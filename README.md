@@ -1,11 +1,12 @@
-# ![BlazorBoilerPlate](src/BlazorBoilerplate.Client/wwwroot/images/blazorboilerplate.svg) Blazor Boilerplate
+# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/blazorboilerplate.svg" alt="Blazor Boilerplate" height="75"/> Blazor Boilerplate
+
 Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer
 
 ## Goal
 To create a boilerplate code base using Blazor / MatBlazor that includes most of the basic functionality of a starter kit (AspnetBoilerplate) that is lean yet powerful for anyone to build off. Hopefully we can get some contributors to review and refine the code. 
 
 ### Live demo
-[Blazor Boilerplate](http://blazorboilerplate.com)
+[Blazor Boilerplate](http://blazorboilerplate.com) - Give a quick test. The initial release is fairly simple but take a look and contribute!
 
 ## Prerequisites
 
@@ -24,28 +25,30 @@ Complete all Blazor dependencies.
 3. Open the solution in Visual Studio and press F5.
 4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
 
-
-### Thanks
+### Thanks To
 - [Blazor](https://blazor.net)
 - [BlazorWithIdentity](https://github.com/stavroskasidis/BlazorWithIdentity)
 - [MatBlazor](https://github.com/SamProf/MatBlazor)
 
 ## Contributing
 
-We'd greatly appreciate any contribution you make. I am very open to updates and features. If you request a feature I most likely 
-will not have time to do it but expect you or other contributors to help.
+We'd greatly appreciate any contribution you make. I am very open to updates and features, though most feature requests 
+will be depending on how much community support for it is.
 
-## Roadmap
+## Road map
 
-- Add SQL Server for DB
-- Breadcrumbs
-- Forgot Password Functionality
-- Slack Communication 
+- Add Database for better data storage.
+- Breadcrumbs.
+- Forgot Password Functionality.
+- Setting management UI.
+- User, role, permission and organization unit management UI.
+- Real time chat and notification system. Slack Communication clone?
+- Audit log report UI.
 
 ## License
 
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
-### BlazorBoilerplate 0.1.0
+### Blazor Boilerplate 0.1.0
 - Initial release
