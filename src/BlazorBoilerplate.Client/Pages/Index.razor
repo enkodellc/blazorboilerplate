@@ -1,0 +1,59 @@
+﻿@page "/"
+@inject AuthenticationState authState
+
+@if (userInfo != null)
+{
+    <h1><img src="images/blazorboilerplate.svg" alt="Loading" title="Blazor Boilerplate" style="height:100px;" /> Hello @userInfo.Username !!</h1>
+
+    <p>Welcome to your new Blazor Boilerplate app.</p>
+    
+    <p>
+        <strong>Blazor Boilerplate's </strong> is just getting started. Our goal is to be an enterprise level <strong>base solution</strong> to jump start your new web project.
+        It's based on Blazor / .Net Core framework and built with best practices.
+    </p>
+    <p>
+        <MatButton Link="https://www.paypal.me/enkodellc"><i class="fa fa-cc-paypal"></i> Donate</MatButton>  
+        <MatButton Link="https://github.com/enkodellc/blazorboilerplate"><i class="fa fa-github" aria-hidden="true"></i> Github Repository / Contribute</MatButton>
+    </p>
+    <p>        
+        Hightlights:
+        <ul class="list-unstyled">
+            <li><i class="fa fa-check"></i> Basic Account Creation and Login with IdentityServer4.</li>
+            <li><i class="fa fa-check"></i> Loading Screen.</li>
+            <li><i class="fa fa-check"></i> Material Design / MatBlazor Components.</li>
+        </ul>
+    </p>
+    <p>
+        Roadmap:
+        <ul class="list-unstyled">
+            <li><i class="fa fa-check"></i> User, role, permission and organization unit management UI.</li>
+            <li><i class="fa fa-check"></i> Setting management UI.</li>
+            <li><i class="fa fa-check"></i> Real time chat and notification system.</li>
+            <li><i class="fa fa-check"></i> Audit log report UI.</li>
+            <li><i class="fa fa-check"></i> User profile, account linking, impersonation, social logins and more...</li>
+        </ul>
+    </p>
+
+    <SurveyPrompt Title="How is Blazor working for you?" />
+}
+else
+{
+    <LoadingBackground ShowLogoBox="true" />
+}
+
+
+@functions{
+    UserInfo userInfo;
+
+    protected override async Task OnInitAsync()
+    {
+        userInfo = await authState.GetUserInfo();
+    }
+
+    string ButtonState = "";
+
+    void Click(UIMouseEventArgs e)
+    {
+        ButtonState = "Clicked";
+    }
+}

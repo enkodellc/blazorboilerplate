@@ -1,0 +1,17 @@
+﻿<div class="triangle-container">
+    <div class="triangles">
+    </div>
+</div>
+
+@if (ShowLogoBox)
+{
+<div class="loading-container">
+    <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />
+    Loading Blazor Boilerplate...
+</div>
+}
+
+@functions{
+    [Parameter]
+    private bool ShowLogoBox { get; set; }
+}

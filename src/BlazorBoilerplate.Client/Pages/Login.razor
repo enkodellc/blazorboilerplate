@@ -1,0 +1,71 @@
+﻿@page "/login"
+@layout LoginLayout
+@inject IUriHelper uriHelper
+@inject AuthenticationState state
+@inject Sotsera.Blazor.Toaster.IToaster toaster
+
+@*TODO: Add client-side validation*@
+
+<MatCard>
+    <div class="logo">
+        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br/>Blazor Boilerplate™
+        <br />
+        <h4>Log In</h4>
+    </div>
+
+    <fieldset>
+        <div class="form-group">
+            <MatTextField bind-value="@loginParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField bind-value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatCheckbox bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
+            <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
+        </div>
+        <hr />
+
+        <NavLink href="register">
+            <h6 class="font-weight-normal text-center">Create account</h6>
+        </NavLink>
+    </fieldset>
+</MatCard>
+
+@*TODO: Create MatExpansionPanel Control for MatBlazor *@
+@*TODO: Add Forgot Password *@
+@*<MatExpansionPanel>
+        <MatExpansionPanelHeader Title="Forgot you Password"></MatExpansionPanelHeader>
+        <MatTextField></MatTextField>
+    </MatExpansionPanel>*@
+
+@*TODO: Style Toaster or Use MatBlazor SnackBar?? *@
+
+@if (error.Length > 0)
+{
+    toaster.Error("Login Failed");
+    <div class="alert alert-danger">
+        Login attempt failed.
+        <br /> - @error
+    </div>
+}
+
+@functions{
+    string error { get; set; } = "";
+
+    LoginParameters loginParameters { get; set; } = new LoginParameters();
+
+    async Task SubmitLogin()
+    {
+        try
+        {
+            error = "";
+            await state.Login(loginParameters);
+            uriHelper.NavigateTo("");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+}
