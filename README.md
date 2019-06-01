@@ -1,4 +1,5 @@
-# ![BlazorBoilerPlate](src/BlazorBoilerplate.Client/wwwroot/images/blazorboilerplate.svg) Blazor Boilerplate
+# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/blazorboilerplate.svg" alt="Blazor Boilerplate" height="75"/> Blazor Boilerplate
+
 Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer
 
 ## Goal
