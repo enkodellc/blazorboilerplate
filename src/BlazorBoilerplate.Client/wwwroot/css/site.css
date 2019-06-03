@@ -37,12 +37,12 @@ app {
     background-image: url("../images/triangles.svg");
     background-size: cover;
     height: 100%;
-    bottom: 0px;
-    left: 0px;
+    bottom: 0;
+    left: 0;
     mix-blend-mode: hard-light;
     position: fixed;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
     background-position: center center;
 }
 
@@ -79,7 +79,6 @@ app {
 
 /* Login page */
 .login-body {
-    margin-top: 150px;
     position: relative;
     max-width: 480px;
     margin: 0 auto;
@@ -95,7 +94,7 @@ app {
     }
 
 .login-container, .loading-container, .mdc-card {
-    border-radius: 0px !important;
+    border-radius: 0 !important;
     box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;
 }
 
@@ -139,6 +138,10 @@ app {
     height:42px;
 }
 
+.mdc-top-app-bar__section .mdc-icon-button {
+    padding: 0 12px;
+}
+
 .mdc-top-app-bar {
     box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
     color: white;
@@ -151,17 +154,34 @@ app {
 }
 
 /* Drawer */
-.app-sidebar .material-icons {
-    margin-right:8px;
+.app-sidebar{
+    width: 256px;
 }
 
-.mdc-drawer__content {
-    position: fixed;
+.drawer-header {
+    padding: 16px;
+    border-bottom: solid 1px #e1e1e1;
+}
+.drawer-header h3 {
+    font-size: 22px;
+    font-weight: bold;
+    display: inline;
+}
+
+.app-sidebar .material-icons {
+    margin-right: 8px;
+}
+
+.mdc-drawer {
+    margin-top: 64px;
+}
+
+.mdc-theme--surface .mdc-drawer-app-content {
+    padding-top: 64px;
 }
 
 .mdc-drawer-app-content {
     background-color: #f5f5f5;
-    padding-right: 8px;
 }
 
 .mat-drawer-container-responsive {
@@ -180,6 +200,31 @@ app {
         flex: 1;
 
     }
+
+.mdc-top-app-bar--fixed-adjust {
+    padding-top:0 !important;
+    overflow: hidden;
+}
+
+.drawer-footer {
+    position: absolute;
+    text-align: center;
+    bottom: 64px;
+    left: 0;
+    right: 0;
+    height: 44px;
+    border-top: solid 1px #e1e1e1;
+}
+
+/* main container */
+.container-footer {
+    border-top: solid 1px #e1e1e1;
+    padding: 8px 16px;
+    font-size: 12px;
+    color:#e1e1e1;
+    background-color: #444;
+    height: 44px;
+}
 
 /*  forms */
 fieldset {
