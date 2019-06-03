@@ -161,6 +161,9 @@ app {
 .drawer-header {
     padding: 16px;
     border-bottom: solid 1px #e1e1e1;
+    background-image: url("../images/profile-bg.jpg");
+    background-size: cover;
+    color:#fff;
 }
 .drawer-header h3 {
     font-size: 22px;
@@ -208,22 +211,14 @@ app {
 
 .drawer-footer {
     position: absolute;
-    text-align: center;
+    text-align: left;
     bottom: 64px;
     left: 0;
     right: 0;
-    height: 44px;
-    border-top: solid 1px #e1e1e1;
-}
-
-/* main container */
-.container-footer {
-    border-top: solid 1px #e1e1e1;
-    padding: 8px 16px;
+    border-top: solid 1px #AAA;
     font-size: 12px;
-    color:#e1e1e1;
-    background-color: #444;
-    height: 44px;
+    padding:0 12px 8px 12px;
+    background-color:lightgray
 }
 
 /*  forms */

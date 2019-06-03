@@ -4,7 +4,10 @@
         <MatListGroup>
             <MatList SingleSelection="true">
                 <MatListItem Href="@uriHelper.ToAbsoluteUri(" ").AbsoluteUri">
-                    <MatIcon>home</MatIcon> Home
+                    <MatIcon>home</MatIcon> Home page
+                </MatListItem>
+                <MatListItem Href="@uriHelper.ToAbsoluteUri("dashboard").AbsoluteUri">
+                    <MatIcon>bar_chart</MatIcon> Dashboard
                 </MatListItem>
                 <MatListItem Href="@uriHelper.ToAbsoluteUri("counter").AbsoluteUri">
                     <MatIcon>exposure_plus_1</MatIcon> Counter

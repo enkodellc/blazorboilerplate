@@ -2,7 +2,6 @@
 @layout LoginLayout
 @inject IUriHelper uriHelper
 @inject AuthenticationState state
-@inject Sotsera.Blazor.Toaster.IToaster toaster
 
 @*TODO: Add client-side validation*@
 
@@ -26,6 +25,10 @@
         <div class="form-group d-flex justify-content-end">
             <MatButton OnClick="@SubmitCreate" Raised="true">Create account</MatButton>
         </div>
+        @if (@error.Length > 0)
+        {
+            <BlazorMessageAlert Message="@error" Dismissible="true" Type="AlertType.Danger"></BlazorMessageAlert>
+        }
         <hr />
 
         <NavLink href="login">
@@ -33,18 +36,6 @@
         </NavLink>
     </fieldset>
 </MatCard>
-
-@*TODO: Style Toaster or Use MatBlazor SnackBar?? *@
-
-@if (error.Length > 0)
-{
-    toaster.Error("Create Failed");
-    <div class="alert alert-danger">
-        Login attempt failed.
-        <br /> - @error
-    </div>
-}
-
 
 @functions{
 
@@ -61,7 +52,7 @@
         }
         catch (Exception ex)
         {
-            error = ex.Message;
+            error = "User Creation failed: "  + ex.Message;
         }
     }
 }

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 //using Blazored.LocalStorage;
-using Sotsera.Blazor.Toaster.Core.Models;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Client
@@ -19,13 +18,6 @@ namespace BlazorBoilerplate.Client
 
             //services.AddBlazoredLocalStorage();
             services.AddLoadingBar();
-
-            services.AddToaster(config =>
-            {
-                config.PositionClass = Defaults.Classes.Position.TopRight;
-                config.PreventDuplicates = true;
-                config.NewestOnTop = false;
-            });
         }
 
         public void Configure(IComponentsApplicationBuilder app)

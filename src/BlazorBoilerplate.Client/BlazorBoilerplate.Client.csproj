@@ -13,10 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="2.0.1" />
-    <PackageReference Include="MatBlazor" Version="0.9.14" />
+    <PackageReference Include="MatBlazor" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview5-19227-01" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview5-19227-01" PrivateAssets="all" />
-    <PackageReference Include="Sotsera.Blazor.Toaster" Version="0.9.0-preview-3" />
     <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="5.0.0" />
   </ItemGroup>
 

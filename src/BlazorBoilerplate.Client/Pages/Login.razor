@@ -2,13 +2,11 @@
 @layout LoginLayout
 @inject IUriHelper uriHelper
 @inject AuthenticationState state
-@inject Sotsera.Blazor.Toaster.IToaster toaster
-
 @*TODO: Add client-side validation*@
 
 <MatCard>
     <div class="logo">
-        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br/>Blazor Boilerplate
+        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
         <br />
         <h4>Log In</h4>
         <sup>user : user123</sup>
@@ -25,6 +23,10 @@
             <MatCheckbox bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
             <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
         </div>
+        @if (@error.Length > 0)
+        {
+            <BlazorMessageAlert Message="@error" Dismissible="true" Type="AlertType.Danger"></BlazorMessageAlert>
+        }
         <hr />
 
         <NavLink href="register">
@@ -40,20 +42,9 @@
         <MatTextField></MatTextField>
     </MatExpansionPanel>*@
 
-@*TODO: Style Toaster or Use MatBlazor SnackBar?? *@
-
-@if (error.Length > 0)
-{
-    toaster.Error("Login Failed");
-    <div class="alert alert-danger">
-        Login attempt failed.
-        <br /> - @error
-    </div>
-}
 
 @functions{
     string error { get; set; } = "";
-
     LoginParameters loginParameters { get; set; } = new LoginParameters();
 
     async Task SubmitLogin()
@@ -66,7 +57,7 @@
         }
         catch (Exception ex)
         {
-            error = ex.Message;
+            error = "Login Attempt Failed: " + ex.Message;
         }
     }
 }
