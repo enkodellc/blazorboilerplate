@@ -16,10 +16,14 @@ app {
     /*--mdc-theme-on-primary: #495f90;
     --mdc-theme-on-secondary: #ffe172;*/
     --mdc-theme-text-primary: #ffffff;
-    --mdc-theme-text-secondary: #000000;
+    --mdc-theme-text-secondary: #333;
     --mdc-theme-text-on-primary: #001037;
     --mdc-theme-text-on-secondary: #c48003;
     /*--mdc-theme-surface: #263238; */
+}
+
+.mdc-icon-button .fa{
+    font-size:30px;
 }
 
 /* Loading page */
@@ -46,35 +50,12 @@ app {
     background-position: center center;
 }
 
-.tesselation {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-}
-
-#tesselationImg {
-    width: 100%;
-    height: 100%;
-}
-
-    #tesselationImg g {
-        mix-blend-mode: lighten;
-    }
-
-    #tesselationImg polygon {
-        stroke: none;
-        fill: white;
-    }
-
 .loading-container {
-    position: fixed;
-    top: 25%;
-    left: 50%;
-    margin-left: -150px;
+    position: relative;
     text-align: center;
     background-color: #fff;
     padding: 20px;
+    margin:25% auto;
 }
 
 /* Login page */
@@ -98,22 +79,26 @@ app {
     box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;
 }
 
-.mdc-card {
-    padding: 40px 30px;
-    width: 500px;
-}
+    .login-container .mdc-card {
+        padding: 40px 30px;
+        width: 500px;
+    }
 
-.additional-info {
-    color: #636c72;
-    background-color: rgba(0,0,0,.04);
-    padding: 10px 6px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: .875rem;
-}
+    .login-container .mat-accordion {
+        width: 500px;
+    }
+
+    .additional-info {
+        color: #636c72;
+        background-color: rgba(0,0,0,.04);
+        padding: 10px 6px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: .875rem;
+    }
 
 .login-container {
     display: -ms-flexbox;
@@ -126,20 +111,28 @@ app {
 }
 
 .login-body {
-    flex-grow: 1;
-    display: flex;
     flex-direction: column;
     max-width: 450px;
     margin: 0 auto;
 }
 
-/* app bar */
-.logo-img{
-    height:42px;
+.login-body .mat-accordion .mat-expansion-panel__header{
+flex-basis:80%;
 }
 
-.mdc-top-app-bar__section .mdc-icon-button {
-    padding: 0 12px;
+    .login-body .mat-expansion-panel {
+        background-color: #f4f4f4 !important;
+    }
+
+
+/* app bar */
+.logo-img {
+    height: 42px;
+}
+
+.navToggle.mdc-icon-button,
+.navToggle .material-icons {
+    font-size: 12px !important;
 }
 
 .mdc-top-app-bar {
@@ -154,8 +147,18 @@ app {
 }
 
 /* Drawer */
-.app-sidebar{
-    width: 256px;
+.app-sidebar {
+    width: 256px;    
+}
+
+.mdc-drawer .mdc-list-item {
+    margin: 8px 0 !important;
+    border-radius: 0 !important;
+    color: #333;
+}
+
+.mdc-drawer a.mdc-list-item {
+    padding: 0 14px !important;
 }
 
 .drawer-header {
@@ -163,7 +166,7 @@ app {
     border-bottom: solid 1px #e1e1e1;
     background-image: url("../images/profile-bg.jpg");
     background-size: cover;
-    color:#fff;
+    color: #fff;
 }
 .drawer-header h3 {
     font-size: 22px;
@@ -177,6 +180,7 @@ app {
 
 .mdc-drawer {
     margin-top: 64px;
+    box-shadow: 2px 0 5px 0 rgba(0,0,0,0.16);
 }
 
 .mdc-theme--surface .mdc-drawer-app-content {
@@ -244,4 +248,62 @@ hr {
     color: #ccc;
     text-shadow: none;
     font-size: 11px;
+}
+
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+
+}
+
+/* Small devices (landscape phones, less than 768px)*/
+@media (max-width: 767.98px) {
+
+    .drawer-footer span,
+    .drawer-header h3,
+    .brand {
+        display: none;
+    }
+
+    .mdc-drawer__content,
+    .mdc-drawer,
+    .app-sidebar {
+        width: 52px !important;
+    }
+        .app-sidebar span {
+            display: none;
+        }
+
+        .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+            margin-left: 52px !important;
+        }
+    .mdc-top-app-bar__title {
+        padding-left: 0 !important;
+    }
+    .drawer-footer {
+        padding: 0;
+    }
+
+    .login-container .mdc-card {
+        padding: 20px;
+        width: 300px;
+    }
+
+    .login-container .mat-accordion {
+        width: 300px;
+    }
+
+    .loading-container {
+        padding: 10px;
+    }
+}
+
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) {
+
+}
+
+/* Large devices (desktops, less than 1200px) */
+@media (max-width: 1199.98px) {
+
 }

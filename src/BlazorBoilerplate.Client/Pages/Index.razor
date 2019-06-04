@@ -6,17 +6,21 @@
     <h1><img src="images/blazorboilerplate.svg" alt="Loading" title="Blazor Boilerplate" style="height:100px;" /> Hello @userInfo.Username !!</h1>
 
     <p>Welcome to your new Blazor Boilerplate app.</p>
-    
+
     <p>
         <strong>Blazor Boilerplate </strong> is just getting started. Our goal is to be an enterprise level <strong>base solution</strong> to jump start your new web project.
         It's based on Blazor &amp; Razor components for the client and the server is .Net Core Framework 3+. Expect a lot of changes in the future as Blazor is growing and changing rapidly.
     </p>
     <p>
-        <MatButton Link="https://www.paypal.me/enkodellc"><i class="fa fa-cc-paypal"></i> Donate</MatButton> - Help support this repo / code and hosting costs.<br/>
+        <MatButton Link="https://www.paypal.me/enkodellc"><i class="fa fa-cc-paypal"></i> Donate</MatButton> - Help support this repo / code and hosting costs.
+    </p>
+    <p>
         <MatButton Link="https://github.com/enkodellc/blazorboilerplate"><i class="fa fa-github" aria-hidden="true"></i>  Github Repository / Contribute</MatButton> - Contribute to this repo to help it grow!
     </p>
-    <p>        
-        Hightlights:
+    <hr />
+    <h2>Blazor Boilerplate Hightlights:</h2>
+    <p>
+
         <ul class="list-unstyled">
             <li><i class="fa fa-check"></i> Basic Account Creation and Login with IdentityServer4.</li>
             <li><i class="fa fa-check"></i> Loading Screen.</li>
@@ -24,8 +28,8 @@
             <li><i class="fa fa-check"></i> Material Design / MatBlazor Components.</li>
         </ul>
     </p>
-    <p>
-        Roadmap:
+    <h2>Blazor Boilerplate Roadmap::</h2>
+    <p>        
         <ul class="list-unstyled">
             <li><i class="fa fa-check"></i> User, role, permission and organization unit management UI.</li>
             <li><i class="fa fa-check"></i> Setting management UI.</li>
@@ -36,31 +40,30 @@
     <p>
         This project was derived from <a href="https://github.com/stavroskasidis/BlazorWithIdentity" target="_blank">https://github.com/stavroskasidis/BlazorWithIdentity</a> and utilizes <a href="https://www.matblazor.com/" target="_blank">MatBlazor</a> extensively.
     </p>
-    <hr/>
+    <hr />
     <h3> MatBlazor / Material Design Components Utilized</h3>
-        <ul>
-            <li>AppBar</li>
-            <li>Blazor Alert Message</li>
-            <li>Button</li>
-            <li>Card</li>
-            <li>Checkbox</li>
-            <li>Drawer</li>
-            <li>Expansion Panel</li>
-            <li>Icon</li>
-            <li>Icon Button</li>
-            <li>List</li>
-            <li>Table</li>
-            <li>TextField</li>
-            <li>Tooltip</li>
-        </ul>
-  
+    <ul>
+        <li>AppBar</li>
+        <li>Blazor Alert Message</li>
+        <li>Button</li>
+        <li>Card</li>
+        <li>Checkbox</li>
+        <li>Drawer</li>
+        <li>Expansion Panel</li>
+        <li>Icon</li>
+        <li>Icon Button</li>
+        <li>List</li>
+        <li>Table</li>
+        <li>TextField</li>
+        <li>Tooltip</li>
+    </ul>
+
     <SurveyPrompt Title="How is Blazor working for you?" />
 }
 else
 {
     <LoadingBackground ShowLogoBox="true" />
 }
-
 
 @functions{
     UserInfo userInfo;

@@ -13,7 +13,7 @@
                         <a class="brand" href="/">Blazor Boilerplate</a>
                     </MatAppBarTitle>
                     <MatTooltip Tooltip="Toggle Navigation">
-                        <MatIconButton Icon="radio_button_checked" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                        <MatIconButton Class="navToggle" Icon="radio_button_checked" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
                     </MatTooltip>
                 </MatAppBarSection>
                 <MatAppBarSection Align="@MatAppBarSectionAlign.End">
@@ -39,10 +39,14 @@
                     </header>
                     <NavMenu />
                     <footer class="drawer-footer">
-                        <MatButton Icon="help" Link="https://github.com/enkodellc/blazorboilerplate">Help & Support</MatButton>
-                        <br />
-                        © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a><br/>
-                        Version 0.1.0
+                        <MatTooltip Tooltip="Help">
+                            <MatButton Icon="help" Link="https://github.com/enkodellc/blazorboilerplate"><span>Help & Support</span></MatButton>
+                        </MatTooltip>
+                        <span>
+                            <br />
+                            © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a><br />
+                            Version 0.1.0
+                        </span>
                     </footer>
                 </MatDrawer>
                 <MatDrawerContent>

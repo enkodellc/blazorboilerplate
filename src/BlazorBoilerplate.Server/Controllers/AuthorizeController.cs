@@ -62,6 +62,40 @@ namespace BlazorBoilerplate.Server.Controllers
             });
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> SendPasswordResetEmail(string emailAddress)
+        {
+            var user = await _userManager.FindByEmailAsync(emailAddress);
+            if (user == null)
+            {
+                return Ok();
+            }
+
+            return Ok();
+
+            // Todo Complete Email Service / Email Templates / Password reset
+
+            //user.SetNewPasswordResetCode();
+            //var passwordResetCode = user.PasswordResetCode;
+
+            //var email = this.L(
+            //    "PasswordResetEmailBody",
+            //    _configuration.GetSection("App:ClientRootAddress").Value.TrimEnd('/'),
+            //    user.TenantId,
+            //    user.Id,
+            //    WebUtility.UrlEncode(passwordResetCode));
+
+            //_emailSender.Send(
+            //    from: (await SettingManager.GetSettingValueAsync(EmailSettingNames.DefaultFromAddress)),
+            //        to: user.EmailAddress,
+            //        subject: this.L("PasswordResetEmailSubject"),
+            //        body: email,
+            //        isBodyHtml: true
+            //    );
+
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
