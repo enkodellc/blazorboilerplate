@@ -50,5 +50,10 @@ will be depending on how much community support for it is.
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
-### Blazor Boilerplate 0.1.0
+
+###  0.1.1
+- Updated Theme / Responsive
+- Added Serilog Log Files
+
+### 0.1.0
 - Initial release
