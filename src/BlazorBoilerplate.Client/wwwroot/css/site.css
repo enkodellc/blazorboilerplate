@@ -251,6 +251,52 @@ hr {
 }
 
 
+/* MatTable */
+.mdc-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    display: inline-block;
+    overflow-x: auto;
+    margin: 8px 0 32px;
+    max-width: 100%;
+    border: 1px solid #eee;
+    width: 100%
+
+}
+
+    .mdc-table th {
+        font-family: Roboto, sans-serif;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+        font-size: 18px;
+        line-height: 18px;
+        font-weight: bold;
+        letter-spacing: .04em;
+        text-decoration: inherit;
+        text-transform: inherit;
+        background-color: whitesmoke !important;
+        border-top: none;
+        color: #444;
+        text-align: left;
+        border: 1px solid #eee;
+        padding: 12px !important;
+    }
+
+    .mdc-table td {
+        border: 1px solid #eee;
+        padding: 12px 12px 12px 24px !important;
+        background-color:white;
+    }
+
+        .mdc-table td:first-child {
+            border-left: none;
+        }
+
+        .mdc-table td:last-child {
+            border-right: none;
+            width: 100%;
+        }
+
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
 

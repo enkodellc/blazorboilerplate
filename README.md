@@ -2,11 +2,16 @@
 
 Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer
 
-## Goal
-To create a boilerplate code base using Blazor / MatBlazor that includes most of the basic functionality of a starter kit (AspnetBoilerplate) that is lean yet powerful for anyone to build off. Hopefully we can get some contributors to review and refine the code. 
+[![GitHub Stars](https://img.shields.io/github/stars/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/issues)
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](http://blazorboilerplate.com)
+[![MIT](https://img.shields.io/github/license/SamProf/MatBlazor.svg)](LICENSE)
 
-### Live demo
-[Blazor Boilerplate](http://blazorboilerplate.com) - Give a quick test. The initial release is fairly simple but take a look and contribute!
+## Goal
+To create a boilerplate code base using Blazor / MatBlazor & .Net Core that includes most of the basic functionality of a starter kit (similar to AspnetBoilerplate) that is lean yet powerful for anyone to build off. A repository that is not controlled by a corporation but by a community.
+
+# Live demo
+[Blazor Boilerplate](http://blazorboilerplate.com) - Kick the tires. The initial release is fairly simple but I am updating almost daily!
 
 ## Prerequisites
 
@@ -35,14 +40,21 @@ Complete all Blazor dependencies.
 We'd greatly appreciate any contribution you make. I am very open to updates and features, though most feature requests 
 will be depending on how much community support for it is.
 
+## Completed
+ 
+ - Basic Login / User Creation
+ - Admin Theme using Material Design / MatBlazor - Free to use.
+ - Log Files
+
 ## Road map
 
-- Add Database for better data storage.
+- Add SQL Database for better data storage.
 - Breadcrumbs.
 - Forgot Password Functionality.
 - Setting management UI.
 - User, role, permission and organization unit management UI.
 - Real time chat and notification system. Slack Communication clone?
+- Blog or other real world functionality.
 - Audit log report UI.
 
 ## License
