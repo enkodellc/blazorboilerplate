@@ -1,21 +1,21 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/blazorboilerplate.svg" alt="Blazor Boilerplate" height="75"/> Blazor Boilerplate
 
-Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer
+Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer (client-side).  Blazor is a web framework designed to run client-side in the browser on a WebAssembly-based .NET runtime. 
 
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
 [![GitHub Stars](https://img.shields.io/github/stars/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/issues)
-[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](http://blazorboilerplate.com)
 [![MIT](https://img.shields.io/github/license/SamProf/MatBlazor.svg)](LICENSE)
 
 ## Goal
 To create a boilerplate code base using Blazor / MatBlazor & .Net Core that includes most of the basic functionality of a starter kit (similar to AspnetBoilerplate) that is lean yet powerful for anyone to build off. A repository that is not controlled by a corporation but by a community.
 
 # Live demo
-[Blazor Boilerplate](http://blazorboilerplate.com) - Kick the tires. The initial release is fairly simple but I am updating almost daily!
+[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The initial release is fairly simple but I am updating almost daily!
 
 ## Prerequisites
 
-Don't know what Blazor is? Read [here](https://github.com/aspnet/Blazor)
+Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-3.0)
 
 Complete all Blazor dependencies.
 
@@ -37,7 +37,7 @@ Complete all Blazor dependencies.
 
 ## Contributing
 
-We'd greatly appreciate any contribution you make. I am very open to updates and features, though most feature requests 
+Please star, watch and fork! We'd greatly appreciate any contribution you make. I am very open to updates and features, though most feature requests 
 will be depending on how much community support for it is.
 
 ## Completed

@@ -2,6 +2,9 @@
 @layout LoginLayout
 @inject IUriHelper uriHelper
 @inject AuthenticationState state
+@inject MatBlazor.Components.MatToast.IBaseMatToastContainer matToaster
+@using  MatBlazor.MatToaster.Helpers;
+
 @*TODO: Add client-side validation*@
 
 <MatCard>
@@ -23,10 +26,6 @@
             <MatCheckbox bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
             <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
         </div>
-        @if (@error.Length > 0)
-        {
-            <BlazorMessageAlert Message="@error" Dismissible="true" Type="AlertType.Danger"></BlazorMessageAlert>
-        }
         <hr />
         <NavLink href="register">
             <h6 class="font-weight-normal text-center">Create account</h6>
@@ -46,18 +45,12 @@
             <div class="form-group">
                 <MatButton class="float-right" OnClick="@ResetPassword" Raised="true">Submit</MatButton>
             </div>
-            @if (@forgotError.Length > 0)
-            {
-                <BlazorMessageAlert Message="@forgotError" Dismissible="true" Type="AlertType.Danger"></BlazorMessageAlert>
-            }
         </MatExpansionPanelDetails>
     </MatExpansionPanel>
 </MatAccordion>
 
 @functions{
     bool forgotPasswordToggle = false;
-    string error { get; set; } = "";
-    string @forgotError { get; set; } = "";
     LoginParameters loginParameters { get; set; } = new LoginParameters();
     string forgotPasswordEmail;
 
@@ -65,13 +58,12 @@
     {
         try
         {
-            error = "";
             await state.Login(loginParameters);
             uriHelper.NavigateTo("");
         }
         catch (Exception ex)
         {
-            error = "Login Attempt Failed: " + ex.Message;
+            matToaster.Add(ex.Message, ToastType.Danger, "Login Attempt Failed");
         }
     }
 
@@ -80,13 +72,12 @@
         try
         {
             @*TODO: Add Forgot Password *@
-            //forgotError = "";
-            forgotError = "TBD / Not Implemented";
+            matToaster.Add("Forgot Passwoord is TBD", ToastType.Warning, "Not Implemented");
             //await state.SendPasswordResetEmail(forgotPasswordEmail);
         }
         catch (Exception ex)
         {
-            forgotError = "Reset Password Attempt Failed: " + ex.Message;
+            matToaster.Add(ex.Message, ToastType.Danger, "Reset Password Attempt Failed");
         }
     }
 }
