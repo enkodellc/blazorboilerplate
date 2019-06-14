@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Client.States
 {
-    public class AuthenticationState
-    {
+    public class BlazorAuthenticationState
+  {
         private readonly IAuthorizeApi _authorizeApi;
         private UserInfo userInfo;
 
-        public AuthenticationState(IAuthorizeApi authorizeApi)
+        public BlazorAuthenticationState(IAuthorizeApi authorizeApi)
         {
             _authorizeApi = authorizeApi;
         }

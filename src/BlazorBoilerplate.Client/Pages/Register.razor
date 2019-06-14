@@ -1,34 +1,31 @@
 ﻿@page "/register"
 @layout LoginLayout
 @inject IUriHelper uriHelper
-@inject AuthenticationState state
+@inject BlazorAuthenticationState state
+@inject IMatToaster matToaster
 
 @*TODO: Add client-side validation*@
 
 <MatCard>
     <div class="logo">
-        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br/>Blazor Boilerplate
+        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
         <br />
         <h4>Create Account</h4>
     </div>
 
     <fieldset>
         <div class="form-group">
-            <MatTextField bind-value="@registerParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-value="@registerParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            <MatTextField @bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
         </div>
         <div class="form-group d-flex justify-content-end">
             <MatButton OnClick="@SubmitCreate" Raised="true">Create account</MatButton>
         </div>
-        @if (@error.Length > 0)
-        {
-            <BlazorMessageAlert Message="@error" Dismissible="true" Type="AlertType.Danger"></BlazorMessageAlert>
-        }
         <hr />
 
         <NavLink href="login">
@@ -37,22 +34,20 @@
     </fieldset>
 </MatCard>
 
-@functions{
+@functions {
 
-    RegisterParameters registerParameters { get; set; } = new RegisterParameters();
-    string error { get; set; }  = "";
+  RegisterParameters registerParameters { get; set; } = new RegisterParameters();
 
-    async Task SubmitCreate()
-    {
-        try
-        {
-            error = "";
-            await state.Register(registerParameters);
-            uriHelper.NavigateTo("");
-        }
-        catch (Exception ex)
-        {
-            error = "User Creation failed: "  + ex.Message;
-        }
-    }
+  async Task SubmitCreate()
+  {
+      try
+      {
+          await state.Register(registerParameters);
+          uriHelper.NavigateTo("");
+      }
+      catch (Exception ex)
+      {
+          matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
+      }
+  }
 }

@@ -7,11 +7,14 @@
 {
 <div class="loading-container">
     <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />
-    Loading Blazor Boilerplate...
+    @ChildContent
 </div>
 }
 
-@functions{
+@code {
     [Parameter]
     private bool ShowLogoBox { get; set; }
+
+    [Parameter]
+    private RenderFragment ChildContent { get; set; }
 }

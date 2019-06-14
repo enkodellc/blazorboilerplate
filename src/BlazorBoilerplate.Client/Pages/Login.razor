@@ -1,10 +1,8 @@
 ﻿@page "/login"
 @layout LoginLayout
 @inject IUriHelper uriHelper
-@inject AuthenticationState state
-@inject MatBlazor.Components.MatToast.IBaseMatToastContainer matToaster
-@using  MatBlazor.MatToaster.Helpers;
-
+@inject BlazorAuthenticationState state
+@inject IMatToaster matToaster
 @*TODO: Add client-side validation*@
 
 <MatCard>
@@ -12,18 +10,19 @@
         <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
         <br />
         <h4>Log In</h4>
-        <sup>user : user123</sup>
+        Username: <b>user</b> Password: <b>user123</b>
+        
     </div>
 
     <fieldset>
         <div class="form-group">
-            <MatTextField bind-value="@loginParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-value="@loginParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField bind-value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            <MatTextField @bind-value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
         </div>
         <div class="form-group">
-            <MatCheckbox bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
+            <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
             <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
         </div>
         <hr />
@@ -33,14 +32,14 @@
     </fieldset>
 </MatCard>
 <MatAccordion>
-    <MatExpansionPanel bind-Expanded="@forgotPasswordToggle">
+    <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
         <MatExpansionPanelSummary>
             <MatExpansionPanelHeader>Forgot Password?</MatExpansionPanelHeader>
             <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
         </MatExpansionPanelSummary>
         <MatExpansionPanelDetails>
             <div class="form-group">
-                <MatTextField bind-value="@forgotPasswordEmail" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-value="@forgotPasswordEmail" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
                 <MatButton class="float-right" OnClick="@ResetPassword" Raised="true">Submit</MatButton>
@@ -49,7 +48,7 @@
     </MatExpansionPanel>
 </MatAccordion>
 
-@functions{
+@functions {
     bool forgotPasswordToggle = false;
     LoginParameters loginParameters { get; set; } = new LoginParameters();
     string forgotPasswordEmail;
@@ -59,11 +58,11 @@
         try
         {
             await state.Login(loginParameters);
-            uriHelper.NavigateTo("");
+            uriHelper.NavigateTo("/counter");
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, ToastType.Danger, "Login Attempt Failed");
+            matToaster.Add(ex.Message, MatToastType.Danger, "Login Attempt Failed");
         }
     }
 
@@ -72,12 +71,12 @@
         try
         {
             @*TODO: Add Forgot Password *@
-            matToaster.Add("Forgot Passwoord is TBD", ToastType.Warning, "Not Implemented");
+            matToaster.Add("Forgot Passwoord is TBD", MatToastType.Warning, "Not Implemented");
             //await state.SendPasswordResetEmail(forgotPasswordEmail);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, ToastType.Danger, "Reset Password Attempt Failed");
+            matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
         }
     }
 }

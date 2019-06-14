@@ -1,6 +1,6 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/blazorboilerplate.svg" alt="Blazor Boilerplate" height="75"/> Blazor Boilerplate
 
-Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer (client-side).  Blazor is a web framework designed to run client-side in the browser on a WebAssembly-based .NET runtime. 
+Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer (Core-Hosted).  Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. 
 
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
 [![GitHub Stars](https://img.shields.io/github/stars/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/stargazers)
@@ -19,7 +19,7 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- .NET Core 3.0 Preview 5 SDK (3.0.0-preview5-011568)
+- .NET Core 3.0 Preview 6 SDK (3.0.100-preview6-012264)
 - Visual Studio 2019 Preview 4 with the ASP.NET and web development workload selected.
 - The latest Blazor extension from the Visual Studio Marketplace.
 - The Blazor templates on the command-line: dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview4-19216-03
@@ -29,6 +29,11 @@ Complete all Blazor dependencies.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
+
+## Publish on IIS
+1. Publish both the Client and Server projects.
+2. Upload Server project to website folder.
+3. Upload Client 'BlazorBoilerplate.Client' directory 
 
 ### Thanks To
 - [Blazor](https://blazor.net)
@@ -62,6 +67,12 @@ will be depending on how much community support for it is.
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
+
+### 0.1.2
+- Update to SDK 3.0.100-preview6-012264 - Breaking Changes
+- Update to MatBlazor 1.2
+- Update Theme
+- Known Issue - UserProfile not loading after login
 
 ###  0.1.1
 - Updated Theme / Responsive

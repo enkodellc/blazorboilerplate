@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace BlazorBoilerplate.Client.Services.Implementations
 {
@@ -22,12 +23,12 @@ namespace BlazorBoilerplate.Client.Services.Implementations
 
         public async Task<UserInfo> Login(LoginParameters loginParameters)
         {
-            var stringContent = new StringContent(Json.Serialize(loginParameters), Encoding.UTF8, "application/json");
+            var stringContent = new StringContent(JsonSerializer.ToString(loginParameters), Encoding.UTF8, "application/json");
             var result = await _httpClient.PostAsync("api/Authorize/Login", stringContent);
             if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
             result.EnsureSuccessStatusCode();
 
-            return Json.Deserialize<UserInfo>(await result.Content.ReadAsStringAsync());
+            return JsonSerializer.Parse<UserInfo>(await result.Content.ReadAsStringAsync());
         }
 
         public async Task Logout()
@@ -38,12 +39,12 @@ namespace BlazorBoilerplate.Client.Services.Implementations
 
         public async Task<UserInfo> Register(RegisterParameters registerParameters)
         {
-            var stringContent = new StringContent(Json.Serialize(registerParameters), Encoding.UTF8, "application/json");
+            var stringContent = new StringContent(JsonSerializer.ToString(registerParameters), Encoding.UTF8, "application/json");
             var result = await _httpClient.PostAsync("api/Authorize/Register", stringContent);
             if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
             result.EnsureSuccessStatusCode();
 
-            return Json.Deserialize<UserInfo>(await result.Content.ReadAsStringAsync());
+            return JsonSerializer.Parse<UserInfo>(await result.Content.ReadAsStringAsync());
         }
 
         public async Task<UserInfo> GetUserInfo()

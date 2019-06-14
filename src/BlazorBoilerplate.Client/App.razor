@@ -1,3 +1,10 @@
-﻿<Router AppAssembly=typeof(Pages.Index).Assembly />
+﻿<Router AppAssembly="typeof(Program).Assembly">
+    <NotFoundContent>
+        <LoadingBackground ShowLogoBox="true">
+            <label>Sorry, there's nothing at this address.</label><br/>
+            <MatButton Link="/">Home</MatButton>
+        </LoadingBackground>
+    </NotFoundContent>
+</Router>
 <MatToastContainer />
 

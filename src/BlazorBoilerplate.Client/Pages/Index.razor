@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inject AuthenticationState authState
+@inject BlazorAuthenticationState authState
 
 @if (userInfo != null)
 {
@@ -29,7 +29,7 @@
         </ul>
     </p>
     <h2>Blazor Boilerplate Roadmap::</h2>
-    <p>        
+    <p>
         <ul class="list-unstyled">
             <li><i class="fa fa-check"></i> User, role, permission and organization unit management UI.</li>
             <li><i class="fa fa-check"></i> Setting management UI.</li>
@@ -55,6 +55,7 @@
         <li>List</li>
         <li>Table</li>
         <li>TextField</li>
+        <li>Toast</li>
         <li>Tooltip</li>
     </ul>
 
@@ -62,21 +63,16 @@
 }
 else
 {
-    <LoadingBackground ShowLogoBox="true" />
+<LoadingBackground ShowLogoBox="true">
+    <label>Unauthorized.. Please Login</label>
+</LoadingBackground>
 }
 
-@functions{
+@functions {
     UserInfo userInfo;
 
     protected override async Task OnInitAsync()
     {
         userInfo = await authState.GetUserInfo();
-    }
-
-    string ButtonState = "";
-
-    void Click(UIMouseEventArgs e)
-    {
-        ButtonState = "Clicked";
     }
 }

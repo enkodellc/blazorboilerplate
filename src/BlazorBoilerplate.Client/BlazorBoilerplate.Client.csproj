@@ -11,12 +11,10 @@
     <RazorLangVersion>3.0</RazorLangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Blazored.LocalStorage" Version="2.0.1" />
-    <PackageReference Include="MatBlazor" Version="1.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview5-19227-01" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview5-19227-01" PrivateAssets="all" />
-    <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="5.0.0" />
+  <ItemGroup>    
+    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview6.19307.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview6.19307.2" PrivateAssets="all" />
+    <PackageReference Include="MatBlazor" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,5 +26,5 @@
     <Folder Include="wwwroot\fonts\fontawesome\" />
     <Folder Include="wwwroot\javascript\" />
   </ItemGroup>
-
+  
 </Project>
