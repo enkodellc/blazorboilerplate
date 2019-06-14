@@ -10,16 +10,15 @@
         <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
         <br />
         <h4>Log In</h4>
-        Username: <b>user</b> Password: <b>user123</b>
-        
+        Username: <b>user</b> Password: <b>user123</b>        
     </div>
 
     <fieldset>
         <div class="form-group">
-            <MatTextField @bind-value="@loginParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-value="@loginParameters.UserName" PlaceHolder="user" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            <MatTextField @bind-value="@loginParameters.Password" PlaceHolder="user123" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
         </div>
         <div class="form-group">
             <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>

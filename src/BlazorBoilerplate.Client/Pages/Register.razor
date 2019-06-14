@@ -4,8 +4,6 @@
 @inject BlazorAuthenticationState state
 @inject IMatToaster matToaster
 
-@*TODO: Add client-side validation*@
-
 <MatCard>
     <div class="logo">
         <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
@@ -13,36 +11,41 @@
         <h4>Create Account</h4>
     </div>
 
-    <fieldset>
-        <div class="form-group">
-            <MatTextField @bind-value="@registerParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatTextField @bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
-        </div>
-        <div class="form-group d-flex justify-content-end">
-            <MatButton OnClick="@SubmitCreate" Raised="true">Create account</MatButton>
-        </div>
-        <hr />
+    <EditForm Model="@registerParameters" OnValidSubmit="@RegisterUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-value="@registerParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            </div>
+            <div class="form-group d-flex justify-content-end">
+                <MatButton Type="submit" Raised="true">Create account</MatButton>
+            </div>
+            <hr />
 
-        <NavLink href="login">
-            <h6 class="font-weight-normal text-center">Already have an account? Click here to login</h6>
-        </NavLink>
-    </fieldset>
+            <NavLink href="login">
+                <h6 class="font-weight-normal text-center">Already have an account? Click here to login</h6>
+            </NavLink>
+        </fieldset>
+    </EditForm>
 </MatCard>
 
-@functions {
+@code {
 
   RegisterParameters registerParameters { get; set; } = new RegisterParameters();
 
-  async Task SubmitCreate()
+  async Task RegisterUser()
   {
       try
       {
           await state.Register(registerParameters);
+          matToaster.Add("Your new user has been added", MatToastType.Success, "User Creation Sucessful");
           uriHelper.NavigateTo("");
       }
       catch (Exception ex)

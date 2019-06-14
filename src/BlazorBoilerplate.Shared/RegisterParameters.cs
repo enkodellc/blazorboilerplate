@@ -11,6 +11,7 @@ namespace BlazorBoilerplate.Shared
         public string UserName { get; set; }
 
         [Required]
+        [MinLength(6,ErrorMessage = "Identifier too short (6 character minimum).")]
         public string Password { get; set; }
 
         [Required]

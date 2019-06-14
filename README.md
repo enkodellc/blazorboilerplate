@@ -22,10 +22,10 @@ Complete all Blazor dependencies.
 - .NET Core 3.0 Preview 6 SDK (3.0.100-preview6-012264)
 - Visual Studio 2019 Preview 4 with the ASP.NET and web development workload selected.
 - The latest Blazor extension from the Visual Studio Marketplace.
-- The Blazor templates on the command-line: dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview4-19216-03
+- The Blazor templates on the command-line: **Install-Package Microsoft.AspNetCore.Blazor.Templates -Version 3.0.0-preview6.19307.2**
 
 ### How to run
-1. Install **dotnet-sdk-3.0.100-preview5-011568** and the latest **Visual Studio 2019 Preview**.
+1. Install **dotnet-sdk-3.0.100-preview6-012264** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
@@ -73,6 +73,8 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Update to MatBlazor 1.2
 - Update Theme
 - Known Issue - UserProfile not loading after login
+- Registration Form added Form Validation
+- Todo Table Fetch from API Example
 
 ###  0.1.1
 - Updated Theme / Responsive

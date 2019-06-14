@@ -28,13 +28,47 @@ else
             <td>@context.Summary</td>
         </MatTableRow>
     </MatTable>
+
+    <hr />
+    <h1>Todo</h1>
+
+    <p>This component demonstrates fetching data from a third party API.</p>
+    <MatTable Class="mat-elevation-z5" Items="@todos" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="https://jsonplaceholder.typicode.com/todos" FilterByColumnName="Title" DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th>Id</th>
+            <th>Completed</th>
+            <th style="min-width:200px;">Todo</th>
+
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@String.Format("{0:d}", @context.Id)</td>
+            <td><MatCheckbox Checked="@context.Completed" class="filled-in chk-col-blue" Disabled="true"></MatCheckbox></td>
+            <td>@context.Title</td>
+        </MatTableRow>
+    </MatTable>
+
 }
 
 @functions {
+
+    Todo[] todos;
+
     WeatherForecast[] forecasts;
 
     protected override async Task OnInitAsync()
     {
         forecasts = await Http.GetJsonAsync<WeatherForecast[]>("api/SampleData/WeatherForecasts");
+    }
+
+    public class Todo
+    {
+        public int UserId { get; set; }
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public bool Completed { get; set; }
+
+        public Todo()
+        {
+        }
     }
 }
