@@ -24,8 +24,9 @@ namespace BlazorBoilerplate.Client.States
         {
             try
             {
-                var userInfo = await GetUserInfo();
-                return userInfo != null;
+                var localUserInfo = await GetUserInfo();
+                // var userInfo = await GetUserInfo();
+                return localUserInfo != null;
             }
             catch (HttpRequestException)
             {
@@ -36,6 +37,7 @@ namespace BlazorBoilerplate.Client.States
         public async Task Login(LoginParameters loginParameters)
         {
             userInfo = await _authorizeApi.Login(loginParameters);
+            Console.WriteLine($"Login... userInfo: {userInfo}, userInfo.Username: {userInfo?.Username}" );
         }
 
         public async Task Register(RegisterParameters registerParameters)
@@ -45,13 +47,22 @@ namespace BlazorBoilerplate.Client.States
 
         public async Task Logout()
         {
+            Console.WriteLine("Logout...");
             await _authorizeApi.Logout();
             userInfo = null;
+            Console.WriteLine($"Logout... userInfo: {userInfo}, userInfo.Username: {userInfo?.Username}" );
         }
 
         public async Task<UserInfo> GetUserInfo()
         {
-            if (userInfo != null) return userInfo;
+            Console.WriteLine("GetUserInfo");
+            if (userInfo != null)
+            {
+                Console.WriteLine("GetUserInfo -> not null");
+                Console.WriteLine($"GetUserInfo -> not null -> username: {userInfo.Username}");
+                return userInfo;
+            }
+            Console.WriteLine("GetUserInfo -> null -> get from server");
             userInfo = await _authorizeApi.GetUserInfo();
             return userInfo;
         }

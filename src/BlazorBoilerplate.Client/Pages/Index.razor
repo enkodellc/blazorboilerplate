@@ -73,6 +73,15 @@ else
 
     protected override async Task OnInitAsync()
     {
+        Console.WriteLine("Init::OnInitAsync");
+
         userInfo = await authState.GetUserInfo();
+
+        Console.WriteLine($"Init::OnInitAsync userInfo: {userInfo.Username}");
+    }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine("Init::OnParametersSet");
     }
 }
