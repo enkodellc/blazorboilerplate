@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
-    public class SampleDataController : Controller
+    // [Authorize(Roles = "Admin")]
+    [ApiController]
+    public class SampleDataController : ControllerBase
     {
         private static string[] Summaries = new[]
         {
@@ -18,6 +19,7 @@ namespace BlazorBoilerplate.Server.Controllers
         };
 
         [HttpGet("[action]")]
+        [Authorize(Policy = "hans")]
         public IEnumerable<WeatherForecast> WeatherForecasts()
         {
             var rng = new Random();
@@ -27,6 +29,20 @@ namespace BlazorBoilerplate.Server.Controllers
                 TemperatureC = rng.Next(-20, 55),
                 Summary = Summaries[rng.Next(Summaries.Length)]
             });
+        }
+
+        [HttpGet("hans")]
+        [Authorize(Policy = "hans")]
+        public IActionResult Hans()
+        {
+            return Ok("hans");
+        }
+
+        [HttpGet("hallo")]
+        [Authorize(Policy = "hallo")]
+        public IActionResult Hallo()
+        {
+            return Ok("hallo");
         }
     }
 }

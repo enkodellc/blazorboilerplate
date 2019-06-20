@@ -11,8 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace BlazorBoilerplate.Server
 {
@@ -27,6 +29,7 @@ namespace BlazorBoilerplate.Server
               options.UseSqlite("Filename=data.db"));
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+                .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -55,17 +58,54 @@ namespace BlazorBoilerplate.Server
                 options.SuppressModelStateInvalidFilter = true;
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("hans", policy => policy.RequireClaim("hans", "wurst"));
+                options.AddPolicy("hallo", policy => policy.RequireClaim("hallo", "velo"));
+            });
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = false;
-                options.Events.OnRedirectToLogin = context =>
+                //options.Events.OnRedirectToLogin = context =>
+                //{
+                //    context.Response.StatusCode = 401;
+                //    return Task.CompletedTask;
+                //};
+
+                // https://stackoverflow.com/a/56384729/54159
+                options.Events = new CookieAuthenticationEvents()
                 {
-                    context.Response.StatusCode = 401;
-                    return Task.CompletedTask;
+                    OnRedirectToAccessDenied = context => 
+                    {
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            context.Response.StatusCode = (int)(HttpStatusCode.Unauthorized);
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToLogin = context =>
+                    {
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    }
+                };
+
+            });  
+
+            services.AddControllers()
+                .AddNewtonsoftJson();
+
+            services.AddSwaggerDocument(config =>
+            {
+                config.PostProcess = document =>
+                {
+                    document.Info.Version     = "v1";
+                    document.Info.Title       = "BlazorBoilerplate";
+                    document.Info.Description = "Blazor Boilerplate Project";
                 };
             });
 
-            services.AddControllers().AddNewtonsoftJson();
             services.AddResponseCompression(options =>
             {
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
@@ -97,6 +137,10 @@ namespace BlazorBoilerplate.Server
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // NSwag
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseEndpoints(endpoints =>
             {

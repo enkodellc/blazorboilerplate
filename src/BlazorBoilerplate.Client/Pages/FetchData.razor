@@ -1,18 +1,25 @@
 ﻿@page "/fetchdata"
 @using BlazorBoilerplate.Shared
+@using Microsoft.AspNetCore.Components
 @inject HttpClient Http
 
 <h1>Weather forecast</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (!loading && !string.IsNullOrEmpty(error))
+{
+    <div>Error: @error</div>
+}
+
+@if (loading)
 {
     <LoadingBackground ShowLogoBox="true">
         <label>Loading Weather Data</label>
     </LoadingBackground>
 }
-else
+
+@if (loaded)
 {
     <MatTable Items="@forecasts" Class="mat-elevation-z5">
         <MatTableHeader>
@@ -29,7 +36,7 @@ else
         </MatTableRow>
     </MatTable>
 
-    <hr />
+    <hr/>
     <h1>Todo</h1>
 
     <p>This component demonstrates fetching data from a third party API.</p>
@@ -37,16 +44,17 @@ else
         <MatTableHeader>
             <th>Id</th>
             <th>Completed</th>
-            <th style="min-width:200px;">Todo</th>
+            <th style="min-width: 200px;">Todo</th>
 
         </MatTableHeader>
         <MatTableRow>
             <td>@String.Format("{0:d}", @context.Id)</td>
-            <td><MatCheckbox Checked="@context.Completed" class="filled-in chk-col-blue" Disabled="true"></MatCheckbox></td>
+            <td>
+                <MatCheckbox Checked="@context.Completed" class="filled-in chk-col-blue" Disabled="true"></MatCheckbox>
+            </td>
             <td>@context.Title</td>
         </MatTableRow>
     </MatTable>
-
 }
 
 @functions {
@@ -55,9 +63,34 @@ else
 
     WeatherForecast[] forecasts;
 
+    bool loading = false;
+    bool loaded = false;
+    string error = string.Empty;
+
     protected override async Task OnInitAsync()
     {
-        forecasts = await Http.GetJsonAsync<WeatherForecast[]>("api/SampleData/WeatherForecasts");
+        try
+        {
+            loading = true;
+            loaded = false;
+            error = string.Empty;
+
+            forecasts = await Http.GetJsonAsync<WeatherForecast[]>("api/SampleData/WeatherForecasts");
+
+            loaded = true;
+            loading = false;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            loaded = false;
+            Console.WriteLine(ex);
+    // throw;
+        }
+        finally
+        {
+            loading = false;
+        }
     }
 
     public class Todo
@@ -71,4 +104,5 @@ else
         {
         }
     }
+
 }
