@@ -23,12 +23,9 @@ namespace BlazorBoilerplate.Client.Services.Implementations
 
         public async Task<UserInfo> Login(LoginParameters loginParameters)
         {
-            var stringContent = new StringContent(JsonSerializer.ToString(loginParameters), Encoding.UTF8, "application/json");
-            var result = await _httpClient.PostAsync("api/Authorize/Login", stringContent);
-            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
-            result.EnsureSuccessStatusCode();
-
-            return JsonSerializer.Parse<UserInfo>(await result.Content.ReadAsStringAsync());
+            // Todo Handle StatusCodes??
+            var result = await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Login", loginParameters);            
+            return result;
         }
 
         public async Task Logout()
@@ -39,12 +36,9 @@ namespace BlazorBoilerplate.Client.Services.Implementations
 
         public async Task<UserInfo> Register(RegisterParameters registerParameters)
         {
-            var stringContent = new StringContent(JsonSerializer.ToString(registerParameters), Encoding.UTF8, "application/json");
-            var result = await _httpClient.PostAsync("api/Authorize/Register", stringContent);
-            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
-            result.EnsureSuccessStatusCode();
-
-            return JsonSerializer.Parse<UserInfo>(await result.Content.ReadAsStringAsync());
+            // Todo Handle StatusCodes??
+            var result = await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Register", registerParameters);
+            return result;
         }
 
         public async Task<UserInfo> GetUserInfo()

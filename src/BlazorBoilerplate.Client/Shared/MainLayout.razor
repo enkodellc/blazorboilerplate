@@ -2,24 +2,25 @@
 @inject IUriHelper uriHelper
 @inject BlazorAuthenticationState authState
 
-@if (IsLoggedIn)
-{
-    <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="mdc-theme--surface">
+    <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
         <MatDrawer @bind-Opened="@_navMenuOpened">
             <header class="drawer-header">
                 <div class="drawer-logo">
                     <img alt="Blazor Boilerplate" class="logo-img" src="images/blazorboilerplate-dark.svg" title="Blazor Boilerplate">
                     <a class="brand" href="/">Blazor Boilerplate</a>
                 </div>
-                <div class="drawer-profile">
-                    <MatIcon Icon="account_circle"></MatIcon>
-                    <span><b>@userInfo.Username</b></span>
-                </div>
-            </header>
-            <NavMenu />
+                @if (IsLoggedIn)
+                {
+                    <div class="drawer-profile">
+                        <MatIcon Icon="account_circle"></MatIcon>
+                        <span><b>@userInfo.Username</b></span>
+                    </div>
+                }
+                </header>
+            <NavMenu AuthState="@authState" />
             <footer class="drawer-footer">
                 <MatTooltip Tooltip="Help">
-                    <MatButton Icon="help" Link="https://github.com/enkodellc/blazorboilerplate"><span>Help & Support</span></MatButton>
+                    <MatButton Icon="help" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHidden">Help & Support</span></MatButton>
                 </MatTooltip>
             </footer>
         </MatDrawer>
@@ -31,27 +32,27 @@
                             <MatAppBarTitle>
 
                             </MatAppBarTitle>
-                            @*<div class="hidden-mdc-down">
-                                <nav>
-                                    <ul>
-                                        <li>*@
-                                            <MatTooltip Tooltip="Toggle Navigation">
-                                                <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
-                                            </MatTooltip>
-                                        @*</li>
-                                        <li>
-                                            <MatTooltip Tooltip="Minify Navigation">
-                                                <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
-                                            </MatTooltip>
-                                        </li>
-                                        <li>
-                                            <MatTooltip Tooltip="Lock Navigation">
-                                                <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
-                                            </MatTooltip>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>*@
+                            <div class="hidden-mdc-down">
+                                @*<nav>
+        <ul>
+            <li>*@
+                                <MatTooltip Tooltip="Toggle Navigation">
+                                    <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                                </MatTooltip>
+                                @*</li>
+        <li>*@
+                                <MatTooltip Tooltip="Minify Navigation">
+                                    <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
+                                </MatTooltip>
+                                @*</li>
+        <li>
+             <MatTooltip Tooltip="Lock Navigation">
+                 <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
+             </MatTooltip>
+         </li>*@
+                                @*</ul>
+                                </nav>*@
+                            </div>
                         </MatAppBarSection>
                         <MatAppBarSection Align="@MatAppBarSectionAlign.End">
                             <MatTooltip Tooltip="Donate to Support">
@@ -60,9 +61,18 @@
                             <MatTooltip Tooltip="Github Repository">
                                 <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
                             </MatTooltip>
-                            <MatTooltip Tooltip="Logout">
-                                <MatIconButton Icon="exit_to_app" RefBack="@context" OnClick="@LogoutClick"></MatIconButton>
-                            </MatTooltip>
+                            @if (IsLoggedIn)
+                            {
+                                <MatTooltip Tooltip="Logout">
+                                    <MatIconButton Icon="exit_to_app" RefBack="@context" OnClick="@LogoutClick"></MatIconButton>
+                                </MatTooltip>
+                            }
+                            else
+                            {
+                                <MatTooltip Tooltip="Login">
+                                    <MatIconButton Icon="account_box" RefBack="@context" Link="/login"></MatIconButton>
+                                </MatTooltip>
+                            }
                         </MatAppBarSection>
                     </MatAppBarRow>
                 </MatAppBar>
@@ -87,12 +97,12 @@
             </MatAppBarContainer>
         </MatDrawerContent>
     </MatDrawerContainer>
-}
 
-
-@functions {
+@code {
 protected bool IsLoggedIn;
 bool _navMenuOpened = true;
+bool _navMinified = false;
+public string bbDrawerClass = "";
 UserInfo userInfo = null;
 
 protected override async Task OnInitAsync()
@@ -100,11 +110,13 @@ protected override async Task OnInitAsync()
     IsLoggedIn = await authState.IsLoggedIn();
     if (!IsLoggedIn)
     {
-        uriHelper.NavigateTo("/login");
+        // To secure entire app change url to '/login'
+        uriHelper.NavigateTo("/");
     }
     else
     {
         userInfo = await authState.GetUserInfo();
+        uriHelper.NavigateTo("/");
     }
 }
 
@@ -117,6 +129,12 @@ async Task LogoutClick()
 void NavToggle()
 {
     _navMenuOpened = !_navMenuOpened;
+    if (_navMenuOpened) {
+        bbDrawerClass = "full";
+    } else {
+        bbDrawerClass = "closed";
+    }
+
     this.StateHasChanged();
 }
 
@@ -127,7 +145,22 @@ void NavLock()
 
 void NavMinify()
 {
+    _navMinified = !_navMinified;
+    
+    if (!_navMenuOpened) {
+        _navMinified = true;
+    }
 
+    if (_navMinified) {
+        bbDrawerClass = "mini";
+        _navMenuOpened = true;
+    } 
+    else if (_navMenuOpened) {
+        bbDrawerClass = "full";
+    }
+    
+    _navMenuOpened = true;
+    this.StateHasChanged();
 }
 
 }

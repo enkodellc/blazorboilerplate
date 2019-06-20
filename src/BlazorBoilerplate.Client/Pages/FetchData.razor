@@ -1,63 +1,76 @@
 ﻿@page "/fetchdata"
 @using BlazorBoilerplate.Shared
+@inject BlazorAuthenticationState authState
 @inject HttpClient Http
 
-<h1>Weather forecast</h1>
+<h1>Secure Page</h1>
+<p>This is a secure page. You must be logged in to have access.</p>
+<h2>Weather forecast</h2>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (userInfo != null)
 {
+
+@if (forecasts == null)
+    {
     <LoadingBackground ShowLogoBox="true">
         <label>Loading Weather Data</label>
     </LoadingBackground>
+    }
+    else
+    {
+<MatTable Items="@forecasts" Class="mat-elevation-z5">
+    <MatTableHeader>
+        <th>Date</th>
+        <th>Temp. (C)</th>
+        <th>Temp. (F)</th>
+        <th>Summary</th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>@context.Date.ToShortDateString()</td>
+        <td>@context.TemperatureC</td>
+        <td>@context.TemperatureF</td>
+        <td>@context.Summary</td>
+    </MatTableRow>
+</MatTable>
+
+<hr />
+<h1>Todo</h1>
+
+<p>This component demonstrates fetching data from a third party API.</p>
+<MatTable Class="mat-elevation-z5" Items="@todos" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="https://jsonplaceholder.typicode.com/todos" FilterByColumnName="Title" DebounceMilliseconds="150">
+    <MatTableHeader>
+        <th>Id</th>
+        <th>Completed</th>
+        <th style="min-width:200px;">Todo</th>
+
+    </MatTableHeader>
+    <MatTableRow>
+        <td>@String.Format("{0:d}", @context.Id)</td>
+        <td><MatCheckbox Checked="@context.Completed" class="filled-in chk-col-blue" Disabled="true"></MatCheckbox></td>
+        <td>@context.Title</td>
+    </MatTableRow>
+</MatTable>
+    }
+
 }
 else
 {
-    <MatTable Items="@forecasts" Class="mat-elevation-z5">
-        <MatTableHeader>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
-        </MatTableHeader>
-        <MatTableRow>
-            <td>@context.Date.ToShortDateString()</td>
-            <td>@context.TemperatureC</td>
-            <td>@context.TemperatureF</td>
-            <td>@context.Summary</td>
-        </MatTableRow>
-    </MatTable>
-
-    <hr />
-    <h1>Todo</h1>
-
-    <p>This component demonstrates fetching data from a third party API.</p>
-    <MatTable Class="mat-elevation-z5" Items="@todos" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="https://jsonplaceholder.typicode.com/todos" FilterByColumnName="Title" DebounceMilliseconds="150">
-        <MatTableHeader>
-            <th>Id</th>
-            <th>Completed</th>
-            <th style="min-width:200px;">Todo</th>
-
-        </MatTableHeader>
-        <MatTableRow>
-            <td>@String.Format("{0:d}", @context.Id)</td>
-            <td><MatCheckbox Checked="@context.Completed" class="filled-in chk-col-blue" Disabled="true"></MatCheckbox></td>
-            <td>@context.Title</td>
-        </MatTableRow>
-    </MatTable>
-
+<LoadingBackground ShowLogoBox="true">
+    <label>Unauthorized.. Please Login</label>
+</LoadingBackground>
 }
 
-@functions {
-
+@code {
+    UserInfo userInfo;
     Todo[] todos;
-
     WeatherForecast[] forecasts;
 
     protected override async Task OnInitAsync()
     {
-        forecasts = await Http.GetJsonAsync<WeatherForecast[]>("api/SampleData/WeatherForecasts");
+        userInfo = await authState.GetUserInfo();
+        forecasts = await Http.GetJsonAsync<WeatherForecast[]> ("api/SampleData/WeatherForecasts");
     }
 
     public class Todo

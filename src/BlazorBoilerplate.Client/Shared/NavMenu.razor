@@ -1,23 +1,36 @@
-﻿@inject IUriHelper uriHelper
+﻿@using Microsoft.AspNetCore.Components;
+@inject IUriHelper uriHelper
 
-    <nav class="app-sidebar mdc-theme--surface">
-        <MatListGroup>
-            <MatList SingleSelection="true">
-                <MatListItem Href="@uriHelper.ToAbsoluteUri(" ").AbsoluteUri">
-                    <MatIcon>home</MatIcon> <span>Home page</span>
-                </MatListItem>
-                <MatListItem Href="@uriHelper.ToAbsoluteUri("dashboard").AbsoluteUri">
-                    <MatIcon>bar_chart</MatIcon> <span>Dashboard</span>
-                </MatListItem>
-                <MatListItem Href="@uriHelper.ToAbsoluteUri("counter").AbsoluteUri">
-                    <MatIcon>exposure_plus_1</MatIcon> <span>Counter</span>
-                </MatListItem>
-                <MatListItem Href="@uriHelper.ToAbsoluteUri("fetchdata").AbsoluteUri">
-                    <MatIcon>cloud_download</MatIcon> <span>Fetch data</span>
-                </MatListItem>
-                <MatListItem Href="@uriHelper.ToAbsoluteUri("contributors").AbsoluteUri">
-                    <MatIcon>people</MatIcon> <span>Contributors</span>
-                </MatListItem>
-            </MatList>
-        </MatListGroup>
-    </nav>
+<nav class="app-sidebar">
+    <MatListGroup>
+        <MatList SingleSelection="true">
+            <MatListItem Href="@uriHelper.ToAbsoluteUri(" ").AbsoluteUri">
+                <MatIcon>home</MatIcon> <span>Home page</span>
+            </MatListItem>
+            <MatListItem Href="@uriHelper.ToAbsoluteUri("counter").AbsoluteUri">
+                <MatIcon>exposure_plus_1</MatIcon> <span>Counter</span>
+            </MatListItem>
+            <MatListItem Href="@uriHelper.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatIcon>bar_chart</MatIcon> <span>Dashboard</span>
+            </MatListItem>
+            <MatListItem Href="@uriHelper.ToAbsoluteUri("fetchdata").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatIcon>cloud_download</MatIcon> <span>Fetch data</span>
+            </MatListItem>
+            <MatListItem Href="@uriHelper.ToAbsoluteUri("contributors").AbsoluteUri">
+                <MatIcon>people</MatIcon> <span>Contributors</span>
+            </MatListItem>
+        </MatList>
+    </MatListGroup>
+</nav>
+
+@code {
+    [Parameter]
+    public BlazorAuthenticationState authState { get; set; }
+
+    public bool IsLoggedIn;
+
+    protected override async Task OnInitAsync()
+    {
+        IsLoggedIn = await authState.IsLoggedIn();
+    }
+}

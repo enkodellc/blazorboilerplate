@@ -237,14 +237,58 @@ flex-basis:80%;
 }
 
 /* Drawer */
-.app-sidebar {
-    width: 256px;
+.full .mdc-drawer
+.full .app-sidebar {
+  width: 256px;
+  transition: width 0.4s;
 }
+
+.full .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+  margin-left: 256px;
+  transition: margin 0.4s;
+}
+
+.mini .mdc-drawer,
+.mini .app-sidebar {
+  width: 52px;
+  transition: width 0.4s;
+}
+
+  .mini .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+    margin-left: 52px;
+    transition: width 0.4s;
+  }
+
+  .mini .drawer-profile span,
+  .mini .drawer-logo .brand,
+  .mini .app-sidebar span {
+    display: none;
+  }
+
+.mini .miniHidden {
+  display: none;
+}
+  .mini .drawer-footer .mdc-button {
+    min-width: 36px;
+  }
+
+  .mdc-drawer__content {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    color: #FFF;
+ }
 
 .mdc-drawer .mdc-list-item {
     margin: 8px 0 !important;
     border-radius: 0 !important;
-    color: #333;
+    color: #fff !important;
+}
+
+.mdc-drawere .mdc-list-item:active {
+    -webkit-box-shadow: inset 3px 0 0 #886ab5;
+}
+
+.mdc-drawer .mdc-list-item--disabled {
+    color: #775e91 !important;
 }
 
 .mdc-drawer a.mdc-list-item {
@@ -283,10 +327,6 @@ flex-basis:80%;
 .mdc-drawer {
     /*margin-top: 64px;*/
     box-shadow: 2px 0 5px 0 rgba(0,0,0,0.16);
-}
-
-.mdc-theme--surface .mdc-drawer-app-content {
-    /*padding-top: 64px;*/
 }
 
 .mdc-drawer-app-content {
@@ -407,24 +447,27 @@ hr {
 /* Small devices (landscape phones, less than 768px)*/
 @media (max-width: 767.98px) {
 
-    .drawer-footer span,
-    .drawer-profile span,
-    .brand {
-        display: none;
-    }
+  .drawer-footer span,
+  .drawer-profile span,
+  .brand {
+    display: none;
 
-    .mdc-drawer__content,
-    .mdc-drawer,
-    .app-sidebar {
-        width: 52px !important;
-    }
+  }
+
+  .mdc-drawer__content,
+  .mdc-drawer,
+  .app-sidebar {
+    width: 52px !important;
+  }
         .app-sidebar span {
             display: none;
         }
 
-        .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
-            margin-left: 52px !important;
-        }
+    .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+      margin-left: 52px !important;
+      transition: margin-left .2s ease-in-out;
+    }
+
     .mdc-top-app-bar__title {
         padding-left: 0 !important;
     }

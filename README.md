@@ -62,11 +62,19 @@ will be depending on how much community support for it is.
 - Blog or other real world functionality.
 - Audit log report UI.
 
+
 ## License
 
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
+
+### 0.1.3
+- Update to MatBlazor 1.2.1 - Not yet release so using local copy
+- Update Theme / Drawer minify & close
+- Fixed Known Issue - UserProfile not loading after login thanks [nstohler](https://github.com/nstohler)
+- Secure Pages.
+- Anonymous Home Page.
 
 ### 0.1.2
 - Update to SDK 3.0.100-preview6-012264 - Breaking Changes

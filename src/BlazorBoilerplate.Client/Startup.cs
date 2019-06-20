@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MatBlazor;
 
 //using Blazored.LocalStorage;
-//using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Client
 {
@@ -19,11 +19,11 @@ namespace BlazorBoilerplate.Client
 
 
           //services.AddBlazoredLocalStorage();
-          //services.AddLoadingBar();
+          services.AddLoadingBar();
 
             services.AddMatToaster(config =>
             {
-                //config. = MatToastPosition.BottomRight;
+                config.Position = MatToastPosition.BottomRight;
                 config.PreventDuplicates = true;
                 config.NewestOnTop = true;
                 config.ShowCloseButton = true;
@@ -35,7 +35,7 @@ namespace BlazorBoilerplate.Client
 
         public void Configure(IComponentsApplicationBuilder app)
         {
-            //app.UseLoadingBar();
+            app.UseLoadingBar();
             app.AddComponent<App>("app");
         }
     }
