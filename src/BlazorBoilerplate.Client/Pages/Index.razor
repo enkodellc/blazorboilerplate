@@ -1,9 +1,12 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components
 @inject BlazorAuthenticationState authState
 
 @if (userInfo != null)
 {
     <h1><img src="images/blazorboilerplate.svg" alt="Loading" title="Blazor Boilerplate" style="height:100px;" /> Hello @userInfo.Username !!</h1>
+
+    <h1><img src="images/blazorboilerplate.svg" alt="Loading" title="Blazor Boilerplate" style="height:100px;" /> Hello @UserName</h1>
 
     <p>Welcome to your new Blazor Boilerplate app.</p>
 
@@ -70,9 +73,19 @@ else
 
 @functions {
     UserInfo userInfo;
+    string UserName;
+
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
     protected override async Task OnInitAsync()
     {
+        var authStateTask = await AuthenticationStateTask;
+
+        if (authStateTask.User.Identity.IsAuthenticated)
+        {
+            UserName = authStateTask.User.Identity.Name;
+        }
+
         Console.WriteLine("Init::OnInitAsync");
 
         userInfo = await authState.GetUserInfo();

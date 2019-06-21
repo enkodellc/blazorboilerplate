@@ -1,10 +1,26 @@
-﻿<Router AppAssembly="typeof(Program).Assembly">
-    <NotFoundContent>
-        <LoadingBackground ShowLogoBox="true">
-            <label>Sorry, there's nothing at this address.</label><br/>
-            <MatButton Link="/">Home</MatButton>
-        </LoadingBackground>
-    </NotFoundContent>
-</Router>
-<MatToastContainer />
+﻿<CascadingAuthenticationState>
+    <Router AppAssembly="typeof(Program).Assembly">
 
+        <NotFoundContent>
+            <LoadingBackground ShowLogoBox="true">
+                <label>Sorry, there's nothing at this address.</label><br />
+                <MatButton Link="/">Home</MatButton>
+            </LoadingBackground>
+        </NotFoundContent>
+
+        <NotAuthorizedContent>
+            <div class="main">
+                <h2>You're signed out</h2>
+                <p>To continue, please sign in.</p>
+                <a class="btn btn-danger" href="login">Sign in</a>
+            </div>
+        </NotAuthorizedContent>
+
+        <AuthorizingContent>
+            Please wait...
+        </AuthorizingContent>
+
+    </Router>
+</CascadingAuthenticationState>
+
+<MatToastContainer/>

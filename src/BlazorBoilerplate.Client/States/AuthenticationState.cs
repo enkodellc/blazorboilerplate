@@ -7,17 +7,22 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorBoilerplate.Client.States
 {
     public class BlazorAuthenticationState
-  {
-        private readonly IAuthorizeApi _authorizeApi;
+    {
+        private readonly IAuthorizeApi                     _authorizeApi;
+        private readonly ServerAuthenticationStateProvider _serverAuthenticationStateProvider;
+
         private UserInfo userInfo;
 
-        public BlazorAuthenticationState(IAuthorizeApi authorizeApi)
+        public BlazorAuthenticationState(IAuthorizeApi authorizeApi,
+            AuthenticationStateProvider authenticationStateProvider)
         {
-            _authorizeApi = authorizeApi;
+            _authorizeApi                      = authorizeApi;
+            _serverAuthenticationStateProvider = (ServerAuthenticationStateProvider)authenticationStateProvider;
         }
 
         public async Task<bool> IsLoggedIn()
@@ -37,7 +42,9 @@ namespace BlazorBoilerplate.Client.States
         public async Task Login(LoginParameters loginParameters)
         {
             userInfo = await _authorizeApi.Login(loginParameters);
-            Console.WriteLine($"Login... userInfo: {userInfo}, userInfo.Username: {userInfo?.Username}" );
+            _serverAuthenticationStateProvider.RaiseChangeEvent();
+
+            Console.WriteLine($"Login... userInfo: {userInfo}, userInfo.Username: {userInfo?.Username}");
         }
 
         public async Task Register(RegisterParameters registerParameters)
@@ -48,9 +55,12 @@ namespace BlazorBoilerplate.Client.States
         public async Task Logout()
         {
             Console.WriteLine("Logout...");
+            
             await _authorizeApi.Logout();
             userInfo = null;
-            Console.WriteLine($"Logout... userInfo: {userInfo}, userInfo.Username: {userInfo?.Username}" );
+            _serverAuthenticationStateProvider.RaiseChangeEvent();
+
+            Console.WriteLine($"Logout... userInfo: {userInfo}, userInfo.Username: {userInfo?.Username}");
         }
 
         public async Task<UserInfo> GetUserInfo()
@@ -62,10 +72,10 @@ namespace BlazorBoilerplate.Client.States
                 Console.WriteLine($"GetUserInfo -> not null -> username: {userInfo.Username}");
                 return userInfo;
             }
+
             Console.WriteLine("GetUserInfo -> null -> get from server");
             userInfo = await _authorizeApi.GetUserInfo();
             return userInfo;
         }
-
     }
 }

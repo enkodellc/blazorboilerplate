@@ -12,16 +12,18 @@ using Microsoft.Extensions.Logging;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/authorize")]
     [ApiController]
     public class AuthorizeController : ControllerBase
     {
+        private static UserInfo LoggedOutUser = new UserInfo {IsAuthenticated = false};
+
         // Logger instance
         ILogger<AuthorizeController> _logger;
 
-        private readonly UserManager<ApplicationUser>   _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole<Guid>>      _roleManager;
+        private readonly UserManager<ApplicationUser>    _userManager;
+        private readonly SignInManager<ApplicationUser>  _signInManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
         public AuthorizeController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, ILogger<AuthorizeController> logger,
@@ -33,8 +35,16 @@ namespace BlazorBoilerplate.Server.Controllers
             _roleManager   = roleManager;
         }
 
+        [HttpGet("")]
+        public UserInfo GetUser()
+        {
+            return User.Identity.IsAuthenticated
+                ? new UserInfo {Username = User.Identity.Name, IsAuthenticated = true}
+                : LoggedOutUser;
+        }
+
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(LoginParameters parameters)
         {
             if (!ModelState.IsValid)
@@ -78,7 +88,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterParameters parameters)
         {
             if (!ModelState.IsValid)
@@ -87,7 +97,7 @@ namespace BlazorBoilerplate.Server.Controllers
                     .FirstOrDefault());
 
             // https://gooroo.io/GoorooTHINK/Article/17333/Custom-user-roles-and-rolebased-authorization-in-ASPNET-core/32835
-            string[]       roleNames = { "Admin", "Manager", "Member" };
+            string[]       roleNames = {"Admin", "Manager", "Member"};
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)
@@ -120,7 +130,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("SendPasswordResetEmail")]
         public async Task<IActionResult> SendPasswordResetEmail(string emailAddress)
         {
             var user = await _userManager.FindByEmailAsync(emailAddress);
@@ -153,7 +163,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             _logger.LogInformation("User Logged out");
@@ -162,7 +172,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("userinfo")]
         public async Task<UserInfo> UserInfo()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -173,7 +183,8 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             return new UserInfo
             {
-                Username = user.UserName
+                Username        = user.UserName,
+                IsAuthenticated = true
             };
         }
     }
