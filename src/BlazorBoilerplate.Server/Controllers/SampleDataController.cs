@@ -25,24 +25,31 @@ namespace BlazorBoilerplate.Server.Controllers
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
-                Date = DateTime.Now.AddDays(index),
+                Date         = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                Summary      = Summaries[rng.Next(Summaries.Length)]
             });
+        }
+
+        [HttpGet("blazor")]
+        [Authorize(Policy = "blazor")]
+        public IActionResult Blazor()
+        {
+            return Ok(new {policy = "blazor"});
         }
 
         [HttpGet("hans")]
         [Authorize(Policy = "hans")]
         public IActionResult Hans()
         {
-            return Ok("hans");
+            return Ok(new {policy = "hans"});
         }
 
         [HttpGet("hallo")]
         [Authorize(Policy = "hallo")]
         public IActionResult Hallo()
         {
-            return Ok("hallo");
+            return Ok(new {policy = "hallo"});
         }
     }
 }

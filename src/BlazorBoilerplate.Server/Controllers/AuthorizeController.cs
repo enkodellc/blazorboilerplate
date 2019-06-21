@@ -63,14 +63,14 @@ namespace BlazorBoilerplate.Server.Controllers
             var claims = await _userManager.GetClaimsAsync(user);
             await _userManager.RemoveClaimsAsync(user, claims);
 
-            if (user.UserName == "nstohler")
-            {
-                await _userManager.AddClaimAsync(user, new Claim("hans", "wurst"));
-            }
-            else
-            {
-                await _userManager.AddClaimAsync(user, new Claim("hallo", "velo"));    
-            }
+            //if (user.UserName == "nstohler")
+            //{
+            //    await _userManager.AddClaimAsync(user, new Claim("hans", "wurst"));
+            //}
+            //else
+            //{
+            //    await _userManager.AddClaimAsync(user, new Claim("hallo", "velo"));    
+            //}
 
             await _signInManager.SignInAsync(user, parameters.RememberMe);
             return Ok(BuildUserInfo(user));

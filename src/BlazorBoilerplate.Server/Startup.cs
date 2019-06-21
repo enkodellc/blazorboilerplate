@@ -26,7 +26,7 @@ namespace BlazorBoilerplate.Server
         {
             // Sql Lite / file database
             services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseSqlite("Filename=data.db"));
+                options.UseSqlite("Filename=data.db"));
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
@@ -36,30 +36,30 @@ namespace BlazorBoilerplate.Server
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6;
+                options.Password.RequireDigit           = false;
+                options.Password.RequiredLength         = 6;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase       = false;
+                options.Password.RequireLowercase       = false;
                 //options.Password.RequiredUniqueChars = 6;
 
                 // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.DefaultLockoutTimeSpan  = TimeSpan.FromMinutes(30);
                 options.Lockout.MaxFailedAccessAttempts = 10;
-                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.AllowedForNewUsers      = true;
 
                 // User settings
                 options.User.RequireUniqueEmail = false;
                 //options.SignIn.RequireConfirmedEmail = true;
             });
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, MyUserClaimsPrincipalFactory>();
+
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy("blazor", policy => policy.RequireClaim("blazor", "laser"));
                 options.AddPolicy("hans", policy => policy.RequireClaim("hans", "wurst"));
                 options.AddPolicy("hallo", policy => policy.RequireClaim("hallo", "velo"));
             });
@@ -76,12 +76,13 @@ namespace BlazorBoilerplate.Server
                 // https://stackoverflow.com/a/56384729/54159
                 options.Events = new CookieAuthenticationEvents()
                 {
-                    OnRedirectToAccessDenied = context => 
+                    OnRedirectToAccessDenied = context =>
                     {
                         if (context.Request.Path.StartsWithSegments("/api"))
                         {
-                            context.Response.StatusCode = (int)(HttpStatusCode.Unauthorized);
+                            context.Response.StatusCode = (int) (HttpStatusCode.Unauthorized);
                         }
+
                         return Task.CompletedTask;
                     },
                     OnRedirectToLogin = context =>
@@ -90,8 +91,7 @@ namespace BlazorBoilerplate.Server
                         return Task.CompletedTask;
                     }
                 };
-
-            });  
+            });
 
             services.AddControllers()
                 .AddNewtonsoftJson();
@@ -144,8 +144,8 @@ namespace BlazorBoilerplate.Server
 
             app.UseEndpoints(endpoints =>
             {
-              endpoints.MapDefaultControllerRoute();
-              endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
         }
     }
