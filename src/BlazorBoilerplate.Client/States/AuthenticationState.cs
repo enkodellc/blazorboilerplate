@@ -19,10 +19,10 @@ namespace BlazorBoilerplate.Client.States
         private UserInfo userInfo;
 
         public BlazorAuthenticationState(IAuthorizeApi authorizeApi,
-            AuthenticationStateProvider authenticationStateProvider)
+            ServerAuthenticationStateProvider serverAuthenticationStateProvider)
         {
             _authorizeApi                      = authorizeApi;
-            _serverAuthenticationStateProvider = (ServerAuthenticationStateProvider)authenticationStateProvider;
+            _serverAuthenticationStateProvider = serverAuthenticationStateProvider;
         }
 
         public async Task<bool> IsLoggedIn()
@@ -55,7 +55,7 @@ namespace BlazorBoilerplate.Client.States
         public async Task Logout()
         {
             Console.WriteLine("Logout...");
-            
+
             await _authorizeApi.Logout();
             userInfo = null;
             _serverAuthenticationStateProvider.RaiseChangeEvent();

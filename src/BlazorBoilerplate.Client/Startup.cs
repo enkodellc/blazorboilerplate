@@ -19,9 +19,15 @@ namespace BlazorBoilerplate.Client
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
 
             services.AddAuthorizationCore();
-            services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+            
+            //services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 
-          //services.AddBlazoredLocalStorage();
+            // register implementation with multiple interfaces
+            // https://stackoverflow.com/a/41812930/54159
+            services.AddScoped<ServerAuthenticationStateProvider, ServerAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(x => x.GetService<ServerAuthenticationStateProvider>());
+
+            //services.AddBlazoredLocalStorage();
           //services.AddLoadingBar();
 
             services.AddMatToaster(config =>
