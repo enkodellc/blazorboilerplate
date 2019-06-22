@@ -13,11 +13,20 @@ using System;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using BlazorBoilerplate.Server.Services;
 
 namespace BlazorBoilerplate.Server
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -64,7 +73,7 @@ namespace BlazorBoilerplate.Server
                     return Task.CompletedTask;
                 };
             });
-
+                       
             services.AddControllers().AddNewtonsoftJson();
             services.AddResponseCompression(options =>
             {
@@ -74,6 +83,9 @@ namespace BlazorBoilerplate.Server
                     WasmMediaTypeNames.Application.Wasm,
                 });
             });
+            
+            services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+            services.AddTransient<IEmailService, EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

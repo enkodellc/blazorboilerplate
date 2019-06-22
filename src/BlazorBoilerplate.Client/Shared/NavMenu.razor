@@ -16,6 +16,9 @@
             <MatListItem Href="@uriHelper.ToAbsoluteUri("fetchdata").AbsoluteUri" Disabled="@(!IsLoggedIn)">
                 <MatIcon>cloud_download</MatIcon> <span>Fetch data</span>
             </MatListItem>
+            <MatListItem Href="@uriHelper.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatIcon>mail_outline</MatIcon> <span>Email</span>
+            </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("contributors").AbsoluteUri">
                 <MatIcon>people</MatIcon> <span>Contributors</span>
             </MatListItem>

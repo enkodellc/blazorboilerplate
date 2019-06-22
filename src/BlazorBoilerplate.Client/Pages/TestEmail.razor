@@ -1,0 +1,47 @@
+﻿@page "/email"
+@using BlazorBoilerplate.Shared
+@inject IUriHelper uriHelper
+@inject HttpClient Http
+@inject IMatToaster matToaster
+
+
+<h1>Send Email</h1>
+<p>Test out SMTP email sending with MailKit. Work in progress.</p>
+<EditForm Model="@emailParameters" OnValidSubmit="@SendEmail">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset>
+        <div class="form-group">
+            <MatTextField @bind-value="@emailParameters.ToAddress" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-value="@emailParameters.Subject" Label="Subject" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-value="@emailParameters.Content" Label="Message" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group d-flex justify-content-end">
+            <MatButton Type="submit" Raised="true">Send Email</MatButton>
+        </div>
+    </fieldset>
+</EditForm>
+
+
+@functions {
+
+    EmailParameters emailParameters { get; set; } = new EmailParameters();
+
+    async Task SendEmail()
+    {
+        try
+        {
+
+            var result = await Http.PostJsonAsync<EmailParameters>("api/Email/EmailTest", emailParameters);
+            matToaster.Add("Your new user has been added", MatToastType.Success, "User Creation Sucessful");
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Email Send Failed");
+        }
+    }
+}
