@@ -9,10 +9,8 @@ namespace BlazorBoilerplate.Shared
     {
         [Required]
         public string ToAddress { get; set; }
-
  
         public string ToName { get; set; }
-
 
         public string FromName { get; set; }
 
@@ -24,10 +22,8 @@ namespace BlazorBoilerplate.Shared
         public string Subject { get; set; }
         
         [Required]
-        public string Content { get; set; }
-
-  
+        public string Body { get; set; }
+          
         public int TemplateId { get; set; }
-
     }
 }

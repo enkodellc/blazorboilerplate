@@ -25,26 +25,28 @@ namespace BlazorBoilerplate.Server.Controllers
             _emailService = emailService;
         }
 
-        [AllowAnonymous]
+
         [HttpPost]
+        [Authorize]
+        [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> EmailTest(EmailParameters parameters)
         {
             //Todo fix these parameters
             parameters.Subject = "test";
-            parameters.Content = "my email";
+            parameters.Body = "my email";
             parameters.ToAddress = "support@blazorboilerplate.com";
 
             var email = new EmailMessage();
             email.ToAddresses.Add(new EmailAddress(parameters.ToAddress, parameters.ToAddress));
             email.Subject = parameters.Subject;
-            email.Content = parameters.Content;
+            email.Body = parameters.Body;
             email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
 
             _logger.LogInformation("Test Email: {0}", email.Subject );
 
             await _emailService.SendEmailAsync(email);
 
-            return Ok("Ok");
+            return Ok(new {success="true"});
         }
     }
 }

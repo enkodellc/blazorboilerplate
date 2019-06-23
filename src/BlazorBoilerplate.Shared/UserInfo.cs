@@ -6,6 +6,7 @@ namespace BlazorBoilerplate.Shared
 {
     public class UserInfo
     {
-        public string Username {get; set;}
+        public bool   IsAuthenticated { get; set; }
+        public string Username        { get; set; }
     }
 }

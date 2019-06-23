@@ -68,6 +68,10 @@ will be depending on how much community support for it is.
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
+### 0.1.4
+- Add Mailkit for Email - Future work to add Email Temaplates
+- Started API Auth CascadingAuthenticationState / Polices / Claims
+- Added SQL Server as a DB option
 
 ### 0.1.3
 - Update to MatBlazor 1.2.1 - Not yet release so using local copy

@@ -39,7 +39,9 @@ namespace BlazorBoilerplate.Server.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    FirstName = table.Column<string>(maxLength: 64, nullable: true),
+                    LastName = table.Column<string>(maxLength: 64, nullable: true)
                 },
                 constraints: table =>
                 {

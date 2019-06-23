@@ -2,12 +2,26 @@
 {
     public class EmailAddress
     {
-        public string Name { get; set; }
+        private string _name;
+
+        public string Name
+        {
+            get {
+                if (string.IsNullOrEmpty(_name))
+                {
+                    return Address;
+                }
+                return _name;
+            }
+            set {
+                _name = value;
+            }
+        }
         public string Address { get; set; }
 
         public EmailAddress(string name, string address)
         {
-            Name = name;
+            _name = name;
             Address = address;
         }
     }

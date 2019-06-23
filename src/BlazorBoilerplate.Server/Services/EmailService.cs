@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Models;
 using MailKit.Net.Smtp;
@@ -8,17 +10,16 @@ using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Text;
 
-//https://dotnetcoretutorials.com/2017/11/02/using-mailkit-send-receive-email-asp-net-core/
-
 namespace BlazorBoilerplate.Server.Services
 {
 
     public interface IEmailService
     {
-        void Send(EmailMessage emailMessage);
+        Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessage emailMessage);
 
-        Task SendEmailAsync(EmailMessage emailMessage);
         List<EmailMessage> ReceiveEmail(int maxCount = 10);
+
+        void Send(EmailMessage emailMessage);
     }
 
     public class EmailService : IEmailService
@@ -41,88 +42,60 @@ namespace BlazorBoilerplate.Server.Services
 
         public void Send(EmailMessage emailMessage)
         {
-            var message = new MimeMessage();
-            message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-            message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-
-            message.Subject = emailMessage.Subject;
-            //We will say we are sending HTML. But there are options for plaintext etc.
-            message.Body = new TextPart(TextFormat.Html)
-            {
-                Text = emailMessage.Content
-            };
-
-            //Be careful that the SmtpClient class is the one from Mailkit not the framework!
-            using (var emailClient = new SmtpClient())
-            {
-                //The last parameter here is to use SSL (Which you should!)
-                emailClient.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, true);
-
-                //Remove any OAuth functionality as we won't be using it.
-                emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-
-                emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
-
-                emailClient.Send(message);
-
-                emailClient.Disconnect(true);
-            }
-
+            throw new NotImplementedException();
         }
 
-        public async Task SendEmailAsync(EmailMessage emailMessage)
+        public async Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessage emailMessage)
         {
             try
             {
                 var message = new MimeMessage();
                 message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                 message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                message.Cc.AddRange(emailMessage.CcAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                message.Bcc.AddRange(emailMessage.BccAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    message.To.Clear();
+                    message.To.Add(new MailboxAddress("support@blazorboilerplate.com"));
+                }
 
                 message.Subject = emailMessage.Subject;
 
-                //Todo create Templates parameter and options to send as a template
+                message.Body = emailMessage.IsHtml ? new BodyBuilder { HtmlBody = emailMessage.Body }.ToMessageBody() : new TextPart("plain") { Text = emailMessage.Body };
 
-                //We will say we are sending HTML. But there are options for plaintext etc.
-                message.Body = new TextPart(TextFormat.Html)
-                {
-                    Text = emailMessage.Content
-                };
+                //TODO store all emails in Database
 
                 //Be careful that the SmtpClient class is the one from Mailkit not the framework!
                 using (var emailClient = new SmtpClient())
                 {
-                    if (_emailConfiguration.SmtpUseSSL)
+                    if (!_emailConfiguration.SmtpUseSSL)
                     {
-                        await emailClient.ConnectAsync(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL);
-                    }
-                    else
-                    {
-                        await emailClient.ConnectAsync(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+                        emailClient.ServerCertificateValidationCallback = (object sender2, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
                     }
 
-                    emailClient.LocalDomain = "blazorboilerplate.com";
+                    await emailClient.ConnectAsync(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL).ConfigureAwait(false);
 
                     //Remove any OAuth functionality as we won't be using it.
                     emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
-                    if (!_emailConfiguration.SmtpUseDefaultCredentials)
+                    if (!string.IsNullOrWhiteSpace(_emailConfiguration.SmtpUsername))
                     {
-                        await emailClient.AuthenticateAsync(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
+                        await emailClient.AuthenticateAsync(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword).ConfigureAwait(false);
                     }
 
-                    await emailClient.SendAsync(message);
+                    await emailClient.SendAsync(message).ConfigureAwait(false);
 
-                    await emailClient.DisconnectAsync(true);
+                    await emailClient.DisconnectAsync(true).ConfigureAwait(false);
+                    return (true, null);
 
-                    return;
                 }
             }
             catch (Exception ex)
             {
-                // TODO: handle exception
                 _logger.LogError("Email Send Failed: {0}", ex.Message);
-                throw new InvalidOperationException(ex.Message);
-
+                return (false, ex.Message);
             }
         }
     }

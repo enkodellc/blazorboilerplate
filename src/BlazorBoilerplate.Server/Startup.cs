@@ -15,6 +15,9 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Server.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
 
 namespace BlazorBoilerplate.Server
 {
@@ -31,13 +34,26 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            // Sql Lite / file database
             services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseSqlite("Filename=data.db"));
+                options.UseSqlite("Filename=data.db"));  // Sql Lite / file database
+                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); //SQL Server Database
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+                .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
+                AdditionalUserClaimsPrincipalFactory>();
+
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
+            //Add Policies / Claims / Authorization - https://stormpath.com/blog/tutorial-policy-based-authorization-asp-net-core
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireElevatedRights", policy => policy.RequireRole("SuperAdmin", "Admin"));
+                options.AddPolicy("ReadOnly", policy => policy.RequireClaim("ReadOnly", "true"));
+            });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -59,22 +75,42 @@ namespace BlazorBoilerplate.Server
                 //options.SignIn.RequireConfirmedEmail = true;
             });
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
-
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = false;
-                options.Events.OnRedirectToLogin = context =>
+
+                // Suppress redirect on API URLs in ASP.NET Core -> https://stackoverflow.com/a/56384729/54159
+                options.Events = new CookieAuthenticationEvents()
                 {
-                    context.Response.StatusCode = 401;
-                    return Task.CompletedTask;
+                    OnRedirectToAccessDenied = context =>
+                    {
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            context.Response.StatusCode = (int) (HttpStatusCode.Unauthorized);
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToLogin = context =>
+                    {
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    }
                 };
             });
-                       
+
             services.AddControllers().AddNewtonsoftJson();
+
+            services.AddSwaggerDocument(config =>
+            {
+                config.PostProcess = document =>
+                {
+                    document.Info.Version     = "v1";
+                    document.Info.Title       = "Blazor Boilerplate";
+                    document.Info.Description = "Blazor Boilerplate / Starter Template using the  (ASP.NET Core Hosted) (dotnet new blazorhosted) model. Hosted by an ASP.NET Core server";
+                };
+            });
+
             services.AddResponseCompression(options =>
             {
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
@@ -83,7 +119,7 @@ namespace BlazorBoilerplate.Server
                     WasmMediaTypeNames.Application.Wasm,
                 });
             });
-            
+
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
             services.AddTransient<IEmailService, EmailService>();
         }
@@ -110,10 +146,14 @@ namespace BlazorBoilerplate.Server
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // NSwag
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
+
             app.UseEndpoints(endpoints =>
             {
-              endpoints.MapDefaultControllerRoute();
-              endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
         }
     }

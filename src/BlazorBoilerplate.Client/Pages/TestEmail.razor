@@ -18,7 +18,7 @@
             <MatTextField @bind-value="@emailParameters.Subject" Label="Subject" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-value="@emailParameters.Content" Label="Message" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-value="@emailParameters.Body" Label="Message" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group d-flex justify-content-end">
             <MatButton Type="submit" Raised="true">Send Email</MatButton>
@@ -35,9 +35,8 @@
     {
         try
         {
-
             var result = await Http.PostJsonAsync<EmailParameters>("api/Email/EmailTest", emailParameters);
-            matToaster.Add("Your new user has been added", MatToastType.Success, "User Creation Sucessful");
+            matToaster.Add("Email has been Sent", MatToastType.Success);
         }
         catch (Exception ex)
         {

@@ -4,7 +4,6 @@ using System.Text;
 
 namespace BlazorBoilerplate.Server.Models
 {
-
     public interface IEmailConfiguration
     {
         string SmtpServer { get; }
@@ -12,8 +11,6 @@ namespace BlazorBoilerplate.Server.Models
         string SmtpUsername { get; set; }
         string SmtpPassword { get; set; }
         bool SmtpUseSSL { get; set; }
-        bool SmtpUseDefaultCredentials { get; set; }
-
         string FromName   { get; set; }
         string FromAddress { get; set; }
         string ReplyToAddress { get; set; }
@@ -31,7 +28,6 @@ namespace BlazorBoilerplate.Server.Models
         public string SmtpUsername { get; set; }
         public string SmtpPassword { get; set; }
         public bool SmtpUseSSL { get; set; }
-        public bool SmtpUseDefaultCredentials { get; set; }
 
         public string FromName { get; set; }
         public string FromAddress { get; set; }

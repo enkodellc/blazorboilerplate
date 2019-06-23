@@ -6,37 +6,57 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace BlazorBoilerplate.Server.Controllers
-{
-    [Route("api/[controller]/[action]")]
+namespace BlazorBoilerplate.Server.Models
+{ 
+    [Route("api/authorize")]
     [ApiController]
     public class AuthorizeController : ControllerBase
     {
+        private static UserInfo LoggedOutUser = new UserInfo {IsAuthenticated = false};
+
         // Logger instance
         ILogger<AuthorizeController> _logger;
 
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser>    _userManager;
+        private readonly SignInManager<ApplicationUser>  _signInManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
-        public AuthorizeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AuthorizeController> logger)
+        public AuthorizeController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager, ILogger<AuthorizeController> logger,
+            RoleManager<IdentityRole<Guid>> roleManager)
         {
-            _userManager = userManager;
+            _userManager   = userManager;
             _signInManager = signInManager;
-            _logger = logger;
+            _logger        = logger;
+            _roleManager   = roleManager;
         }
 
+        [HttpGet("")]
+        public UserInfo GetUser()
+        {
+            return User.Identity.IsAuthenticated
+                ? new UserInfo {Username = User.Identity.Name, IsAuthenticated = true}
+                : LoggedOutUser;
+        }
+
+        [HttpPost("login")]
         [AllowAnonymous]
-        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> Login(LoginParameters parameters)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
-                                                                        .Select(error => error.ErrorMessage)
-                                                                        .FirstOrDefault());
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
+                    .Select(error => error.ErrorMessage)
+                    .FirstOrDefault());
 
-            var user = await _userManager.FindByNameAsync(parameters.UserName);
+            var user = await _userManager.FindByEmailAsync(parameters.UserName)
+                       ?? await _userManager.FindByNameAsync(parameters.UserName);
+
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", parameters.UserName);
@@ -52,35 +72,72 @@ namespace BlazorBoilerplate.Server.Controllers
             }
 
             _logger.LogInformation("Logged In: {0}, {1}", parameters.UserName, parameters.Password);
+
+            // add custom claims here, before signin if needed
+            var claims = await _userManager.GetClaimsAsync(user);
+            //await _userManager.RemoveClaimsAsync(user, claims);
+            
+
             await _signInManager.SignInAsync(user, parameters.RememberMe);
             return Ok(BuildUserInfo(user));
         }
 
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterParameters parameters)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
-                                                                        .Select(error => error.ErrorMessage)
-                                                                        .FirstOrDefault());
-
-            var user = new ApplicationUser();
-            user.UserName = parameters.UserName;
-            var result = await _userManager.CreateAsync(user, parameters.Password);
-            if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
-
-            _logger.LogInformation("New user registered: {0}", user);
-
-            return await Login(new LoginParameters
+            try
             {
-                UserName = parameters.UserName,
-                Password = parameters.Password
-            });
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
+                        .Select(error => error.ErrorMessage)
+                        .FirstOrDefault());
+
+                // https://gooroo.io/GoorooTHINK/Article/17333/Custom-user-roles-and-rolebased-authorization-in-ASPNET-core/32835
+                string[] roleNames = { "SuperAdmin","Admin","User" };
+                IdentityResult roleResult;
+
+                foreach (var roleName in roleNames)
+                {
+                    //creating the roles and seeding them to the database
+                    var roleExist = await _roleManager.RoleExistsAsync(roleName);
+                    if (!roleExist)
+                    {
+                        roleResult = await _roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+                    }
+                }
+
+                var user = new ApplicationUser
+                {
+                    UserName = parameters.UserName,
+                    Email = parameters.UserName
+                };
+
+                user.UserName = parameters.UserName;
+                var result = await _userManager.CreateAsync(user, parameters.Password);
+                if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
+                           
+                //Role - Here we tie the new user to the "Admin" role 
+                await _userManager.AddToRoleAsync(user, "Admin");
+
+                _logger.LogInformation("New user registered: {0}", user);
+
+                return await Login(new LoginParameters
+                {
+                    UserName = parameters.UserName,
+                    Password = parameters.Password
+                });
+            }
+            catch (Exception  ex)
+            {
+                _logger.LogError("Register User Failed: {0}", ex.Message);
+                return BadRequest(ex);
+            }
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("SendPasswordResetEmail")]
         public async Task<IActionResult> SendPasswordResetEmail(string emailAddress)
         {
             var user = await _userManager.FindByEmailAsync(emailAddress);
@@ -110,31 +167,31 @@ namespace BlazorBoilerplate.Server.Controllers
             //        body: email,
             //        isBodyHtml: true
             //    );
-
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             _logger.LogInformation("User Logged out");
-            await _signInManager.SignOutAsync();           
+            await _signInManager.SignOutAsync();
             return Ok();
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("userinfo")]
         public async Task<UserInfo> UserInfo()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             return BuildUserInfo(user);
         }
-        
+
         private UserInfo BuildUserInfo(ApplicationUser user)
         {
             return new UserInfo
             {
-                Username = user.UserName
+                Username        = user.UserName,
+                IsAuthenticated = true
             };
         }
     }
