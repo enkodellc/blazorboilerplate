@@ -6,6 +6,7 @@ Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer (Core-Ho
 [![GitHub Stars](https://img.shields.io/github/stars/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/issues)
 [![MIT](https://img.shields.io/github/license/SamProf/MatBlazor.svg)](LICENSE)
+[![Gitter](https://badges.gitter.im/BlazorBoilerplate/community.svg)](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Goal
 To create a boilerplate code base using Blazor / MatBlazor & .Net Core that includes most of the basic functionality of a starter kit (similar to AspnetBoilerplate) that is lean yet powerful for anyone to build off. A repository that is not controlled by a corporation but by a community.
@@ -74,7 +75,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Added SQL Server as a DB option
 
 ### 0.1.3
-- Update to MatBlazor 1.2.1 - Not yet release so using local copy
+- Update to MatBlazor 1.2.1 - Not yet released so using local copy
 - Update Theme / Drawer minify & close
 - Fixed Known Issue - UserProfile not loading after login thanks [nstohler](https://github.com/nstohler)
 - Secure Pages.
