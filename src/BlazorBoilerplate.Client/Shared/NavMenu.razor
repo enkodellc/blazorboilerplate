@@ -19,6 +19,9 @@
             <MatListItem Href="@uriHelper.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
                 <MatIcon>mail_outline</MatIcon> <span>Email</span>
             </MatListItem>
+            <MatListItem Href="@uriHelper.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatIcon>supervisor_account</MatIcon> <span>Users</span>
+            </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("contributors").AbsoluteUri">
                 <MatIcon>people</MatIcon> <span>Contributors</span>
             </MatListItem>
