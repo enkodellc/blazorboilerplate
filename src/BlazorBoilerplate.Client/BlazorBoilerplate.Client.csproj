@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <Reference Include="MatBlazor">
-      <HintPath>..\..\..\MatBlazorLatest\src\MatBlazor\bin\Release\netstandard2.0\MatBlazor.dll</HintPath>
+      <HintPath>wwwroot\MatBlazor\MatBlazor.dll</HintPath>
     </Reference>
   </ItemGroup>
 
