@@ -1,0 +1,75 @@
+﻿@page "/admin/users"
+@using BlazorBoilerplate.Shared
+@inject BlazorAuthenticationState authState
+@inject HttpClient Http
+@inject IMatToaster matToaster
+
+<h1>Users</h1>
+<p>This admin page is under construction. It is not connected to the live dataset and is not fully funcitonal.</p>
+@if (userInfo != null)
+{
+    @if (users == null)
+    {
+        <LoadingBackground ShowLogoBox="true">
+            <label>Loading Users</label>
+        </LoadingBackground>
+    }
+    else
+    {
+        <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users" FilterByColumnName="Email"
+                    DebounceMilliseconds="150">
+            <MatTableHeader>
+                <th><MatButton Icon="person_add" Label="New User"></MatButton></th>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+            </MatTableHeader>
+            <MatTableRow>
+                <td>
+                    <div style="width:130px;">
+                        <MatIconButton Icon="edit" OnClick="@((e) => Edit())"></MatIconButton>
+                        <MatIconButton Icon="delete" OnClick="@((e) => Delete())"></MatIconButton>
+                    </div>
+                </td>
+                <td><div style="width:130px;">@context.UserName</div></td>
+                <td>@context.Email</td>
+                <td>
+                    <MatChipSet>
+                        @foreach (var role in @context.Roles)
+                        {
+                            <MatChip Label="@role"></MatChip>
+                        }                 
+                    </MatChipSet>
+                </td>
+            </MatTableRow>
+        </MatTable>
+    
+        }
+    }
+    else
+    {
+    <LoadingBackground ShowLogoBox="true">
+        <label>Unauthorized.. Please Login</label>
+    </LoadingBackground>
+    }
+
+@functions {
+    UserInfo userInfo;
+    DemoUser[] users;
+
+    protected override async Task OnInitAsync()
+    {
+        userInfo = await authState.GetUserInfo();
+        users = await Http.GetJsonAsync<DemoUser[]>("api/SampleData/GetDemoUsers");
+    }
+
+    public void Edit()
+    {
+         matToaster.Add("Not Implemented", MatToastType.Danger, "User Edit Failed");
+    }
+
+    public void Delete()
+    {
+         matToaster.Add("Not Implemented", MatToastType.Danger, "User Delete Failed");
+    }
+}
