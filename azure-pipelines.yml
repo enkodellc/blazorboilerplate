@@ -23,7 +23,7 @@ steps:
 - task: NuGetToolInstaller@0
 
 - script: dotnet build BlazorBoilerplate.sln --configuration $(buildConfiguration)
-  displayName: 'dotnet ./src/blazorboilerplate.sln'
+  displayName: 'dotnet build ./src/blazorboilerplate.sln'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publishing App...'
