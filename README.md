@@ -2,6 +2,7 @@
 
 Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer (Core-Hosted).  Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. 
 
+[![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
 [![GitHub Stars](https://img.shields.io/github/stars/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/issues)
@@ -12,7 +13,7 @@ Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer (Core-Ho
 To create a boilerplate code base using Blazor / MatBlazor & .Net Core that includes most of the basic functionality of a starter kit (similar to AspnetBoilerplate) that is lean yet powerful for anyone to build off. A repository that is not controlled by a corporation but by a community.
 
 # Live demo
-[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The initial release is fairly simple but I am updating almost daily!
+[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The initial release is fairly simple but I am updating bi-weekly!
 
 ## Prerequisites
 
@@ -63,12 +64,15 @@ will be depending on how much community support for it is.
 - Blog or other real world functionality.
 - Audit log report UI.
 
-
 ## License
 
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
+
+### 0.1.5 - In Progress
+- Added Azure DevOps Pipeline for builds
+
 ### 0.1.4
 - Add Mailkit for Email - Future work to add Email Temaplates
 - Started API Auth CascadingAuthenticationState / Polices / Claims
