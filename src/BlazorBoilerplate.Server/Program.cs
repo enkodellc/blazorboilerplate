@@ -11,8 +11,11 @@ namespace BlazorBoilerplate.Server
     {
         public static int Main(string[] args)
         {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings" + (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development ? ".Development.json" : ".json"))
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{environment}.json", optional: true)
                 .Build();
 
             Log.Logger = new LoggerConfiguration()
@@ -21,13 +24,13 @@ namespace BlazorBoilerplate.Server
 
             try
             {
-                Log.Information("Starting web server host");
+                Log.Information("Starting BlazorBoilerplate web server host");
                 BuildWebHost(args).Run();
                 return 0;
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex, "Host terminated unexpectedly");
+                Log.Fatal(ex, "BlazorBoilerplate Host terminated unexpectedly");
                 return 1;
             }
         }
