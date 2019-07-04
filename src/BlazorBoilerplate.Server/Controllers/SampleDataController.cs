@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Models;
 using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Services;
+using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -61,6 +63,20 @@ namespace BlazorBoilerplate.Server.Controllers
         public IActionResult IsReadOnly()
         {
             return Ok(new {policy = "ReadOnly" });
+        }
+
+
+        //For testing Admin UI
+        [HttpGet("[action]")]
+        [Authorize(Roles = "SuperAdmin, Admin, User")]
+        public async Task<IEnumerable<DemoUser>> GetDemoUsers()
+        {
+            using (var client = new HttpClient())
+            {
+                string content = await client.GetStringAsync("http://keithfimreite.com/users.json");
+                IEnumerable<DemoUser> users = JsonConvert.DeserializeObject<IEnumerable<DemoUser>>(content);
+                return users;
+            }
         }
     }
 }

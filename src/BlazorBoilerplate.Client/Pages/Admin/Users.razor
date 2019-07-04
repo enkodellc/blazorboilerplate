@@ -1,0 +1,118 @@
+﻿@page "/admin/users"
+@using BlazorBoilerplate.Shared
+@inject BlazorAuthenticationState authState
+@inject HttpClient Http
+@inject IMatToaster matToaster
+
+<h1>Users</h1>
+<p>This admin page is under construction. It is not connected to the live dataset and is not fully funcitonal.</p>
+@if (userInfo != null)
+{
+    @if (users == null)
+    {
+        <LoadingBackground ShowLogoBox="true">
+            <label>Loading Users</label>
+        </LoadingBackground>
+    }
+    else
+    {
+        <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
+                  DebounceMilliseconds="150">
+            <MatTableHeader>
+                <th><MatButton Icon="person_add" Label="New User" OnClick="@((e) => OpenDialog())"></MatButton></th>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+            </MatTableHeader>
+            <MatTableRow>
+                <td>
+                    <div style="width:130px;">
+                        <MatIconButton Icon="edit" OnClick="@((e) => Edit())"></MatIconButton>
+                        <MatIconButton Icon="delete" OnClick="@((e) => Delete())"></MatIconButton>
+                    </div>
+                </td>
+                <td><div style="width:130px;">@context.UserName</div></td>
+                <td>@context.Email</td>
+                <td>
+                    <MatChipSet>
+                        @foreach (var role in @context.Roles)
+                        {
+                            <MatChip Label="@role"></MatChip>
+                        }                      
+                    </MatChipSet>
+                </td>
+            </MatTableRow>
+        </MatTable>
+    }
+
+    <MatDialog @bind-IsOpen="@dialogIsOpen">
+        <MatDialogTitle>Create User</MatDialogTitle>
+        <MatDialogContent>
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-value="@registerParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                </div>
+            </fieldset>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { dialogIsOpen = false; })">Cancel</MatButton>
+            <MatButton OnClick="@CreateUser">Create User</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+}
+else
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>Unauthorized.. Please Login</label>
+    </LoadingBackground>
+}
+
+@functions {
+    bool dialogIsOpen = false;
+    UserInfo userInfo;
+    DemoUser[] users;
+    RegisterParameters registerParameters { get; set; } = new RegisterParameters();
+
+    protected override async Task OnInitAsync()
+    {
+        userInfo = await authState.GetUserInfo();
+        users = await Http.GetJsonAsync<DemoUser[]>("api/SampleData/GetDemoUsers");
+    }
+
+    public void OpenDialog()
+    {
+        dialogIsOpen = true;
+    }
+
+    async Task CreateUser()
+    {
+        dialogIsOpen = false;
+        try
+        {
+            //Todo Create AdminUserModel and update this for AdminUserModel
+            await authState.Register(registerParameters);
+            matToaster.Add("Not Implemented", MatToastType.Success, "User Creation Sucessful");
+            //Todo Add User & refresh user list
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
+        }
+    }
+
+    public void Edit()
+    {
+        matToaster.Add("Not Implemented", MatToastType.Danger, "User Edit Failed");
+    }
+
+    public void Delete()
+    {
+        matToaster.Add("Not Implemented", MatToastType.Danger, "User Delete Failed");
+    }
+}

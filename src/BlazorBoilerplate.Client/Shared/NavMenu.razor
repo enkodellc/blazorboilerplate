@@ -7,9 +7,6 @@
             <MatListItem Href="@uriHelper.ToAbsoluteUri(" ").AbsoluteUri">
                 <MatIcon>home</MatIcon> <span>Home page</span>
             </MatListItem>
-            <MatListItem Href="@uriHelper.ToAbsoluteUri("counter").AbsoluteUri">
-                <MatIcon>exposure_plus_1</MatIcon> <span>Counter</span>
-            </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
                 <MatIcon>bar_chart</MatIcon> <span>Dashboard</span>
             </MatListItem>
@@ -18,6 +15,9 @@
             </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
                 <MatIcon>mail_outline</MatIcon> <span>Email</span>
+            </MatListItem>
+            <MatListItem Href="@uriHelper.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatIcon>supervisor_account</MatIcon> <span>Users</span>
             </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("contributors").AbsoluteUri">
                 <MatIcon>people</MatIcon> <span>Contributors</span>

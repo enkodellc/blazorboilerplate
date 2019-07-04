@@ -3,8 +3,24 @@
 <h1>Dashboard</h1>
 
 <p>
-    Expecting to see a bunch of flashy charts then you download the repo and delete them all because you don't need them? <br/>
-    Check out <a href="https://github.com/mariusmuntean/ChartJs.Blazor" target="_blank">https://github.com/mariusmuntean/ChartJs.Blazor</a> or <a href="https://www.iheartblazor.com/" target="_blank">here</a> and you will find a great resource for animated charts for a dashboard.<br/>
+    Expecting to see a bunch of flashy charts then you download the repo and delete them all because you don't need them? <br />
+    Check out <a href="https://github.com/mariusmuntean/ChartJs.Blazor" target="_blank">https://github.com/mariusmuntean/ChartJs.Blazor</a> or <a href="https://www.iheartblazor.com/" target="_blank">here</a> and you will find a great resource for animated charts for a dashboard.<br />
 </p>
+<hr/>
+<h2>Counter</h2>
+
+<MatFAB icon="exposure_plus_1" @onclick="@IncrementCount"></MatFAB>
+
+<p>Current count: @currentCount</p>
+
+@functions {
+    int currentCount = 0;
+
+    void IncrementCount()
+    {
+        currentCount++;
+    }
+}
+
 
 
