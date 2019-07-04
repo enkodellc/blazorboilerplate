@@ -73,7 +73,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             using (var client = new HttpClient())
             {
-                string content = await client.GetStringAsync("http://keithfimreite.com/users.json");
+                string content = await client.GetStringAsync("https://blazorboilerplate.com/users.json");
                 IEnumerable<DemoUser> users = JsonConvert.DeserializeObject<IEnumerable<DemoUser>>(content);
                 return users;
             }
