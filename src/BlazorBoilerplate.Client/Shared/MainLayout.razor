@@ -146,7 +146,7 @@ void NavLock()
 void NavMinify()
 {
     _navMinified = !_navMinified;
-    
+
     if (!_navMenuOpened) {
         _navMinified = true;
     }
@@ -154,11 +154,11 @@ void NavMinify()
     if (_navMinified) {
         bbDrawerClass = "mini";
         _navMenuOpened = true;
-    } 
+    }
     else if (_navMenuOpened) {
         bbDrawerClass = "full";
     }
-    
+
     _navMenuOpened = true;
     this.StateHasChanged();
 }
