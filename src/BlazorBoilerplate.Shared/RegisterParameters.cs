@@ -7,8 +7,14 @@ namespace BlazorBoilerplate.Shared
 {
     public class RegisterParameters
     {
+
         [Required]
         public string UserName { get; set; }
+
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
+        public string Email { get; set; }
 
         [Required]
         [MinLength(6,ErrorMessage = "Identifier too short (6 character minimum).")]

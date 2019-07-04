@@ -71,10 +71,12 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 ## News
 
 ### 0.1.5 - In Progress
-- Added Azure DevOps Pipeline for builds
+- Added Azure DevOps Pipeline for build status
+- Added Update Email Templates
+- Implemented New User Registration Email Template
 
 ### 0.1.4
-- Add Mailkit for Email - Future work to add Email Temaplates
+- Add Mailkit for Email - Future work to add Email Templates
 - Started API Auth CascadingAuthenticationState / Polices / Claims
 - Added SQL Server as a DB option
 

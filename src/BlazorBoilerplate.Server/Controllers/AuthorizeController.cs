@@ -9,6 +9,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Services;
 
 namespace BlazorBoilerplate.Server.Models
 { 
@@ -24,15 +26,17 @@ namespace BlazorBoilerplate.Server.Models
         private readonly UserManager<ApplicationUser>    _userManager;
         private readonly SignInManager<ApplicationUser>  _signInManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly IEmailService _emailService;  
 
         public AuthorizeController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, ILogger<AuthorizeController> logger,
-            RoleManager<IdentityRole<Guid>> roleManager)
+            RoleManager<IdentityRole<Guid>> roleManager, IEmailService emailService)
         {
             _userManager   = userManager;
             _signInManager = signInManager;
             _logger        = logger;
             _roleManager   = roleManager;
+            _emailService = emailService;
         }
 
         [HttpGet("")]
@@ -111,7 +115,7 @@ namespace BlazorBoilerplate.Server.Models
                 var user = new ApplicationUser
                 {
                     UserName = parameters.UserName,
-                    Email = parameters.UserName
+                    Email = parameters.Email
                 };
 
                 user.UserName = parameters.UserName;
@@ -122,6 +126,21 @@ namespace BlazorBoilerplate.Server.Models
                 await _userManager.AddToRoleAsync(user, "Admin");
 
                 _logger.LogInformation("New user registered: {0}", user);
+
+                #region Email New User
+                try
+                {
+                  var email = new EmailMessage();
+                  email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
+                  email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
+                  email = EmailTemplates.BuildNewUserEmail(email, user.UserName, user.UserName, user.Email); //Replace First UserName with Name if you want to add name to Registration Form
+                  await _emailService.SendEmailAsync(email);
+                }
+                catch (Exception ex)
+                {
+
+                }
+                #endregion
 
                 return await Login(new LoginParameters
                 {
@@ -153,23 +172,23 @@ namespace BlazorBoilerplate.Server.Models
             //user.SetNewPasswordResetCode();
             //var passwordResetCode = user.PasswordResetCode;
 
-            //var email = this.L(
-            //    "PasswordResetEmailBody",
-            //    _configuration.GetSection("App:ClientRootAddress").Value.TrimEnd('/'),
-            //    user.TenantId,
-            //    user.Id,
-            //    WebUtility.UrlEncode(passwordResetCode));
+            //#region Password Reset Email
+            //try
+            //{
+            //    var email = new EmailMessage();
+            //    email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
+            //    email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
+            //    email = EmailTemplates.BuildPasswordResetEmail(email, user.UserName, user.UserName, user.Email); //Replace First UserName with Name if you want to add name to Registration Form
+            //    await _emailService.SendEmailAsync(email);
+            //}
+            //catch (Exception ex)
+            //{
 
-            //_emailSender.Send(
-            //    from: (await SettingManager.GetSettingValueAsync(EmailSettingNames.DefaultFromAddress)),
-            //        to: user.EmailAddress,
-            //        subject: this.L("PasswordResetEmailSubject"),
-            //        body: email,
-            //        isBodyHtml: true
-            //    );
+            //}
+            //#endregion
         }
 
-        [Authorize]
+    [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {

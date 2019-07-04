@@ -43,7 +43,7 @@ namespace BlazorBoilerplate.Server.Services
         public void Send(EmailMessage emailMessage)
         {
             throw new NotImplementedException();
-        }
+        }        
 
         public async Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessage emailMessage)
         {

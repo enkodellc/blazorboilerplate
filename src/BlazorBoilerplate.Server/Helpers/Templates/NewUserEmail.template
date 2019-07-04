@@ -1,13 +1,14 @@
 ﻿<div>
   <h1>
-    <img src="https://blazorboilerplate.com/images/blazorboilerplate.svg" alt="Analytic Brokerage Platform"/>
+    <img style="width:100px; vertical-align: middle;" src="https://blazorboilerplate.com/images/logo.png" alt="Blazor Boilerplate"/> Blazor Boilerplate
   </h1>
-  <p>Hello {name},</p>
+  <p>Hello {userName},</p>
   <p>
     You have been added as a new user to <a href="https://blazorboilerplate.com" target="_blank">https://blazorboilerplate.com</a> Below are your new credentials.
   </p>
   <p>
     Username: {userName}<br />
+    Email: {email}<br />
     Password: {password}
   </p>
   <ul>

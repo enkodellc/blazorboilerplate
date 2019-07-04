@@ -1,6 +1,15 @@
-﻿<p>Hello {user},</p>
-<p>This is a <strong>TEST</strong> email.</p>
-<p>The request was on {testDate}.</p>
-<p><br /></p>
-<p>Regards,</p>
-<p>Blazor Boilerplate Template</p>
+﻿<div>
+  <h1>
+    <img style="width:100px; vertical-align: middle;" src="https://blazorboilerplate.com/images/logo.png" alt="Blazor Boilerplate"/> Blazor Boilerplate
+  </h1>
+  <p>Hello {user},</p>
+  <p>
+    This is a <strong>TEST</strong> email.
+  </p>
+  <p>The email was on {testDate}.</p>
+  <p>
+    <br />
+  </p>
+  <p>Regards,</p>
+  <p>Blazor Boilerplate Email Template</p>
+</div>

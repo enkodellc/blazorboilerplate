@@ -14,33 +14,36 @@
         <div class="form-group">
             <MatTextField @bind-value="@emailParameters.ToAddress" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
-        <div class="form-group">
+        @*<div class="form-group">
             <MatTextField @bind-value="@emailParameters.Subject" Label="Subject" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
             <MatTextField @bind-value="@emailParameters.Body" Label="Message" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-        </div>
+        </div>*@
         <div class="form-group d-flex justify-content-end">
-            <MatButton Type="submit" Raised="true">Send Email</MatButton>
+            <MatButton Type="submit" Raised="true">Send Test Template Email</MatButton>
         </div>
     </fieldset>
 </EditForm>
 
 
 @functions {
+  EmailParameters emailParameters { get; set; } = new EmailParameters();
+  protected override async Task OnInitAsync()
+  {
+      emailParameters.TemplateName = "Test";
+  }
 
-    EmailParameters emailParameters { get; set; } = new EmailParameters();
-
-    async Task SendEmail()
-    {
-        try
-        {
-            var result = await Http.PostJsonAsync<EmailParameters>("api/Email/EmailTest", emailParameters);
-            matToaster.Add("Email has been Sent", MatToastType.Success);
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.Message, MatToastType.Danger, "Email Send Failed");
-        }
-    }
+  async Task SendEmail()
+  {
+      try
+      {
+          var result = await Http.PostJsonAsync<EmailParameters>("api/Email/Email", emailParameters);
+          matToaster.Add("Email has been Sent", MatToastType.Success);
+      }
+      catch (Exception ex)
+      {
+          matToaster.Add(ex.Message, MatToastType.Danger, "Email Send Failed");
+      }
+  }
 }

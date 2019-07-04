@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Models;
 using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Server.Helpers;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -25,28 +26,40 @@ namespace BlazorBoilerplate.Server.Controllers
             _emailService = emailService;
         }
 
-
         [HttpPost]
         [Authorize]
         [ProducesResponseType(200, Type = typeof(string))]
-        public async Task<IActionResult> EmailTest(EmailParameters parameters)
+        public async Task<IActionResult> Email(EmailParameters parameters)
         {
-            //Todo fix these parameters
             parameters.Subject = "test";
             parameters.Body = "my email";
             parameters.ToAddress = "support@blazorboilerplate.com";
 
             var email = new EmailMessage();
-            email.ToAddresses.Add(new EmailAddress(parameters.ToAddress, parameters.ToAddress));
-            email.Subject = parameters.Subject;
-            email.Body = parameters.Body;
-            email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
+            email.ToAddresses.Add(new EmailAddress(parameters.ToName, parameters.ToAddress));
+          //email.Subject = parameters.Subject; //for demo force a Template to reduce spam
+          //email.Body = parameters.Body;
 
-            _logger.LogInformation("Test Email: {0}", email.Subject );
+            if (string.IsNullOrEmpty(parameters.TemplateName))
+            {
+              parameters.TemplateName = "Test";
+            }
+
+            switch (parameters.TemplateName)
+            {
+              case "Test":
+                email = EmailTemplates.BuildTestEmail(email,parameters.ToName); //example of email Template usage
+                break;
+              default:
+                break;
+            }
+
+            email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
+            _logger.LogInformation("Test Email: {0}", email.Subject);
 
             await _emailService.SendEmailAsync(email);
 
-            return Ok(new {success="true"});
+            return Ok(new { success = "true" });
         }
     }
 }

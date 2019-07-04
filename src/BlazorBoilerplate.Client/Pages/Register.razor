@@ -16,7 +16,10 @@
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-value="@registerParameters.UserName" Label="Username" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-value="@registerParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
                 <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
@@ -28,7 +31,6 @@
                 <MatButton Type="submit" Raised="true">Create account</MatButton>
             </div>
             <hr />
-
             <NavLink href="login">
                 <h6 class="font-weight-normal text-center">Already have an account? Click here to login</h6>
             </NavLink>
