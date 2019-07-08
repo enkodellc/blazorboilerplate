@@ -1,12 +1,13 @@
 using BlazorBoilerplate.Client.Services.Contracts;
 using BlazorBoilerplate.Client.Services.Implementations;
 using BlazorBoilerplate.Client.States;
+using Microsoft.AspNetCore.Blazor.Http;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using MatBlazor;
-
-//using Blazored.LocalStorage;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+//using Blazored.LocalStorage;
 
 namespace BlazorBoilerplate.Client
 {
@@ -14,12 +15,14 @@ namespace BlazorBoilerplate.Client
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<BlazorAuthenticationState>();
+            services.AddAuthorizationCore();
+            services.AddScoped<IdentityAuthenticationStateProvider>();
+            services.AddScoped<IdentityAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
-
-
-          //services.AddBlazoredLocalStorage();
-          services.AddLoadingBar();
+            
+            //services.AddBlazoredLocalStorage();
+            services.AddLoadingBar();
 
             services.AddMatToaster(config =>
             {
@@ -35,6 +38,7 @@ namespace BlazorBoilerplate.Client
 
         public void Configure(IComponentsApplicationBuilder app)
         {
+            WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
             app.UseLoadingBar();
             app.AddComponent<App>("app");
         }

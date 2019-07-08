@@ -41,7 +41,7 @@ namespace BlazorBoilerplate.Server
                     .AddCommandLine(args)
                     .Build())
                 .UseStartup<Startup>()
-                 .UseSerilog()
+                .UseSerilog()
                 .Build();
     }
 }

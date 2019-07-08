@@ -1,14 +1,8 @@
 ﻿using BlazorBoilerplate.Client.Services.Contracts;
 using BlazorBoilerplate.Shared;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Text.Json.Serialization;
 
 namespace BlazorBoilerplate.Client.Services.Implementations
 {
@@ -21,11 +15,9 @@ namespace BlazorBoilerplate.Client.Services.Implementations
             _httpClient = httpClient;
         }
 
-        public async Task<UserInfo> Login(LoginParameters loginParameters)
+        public async Task Login(LoginParameters loginParameters)
         {
-            // Todo Handle StatusCodes??
-            var result = await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Login", loginParameters);            
-            return result;
+            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Login", loginParameters);
         }
 
         public async Task Logout()
@@ -34,11 +26,9 @@ namespace BlazorBoilerplate.Client.Services.Implementations
             result.EnsureSuccessStatusCode();
         }
 
-        public async Task<UserInfo> Register(RegisterParameters registerParameters)
+        public async Task Register(RegisterParameters registerParameters)
         {
-            // Todo Handle StatusCodes??
-            var result = await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Register", registerParameters);
-            return result;
+           await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Register", registerParameters);          
         }
 
         public async Task<UserInfo> GetUserInfo()

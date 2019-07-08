@@ -1,12 +1,12 @@
 ﻿@page "/admin/users"
 @using BlazorBoilerplate.Shared
-@inject BlazorAuthenticationState authState
+@inject IdentityAuthenticationStateProvider authState
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
 <h1>Users</h1>
 <p>This admin page is under construction. It is not connected to the live dataset and is not fully functional.</p>
-@if (userInfo != null)
+@if (IsLoggedIn)
 {
     @if (users == null)
     {
@@ -75,13 +75,13 @@ else
 
 @functions {
     bool dialogIsOpen = false;
-    UserInfo userInfo;
+    protected bool IsLoggedIn;
     DemoUser[] users;
     RegisterParameters registerParameters { get; set; } = new RegisterParameters();
 
     protected override async Task OnInitAsync()
     {
-        userInfo = await authState.GetUserInfo();
+        IsLoggedIn = await authState.IsLoggedIn();
         users = await Http.GetJsonAsync<DemoUser[]>("api/SampleData/GetDemoUsers");
     }
 

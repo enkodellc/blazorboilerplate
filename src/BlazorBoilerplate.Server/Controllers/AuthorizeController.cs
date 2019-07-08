@@ -1,19 +1,16 @@
-﻿using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared;
 
 namespace BlazorBoilerplate.Server.Models
-{ 
+{
     [Route("api/authorize")]
     [ApiController]
     public class AuthorizeController : ControllerBase
@@ -26,7 +23,7 @@ namespace BlazorBoilerplate.Server.Models
         private readonly UserManager<ApplicationUser>    _userManager;
         private readonly SignInManager<ApplicationUser>  _signInManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-        private readonly IEmailService _emailService;  
+        private readonly IEmailService _emailService;
 
         public AuthorizeController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, ILogger<AuthorizeController> logger,
@@ -80,10 +77,9 @@ namespace BlazorBoilerplate.Server.Models
             // add custom claims here, before signin if needed
             var claims = await _userManager.GetClaimsAsync(user);
             //await _userManager.RemoveClaimsAsync(user, claims);
-            
 
             await _signInManager.SignInAsync(user, parameters.RememberMe);
-            return Ok(BuildUserInfo(user));
+            return Ok(new { success = "true" });
         }
 
 
@@ -121,8 +117,8 @@ namespace BlazorBoilerplate.Server.Models
                 user.UserName = parameters.UserName;
                 var result = await _userManager.CreateAsync(user, parameters.Password);
                 if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
-                           
-                //Role - Here we tie the new user to the "Admin" role 
+
+                //Role - Here we tie the new user to the "Admin" role
                 await _userManager.AddToRoleAsync(user, "Admin");
 
                 _logger.LogInformation("New user registered: {0}", user);
@@ -138,7 +134,7 @@ namespace BlazorBoilerplate.Server.Models
                 }
                 catch (Exception ex)
                 {
-
+                    _logger.LogInformation("New user email failed: {0}", ex.Message);
                 }
                 #endregion
 
@@ -188,7 +184,7 @@ namespace BlazorBoilerplate.Server.Models
             //#endregion
         }
 
-    [Authorize]
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
@@ -199,18 +195,21 @@ namespace BlazorBoilerplate.Server.Models
 
         [Authorize]
         [HttpGet("userinfo")]
-        public async Task<UserInfo> UserInfo()
+        public UserInfo UserInfo()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            return BuildUserInfo(user);
+            return BuildUserInfo();
         }
 
-        private UserInfo BuildUserInfo(ApplicationUser user)
+        private UserInfo BuildUserInfo()
         {
             return new UserInfo
             {
-                Username        = user.UserName,
-                IsAuthenticated = true
+                IsAuthenticated = User.Identity.IsAuthenticated,
+                Username = User.Identity.Name,
+                ExposedClaims = User.Claims
+                        //Optionally: filter the claims you want to expose to the client
+                        //.Where(c => c.Type == "test-claim")
+                        .ToDictionary(c => c.Type, c => c.Value)
             };
         }
     }
