@@ -11,25 +11,12 @@ namespace BlazorBoilerplate.Client.States
 {
     public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private UserInfo _userInfoCache;
+        private UserInfo _userInfoCache = null;
         private readonly IAuthorizeApi _authorizeApi;
 
         public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi)
         {
             this._authorizeApi = authorizeApi;
-        }
-
-        public async Task<bool> IsLoggedIn()
-        {
-            try
-            {
-                var userInfo = await GetUserInfo();
-                return userInfo != null;
-            }
-            catch (HttpRequestException)
-            {
-                return false;
-            }
         }
 
         public async Task Login(LoginParameters loginParameters)
@@ -53,7 +40,10 @@ namespace BlazorBoilerplate.Client.States
 
         public async Task<UserInfo> GetUserInfo()
         {
-            if (_userInfoCache != null && _userInfoCache.IsAuthenticated) return _userInfoCache;
+            if (_userInfoCache != null && _userInfoCache.IsAuthenticated)
+            {
+                return _userInfoCache;
+            }
             _userInfoCache = await _authorizeApi.GetUserInfo();
             return _userInfoCache;
         }

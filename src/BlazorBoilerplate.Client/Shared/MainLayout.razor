@@ -9,15 +9,9 @@
                 <img alt="Blazor Boilerplate" class="logo-img" src="images/blazorboilerplate-dark.svg" title="Blazor Boilerplate">
                 <a class="brand" href="/">Blazor Boilerplate</a>
             </div>
-            @if (IsLoggedIn)
-            {
-                <div class="drawer-profile">
-                    <MatIcon Icon="account_circle"></MatIcon>
-                    <span><b>@userInfo.Username</b></span>
-                </div>
-            }
+            <ProfileControl />
         </header>
-        <NavMenu AuthState="@authState" />
+        <NavMenu />
         <footer class="drawer-footer">
             <MatTooltip Tooltip="Help">
                 <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHidden">Help & Support</span></MatButton>
@@ -34,24 +28,24 @@
                         </MatAppBarTitle>
                         <div class="hidden-mdc-down">
                             @*<nav>
-                                                    <ul>
-                                <li>*@
-                            <MatTooltip Tooltip="Toggle Navigation">
-                                <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
-                            </MatTooltip>
-                            @*</li>
-                                <li>*@
-                            <MatTooltip Tooltip="Minify Navigation">
-                                <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
-                            </MatTooltip>
-                            @*</li>
-                                                       <li>
-                                                            <MatTooltip Tooltip="Lock Navigation">
-                                                                <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
-                                                            </MatTooltip>
-                                </li>*@
-                            @*</ul>
-                                </nav>*@
+                                <ul>
+                                    <li>*@
+                                <MatTooltip Tooltip="Toggle Navigation">
+                                    <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                                </MatTooltip>
+                                @*</li>
+                                    <li>*@
+                                <MatTooltip Tooltip="Minify Navigation">
+                                    <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
+                                </MatTooltip>
+                                @*</li>
+                                <li>
+                                    <MatTooltip Tooltip="Lock Navigation" >
+                                        <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
+                                    </MatTooltip>
+                                    </li>*@
+                                @*</ul>
+                            </nav>*@
                         </div>
                     </MatAppBarSection>
                     <MatAppBarSection Align="@MatAppBarSectionAlign.End">
@@ -61,18 +55,7 @@
                         <MatTooltip Tooltip="Github Repository">
                             <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
                         </MatTooltip>
-                        @if (IsLoggedIn)
-                        {
-                            <MatTooltip Tooltip="Logout">
-                                <MatIconButton Icon="exit_to_app" RefBack="@context" OnClick="@LogoutClick"></MatIconButton>
-                            </MatTooltip>
-                        }
-                        else
-                        {
-                            <MatTooltip Tooltip="Login">
-                                <MatIconButton Icon="account_box" RefBack="@context" Link="/login"></MatIconButton>
-                            </MatTooltip>
-                        }
+                        <LoginControl></LoginControl>
                     </MatAppBarSection>
                 </MatAppBarRow>
             </MatAppBar>
@@ -89,7 +72,7 @@
                 </section>
                 <footer class="page-footer">
                     <div class="flex-1">
-                        © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a> Version 0.1.1
+                        © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a> Version 0.1.5
                     </div>
                 </footer>
             </MatAppBarContent>
@@ -98,33 +81,20 @@
 </MatDrawerContainer>
 
 @functions {
-    protected bool IsLoggedIn;
     bool _navMenuOpened = true;
     bool _navMinified = false;
     public string bbDrawerClass = "";
-    UserInfo userInfo = null;
-
 
     protected override async Task OnInitAsync()
     {
-        IsLoggedIn = await authState.IsLoggedIn();
-        if (!IsLoggedIn)
-        {
-            // To secure entire app change url to '/login'
-            uriHelper.NavigateTo("/");
-        }
-        else
-        {
-            //default landing page for logged in users
-            userInfo = await authState.GetUserInfo();
-            uriHelper.NavigateTo("/");
-        }
-    }
+        // Uncomment to secure entire app
+        //if (!(await AuthenticationState).User.Identity.IsAuthenticated)
+        //{
+        //    uriHelper.NavigateTo("/login");
+        //}
 
-    async Task LogoutClick()
-    {
-        await authState.Logout();
-        uriHelper.NavigateTo("/login");
+        // Default landing page
+        uriHelper.NavigateTo("/");
     }
 
     void NavToggle()
@@ -169,5 +139,4 @@
         _navMenuOpened = true;
         this.StateHasChanged();
     }
-
 }

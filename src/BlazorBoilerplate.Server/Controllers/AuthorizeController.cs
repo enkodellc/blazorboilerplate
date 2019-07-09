@@ -192,16 +192,18 @@ namespace BlazorBoilerplate.Server.Models
             await _signInManager.SignOutAsync();
             return Ok();
         }
-
-        [Authorize]
+          
+        //[Authorize]
         [HttpGet("userinfo")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
         public UserInfo UserInfo()
         {
             return BuildUserInfo();
         }
 
         private UserInfo BuildUserInfo()
-        {
+        {            
             return new UserInfo
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,

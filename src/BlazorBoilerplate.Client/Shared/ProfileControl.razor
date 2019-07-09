@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Components
+@inject IUriHelper uriHelper
+@inject IdentityAuthenticationStateProvider authState
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <div class="drawer-profile">
+            <MatIcon Icon="account_circle"></MatIcon>
+            <span><b>@userInfo.Username</b></span>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+@functions {
+    public bool IsLoggedIn = false;
+    UserInfo userInfo = null;
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask  { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        userInfo = null;
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+           userInfo = await authState.GetUserInfo();
+        }  
+    }
+}

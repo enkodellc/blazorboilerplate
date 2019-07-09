@@ -1,87 +1,86 @@
 ﻿@page "/admin/users"
 @using BlazorBoilerplate.Shared
-@inject IdentityAuthenticationStateProvider authState
 @inject HttpClient Http
+@inject IdentityAuthenticationStateProvider authState
 @inject IMatToaster matToaster
 
 <h1>Users</h1>
 <p>This admin page is under construction. It is not connected to the live dataset and is not fully functional.</p>
-@if (IsLoggedIn)
-{
-    @if (users == null)
-    {
-        <LoadingBackground ShowLogoBox="true">
-            <label>Loading Users</label>
-        </LoadingBackground>
-    }
-    else
-    {
-        <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
-                  DebounceMilliseconds="150">
-            <MatTableHeader>
-                <th><MatButton Icon="person_add" Label="New User" OnClick="@((e) => OpenDialog())"></MatButton></th>
-                <th>User Name</th>
-                <th>Email</th>
-                <th>Roles</th>
-            </MatTableHeader>
-            <MatTableRow>
-                <td>
-                    <div style="width:130px;">
-                        <MatIconButton Icon="edit" OnClick="@((e) => Edit())"></MatIconButton>
-                        <MatIconButton Icon="delete" OnClick="@((e) => Delete())"></MatIconButton>
-                    </div>
-                </td>
-                <td><div style="width:130px;">@context.UserName</div></td>
-                <td>@context.Email</td>
-                <td>
-                    <MatChipSet>
-                        @foreach (var role in @context.Roles)
-                        {
-                            <MatChip Label="@role"></MatChip>
-                        }                      
-                    </MatChipSet>
-                </td>
-            </MatTableRow>
-        </MatTable>
-    }
+<AuthorizeView Roles="SuperAdmin, Admin">
+    <Authorized>
+        @if (users == null)
+        {
+            <LoadingBackground ShowLogoBox="true">
+                <label>Loading Users</label>
+            </LoadingBackground>
+        }
+        else
+        {
+            <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
+                      DebounceMilliseconds="150">
+                <MatTableHeader>
+                    <th><MatButton Icon="person_add" Label="New User" OnClick="@((e) => OpenDialog())"></MatButton></th>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Roles</th>
+                </MatTableHeader>
+                <MatTableRow Context="UserRow">
+                    <td>
+                        <div style="width:130px;">
+                            <MatIconButton Icon="edit" OnClick="@((e) => Edit())"></MatIconButton>
+                            <MatIconButton Icon="delete" OnClick="@((e) => Delete())"></MatIconButton>
+                        </div>
+                    </td>
+                    <td><div style="width:130px;">@UserRow.UserName</div></td>
+                    <td>@UserRow.Email</td>
+                    <td>
+                        <MatChipSet>
+                            @foreach (var role in @UserRow.Roles)
+                            {
+                                <MatChip Label="@role"></MatChip>
+                            }
+                        </MatChipSet>
+                    </td>
+                </MatTableRow>
+            </MatTable>
+        }
 
-    <MatDialog @bind-IsOpen="@dialogIsOpen">
-        <MatDialogTitle>Create User</MatDialogTitle>
-        <MatDialogContent>
-            <fieldset>
-                <div class="form-group">
-                    <MatTextField @bind-value="@registerParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-                </div>
-                <div class="form-group">
-                    <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
-                </div>
-                <div class="form-group">
-                    <MatTextField @bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
-                </div>
-            </fieldset>
-        </MatDialogContent>
-        <MatDialogActions>
-            <MatButton OnClick="@(e => { dialogIsOpen = false; })">Cancel</MatButton>
-            <MatButton OnClick="@CreateUser">Create User</MatButton>
-        </MatDialogActions>
-    </MatDialog>
-}
-else
-{
-    <LoadingBackground ShowLogoBox="true">
-        <label>Unauthorized.. Please Login</label>
-    </LoadingBackground>
-}
+        <MatDialog @bind-IsOpen="@dialogIsOpen">
+            <MatDialogTitle>Create User</MatDialogTitle>
+            <MatDialogContent>
+                <fieldset>
+                    <div class="form-group">
+                        <MatTextField @bind-value="@registerParameters.UserName" Label="Username" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatTextField @bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    </div>
+                </fieldset>
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton OnClick="@(e => { dialogIsOpen = false; })">Cancel</MatButton>
+                <MatButton OnClick="@CreateUser">Create User</MatButton>
+            </MatDialogActions>
+        </MatDialog>
+    </Authorized>
+    <NotAuthorized>
+        <LoadingBackground ShowLogoBox="true">
+            <label>Unauthorized. Must be in role [SuperAdmin, Admin].. Please Login</label>
+        </LoadingBackground>
+    </NotAuthorized>
+</AuthorizeView>
+
 
 @functions {
     bool dialogIsOpen = false;
-    protected bool IsLoggedIn;
     DemoUser[] users;
     RegisterParameters registerParameters { get; set; } = new RegisterParameters();
 
     protected override async Task OnInitAsync()
     {
-        IsLoggedIn = await authState.IsLoggedIn();
         users = await Http.GetJsonAsync<DemoUser[]>("api/SampleData/GetDemoUsers");
     }
 
