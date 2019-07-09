@@ -70,10 +70,12 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.1.5 - In Progress
+### 0.1.5
 - Added Azure DevOps Pipeline for build status
 - Added Update Email Templates
 - Implemented New User Registration Email Template
+- Implement AuthorizeView for Theme
+- Breakout Theme Components 
 
 ### 0.1.4
 - Add Mailkit for Email - Future work to add Email Templates
