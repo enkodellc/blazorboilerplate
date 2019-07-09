@@ -222,14 +222,14 @@ flex-basis:80%;
 }
 
 .page-footer {
-  display: flex;
-  flex: 0 0 auto;
-  background: #fff;
-  color: #4d4d4d;
-  font-size: 0.8125rem;
-  padding: 4px 12px 4px 18px;
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.21);
-  margin-top: 30px;
+    display: flex;
+    flex: 0 0 auto;
+    background: #fff;
+    color: #4d4d4d;
+    padding: 9px 12px 9px 18px;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.21);
+    margin-top: 30px;
+    font-size: 12px;
 }
 
 .flex-1 {
@@ -275,7 +275,7 @@ flex-basis:80%;
   .mdc-drawer__content {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
     color: #FFF;
- }
+  }
 
 .mdc-drawer .mdc-list-item {
     margin: 8px 0 !important;
@@ -293,6 +293,10 @@ flex-basis:80%;
 
 .mdc-drawer a.mdc-list-item {
     padding: 0 14px !important;
+}
+
+.mdc-drawer .mdc-list-item--selected {
+    border-left: solid 3px rgba(255, 255, 255, .5);
 }
 
 .drawer-logo {
@@ -313,7 +317,7 @@ flex-basis:80%;
 
 .drawer-profile {
     padding: 16px;
-    border-bottom: solid 1px #e1e1e1;
+    border-bottom: solid 1px #777;
     background-image: url("../images/profile-bg.jpg");
     background-size: cover;
     color: #fff;
@@ -363,7 +367,7 @@ flex-basis:80%;
     right: 0;
     border-top: solid 1px #AAA;
     font-size: 12px;
-    padding:0 12px 8px 12px;
+    padding:0 12px 0 12px;
     background-color:lightgray
 }
 
@@ -392,12 +396,25 @@ hr {
     font-size: 11px;
 }
 
-
-
-
+/* misc */
+.contrib-card {
+    padding: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+    .contrib-card img {
+        height: 50px;
+        width: 50px;
+    }
 /* Extra small devices (portrait phones, less than 576px) */
-@media (max-width: 575.98px) {
+@media (max-width: 596.98px) {
+    .drawer-logo {
+        height: 56px;
+    }
 
+    .logo-img {
+        height: 38px;
+    }
 }
 
 /* Small devices (landscape phones, less than 768px)*/
@@ -407,7 +424,6 @@ hr {
   .drawer-profile span,
   .brand {
     display: none;
-
   }
 
   .mdc-drawer__content,
@@ -427,6 +443,7 @@ hr {
     .mdc-top-app-bar__title {
         padding-left: 0 !important;
     }
+
     .drawer-footer {
         padding: 0;
     }
@@ -444,13 +461,6 @@ hr {
         padding: 10px;
     }
 }
-
-
-/* misc */
-.contrib-card{
-    max-width: 300px;
-}
-
 
 /* Medium devices (tablets, less than 992px) */
 @media (max-width: 991.98px) {
