@@ -1,4 +1,4 @@
-﻿@page "/login"
+﻿@page "/account/login"
 @layout LoginLayout
 @inject IUriHelper uriHelper
 @inject IdentityAuthenticationStateProvider authStateProvider
@@ -25,7 +25,7 @@
             <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
         </div>
         <hr />
-        <NavLink href="register">
+        <NavLink href="account/register">
             <h6 class="font-weight-normal text-center">Create account</h6>
         </NavLink>
     </fieldset>
@@ -38,10 +38,10 @@
         </MatExpansionPanelSummary>
         <MatExpansionPanelDetails>
             <div class="form-group">
-                <MatTextField @bind-value="@forgotPasswordEmail" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-value="@forgotPasswordParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatButton class="float-right" OnClick="@ResetPassword" Raised="true">Submit</MatButton>
+                <MatButton class="float-right" OnClick="@ForgotPassword" Raised="true">Submit</MatButton>
             </div>
         </MatExpansionPanelDetails>
     </MatExpansionPanel>
@@ -50,7 +50,7 @@
 @functions {
     bool forgotPasswordToggle = false;
     LoginParameters loginParameters { get; set; } = new LoginParameters();
-    string forgotPasswordEmail;
+    ForgotPasswordParameters forgotPasswordParameters { get; set; } = new ForgotPasswordParameters();
 
     async Task SubmitLogin()
     {
@@ -65,14 +65,14 @@
         }
     }
 
-    async Task ResetPassword()
+    async Task ForgotPassword()
     {
         try
         {
-            @*TODO: Add Forgot Password *@
-            matToaster.Add("Forgot Passwoord is TBD", MatToastType.Warning, "Not Implemented");
-            //await state.SendPasswordResetEmail(forgotPasswordEmail);
-
+            await authStateProvider.ForgotPassword(forgotPasswordParameters);
+            matToaster.Add("Forgot Password Email Sent", MatToastType.Success);
+            forgotPasswordParameters.Email = "";
+            forgotPasswordToggle = false;
         }
         catch (Exception ex)
         {

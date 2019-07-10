@@ -28,12 +28,22 @@ namespace BlazorBoilerplate.Client.Services.Implementations
 
         public async Task Register(RegisterParameters registerParameters)
         {
-           await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Register", registerParameters);          
+            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Register", registerParameters);
         }
 
         public async Task ConfirmEmail(ConfirmEmailParameters confirmEmailParameters)
         {
             await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/ConfirmEmail", confirmEmailParameters);
+        }
+
+        public async Task ResetPassword(ResetPasswordParameters resetPasswordParameters)
+        {
+            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/ResetPassword", resetPasswordParameters);
+        }
+
+        public async Task ForgotPassword(ForgotPasswordParameters forgotPasswordParameters)
+        {
+            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/ForgotPassword", forgotPasswordParameters);
         }
 
         public async Task<UserInfo> GetUserInfo()

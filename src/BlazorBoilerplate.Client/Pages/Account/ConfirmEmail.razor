@@ -1,31 +1,36 @@
 ﻿@page "/account/confirmemail"
 @page "/account/confirmemail/{UserId}"
 
+@layout LoginLayout
+
 @using BlazorBoilerplate.Shared
 
 @inject IUriHelper uriHelper
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
-
-<h1>New User Email Confirmation</h1>
-<p>Test out confirm email for user registration.</p>
-<EditForm Model="@confirmEmailParameters" OnValidSubmit="@SendConfirmation">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <fieldset>
-        <div class="form-group">
-            <MatTextField @bind-value="@confirmEmailParameters.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatTextField @bind-value="@confirmEmailParameters.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-        </div>
-        <div class="form-group d-flex justify-content-end">
-            <MatButton Type="submit" Raised="true">Send Confirmation</MatButton>
-        </div>
-    </fieldset>
-</EditForm>
-
+<MatCard>
+    <div class="logo">
+        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
+        <br />
+        <h4>New User Email Confirmation</h4>
+    </div>
+    <EditForm Model="@confirmEmailParameters" OnValidSubmit="@SendConfirmation">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-value="@confirmEmailParameters.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-value="@confirmEmailParameters.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group d-flex justify-content-end">
+                <MatButton Type="submit" Raised="true">Send Confirmation</MatButton>
+            </div>
+        </fieldset>
+    </EditForm>
+</MatCard>
 @functions {
 
     ConfirmEmailParameters confirmEmailParameters { get; set; } = new ConfirmEmailParameters();
@@ -53,7 +58,7 @@
     {
         try
         {
-            await authStateProvider.ConfirmEmail(confirmEmailParameters);            
+            await authStateProvider.ConfirmEmail(confirmEmailParameters);
             matToaster.Add("Account has been Approved and Activated", MatToastType.Success);
             //Todo Take user to their profile page to edit their profile.
             uriHelper.NavigateTo("/");

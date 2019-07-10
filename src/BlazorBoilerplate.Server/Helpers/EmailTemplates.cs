@@ -12,6 +12,7 @@ namespace BlazorBoilerplate.Server.Helpers
         static string testEmailTemplate;
         static string plainTextTestEmailTemplate;
         static string newUserEmailTemplate;
+        static string newUserConfirmationEmailTemplate;
         static string newUserNotificationEmailTemplate;
         static string passwordResetTemplate;
         static string forgotPasswordTemplate;
@@ -34,7 +35,6 @@ namespace BlazorBoilerplate.Server.Helpers
 
           return emailMessage;
         }
-
         public static EmailMessage GetPlainTextTestEmail(EmailMessage emailMessage, DateTime date)
         {
             if (plainTextTestEmailTemplate == null)
@@ -46,15 +46,13 @@ namespace BlazorBoilerplate.Server.Helpers
             emailMessage.IsHtml = false;
 
             return emailMessage;
-        }
-        
-
+        }        
         public static EmailMessage BuildNewUserConfirmationEmail(EmailMessage emailMessage, string recepientName, string userName, string callbackUrl, string userId, string token)
         {
-            if (newUserEmailTemplate == null)
-                newUserEmailTemplate = ReadPhysicalFile("Helpers/Templates/NewUserConfirmationEmail.template");
+            if (newUserConfirmationEmailTemplate == null)
+                newUserConfirmationEmailTemplate = ReadPhysicalFile("Helpers/Templates/NewUserConfirmationEmail.template");
 
-            emailMessage.Body = newUserEmailTemplate
+            emailMessage.Body = newUserConfirmationEmailTemplate
                 //.Replace("{name}", recepientName) // Uncomment if you want to add name to the registration form
                 .Replace("{userName}", userName)
                 .Replace("{callbackUrl}", callbackUrl)
@@ -79,14 +77,13 @@ namespace BlazorBoilerplate.Server.Helpers
 
             return emailMessage;
         }
-
         public static EmailMessage BuilNewUserNotificationEmail(EmailMessage emailMessage, string creator, string name, string userName, string company, string roles)
         {
             //placeholder not actually implemented
             if (newUserNotificationEmailTemplate == null)
                 newUserNotificationEmailTemplate = ReadPhysicalFile("Helpers/Templates/NewUserEmail.template");
 
-            emailMessage.Body = newUserEmailTemplate
+            emailMessage.Body = newUserNotificationEmailTemplate
                 .Replace("{creator}", creator)
                 .Replace("{name}", name)
                 .Replace("{userName}", userName)
@@ -97,38 +94,33 @@ namespace BlazorBoilerplate.Server.Helpers
 
             return emailMessage;
         }
-
-        public static EmailMessage BuildForgotPasswordEmail(EmailMessage emailMessage, string recepientName, string userName)
+        public static EmailMessage BuildForgotPasswordEmail(EmailMessage emailMessage, string name, string callbackUrl, string token)
         {
-            //placeholder not actually implemented
             if (forgotPasswordTemplate == null)
                 forgotPasswordTemplate = ReadPhysicalFile("Helpers/Templates/ForgotPassword.template");
 
-            emailMessage.Body = newUserEmailTemplate
-                .Replace("{name}", recepientName)
-                .Replace("{userName}", userName);
+            emailMessage.Body = forgotPasswordTemplate
+                .Replace("{name}", name)
+                .Replace("{token}", token)
+                .Replace("{callbackUrl}", callbackUrl);
 
-            emailMessage.Subject = string.Format("Forgot your Passord? [{0}]", userName);
+            emailMessage.Subject = string.Format("Blazor Boilerplate Forgot your Passord? [{0}]", name);
 
             return emailMessage;
         }
-
-        public static EmailMessage BuildPasswordResetEmail(EmailMessage emailMessage, string recepientName, string userName)
+        public static EmailMessage BuildPasswordResetEmail(EmailMessage emailMessage, string userName)
         {
-            //placeholder not actually implemented
             if (passwordResetTemplate == null)
                 passwordResetTemplate = ReadPhysicalFile("Helpers/Templates/PasswordReset.template");
 
-            emailMessage.Body = newUserEmailTemplate
-                .Replace("{name}", recepientName)
+            emailMessage.Body = passwordResetTemplate
                 .Replace("{userName}", userName);
 
-            emailMessage.Subject = string.Format("Blazor Boilerplate Password Reset for {0}", recepientName);
+            emailMessage.Subject = string.Format("Blazor Boilerplate Password Reset for {0}", userName);
 
             return emailMessage;
         }
-
-
+        
         private static string ReadPhysicalFile(string path)
         {
             if (_webHostEnvironment == null)

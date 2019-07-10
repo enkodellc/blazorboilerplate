@@ -10,6 +10,8 @@ namespace BlazorBoilerplate.Client.Services.Contracts
     {
         Task Login(LoginParameters loginParameters);
         Task Register(RegisterParameters registerParameters);
+        Task ForgotPassword(ForgotPasswordParameters forgotPasswordParameters);
+        Task ResetPassword(ResetPasswordParameters resetPasswordParameters);
         Task Logout();
         Task ConfirmEmail(ConfirmEmailParameters confirmEmailParameters);
         Task<UserInfo> GetUserInfo();

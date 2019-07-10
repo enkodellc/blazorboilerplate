@@ -2,18 +2,16 @@
 
 namespace BlazorBoilerplate.Shared
 {
-    public class RegisterParameters
+    public class ResetPasswordParameters
     {
         [Required]
-        public string UserName { get; set; }
+        public string UserId { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress)]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string Token { get; set; }
 
         [Required]
-        [MinLength(6,ErrorMessage = "Identifier too short (6 character minimum).")]
+        [MinLength(6, ErrorMessage = "Identifier too short (6 character minimum).")]
         public string Password { get; set; }
 
         [Required]

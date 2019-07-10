@@ -54,11 +54,11 @@ will be depending on how much community support for it is.
  - Log Files
  - Choose between SQL Lite File or MS SQL Database
  - Email Confirmation of Registered Users
+ - Forgot Password Functionality
 
 ## Road map
 
 - Breadcrumbs.
-- Forgot Password Functionality - In Progress
 - Setting management UI.
 - User, role, permission and organization unit management UI.
 - Real time chat and notification system. Slack Communication clone?
@@ -73,9 +73,12 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ### 0.1.6 - In Progress
 - Email confirmation on Registration 
-  - Setup Email Configuration in server appsettings.json
-  - Set "RequireConfirmedEmail": true in appsettings.json
-
+  - Configure Email Configuration in server appsettings.json
+  - Set "RequireConfirmedEmail" to true in appsettings.json
+- Forgot Password
+  - Configure Email Configuration in server appsettings.json
+- Updated Email Templates for Forgot Password 
+  
 ### 0.1.5
 - Added Azure DevOps Pipeline for build status
 - Added Update Email Templates

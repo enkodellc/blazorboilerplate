@@ -44,6 +44,17 @@ namespace BlazorBoilerplate.Client.States
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
+        public async Task ResetPassword(ResetPasswordParameters resetPasswordParameters)
+        {
+            await _authorizeApi.ResetPassword(resetPasswordParameters);
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        }
+
+        public async Task ForgotPassword(ForgotPasswordParameters forgotPasswordParameters)
+        {
+            await _authorizeApi.ForgotPassword(forgotPasswordParameters);
+        }
+
         public async Task<UserInfo> GetUserInfo()
         {
             if (_userInfoCache != null && _userInfoCache.IsAuthenticated)

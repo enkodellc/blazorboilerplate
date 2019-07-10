@@ -10,7 +10,7 @@
     </Authorized>
     <NotAuthorized>
         <MatTooltip Tooltip="Login">
-            <MatIconButton Icon="account_box" RefBack="@context" Link="/login"></MatIconButton>
+            <MatIconButton Icon="account_box" RefBack="@context" Link="/account/login"></MatIconButton>
         </MatTooltip>
     </NotAuthorized>
 </AuthorizeView>
@@ -19,6 +19,6 @@
     async Task LogoutClick()
     {
         await authStateProvider.Logout();
-        uriHelper.NavigateTo("/login");
+        uriHelper.NavigateTo("/account/login");
     }
 }

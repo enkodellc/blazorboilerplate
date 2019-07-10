@@ -1,4 +1,5 @@
-﻿@page "/register"
+﻿@page "/account/register"
+
 @layout LoginLayout
 @inject IUriHelper uriHelper
 @inject IdentityAuthenticationStateProvider authStateProvider
@@ -38,7 +39,7 @@
     </EditForm>
 </MatCard>
 
-@code {
+@functions {
 
     RegisterParameters registerParameters { get; set; } = new RegisterParameters();
 

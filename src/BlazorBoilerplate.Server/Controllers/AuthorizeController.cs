@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO.Compression;
-using System.IO;
-using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared;
-
 
 namespace BlazorBoilerplate.Server.Models
 {
@@ -134,8 +130,7 @@ namespace BlazorBoilerplate.Server.Models
                     {
                         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        //token = Enkode(token); //Enkode token to work
-                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token); //token must be a query string parameter as it is very long
+                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token); 
 
                         var email = new EmailMessage();
                         email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
@@ -188,6 +183,11 @@ namespace BlazorBoilerplate.Server.Models
         [HttpPost("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailParameters parameters)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
+                    .Select(error => error.ErrorMessage)
+                    .FirstOrDefault());
+
             if (parameters.UserId == null || parameters.Token == null)
             {
                 return BadRequest();
@@ -211,38 +211,95 @@ namespace BlazorBoilerplate.Server.Models
             await _signInManager.SignInAsync(user, true);
             return Ok(new { success = "true" });
         }
+                
+        [AllowAnonymous]
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordParameters parameters)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
+                    .Select(error => error.ErrorMessage)
+                    .FirstOrDefault());
+
+            var user = await _userManager.FindByEmailAsync(parameters.Email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                _logger.LogInformation("Forgot Password with non-existent email / user: {0}", parameters.Email);
+                // Don't reveal that the user does not exist or is not confirmed
+                return Ok(new { success = "true" });
+            }
+                       
+            #region Forgot Password Email
+            try
+            {
+                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token); //token must be a query string parameter as it is very long
+                
+                var email = new EmailMessage();
+                email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
+                email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
+                email = EmailTemplates.BuildForgotPasswordEmail(email, user.UserName, callbackUrl, token); //Replace First UserName with Name if you want to add name to Registration Form
+
+                _logger.LogInformation("Forgot Password Email Sent: {0}", user.Email);
+                await _emailService.SendEmailAsync(email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("Forgot Password email failed: {0}", ex.Message);
+            }
+            #endregion
+            return Ok(new { success = "true" });
+        }
+
 
         [AllowAnonymous]
-        [HttpPost("SendPasswordResetEmail")]
-        public async Task<IActionResult> SendPasswordResetEmail(string emailAddress)
+        [ValidateAntiForgeryToken]
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordParameters parameters)
         {
-            var user = await _userManager.FindByEmailAsync(emailAddress);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
+                    .Select(error => error.ErrorMessage)
+                    .FirstOrDefault());
+
+            var user = await _userManager.FindByIdAsync(parameters.UserId);
             if (user == null)
             {
-                return Ok();
+                _logger.LogInformation("User does not exist: {0}", parameters.UserId);
+                return BadRequest("User does not exist");
             }
 
-            return Ok();
+            #region Reset Password Successful Email
+            try
+            {
+                IdentityResult result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
+                if (result.Succeeded)
+                {
+                    #region Email Successful Password change
+                    var email = new EmailMessage();
+                    email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
+                    email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
+                    email = EmailTemplates.BuildPasswordResetEmail(email, user.UserName); //Replace First UserName with Name if you want to add name to Registration Form
 
-            // Todo Complete Email Service / Email Templates / Password reset
+                    _logger.LogInformation("Reset Password Successful Email Sent: {0}", user.Email);
+                    await _emailService.SendEmailAsync(email);
+                    #endregion
 
-            //user.SetNewPasswordResetCode();
-            //var passwordResetCode = user.PasswordResetCode;
-
-            //#region Password Reset Email
-            //try
-            //{
-            //    var email = new EmailMessage();
-            //    email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
-            //    email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
-            //    email = EmailTemplates.BuildPasswordResetEmail(email, user.UserName, user.UserName, user.Email); //Replace First UserName with Name if you want to add name to Registration Form
-            //    await _emailService.SendEmailAsync(email);
-            //}
-            //catch (Exception ex)
-            //{
-
-            //}
-            //#endregion
+                    return Ok(new { success = "true" });
+                }
+                else
+                {
+                    _logger.LogInformation("Error while resetting the password!: {0}", user.UserName);
+                    return BadRequest(string.Format("Error while resetting the password!: {0}", user.UserName));                   
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("Reset Password failed: {0}", ex.Message);
+                return BadRequest(string.Format("Error while resetting the password!: {0}", ex.Message));
+            }
+            #endregion
         }
 
         [Authorize]
@@ -274,30 +331,6 @@ namespace BlazorBoilerplate.Server.Models
                         //.Where(c => c.Type == "test-claim")
                         .ToDictionary(c => c.Type, c => c.Value)
             };
-        }
-
-        public static string Enkode(string token)
-        {
-            // Microsoft in its brilliance includes invalid characters in their code/token.
-            // So let's replace them with another character set so we can actually use it. Then dekode it.
-            string[] dirtyCharacters = { ";", "/", "?", ":", "@", "&", "=", "+", "$", "," };
-            string[] cleanCharacters = { "p2n3t4G5l6m", "s1l2a3s4h", "q1e2st3i4o5n", "T22p14nt2s", "a9t", "a2n3nd", "e1q2ua88l", "p22l33u1ws", "d0l1ar5", "c0m8a1a" };
-            foreach (string dirtyCharacter in dirtyCharacters)
-            {
-                token = token.Replace(dirtyCharacter, cleanCharacters[Array.IndexOf(dirtyCharacters, dirtyCharacter)]);
-            }
-            return token;
-        }
-
-        public static string Dekode(string token)
-        {
-            string[] dirtyCharacters = { ";", "/", "?", ":", "@", "&", "=", "+", "$", "," };
-            string[] cleanCharacters = { "p2n3t4G5l6m", "s1l2a3s4h", "q1e2st3i4o5n", "T22p14nt2s", "a9t", "a2n3nd", "e1q2ua88l", "p22l33u1ws", "d0l1ar5", "c0m8a1a" };
-            foreach (string symbol in cleanCharacters)
-            {
-                token = token.Replace(symbol, dirtyCharacters[Array.IndexOf(cleanCharacters, symbol)]);
-            }
-            return token;
         }
     }
 }
