@@ -17,7 +17,6 @@ namespace BlazorBoilerplate.Client
         {
             services.AddAuthorizationCore();
             services.AddScoped<IdentityAuthenticationStateProvider>();
-            services.AddScoped<IdentityAuthenticationStateProvider>();
             services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             
@@ -33,7 +32,6 @@ namespace BlazorBoilerplate.Client
                 config.MaximumOpacity = 95;
                 config.VisibleStateDuration = 3000;
             });
-
         }
 
         public void Configure(IComponentsApplicationBuilder app)

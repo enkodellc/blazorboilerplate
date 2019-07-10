@@ -47,14 +47,31 @@ namespace BlazorBoilerplate.Server.Helpers
 
             return emailMessage;
         }
+        
 
+        public static EmailMessage BuildNewUserConfirmationEmail(EmailMessage emailMessage, string recepientName, string userName, string callbackUrl, string userId, string token)
+        {
+            if (newUserEmailTemplate == null)
+                newUserEmailTemplate = ReadPhysicalFile("Helpers/Templates/NewUserConfirmationEmail.template");
+
+            emailMessage.Body = newUserEmailTemplate
+                //.Replace("{name}", recepientName) // Uncomment if you want to add name to the registration form
+                .Replace("{userName}", userName)
+                .Replace("{callbackUrl}", callbackUrl)
+                .Replace("{userId}", userId)
+                .Replace("{token}", token);
+
+            emailMessage.Subject = string.Format("Welcome {0} to Blazor Boilerplate", recepientName);
+
+            return emailMessage;
+        }
         public static EmailMessage BuildNewUserEmail(EmailMessage emailMessage, string recepientName, string userName, string password)
         {
             if (newUserEmailTemplate == null)
                 newUserEmailTemplate = ReadPhysicalFile("Helpers/Templates/NewUserEmail.template");
 
             emailMessage.Body = newUserEmailTemplate
-                //.Replace("{name}", recepientName) //use if you want to add name to the registration form
+                //.Replace("{name}", recepientName) // Uncomment if you want to add name to the registration form
                 .Replace("{userName}", userName)
                 .Replace("{password}", password);
 

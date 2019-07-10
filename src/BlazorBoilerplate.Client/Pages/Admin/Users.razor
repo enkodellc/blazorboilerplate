@@ -1,7 +1,7 @@
 ﻿@page "/admin/users"
 @using BlazorBoilerplate.Shared
 @inject HttpClient Http
-@inject IdentityAuthenticationStateProvider authState
+@inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 
 <h1>Users</h1>
@@ -95,7 +95,7 @@
         try
         {
             //Todo Create AdminUserModel and update this for AdminUserModel
-            await authState.Register(registerParameters);
+            await authStateProvider.Register(registerParameters);
             matToaster.Add("Not Implemented", MatToastType.Success, "User Creation Sucessful");
             //Todo Add User & refresh user list
         }

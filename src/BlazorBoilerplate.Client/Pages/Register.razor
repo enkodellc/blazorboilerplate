@@ -1,7 +1,7 @@
 ﻿@page "/register"
 @layout LoginLayout
 @inject IUriHelper uriHelper
-@inject IdentityAuthenticationStateProvider state
+@inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 
 <MatCard>
@@ -40,19 +40,19 @@
 
 @code {
 
-  RegisterParameters registerParameters { get; set; } = new RegisterParameters();
+    RegisterParameters registerParameters { get; set; } = new RegisterParameters();
 
-  async Task RegisterUser()
-  {
-      try
-      {
-          await state.Register(registerParameters);
-          matToaster.Add("Your new user has been added", MatToastType.Success, "User Creation Sucessful");
-          uriHelper.NavigateTo("");
-      }
-      catch (Exception ex)
-      {
-          matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
-      }
-  }
+    async Task RegisterUser()
+    {
+        try
+        {
+            await authStateProvider.Register(registerParameters);
+            matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, "User Creation Sucessful");
+            uriHelper.NavigateTo("");
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
+        }
+    }
 }

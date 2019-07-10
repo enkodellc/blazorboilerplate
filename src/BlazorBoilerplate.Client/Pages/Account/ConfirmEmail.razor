@@ -1,0 +1,66 @@
+﻿@page "/account/confirmemail"
+@page "/account/confirmemail/{UserId}"
+
+@using BlazorBoilerplate.Shared
+
+@inject IUriHelper uriHelper
+@inject HttpClient Http
+@inject IdentityAuthenticationStateProvider authStateProvider
+@inject IMatToaster matToaster
+
+<h1>New User Email Confirmation</h1>
+<p>Test out confirm email for user registration.</p>
+<EditForm Model="@confirmEmailParameters" OnValidSubmit="@SendConfirmation">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset>
+        <div class="form-group">
+            <MatTextField @bind-value="@confirmEmailParameters.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-value="@confirmEmailParameters.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group d-flex justify-content-end">
+            <MatButton Type="submit" Raised="true">Send Confirmation</MatButton>
+        </div>
+    </fieldset>
+</EditForm>
+
+@functions {
+
+    ConfirmEmailParameters confirmEmailParameters { get; set; } = new ConfirmEmailParameters();
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        // Blazor does not have query string accessible parameters yet so a hack is needed. Token is too long for path parameter
+        var absoluteUrl = uriHelper.GetAbsoluteUri();
+        var token = absoluteUrl.Substring(absoluteUrl.IndexOf("?token=") + 7);
+        if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(token))
+        {
+            confirmEmailParameters = new ConfirmEmailParameters
+            {
+                Token = token,
+                UserId = this.UserId
+            };
+            await SendConfirmation();
+        }
+    }
+
+    async Task SendConfirmation()
+    {
+        try
+        {
+            await authStateProvider.ConfirmEmail(confirmEmailParameters);            
+            matToaster.Add("Account has been Approved and Activated", MatToastType.Success);
+            //Todo Take user to their profile page to edit their profile.
+            uriHelper.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Email Verification Failed");
+        }
+    }
+}

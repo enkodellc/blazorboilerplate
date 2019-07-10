@@ -13,7 +13,7 @@ Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer (Core-Ho
 To create a boilerplate code base using Blazor / MatBlazor & .Net Core that includes most of the basic functionality of a starter kit (similar to AspnetBoilerplate) that is lean yet powerful for anyone to build off. A repository that is not controlled by a corporation but by a community.
 
 # Live demo
-[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The initial release is fairly simple but I am updating bi-weekly!
+[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. 
 
 ## Prerequisites
 
@@ -52,12 +52,13 @@ will be depending on how much community support for it is.
  - Basic Login / User Creation
  - Admin Theme using Material Design / MatBlazor - Free to use.
  - Log Files
+ - Choose between SQL Lite File or MS SQL Database
+ - Email Confirmation of Registered Users
 
 ## Road map
 
-- Add SQL Database for better data storage.
 - Breadcrumbs.
-- Forgot Password Functionality.
+- Forgot Password Functionality - In Progress
 - Setting management UI.
 - User, role, permission and organization unit management UI.
 - Real time chat and notification system. Slack Communication clone?
@@ -69,6 +70,11 @@ will be depending on how much community support for it is.
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
+
+### 0.1.6 - In Progress
+- Email confirmation on Registration 
+  - Setup Email Configuration in server appsettings.json
+  - Set "RequireConfirmedEmail": true in appsettings.json
 
 ### 0.1.5
 - Added Azure DevOps Pipeline for build status

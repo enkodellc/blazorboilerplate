@@ -31,6 +31,11 @@ namespace BlazorBoilerplate.Client.Services.Implementations
            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Register", registerParameters);          
         }
 
+        public async Task ConfirmEmail(ConfirmEmailParameters confirmEmailParameters)
+        {
+            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/ConfirmEmail", confirmEmailParameters);
+        }
+
         public async Task<UserInfo> GetUserInfo()
         {
             var result = await _httpClient.GetJsonAsync<UserInfo>("api/Authorize/UserInfo");

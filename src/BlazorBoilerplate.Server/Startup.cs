@@ -71,9 +71,12 @@ namespace BlazorBoilerplate.Server
                 options.Lockout.MaxFailedAccessAttempts = 10;
                 options.Lockout.AllowedForNewUsers = true;
 
-                // User settings
-                options.User.RequireUniqueEmail = false;
-                //options.SignIn.RequireConfirmedEmail = true;
+                // Require Confirmed Email User settings
+                if (Convert.ToBoolean(Configuration["RequireConfirmedEmail"]))
+                {
+                    options.User.RequireUniqueEmail = false;
+                    options.SignIn.RequireConfirmedEmail = true;
+                }
             });
 
             services.ConfigureApplicationCookie(options =>

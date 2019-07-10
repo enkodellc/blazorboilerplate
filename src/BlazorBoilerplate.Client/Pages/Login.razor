@@ -1,7 +1,7 @@
 ﻿@page "/login"
 @layout LoginLayout
 @inject IUriHelper uriHelper
-@inject IdentityAuthenticationStateProvider state
+@inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @*TODO: Add client-side validation*@
 
@@ -56,7 +56,7 @@
     {
         try
         {
-            await state.Login(loginParameters);
+            await authStateProvider.Login(loginParameters);
             uriHelper.NavigateTo("/dashboard");
         }
         catch (Exception ex)

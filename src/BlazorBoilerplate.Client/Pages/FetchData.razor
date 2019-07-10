@@ -1,6 +1,6 @@
 ﻿@page "/fetchdata"
 @using BlazorBoilerplate.Shared
-@inject IdentityAuthenticationStateProvider authState
+@inject IdentityAuthenticationStateProvider authStateProvider
 @inject HttpClient Http
 
 <h1>Secure Page</h1>
@@ -67,7 +67,7 @@ else
 
     protected override async Task OnInitAsync()
     {
-        userInfo = await authState.GetUserInfo();
+        userInfo = await authStateProvider.GetUserInfo();
         forecasts = await Http.GetJsonAsync<WeatherForecast[]>("api/SampleData/WeatherForecasts");
     }
 

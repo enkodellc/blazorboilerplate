@@ -1,0 +1,14 @@
+﻿<div>
+  <h1>
+    <img style="width:100px; vertical-align: middle;" src="https://blazorboilerplate.com/images/logo.png" alt="Blazor Boilerplate"/> Blazor Boilerplate
+  </h1>
+  <p>Hello {userName},</p>
+  <p>
+    Please confirm your account by: <a href='{callbackUrl}'>clicking this link.</a>
+  </p>
+  <p>
+    <strong>UserId:</strong> {userId}<br />
+    <strong>Token:</strong> {token}<br/>
+  </p>
+  <p>Thank you, and welcome to the Blazor Boilerplate</p>
+</div>

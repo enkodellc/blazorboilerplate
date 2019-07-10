@@ -38,6 +38,12 @@ namespace BlazorBoilerplate.Client.States
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
+        public async Task ConfirmEmail(ConfirmEmailParameters confirmEmailParameters)
+        {
+            await _authorizeApi.ConfirmEmail(confirmEmailParameters);
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        }
+
         public async Task<UserInfo> GetUserInfo()
         {
             if (_userInfoCache != null && _userInfoCache.IsAuthenticated)

@@ -1,6 +1,5 @@
 ﻿@inherits LayoutComponentBase
 @inject IUriHelper uriHelper
-@inject IdentityAuthenticationStateProvider authState
 
 <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
     <MatDrawer @bind-Opened="@_navMenuOpened">
@@ -72,7 +71,7 @@
                 </section>
                 <footer class="page-footer">
                     <div class="flex-1">
-                        © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a> Version 0.1.5
+                        © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a> Version 0.1.6 - Developed by <a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
                     </div>
                 </footer>
             </MatAppBarContent>
@@ -94,7 +93,7 @@
         //}
 
         // Default landing page
-        uriHelper.NavigateTo("/");
+        //uriHelper.NavigateTo("/");
     }
 
     void NavToggle()
