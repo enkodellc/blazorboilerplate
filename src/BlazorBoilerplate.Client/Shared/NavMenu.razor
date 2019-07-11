@@ -7,6 +7,9 @@
             <MatListItem Href="@uriHelper.ToAbsoluteUri(" ").AbsoluteUri">
                 <MatIcon>home</MatIcon> <span>Home page</span>
             </MatListItem>
+            <MatListItem Href="@uriHelper.ToAbsoluteUri("screenshots").AbsoluteUri">
+                <MatIcon>screen_share</MatIcon> <span>Screenshots</span>
+            </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
                 <MatIcon>bar_chart</MatIcon> <span>Dashboard</span>
             </MatListItem>

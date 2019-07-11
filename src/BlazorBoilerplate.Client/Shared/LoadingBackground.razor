@@ -5,11 +5,12 @@
 
 @if (ShowLogoBox)
 {
-<div class="loading-container">
-    <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />
-    @ChildContent
-</div>
+    <div class="loading-container">
+        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />
+        @ChildContent
+    </div>
 }
+
 
 @code {
     [Parameter]

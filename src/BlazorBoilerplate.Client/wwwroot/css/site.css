@@ -70,7 +70,7 @@ app {
     text-align: center;
     background-color: #fff;
     padding: 20px;
-    margin:10% auto;
+    margin: 10% auto;
 }
 
 /* Login page */
@@ -406,6 +406,15 @@ hr {
         height: 50px;
         width: 50px;
     }
+
+.screenshot {
+  text-align: center;
+  display: block;
+}
+  .screenshot img {
+    max-width: 100%;
+  }
+
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 596.98px) {
     .drawer-logo {
