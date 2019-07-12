@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Shared\Breadcrumbs\" />
     <Folder Include="wwwroot\fonts\fontawesome\" />
     <Folder Include="wwwroot\javascript\" />
   </ItemGroup>
