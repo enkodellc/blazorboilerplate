@@ -10,12 +10,12 @@
         <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
         <br />
         <h4>Log In</h4>
-        Username: <b>user</b> Password: <b>user123</b>        
+        User Name: <b>user</b> Password: <b>user123</b>
     </div>
 
     <fieldset>
         <div class="form-group">
-            <MatTextField @bind-value="@loginParameters.UserName" Label="Username" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
             <MatTextField @bind-value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>

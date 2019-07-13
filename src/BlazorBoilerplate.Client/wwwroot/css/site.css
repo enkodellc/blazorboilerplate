@@ -325,10 +325,14 @@ app {
   color: #fff;
   font-size: 12px;
 }
+  .drawer-profile a,
+  .drawer-profile .material-icons {
+    color: #fff;
+  }
 
-.app-sidebar .material-icons {
-  margin-right: 8px;
-}
+  .app-sidebar .material-icons {
+    margin-right: 8px;
+  }
 
 .mdc-drawer {
   /*margin-top: 64px;*/

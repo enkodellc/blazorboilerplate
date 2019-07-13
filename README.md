@@ -1,6 +1,6 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/blazorboilerplate.svg" alt="Blazor Boilerplate" height="75"/> Blazor Boilerplate
 
-Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer (Core-Hosted).  Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. 
+Blazor Boilerplate, "Blazor Starter Template" is a SPA admin template (Core-Hosted). The UI is driven by Material Design provided mostly by MatBlazor.  Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. 
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
@@ -10,7 +10,8 @@ Blazor Boilerplate / Starter Template with MatBlazor and IdentityServer (Core-Ho
 [![Gitter](https://badges.gitter.im/BlazorBoilerplate/community.svg)](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Goal
-To create a boilerplate code base using Blazor / MatBlazor & .Net Core that includes most of the basic functionality of a starter kit (similar to AspnetBoilerplate) that is lean yet powerful for anyone to build off. A repository that is not controlled by a corporation but by a community.
+To create boilerplate Blazor code that includes the most common functionality for an app that is lean yet powerful for anyone to start their own project rapidly. 
+A repository that is not controlled by a corporation but by a community. Javascript Free! So far no Javascript has been written outside of the MatBlazor dependencies. 
 
 # Live demo
 [Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. 
@@ -22,7 +23,7 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 Complete all Blazor dependencies.
 
 - .NET Core 3.0 Preview 6 SDK (3.0.100-preview6-012264)
-- Visual Studio 2019 Preview 4 with the ASP.NET and web development workload selected.
+- Visual Studio 2019 Preview  with the ASP.NET and web development workload selected.
 - The latest Blazor extension from the Visual Studio Marketplace.
 - The Blazor templates on the command-line: **Install-Package Microsoft.AspNetCore.Blazor.Templates -Version 3.0.0-preview6.19307.2**
 
@@ -58,9 +59,8 @@ will be depending on how much community support for it is.
 
 ## Road map
 
-- Breadcrumbs.
-- Setting management UI.
-- User, role, permission and organization unit management UI.
+- User [rofile & settings management.
+- User, role, permission and organization unit management.
 - Real time chat and notification system. Slack Communication clone?
 - Blog or other real world functionality.
 - Audit log report UI.
@@ -70,8 +70,11 @@ will be depending on how much community support for it is.
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
+### 0.1.7 - In Progress
+- User Profile Management
+- Propagating Errors properly to Toasts
 
-### 0.1.6 - In Progress
+### 0.1.6 
 - Email confirmation on Registration 
   - Configure Email Configuration in server appsettings.json
   - Set "RequireConfirmedEmail" to true in appsettings.json

@@ -7,7 +7,7 @@
     You have been added as a new user to <a href="https://blazorboilerplate.com" target="_blank">https://blazorboilerplate.com</a> Below are your new credentials.
   </p>
   <p>
-    Username: {userName}<br />
+    User Name: {userName}<br />
     Email: {email}<br />
     Password: {password}
   </p>

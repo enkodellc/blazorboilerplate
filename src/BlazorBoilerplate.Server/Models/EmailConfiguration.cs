@@ -14,7 +14,7 @@ namespace BlazorBoilerplate.Server.Models
         string FromName   { get; set; }
         string FromAddress { get; set; }
         string ReplyToAddress { get; set; }
-                
+
         string PopServer { get; }
         int PopPort { get; }
         string PopUsername { get; }

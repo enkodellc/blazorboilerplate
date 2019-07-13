@@ -73,7 +73,7 @@ namespace BlazorBoilerplate.Client.States
                 var userInfo = await GetUserInfo();
                 if (userInfo.IsAuthenticated)
                 {
-                    var claims = new[] { new Claim(ClaimTypes.Name, _userInfoCache.Username) }.Concat(_userInfoCache.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
+                    var claims = new[] { new Claim(ClaimTypes.Name, _userInfoCache.UserName) }.Concat(_userInfoCache.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
                     identity = new ClaimsIdentity(claims, "Server authentication");
                 }
             }
@@ -83,6 +83,13 @@ namespace BlazorBoilerplate.Client.States
             }
 
             return new AuthenticationState(new ClaimsPrincipal(identity));
+        }
+
+        public async Task<UserInfo> UpdateUser(UserInfo userInfo)
+        {
+            _userInfoCache = await _authorizeApi.UpdateUser(userInfo);
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            return _userInfoCache;
         }
     }
 }

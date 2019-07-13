@@ -48,8 +48,12 @@ namespace BlazorBoilerplate.Client.Services.Implementations
 
         public async Task<UserInfo> GetUserInfo()
         {
-            var result = await _httpClient.GetJsonAsync<UserInfo>("api/Authorize/UserInfo");
-            return result;
+            return await _httpClient.GetJsonAsync<UserInfo>("api/Authorize/UserInfo");
+        }
+
+        public async Task<UserInfo> UpdateUser(UserInfo userInfo)
+        {
+            return await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/UpdateUser", userInfo);
         }
     }
 }

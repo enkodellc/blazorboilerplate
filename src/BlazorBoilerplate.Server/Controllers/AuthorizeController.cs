@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared;
+using System.Security.Claims;
 
 namespace BlazorBoilerplate.Server.Models
 {
@@ -16,13 +17,13 @@ namespace BlazorBoilerplate.Server.Models
     [ApiController]
     public class AuthorizeController : ControllerBase
     {
-        private static UserInfo LoggedOutUser = new UserInfo {IsAuthenticated = false};
+        private static UserInfo LoggedOutUser = new UserInfo { IsAuthenticated = false, Roles = new String[] { } };
 
         // Logger instance
         ILogger<AuthorizeController> _logger;
 
-        private readonly UserManager<ApplicationUser>    _userManager;
-        private readonly SignInManager<ApplicationUser>  _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IEmailService _emailService;
         private IConfiguration _configuration;
@@ -31,21 +32,29 @@ namespace BlazorBoilerplate.Server.Models
             SignInManager<ApplicationUser> signInManager, ILogger<AuthorizeController> logger,
             RoleManager<IdentityRole<Guid>> roleManager, IEmailService emailService, IConfiguration configuration)
         {
-            _userManager   = userManager;
+            _userManager = userManager;
             _signInManager = signInManager;
-            _logger        = logger;
-            _roleManager   = roleManager;
+            _logger = logger;
+            _roleManager = roleManager;
             _emailService = emailService;
             _configuration = configuration;
         }
 
         [HttpGet("")]
+        [Authorize]
         public UserInfo GetUser()
         {
             return User.Identity.IsAuthenticated
-                ? new UserInfo {Username = User.Identity.Name, IsAuthenticated = true}
+                ? new UserInfo {UserName = User.Identity.Name, IsAuthenticated = true}
                 : LoggedOutUser;
         }
+
+        //[HttpGet("")]
+        //[Authorize]
+        //public List<UserInfo> GetUsers()
+        //{
+            
+        //}
 
         [HttpPost("Login")]
         [AllowAnonymous]
@@ -61,10 +70,15 @@ namespace BlazorBoilerplate.Server.Models
             var user = await _userManager.FindByEmailAsync(parameters.UserName)
                        ?? await _userManager.FindByNameAsync(parameters.UserName);
 
+            if (!user.EmailConfirmed && Convert.ToBoolean(_configuration["RequireConfirmedEmail"]))
+            {
+                return BadRequest(new { message = "User has not confirmed their email." });
+            }
+
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", parameters.UserName);
-                return BadRequest("User does not exist");
+                return NotFound(new { message = "User does not exist" });
             }
 
             var singInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password, false);
@@ -72,7 +86,7 @@ namespace BlazorBoilerplate.Server.Models
             if (!singInResult.Succeeded)
             {
                 _logger.LogInformation("Invalid password: {0}, {1}", parameters.UserName, parameters.Password);
-                return BadRequest("Invalid password");
+                return BadRequest(new { message = "Invalid password" });
             }
 
             _logger.LogInformation("Logged In: {0}, {1}", parameters.UserName, parameters.Password);
@@ -130,7 +144,7 @@ namespace BlazorBoilerplate.Server.Models
                     {
                         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token); 
+                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token);
 
                         var email = new EmailMessage();
                         email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
@@ -172,10 +186,10 @@ namespace BlazorBoilerplate.Server.Models
                 });
 
             }
-            catch (Exception  ex)
+            catch (Exception ex)
             {
                 _logger.LogError("Register User Failed: {0}", ex.Message);
-                return BadRequest(ex);
+                return BadRequest(new { message = ex });
             }
         }
 
@@ -197,7 +211,7 @@ namespace BlazorBoilerplate.Server.Models
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", parameters.UserId);
-                return BadRequest("User does not exist");
+                return NotFound(new { message = "User does not exist" });
             }
 
             string token = parameters.Token;
@@ -211,7 +225,7 @@ namespace BlazorBoilerplate.Server.Models
             await _signInManager.SignInAsync(user, true);
             return Ok(new { success = "true" });
         }
-                
+
         [AllowAnonymous]
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordParameters parameters)
@@ -228,14 +242,14 @@ namespace BlazorBoilerplate.Server.Models
                 // Don't reveal that the user does not exist or is not confirmed
                 return Ok(new { success = "true" });
             }
-                       
+
             #region Forgot Password Email
             try
             {
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token); //token must be a query string parameter as it is very long
-                
+
                 var email = new EmailMessage();
                 email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
                 email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
@@ -252,7 +266,6 @@ namespace BlazorBoilerplate.Server.Models
             return Ok(new { success = "true" });
         }
 
-
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         [HttpPost("ResetPassword")]
@@ -267,7 +280,7 @@ namespace BlazorBoilerplate.Server.Models
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", parameters.UserId);
-                return BadRequest("User does not exist");
+                return NotFound(new { message = "User does not exist" });
             }
 
             #region Reset Password Successful Email
@@ -291,7 +304,7 @@ namespace BlazorBoilerplate.Server.Models
                 else
                 {
                     _logger.LogInformation("Error while resetting the password!: {0}", user.UserName);
-                    return BadRequest(string.Format("Error while resetting the password!: {0}", user.UserName));                   
+                    return BadRequest(string.Format("Error while resetting the password!: {0}", user.UserName));
                 }
             }
             catch (Exception ex)
@@ -315,22 +328,61 @@ namespace BlazorBoilerplate.Server.Models
         [HttpGet("UserInfo")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        public UserInfo UserInfo()
+        public async Task<IActionResult> UserInfo()
         {
-            return BuildUserInfo();
+            return Ok(await BuildUserInfo());
         }
 
-        private UserInfo BuildUserInfo()
+        private async Task<UserInfo> BuildUserInfo()
         {
+            var user = await _userManager.GetUserAsync(User);
+
             return new UserInfo
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,
-                Username = User.Identity.Name,
+                UserName = User.Identity.Name,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,                
                 ExposedClaims = User.Claims
                         //Optionally: filter the claims you want to expose to the client
                         //.Where(c => c.Type == "test-claim")
-                        .ToDictionary(c => c.Type, c => c.Value)
+                        .ToDictionary(c => c.Type, c => c.Value),
+                Roles = ((ClaimsIdentity)User.Identity).Claims
+                        .Where(c => c.Type == ClaimTypes.Role)
+                        .Select(c => c.Value).ToArray()
             };
+        }
+
+        [AllowAnonymous]
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(UserInfo userInfo)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
+                    .Select(error => error.ErrorMessage)
+                    .FirstOrDefault());
+
+            var user = await _userManager.FindByEmailAsync(userInfo.Email);
+
+            if (user == null)
+            {
+                _logger.LogInformation("User does not exist: {0}", userInfo.Email);
+                return NotFound(new { message = "User does not exist" });
+            }
+
+            user.FirstName = userInfo.FirstName;
+            user.LastName = userInfo.LastName;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                _logger.LogInformation("User Update Failed: {0}", result.Errors.FirstOrDefault()?.Description);
+                return BadRequest(result.Errors.FirstOrDefault()?.Description);
+            }
+
+            return Ok(new { success = "true" });
         }
     }
 }

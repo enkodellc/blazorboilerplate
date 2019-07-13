@@ -5,8 +5,8 @@
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
         <div class="drawer-profile">
-            <MatIcon Icon="account_circle"></MatIcon>
-            <span><b>@userInfo.Username</b></span>
+            <MatIconButton Icon="account_circle" Link="/account/profile" ></MatIconButton>
+            <span><b><a href="/account/profile">@userInfo.UserName</a></b></span>
         </div>
     </Authorized>
 </AuthorizeView>
@@ -26,6 +26,6 @@
         if (user.Identity.IsAuthenticated)
         {
            userInfo = await authStateProvider.GetUserInfo();
-        }  
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace BlazorBoilerplate.Client.Services.Contracts
         Task Logout();
         Task ConfirmEmail(ConfirmEmailParameters confirmEmailParameters);
         Task<UserInfo> GetUserInfo();
+        Task<UserInfo> UpdateUser(UserInfo userInfo);
     }
 }
