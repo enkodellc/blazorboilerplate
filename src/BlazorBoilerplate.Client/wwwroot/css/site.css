@@ -42,7 +42,7 @@ app {
 }
 
 /* Loading page */
-.triangle-container, .login-container {
+.triangle-container {
   left: calc(-50vw + 50%);
   position: fixed;
   right: calc(-50vw + 50%);
@@ -69,16 +69,12 @@ app {
   position: relative;
   text-align: center;
   background-color: #fff;
-  padding: 20px;
-  margin: 10% auto;
+  margin: 10% auto 0 auto;
 }
 
 /* Login page */
 .login-body {
   position: relative;
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 50px 0 20px;
 }
 
 .logo {
@@ -120,14 +116,12 @@ app {
   display: flex;
   -ms-flex-align: center;
   align-items: center;
-  padding-top: 30px;
-  padding-bottom: 40px;
   align-content: center;
+  margin: 5% auto 0;
 }
 
 .login-body {
   flex-direction: column;
-  max-width: 450px;
   margin: 0 auto;
 }
 
