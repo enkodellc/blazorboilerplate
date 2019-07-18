@@ -33,7 +33,6 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             parameters.Subject = "test";
             parameters.Body = "my email";
-            parameters.ToAddress = "support@blazorboilerplate.com";
 
             var email = new EmailMessage();
             email.ToAddresses.Add(new EmailAddress(parameters.ToName, parameters.ToAddress));
@@ -54,7 +53,8 @@ namespace BlazorBoilerplate.Server.Controllers
                 break;
             }
 
-            email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
+            //Add a new From Address if you so choose
+            //email.FromAddresses.Add(new EmailAddress("New From Name", "email@domain.com"));
             _logger.LogInformation("Test Email: {0}", email.Subject);
 
             await _emailService.SendEmailAsync(email);

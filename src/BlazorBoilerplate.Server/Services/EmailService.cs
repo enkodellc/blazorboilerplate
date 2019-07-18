@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Security;
@@ -50,6 +50,13 @@ namespace BlazorBoilerplate.Server.Services
             try
             {
                 var message = new MimeMessage();
+
+                // Set From Address it was not set
+                if (emailMessage.FromAddresses.Count == 0)
+                {
+                    emailMessage.FromAddresses.Add(new EmailAddress(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
+                }
+
                 message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                 message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                 message.Cc.AddRange(emailMessage.CcAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));

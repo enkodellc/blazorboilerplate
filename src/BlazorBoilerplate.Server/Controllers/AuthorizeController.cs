@@ -147,8 +147,7 @@ namespace BlazorBoilerplate.Server.Models
                         string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token);
 
                         var email = new EmailMessage();
-                        email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
-                        email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
+                        email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));                        
                         email = EmailTemplates.BuildNewUserConfirmationEmail(email, user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
 
                         _logger.LogInformation("New user registered: {0}", user);
@@ -167,7 +166,6 @@ namespace BlazorBoilerplate.Server.Models
                 {
                     var email = new EmailMessage();
                     email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
-                    email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
                     email = EmailTemplates.BuildNewUserEmail(email, user.UserName, user.Email, parameters.Password); //Replace First UserName with Name if you want to add name to Registration Form
 
                     _logger.LogInformation("New user registered: {0}", user);
@@ -252,7 +250,6 @@ namespace BlazorBoilerplate.Server.Models
 
                 var email = new EmailMessage();
                 email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
-                email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
                 email = EmailTemplates.BuildForgotPasswordEmail(email, user.UserName, callbackUrl, token); //Replace First UserName with Name if you want to add name to Registration Form
 
                 _logger.LogInformation("Forgot Password Email Sent: {0}", user.Email);
@@ -292,7 +289,6 @@ namespace BlazorBoilerplate.Server.Models
                     #region Email Successful Password change
                     var email = new EmailMessage();
                     email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
-                    email.FromAddresses.Add(new EmailAddress("support@blazorboilerplate.com", "support@blazorboilerplate.com"));
                     email = EmailTemplates.BuildPasswordResetEmail(email, user.UserName); //Replace First UserName with Name if you want to add name to Registration Form
 
                     _logger.LogInformation("Reset Password Successful Email Sent: {0}", user.Email);
