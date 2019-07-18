@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Security;
@@ -62,11 +62,12 @@ namespace BlazorBoilerplate.Server.Services
                 message.Cc.AddRange(emailMessage.CcAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                 message.Bcc.AddRange(emailMessage.BccAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
 
-                if (System.Diagnostics.Debugger.IsAttached)
-                {
-                    message.To.Clear();
-                    message.To.Add(new MailboxAddress("support@blazorboilerplate.com"));
-                }
+                //Use for testing - send a copy of any email to from address when in debug mode
+                //if (System.Diagnostics.Debugger.IsAttached)
+                //{
+                //    message.To.Clear();
+                //    message.To.Add(new MailboxAddress(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
+                //}
 
                 message.Subject = emailMessage.Subject;
 
