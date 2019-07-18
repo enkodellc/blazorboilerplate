@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Shared;
-using System.Security.Claims;
+using BlazorBoilerplate.Server.Models;
 
-namespace BlazorBoilerplate.Server.Models
+namespace BlazorBoilerplate.Server.Controllers
 {
-    [Route("api/Authorize")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthorizeController : ControllerBase
     {
@@ -45,7 +46,7 @@ namespace BlazorBoilerplate.Server.Models
         public UserInfo GetUser()
         {
             return User.Identity.IsAuthenticated
-                ? new UserInfo {UserName = User.Identity.Name, IsAuthenticated = true}
+                ? new UserInfo { UserName = User.Identity.Name, IsAuthenticated = true }
                 : LoggedOutUser;
         }
 
@@ -53,7 +54,7 @@ namespace BlazorBoilerplate.Server.Models
         //[Authorize]
         //public List<UserInfo> GetUsers()
         //{
-            
+
         //}
 
         [HttpPost("Login")]
@@ -147,7 +148,7 @@ namespace BlazorBoilerplate.Server.Models
                         string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token);
 
                         var email = new EmailMessage();
-                        email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));                        
+                        email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
                         email = EmailTemplates.BuildNewUserConfirmationEmail(email, user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
 
                         _logger.LogInformation("New user registered: {0}", user);
@@ -339,7 +340,7 @@ namespace BlazorBoilerplate.Server.Models
                 UserName = User.Identity.Name,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName,                
+                LastName = user.LastName,
                 ExposedClaims = User.Claims
                         //Optionally: filter the claims you want to expose to the client
                         //.Where(c => c.Type == "test-claim")

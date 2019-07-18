@@ -22,16 +22,16 @@ namespace BlazorBoilerplate.Server.Helpers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public static EmailMessage BuildTestEmail(EmailMessage emailMessage, string recepientName)
+        public static EmailMessage BuildTestEmail(EmailMessage emailMessage)
         {           
             if (testEmailTemplate == null)
                 testEmailTemplate = ReadPhysicalFile("Helpers/Templates/TestEmail.template");
 
               emailMessage.Body = testEmailTemplate
-                .Replace("{user}", recepientName)
+                .Replace("{user}", emailMessage.ToAddresses[0].Name)
                 .Replace("{testDate}", DateTime.Now.ToString());
 
-              emailMessage.Subject = string.Format("Hello {0} from Blazor Boilerplate", recepientName);
+              emailMessage.Subject = string.Format("Hello {0} from Blazor Boilerplate", emailMessage.ToAddresses[0].Name);
 
           return emailMessage;
         }

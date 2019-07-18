@@ -1,59 +1,66 @@
-﻿using BlazorBoilerplate.Shared;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Models;
 using Microsoft.Extensions.Logging;
+using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Server.Helpers;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [Authorize]
-    public class EmailController : Controller
+    [ApiController]
+    public class EmailController : ControllerBase
     {
         // Logger instance
-        ILogger<SampleDataController> _logger;
+        ILogger<EmailController> _logger;
         IEmailService _emailService;
 
-        public EmailController(IEmailService emailService, ILogger<SampleDataController> logger)
+        public EmailController(IEmailService emailService, ILogger<EmailController> logger)
         {
             _logger = logger;
             _emailService = emailService;
         }
 
-        [HttpPost]
-        [Authorize]
-        [ProducesResponseType(200, Type = typeof(string))]
-        public async Task<IActionResult> Email(EmailParameters parameters)
+        [HttpPost("Send")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> Send(EmailParameters parameters)
         {
-            parameters.Subject = "test";
-            parameters.Body = "my email";
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
+                    .Select(error => error.ErrorMessage)
+                    .FirstOrDefault());
 
             var email = new EmailMessage();
+
             email.ToAddresses.Add(new EmailAddress(parameters.ToName, parameters.ToAddress));
-          //email.Subject = parameters.Subject; //for demo force a Template to reduce spam
-          //email.Body = parameters.Body;
 
-            if (string.IsNullOrEmpty(parameters.TemplateName))
+            //This forces all emails from the API to use the Test template to prevent spam
+            parameters.TemplateName = "Test";
+
+            //Send a Template email or a custom one since it is hardcoded to Test template it will not do a custom email.
+            if (!string.IsNullOrEmpty(parameters.TemplateName))
             {
-              parameters.TemplateName = "Test";
+                switch (parameters.TemplateName)
+                {
+                    case "Test":
+                        email = EmailTemplates.BuildTestEmail(email); //example of email Template usage
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                email.Subject = parameters.Subject;
+                email.Body = parameters.Body;
             }
 
-            switch (parameters.TemplateName)
-            {
-              case "Test":
-                email = EmailTemplates.BuildTestEmail(email,parameters.ToName); //example of email Template usage
-                break;
-              default:
-                break;
-            }
-
-            //Add a new From Address if you so choose
+            //Add a new From Address if you so choose, default is set in appsettings.json
             //email.FromAddresses.Add(new EmailAddress("New From Name", "email@domain.com"));
             _logger.LogInformation("Test Email: {0}", email.Subject);
 

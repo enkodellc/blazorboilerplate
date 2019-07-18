@@ -72,7 +72,9 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 ## News
 ### 0.1.7 - In Progress
 - User Profile Management
-- Propagating Errors properly to Toasts
+- Refactor Email Settings and API
+- Error Handling Middleware to Propagating Errors properly to Toasts
+
 
 ### 0.1.6 
 - Email confirmation on Registration 
