@@ -490,3 +490,15 @@ ul.breadcrumb {
 /* Large devices (desktops, less than 1200px) */
 @media (max-width: 1199.98px) {
 }
+
+
+/* MatBlazor temp */
+.mat-toast-body{
+  padding: 8px 5px;
+}
+.mat-toast-icon{
+  padding-left: 5px;
+}
+.mat-toast-close-button .material-icons{
+  color: white;
+}

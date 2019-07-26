@@ -3,11 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
+    <Version>0.1.7</Version>
+    <Authors>Keith Fimreite</Authors>
+    <Company>EnkodeLLC</Company>   
+    <Title>Blazor Boilerplate Shared</Title>
+    <Description>Blazor Boilerplate is starter kit / SPA Admin Template for Blazor</Description>
+    <WebPage>https://blazorboilerplate.com/</WebPage>
+    <PackageProjectUrl>https://blazorboilerplate.com/</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0-preview6.19303.8" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0-preview7.19362.9" />
   </ItemGroup>
 
 </Project>

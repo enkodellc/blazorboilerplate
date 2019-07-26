@@ -19,6 +19,7 @@ using BlazorBoilerplate.Server.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
 using BlazorBoilerplate.Server.Helpers;
+//using BlazorBoilerplate.Server.Middleware;
 
 namespace BlazorBoilerplate.Server
 {
@@ -138,15 +139,23 @@ namespace BlazorBoilerplate.Server
             }
 
             app.UseResponseCompression();
+            //app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBlazorDebugging();
             }
+//            else
+//            {
+//                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+//                app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
+//            }
+
 
             app.UseClientSideBlazorFiles<Client.Startup>();
 
+            //app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

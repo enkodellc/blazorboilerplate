@@ -17,18 +17,16 @@ A repository that is not controlled by a corporation but by a community. Javascr
 [Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. 
 
 ## Prerequisites
-
 Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-3.0)
 
 Complete all Blazor dependencies.
 
-- .NET Core 3.0 Preview 6 SDK (3.0.100-preview6-012264)
+- .NET Core 3.0 Preview 7 SDK 3.0.100-preview7-012821
 - Visual Studio 2019 Preview  with the ASP.NET and web development workload selected.
-- The latest Blazor extension from the Visual Studio Marketplace.
-- The Blazor templates on the command-line: **Install-Package Microsoft.AspNetCore.Blazor.Templates -Version 3.0.0-preview6.19307.2**
+- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview7.19365.7**
 
 ### How to run
-1. Install **dotnet-sdk-3.0.100-preview6-012264** and the latest **Visual Studio 2019 Preview**.
+1. Install **dotnet-sdk 3.0.100-preview7-012821** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
@@ -48,8 +46,7 @@ Complete all Blazor dependencies.
 Please star, watch and fork! We'd greatly appreciate any contribution you make. I am very open to updates and features, though most feature requests 
 will be depending on how much community support for it is.
 
-## Completed
- 
+## Completed 
  - Basic Login / User Creation
  - Admin Theme using Material Design / MatBlazor - Free to use.
  - Log Files
@@ -58,7 +55,6 @@ will be depending on how much community support for it is.
  - Forgot Password Functionality
 
 ## Road map
-
 - User [rofile & settings management.
 - User, role, permission and organization unit management.
 - Real time chat and notification system. Slack Communication clone?
@@ -66,15 +62,14 @@ will be depending on how much community support for it is.
 - Audit log report UI.
 
 ## License
-
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
-### 0.1.7 - In Progress
+### 0.1.7
 - User Profile Management
 - Refactor Email Settings and API
-- Error Handling Middleware to Propagating Errors properly to Toasts
-
+- MatBlazor 1.3.0
+- Migrate to .NET Core 3.0
 
 ### 0.1.6 
 - Email confirmation on Registration 

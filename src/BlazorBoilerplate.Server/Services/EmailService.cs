@@ -4,15 +4,13 @@ using System.Linq;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Models;
-using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
-using MimeKit.Text;
+using MailKit.Net.Smtp;
+using BlazorBoilerplate.Server.Models;
 
 namespace BlazorBoilerplate.Server.Services
 {
-
     public interface IEmailService
     {
         Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessage emailMessage);
