@@ -9,9 +9,10 @@ Blazor Boilerplate, "Blazor Starter Template" is a SPA admin template (Core-Host
 [![MIT](https://img.shields.io/github/license/SamProf/MatBlazor.svg)](LICENSE)
 [![Gitter](https://badges.gitter.im/BlazorBoilerplate/community.svg)](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-## Goal
-To create boilerplate Blazor code that includes the most common functionality for an app that is lean yet powerful for anyone to start their own project rapidly. 
-A repository that is not controlled by a corporation but by a community. Javascript Free! So far no Javascript has been written outside of the MatBlazor dependencies. 
+## Goals
+- To create a boilerplate with Blazor / Razor components that includes the most common functionality for an app that is lean yet powerful for anyone to start their own project rapidly. 
+- This repository is community driven. It is not and never will be controlled by a corporation. 
+- Javascript Free or a least limited Javascript code. We may us components with JS in them but so far no Javascript has been written specifically for anything in the repository.
 
 # Live demo
 [Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. 
@@ -55,7 +56,7 @@ will be depending on how much community support for it is.
  - Forgot Password Functionality
 
 ## Road map
-- User [rofile & settings management.
+- User profile & settings management.
 - User, role, permission and organization unit management.
 - Real time chat and notification system. Slack Communication clone?
 - Blog or other real world functionality.
