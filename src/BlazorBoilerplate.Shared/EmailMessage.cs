@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BlazorBoilerplate.Server.Models
+namespace BlazorBoilerplate.Shared
 {
     public class EmailMessage
     {

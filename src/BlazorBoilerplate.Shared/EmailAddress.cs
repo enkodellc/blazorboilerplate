@@ -1,4 +1,4 @@
-﻿namespace BlazorBoilerplate.Server.Models
+﻿namespace BlazorBoilerplate.Shared
 {
     public class EmailAddress
     {

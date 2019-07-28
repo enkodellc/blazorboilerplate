@@ -19,6 +19,12 @@ namespace BlazorBoilerplate.Server.Models
         int PopPort { get; }
         string PopUsername { get; }
         string PopPassword { get; }
+
+        string ImapServer { get; set; }
+        int ImapPort { get; set; }
+        string ImapUsername { get; set; }
+        string ImapPassword { get; set; }
+        bool ImapUseSSL { get; set; }
     }
 
     public class EmailConfiguration : IEmailConfiguration
@@ -37,5 +43,11 @@ namespace BlazorBoilerplate.Server.Models
         public int PopPort { get; set; }
         public string PopUsername { get; set; }
         public string PopPassword { get; set; }
+
+        public string ImapServer { get; set; }
+        public int ImapPort { get; set; }
+        public string ImapUsername { get; set; }
+        public string ImapPassword { get; set; }
+        public bool ImapUseSSL { get; set; }
     }
 }

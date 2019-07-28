@@ -7,6 +7,7 @@ using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Server.Helpers;
+using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -67,6 +68,20 @@ namespace BlazorBoilerplate.Server.Controllers
             await _emailService.SendEmailAsync(email);
 
             return Ok(new { success = "true" });
+        }
+
+        [HttpGet("Receive")]
+        [Authorize]
+        public async Task<List<EmailMessage>> Receive()
+        {
+            //check email from default account defined in appsettings.json
+
+            // Currently set up to only send valid results, no error codes
+            List<EmailMessage> results = (await _emailService.ReceiveMailImapAsync()).Item3;
+
+
+            return results;
+
         }
     }
 }
