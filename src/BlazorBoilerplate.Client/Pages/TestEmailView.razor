@@ -1,8 +1,9 @@
 ﻿@page "/email_view"
 @attribute [Authorize]
 @using BlazorBoilerplate.Shared
-@using Newtonsoft.Json
 @inject HttpClient Http
+@inject IMatToaster matToaster
+
 
 <h1>Secure Page</h1>
 <p>This is a secure page. You must be logged in to have access.</p>
@@ -22,7 +23,7 @@ else
         <thead>
             <tr>
                 <th>From</th>
-                <th>To Addresses</th>
+                <th>To</th>
                 <th>Subject</th>
                 <th>Body</th>
             </tr>
@@ -31,14 +32,14 @@ else
             @foreach (var email in emails)
             {
                 <tr>
-                    <td>@email.FromAddresses.Select(x => x.Name).First() (@email.FromAddresses.Select(x => x.Address).First()) </td>
-                    <td>@email.ToAddresses.Select(x => x.Name).First() (@email.ToAddresses.Select(x => x.Address).First())</td>
+                    <td>@foreach (EmailAddress sender in email.FromAddresses)
+                    {<figure>@sender.Name (@sender.Address)</figure>}</td>
+                    <td>@foreach (EmailAddress receipient in email.ToAddresses)
+                    {<figure>@receipient.Name (@receipient.Address)</figure>}</td>
                     <td>@email.Subject</td>
                     <td>
                         <button class="btn-danger" @onclick="@( () => openModal(email.GetHashCode()))">View Email</button>
                     </td>
-
-
                 </tr>
             }
         </tbody>
@@ -59,7 +60,8 @@ else
                         <form>
                             <div class="form-group">
                                 <label for="From" class="control-label">From:</label>
-                                <figure for="From" class="form-control">@email.FromAddresses.Select(x => x.Name).First() (@email.FromAddresses.Select(x => x.Address).First())</figure>
+                                <figure for="From" class="form-control"> @foreach (EmailAddress sender in email.FromAddresses)
+                                {<figure>@sender.Name (@sender.Address)</figure>}</figure>
                             </div>
                             <div class="form-group container" style="max-height: calc(80vh - 210px); overflow-y:auto; overflow-x:auto; padding-bottom:50px">
                                 @((MarkupString)email.Body)
@@ -68,7 +70,8 @@ else
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-block btn-info" @onclick="closeModal" data-dismiss="modal">exit</button>                    </div>
+                        <button class="btn btn-block btn-info" @onclick="closeModal" data-dismiss="modal">exit</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,7 +85,7 @@ else
     EmailMessage email = new EmailMessage();
 
     bool ModalOpen { get; set; }
-    string emailsAsString { get; set; }
+    //   string emailsAsString { get; set; }
     string modalTitle { get; set; }
 
     void openModal(int hash)
@@ -95,7 +98,7 @@ else
 
     }
     protected void closeModal()
-    { 
+    {
         this.ModalOpen = false;
     }
 
@@ -106,11 +109,21 @@ else
 
     public async Task GetMessagesAsync()
     {
-        // In theory GetJsonAsync should work, but unable to get functional; string--> JsonConvert is a temporary workaround
-     //   emails = await Http.GetJsonAsync<List<EmailMessage>>("api/Email/Receive");
-        emailsAsString = await Http.GetStringAsync("api/Email/Receive");
-        emails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EmailMessage>>(emailsAsString);
+        try
+        {
+            // In theory GetJsonAsync should work, but unable to get functional; string--> JsonConvert is a temporary workaround
+            //  emails = await Http.GetJsonAsync<List<EmailMessage>>("api/Email/Receive");
+            string emailsAsString = await Http.GetStringAsync("api/Email/Receive");
+            emails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EmailMessage>>(emailsAsString);
 
-        //TODO implement error handling
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Email retrieval failed", null, config =>
+                {
+                    config.RequireInteraction = true;
+                });
+
+        }
     }
 }

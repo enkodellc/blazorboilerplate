@@ -1,13 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Server.Helpers;
-using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -72,15 +71,29 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpGet("Receive")]
         [Authorize]
-        public async Task<List<EmailMessage>> Receive()
+        public async Task<IActionResult> Receive()
         {
             //check email from default account defined in appsettings.json
 
             // Currently set up to only send valid results, no error codes
-            List<EmailMessage> results = (await _emailService.ReceiveMailImapAsync()).Item3;
 
 
-            return results;
+            //to use Imap::
+
+            var results = (await _emailService.ReceiveMailImapAsync());
+
+            // to use Pop3 uncomment the following and comment out the Imap line (above):
+            // List<EmailMessage> results = (await _emailService.ReceiveMailPopAsync()).Item3;
+
+            if (results.success)
+            {
+                // return new OkObjectResult(results.Item3);
+                return new JsonResult(results.Item3);
+            }
+            else
+            {
+                return new BadRequestObjectResult(results.errorMsg);
+            }
 
         }
     }

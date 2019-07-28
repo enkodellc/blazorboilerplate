@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BlazorBoilerplate.Server.Models
+﻿namespace BlazorBoilerplate.Server.Models
 {
     public interface IEmailConfiguration
     {
@@ -11,7 +7,7 @@ namespace BlazorBoilerplate.Server.Models
         string SmtpUsername { get; set; }
         string SmtpPassword { get; set; }
         bool SmtpUseSSL { get; set; }
-        string FromName   { get; set; }
+        string FromName { get; set; }
         string FromAddress { get; set; }
         string ReplyToAddress { get; set; }
 
@@ -19,6 +15,7 @@ namespace BlazorBoilerplate.Server.Models
         int PopPort { get; }
         string PopUsername { get; }
         string PopPassword { get; }
+        bool PopUseSSL { get; }
 
         string ImapServer { get; set; }
         int ImapPort { get; set; }
@@ -43,7 +40,8 @@ namespace BlazorBoilerplate.Server.Models
         public int PopPort { get; set; }
         public string PopUsername { get; set; }
         public string PopPassword { get; set; }
-
+        public bool PopUseSSL { get; set; }
+            
         public string ImapServer { get; set; }
         public int ImapPort { get; set; }
         public string ImapUsername { get; set; }

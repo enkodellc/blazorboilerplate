@@ -6,14 +6,16 @@
 
         public string Name
         {
-            get {
+            get
+            {
                 if (string.IsNullOrEmpty(_name))
                 {
                     return Address;
                 }
                 return _name;
             }
-            set {
+            set
+            {
                 _name = value;
             }
         }
