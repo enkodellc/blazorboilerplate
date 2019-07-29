@@ -4,10 +4,14 @@ using System.Linq;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared;
+using MailKit.Net.Pop3;
+using MailKit.Net.Imap;
+using MailKit.Net.Smtp;
+using MailKit.Search;
 using Microsoft.Extensions.Logging;
 using MimeKit;
-using MailKit.Net.Smtp;
-using BlazorBoilerplate.Server.Models;
 
 namespace BlazorBoilerplate.Server.Services
 {
@@ -16,6 +20,11 @@ namespace BlazorBoilerplate.Server.Services
         Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessage emailMessage);
 
         List<EmailMessage> ReceiveEmail(int maxCount = 10);
+
+        Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailImapAsync();
+
+        Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailPopAsync(int min = 0, int max = 0);
+
 
         void Send(EmailMessage emailMessage);
     }
@@ -37,6 +46,116 @@ namespace BlazorBoilerplate.Server.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailImapAsync()
+        {
+            using (var emailClient = new ImapClient())
+            {
+                try
+                {
+                    // use this if you need to specify using ssl; MailKit should usually be able to autodetect the appropriate settings
+                    // await emailClient.ConnectAsync(_emailConfiguration.ImapServer, _emailConfiguration.ImapPort, _emailConfiguration.ImapUseSSL).ConfigureAwait(false);
+
+                    await emailClient.ConnectAsync(_emailConfiguration.ImapServer, _emailConfiguration.ImapPort).ConfigureAwait(false);
+
+                    emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+
+                    if (!string.IsNullOrWhiteSpace(_emailConfiguration.ImapUsername))
+                    {
+                        await emailClient.AuthenticateAsync(_emailConfiguration.ImapUsername, _emailConfiguration.ImapPassword).ConfigureAwait(false);
+                    }
+
+
+                    List<EmailMessage> emails = new List<EmailMessage>();
+                    await emailClient.Inbox.OpenAsync(MailKit.FolderAccess.ReadOnly);
+
+                    //TODO implement email results filtering
+                    var uids = await emailClient.Inbox.SearchAsync(SearchQuery.All);
+                    foreach (var uid in uids)
+                    {
+                        var message = await emailClient.Inbox.GetMessageAsync(uid);
+
+                        var emailMessage = new EmailMessage
+                        {
+                            Body = !string.IsNullOrEmpty(message.HtmlBody) ? message.HtmlBody : message.TextBody,
+
+                            Subject = message.Subject
+                        };
+                        emailMessage.ToAddresses.AddRange(message.To.Select(x => (MailboxAddress)x).Select(x => new EmailAddress(x.Name, x.Address)));
+                        emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new EmailAddress(x.Name, x.Address)));
+
+                        emails.Add(emailMessage);
+                    }
+
+                    await emailClient.DisconnectAsync(true);
+                    return (true, null, emails);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Imap Email Retrieval failed: {0}", ex.Message);
+                    return (false, ex.Message, null);
+                }
+            }
+        }
+
+        public async Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailPopAsync(int min = 0, int max = 0)
+        {
+
+            using (var emailClient = new Pop3Client())
+            {
+                try
+                {
+
+
+                    await emailClient.ConnectAsync(_emailConfiguration.PopServer, _emailConfiguration.PopPort).ConfigureAwait(false);     // omitting usessl to allow mailkit to autoconfigure
+
+                    emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+                    if (!String.IsNullOrWhiteSpace(_emailConfiguration.PopUsername))
+                    {
+                        await emailClient.AuthenticateAsync(_emailConfiguration.PopUsername, _emailConfiguration.PopPassword).ConfigureAwait(false);
+                    }
+
+                    List<EmailMessage> emails = new List<EmailMessage>();
+
+                    if (max == 0) max = await emailClient.GetMessageCountAsync(); // if max not defined, get all messages
+
+
+
+                    for (int i = min; i < max; i++)
+                    {
+
+
+                        var message = await emailClient.GetMessageAsync(i);
+
+                        var emailMessage = new EmailMessage
+                        {
+                            Body = !string.IsNullOrEmpty(message.HtmlBody) ? message.HtmlBody : message.TextBody,
+                            IsHtml = !string.IsNullOrEmpty(message.HtmlBody) ? true : false,
+                            Subject = message.Subject
+
+                        };
+                        emailMessage.ToAddresses.AddRange(message.To.Select(x => (MailboxAddress)x).Select(x => new EmailAddress(x.Name, x.Address)));
+                        emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new EmailAddress(x.Name, x.Address)));
+
+                        emails.Add(emailMessage);
+                    }
+
+                    await emailClient.DisconnectAsync(true);
+                    return (true, null, emails);
+
+
+
+
+                }
+                catch (Exception ex)
+                {
+                    return (false, ex.Message, null);
+                }
+            }
+        }
+
 
         public void Send(EmailMessage emailMessage)
         {

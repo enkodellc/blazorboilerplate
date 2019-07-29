@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace BlazorBoilerplate.Server.Models
+namespace BlazorBoilerplate.Shared
 {
     public class EmailMessage
     {

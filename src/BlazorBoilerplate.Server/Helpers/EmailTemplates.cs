@@ -3,6 +3,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared;
 
 namespace BlazorBoilerplate.Server.Helpers
 {
