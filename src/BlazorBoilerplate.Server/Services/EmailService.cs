@@ -4,28 +4,23 @@ using System.Linq;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared;
+using Microsoft.Extensions.Logging;
+using MimeKit;
 using MailKit.Net.Pop3;
 using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
 using MailKit.Search;
-using Microsoft.Extensions.Logging;
-using MimeKit;
+using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared;
 
 namespace BlazorBoilerplate.Server.Services
 {
     public interface IEmailService
     {
         Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessage emailMessage);
-
         List<EmailMessage> ReceiveEmail(int maxCount = 10);
-
         Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailImapAsync();
-
         Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailPopAsync(int min = 0, int max = 0);
-
-
         void Send(EmailMessage emailMessage);
     }
 
@@ -66,7 +61,6 @@ namespace BlazorBoilerplate.Server.Services
                         await emailClient.AuthenticateAsync(_emailConfiguration.ImapUsername, _emailConfiguration.ImapPassword).ConfigureAwait(false);
                     }
 
-
                     List<EmailMessage> emails = new List<EmailMessage>();
                     await emailClient.Inbox.OpenAsync(MailKit.FolderAccess.ReadOnly);
 
@@ -106,8 +100,6 @@ namespace BlazorBoilerplate.Server.Services
             {
                 try
                 {
-
-
                     await emailClient.ConnectAsync(_emailConfiguration.PopServer, _emailConfiguration.PopPort).ConfigureAwait(false);     // omitting usessl to allow mailkit to autoconfigure
 
                     emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
@@ -121,12 +113,8 @@ namespace BlazorBoilerplate.Server.Services
 
                     if (max == 0) max = await emailClient.GetMessageCountAsync(); // if max not defined, get all messages
 
-
-
                     for (int i = min; i < max; i++)
                     {
-
-
                         var message = await emailClient.GetMessageAsync(i);
 
                         var emailMessage = new EmailMessage
@@ -144,10 +132,6 @@ namespace BlazorBoilerplate.Server.Services
 
                     await emailClient.DisconnectAsync(true);
                     return (true, null, emails);
-
-
-
-
                 }
                 catch (Exception ex)
                 {
@@ -155,8 +139,7 @@ namespace BlazorBoilerplate.Server.Services
                 }
             }
         }
-
-
+    
         public void Send(EmailMessage emailMessage)
         {
             throw new NotImplementedException();
@@ -214,7 +197,6 @@ namespace BlazorBoilerplate.Server.Services
 
                     await emailClient.DisconnectAsync(true).ConfigureAwait(false);
                     return (true, null);
-
                 }
             }
             catch (Exception ex)
