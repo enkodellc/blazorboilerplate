@@ -25,6 +25,7 @@ Complete all Blazor dependencies.
 - .NET Core 3.0 Preview 7 SDK 3.0.100-preview7-012821
 - Visual Studio 2019 Preview  with the ASP.NET and web development workload selected.
 - The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview7.19365.7**
+- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.0.0-preview7.19362.6**
 
 ### How to run
 1. Install **dotnet-sdk 3.0.100-preview7-012821** and the latest **Visual Studio 2019 Preview**.
@@ -47,6 +48,17 @@ Complete all Blazor dependencies.
 Please star, watch and fork! We'd greatly appreciate any contribution you make. I am very open to updates and features, though most feature requests 
 will be depending on how much community support for it is.
 
+## Disclaimer / About the Author
+
+I (Enkodellc) started this repository as I was frustrated with the examples out there that people were charging money for and were in my opinion
+incomplete or closed source. I paid for 4-5 of these solutions and none of them were what I was looking for. This is my
+attempt to create something that developers can start a Blazor project with several great features to build from. 
+I have a lot of experience with ASP.Net webforms. I am new to .NET Core and Blazor. 
+This code is not meant to be perfect or follow every Best Practice. It though is my ambition to learn and get feedback on what Best Practices
+ can be implemented. 
+ I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and 
+ suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository.
+
 ## Completed 
  - Basic Login / User Creation
  - Admin Theme using Material Design / MatBlazor - Free to use.
@@ -66,6 +78,9 @@ will be depending on how much community support for it is.
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
+### 0.1.8 (In Progress)
+- Middleware to log Api Requests and Responses
+
 ### 0.1.7
 - User Profile Management
 - Refactor Email Settings and API
