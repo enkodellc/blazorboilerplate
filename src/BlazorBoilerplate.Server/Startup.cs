@@ -19,7 +19,7 @@ using BlazorBoilerplate.Server.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
 using BlazorBoilerplate.Server.Helpers;
-//using BlazorBoilerplate.Server.Middleware;
+using BlazorBoilerplate.Server.Middleware;
 
 namespace BlazorBoilerplate.Server
 {
@@ -127,6 +127,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<ApiLogService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -138,20 +139,19 @@ namespace BlazorBoilerplate.Server
                 serviceScope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
             }
 
+            app.UseMiddleware<ApiLoggingMiddleware>();
             app.UseResponseCompression();
-            //app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBlazorDebugging();
             }
-//            else
-//            {
-//                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-//                app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
-//            }
-
+            //            else
+            //            {
+            //                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //                app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
+            //            }
 
             app.UseClientSideBlazorFiles<Client.Startup>();
 
