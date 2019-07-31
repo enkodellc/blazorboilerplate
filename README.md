@@ -1,4 +1,4 @@
-# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/blazorboilerplate.svg" alt="Blazor Boilerplate" height="75"/> Blazor Boilerplate
+# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" height="75"/>
 
 Blazor Boilerplate, "Blazor Starter Template" is a SPA admin template (Core-Hosted). The UI is driven by Material Design provided mostly by MatBlazor.  Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. 
 
