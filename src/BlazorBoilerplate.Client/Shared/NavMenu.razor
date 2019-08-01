@@ -5,29 +5,28 @@
     <MatListGroup>
         <MatList SingleSelection="true">
             <MatListItem Href="@uriHelper.ToAbsoluteUri(" ").AbsoluteUri">
-                <MatIcon>home</MatIcon> <span>Home page</span>
+                <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
             </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("screenshots").AbsoluteUri">
-                <MatIcon>screen_share</MatIcon> <span>Screenshots</span>
+                <MatIcon>screen_share</MatIcon> <span class="miniHover">Screenshots</span>
             </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-                <MatIcon>bar_chart</MatIcon> <span>Dashboard</span>
+                <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
             </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("fetch_data").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-                <MatIcon>cloud_download</MatIcon> <span>Fetch data</span>
+                <MatIcon>cloud_download</MatIcon> <span class="miniHover">Fetch data</span>
             </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-                <MatIcon>mail_outline</MatIcon> <span>Email</span>
-            </MatListItem>            
-            <MatListItem Href="@uriHelper.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-                <MatIcon>mail_outline</MatIcon> <span>Read Email</span>
+                <MatIcon>mail_outline</MatIcon> <span class="miniHover">Email</span>
             </MatListItem>
-
+            <MatListItem Href="@uriHelper.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatIcon>mail_outline</MatIcon> <span class="miniHover">Read Email</span>
+            </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-                <MatIcon>supervisor_account</MatIcon> <span>Users</span>
+                <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Users</span>
             </MatListItem>
             <MatListItem Href="@uriHelper.ToAbsoluteUri("contributors").AbsoluteUri">
-                <MatIcon>people</MatIcon> <span>Contributors</span>
+                <MatIcon>people</MatIcon> <span class="miniHover">Contributors</span>
             </MatListItem>
         </MatList>
     </MatListGroup>
@@ -47,8 +46,8 @@
         if (user.Identity.IsAuthenticated)
         {
             IsLoggedIn = true;
-        }  
-        
+        }
+
         //https://gist.github.com/SteveSandersonMS/175a08dcdccb384a52ba760122cd2eda Examples
         //if (user.IsInRole("Admin"))
         //{
