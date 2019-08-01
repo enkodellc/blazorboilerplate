@@ -1,6 +1,7 @@
-# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" height="75"/>
+# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
-Blazor Boilerplate, "Blazor Starter Template" is a SPA admin template (Core-Hosted). The UI is driven by Material Design provided mostly by MatBlazor.  Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. 
+Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template (Core-Hosted) built with Blazor with a .NET Core 3 Server API. The UI for this application is by Material Design provided mostly by MatBlazor.  
+
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
@@ -51,11 +52,10 @@ will be depending on how much community support for it is.
 ## Disclaimer / About the Author
 
 I (Enkodellc) started this repository as I was frustrated with the examples out there that people were charging money for and were in my opinion
-incomplete or closed source. I paid for 4-5 of these solutions and none of them were what I was looking for. This is my
+incomplete or closed source. I paid for 4-5 of these solutions with an Angular front-end and none of them were what I was looking for. This is my
 attempt to create something that developers can start a Blazor project with several great features to build from. 
-I have a lot of experience with ASP.Net webforms. I am new to .NET Core and Blazor. 
-This code is not meant to be perfect or follow every Best Practice. It though is my ambition to learn and get feedback on what Best Practices
- can be implemented. 
+I have a lot of experience with ASP.Net webforms an new to .NET Core and Blazor. This code is not meant to be perfect or follow every Best Practice. 
+It though is my ambition to learn and get feedback on what Best Practices can be implemented. 
  I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and 
  suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository.
 
@@ -80,6 +80,8 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 ## News
 ### 0.1.8 (In Progress)
 - Middleware to log Api Requests and Responses
+- Email Pop3 / IMAP retrieval thanks [npraskins](https://github.com/npraskins)
+- Responsive Menu updates
 
 ### 0.1.7
 - User Profile Management
