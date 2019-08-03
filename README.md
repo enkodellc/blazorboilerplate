@@ -82,6 +82,8 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Middleware to log Api Requests and Responses
 - Email Pop3 / IMAP retrieval. Thanks [npraskins](https://github.com/npraskins)
 - Responsive Navigation / Closed / Full / Minified / Minified & Hover effect
+- Added MatNavMenu PR for MatBlazor, BlazorBoilerplate using local version until that is merged
+- Updated demo site for new MatNavMenu and rest of 0.1.8 code
 
 ### 0.1.7
 - User Profile Management
