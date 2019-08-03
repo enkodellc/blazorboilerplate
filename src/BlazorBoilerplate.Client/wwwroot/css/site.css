@@ -161,9 +161,6 @@ app {
     color: white;
 }
 
-.app-sidebar .mdc-nav-menu{
-    padding-left: 7px;
-}
 
 .sub-menu {
     visibility: hidden; /* hides sub-menu */
@@ -335,6 +332,17 @@ app {
     border-left: solid 3px rgba(255, 255, 255, .5);
 }
 
+    .mdc-drawer .mdc-list-item--selected::before {
+        opacity: 0.3 !important;
+    }
+
+.mdc-expansion-panel--selected .mat-expansion-panel__summary {
+    border-left: solid 3px rgba(255, 255, 255, .3);
+}
+    .mdc-expansion-panel--selected .mat-expansion-panel__summary::before {
+        opacity: 0.2 !important;
+    }
+
 .drawer-logo {
     display: flex;
     align-items: center;
@@ -367,6 +375,7 @@ app {
 
 .app-sidebar .material-icons {
     margin-right: 8px;
+    padding-left: 7px;
 }
 
 .mdc-drawer {
