@@ -247,6 +247,7 @@ app {
     padding: 0 4px;
 }
 
+.mini .mdc-sub-menu-icon,
 .mini .miniHover {
     transform: translateX(200%);
     animation: slide-out 1s forwards;
@@ -256,6 +257,7 @@ app {
     position: fixed;
 }
 
+.mini .mdc-drawer:hover .mdc-sub-menu-icon,
 .mini .mdc-drawer:hover .miniHover {
     transform: translateX(0%);
     animation: slide-in 1s forwards;
@@ -482,6 +484,7 @@ ul.breadcrumb {
         transition: margin-left .2s ease-in-out;
     }
 
+    .mdc-sub-menu-icon,
     .drawer-profile span,
     .miniHover,
     .brand {
