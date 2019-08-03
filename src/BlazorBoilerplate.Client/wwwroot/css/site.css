@@ -161,6 +161,10 @@ app {
     color: white;
 }
 
+.app-sidebar .mdc-nav-menu{
+    padding-left: 7px;
+}
+
 .sub-menu {
     visibility: hidden; /* hides sub-menu */
     opacity: 0;
@@ -246,6 +250,14 @@ app {
 .mini .drawer-profile {
     padding: 0 4px;
 }
+
+.mini .mat-accordion .mdc-nav-menu .mat-expansion-panel__content {
+    padding-left: 6px;
+}
+
+/*.mini .mdc-drawer:hover .mat-accordion .mdc-nav-menu .mat-expansion-panel__content {
+    padding-left: 13px;
+}*/
 
 .mini .mdc-sub-menu-icon,
 .mini .miniHover {
@@ -482,6 +494,14 @@ ul.breadcrumb {
     .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
         margin-left: 52px !important;
         transition: margin-left .2s ease-in-out;
+    }
+
+    .mat-accordion .mdc-nav-menu .mat-expansion-panel__content {
+        padding-left: 6px;
+    }
+
+    .full .mdc-drawer:hover .mat-accordion .mdc-nav-menu .mat-expansion-panel__content {
+        padding-left: 13px;
     }
 
     .mdc-sub-menu-icon,
