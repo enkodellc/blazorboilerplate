@@ -52,12 +52,24 @@
     LoginParameters loginParameters { get; set; } = new LoginParameters();
     ForgotPasswordParameters forgotPasswordParameters { get; set; } = new ForgotPasswordParameters();
 
+    protected override async Task OnInitAsync()
+    {
+        matToaster.Add("Password: user123", MatToastType.Info, "User Name: user");
+    }
+
     async Task SubmitLogin()
     {
         try
         {
-            await authStateProvider.Login(loginParameters);
-            uriHelper.NavigateTo("/dashboard");
+            var response = await authStateProvider.Login(loginParameters);
+            if (response.StatusCode == 200)
+            {
+                uriHelper.NavigateTo("/dashboard");
+            }
+            else
+            {
+                matToaster.Add(response.Message, MatToastType.Danger, "Login Attempt Failed");
+            }
         }
         catch (Exception ex)
         {

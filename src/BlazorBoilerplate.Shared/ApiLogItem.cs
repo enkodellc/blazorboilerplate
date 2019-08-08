@@ -5,6 +5,7 @@ namespace BlazorBoilerplate.Shared
 {
     public class ApiLogItem
     {
+        [Key]
         public long Id { get; set; }
 
         [Required]

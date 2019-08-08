@@ -95,7 +95,6 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailPopAsync(int min = 0, int max = 0)
         {
-
             using (var emailClient = new Pop3Client())
             {
                 try

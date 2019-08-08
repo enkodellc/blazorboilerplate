@@ -3,10 +3,12 @@ using System.Net;
 using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Services;
 
 namespace BlazorBoilerplate.Server.Middleware
@@ -29,7 +31,7 @@ namespace BlazorBoilerplate.Server.Middleware
         {
             _apiLogService = apiLogService;
             _logger = logger;
-            
+
             try
             {
                 var request = httpContext.Request;
@@ -103,10 +105,8 @@ namespace BlazorBoilerplate.Server.Middleware
                             string requestBody,
                             string responseBody)
         {
-            // Do not log these events
-            if (path.ToLower().StartsWith("/api/authorize/login") ||
-               path.ToLower().StartsWith("/api/authorize/userinfo") ||
-               path.ToLower().StartsWith("/api/authorize/logut"))
+            // Do not log these events login, logout, getuserinfo...
+            if (path.ToLower().StartsWith("/api/authorize/"))
             {
                 return;
             }
@@ -149,7 +149,11 @@ namespace BlazorBoilerplate.Server.Middleware
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            await httpContext.Response.WriteAsync(new ApiError(httpContext.Response.StatusCode, "Internal Server Error from the custom middleware.").ToString());
+            await httpContext.Response.WriteAsync(JsonSerializer.Serialize<ClientApiResponse>(
+              new ClientApiResponse {
+                  StatusCode = httpContext.Response.StatusCode,
+                  Message = "Internal Server Error from the custom middleware."
+              }));
         }
 
         private Task ClearCacheHeaders(object state)

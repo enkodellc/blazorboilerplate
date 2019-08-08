@@ -32,8 +32,16 @@
     {
         try
         {
-            await Http.PostJsonAsync<EmailParameters>("api/Email/Send", emailParameters);
-            matToaster.Add("Email has been Sent", MatToastType.Success);
+            ClientApiResponse apiResponse = await Http.PostJsonAsync<ClientApiResponse>("api/Email/Send", emailParameters);
+
+            if (apiResponse.StatusCode == 200)
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Success);
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Email Send Failed");
+            }            
         }
         catch (Exception ex)
         {

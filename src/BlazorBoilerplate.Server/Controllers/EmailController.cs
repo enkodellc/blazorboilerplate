@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -28,12 +27,12 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpPost("Send")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Send(EmailParameters parameters)
+        public async Task<APIResponse> Send(EmailParameters parameters)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState.Values.SelectMany(state => state.Errors)
-                    .Select(error => error.ErrorMessage)
-                    .FirstOrDefault());
+            {
+                return new APIResponse(400, "User Model is Invalid");
+            }
 
             var email = new EmailMessage();
 
@@ -66,30 +65,29 @@ namespace BlazorBoilerplate.Server.Controllers
 
             await _emailService.SendEmailAsync(email);
 
-            return Ok(new { success = "true" });
+            return new APIResponse(200, "Email Successfuly Sent");
         }
 
         [HttpGet("Receive")]
         [Authorize]
-        public async Task<IActionResult> Receive()
+        public async Task<APIResponse> Receive()
         {
             //Check email from default account defined in appsettings.json
             //Currently set up to only send valid results, no error codes
 
-            //To use Imap::
-            var results = (await _emailService.ReceiveMailImapAsync());
+            // To use Imap::
+            var results = await _emailService.ReceiveMailImapAsync();
 
             // To use Pop3 uncomment the following and comment out the Imap line (above):
-            // List<EmailMessage> results = (await _emailService.ReceiveMailPopAsync()).Item3;
+            //var results = await _emailService.ReceiveMailPopAsync();
 
             if (results.success)
             {
-                // return new OkObjectResult(results.Item3);
-                return new JsonResult(results.Item3);
+                return new APIResponse(200, "Email Received", results);
             }
             else
             {
-                return new BadRequestObjectResult(results.errorMsg);
+                return new APIResponse(400, "Email Receiving Failed");
             }
         }
     }

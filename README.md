@@ -79,7 +79,8 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 ### 0.1.8 (In Progress)
-- Middleware to log Api Requests and Responses
+- Middleware to log Api Requests and Responses for auditing - In progess
+- Middleware for consistent Responses and Exceptions [proudmonkey](http://vmsdurano.com/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consistent-responses/)
 - Email Pop3 / IMAP retrieval. Thanks [npraskins](https://github.com/npraskins)
 - Responsive Navigation / Closed / Full / Minified / Minified & Hover effect
 - Added MatNavMenu PR for MatBlazor, BlazorBoilerplate using local version until that is merged

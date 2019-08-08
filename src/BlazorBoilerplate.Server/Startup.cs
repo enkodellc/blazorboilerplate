@@ -1,5 +1,8 @@
-using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Models;
+using System;
+using System.Net;
+using System.Linq;
+using System.Net.Mime;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Hosting;
@@ -9,15 +12,12 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Linq;
-using System.Net.Mime;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
+using BlazorBoilerplate.Server.Data;
+using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Server.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Net;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Middleware;
 
@@ -139,8 +139,10 @@ namespace BlazorBoilerplate.Server
                 serviceScope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
             }
 
-            app.UseMiddleware<ApiLoggingMiddleware>();
-            app.UseResponseCompression();
+            //app.UseMiddleware<ApiLoggingMiddleware>(); // Logs most API calls. Great for debugging and user activity audits
+            app.UseMiddleware<APIResponseMiddleware>(); // A REST API global exception handler and response wrapper for a consistent API
+
+            //app.UseResponseCompression(); // Todo Debug why this is breaking APIResponseMiddleware
 
             if (env.IsDevelopment())
             {

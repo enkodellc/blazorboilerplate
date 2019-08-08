@@ -5,13 +5,13 @@ namespace BlazorBoilerplate.Client.Services.Contracts
 {
     public interface IAuthorizeApi
     {
-        Task Login(LoginParameters loginParameters);
-        Task Register(RegisterParameters registerParameters);
-        Task ForgotPassword(ForgotPasswordParameters forgotPasswordParameters);
-        Task ResetPassword(ResetPasswordParameters resetPasswordParameters);
-        Task Logout();
-        Task ConfirmEmail(ConfirmEmailParameters confirmEmailParameters);
+        Task<ClientApiResponse> Login(LoginParameters loginParameters);
+        Task<ClientApiResponse> Register(RegisterParameters registerParameters);
+        Task<ClientApiResponse> ForgotPassword(ForgotPasswordParameters forgotPasswordParameters);
+        Task<ClientApiResponse> ResetPassword(ResetPasswordParameters resetPasswordParameters);
+        Task<ClientApiResponse> Logout();
+        Task<ClientApiResponse> ConfirmEmail(ConfirmEmailParameters confirmEmailParameters);
         Task<UserInfo> GetUserInfo();
-        Task<UserInfo> UpdateUser(UserInfo userInfo);
+        Task<ClientApiResponse> UpdateUser(UserInfo userInfo);
     }
 }

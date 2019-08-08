@@ -4,7 +4,6 @@
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
-
 <h1>Secure Page</h1>
 <p>This is a secure page. You must be logged in to have access.</p>
 <h2>Email Retrieval</h2>
@@ -115,6 +114,7 @@ else
             //  emails = await Http.GetJsonAsync<List<EmailMessage>>("api/Email/Receive");
             string emailsAsString = await Http.GetStringAsync("api/Email/Receive");
             emails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EmailMessage>>(emailsAsString);
+            //emails = JsonSerializer.Deserialize<List<EmailMessage>>(emailsAsString);
 
         }
         catch (Exception ex)

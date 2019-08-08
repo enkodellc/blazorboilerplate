@@ -67,12 +67,23 @@ else
 
 @functions {
     bool dialogIsOpen = false;
+    ClientApiResponse apiResponse;// { get; set; } = new ClientApiResponse();
     DemoUser[] users;
     RegisterParameters registerParameters { get; set; } = new RegisterParameters();
 
     protected override async Task OnInitAsync()
     {
-        users = await Http.GetJsonAsync<DemoUser[]>("api/SampleData/GetDemoUsers");
+        apiResponse = await Http.GetJsonAsync<ClientApiResponse>("api/SampleData/GetDemoUsers");
+
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "Demo Users Retrieved");
+            users = Newtonsoft.Json.JsonConvert.DeserializeObject<DemoUser[]>(apiResponse.Result.ToString());
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "User Retrieval Failed");
+        }
     }
 
     public void OpenDialog()

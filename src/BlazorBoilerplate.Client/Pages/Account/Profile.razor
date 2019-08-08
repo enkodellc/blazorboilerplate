@@ -58,9 +58,18 @@
     async Task UpdateUser()
     {
         try
-        {            
-            await authStateProvider.UpdateUser(userInfo);
-            matToaster.Add("Profile update was Successful", MatToastType.Success);
+        {
+            ClientApiResponse apiResponse = await authStateProvider.UpdateUser(userInfo);
+
+            if (apiResponse.StatusCode == 200)
+            {
+                userInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfo>(apiResponse.Result.ToString());
+                matToaster.Add("Profile update was Successful", MatToastType.Success);
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, "Profile Update Failed");
+            }
         }
         catch (Exception ex)
         {

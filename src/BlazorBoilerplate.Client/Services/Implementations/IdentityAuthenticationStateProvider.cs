@@ -19,40 +19,46 @@ namespace BlazorBoilerplate.Client.States
             this._authorizeApi = authorizeApi;
         }
 
-        public async Task Login(LoginParameters loginParameters)
+        public async Task<ClientApiResponse> Login(LoginParameters loginParameters)
         {
-            await _authorizeApi.Login(loginParameters);
+            ClientApiResponse apiResponse = await _authorizeApi.Login(loginParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            return apiResponse;
         }
 
-        public async Task Register(RegisterParameters registerParameters)
+        public async Task<ClientApiResponse> Register(RegisterParameters registerParameters)
         {
-            await _authorizeApi.Register(registerParameters);
+            ClientApiResponse apiResponse = await _authorizeApi.Register(registerParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            return apiResponse;
         }
 
-        public async Task Logout()
+        public async Task<ClientApiResponse> Logout()
         {
-            await _authorizeApi.Logout();
+            ClientApiResponse apiResponse = await _authorizeApi.Logout();
             _userInfoCache = null;
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            return apiResponse;
         }
 
-        public async Task ConfirmEmail(ConfirmEmailParameters confirmEmailParameters)
+        public async Task<ClientApiResponse> ConfirmEmail(ConfirmEmailParameters confirmEmailParameters)
         {
-            await _authorizeApi.ConfirmEmail(confirmEmailParameters);
+            ClientApiResponse apiResponse = await _authorizeApi.ConfirmEmail(confirmEmailParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            return apiResponse;
         }
 
-        public async Task ResetPassword(ResetPasswordParameters resetPasswordParameters)
+        public async Task<ClientApiResponse> ResetPassword(ResetPasswordParameters resetPasswordParameters)
         {
-            await _authorizeApi.ResetPassword(resetPasswordParameters);
+            ClientApiResponse apiResponse = await _authorizeApi.ResetPassword(resetPasswordParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            return apiResponse;
         }
 
-        public async Task ForgotPassword(ForgotPasswordParameters forgotPasswordParameters)
+        public async Task<ClientApiResponse> ForgotPassword(ForgotPasswordParameters forgotPasswordParameters)
         {
-            await _authorizeApi.ForgotPassword(forgotPasswordParameters);
+            ClientApiResponse apiResponse = await _authorizeApi.ForgotPassword(forgotPasswordParameters);
+            return apiResponse;
         }
 
         public async Task<UserInfo> GetUserInfo()
@@ -61,6 +67,7 @@ namespace BlazorBoilerplate.Client.States
             {
                 return _userInfoCache;
             }
+
             _userInfoCache = await _authorizeApi.GetUserInfo();
             return _userInfoCache;
         }
@@ -85,11 +92,11 @@ namespace BlazorBoilerplate.Client.States
             return new AuthenticationState(new ClaimsPrincipal(identity));
         }
 
-        public async Task<UserInfo> UpdateUser(UserInfo userInfo)
+        public async Task<ClientApiResponse> UpdateUser(UserInfo userInfo)
         {
-            _userInfoCache = await _authorizeApi.UpdateUser(userInfo);
+            ClientApiResponse apiResponse = await _authorizeApi.UpdateUser(userInfo);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-            return _userInfoCache;
+            return apiResponse;
         }
     }
 }

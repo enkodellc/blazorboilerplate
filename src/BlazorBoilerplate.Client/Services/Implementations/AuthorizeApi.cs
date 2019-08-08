@@ -1,8 +1,10 @@
-﻿using BlazorBoilerplate.Client.Services.Contracts;
-using BlazorBoilerplate.Shared;
-using Microsoft.AspNetCore.Components;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
+using Newtonsoft.Json;
+using BlazorBoilerplate.Client.Services.Contracts;
+using BlazorBoilerplate.Shared;
 
 namespace BlazorBoilerplate.Client.Services.Implementations
 {
@@ -15,45 +17,52 @@ namespace BlazorBoilerplate.Client.Services.Implementations
             _httpClient = httpClient;
         }
 
-        public async Task Login(LoginParameters loginParameters)
+        public async Task<ClientApiResponse> Login(LoginParameters loginParameters)
         {
-            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Login", loginParameters);
+            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/Login", loginParameters);
         }
 
-        public async Task Logout()
+        public async Task<ClientApiResponse> Logout()
         {
-            var result = await _httpClient.PostAsync("api/Authorize/Logout", null);
-            result.EnsureSuccessStatusCode();
+            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/Logout", null);
         }
 
-        public async Task Register(RegisterParameters registerParameters)
+        public async Task<ClientApiResponse> Register(RegisterParameters registerParameters)
         {
-            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/Register", registerParameters);
+            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/Register", registerParameters);
         }
 
-        public async Task ConfirmEmail(ConfirmEmailParameters confirmEmailParameters)
+        public async Task<ClientApiResponse> ConfirmEmail(ConfirmEmailParameters confirmEmailParameters)
         {
-            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/ConfirmEmail", confirmEmailParameters);
+            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/ConfirmEmail", confirmEmailParameters);
         }
 
-        public async Task ResetPassword(ResetPasswordParameters resetPasswordParameters)
+        public async Task<ClientApiResponse> ResetPassword(ResetPasswordParameters resetPasswordParameters)
         {
-            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/ResetPassword", resetPasswordParameters);
+            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/ResetPassword", resetPasswordParameters);
         }
 
-        public async Task ForgotPassword(ForgotPasswordParameters forgotPasswordParameters)
+        public async Task<ClientApiResponse> ForgotPassword(ForgotPasswordParameters forgotPasswordParameters)
         {
-            await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/ForgotPassword", forgotPasswordParameters);
+            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/ForgotPassword", forgotPasswordParameters);
         }
 
         public async Task<UserInfo> GetUserInfo()
         {
-            return await _httpClient.GetJsonAsync<UserInfo>("api/Authorize/UserInfo");
+            UserInfo userInfo = new UserInfo { IsAuthenticated = false, Roles = new String[] { } };
+            ClientApiResponse apiResponse = await _httpClient.GetJsonAsync<ClientApiResponse>("api/Authorize/UserInfo");
+            
+            if (apiResponse.StatusCode == 200)
+            {
+                userInfo = JsonConvert.DeserializeObject<UserInfo>(apiResponse.Result.ToString());
+                return userInfo;
+            }
+            return userInfo;
         }
 
-        public async Task<UserInfo> UpdateUser(UserInfo userInfo)
+        public async Task<ClientApiResponse> UpdateUser(UserInfo userInfo)
         {
-            return await _httpClient.PostJsonAsync<UserInfo>("api/Authorize/UpdateUser", userInfo);
+            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/UpdateUser", userInfo);
         }
     }
 }

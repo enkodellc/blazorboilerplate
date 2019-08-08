@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @using BlazorBoilerplate.Shared
 @inject HttpClient Http
+@inject IMatToaster matToaster
 
 <h1>Secure Page</h1>
 <p>This is a secure page. You must be logged in to have access.</p>
@@ -57,7 +58,17 @@ else
 
     protected override async Task OnInitAsync()
     {
-        forecasts = await Http.GetJsonAsync<WeatherForecast[]>("api/SampleData/WeatherForecasts");
+        ClientApiResponse apiResponse = await Http.GetJsonAsync<ClientApiResponse>("api/SampleData/WeatherForecasts");
+
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "Weather Forecast Retrieved");
+            forecasts = Newtonsoft.Json.JsonConvert.DeserializeObject<WeatherForecast[]>(apiResponse.Result.ToString());
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Weather Forecast Retrieval Failed");
+        }
     }
 
     public class Todo

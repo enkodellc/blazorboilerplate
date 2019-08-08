@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -42,13 +43,6 @@ namespace BlazorBoilerplate.Server.Controllers
             });
         }
 
-        [HttpGet("IsAdmin")]
-        [Authorize(Roles = "Admin")]
-        public IActionResult IsAdmin()
-        {
-            return Ok(new {UserInRole = "Admin" });
-        }
-
         [HttpGet("IsUser")]
         [Authorize(Roles = "IsUser")]
         public IActionResult IsUser()
@@ -67,13 +61,15 @@ namespace BlazorBoilerplate.Server.Controllers
         //For testing Admin UI
         [HttpGet("[action]")]
         [Authorize(Roles = "SuperAdmin, Admin, User")]
-        public async Task<IEnumerable<DemoUser>> GetDemoUsers()
+        public async Task<APIResponse> GetDemoUsers()
+        //public async Task<IEnumerable<DemoUser>> GetDemoUsers()
         {
             using (var client = new HttpClient())
             {
                 string content = await client.GetStringAsync("https://blazorboilerplate.com/users.json");
                 IEnumerable<DemoUser> users = JsonConvert.DeserializeObject<IEnumerable<DemoUser>>(content);
-                return users;
+                return new APIResponse(200, "Retrieved Demo Users", users);
+                //return users;
             }
         }
     }
