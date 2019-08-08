@@ -22,7 +22,7 @@
 @functions {
 
     EmailParameters emailParameters { get; set; } = new EmailParameters();
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
         //set the template name so it passes model validation
         emailParameters.TemplateName = "Test";

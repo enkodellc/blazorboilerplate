@@ -1,5 +1,5 @@
-﻿using BlazorBoilerplate.Shared;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using BlazorBoilerplate.Shared;
 
 namespace BlazorBoilerplate.Client.Services.Contracts
 {

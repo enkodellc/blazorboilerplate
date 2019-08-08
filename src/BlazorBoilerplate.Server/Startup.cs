@@ -37,8 +37,8 @@ namespace BlazorBoilerplate.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}"));  // Sql Lite / file database
-                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); //SQL Server Database
+                //options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}"));  // Sql Lite / file database
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); //SQL Server Database
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
@@ -142,8 +142,8 @@ namespace BlazorBoilerplate.Server
             app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
 
             // A REST API global exception handler and response wrapper for a consistent API
-            // Logs most API calls. Great for debugging and user activity audits
-            app.UseMiddleware<APIResponseRequestLogginMiddleware>();
+            // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
+            app.UseMiddleware<APIResponseRequestLogginMiddleware>(Convert.ToBoolean(Configuration["EnableAPILogging"] ?? "true"));
 
             if (env.IsDevelopment())
             {

@@ -19,16 +19,16 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class AuthorizeController : ControllerBase
     {
-        private static UserInfo LoggedOutUser = new UserInfo { IsAuthenticated = false, Roles = new String[] { } };
+        private static readonly UserInfo LoggedOutUser = new UserInfo { IsAuthenticated = false, Roles = new String[] { } };
 
         // Logger instance
-        ILogger<AuthorizeController> _logger;
+        private readonly ILogger<AuthorizeController> _logger;
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IEmailService _emailService;
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public AuthorizeController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, ILogger<AuthorizeController> logger,
@@ -44,7 +44,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpGet("GetUser")]
         [Authorize]
-        public async Task<APIResponse> GetUser()
+        public APIResponse GetUser()
         {
             UserInfo userInfo = User != null && User.Identity.IsAuthenticated
                 ? new UserInfo { UserName = User.Identity.Name, IsAuthenticated = true }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared;
 
@@ -13,12 +12,10 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class ApiLogController : ControllerBase
     {
-        ILogger<ApiLogController> _logger;
         private readonly ApiLogService _apiLogService;
 
-        public ApiLogController(ApiLogService apiLogService, ILogger<ApiLogController> logger)
+        public ApiLogController(ApiLogService apiLogService)
         {
-            _logger = logger;
             _apiLogService = apiLogService;
         }
 

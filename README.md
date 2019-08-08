@@ -66,6 +66,7 @@ It though is my ambition to learn and get feedback on what Best Practices can be
  - Choose between SQL Lite File or MS SQL Database
  - Email Confirmation of Registered Users
  - Forgot Password Functionality
+ - Middleware to log Api Requests and Responses and Logging to Database for audit trails.
 
 ## Road map
 - User profile & settings management.
@@ -78,6 +79,12 @@ It though is my ambition to learn and get feedback on what Best Practices can be
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
+
+### 0.1.9 (In Progress)
+- Added IpAddress and UserId to Middleware ApiLogging
+- Review / Fix VS code Warnings and Information notice. Clean up code.
+- ApiLogging UI Screen
+
 ### 0.1.8
 - Middleware to log Api Requests and Responses for auditing and debugging. Thanks [salslab](https://github.com/salslab/AspNetCoreApiLoggingSample)
 - Middleware for consistent API Responses and Exception Handlin. Thanks [proudmonkey](http://vmsdurano.com/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consistent-responses/)

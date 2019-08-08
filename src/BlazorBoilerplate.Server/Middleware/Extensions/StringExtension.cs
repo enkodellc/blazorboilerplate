@@ -17,11 +17,11 @@ namespace BlazorBoilerplate.Server.Middleware.Extensions
                     var obj = JToken.Parse(text);
                     return true;
                 }
-                catch (JsonReaderException jex)
+                catch (JsonReaderException)
                 {
                     return false;
                 }
-                catch (Exception ex)
+                catch (System.Exception)
                 {
                     return false;
                 }

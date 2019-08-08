@@ -29,5 +29,8 @@ namespace BlazorBoilerplate.Shared
 
         public string ResponseBody { get; set; }
 
+        public string IPAddress { get; set; }
+
+        public Guid UserId { get; set; }
     }
 }
