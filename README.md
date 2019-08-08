@@ -78,12 +78,12 @@ It though is my ambition to learn and get feedback on what Best Practices can be
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
-### 0.1.8 (In Progress)
-- Middleware to log Api Requests and Responses for auditing - In progess
-- Middleware for consistent Responses and Exceptions [proudmonkey](http://vmsdurano.com/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consistent-responses/)
+### 0.1.8
+- Middleware to log Api Requests and Responses for auditing and debugging. Thanks [salslab](https://github.com/salslab/AspNetCoreApiLoggingSample)
+- Middleware for consistent API Responses and Exception Handlin. Thanks [proudmonkey](http://vmsdurano.com/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consistent-responses/)
 - Email Pop3 / IMAP retrieval. Thanks [npraskins](https://github.com/npraskins)
 - Responsive Navigation / Closed / Full / Minified / Minified & Hover effect
-- Added MatNavMenu PR for MatBlazor, BlazorBoilerplate using local version until that is merged
+- Added MatNavMenu PR for MatBlazor - Ver 1.5
 - Updated demo site for new MatNavMenu and rest of 0.1.8 code
 
 ### 0.1.7

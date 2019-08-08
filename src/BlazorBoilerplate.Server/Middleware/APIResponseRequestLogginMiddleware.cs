@@ -9,66 +9,117 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Middleware.Extensions;
+using BlazorBoilerplate.Server.Services;
+using System.Diagnostics;
+using BlazorBoilerplate.Shared;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
-    //https://www.c-sharpcorner.com/article/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consiste/
-    public class APIResponseMiddleware
+    //Logging  -> https://salslab.com/a/safely-logging-api-requests-and-responses-in-asp-net-core
+    //Response -> https://www.c-sharpcorner.com/article/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consiste/
+    public class APIResponseRequestLogginMiddleware
     {
         private readonly RequestDelegate _next;
-        ILogger<APIResponseMiddleware> _logger;
+        ILogger<APIResponseRequestLogginMiddleware> _logger;
+        private ApiLogService _apiLogService;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
 
-        public APIResponseMiddleware(RequestDelegate next)
+        public APIResponseRequestLogginMiddleware(RequestDelegate next)
         {
             _next = next;
             _clearCacheHeadersDelegate = ClearCacheHeaders;
         }
 
-        public async Task Invoke(HttpContext httpContext, ILogger<APIResponseMiddleware> logger)
+        public async Task Invoke(HttpContext httpContext, ApiLogService apiLogService, ILogger<APIResponseRequestLogginMiddleware> logger)
         {
             _logger = logger;
+            _apiLogService = apiLogService;
 
-            if (IsSwagger(httpContext) || !httpContext.Request.Path.StartsWithSegments(new PathString("/api")))
+            try
             {
-                await _next(httpContext);
-            }
-            else
-            {
-                var originalBodyStream = httpContext.Response.Body;
-
-                using (var responseBody = new MemoryStream())
+                var request = httpContext.Request;
+                if (IsSwagger(httpContext) || !request.Path.StartsWithSegments(new PathString("/api")))
                 {
-                    httpContext.Response.Body = responseBody;
+                    await _next(httpContext);
+                }
+                else
+                {
+                    Stopwatch stopWatch = Stopwatch.StartNew();
+                    var requestTime = DateTime.UtcNow;
 
-                    try
-                    {
-                        await _next.Invoke(httpContext);
+                    //  Enable seeking
+                    httpContext.Request.EnableBuffering();
+                    //  Read the stream as text
+                    var requestBodyContent = await new StreamReader(httpContext.Request.Body).ReadToEndAsync();
+                    //  Set the position of the stream to 0 to enable rereading
+                    httpContext.Request.Body.Position = 0;
 
-                        if (httpContext.Response.StatusCode == (int)HttpStatusCode.OK)
-                        {
-                            var body = await FormatResponse(httpContext.Response);
-                            await HandleSuccessRequestAsync(httpContext, body, httpContext.Response.StatusCode);
-                        }
-                        else
-                        {
-                            await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
-                        }
-                    }
-                    catch (System.Exception ex)
+                    var originalBodyStream = httpContext.Response.Body;
+
+                    using (var responseBody = new MemoryStream())
                     {
-                        await HandleExceptionAsync(httpContext, ex);
-                    }
-                    finally
-                    {
-                        responseBody.Seek(0, SeekOrigin.Begin);
-                        await responseBody.CopyToAsync(originalBodyStream);
+                        httpContext.Response.Body = responseBody;
+
+                        try
+                        {                            
+                            var response = httpContext.Response;
+                            response.Body = responseBody;
+                            await _next.Invoke(httpContext);
+                                                        
+                            string responseBodyContent = null;                                                                              
+                             
+                            if (httpContext.Response.StatusCode == (int)HttpStatusCode.OK)
+                            {
+                                responseBodyContent = await FormatResponse(response);
+                                await HandleSuccessRequestAsync(httpContext, responseBodyContent, httpContext.Response.StatusCode);
+                            }
+                            else
+                            {
+                                await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
+                            }
+
+                            #region Log Request / Response
+                            stopWatch.Stop();
+                            await responseBody.CopyToAsync(originalBodyStream);
+                            await SafeLog(requestTime,
+                                stopWatch.ElapsedMilliseconds,
+                                response.StatusCode,
+                                request.Method,
+                                request.Path,
+                                request.QueryString.ToString(),
+                                requestBodyContent,
+                                responseBodyContent);
+                            #endregion 
+
+
+                        }
+                        catch (System.Exception ex)
+                        {
+                            _logger.LogWarning("A Inner Middleware exception occurred, but response has already started!");
+                            await HandleExceptionAsync(httpContext, ex);
+                        }
+                        finally
+                        {
+                            responseBody.Seek(0, SeekOrigin.Begin);
+                            await responseBody.CopyToAsync(originalBodyStream);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                // We can't do anything if the response has already started, just abort.
+                if (httpContext.Response.HasStarted)
+                {
+                    _logger.LogWarning("A Middleware exception occurred, but response has already started!");
+                    throw;
+                }
+
+                await HandleExceptionAsync(httpContext, ex);
+                throw;
+            }
         }
-
-
+        
         private async Task HandleExceptionAsync(HttpContext httpContext, System.Exception exception)
         {
             _logger.LogError("Api Exception:", exception);
@@ -200,9 +251,51 @@ namespace BlazorBoilerplate.Server.Middleware
         private bool IsSwagger(HttpContext context)
         {
             return context.Request.Path.StartsWithSegments("/swagger");
-
         }
 
+        private async Task SafeLog(DateTime requestTime,
+                            long responseMillis,
+                            int statusCode,
+                            string method,
+                            string path,
+                            string queryString,
+                            string requestBody,
+                            string responseBody)
+        {
+            // Do not log these events login, logout, getuserinfo...
+            if (path.ToLower().StartsWith("/api/authorize/"))
+            {
+                return;
+            }
+
+            if (requestBody.Length > 256)
+            {
+                requestBody = $"(Truncated to 200 chars) {requestBody.Substring(0, 200)}";
+            }
+
+            if (responseBody.Length > 256)
+            {
+                responseBody = $"(Truncated to 200 chars) {responseBody.Substring(0, 200)}";
+            }
+
+            if (queryString.Length > 256)
+            {
+                queryString = $"(Truncated to 200 chars) {queryString.Substring(0, 200)}";
+            }
+
+            await _apiLogService.Log(new ApiLogItem
+            {
+                RequestTime = requestTime,
+                ResponseMillis = responseMillis,
+                StatusCode = statusCode,
+                Method = method,
+                Path = path,
+                QueryString = queryString,
+                RequestBody = requestBody,
+                ResponseBody = responseBody
+            });
+        }
+               
         private Task ClearCacheHeaders(object state)
         {
             var response = (HttpResponse)state;

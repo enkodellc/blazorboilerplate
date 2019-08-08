@@ -139,21 +139,22 @@ namespace BlazorBoilerplate.Server
                 serviceScope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
             }
 
-            //app.UseMiddleware<ApiLoggingMiddleware>(); // Logs most API calls. Great for debugging and user activity audits
-            app.UseMiddleware<APIResponseMiddleware>(); // A REST API global exception handler and response wrapper for a consistent API
+            app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
 
-            //app.UseResponseCompression(); // Todo Debug why this is breaking APIResponseMiddleware
+            // A REST API global exception handler and response wrapper for a consistent API
+            // Logs most API calls. Great for debugging and user activity audits
+            app.UseMiddleware<APIResponseRequestLogginMiddleware>();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBlazorDebugging();
             }
-            //            else
-            //            {
-            //                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //                app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
-            //            }
+            //else
+            //{
+            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
+            //}
 
             app.UseClientSideBlazorFiles<Client.Startup>();
 
