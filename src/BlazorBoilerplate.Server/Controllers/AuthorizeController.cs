@@ -262,6 +262,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
                 _logger.LogInformation("Forgot Password Email Sent: {0}", user.Email);
                 await _emailService.SendEmailAsync(email);
+                return new APIResponse(200, "Forgot Password Email Sent");
             }
             catch (Exception ex)
             {
@@ -272,7 +273,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         [HttpPost("ResetPassword")]
         public async Task<APIResponse> ResetPassword(ResetPasswordParameters parameters)
         {

@@ -100,6 +100,11 @@ app {
         width: 500px;
     }
 
+.container-fluid .login-container {
+    display: block;
+    max-width: 500px;
+}
+
 .additional-info {
     color: #636c72;
     background-color: rgba(0,0,0,.04);
