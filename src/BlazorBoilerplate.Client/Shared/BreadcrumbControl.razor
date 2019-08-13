@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components
 
+@inject AppState appState;
 @inject IUriHelper uriHelper
 @implements IDisposable
 
@@ -11,16 +12,16 @@
     {
         if (path.i == paths.Count())
         {
-            <li><a href="@(baseUrl + String.Join("/", paths))">@path.value.Replace("_"," ")</a></li>
+            <li><a href="@(baseUrl + String.Join("/", paths))">@path.value.Replace("_", " ")</a></li>
         }
         else
         {
-            <li>@path.value.Replace("_"," ")</li>
+            <li>@path.value.Replace("_", " ")</li>
         }
     }
 </ul>
 
-@functions {
+@code {
     // This is just for demo and is VERY Hackish  for several reasons
     // Blazor does not have page implemented for client side... as far as I know so we split page names with underscore for now.
     // Path system is hack as well as the Url.. Maybe you have a better solution?
@@ -42,6 +43,7 @@
 
     private void BuildBreadcrumbs()
     {
+        //TODO Store lastVisited URL in appState.
         string uri = uriHelper.GetAbsoluteUri().Replace(baseUrl, "").Trim();
         paths = String.IsNullOrEmpty(uri) ? new string[] { } : uri.Split('/');
         StateHasChanged();

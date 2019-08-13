@@ -16,7 +16,7 @@
 else
 {
     <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
-                DebounceMilliseconds="150">
+              DebounceMilliseconds="150">
         <MatTableHeader>
             <th><MatButton Icon="person_add" Label="New User" OnClick="@((e) => OpenDialog())"></MatButton></th>
             <th>User Name</th>
@@ -37,7 +37,7 @@ else
                     @foreach (var role in @UserRow.Roles)
                         {
                         <MatChip Label="@role"></MatChip>
-                        }
+                        }                   
                 </MatChipSet>
             </td>
         </MatTableRow>
@@ -65,7 +65,7 @@ else
     </MatDialogActions>
 </MatDialog>
 
-@functions {
+@code {
     bool dialogIsOpen = false;
     ClientApiResponse apiResponse;// { get; set; } = new ClientApiResponse();
     DemoUser[] users;

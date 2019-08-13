@@ -1,13 +1,12 @@
-using BlazorBoilerplate.Client.Services.Contracts;
-using BlazorBoilerplate.Client.Services.Implementations;
-using BlazorBoilerplate.Client.States;
 using Microsoft.AspNetCore.Blazor.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using BlazorBoilerplate.Client.Services.Contracts;
+using BlazorBoilerplate.Client.Services.Implementations;
+using BlazorBoilerplate.Client.States;
 using MatBlazor;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
-//using Blazored.LocalStorage;
 
 namespace BlazorBoilerplate.Client
 {
@@ -19,10 +18,10 @@ namespace BlazorBoilerplate.Client
             services.AddScoped<IdentityAuthenticationStateProvider>();
             services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
-            
-            //services.AddBlazoredLocalStorage();
             services.AddLoadingBar();
-
+            services.Add(new ServiceDescriptor(typeof(IUserProfileApi), typeof(UserProfileApi), ServiceLifetime.Scoped));
+            services.AddScoped<AppState>();
+            
             services.AddMatToaster(config =>
             {
                 config.Position = MatToastPosition.BottomRight;

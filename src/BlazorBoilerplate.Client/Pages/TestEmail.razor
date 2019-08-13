@@ -19,7 +19,7 @@
     </fieldset>
 </EditForm>
 
-@functions {
+@code {
 
     EmailParameters emailParameters { get; set; } = new EmailParameters();
     protected override void OnInit()
@@ -41,7 +41,7 @@
             else
             {
                 matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Email Send Failed");
-            }            
+            }
         }
         catch (Exception ex)
         {

@@ -21,10 +21,6 @@
                 </MatNavItem>
             </MatNavSubMenuList>
         </MatNavSubMenu>
-        
-        <MatNavItem Href="@uriHelper.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
-        </MatNavItem>
 
         <MatNavItem Href="@uriHelper.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
             <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
@@ -61,11 +57,11 @@
 
     </MatNavMenu>
 
-@functions {
+@code {
     public bool IsLoggedIn = false;
 
     [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask  { get; set; }
+    Task<AuthenticationState> authenticationStateTask { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -80,7 +76,7 @@
         //https://gist.github.com/SteveSandersonMS/175a08dcdccb384a52ba760122cd2eda Examples
         //if (user.IsInRole("Admin"))
         //{
-            // Perform some action only available to users in the 'admin' role
+        // Perform some action only available to users in the 'admin' role
         //}
     }
 }

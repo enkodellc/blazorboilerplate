@@ -22,28 +22,28 @@
 }
 else
 {
-   <MatTable Items="@apiResponses" Class="mat-elevation-z5">
-       <MatTableHeader>
-           <th>Date / Time</th>
-           <th>Http Code</th>
-           <th>User</th>
-           <th>Method</th>
-           <th>Path</th>
-           <th>Response Time</th>
-       </MatTableHeader>
-       <MatTableRow>
-           <td></td>
-           <td>@context.StatusCode</td>
-           <td></td>
-           <td></td>
-           <td></td>
-           <td></td>
-       </MatTableRow>
+    <MatTable Items="@apiResponses" Class="mat-elevation-z5">
+        <MatTableHeader>
+            <th>Date / Time</th>
+            <th>Http Code</th>
+            <th>User</th>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Response Time</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td></td>
+            <td>@context.StatusCode</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </MatTableRow>
     </MatTable>
 }
 
 
-@functions {
+@code {
     ClientApiResponse[] apiResponses = new ClientApiResponse[] { };
 
     protected override async Task OnInitAsync()

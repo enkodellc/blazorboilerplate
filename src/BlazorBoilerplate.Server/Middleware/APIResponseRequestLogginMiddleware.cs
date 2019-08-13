@@ -24,7 +24,7 @@ namespace BlazorBoilerplate.Server.Middleware
     {
         private readonly RequestDelegate _next;
         ILogger<APIResponseRequestLogginMiddleware> _logger;
-        private ApiLogService _apiLogService;
+        private IApiLogService _apiLogService;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
         private readonly bool _enableAPILogging;  
 
@@ -35,7 +35,7 @@ namespace BlazorBoilerplate.Server.Middleware
             _clearCacheHeadersDelegate = ClearCacheHeaders;
         }
 
-        public async Task Invoke(HttpContext httpContext, ApiLogService apiLogService, ILogger<APIResponseRequestLogginMiddleware> logger)
+        public async Task Invoke(HttpContext httpContext, IApiLogService apiLogService, ILogger<APIResponseRequestLogginMiddleware> logger)
         {
             _logger = logger;
             _apiLogService = apiLogService;
@@ -88,12 +88,13 @@ namespace BlazorBoilerplate.Server.Middleware
                             {
                                 stopWatch.Stop();
                                 await responseBody.CopyToAsync(originalBodyStream);
+                                                               
                                 await SafeLog(requestTime,
                                     stopWatch.ElapsedMilliseconds,
                                     response.StatusCode,
                                     request.Method,
                                     request.Path,
-                                    request.QueryString.ToString(),
+                                    request.QueryString.ToString(), 
                                     requestBodyContent,
                                     responseBodyContent,
                                     httpContext.Connection.RemoteIpAddress.ToString(),
@@ -106,7 +107,7 @@ namespace BlazorBoilerplate.Server.Middleware
                         }
                         catch (System.Exception ex)
                         {
-                            _logger.LogWarning("A Inner Middleware exception occurred, but response has already started!");
+                            _logger.LogWarning("An Inner Middleware exception occurred: " + ex.Message);
                             await HandleExceptionAsync(httpContext, ex);
                         }
                         finally

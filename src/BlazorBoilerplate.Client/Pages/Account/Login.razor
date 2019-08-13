@@ -3,6 +3,7 @@
 @inject IUriHelper uriHelper
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
+@inject AppState appState
 @*TODO: Add client-side validation*@
 
 <MatCard>
@@ -47,7 +48,7 @@
     </MatExpansionPanel>
 </MatAccordion>
 
-@functions {
+@code {
     bool forgotPasswordToggle = false;
     LoginParameters loginParameters { get; set; } = new LoginParameters();
     ForgotPasswordParameters forgotPasswordParameters { get; set; } = new ForgotPasswordParameters();
@@ -64,6 +65,8 @@
             var response = await authStateProvider.Login(loginParameters);
             if (response.StatusCode == 200)
             {
+                //Load User Profile
+                await appState.GetUserProfile();
                 uriHelper.NavigateTo("/dashboard");
             }
             else

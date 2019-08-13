@@ -127,7 +127,8 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
             services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<ApiLogService>();
+            services.AddTransient<IUserProfileService, UserProfileService>();
+            services.AddTransient<IApiLogService, ApiLogService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject IUriHelper uriHelper
+@inject AppState appState
 
 <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
     <MatDrawer @bind-Opened="@_navMenuOpened">
@@ -29,22 +30,22 @@
                             @*<nav>
                                 <ul>
                                     <li>*@
-                                <MatTooltip Tooltip="Toggle Navigation">
-                                    <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
-                                </MatTooltip>
-                                @*</li>
-                                    <li>*@
-                                <MatTooltip Tooltip="Minify Navigation">
-                                    <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
-                                </MatTooltip>
-                                @*</li>
+                            <MatTooltip Tooltip="Toggle Navigation">
+                                <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                            </MatTooltip>
+                            @*</li>
+                                <li>*@
+                            <MatTooltip Tooltip="Minify Navigation">
+                                <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
+                            </MatTooltip>
+                            @*</li>
                                 <li>
                                     <MatTooltip Tooltip="Lock Navigation" >
                                         <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
                                     </MatTooltip>
                                     </li>*@
-                                @*</ul>
-                            </nav>*@
+                            @*</ul>
+                                </nav>*@
                         </div>
                     </MatAppBarSection>
                     <MatAppBarSection Align="@MatAppBarSectionAlign.End">
@@ -73,22 +74,32 @@
     </MatDrawerContent>
 </MatDrawerContainer>
 
-@functions {
+@code {
     bool _navMenuOpened = true;
     bool _navMinified = false;
     public string bbDrawerClass = "";
 
-    //protected override async Task OnInitAsync()
-    //{
-    //    // Uncomment to secure entire app
-    //    if (!(await AuthenticationState).User.Identity.IsAuthenticated)
-    //    {
-    //        uriHelper.NavigateTo("/account/login");
-    //    }
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    //    // Default landing page
-    //    //uriHelper.NavigateTo("/");
-    //}
+    protected override async Task OnInitAsync()
+    {
+        // Uncomment to secure entire app
+        //uriHelper.NavigateTo("/account/login");
+
+        // Set Default landing page if you want
+        //uriHelper.NavigateTo("/");
+
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var profile = await appState.GetUserProfile();
+            _navMenuOpened = profile.IsNavOpen;
+            _navMinified = profile.IsNavMinified;
+            // uriHelper.NavigateTo(AppState.UserProfile.LastPageVisited); //Not Implemented
+        }
+    }
 
     void NavToggle()
     {
