@@ -37,8 +37,8 @@ namespace BlazorBoilerplate.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                //options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}"));  // Sql Lite / file database
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); //SQL Server Database
+                options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}"));  // Sql Lite / file database
+                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); //SQL Server Database
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
