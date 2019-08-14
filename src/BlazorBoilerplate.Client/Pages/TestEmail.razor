@@ -11,7 +11,7 @@
     <ValidationSummary />
     <fieldset>
         <div class="form-group">
-            <MatTextField @bind-value="@emailParameters.ToAddress" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-Value="@emailParameters.ToAddress" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group d-flex justify-content-end">
             <MatButton Type="submit" Raised="true">Send Test Template Email</MatButton>
@@ -22,7 +22,7 @@
 @code {
 
     EmailParameters emailParameters { get; set; } = new EmailParameters();
-    protected override void OnInit()
+    protected override void OnInitialized()
     {
         //set the template name so it passes model validation
         emailParameters.TemplateName = "Test";

@@ -28,7 +28,7 @@
     int currentCount = 0;
     int profileCurrentCount = -1;
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         profileCurrentCount = await appState.GetUserProfileCount();
     }

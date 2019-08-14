@@ -20,10 +20,10 @@
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-value="@confirmEmailParameters.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@confirmEmailParameters.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-value="@confirmEmailParameters.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@confirmEmailParameters.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group d-flex justify-content-end">
                 <MatButton Type="submit" Raised="true">Send Confirmation</MatButton>
@@ -38,7 +38,7 @@
     [Parameter]
     public string UserId { get; set; }
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         // Blazor does not have query string accessible parameters yet so a hack is needed. Token is too long for path parameter
         var absoluteUrl = uriHelper.GetAbsoluteUri();

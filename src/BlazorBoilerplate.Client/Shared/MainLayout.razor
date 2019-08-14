@@ -82,7 +82,7 @@
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         // Uncomment to secure entire app
         //uriHelper.NavigateTo("/account/login");

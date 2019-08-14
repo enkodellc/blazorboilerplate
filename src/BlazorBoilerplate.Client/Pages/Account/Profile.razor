@@ -16,16 +16,16 @@
     <ValidationSummary />
     <fieldset>
         <div class="form-group">
-            <MatTextField @bind-value="@userInfo.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
+            <MatTextField @bind-Value="@userInfo.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-value="@userInfo.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-Value="@userInfo.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-value="@userInfo.FirstName" Label="First Name" FullWidth="true"></MatTextField>
+            <MatTextField @bind-Value="@userInfo.FirstName" Label="First Name" FullWidth="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-value="@userInfo.LastName" Label="Last Name" FullWidth="true"></MatTextField>
+            <MatTextField @bind-Value="@userInfo.LastName" Label="Last Name" FullWidth="true"></MatTextField>
         </div>
 
         <div class="form-group">
@@ -50,7 +50,7 @@
     [Parameter]
     public string UserId { get; set; }
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         userInfo = await authStateProvider.GetUserInfo();
     }

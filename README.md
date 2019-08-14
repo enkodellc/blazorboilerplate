@@ -23,13 +23,13 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- .NET Core 3.0 Preview 7 SDK 3.0.100-preview7-012821
+- .NET Core 3.0 Preview 8 SDK SDK 3.0.100-preview8-013656
 - Visual Studio 2019 Preview  with the ASP.NET and web development workload selected.
-- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview7.19365.7**
-- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.0.0-preview7.19362.6**
+- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview8-28405-07**
+- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.0.0-preview8-28405-07**
 
 ### How to run
-1. Install **dotnet-sdk 3.0.100-preview7-012821** and the latest **Visual Studio 2019 Preview**.
+1. Install **dotnet-sdk 3.0.100-preview8-013656** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
@@ -81,9 +81,11 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 ## News
 
 ### 0.1.9 (In Progress)
+- Update to SDK 3.0.0-preview8-28405-07 - Breaking Changes
 - Added IpAddress and UserId to Middleware ApiLogging
 - Review / Fix VS code Warnings and Information notice. Clean up code.
-- ApiLogging UI Screen
+- UserProfile - Beta
+- MatBlazor 1.6.0
 
 ### 0.1.8
 - Middleware to log Api Requests and Responses for auditing and debugging. Thanks [salslab](https://github.com/salslab/AspNetCoreApiLoggingSample)

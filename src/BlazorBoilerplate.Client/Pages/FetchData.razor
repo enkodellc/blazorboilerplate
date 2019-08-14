@@ -56,7 +56,7 @@ else
     Todo[] todos = new Todo[] { };
     WeatherForecast[] forecasts;
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         ClientApiResponse apiResponse = await Http.GetJsonAsync<ClientApiResponse>("api/SampleData/WeatherForecasts");
 

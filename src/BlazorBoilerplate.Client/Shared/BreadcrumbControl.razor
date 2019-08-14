@@ -32,7 +32,7 @@
     public string[] paths;
     public string baseUrl;
 
-    protected override void OnInit()
+    protected override void OnInitialized()
     {
         baseUrl = uriHelper.GetBaseUri();
         BuildBreadcrumbs();

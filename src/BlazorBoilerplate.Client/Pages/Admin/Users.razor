@@ -49,13 +49,13 @@ else
     <MatDialogContent>
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
         </fieldset>
     </MatDialogContent>
@@ -71,7 +71,7 @@ else
     DemoUser[] users;
     RegisterParameters registerParameters { get; set; } = new RegisterParameters();
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         apiResponse = await Http.GetJsonAsync<ClientApiResponse>("api/SampleData/GetDemoUsers");
 
