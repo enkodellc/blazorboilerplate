@@ -20,7 +20,7 @@ using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Middleware;
-using AutoMapper;
+//using AutoMapper;
 
 namespace BlazorBoilerplate.Server
 {
