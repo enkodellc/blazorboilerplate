@@ -20,6 +20,7 @@ using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Middleware;
+using AutoMapper;
 
 namespace BlazorBoilerplate.Server
 {
@@ -36,10 +37,17 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}"));  // Sql Lite / file database
-                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); //SQL Server Database
-
+            services.AddDbContext<ApplicationDbContext>(options => {
+                if (Convert.ToBoolean(Configuration["Authentication:UseSqlServer"]))
+                {
+                    options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}");  // Sql Lite / file database
+                }
+                else
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")); //SQL Server Database
+                }
+            });
+            
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -73,7 +81,7 @@ namespace BlazorBoilerplate.Server
                 options.Lockout.AllowedForNewUsers = true;
 
                 // Require Confirmed Email User settings
-                if (Convert.ToBoolean(Configuration["RequireConfirmedEmail"]))
+                if (Convert.ToBoolean(Configuration["BlazorBoilerplate.RequireConfirmedEmail"]))
                 {
                     options.User.RequireUniqueEmail = false;
                     options.SignIn.RequireConfirmedEmail = true;
@@ -126,6 +134,7 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IApiLogService, ApiLogService>();
+            services.AddTransient<ITodoService, ToDoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -141,7 +150,7 @@ namespace BlazorBoilerplate.Server
 
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
-            app.UseMiddleware<APIResponseRequestLogginMiddleware>(Convert.ToBoolean(Configuration["EnableAPILogging"] ?? "true"));
+            app.UseMiddleware<APIResponseRequestLogginMiddleware>(Convert.ToBoolean(Configuration["BlazorBoilerplate.EnableAPILogging"] ?? "true"));
 
             if (env.IsDevelopment())
             {

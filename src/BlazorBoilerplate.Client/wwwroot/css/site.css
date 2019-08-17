@@ -463,6 +463,8 @@ ul.breadcrumb {
             text-decoration: underline;
         }
 
+
+
 /* misc */
 .contrib-card {
     padding: 20px;
@@ -497,8 +499,8 @@ ul.breadcrumb {
 
 /* Small devices (landscape phones, less than 768px)*/
 @media (max-width: 767.98px) {
-    .mdc-drawer,
-    .app-sidebar {
+
+    .mdc-drawer, .app-sidebar {
         width: 54px !important;
         transform: translateX(0%);
         transition: width .4s ease-in-out;
@@ -602,6 +604,7 @@ ul.breadcrumb {
 /* Large devices (desktops, less than 1200px) */
 @media (max-width: 1199.98px) {
 }
+
 
 
 /* MatBlazor temp */

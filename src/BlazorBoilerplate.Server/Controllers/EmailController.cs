@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 
 namespace BlazorBoilerplate.Server.Controllers
@@ -27,16 +28,16 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpPost("Send")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<APIResponse> Send(EmailParameters parameters)
+        public async Task<APIResponse> Send(EmailDto parameters)
         {
             if (!ModelState.IsValid)
             {
                 return new APIResponse(400, "User Model is Invalid");
             }
 
-            var email = new EmailMessage();
+            var email = new EmailMessageDto();
 
-            email.ToAddresses.Add(new EmailAddress(parameters.ToName, parameters.ToAddress));
+            email.ToAddresses.Add(new EmailAddressDto(parameters.ToName, parameters.ToAddress));
 
             //This forces all emails from the API to use the Test template to prevent spam
             parameters.TemplateName = "Test";

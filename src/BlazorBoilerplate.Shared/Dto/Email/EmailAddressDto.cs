@@ -1,6 +1,6 @@
-﻿namespace BlazorBoilerplate.Shared
+﻿namespace BlazorBoilerplate.Shared.Dto
 {
-    public class EmailAddress
+    public class EmailAddressDto
     {
         private string _name;
 
@@ -21,7 +21,7 @@
         }
         public string Address { get; set; }
 
-        public EmailAddress(string name, string address)
+        public EmailAddressDto(string name, string address)
         {
             _name = name;
             Address = address;

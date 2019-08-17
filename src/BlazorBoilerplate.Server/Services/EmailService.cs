@@ -11,17 +11,17 @@ using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
 using MailKit.Search;
 using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 
 namespace BlazorBoilerplate.Server.Services
 {
     public interface IEmailService
     {
-        Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessage emailMessage);
-        List<EmailMessage> ReceiveEmail(int maxCount = 10);
-        Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailImapAsync();
-        Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailPopAsync(int min = 0, int max = 0);
-        void Send(EmailMessage emailMessage);
+        Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessageDto emailMessage);
+        List<EmailMessageDto> ReceiveEmail(int maxCount = 10);
+        Task<(bool success, string errorMsg, List<EmailMessageDto>)> ReceiveMailImapAsync();
+        Task<(bool success, string errorMsg, List<EmailMessageDto>)> ReceiveMailPopAsync(int min = 0, int max = 0);
+        void Send(EmailMessageDto emailMessage);
     }
 
     public class EmailService : IEmailService
@@ -37,12 +37,12 @@ namespace BlazorBoilerplate.Server.Services
             _logger = logger;
         }
 
-        public List<EmailMessage> ReceiveEmail(int maxCount = 10)
+        public List<EmailMessageDto> ReceiveEmail(int maxCount = 10)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailImapAsync()
+        public async Task<(bool success, string errorMsg, List<EmailMessageDto>)> ReceiveMailImapAsync()
         {
             using (var emailClient = new ImapClient())
             {
@@ -61,7 +61,7 @@ namespace BlazorBoilerplate.Server.Services
                         await emailClient.AuthenticateAsync(_emailConfiguration.ImapUsername, _emailConfiguration.ImapPassword).ConfigureAwait(false);
                     }
 
-                    List<EmailMessage> emails = new List<EmailMessage>();
+                    List<EmailMessageDto> emails = new List<EmailMessageDto>();
                     await emailClient.Inbox.OpenAsync(MailKit.FolderAccess.ReadOnly);
 
                     //TODO implement email results filtering
@@ -70,14 +70,14 @@ namespace BlazorBoilerplate.Server.Services
                     {
                         var message = await emailClient.Inbox.GetMessageAsync(uid);
 
-                        var emailMessage = new EmailMessage
+                        var emailMessage = new EmailMessageDto
                         {
                             Body = !string.IsNullOrEmpty(message.HtmlBody) ? message.HtmlBody : message.TextBody,
 
                             Subject = message.Subject
                         };
-                        emailMessage.ToAddresses.AddRange(message.To.Select(x => (MailboxAddress)x).Select(x => new EmailAddress(x.Name, x.Address)));
-                        emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new EmailAddress(x.Name, x.Address)));
+                        emailMessage.ToAddresses.AddRange(message.To.Select(x => (MailboxAddress)x).Select(x => new EmailAddressDto(x.Name, x.Address)));
+                        emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new EmailAddressDto(x.Name, x.Address)));
 
                         emails.Add(emailMessage);
                     }
@@ -93,7 +93,7 @@ namespace BlazorBoilerplate.Server.Services
             }
         }
 
-        public async Task<(bool success, string errorMsg, List<EmailMessage>)> ReceiveMailPopAsync(int min = 0, int max = 0)
+        public async Task<(bool success, string errorMsg, List<EmailMessageDto>)> ReceiveMailPopAsync(int min = 0, int max = 0)
         {
             using (var emailClient = new Pop3Client())
             {
@@ -108,7 +108,7 @@ namespace BlazorBoilerplate.Server.Services
                         await emailClient.AuthenticateAsync(_emailConfiguration.PopUsername, _emailConfiguration.PopPassword).ConfigureAwait(false);
                     }
 
-                    List<EmailMessage> emails = new List<EmailMessage>();
+                    List<EmailMessageDto> emails = new List<EmailMessageDto>();
 
                     if (max == 0) max = await emailClient.GetMessageCountAsync(); // if max not defined, get all messages
 
@@ -116,15 +116,15 @@ namespace BlazorBoilerplate.Server.Services
                     {
                         var message = await emailClient.GetMessageAsync(i);
 
-                        var emailMessage = new EmailMessage
+                        var emailMessage = new EmailMessageDto
                         {
                             Body = !string.IsNullOrEmpty(message.HtmlBody) ? message.HtmlBody : message.TextBody,
                             IsHtml = !string.IsNullOrEmpty(message.HtmlBody) ? true : false,
                             Subject = message.Subject
 
                         };
-                        emailMessage.ToAddresses.AddRange(message.To.Select(x => (MailboxAddress)x).Select(x => new EmailAddress(x.Name, x.Address)));
-                        emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new EmailAddress(x.Name, x.Address)));
+                        emailMessage.ToAddresses.AddRange(message.To.Select(x => (MailboxAddress)x).Select(x => new EmailAddressDto(x.Name, x.Address)));
+                        emailMessage.FromAddresses.AddRange(message.From.Select(x => (MailboxAddress)x).Select(x => new EmailAddressDto(x.Name, x.Address)));
 
                         emails.Add(emailMessage);
                     }
@@ -139,12 +139,12 @@ namespace BlazorBoilerplate.Server.Services
             }
         }
     
-        public void Send(EmailMessage emailMessage)
+        public void Send(EmailMessageDto emailMessage)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessage emailMessage)
+        public async Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessageDto emailMessage)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace BlazorBoilerplate.Server.Services
                 // Set From Address it was not set
                 if (emailMessage.FromAddresses.Count == 0)
                 {
-                    emailMessage.FromAddresses.Add(new EmailAddress(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
+                    emailMessage.FromAddresses.Add(new EmailAddressDto(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
                 }
 
                 message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));

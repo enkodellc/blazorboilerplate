@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
@@ -36,7 +36,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost("Upsert")]
-        public async Task<APIResponse> Upsert(UserProfile userProfile)
+        public async Task<APIResponse> Upsert(UserProfileDto userProfile)
         {
             if (!ModelState.IsValid)
             {

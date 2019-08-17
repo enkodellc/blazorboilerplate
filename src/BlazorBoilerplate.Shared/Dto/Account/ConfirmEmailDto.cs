@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Shared.Dto
 {
 
-    public class ConfirmEmailParameters
+    public class ConfirmEmailDto
     {
         [Required]
         public string UserId { get; set; }

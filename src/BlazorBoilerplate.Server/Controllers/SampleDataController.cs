@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 
 namespace BlazorBoilerplate.Server.Controllers
@@ -32,10 +33,10 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpGet("[action]")]
         [Authorize(Roles = "SuperAdmin, Admin, User")]
-        public IEnumerable<WeatherForecast> WeatherForecasts()
+        public IEnumerable<WeatherForecastDto> WeatherForecasts()
         {
             var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecastDto
             {
                 Date         = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
@@ -67,7 +68,7 @@ namespace BlazorBoilerplate.Server.Controllers
             using (var client = new HttpClient())
             {
                 string content = await client.GetStringAsync("https://blazorboilerplate.com/users.json");
-                IEnumerable<DemoUser> users = JsonConvert.DeserializeObject<IEnumerable<DemoUser>>(content);
+                IEnumerable<DemoUserDto> users = JsonConvert.DeserializeObject<IEnumerable<DemoUserDto>>(content);
                 return new APIResponse(200, "Retrieved Demo Users", users);
                 //return users;
             }

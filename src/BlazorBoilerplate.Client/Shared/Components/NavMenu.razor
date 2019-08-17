@@ -5,6 +5,10 @@
         <MatNavItem Href="@uriHelper.ToAbsoluteUri(" ").AbsoluteUri">
             <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
         </MatNavItem>
+        
+        <MatNavItem Href="@uriHelper.ToAbsoluteUri("todo_list").AbsoluteUri">
+            <MatIcon>list_alt</MatIcon> <span class="miniHover">Todo List</span>
+        </MatNavItem>
 
         <MatNavSubMenu>
             <MatNavSubMenuHeader>
@@ -51,10 +55,9 @@
             <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Users</span>
         </MatNavItem>
 
-        <MatNavItem Href="@uriHelper.ToAbsoluteUri("contributors").AbsoluteUri">
-            <MatIcon>group_add</MatIcon> <span class="miniHover">Contributors</span>
+        <MatNavItem Href="@uriHelper.ToAbsoluteUri("sponsors").AbsoluteUri">
+            <MatIcon>attach_money</MatIcon> <span class="miniHover">Sponsors</span>
         </MatNavItem>
-
     </MatNavMenu>
 
 @code {

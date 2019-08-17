@@ -1,6 +1,5 @@
 ﻿@page "/fetch_data"
 @attribute [Authorize]
-@using BlazorBoilerplate.Shared
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
@@ -54,16 +53,16 @@ else
 
 @code {
     Todo[] todos = new Todo[] { };
-    WeatherForecast[] forecasts;
+    WeatherForecastDto[] forecasts;
 
     protected override async Task OnInitializedAsync()
     {
-        ClientApiResponse apiResponse = await Http.GetJsonAsync<ClientApiResponse>("api/SampleData/WeatherForecasts");
+        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/SampleData/WeatherForecasts");
 
         if (apiResponse.StatusCode == 200)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "Weather Forecast Retrieved");
-            forecasts = Newtonsoft.Json.JsonConvert.DeserializeObject<WeatherForecast[]>(apiResponse.Result.ToString());
+            forecasts = Newtonsoft.Json.JsonConvert.DeserializeObject<WeatherForecastDto[]>(apiResponse.Result.ToString());
         }
         else
         {

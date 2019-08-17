@@ -2,7 +2,7 @@
 
 namespace BlazorBoilerplate.Shared
 {
-    public class EmailParameters
+    public class EmailDto
     {
         private string _name;
 

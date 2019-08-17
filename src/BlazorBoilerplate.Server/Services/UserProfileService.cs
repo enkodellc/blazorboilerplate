@@ -2,15 +2,16 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Server.Models;
 
 namespace BlazorBoilerplate.Server.Services
 {
     public interface IUserProfileService
     {
         Task<APIResponse> Get(Guid userId);
-        Task<APIResponse> Upsert(UserProfile userProfile);
+        Task<APIResponse> Upsert(UserProfileDto userProfile);
     }
     public class UserProfileService : IUserProfileService
     {
@@ -25,21 +26,25 @@ namespace BlazorBoilerplate.Server.Services
         {
             try
             {
-                var profile = from userProf in _db.UserProfiles
+                var profileQuery = from userProf in _db.UserProfiles
                               where userProf.UserId == userId
                               select userProf;
 
-                UserProfile userProfile = new UserProfile();
-                if (!profile.Any())
+                UserProfileDto userProfile = new UserProfileDto();
+                if (!profileQuery.Any())
                 {
-                    userProfile = new UserProfile
+                    userProfile = new UserProfileDto
                     {
                         UserId = userId
                     };
                 }
                 else
                 {
-                    userProfile = profile.First();
+                    UserProfile profile = profileQuery.First();
+                    userProfile.Count = profile.Count;
+                    userProfile.IsNavOpen = profile.IsNavOpen;
+                    userProfile.LastPageVisited = profile.LastPageVisited;
+                    userProfile.IsNavMinified = profile.IsNavMinified;
                 }
 
                 return new APIResponse(200, "Retrieved User Profile", userProfile);
@@ -51,26 +56,34 @@ namespace BlazorBoilerplate.Server.Services
             }
         }
 
-        public async Task<APIResponse> Upsert(UserProfile userProfile)
+        public async Task<APIResponse> Upsert(UserProfileDto userProfile)
         {
             try
             {
-                var profiles = from prof in _db.UserProfiles where prof.UserId == userProfile.UserId select prof;
+                var profileQuery = from prof in _db.UserProfiles where prof.UserId == userProfile.UserId select prof;
 
-                if (profiles.Any())
+                UserProfile profile = new UserProfile();
+
+                if (profileQuery.Any())
                 {
-                    UserProfile profile = profiles.First();
+                    profile = profileQuery.First();
+                }
+
                     profile.Count = userProfile.Count;
                     profile.IsNavOpen = userProfile.IsNavOpen;
                     profile.LastPageVisited = userProfile.LastPageVisited;
                     profile.IsNavMinified = userProfile.IsNavMinified;
-                    profile.LastUpdatedDate = userProfile.LastUpdatedDate;
+                    profile.LastUpdatedDate = DateTime.Now;
+
+                if (profileQuery.Any())
+                {
                     _db.UserProfiles.Update(profile);
                 }
                 else
                 {
-                    _db.UserProfiles.Add(userProfile);
-                }
+                    _db.UserProfiles.Add(profile);
+                }                   
+               
                 await _db.SaveChangesAsync();
 
                 return new APIResponse(200, "Updated User Profile");

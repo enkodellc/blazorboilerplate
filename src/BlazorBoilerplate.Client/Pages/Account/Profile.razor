@@ -2,8 +2,6 @@
 @page "/account/profile/{UserId}"
 @attribute [Authorize]
 
-@using BlazorBoilerplate.Shared
-
 @inject IUriHelper uriHelper
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider authStateProvider
@@ -45,7 +43,7 @@
 
 
 @code {
-    UserInfo userInfo { get; set; } = new UserInfo();
+    UserInfoDto userInfo { get; set; } = new UserInfoDto();
 
     [Parameter]
     public string UserId { get; set; }
@@ -59,11 +57,11 @@
     {
         try
         {
-            ClientApiResponse apiResponse = await authStateProvider.UpdateUser(userInfo);
+            ApiResponseDto apiResponse = await authStateProvider.UpdateUser(userInfo);
 
             if (apiResponse.StatusCode == 200)
             {
-                userInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfo>(apiResponse.Result.ToString());
+                userInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
                 matToaster.Add("Profile update was Successful", MatToastType.Success);
             }
             else

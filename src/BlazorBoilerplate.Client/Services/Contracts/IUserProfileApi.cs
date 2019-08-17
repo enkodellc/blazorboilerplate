@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 
 namespace BlazorBoilerplate.Client.Services.Contracts
 {
@@ -8,7 +8,7 @@ namespace BlazorBoilerplate.Client.Services.Contracts
     /// </summary>
     public interface IUserProfileApi
     {
-        Task<ClientApiResponse> Upsert(UserProfile userProfile);
-        Task<ClientApiResponse> Get();
+        Task<ApiResponseDto> Upsert(UserProfileDto userProfile);
+        Task<ApiResponseDto> Get();
     }
 }

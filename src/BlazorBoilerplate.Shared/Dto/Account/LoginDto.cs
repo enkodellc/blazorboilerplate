@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Shared.Dto
 {
-    public class LoginParameters
+    public class LoginDto
     {
         [Required]
         public string UserName { get; set; }

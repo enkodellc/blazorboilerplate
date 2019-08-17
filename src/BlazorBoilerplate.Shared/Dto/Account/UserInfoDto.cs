@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Shared.Dto
 {
-    public class UserInfo
+    public class UserInfoDto
     {
         public bool IsAuthenticated { get; set; }
         public string UserName { get; set; }
@@ -14,7 +14,7 @@ namespace BlazorBoilerplate.Shared
     }
 
     //For testing Admin UI
-    public class DemoUser
+    public class DemoUserDto
     {
         public int Id { get; set; }
         public string UserName { get; set; }
@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Shared
         public string Email { get; set; }
         public string[] Roles { get; set; }
 
-        public DemoUser()
+        public DemoUserDto()
         {
         }
     }

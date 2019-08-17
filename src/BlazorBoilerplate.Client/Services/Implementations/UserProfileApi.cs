@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Client.Services.Contracts;
 
 namespace BlazorBoilerplate.Client.Services.Implementations
@@ -15,14 +15,14 @@ namespace BlazorBoilerplate.Client.Services.Implementations
             _httpClient = httpClient;
         }
 
-        public async Task<ClientApiResponse> Get()
+        public async Task<ApiResponseDto> Get()
         {
-            return await _httpClient.GetJsonAsync<ClientApiResponse>("api/UserProfile/Get");
+            return await _httpClient.GetJsonAsync<ApiResponseDto>("api/UserProfile/Get");
         }
 
-        public async Task<ClientApiResponse> Upsert(UserProfile userProfile)
+        public async Task<ApiResponseDto> Upsert(UserProfileDto userProfile)
         {
-            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/UserProfile/Upsert", userProfile);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/UserProfile/Upsert", userProfile);
         }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Server.Models
 {
-    //Use Profile field until .NET Core has aspnetprofile table / functionality is created
     public class UserProfile
-    {        
+    {
         [Key]
         public long Id { get; set; }
         [Required]

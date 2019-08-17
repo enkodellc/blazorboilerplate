@@ -1,5 +1,5 @@
 ﻿@page "/email"
-@using BlazorBoilerplate.Shared
+
 @inject IUriHelper uriHelper
 @inject HttpClient Http
 @inject IMatToaster matToaster
@@ -21,7 +21,7 @@
 
 @code {
 
-    EmailParameters emailParameters { get; set; } = new EmailParameters();
+    EmailDto emailParameters { get; set; } = new EmailDto();
     protected override void OnInitialized()
     {
         //set the template name so it passes model validation
@@ -32,7 +32,7 @@
     {
         try
         {
-            ClientApiResponse apiResponse = await Http.PostJsonAsync<ClientApiResponse>("api/Email/Send", emailParameters);
+            ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Email/Send", emailParameters);
 
             if (apiResponse.StatusCode == 200)
             {

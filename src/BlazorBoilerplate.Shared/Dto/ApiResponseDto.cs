@@ -1,9 +1,9 @@
 ﻿using System.Runtime.Serialization;
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Shared.Dto
 {
     [DataContract]
-    public class ClientApiResponse
+    public class ApiResponseDto
     {
         [DataMember]
         public string Version { get; set; }

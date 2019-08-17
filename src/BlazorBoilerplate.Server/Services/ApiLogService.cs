@@ -4,40 +4,45 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Shared;
 using Microsoft.Extensions.Configuration;
+using BlazorBoilerplate.Server.Models;
 
 namespace BlazorBoilerplate.Server.Services
 {
     public interface IApiLogService
     {
-        Task<bool> Log(ApiLogItem apiLogItem);
+        Task Log(ApiLogItem apiLogItem);
         Task<IEnumerable<ApiLogItem>> Get();
     }
     public class ApiLogService : IApiLogService
     {
-        private readonly ApplicationDbContext _db;
-        private IConfiguration _configuration { get; set; }
+        ApplicationDbContext _db;
+        DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
 
-        public ApiLogService(ApplicationDbContext db, IConfiguration configuration)
+        public ApiLogService(IConfiguration configuration, ApplicationDbContext db)
         {
             _db = db;
-            _configuration = configuration;
+
+            // Calling Log from the API Middlware results in a disposed ApplicationDBContext. This is here to build a DB Context for logging API Calls
+            // If you have a better solution please let me know.
+            _optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            if (Convert.ToBoolean(configuration["Authentication:UseSqlServer"]))
+            {
+                _optionsBuilder.UseSqlite($"Filename={configuration.GetConnectionString("SqlLiteConnectionFileName")}");  // Sql Lite / file database
+            }
+            else
+            {
+                _optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection")); //SQL Server Database
+            }
         }
 
-        public async Task<bool> Log(ApiLogItem apiLogItem)
+        public async Task Log(ApiLogItem apiLogItem)
         {
-            try
+            using (ApplicationDbContext _dbContext = new ApplicationDbContext(_optionsBuilder.Options))
             {
-                // TODO Fix Entity Framework
-                _db.ApiLogs.Add(apiLogItem);
-                await _db.SaveChangesAsync();
+                _dbContext.ApiLogs.Add(apiLogItem);
+                await _dbContext.SaveChangesAsync();
             }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-            }
-            return true;
         }
 
         public async Task<IEnumerable<ApiLogItem>> Get()

@@ -9,7 +9,7 @@
                 <img alt="Blazor Boilerplate" class="logo-img" src="images/blazorboilerplate-dark.svg" title="Blazor Boilerplate">
                 <a class="miniHover" href="/">Blazor Boilerplate</a>
             </div>
-            <ProfileControl />
+            <UserProfile />
         </header>
         <NavMenu />
         <footer class="drawer-footer">
@@ -55,12 +55,12 @@
                         <MatTooltip Tooltip="Github Repository">
                             <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
                         </MatTooltip>
-                        <LoginControl></LoginControl>
+                        <Login></Login>
                     </MatAppBarSection>
                 </MatAppBarRow>
             </MatAppBar>
             <MatAppBarContent>
-                <BreadcrumbControl RootLinkTitle="Home"></BreadcrumbControl>
+                <Breadcrumbs RootLinkTitle="Home"></Breadcrumbs>
                 <section class="container-fluid">
                     @Body
                 </section>

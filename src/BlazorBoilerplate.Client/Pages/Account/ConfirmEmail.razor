@@ -2,9 +2,6 @@
 @page "/account/confirmemail/{UserId}"
 
 @layout LoginLayout
-
-@using BlazorBoilerplate.Shared
-
 @inject IUriHelper uriHelper
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider authStateProvider
@@ -33,7 +30,7 @@
 </MatCard>
 
 @code {
-    ConfirmEmailParameters confirmEmailParameters { get; set; } = new ConfirmEmailParameters();
+    ConfirmEmailDto confirmEmailParameters { get; set; } = new ConfirmEmailDto();
 
     [Parameter]
     public string UserId { get; set; }
@@ -45,7 +42,7 @@
         var token = absoluteUrl.Substring(absoluteUrl.IndexOf("?token=") + 7);
         if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(token))
         {
-            confirmEmailParameters = new ConfirmEmailParameters
+            confirmEmailParameters = new ConfirmEmailDto
             {
                 Token = token,
                 UserId = this.UserId

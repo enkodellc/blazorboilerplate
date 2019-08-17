@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Server.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

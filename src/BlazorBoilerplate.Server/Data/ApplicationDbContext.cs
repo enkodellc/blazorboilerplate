@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared;
 
 namespace BlazorBoilerplate.Server.Data
 {
@@ -11,6 +10,7 @@ namespace BlazorBoilerplate.Server.Data
     {
         public DbSet<ApiLogItem> ApiLogs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<Todo> Todos { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
