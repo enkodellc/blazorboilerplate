@@ -18,6 +18,7 @@
     <PackageProjectUrl>https://blazorboilerplate.com/</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
+    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,11 +32,11 @@
     <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
   </ItemGroup>
 
-<!--  <ItemGroup>-->
-<!--    <Reference Include="MatBlazor">-->
-<!--      <HintPath>wwwroot\matblazor\MatBlazor.dll</HintPath>-->
-<!--    </Reference>-->
-<!--  </ItemGroup>-->
+  <!--  <ItemGroup>-->
+  <!--    <Reference Include="MatBlazor">-->
+  <!--      <HintPath>wwwroot\matblazor\MatBlazor.dll</HintPath>-->
+  <!--    </Reference>-->
+  <!--  </ItemGroup>-->
 
   <ItemGroup>
     <Folder Include="wwwroot\fonts\fontawesome\" />

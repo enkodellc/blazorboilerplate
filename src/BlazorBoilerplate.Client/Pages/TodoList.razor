@@ -16,7 +16,7 @@
     <MatTableRow>
         <td>
             <div style="width:150px;">
-                <MatIconButton Icon="delete" OnClick="@((e) => Delete())"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@((e) => Delete(context))"></MatIconButton>
             </div>
         </td>
         <td>@String.Format("{0:d}", @context.Id)</td>
@@ -86,7 +86,7 @@
         }
     }
 
-    public async Task Delete()
+    public async Task Delete(TodoDto todo)
     {
         try
         {
@@ -94,7 +94,8 @@
 
             //if (apiResponse.StatusCode == 200)
             //{
-            //    matToaster.Add(apiResponse.Message, MatToastType.Success);
+            matToaster.Add("Todo Deleted", MatToastType.Success);
+            todos.Remove(todo);
             //}
             //else
             //{

@@ -65,12 +65,12 @@ namespace BlazorBoilerplate.Server.Services
                 await _db.Todos.AddAsync(newTodo);
                 await _db.SaveChangesAsync();
 
-                return new APIResponse(200, "Updated Todo");
+                return new APIResponse(200, "Created Todo", newTodo);
             }
             catch (Exception ex)
             {
                 string test = ex.Message;
-                return new APIResponse(400, "Failed to update Todo");
+                return new APIResponse(400, "Failed to Create Todo");
             }
         }
 
