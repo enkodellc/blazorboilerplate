@@ -1,19 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Shared.Dto
 {
-    public class RegisterParameters
+    public class ResetPasswordDto
     {
         [Required]
-        [StringLength(64, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
-        [Display(Name = "UserName")]
-        public string UserName { get; set; }
+        public string UserId { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress)]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
+        public string Token { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]

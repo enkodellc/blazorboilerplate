@@ -67,10 +67,11 @@ It though is my ambition to learn and get feedback on what Best Practices can be
  - Email Confirmation of Registered Users
  - Forgot Password Functionality
  - Middleware to log Api Requests and Responses and Logging to Database for audit trails.
+ - Todo List CRUD Example with N-Tier Layers Not just some fluff that most others do.
 
 ## Road map
 - User profile & settings management.
-- User, role, permission and organization unit management.
+- User, claims, role, permission and organization unit management.
 - Real time chat and notification system. Slack Communication clone?
 - Blog or other real world functionality.
 - Audit log report UI.
@@ -80,8 +81,14 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.1.9 (In Progress)
-- Update to SDK 3.0.0-preview8-28405-07 - Breaking Changes
+### 0.2.0 (In Progress)
+- CRUD Todo List example (In Progress)
+- Tweak Middleware
+- Restructure Project Refactor BlazorBoilerplate.Shared for N-Tier Design
+- Implement Automapper (In Progress)
+
+### 0.1.9
+- Update to SDK 3.0.0-preview8-28405-07
 - Added IpAddress and UserId to Middleware ApiLogging
 - Review / Fix VS code Warnings and Information notice. Clean up code.
 - UserProfile - Beta

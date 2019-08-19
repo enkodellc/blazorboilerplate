@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Server.Models;
@@ -19,7 +19,7 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class AuthorizeController : ControllerBase
     {
-        private static readonly UserInfo LoggedOutUser = new UserInfo { IsAuthenticated = false, Roles = new String[] { } };
+        private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new String[] { } };
 
         // Logger instance
         private readonly ILogger<AuthorizeController> _logger;
@@ -46,8 +46,8 @@ namespace BlazorBoilerplate.Server.Controllers
         [Authorize]
         public APIResponse GetUser()
         {
-            UserInfo userInfo = User != null && User.Identity.IsAuthenticated
-                ? new UserInfo { UserName = User.Identity.Name, IsAuthenticated = true }
+            UserInfoDto userInfo = User != null && User.Identity.IsAuthenticated
+                ? new UserInfoDto { UserName = User.Identity.Name, IsAuthenticated = true }
                 : LoggedOutUser;
             return new APIResponse(200, "Get User Successful", userInfo);
         }
@@ -63,7 +63,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [AllowAnonymous]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<APIResponse> Login(LoginParameters parameters)
+        public async Task<APIResponse> Login(LoginDto parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace BlazorBoilerplate.Server.Controllers
             var user = await _userManager.FindByEmailAsync(parameters.UserName)
                        ?? await _userManager.FindByNameAsync(parameters.UserName);
 
-            if (!user.EmailConfirmed && Convert.ToBoolean(_configuration["RequireConfirmedEmail"]))
+            if (!user.EmailConfirmed && Convert.ToBoolean(_configuration["BlazorBoilerplate.RequireConfirmedEmail"]))
             {
                 return new APIResponse(401, "User has not confirmed their email.");
             }
@@ -104,7 +104,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<APIResponse> Register(RegisterParameters parameters)
+        public async Task<APIResponse> Register(RegisterDto parameters)
         {
             try
             {
@@ -144,17 +144,17 @@ namespace BlazorBoilerplate.Server.Controllers
                 //Role - Here we tie the new user to the "Admin" role
                 await _userManager.AddToRoleAsync(user, "Admin");
 
-                if (Convert.ToBoolean(_configuration["RequireConfirmedEmail"]))
+                if (Convert.ToBoolean(_configuration["BlazorBoilerplate.RequireConfirmedEmail"]))
                 {
                     #region New  User Confirmation Email
                     try
                     {
                         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token);
+                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate.ApplicationUrl"], user.Id, token);
 
-                        var email = new EmailMessage();
-                        email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
+                        var email = new EmailMessageDto();
+                        email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
                         email = EmailTemplates.BuildNewUserConfirmationEmail(email, user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
 
                         _logger.LogInformation("New user registered: {0}", user);
@@ -171,8 +171,8 @@ namespace BlazorBoilerplate.Server.Controllers
                 #region New  User Email
                 try
                 {
-                    var email = new EmailMessage();
-                    email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
+                    var email = new EmailMessageDto();
+                    email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
                     email = EmailTemplates.BuildNewUserEmail(email, user.UserName, user.Email, parameters.Password); //Replace First UserName with Name if you want to add name to Registration Form
 
                     _logger.LogInformation("New user registered: {0}", user);
@@ -184,7 +184,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
                 #endregion
 
-                return await Login(new LoginParameters
+                return await Login(new LoginDto
                 {
                     UserName = parameters.UserName,
                     Password = parameters.Password
@@ -200,7 +200,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("ConfirmEmail")]
-        public async Task<APIResponse> ConfirmEmail(ConfirmEmailParameters parameters)
+        public async Task<APIResponse> ConfirmEmail(ConfirmEmailDto parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -234,7 +234,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("ForgotPassword")]
-        public async Task<APIResponse> ForgotPassword(ForgotPasswordParameters parameters)
+        public async Task<APIResponse> ForgotPassword(ForgotPasswordDto parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -254,10 +254,10 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", _configuration["ApplicationUrl"], user.Id, token); //token must be a query string parameter as it is very long
+                string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", _configuration["BlazorBoilerplate.ApplicationUrl"], user.Id, token); //token must be a query string parameter as it is very long
 
-                var email = new EmailMessage();
-                email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
+                var email = new EmailMessageDto();
+                email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
                 email = EmailTemplates.BuildForgotPasswordEmail(email, user.UserName, callbackUrl, token); //Replace First UserName with Name if you want to add name to Registration Form
 
                 _logger.LogInformation("Forgot Password Email Sent: {0}", user.Email);
@@ -275,7 +275,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [AllowAnonymous]
         //[ValidateAntiForgeryToken]
         [HttpPost("ResetPassword")]
-        public async Task<APIResponse> ResetPassword(ResetPasswordParameters parameters)
+        public async Task<APIResponse> ResetPassword(ResetPasswordDto parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -296,8 +296,8 @@ namespace BlazorBoilerplate.Server.Controllers
                 if (result.Succeeded)
                 {
                     #region Email Successful Password change
-                    var email = new EmailMessage();
-                    email.ToAddresses.Add(new EmailAddress(user.Email, user.Email));
+                    var email = new EmailMessageDto();
+                    email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
                     email = EmailTemplates.BuildPasswordResetEmail(email, user.UserName); //Replace First UserName with Name if you want to add name to Registration Form
 
                     _logger.LogInformation("Reset Password Successful Email Sent: {0}", user.Email);
@@ -336,15 +336,15 @@ namespace BlazorBoilerplate.Server.Controllers
         [ProducesResponseType(401)]
         public async Task<APIResponse> UserInfo()
         {
-            UserInfo userInfo = await BuildUserInfo();
+            UserInfoDto userInfo = await BuildUserInfo();
             return new APIResponse(200, "Retrieved UserInfo", userInfo); ;
         }
 
-        private async Task<UserInfo> BuildUserInfo()
+        private async Task<UserInfoDto> BuildUserInfo()
         {
             var user = await _userManager.GetUserAsync(User);
 
-            return new UserInfo
+            return new UserInfoDto
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,
                 UserName = User.Identity.Name,
@@ -363,7 +363,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("UpdateUser")]
-        public async Task<APIResponse> UpdateUser(UserInfo userInfo)
+        public async Task<APIResponse> UpdateUser(UserInfoDto userInfo)
         {
             if (!ModelState.IsValid)
             {

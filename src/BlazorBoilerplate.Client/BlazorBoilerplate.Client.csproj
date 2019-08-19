@@ -9,7 +9,7 @@
     </RestoreAdditionalProjectSources>
     <LangVersion>7.3</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <Version>0.1.9</Version>
+    <Version>0.2.0</Version>
     <Authors>Keith Fimreite</Authors>
     <Company>EnkodeLLC</Company>
     <Title>Blazor Boilerplate Client</Title>
@@ -25,18 +25,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview8.19405.7" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview8.19405.7" PrivateAssets="all" />
     <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="6.0.0" />
-    <PackageReference Include="MatBlazor" Version="1.6.0" />
+    <PackageReference Include="MatBlazor" Version="1.6.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
   </ItemGroup>
-
-<!--  <ItemGroup>-->
-<!--    <Reference Include="MatBlazor">-->
-<!--      <HintPath>wwwroot\matblazor\MatBlazor.dll</HintPath>-->
-<!--    </Reference>-->
-<!--  </ItemGroup>-->
 
   <ItemGroup>
     <Folder Include="wwwroot\fonts\fontawesome\" />

@@ -1,5 +1,6 @@
 ﻿@page "/account/register"
 
+@using  BlazorBoilerplate.Shared.Dto
 @layout LoginLayout
 @inject IUriHelper uriHelper
 @inject IdentityAuthenticationStateProvider authStateProvider
@@ -40,7 +41,7 @@
 </MatCard>
 
 @code {
-    RegisterParameters registerParameters { get; set; } = new RegisterParameters();
+    RegisterDto registerParameters { get; set; } = new RegisterDto();
 
     async Task RegisterUser()
     {

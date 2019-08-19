@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Shared.Dto
 {
-    public class ForgotPasswordParameters
+    public class ForgotPasswordDto
     {
         [Required]
         [DataType(DataType.EmailAddress)]

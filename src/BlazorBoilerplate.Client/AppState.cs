@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Client.Services.Contracts;
 using Newtonsoft.Json;
 
@@ -10,7 +10,7 @@ namespace BlazorBoilerplate.Client
     {
         public event Action OnChange;
         private readonly IUserProfileApi _userProfileApi;
-        public UserProfile UserProfile { get; private set; }
+        public UserProfileDto UserProfile { get; private set; }
 
         public AppState(IUserProfileApi userProfileApi)
         {
@@ -35,25 +35,24 @@ namespace BlazorBoilerplate.Client
         public bool IsNavMinified { get; set; }
 
         public async Task UpdateUserProfile()
-        {
-            UserProfile.LastUpdatedDate = DateTime.Now;
+        {     
             await _userProfileApi.Upsert(UserProfile);
         }
 
-        public async Task<UserProfile> GetUserProfile()
+        public async Task<UserProfileDto> GetUserProfile()
         {
             if (UserProfile != null)
             {
                 return UserProfile;
             }
 
-            ClientApiResponse apiResponse = await _userProfileApi.Get();
+            ApiResponseDto apiResponse = await _userProfileApi.Get();
 
             if (apiResponse.StatusCode == 200)
             {
-                return JsonConvert.DeserializeObject<UserProfile>(apiResponse.Result.ToString());
+                return JsonConvert.DeserializeObject<UserProfileDto>(apiResponse.Result.ToString());
             }
-            return new UserProfile();
+            return new UserProfileDto();
         }
 
         public async Task UpdateUserProfileCount(int count)

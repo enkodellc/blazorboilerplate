@@ -1,0 +1,142 @@
+﻿@page "/todo_list"
+@*@attribute [Authorize] Uncomment to Secure this page*@
+@inject HttpClient Http
+@inject IMatToaster matToaster
+
+<h1>Todo List - CRUD</h1>
+<p>This Todo List demonstrates fetching data from the server and CRUD for Blazor with .NET Core API server. This example unlike most is implemented with persistent data using N-Tier design patterns. 
+    Check out the <a href="https://github.com/enkodellc/blazorboilerplate" target="_blank">repository to view the source.</a> If you find this helpful please contribute or <a href="https://www.paypal.me/enkodellc">donate</a> to support further development.</p>
+
+<MatButton Icon="playlist_add" Label="New Todo" OnClick="@((e) => OpenDialog())" Raised="true"></MatButton><br/>
+<MatTable Class="mat-elevation-z5" Items="@todos" LoadInitialData="true" Striped="true" FilterByColumnName="Title" DebounceMilliseconds="150">
+    <MatTableHeader>
+        <th></th>
+        <th>Id</th>
+        <th>Completed</th>
+        <th style="min-width:180px;">Todo</th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>
+            <div style="width:50px;">
+                <MatIconButton Icon="delete" OnClick="@((e) => Delete(context))"></MatIconButton>
+            </div>
+        </td>
+        <td>@String.Format("{0:d}", @context.Id)</td>
+        <td><MatCheckbox Checked="@context.IsCompleted" class="filled-in chk-col-blue" CheckedChanged="@((e) => Save(context))"></MatCheckbox></td>
+        <td>@context.Title</td>
+    </MatTableRow>
+</MatTable>
+
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Create Todo</MatDialogTitle>
+    <MatDialogContent>
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@todo.Title" Label="Title" Icon="title" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">          
+                <MatCheckbox @bind-Checked="@todo.IsCompleted" Label="Completed"></MatCheckbox>
+            </div>
+        </fieldset>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { dialogIsOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@CreateTodo">Create Todo</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    bool dialogIsOpen = false;
+    List<TodoDto> todos = new List<TodoDto>();
+    TodoDto todo { get; set; } = new TodoDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/todo");
+
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "Todo List Retrieved");
+            todos = Newtonsoft.Json.JsonConvert.DeserializeObject<TodoDto[]>(apiResponse.Result.ToString()).ToList<TodoDto>();
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Todo List Retrieval Failed");
+        }
+    }
+
+
+    public async Task Save(TodoDto todo)
+    {
+        try
+        {
+            todo.IsCompleted = !todo.IsCompleted;
+            ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/todo", todo);
+
+            if (apiResponse.StatusCode == 200)
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Success);
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Todo Save Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Todo Save Failed");
+        }
+    }
+
+    public async Task Delete(TodoDto todo)
+    {
+        try
+        {
+            var response = await Http.DeleteAsync("api/todo/" + todo.Id);
+
+            //if (apiResponse.StatusCode == 200)
+            //{
+            matToaster.Add("Todo Deleted", MatToastType.Success);
+            todos.Remove(todo);
+            //}
+            //else
+            //{
+            //    matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Todo Save Failed");
+            //}
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Todo Save Failed");
+        }
+    }
+
+    public void OpenDialog()
+    {
+        dialogIsOpen = true;
+    }
+
+    async Task CreateTodo()
+    {
+        dialogIsOpen = false;
+        try
+        {
+            ApiResponseDto apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/todo", todo);
+            if (apiResponse.StatusCode == 200)
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Success);
+                todo = Newtonsoft.Json.JsonConvert.DeserializeObject<TodoDto>(apiResponse.Result.ToString());
+                todos.Add(todo);
+                todo = new TodoDto(); //reset todo after insert
+
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Todo Creation Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Todo Creation Failed");
+        }
+    }   
+}

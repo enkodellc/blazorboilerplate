@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using BlazorBoilerplate.Client.Services.Contracts;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 
 namespace BlazorBoilerplate.Client.Services.Implementations
 {
@@ -17,52 +17,52 @@ namespace BlazorBoilerplate.Client.Services.Implementations
             _httpClient = httpClient;
         }
 
-        public async Task<ClientApiResponse> Login(LoginParameters loginParameters)
+        public async Task<ApiResponseDto> Login(LoginDto loginParameters)
         {
-            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/Login", loginParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/Login", loginParameters);
         }
 
-        public async Task<ClientApiResponse> Logout()
+        public async Task<ApiResponseDto> Logout()
         {
-            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/Logout", null);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/Logout", null);
         }
 
-        public async Task<ClientApiResponse> Register(RegisterParameters registerParameters)
+        public async Task<ApiResponseDto> Register(RegisterDto registerParameters)
         {
-            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/Register", registerParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/Register", registerParameters);
         }
 
-        public async Task<ClientApiResponse> ConfirmEmail(ConfirmEmailParameters confirmEmailParameters)
+        public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto confirmEmailParameters)
         {
-            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/ConfirmEmail", confirmEmailParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/ConfirmEmail", confirmEmailParameters);
         }
 
-        public async Task<ClientApiResponse> ResetPassword(ResetPasswordParameters resetPasswordParameters)
+        public async Task<ApiResponseDto> ResetPassword(ResetPasswordDto resetPasswordParameters)
         {
-            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/ResetPassword", resetPasswordParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/ResetPassword", resetPasswordParameters);
         }
 
-        public async Task<ClientApiResponse> ForgotPassword(ForgotPasswordParameters forgotPasswordParameters)
+        public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordParameters)
         {
-            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/ForgotPassword", forgotPasswordParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/ForgotPassword", forgotPasswordParameters);
         }
 
-        public async Task<UserInfo> GetUserInfo()
+        public async Task<UserInfoDto> GetUserInfo()
         {
-            UserInfo userInfo = new UserInfo { IsAuthenticated = false, Roles = new String[] { } };
-            ClientApiResponse apiResponse = await _httpClient.GetJsonAsync<ClientApiResponse>("api/Authorize/UserInfo");
+            UserInfoDto userInfo = new UserInfoDto { IsAuthenticated = false, Roles = new String[] { } };
+            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Authorize/UserInfo");
             
             if (apiResponse.StatusCode == 200)
             {
-                userInfo = JsonConvert.DeserializeObject<UserInfo>(apiResponse.Result.ToString());
+                userInfo = JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
                 return userInfo;
             }
             return userInfo;
         }
 
-        public async Task<ClientApiResponse> UpdateUser(UserInfo userInfo)
+        public async Task<ApiResponseDto> UpdateUser(UserInfoDto userInfo)
         {
-            return await _httpClient.PostJsonAsync<ClientApiResponse>("api/Authorize/UpdateUser", userInfo);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/UpdateUser", userInfo);
         }
     }
 }

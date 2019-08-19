@@ -2,7 +2,7 @@
 
 namespace BlazorBoilerplate.Shared
 {
-    public class WeatherForecast
+    public class WeatherForecastDto
     {
         public DateTime Date { get; set; }
 

@@ -15,6 +15,8 @@ using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Middleware.Extensions;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Server.Data;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
@@ -88,7 +90,16 @@ namespace BlazorBoilerplate.Server.Middleware
                             {
                                 stopWatch.Stop();
                                 await responseBody.CopyToAsync(originalBodyStream);
-                                                               
+
+                                Guid userId = Guid.Empty;
+                                try
+                                {
+                                    userId = httpContext.User.Identity.IsAuthenticated
+                                            ? new Guid(httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value)
+                                            : Guid.Empty;
+                                }
+                                catch { }                                
+
                                 await SafeLog(requestTime,
                                     stopWatch.ElapsedMilliseconds,
                                     response.StatusCode,
@@ -98,9 +109,7 @@ namespace BlazorBoilerplate.Server.Middleware
                                     requestBodyContent,
                                     responseBodyContent,
                                     httpContext.Connection.RemoteIpAddress.ToString(),
-                                    httpContext.User.Identity.IsAuthenticated
-                                        ? new Guid(httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value)
-                                        : Guid.Empty
+                                    userId
                                     );
                             }
                             #endregion 
@@ -291,7 +300,8 @@ namespace BlazorBoilerplate.Server.Middleware
                             Guid userId)
         {
             // Do not log these events login, logout, getuserinfo...
-            if (path.ToLower().StartsWith("/api/authorize/"))
+            if ((path.ToLower().StartsWith("/api/authorize/")) ||
+                (path.ToLower().StartsWith("/api/UserProfile/")) )
             {
                 return;
             }

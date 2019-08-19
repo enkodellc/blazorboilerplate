@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Server.Models
 {
     public class ApiLogItem
     {

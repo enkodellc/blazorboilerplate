@@ -5,13 +5,13 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using BlazorBoilerplate.Client.Services.Contracts;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 
 namespace BlazorBoilerplate.Client.States
 {
     public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private UserInfo _userInfoCache = null;
+        private UserInfoDto _userInfoCache = null;
         private readonly IAuthorizeApi _authorizeApi;
 
         public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi)
@@ -19,49 +19,49 @@ namespace BlazorBoilerplate.Client.States
             this._authorizeApi = authorizeApi;
         }
 
-        public async Task<ClientApiResponse> Login(LoginParameters loginParameters)
+        public async Task<ApiResponseDto> Login(LoginDto loginParameters)
         {
-            ClientApiResponse apiResponse = await _authorizeApi.Login(loginParameters);
+            ApiResponseDto apiResponse = await _authorizeApi.Login(loginParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
-        public async Task<ClientApiResponse> Register(RegisterParameters registerParameters)
+        public async Task<ApiResponseDto> Register(RegisterDto registerParameters)
         {
-            ClientApiResponse apiResponse = await _authorizeApi.Register(registerParameters);
+            ApiResponseDto apiResponse = await _authorizeApi.Register(registerParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
-        public async Task<ClientApiResponse> Logout()
+        public async Task<ApiResponseDto> Logout()
         {
-            ClientApiResponse apiResponse = await _authorizeApi.Logout();
+            ApiResponseDto apiResponse = await _authorizeApi.Logout();
             _userInfoCache = null;
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
-        public async Task<ClientApiResponse> ConfirmEmail(ConfirmEmailParameters confirmEmailParameters)
+        public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto confirmEmailParameters)
         {
-            ClientApiResponse apiResponse = await _authorizeApi.ConfirmEmail(confirmEmailParameters);
+            ApiResponseDto apiResponse = await _authorizeApi.ConfirmEmail(confirmEmailParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
-        public async Task<ClientApiResponse> ResetPassword(ResetPasswordParameters resetPasswordParameters)
+        public async Task<ApiResponseDto> ResetPassword(ResetPasswordDto resetPasswordParameters)
         {
-            ClientApiResponse apiResponse = await _authorizeApi.ResetPassword(resetPasswordParameters);
+            ApiResponseDto apiResponse = await _authorizeApi.ResetPassword(resetPasswordParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
-        public async Task<ClientApiResponse> ForgotPassword(ForgotPasswordParameters forgotPasswordParameters)
+        public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordParameters)
         {
-            ClientApiResponse apiResponse = await _authorizeApi.ForgotPassword(forgotPasswordParameters);
+            ApiResponseDto apiResponse = await _authorizeApi.ForgotPassword(forgotPasswordParameters);
             return apiResponse;
         }
 
-        public async Task<UserInfo> GetUserInfo()
+        public async Task<UserInfoDto> GetUserInfo()
         {
             if (_userInfoCache != null && _userInfoCache.IsAuthenticated)
             {
@@ -92,9 +92,9 @@ namespace BlazorBoilerplate.Client.States
             return new AuthenticationState(new ClaimsPrincipal(identity));
         }
 
-        public async Task<ClientApiResponse> UpdateUser(UserInfo userInfo)
+        public async Task<ApiResponseDto> UpdateUser(UserInfoDto userInfo)
         {
-            ClientApiResponse apiResponse = await _authorizeApi.UpdateUser(userInfo);
+            ApiResponseDto apiResponse = await _authorizeApi.UpdateUser(userInfo);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }

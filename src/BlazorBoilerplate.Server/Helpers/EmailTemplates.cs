@@ -3,7 +3,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 
 namespace BlazorBoilerplate.Server.Helpers
 {
@@ -23,7 +23,7 @@ namespace BlazorBoilerplate.Server.Helpers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public static EmailMessage BuildTestEmail(EmailMessage emailMessage)
+        public static EmailMessageDto BuildTestEmail(EmailMessageDto emailMessage)
         {           
             if (testEmailTemplate == null)
                 testEmailTemplate = ReadPhysicalFile("Helpers/Templates/TestEmail.template");
@@ -36,7 +36,7 @@ namespace BlazorBoilerplate.Server.Helpers
 
           return emailMessage;
         }
-        public static EmailMessage GetPlainTextTestEmail(EmailMessage emailMessage, DateTime date)
+        public static EmailMessageDto GetPlainTextTestEmail(EmailMessageDto emailMessage, DateTime date)
         {
             if (plainTextTestEmailTemplate == null)
                 plainTextTestEmailTemplate = ReadPhysicalFile("Helpers/Templates/PlainTextTestEmail.template");
@@ -48,7 +48,7 @@ namespace BlazorBoilerplate.Server.Helpers
 
             return emailMessage;
         }        
-        public static EmailMessage BuildNewUserConfirmationEmail(EmailMessage emailMessage, string recepientName, string userName, string callbackUrl, string userId, string token)
+        public static EmailMessageDto BuildNewUserConfirmationEmail(EmailMessageDto emailMessage, string recepientName, string userName, string callbackUrl, string userId, string token)
         {
             if (newUserConfirmationEmailTemplate == null)
                 newUserConfirmationEmailTemplate = ReadPhysicalFile("Helpers/Templates/NewUserConfirmationEmail.template");
@@ -64,7 +64,7 @@ namespace BlazorBoilerplate.Server.Helpers
 
             return emailMessage;
         }
-        public static EmailMessage BuildNewUserEmail(EmailMessage emailMessage, string recepientName, string userName, string password)
+        public static EmailMessageDto BuildNewUserEmail(EmailMessageDto emailMessage, string recepientName, string userName, string password)
         {
             if (newUserEmailTemplate == null)
                 newUserEmailTemplate = ReadPhysicalFile("Helpers/Templates/NewUserEmail.template");
@@ -78,7 +78,7 @@ namespace BlazorBoilerplate.Server.Helpers
 
             return emailMessage;
         }
-        public static EmailMessage BuilNewUserNotificationEmail(EmailMessage emailMessage, string creator, string name, string userName, string company, string roles)
+        public static EmailMessageDto BuilNewUserNotificationEmail(EmailMessageDto emailMessage, string creator, string name, string userName, string company, string roles)
         {
             //placeholder not actually implemented
             if (newUserNotificationEmailTemplate == null)
@@ -95,7 +95,7 @@ namespace BlazorBoilerplate.Server.Helpers
 
             return emailMessage;
         }
-        public static EmailMessage BuildForgotPasswordEmail(EmailMessage emailMessage, string name, string callbackUrl, string token)
+        public static EmailMessageDto BuildForgotPasswordEmail(EmailMessageDto emailMessage, string name, string callbackUrl, string token)
         {
             if (forgotPasswordTemplate == null)
                 forgotPasswordTemplate = ReadPhysicalFile("Helpers/Templates/ForgotPassword.template");
@@ -109,7 +109,7 @@ namespace BlazorBoilerplate.Server.Helpers
 
             return emailMessage;
         }
-        public static EmailMessage BuildPasswordResetEmail(EmailMessage emailMessage, string userName)
+        public static EmailMessageDto BuildPasswordResetEmail(EmailMessageDto emailMessage, string userName)
         {
             if (passwordResetTemplate == null)
                 passwordResetTemplate = ReadPhysicalFile("Helpers/Templates/PasswordReset.template");

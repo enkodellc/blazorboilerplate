@@ -1,5 +1,5 @@
 ﻿@page "/blazor_middlware_audit"
-@using BlazorBoilerplate.Shared
+
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
@@ -44,11 +44,11 @@ else
 
 
 @code {
-    ClientApiResponse[] apiResponses = new ClientApiResponse[] { };
+    ApiResponseDto[] apiResponses = new ApiResponseDto[] { };
 
     protected override async Task OnInitializedAsync()
     {
-        //ClientApiResponse apiResponse = await Http.GetJsonAsync<ClientApiResponse>("api//WeatherForecasts");
+        //ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api//WeatherForecasts");
 
         //if (apiResponse.StatusCode == 200)
         //{
