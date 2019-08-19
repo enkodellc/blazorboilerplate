@@ -3,19 +3,21 @@
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
-<h1>Todo List - CRUD (In Progress)</h1>
-<p>This Todo List demonstrates fetching data from the server and CRUD for Blazor with .NET Core API server.</p>
+<h1>Todo List - CRUD</h1>
+<p>This Todo List demonstrates fetching data from the server and CRUD for Blazor with .NET Core API server. This example unlike most is implemented with persistent data using N-Tier design patterns. 
+    Check out the <a href="https://github.com/enkodellc/blazorboilerplate" target="_blank">repository to view the source.</a> If you find this helpful please contribute or <a href="https://www.paypal.me/enkodellc">donate</a> to support further development.</p>
 
+<MatButton Icon="playlist_add" Label="New Todo" OnClick="@((e) => OpenDialog())" Raised="true"></MatButton><br/>
 <MatTable Class="mat-elevation-z5" Items="@todos" LoadInitialData="true" Striped="true" FilterByColumnName="Title" DebounceMilliseconds="150">
     <MatTableHeader>
-        <th><MatButton Icon="playlist_add" Label="New Todo" OnClick="@((e) => OpenDialog())" Raised="true"></MatButton></th>
+        <th></th>
         <th>Id</th>
         <th>Completed</th>
         <th style="min-width:180px;">Todo</th>
     </MatTableHeader>
     <MatTableRow>
         <td>
-            <div style="width:150px;">
+            <div style="width:50px;">
                 <MatIconButton Icon="delete" OnClick="@((e) => Delete(context))"></MatIconButton>
             </div>
         </td>
@@ -124,6 +126,8 @@
                 matToaster.Add(apiResponse.Message, MatToastType.Success);
                 todo = Newtonsoft.Json.JsonConvert.DeserializeObject<TodoDto>(apiResponse.Result.ToString());
                 todos.Add(todo);
+                todo = new TodoDto(); //reset todo after insert
+
             }
             else
             {
@@ -134,5 +138,5 @@
         {
             matToaster.Add(ex.Message, MatToastType.Danger, "Todo Creation Failed");
         }
-    }
+    }   
 }

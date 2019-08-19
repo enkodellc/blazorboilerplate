@@ -5,6 +5,7 @@ using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
+using AutoMapper;
 
 namespace BlazorBoilerplate.Server.Services
 {
@@ -20,20 +21,21 @@ namespace BlazorBoilerplate.Server.Services
     public class ToDoService : ITodoService
     {
         private readonly ApplicationDbContext _db;
+        private readonly IMapper _autoMapper;
 
-        public ToDoService(ApplicationDbContext db)
+        public ToDoService(ApplicationDbContext db, IMapper autoMapper)
         {
             _db = db;
+            _autoMapper = autoMapper;
         }
 
         public async Task<APIResponse> Get()
         {
             try
             {
-                var toDos = from td in _db.Todos select td;
-                return new APIResponse(200, "Retrieved Todos", toDos);
+                return new APIResponse(200, "Retrieved Todos", _autoMapper.ProjectTo<TodoDto>(_db.Todos.Where(t => t.IsDeleted == false)).ToList());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new APIResponse(400, ex.Message);
             }
@@ -41,94 +43,80 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task<APIResponse> Get(long id)
         {
-            try
+            Todo todo = _db.Todos.FirstOrDefault(t => t.Id == id);
+            if (todo != null)
             {
-                var todoResults = from td in _db.Todos where td.Id == id select td;
-                return new APIResponse(200, "Retrieved User Profile", todoResults.First());
+                return new APIResponse(200, "Retrived Todo", _autoMapper.Map<TodoDto>(todo));
             }
-            catch (Exception ex)
+            else
             {
-                string test = ex.Message;
-                return new APIResponse(400, "Failed to Retrieve User Profile");
+                return new APIResponse(400, "Failed to Retrieve Todo");
             }
         }
 
-        public async Task<APIResponse> Create(TodoDto todo)
+        public async Task<APIResponse> Create(TodoDto todoDto)
         {
-            try
+            /* Without AutoMapper
+            Todo newTodo = new Todo()
             {
-                Todo newTodo = new Todo()
-                {
-                    Title = todo.Title,
-                    IsCompleted = todo.IsCompleted
-                };
-                await _db.Todos.AddAsync(newTodo);
-                await _db.SaveChangesAsync();
+                Title = todo.Title,
+                IsCompleted = todo.IsCompleted
+            };*/
 
-                return new APIResponse(200, "Created Todo", newTodo);
-            }
-            catch (Exception ex)
-            {
-                string test = ex.Message;
-                return new APIResponse(400, "Failed to Create Todo");
-            }
+            Todo todo = _autoMapper.Map<TodoDto, Todo>(todoDto);
+            await _db.Todos.AddAsync(todo);
+            await _db.SaveChangesAsync();
+
+            return new APIResponse(200, "Created Todo", todo);
         }
 
         public async Task<APIResponse> Update(TodoDto todoDto)
         {
-            try
+            Todo todo = _db.Todos.FirstOrDefault(t => t.Id == todoDto.Id);
+            if (todo != null)
             {
-                var todoResults = from td in _db.Todos where td.Id == todoDto.Id select td;
+                /* Without AutoMapper                
+                todo.Title = todoDto.Title;
+                todo.IsCompleted = todoDto.IsCompleted;
+                todo.Modified = DateTime.Now;
+                */
 
-                if (todoResults.Any())
-                {
-                    Todo todo = todoResults.First();
-                    todo.Title = todoDto.Title;
-                    todo.IsCompleted = todoDto.IsCompleted;
-                    todo.Modified = DateTime.Now;
-                    await _db.SaveChangesAsync();
-                    return new APIResponse(200, "Updated Todo", todo);
-                }
-                else
-                {
-                    return new APIResponse(400, "Failed to update Todo");
-                }
+                _autoMapper.Map<TodoDto, Todo>(todoDto, todo);
+                await _db.SaveChangesAsync();
+                return new APIResponse(200, "Updated Todo", todo);
             }
-            catch (Exception ex)
+            else
             {
-                string test = ex.Message;
                 return new APIResponse(400, "Failed to update Todo");
             }
         }
 
         public async Task<APIResponse> SoftDelete(long id)
         {
-            try
+            Todo todo = _db.Todos.FirstOrDefault(t => t.Id == id);
+            if (todo != null)
             {
-                var todoResults = from td in _db.Todos where td.Id == id select td;
-                todoResults.First().IsDeleted = true;
+                todo.IsDeleted = true;
                 await _db.SaveChangesAsync();
                 return new APIResponse(200, "Soft Delete Todo");
             }
-            catch (Exception ex)
+            else
             {
-                string test = ex.Message;
                 return new APIResponse(400, "Failed to update Todo");
             }
         }
 
         public async Task<APIResponse> HardDelete(long id)
         {
-            try
+            Todo todo = _db.Todos.FirstOrDefault(t => t.Id == id);
+            if (todo != null)
             {
-                var todoResults = from td in _db.Todos where td.Id == id select td;
-                _db.Todos.Remove(todoResults.First());
+                _db.Todos.Remove(todo);
                 await _db.SaveChangesAsync();
-                return new APIResponse(200, "Deleted Todo");
+                return new APIResponse(200, "Soft Delete Todo");
             }
-            catch (Exception ex)
+            else
             {
-                string test = ex.Message;
                 return new APIResponse(400, "Failed to update Todo");
             }
         }

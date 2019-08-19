@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
 
 namespace BlazorBoilerplate.Server.Data.Mapping
 {
-    public class MappingProfile : Profile
+    public class MappingProfile : MapperConfigurationExpression
     {
         /// <summary>
         /// Create automap mapping profiles
         /// </summary>
         public MappingProfile()
         {
-            CreateMap<TodoDto, Todo>();
-            CreateMap<ApiResponseDto, APIResponse>();
+            CreateMap<Todo, TodoDto>().ReverseMap(); 
+            CreateMap<APIResponse, ApiResponseDto>();
             //CreateMap<Account, AccountViewModel>();
             //CreateMap<UserViewModel, User>()
             //    .ForMember(dest => dest.DecryptedPassword, opts => opts.MapFrom(src => src.Password))

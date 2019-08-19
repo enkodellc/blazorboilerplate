@@ -30,10 +30,6 @@
             <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
         </MatNavItem>
 
-        <MatNavItem Href="@uriHelper.ToAbsoluteUri("fetch_data").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>cloud_download</MatIcon> <span class="miniHover">Fetch data</span>
-        </MatNavItem>
-
         <MatNavSubMenu>
             <MatNavSubMenuHeader>
                 <MatNavItem AllowSelection="false" Disabled="@(!IsLoggedIn)">

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BlazorBoilerplate.Server.Helpers;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
