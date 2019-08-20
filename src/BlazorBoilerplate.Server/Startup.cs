@@ -39,11 +39,11 @@ namespace BlazorBoilerplate.Server
             services.AddDbContext<ApplicationDbContext>(options => {
                 if (Convert.ToBoolean(Configuration["Authentication:UseSqlServer"] ?? "false"))
                 {
-                    options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}");  // Sql Lite / file database
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")); //SQL Server Database                    
                 }
                 else
                 {
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")); //SQL Server Database
+                    options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}");  // Sql Lite / file database
                 }
             });
             
