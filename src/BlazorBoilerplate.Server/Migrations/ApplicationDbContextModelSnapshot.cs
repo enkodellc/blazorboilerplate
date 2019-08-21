@@ -19,57 +19,7 @@ namespace BlazorBoilerplate.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.ApiLogItem", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid?>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("IPAddress")
-                        .HasColumnType("nvarchar(45)")
-                        .HasMaxLength(45);
-
-                    b.Property<string>("Method")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(2048)")
-                        .HasMaxLength(2048);
-
-                    b.Property<string>("QueryString")
-                        .HasColumnType("nvarchar(2048)")
-                        .HasMaxLength(2048);
-
-                    b.Property<string>("RequestBody")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<DateTime>("RequestTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ResponseBody")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<long>("ResponseMillis")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("StatusCode")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("ApiLogs");
-                });
-
+    
             modelBuilder.Entity("BlazorBoilerplate.Server.Models.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -143,78 +93,7 @@ namespace BlazorBoilerplate.Server.Migrations
 
                     b.ToTable("AspNetUsers");
                 });
-
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.Todo", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GetUtcDate()");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GetUtcDate()");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Todos");
-                });
-
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.UserProfile", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsNavMinified")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsNavOpen")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastPageVisited")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastUpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("UserProfiles");
-                });
-
+            
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
                     b.Property<Guid>("Id")
@@ -344,21 +223,7 @@ namespace BlazorBoilerplate.Server.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.ApiLogItem", b =>
-                {
-                    b.HasOne("BlazorBoilerplate.Server.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId");
-                });
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.UserProfile", b =>
-                {
-                    b.HasOne("BlazorBoilerplate.Server.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
