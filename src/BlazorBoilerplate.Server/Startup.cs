@@ -37,7 +37,7 @@ namespace BlazorBoilerplate.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => {
-                if (Convert.ToBoolean(Configuration["Authentication:UseSqlServer"] ?? "false"))
+                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                 {
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")); //SQL Server Database                    
                 }
@@ -80,7 +80,7 @@ namespace BlazorBoilerplate.Server
                 options.Lockout.AllowedForNewUsers = true;
 
                 // Require Confirmed Email User settings
-                if (Convert.ToBoolean(Configuration["BlazorBoilerplate.RequireConfirmedEmail"] ?? "false"))
+                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
                     options.User.RequireUniqueEmail = false;
                     options.SignIn.RequireConfirmedEmail = true;
