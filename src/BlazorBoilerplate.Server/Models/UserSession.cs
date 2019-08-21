@@ -1,9 +1,12 @@
-﻿using System;
+﻿using BlazorBoilerplate.Server.Data.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Shared.Dto
+namespace BlazorBoilerplate.Server.Models
 {
-    public class UserInfoDto
+    public class UserSession : IUserSession
     {
         public bool IsAuthenticated { get; set; }
         public Guid UserId { get; set; }
@@ -15,19 +18,5 @@ namespace BlazorBoilerplate.Shared.Dto
         public List<string> Roles { get; set; }
         public Dictionary<string, string> ExposedClaims { get; set; }
         public bool DisableTenantFilter { get; set; }
-    }
-
-    //For testing Admin UI
-    public class DemoUserDto
-    {
-        public int Id { get; set; }
-        public string UserName { get; set; }
-        public string FistName { get; set; }
-        public string Email { get; set; }
-        public string[] Roles { get; set; }
-
-        public DemoUserDto()
-        {
-        }
     }
 }

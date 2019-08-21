@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
-namespace BlazorBoilerplate.Server.Models
+namespace BlazorBoilerplate.Shared.Dto
 {
-    public class ApiLogItem
+    public class ApiLogItemDto
     {
         [Key]
         public long Id { get; set; }
@@ -21,22 +23,16 @@ namespace BlazorBoilerplate.Server.Models
         public string Method { get; set; }
 
         [Required]
-        [MaxLength(2048)]
         public string Path { get; set; }
 
-
-        [MaxLength(2048)]
         public string QueryString { get; set; }
 
-        [MaxLength(256)]
         public string RequestBody { get; set; }
 
-        [MaxLength(256)]
         public string ResponseBody { get; set; }
 
-        [MaxLength(45)]
         public string IPAddress { get; set; }
 
-        public ApplicationUser ApplicationUser { get; set; }
+        public string UserName { get; set; }
     }
 }

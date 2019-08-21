@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using BlazorBoilerplate.Client.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
+using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Client.Services.Implementations
 {
@@ -19,38 +20,38 @@ namespace BlazorBoilerplate.Client.Services.Implementations
 
         public async Task<ApiResponseDto> Login(LoginDto loginParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/Login", loginParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Login", loginParameters);
         }
 
         public async Task<ApiResponseDto> Logout()
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/Logout", null);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
         }
 
         public async Task<ApiResponseDto> Register(RegisterDto registerParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/Register", registerParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Register", registerParameters);
         }
 
         public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto confirmEmailParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/ConfirmEmail", confirmEmailParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ConfirmEmail", confirmEmailParameters);
         }
 
         public async Task<ApiResponseDto> ResetPassword(ResetPasswordDto resetPasswordParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/ResetPassword", resetPasswordParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ResetPassword", resetPasswordParameters);
         }
 
         public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/ForgotPassword", forgotPasswordParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ForgotPassword", forgotPasswordParameters);
         }
 
         public async Task<UserInfoDto> GetUserInfo()
         {
-            UserInfoDto userInfo = new UserInfoDto { IsAuthenticated = false, Roles = new String[] { } };
-            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Authorize/UserInfo");
+            UserInfoDto userInfo = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
+            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Account/UserInfo");
             
             if (apiResponse.StatusCode == 200)
             {
@@ -62,7 +63,7 @@ namespace BlazorBoilerplate.Client.Services.Implementations
 
         public async Task<ApiResponseDto> UpdateUser(UserInfoDto userInfo)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Authorize/UpdateUser", userInfo);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdateUser", userInfo);
         }
     }
 }

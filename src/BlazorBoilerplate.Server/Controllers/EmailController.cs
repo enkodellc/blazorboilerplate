@@ -28,11 +28,11 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpPost("Send")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<APIResponse> Send(EmailDto parameters)
+        public async Task<ApiResponse> Send(EmailDto parameters)
         {
             if (!ModelState.IsValid)
             {
-                return new APIResponse(400, "User Model is Invalid");
+                return new ApiResponse(400, "User Model is Invalid");
             }
 
             var email = new EmailMessageDto();
@@ -66,12 +66,12 @@ namespace BlazorBoilerplate.Server.Controllers
 
             await _emailService.SendEmailAsync(email);
 
-            return new APIResponse(200, "Email Successfuly Sent");
+            return new ApiResponse(200, "Email Successfuly Sent");
         }
 
         [HttpGet("Receive")]
         [Authorize]
-        public async Task<APIResponse> Receive()
+        public async Task<ApiResponse> Receive()
         {
             //Check email from default account defined in appsettings.json
             //Currently set up to only send valid results, no error codes
@@ -84,11 +84,11 @@ namespace BlazorBoilerplate.Server.Controllers
 
             if (results.success)
             {
-                return new APIResponse(200, "Email Received", results);
+                return new ApiResponse(200, "Email Received", results);
             }
             else
             {
-                return new APIResponse(400, "Email Receiving Failed");
+                return new ApiResponse(400, "Email Receiving Failed");
             }
         }
     }

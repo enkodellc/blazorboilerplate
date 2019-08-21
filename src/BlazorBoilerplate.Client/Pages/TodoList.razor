@@ -46,9 +46,9 @@
 </MatDialog>
 
 @code {
-    bool dialogIsOpen = false;
-    List<TodoDto> todos = new List<TodoDto>();
-    TodoDto todo { get; set; } = new TodoDto();
+        bool dialogIsOpen = false;
+        List<TodoDto> todos = new List<TodoDto>();
+        TodoDto todo { get; set; } = new TodoDto();
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,8 +92,10 @@
     {
         try
         {
-            var response = await Http.DeleteAsync("api/todo/" + todo.Id);
+            var apiResponse = await Http.DeleteAsync("api/todo/" + todo.Id);
 
+            //TODO Implement: Are you sure you want to delete dialog
+            //TODO Delete Async doesn't pass back a json apiResponse to determine how to handle this
             //if (apiResponse.StatusCode == 200)
             //{
             matToaster.Add("Todo Deleted", MatToastType.Success);
@@ -138,5 +140,5 @@
         {
             matToaster.Add(ex.Message, MatToastType.Danger, "Todo Creation Failed");
         }
-    }   
+    }
 }

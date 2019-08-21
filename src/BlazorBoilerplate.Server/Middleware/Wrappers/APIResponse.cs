@@ -5,7 +5,7 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
 {
     [Serializable]
     [DataContract]
-    public class APIResponse
+    public class ApiResponse
     {
         [DataMember]
         public string Version { get; set; }
@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         [DataMember(EmitDefaultValue = false)]
         public object Result { get; set; }
 
-        public APIResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "0.1.9")
+        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "0.2.0")
         {
             this.StatusCode = statusCode;
             this.Message = message;

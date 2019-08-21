@@ -44,33 +44,16 @@ namespace BlazorBoilerplate.Server.Controllers
             });
         }
 
-        [HttpGet("IsUser")]
-        [Authorize(Roles = "IsUser")]
-        public IActionResult IsUser()
-        {
-            return Ok(new { UserInRole = "User" });
-        }
-
-        [HttpGet("IsReadOnly")]
-        [Authorize(Policy = "ReadOnly")]
-        public IActionResult IsReadOnly()
-        {
-            return Ok(new {policy = "ReadOnly" });
-        }
-
-
         //For testing Admin UI
         [HttpGet("[action]")]
         [Authorize(Roles = "SuperAdmin, Admin, User")]
-        public async Task<APIResponse> GetDemoUsers()
-        //public async Task<IEnumerable<DemoUser>> GetDemoUsers()
+        public async Task<ApiResponse> GetDemoUsers()
         {
             using (var client = new HttpClient())
             {
                 string content = await client.GetStringAsync("https://blazorboilerplate.com/users.json");
                 IEnumerable<DemoUserDto> users = JsonConvert.DeserializeObject<IEnumerable<DemoUserDto>>(content);
-                return new APIResponse(200, "Retrieved Demo Users", users);
-                //return users;
+                return new ApiResponse(200, "Retrieved Demo Users", users);
             }
         }
     }

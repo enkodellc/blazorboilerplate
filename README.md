@@ -81,11 +81,14 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.2.0 (In Progress)
+### 0.2.0 (In Progress - Under Development)
 - CRUD Todo List example (In Progress)
 - Tweak Middleware
 - Restructure Project Refactor BlazorBoilerplate.Shared for N-Tier Design
-- Implement Automapper (In Progress)
+- Implement Automapper
+- Removed old Migrations. Recommend to delete your database to start new.
+- Implement ShadowProperties for Auditable, SoftDelete Interfaces for Models (In Progress)
+
 
 ### 0.1.9
 - Update to SDK 3.0.0-preview8-28405-07
