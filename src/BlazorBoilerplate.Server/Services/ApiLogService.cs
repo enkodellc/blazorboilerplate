@@ -26,7 +26,7 @@ namespace BlazorBoilerplate.Server.Services
             // Calling Log from the API Middlware results in a disposed ApplicationDBContext. This is here to build a DB Context for logging API Calls
             // If you have a better solution please let me know.
             _optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            if (Convert.ToBoolean(configuration["Authentication:UseSqlServer"] ?? "false"))
+            if (Convert.ToBoolean(configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
             {
                 _optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection")); //SQL Server Database
             }
