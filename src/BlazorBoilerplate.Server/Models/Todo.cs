@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BlazorBoilerplate.Server.Data.Interfaces;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Models
 {
-    public class Todo : BaseModel
+    public class Todo : IAuditable, ISoftDelete
     {
         [Key]
-        public new long Id { get; set; }
+        public long Id { get; set; }
 
         [Required]
+        [MaxLength(128)]
         public string Title { get; set; }
         public bool IsCompleted { get; set; }
     }

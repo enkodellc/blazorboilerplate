@@ -39,12 +39,12 @@ namespace BlazorBoilerplate.Server.Authorization
 
             if (!string.IsNullOrWhiteSpace(user.FirstName))
             {
-                ((ClaimsIdentity)principal.Identity).AddClaims(new[] { new Claim(ClaimTypes.GivenName, user.FirstName)});
+                ((ClaimsIdentity)principal.Identity).AddClaims(new[] { new Claim(ClaimTypes.GivenName, user.FirstName) });
             }
 
             if (!string.IsNullOrWhiteSpace(user.LastName))
             {
-                ((ClaimsIdentity)principal.Identity).AddClaims(new[] {new Claim(ClaimTypes.Surname, user.LastName)});
+                ((ClaimsIdentity)principal.Identity).AddClaims(new[] { new Claim(ClaimTypes.Surname, user.LastName) });
             }
 
             //Example of a trivial claim - https://www.c-sharpcorner.com/article/claim-based-and-policy-based-authorization-with-asp-net-core-2-1/
@@ -52,10 +52,7 @@ namespace BlazorBoilerplate.Server.Authorization
             {
                 identity.AddClaim(new Claim("ReadOnly", "true"));
             }
-
-
-            return principal;
+            return principal;         
         }
-
     }
 }

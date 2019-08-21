@@ -1,22 +1,21 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Linq;
+﻿using BlazorBoilerplate.Server.Middleware.Extensions;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Server.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 //using System.Text.Json; //Does not work for this middleware, at least as in preview
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Middleware.Extensions;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Data;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
@@ -28,8 +27,9 @@ namespace BlazorBoilerplate.Server.Middleware
         ILogger<APIResponseRequestLogginMiddleware> _logger;
         private IApiLogService _apiLogService;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
-        private readonly bool _enableAPILogging;  
+        private readonly bool _enableAPILogging;
 
+ 
         public APIResponseRequestLogginMiddleware(RequestDelegate next, bool enableAPILogging)
         {
             _next = next;
@@ -68,13 +68,13 @@ namespace BlazorBoilerplate.Server.Middleware
                         httpContext.Response.Body = responseBody;
 
                         try
-                        {                            
+                        {
                             var response = httpContext.Response;
                             response.Body = responseBody;
                             await _next.Invoke(httpContext);
-                                                        
-                            string responseBodyContent = null;                                                                              
-                             
+
+                            string responseBodyContent = null;
+
                             if (httpContext.Response.StatusCode == (int)HttpStatusCode.OK)
                             {
                                 responseBodyContent = await FormatResponse(response);
@@ -98,24 +98,25 @@ namespace BlazorBoilerplate.Server.Middleware
                                             ? new Guid(httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value)
                                             : Guid.Empty;
                                 }
-                                catch { }                                
+                                catch { }
 
-                                await SafeLog(requestTime,
-                                    stopWatch.ElapsedMilliseconds,
-                                    response.StatusCode,
-                                    request.Method,
-                                    request.Path,
-                                    request.QueryString.ToString(), 
-                                    requestBodyContent,
-                                    responseBodyContent,
-                                    httpContext.Connection.RemoteIpAddress.ToString(),
-                                    userId
-                                    );
+                                //await SafeLog(requestTime,
+                                //    stopWatch.ElapsedMilliseconds,
+                                //    response.StatusCode,
+                                //    request.Method,
+                                //    request.Path,
+                                //    request.QueryString.ToString(),
+                                //    requestBodyContent,
+                                //    responseBodyContent,
+                                //    httpContext.Connection.RemoteIpAddress.ToString(),
+                                //    userId
+                                //    );
                             }
-                            #endregion 
+                            #endregion
                         }
                         catch (System.Exception ex)
                         {
+                            
                             _logger.LogWarning("An Inner Middleware exception occurred: " + ex.Message);
                             await HandleExceptionAsync(httpContext, ex);
                         }
@@ -140,13 +141,13 @@ namespace BlazorBoilerplate.Server.Middleware
                 throw;
             }
         }
-        
+
         private async Task HandleExceptionAsync(HttpContext httpContext, System.Exception exception)
         {
             _logger.LogError("Api Exception:", exception);
 
             ApiError apiError = null;
-            APIResponse apiResponse = null;
+            ApiResponse apiResponse = null;
             int code = 0;
 
             if (exception is ApiException)
@@ -188,7 +189,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
             httpContext.Response.ContentType = "application/json";
 
-            apiResponse = new APIResponse(code, ResponseMessageEnum.Exception.GetDescription(), null, apiError);
+            apiResponse = new ApiResponse(code, ResponseMessageEnum.Exception.GetDescription(), null, apiError);
 
             await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
         }
@@ -212,7 +213,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 apiError = new ApiError("Your request cannot be processed. Please contact a support.");
             }
 
-            APIResponse apiResponse = new APIResponse(code, ResponseMessageEnum.Failure.GetDescription(), null, apiError);
+            ApiResponse apiResponse = new ApiResponse(code, ResponseMessageEnum.Failure.GetDescription(), null, apiError);
             httpContext.Response.StatusCode = code;
             return httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
         }
@@ -221,7 +222,7 @@ namespace BlazorBoilerplate.Server.Middleware
         {
             httpContext.Response.ContentType = "application/json";
             string jsonString, bodyText;
-            APIResponse apiResponse = null;
+            ApiResponse apiResponse = null;
 
             if (!body.ToString().IsValidJson())
             {
@@ -230,16 +231,17 @@ namespace BlazorBoilerplate.Server.Middleware
             else
             {
                 bodyText = body.ToString();
+               // return httpContext.Response.WriteAsync(bodyText);
             }
 
             dynamic bodyContent = JsonConvert.DeserializeObject<dynamic>(bodyText);
             Type type = bodyContent?.GetType();
 
-            // Check to see if body is already an APIResponse Class type
+            // Check to see if body is already an ApiResponse Class type
             if (type.Equals(typeof(Newtonsoft.Json.Linq.JObject)))
             {
-                apiResponse = JsonConvert.DeserializeObject<APIResponse>(bodyText);
-                if (apiResponse.StatusCode != code) 
+                apiResponse = JsonConvert.DeserializeObject<ApiResponse>(bodyText);
+                if (apiResponse.StatusCode != code)
                 {
                     apiResponse.StatusCode = code;
                 }
@@ -250,13 +252,13 @@ namespace BlazorBoilerplate.Server.Middleware
                 }
                 else
                 {
-                    apiResponse = new APIResponse(code, ResponseMessageEnum.Success.GetDescription(), bodyContent, null);
+                    apiResponse = new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), bodyContent, null);
                     jsonString = JsonConvert.SerializeObject(apiResponse);
                 }
             }
             else
             {
-                apiResponse = new APIResponse(code, ResponseMessageEnum.Success.GetDescription(), bodyContent, null);
+                apiResponse = new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), bodyContent, null);
                 jsonString = JsonConvert.SerializeObject(apiResponse);
             }
 
@@ -280,7 +282,7 @@ namespace BlazorBoilerplate.Server.Middleware
         //        var plainBodyText = await reader.ReadToEndAsync();
         //        response.Body.Seek(0, SeekOrigin.Begin);
         //        return plainBodyText;
-        //    }       
+        //    }
         //}
 
         private bool IsSwagger(HttpContext context)
@@ -300,7 +302,7 @@ namespace BlazorBoilerplate.Server.Middleware
                             Guid userId)
         {
             // Do not log these events login, logout, getuserinfo...
-            if ((path.ToLower().StartsWith("/api/authorize/")) ||
+            if ((path.ToLower().StartsWith("/api/account/")) ||
                 (path.ToLower().StartsWith("/api/UserProfile/")) )
             {
                 return;
@@ -316,8 +318,8 @@ namespace BlazorBoilerplate.Server.Middleware
             {
                 try
                 {
-                    APIResponse apiResponse = JsonConvert.DeserializeObject<APIResponse>(responseBody);
-                    responseBody = Regex.Replace(apiResponse.Result.ToString(), @"(""[^""\\]*(?:\\.[^""\\]*)*"")|\s+", "$1"); 
+                    ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(responseBody);
+                    responseBody = Regex.Replace(apiResponse.Result.ToString(), @"(""[^""\\]*(?:\\.[^""\\]*)*"")|\s+", "$1");
                 }
                 catch { }
             }
@@ -342,11 +344,11 @@ namespace BlazorBoilerplate.Server.Middleware
                 QueryString = queryString,
                 RequestBody = requestBody,
                 ResponseBody = responseBody,
-                IPAddress = ipAddress,
-                UserId = userId
-            });
+                IPAddress = ipAddress
+
+            }, userId);
         }
-               
+
         private Task ClearCacheHeaders(object state)
         {
             var response = (HttpResponse)state;

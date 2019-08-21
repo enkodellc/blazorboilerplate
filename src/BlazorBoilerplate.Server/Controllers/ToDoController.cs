@@ -22,49 +22,49 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // GET: api/Todo
         [HttpGet]
-        public async Task<APIResponse> Get()
+        public async Task<ApiResponse> Get()
         {
             return await _todoService.Get();
         }
 
-        // GET: api/Todo/5  
+        // GET: api/Todo/5
         [HttpGet("{id}")]
-        public async Task<APIResponse> Get(int id)
+        public async Task<ApiResponse> Get(int id)
         {
             if (!ModelState.IsValid)
             {
-                return new APIResponse(400, "Todo Model is Invalid");
+                return new ApiResponse(400, "Todo Model is Invalid");
             }
             return await _todoService.Get(id);
         }
 
-        // POST: api/Todos 
+        // POST: api/Todos
         [HttpPut]
-        public async Task<APIResponse> Put([FromBody] TodoDto todo)
+        public async Task<ApiResponse> Put([FromBody] TodoDto todo)
         {
             if (!ModelState.IsValid)
             {
-                return new APIResponse(400, "Todo Model is Invalid");
+                return new ApiResponse(400, "Todo Model is Invalid");
             }
             return await _todoService.Create(todo);
         }
 
-        // POST: api/Todos 
+        // POST: api/Todos
         [HttpPost]
-        public async Task<APIResponse> Post([FromBody] TodoDto todo)
+        public async Task<ApiResponse> Post([FromBody] TodoDto todo)
         {
+            if (!ModelState.IsValid)
+            {
+                return new ApiResponse(400, "Todo Model is Invalid");
+            }
             return await _todoService.Update(todo);
         }
 
-        // DELETE: api/Todos/5  
+        // DELETE: api/Todos/5
         [HttpDelete("{id}")]
-        public async Task<APIResponse> Delete(long id)
+        public async Task<ApiResponse> Delete(long id)
         {
-            //if (isHard)
-            //{
-                return await _todoService.HardDelete(id); // Delete from DB  
-            //}            
-            //return await _todoService.SoftDelete(id); // Set Deleted flag.  
+            return await _todoService.Delete(id); // Delete from DB
         }
     }
 }

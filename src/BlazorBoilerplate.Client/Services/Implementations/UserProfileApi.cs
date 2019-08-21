@@ -1,8 +1,8 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using BlazorBoilerplate.Client.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Client.Services.Contracts;
+using Microsoft.AspNetCore.Components;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Client.Services.Implementations
 {

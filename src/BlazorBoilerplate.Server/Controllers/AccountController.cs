@@ -1,28 +1,29 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using Microsoft.Extensions.Configuration;
+﻿using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Server.Helpers;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorizeController : ControllerBase
+    public class AccountController : ControllerBase
     {
-        private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new String[] { } };
+        private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
 
         // Logger instance
-        private readonly ILogger<AuthorizeController> _logger;
+        private readonly ILogger<AccountController> _logger;
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -30,8 +31,8 @@ namespace BlazorBoilerplate.Server.Controllers
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
 
-        public AuthorizeController(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, ILogger<AuthorizeController> logger,
+        public AccountController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger,
             RoleManager<IdentityRole<Guid>> roleManager, IEmailService emailService, IConfiguration configuration)
         {
             _userManager = userManager;
@@ -44,44 +45,48 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpGet("GetUser")]
         [Authorize]
-        public APIResponse GetUser()
+        public ApiResponse GetUser()
         {
             UserInfoDto userInfo = User != null && User.Identity.IsAuthenticated
                 ? new UserInfoDto { UserName = User.Identity.Name, IsAuthenticated = true }
                 : LoggedOutUser;
-            return new APIResponse(200, "Get User Successful", userInfo);
+            return new ApiResponse(200, "Get User Successful", userInfo);
         }
 
-        //[HttpGet("")]
-        //[Authorize]
-        //public List<UserInfo> GetUsers()
-        //{
+        [Authorize]
+        // GET: api/Account/User
+        [HttpGet]
+        public async Task<ApiResponse> Get()
+        {
+            var users = _userManager.Users;
+            return new ApiResponse(200, "Get User Successful", users);
+        }
 
-        //}
-
+        // POST: api/Account/Login
         [HttpPost("Login")]
+
         [AllowAnonymous]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<APIResponse> Login(LoginDto parameters)
+        public async Task<ApiResponse> Login(LoginDto parameters)
         {
             if (!ModelState.IsValid)
             {
-                return new APIResponse(400, "User Model is Invalid");
+                return new ApiResponse(400, "User Model is Invalid");
             }
 
             var user = await _userManager.FindByEmailAsync(parameters.UserName)
                        ?? await _userManager.FindByNameAsync(parameters.UserName);
 
-            if (!user.EmailConfirmed && Convert.ToBoolean(_configuration["BlazorBoilerplate.RequireConfirmedEmail"]))
+            if (!user.EmailConfirmed && Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
             {
-                return new APIResponse(401, "User has not confirmed their email.");
+                return new ApiResponse(401, "User has not confirmed their email.");
             }
 
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", parameters.UserName);
-                return new APIResponse(404, "User does not exist");
+                return new ApiResponse(404, "User does not exist");
             }
 
             var singInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password, false);
@@ -89,28 +94,29 @@ namespace BlazorBoilerplate.Server.Controllers
             if (!singInResult.Succeeded)
             {
                 _logger.LogInformation("Invalid password: {0}, {1}", parameters.UserName, parameters.Password);
-                return new APIResponse(400, "Invalid password");
+                return new ApiResponse(400, "Invalid password");
             }
 
             _logger.LogInformation("Logged In: {0}, {1}", parameters.UserName, parameters.Password);
 
             // add custom claims here, before signin if needed
-            var claims = await _userManager.GetClaimsAsync(user);
+            //var claims = await _userManager.GetClaimsAsync(user);
             //await _userManager.RemoveClaimsAsync(user, claims);
-
+            user.SecurityStamp = Guid.NewGuid().ToString();
             await _signInManager.SignInAsync(user, parameters.RememberMe);
-            return new APIResponse(200, "Login Successful");
+            return new ApiResponse(200, "Login Successful");
         }
 
         [AllowAnonymous]
+        // POST: api/Account/Register
         [HttpPost("Register")]
-        public async Task<APIResponse> Register(RegisterDto parameters)
+        public async Task<ApiResponse> Register(RegisterDto parameters)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return new APIResponse(400, "User Model is Invalid");
+                    return new ApiResponse(400, "User Model is Invalid");
                 }
 
                 // https://gooroo.io/GoorooTHINK/Article/17333/Custom-user-roles-and-rolebased-authorization-in-ASPNET-core/32835
@@ -137,21 +143,21 @@ namespace BlazorBoilerplate.Server.Controllers
                 var result = await _userManager.CreateAsync(user, parameters.Password);
                 if (!result.Succeeded)
                 {
-                    return new APIResponse(400, "Register User Failed: " +  result.Errors.FirstOrDefault()?.Description);
+                    return new ApiResponse(400, "Register User Failed: " +  result.Errors.FirstOrDefault()?.Description);
                 }
 
 
                 //Role - Here we tie the new user to the "Admin" role
                 await _userManager.AddToRoleAsync(user, "Admin");
 
-                if (Convert.ToBoolean(_configuration["BlazorBoilerplate.RequireConfirmedEmail"]))
+                if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
                     #region New  User Confirmation Email
                     try
                     {
                         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate.ApplicationUrl"], user.Id, token);
+                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token);
 
                         var email = new EmailMessageDto();
                         email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
@@ -165,7 +171,7 @@ namespace BlazorBoilerplate.Server.Controllers
                         _logger.LogInformation("New user email failed: {0}", ex.Message);
                     }
                     #endregion
-                    return new APIResponse(200, "Register User Success");
+                    return new ApiResponse(200, "Register User Success");
                 }
 
                 #region New  User Email
@@ -194,29 +200,30 @@ namespace BlazorBoilerplate.Server.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Register User Failed: {0}", ex.Message);
-                return new APIResponse(400, "Register User Failed");
+                return new ApiResponse(400, "Register User Failed");
             }
         }
 
         [AllowAnonymous]
+        // POST: api/Account/ConfirmEmail
         [HttpPost("ConfirmEmail")]
-        public async Task<APIResponse> ConfirmEmail(ConfirmEmailDto parameters)
+        public async Task<ApiResponse> ConfirmEmail(ConfirmEmailDto parameters)
         {
             if (!ModelState.IsValid)
             {
-                return new APIResponse(400, "User Model is Invalid");
+                return new ApiResponse(400, "User Model is Invalid");
             }
 
             if (parameters.UserId == null || parameters.Token == null)
             {
-                return new APIResponse(404, "User does not exist");
+                return new ApiResponse(404, "User does not exist");
             }
 
             var user = await _userManager.FindByIdAsync(parameters.UserId);
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", parameters.UserId);
-                return new APIResponse(404, "User does not exist");
+                return new ApiResponse(404, "User does not exist");
             }
 
             string token = parameters.Token;
@@ -224,21 +231,22 @@ namespace BlazorBoilerplate.Server.Controllers
             if (!result.Succeeded)
             {
                 _logger.LogInformation("User Email Confirmation Failed: {0}", result.Errors.FirstOrDefault()?.Description);
-                return new APIResponse(400, "User Email Confirmation Failed");
+                return new ApiResponse(400, "User Email Confirmation Failed");
             }
 
             await _signInManager.SignInAsync(user, true);
 
-            return new APIResponse(200, "Success");
+            return new ApiResponse(200, "Success");
         }
 
         [AllowAnonymous]
+        // POST: api/Account/ForgotPassword
         [HttpPost("ForgotPassword")]
-        public async Task<APIResponse> ForgotPassword(ForgotPasswordDto parameters)
+        public async Task<ApiResponse> ForgotPassword(ForgotPasswordDto parameters)
         {
             if (!ModelState.IsValid)
             {
-                return new APIResponse(400, "User Model is Invalid");
+                return new ApiResponse(400, "User Model is Invalid");
             }
 
             var user = await _userManager.FindByEmailAsync(parameters.Email);
@@ -246,7 +254,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 _logger.LogInformation("Forgot Password with non-existent email / user: {0}", parameters.Email);
                 // Don't reveal that the user does not exist or is not confirmed
-                return new APIResponse(200, "Success");
+                return new ApiResponse(200, "Success");
             }
 
             #region Forgot Password Email
@@ -254,7 +262,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", _configuration["BlazorBoilerplate.ApplicationUrl"], user.Id, token); //token must be a query string parameter as it is very long
+                string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token); //token must be a query string parameter as it is very long
 
                 var email = new EmailMessageDto();
                 email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
@@ -262,31 +270,31 @@ namespace BlazorBoilerplate.Server.Controllers
 
                 _logger.LogInformation("Forgot Password Email Sent: {0}", user.Email);
                 await _emailService.SendEmailAsync(email);
-                return new APIResponse(200, "Forgot Password Email Sent");
+                return new ApiResponse(200, "Forgot Password Email Sent");
             }
             catch (Exception ex)
             {
                 _logger.LogInformation("Forgot Password email failed: {0}", ex.Message);
             }
             #endregion
-            return new APIResponse(200, "Success");
+            return new ApiResponse(200, "Success");
         }
 
         [AllowAnonymous]
-        //[ValidateAntiForgeryToken]
+        // PUT: api/Account/ResetPassword
         [HttpPost("ResetPassword")]
-        public async Task<APIResponse> ResetPassword(ResetPasswordDto parameters)
+        public async Task<ApiResponse> ResetPassword(ResetPasswordDto parameters)
         {
             if (!ModelState.IsValid)
             {
-                return new APIResponse(400, "User Model is Invalid");
+                return new ApiResponse(400, "User Model is Invalid");
             }
 
             var user = await _userManager.FindByIdAsync(parameters.UserId);
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", parameters.UserId);
-                return new APIResponse(404, "User does not exist");
+                return new ApiResponse(404, "User does not exist");
             }
 
             #region Reset Password Successful Email
@@ -304,40 +312,40 @@ namespace BlazorBoilerplate.Server.Controllers
                     await _emailService.SendEmailAsync(email);
                     #endregion
 
-                    return new APIResponse(200, String.Format("Reset Password Successful Email Sent: {0}", user.Email));
+                    return new ApiResponse(200, String.Format("Reset Password Successful Email Sent: {0}", user.Email));
                 }
                 else
                 {
                     _logger.LogInformation("Error while resetting the password!: {0}", user.UserName);
-                    return new APIResponse(400, string.Format("Error while resetting the password!: {0}", user.UserName));
+                    return new ApiResponse(400, string.Format("Error while resetting the password!: {0}", user.UserName));
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogInformation("Reset Password failed: {0}", ex.Message);
-                return new APIResponse(400, string.Format("Error while resetting the password!: {0}", ex.Message));
+                return new ApiResponse(400, string.Format("Error while resetting the password!: {0}", ex.Message));
 
             }
             #endregion
         }
 
         [Authorize]
+        // POST: api/Account/Logout
         [HttpPost("Logout")]
-        public async Task<APIResponse> Logout()
+        public async Task<ApiResponse> Logout()
         {
-            _logger.LogInformation("User Logged out");
             await _signInManager.SignOutAsync();
-            return new APIResponse(200, "Logout Successful");
+            return new ApiResponse(200, "Logout Successful");
         }
 
         //[Authorize]
         [HttpGet("UserInfo")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        public async Task<APIResponse> UserInfo()
+        public async Task<ApiResponse> UserInfo()
         {
             UserInfoDto userInfo = await BuildUserInfo();
-            return new APIResponse(200, "Retrieved UserInfo", userInfo); ;
+            return new ApiResponse(200, "Retrieved UserInfo", userInfo); ;
         }
 
         private async Task<UserInfoDto> BuildUserInfo()
@@ -357,17 +365,18 @@ namespace BlazorBoilerplate.Server.Controllers
                         .ToDictionary(c => c.Type, c => c.Value),
                 Roles = ((ClaimsIdentity)User.Identity).Claims
                         .Where(c => c.Type == ClaimTypes.Role)
-                        .Select(c => c.Value).ToArray()
+                        .Select(c => c.Value).ToList()
             };
         }
 
         [AllowAnonymous]
+        // DELETE: api/Account/5
         [HttpPost("UpdateUser")]
-        public async Task<APIResponse> UpdateUser(UserInfoDto userInfo)
+        public async Task<ApiResponse> UpdateUser(UserInfoDto userInfo)
         {
             if (!ModelState.IsValid)
             {
-                return new APIResponse(400, "User Model is Invalid");
+                return new ApiResponse(400, "User Model is Invalid");
             }
 
             var user = await _userManager.FindByEmailAsync(userInfo.Email);
@@ -375,7 +384,7 @@ namespace BlazorBoilerplate.Server.Controllers
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", userInfo.Email);
-                return new APIResponse(404, "User does not exist");
+                return new ApiResponse(404, "User does not exist");
             }
 
             user.FirstName = userInfo.FirstName;
@@ -386,10 +395,28 @@ namespace BlazorBoilerplate.Server.Controllers
             if (!result.Succeeded)
             {
                 _logger.LogInformation("User Update Failed: {0}", result.Errors.FirstOrDefault()?.Description);
-                return new APIResponse(400, "User Update Failed");
+                return new ApiResponse(400, "User Update Failed");
             }
 
-            return new APIResponse(200, "User Updated Successfully");
+            return new ApiResponse(200, "User Updated Successfully");
         }
+
+
+        [Authorize]
+        // DELETE: api/Account/5
+        [HttpDelete("{id}")]
+        public async Task<ApiResponse> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return new ApiResponse(404, "User does not exist");
+            }
+
+            await _userManager.DeleteAsync(user);
+
+            return new ApiResponse(200, "User Deletion Successful");
+        }
+
     }
 }

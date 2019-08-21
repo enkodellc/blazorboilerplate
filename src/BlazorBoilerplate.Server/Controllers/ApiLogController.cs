@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Server.Models;
-using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -22,10 +20,9 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // GET: api/ApiLogs
         [HttpGet]
-        public async Task<IEnumerable<ApiLogItem>> Get()
+        public async Task<ApiResponse> Get()
         {
-            var apiLogItems = await _apiLogService.Get();
-            return apiLogItems;
+            return await _apiLogService.Get();
         }
     }
 }

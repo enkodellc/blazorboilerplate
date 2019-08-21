@@ -20,6 +20,8 @@ using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Data.Mapping;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using BlazorBoilerplate.Server.Data.Interfaces;
 
 namespace BlazorBoilerplate.Server
 {
@@ -129,6 +131,7 @@ namespace BlazorBoilerplate.Server
                     new[] { "application/octet-stream" });
             });
 
+            services.AddScoped<IUserSession, UserSession>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
@@ -142,7 +145,14 @@ namespace BlazorBoilerplate.Server
             });
 
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
-            IMapper autoMapper = mappingConfig.CreateMapper();
+
+            var automapperConfig = new MapperConfiguration(configuration =>
+            {
+                configuration.AddProfile(new MappingProfile());
+            });
+
+            var autoMapper = automapperConfig.CreateMapper();
+
             services.AddSingleton(autoMapper);
         }
 
@@ -157,10 +167,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
 
+            app.UseMiddleware<UserSessionMiddleware>();
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
-            app.UseMiddleware<APIResponseRequestLogginMiddleware>(Convert.ToBoolean(Configuration["BlazorBoilerplate.EnableAPILogging"] ?? "true"));
-
+            app.UseMiddleware<APIResponseRequestLogginMiddleware>(Convert.ToBoolean(Configuration["BlazorBoilerplate:EnableAPILogging"] ?? "true"));
+             
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -189,5 +200,6 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
         }
+
     }
 }

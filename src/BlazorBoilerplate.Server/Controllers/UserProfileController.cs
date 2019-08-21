@@ -29,22 +29,22 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // GET: api/UserProfile/Get
         [HttpGet("Get")]
-        public async Task<APIResponse> Get()
+        public async Task<ApiResponse> Get()
         {
             Guid userId = new Guid(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             return await _userProfileService.Get(userId);
         }
 
         [HttpPost("Upsert")]
-        public async Task<APIResponse> Upsert(UserProfileDto userProfile)
+        public async Task<ApiResponse> Upsert(UserProfileDto userProfile)
         {
             if (!ModelState.IsValid)
             {
-                return new APIResponse(400, "User Model is Invalid");
+                return new ApiResponse(400, "User Model is Invalid");
             }
 
             await _userProfileService.Upsert(userProfile);
-            return new APIResponse(200, "Email Successfuly Sent");
+            return new ApiResponse(200, "Email Successfuly Sent");
         }
 
     }

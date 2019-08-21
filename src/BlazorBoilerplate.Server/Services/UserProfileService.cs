@@ -10,8 +10,8 @@ namespace BlazorBoilerplate.Server.Services
 {
     public interface IUserProfileService
     {
-        Task<APIResponse> Get(Guid userId);
-        Task<APIResponse> Upsert(UserProfileDto userProfile);
+        Task<ApiResponse> Get(Guid userId);
+        Task<ApiResponse> Upsert(UserProfileDto userProfile);
     }
     public class UserProfileService : IUserProfileService
     {
@@ -22,12 +22,12 @@ namespace BlazorBoilerplate.Server.Services
             _db = db;
         }
 
-        public async Task<APIResponse> Get(Guid userId)
+        public async Task<ApiResponse> Get(Guid userId)
         {
             try
             {
                 var profileQuery = from userProf in _db.UserProfiles
-                              where userProf.UserId == userId
+                              where userProf.ApplicationUser.Id == userId
                               select userProf;
 
                 UserProfileDto userProfile = new UserProfileDto();
@@ -47,20 +47,20 @@ namespace BlazorBoilerplate.Server.Services
                     userProfile.IsNavMinified = profile.IsNavMinified;
                 }
 
-                return new APIResponse(200, "Retrieved User Profile", userProfile);
+                return new ApiResponse(200, "Retrieved User Profile", userProfile);
             }
             catch (Exception ex)
             {
                 string test = ex.Message;
-                return new APIResponse(400, "Failed to Retrieve User Profile");
+                return new ApiResponse(400, "Failed to Retrieve User Profile");
             }
         }
 
-        public async Task<APIResponse> Upsert(UserProfileDto userProfile)
+        public async Task<ApiResponse> Upsert(UserProfileDto userProfile)
         {
             try
             {
-                var profileQuery = from prof in _db.UserProfiles where prof.UserId == userProfile.UserId select prof;
+                var profileQuery = from prof in _db.UserProfiles where prof.ApplicationUser.Id == userProfile.UserId select prof;
 
                 UserProfile profile = new UserProfile();
 
@@ -82,16 +82,16 @@ namespace BlazorBoilerplate.Server.Services
                 else
                 {
                     _db.UserProfiles.Add(profile);
-                }                   
-               
+                }
+
                 await _db.SaveChangesAsync();
 
-                return new APIResponse(200, "Updated User Profile");
+                return new ApiResponse(200, "Updated User Profile");
             }
             catch (Exception ex)
             {
                 string test = ex.Message;
-                return new APIResponse(400, "Failed to Retrieve User Profile");
+                return new ApiResponse(400, "Failed to Retrieve User Profile");
             }
         }
     }
