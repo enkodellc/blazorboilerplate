@@ -18,21 +18,21 @@ namespace BlazorBoilerplate.Server.Data
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Todo> Todos { get; set; }
 
-        private readonly IUserSession _userSession;
-
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)  
+        private IUserSession _userSession { get; set; }
+        
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUserSession userSession) : base(options)
         {
             _userSession = userSession;
-        }       
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
         }
-        
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ShadowProperties();
@@ -43,19 +43,6 @@ namespace BlazorBoilerplate.Server.Data
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
-
-            //builder.Entity<UserProfile>(entity =>
-            //{
-            //    // Set key for entity
-            //    entity.HasKey(p => p.Id);
-            //});
-
-
-            //builder.Entity<ApiLogItem>(entity =>
-            //{
-            //    // Set key for entity
-            //    entity.HasKey(li => li.Id);
-            //});
         }
 
         private void SetGlobalQueryFilters(ModelBuilder modelBuilder)
@@ -70,7 +57,7 @@ namespace BlazorBoilerplate.Server.Data
                     //TODO future for Tenant
                     //if (typeof(ITenantEntity).IsAssignableFrom(t))
                     //{
-                    //    // softdeletable and tenant (note do not filter just ITenant - too much filtering! 
+                    //    // softdeletable and tenant (note do not filter just ITenant - too much filtering!
                     //    // just top level classes that have ITenantEntity
                     //    var method = SetGlobalQueryForSoftDeleteAndTenantMethodInfo.MakeGenericMethod(t);
                     //    method.Invoke(this, new object[] { modelBuilder });

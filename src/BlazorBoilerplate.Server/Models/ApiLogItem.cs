@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorBoilerplate.Server.Models
 {
@@ -24,7 +25,6 @@ namespace BlazorBoilerplate.Server.Models
         [MaxLength(2048)]
         public string Path { get; set; }
 
-
         [MaxLength(2048)]
         public string QueryString { get; set; }
 
@@ -37,6 +37,8 @@ namespace BlazorBoilerplate.Server.Models
         [MaxLength(45)]
         public string IPAddress { get; set; }
 
-        public ApplicationUser ApplicationUser { get; set; }
+        //TODO Error Fix Anonymous / Guid Empty works but if you assign a user it tries to add a row to the AspNetUsers table WTF
+        public Guid? UserId { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

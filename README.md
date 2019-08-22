@@ -81,14 +81,17 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.2.0 (In Progress - Under Development)
-- CRUD Todo List example (In Progress)
-- Tweak Middleware
+### 0.2.0 (Known Issues - Under Development)
+- CRUD Todo List example
 - Restructure Project Refactor BlazorBoilerplate.Shared for N-Tier Design
-- Implement Automapper
+- Implement Automapper for Models
 - Removed old Migrations. Recommend to delete your database to start new.
 - Implement ShadowProperties for Auditable, SoftDelete Interfaces for Models (In Progress)
+- DB Seed Data
 
+- Known Issues: 
+  - ApiLogging Doesn't log users who are logged in because I hate Entity Framework
+  - IAuditable Doesn't save CreatedBy / ModifiedBy UserId because I hate Entity Framework / Shadow Properties
 
 ### 0.1.9
 - Update to SDK 3.0.0-preview8-28405-07

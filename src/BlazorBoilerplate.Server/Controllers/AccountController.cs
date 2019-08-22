@@ -119,20 +119,6 @@ namespace BlazorBoilerplate.Server.Controllers
                     return new ApiResponse(400, "User Model is Invalid");
                 }
 
-                // https://gooroo.io/GoorooTHINK/Article/17333/Custom-user-roles-and-rolebased-authorization-in-ASPNET-core/32835
-                string[] roleNames = { "SuperAdmin", "Admin", "User" };
-                IdentityResult roleResult;
-
-                foreach (var roleName in roleNames)
-                {
-                    //creating the roles and seeding them to the database
-                    var roleExist = await _roleManager.RoleExistsAsync(roleName);
-                    if (!roleExist)
-                    {
-                        roleResult = await _roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
-                    }
-                }
-
                 var user = new ApplicationUser
                 {
                     UserName = parameters.UserName,

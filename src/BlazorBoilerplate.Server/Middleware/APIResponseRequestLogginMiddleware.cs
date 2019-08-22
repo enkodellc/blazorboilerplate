@@ -3,6 +3,7 @@ using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
@@ -37,7 +38,7 @@ namespace BlazorBoilerplate.Server.Middleware
             _clearCacheHeadersDelegate = ClearCacheHeaders;
         }
 
-        public async Task Invoke(HttpContext httpContext, IApiLogService apiLogService, ILogger<APIResponseRequestLogginMiddleware> logger)
+        public async Task Invoke(HttpContext httpContext, IApiLogService apiLogService, ILogger<APIResponseRequestLogginMiddleware> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _apiLogService = apiLogService;
@@ -88,29 +89,30 @@ namespace BlazorBoilerplate.Server.Middleware
                             #region Log Request / Response
                             if (_enableAPILogging)
                             {
-                                stopWatch.Stop();
-                                await responseBody.CopyToAsync(originalBodyStream);
-
-                                Guid userId = Guid.Empty;
                                 try
                                 {
-                                    userId = httpContext.User.Identity.IsAuthenticated
-                                            ? new Guid(httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value)
-                                            : Guid.Empty;
+                                    stopWatch.Stop();
+                                    await responseBody.CopyToAsync(originalBodyStream);
+
+                                    Guid userId = Guid.Empty;
+
+                                    ApplicationUser user = httpContext.User.Identity.IsAuthenticated
+                                            ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value)
+                                            : null;
+
+                                await SafeLog(requestTime,
+                                    stopWatch.ElapsedMilliseconds,
+                                    response.StatusCode,
+                                    request.Method,
+                                    request.Path,
+                                    request.QueryString.ToString(),
+                                    requestBodyContent,
+                                    responseBodyContent,
+                                    httpContext.Connection.RemoteIpAddress.ToString(),
+                                    user
+                                    );
                                 }
                                 catch { }
-
-                                //await SafeLog(requestTime,
-                                //    stopWatch.ElapsedMilliseconds,
-                                //    response.StatusCode,
-                                //    request.Method,
-                                //    request.Path,
-                                //    request.QueryString.ToString(),
-                                //    requestBodyContent,
-                                //    responseBodyContent,
-                                //    httpContext.Connection.RemoteIpAddress.ToString(),
-                                //    userId
-                                //    );
                             }
                             #endregion
                         }
@@ -299,7 +301,7 @@ namespace BlazorBoilerplate.Server.Middleware
                             string requestBody,
                             string responseBody,
                             string ipAddress,
-                            Guid userId)
+                            ApplicationUser user)
         {
             // Do not log these events login, logout, getuserinfo...
             if ((path.ToLower().StartsWith("/api/account/")) ||
@@ -344,9 +346,9 @@ namespace BlazorBoilerplate.Server.Middleware
                 QueryString = queryString,
                 RequestBody = requestBody,
                 ResponseBody = responseBody,
-                IPAddress = ipAddress
-
-            }, userId);
+                IPAddress = ipAddress,
+                User = user
+            });
         }
 
         private Task ClearCacheHeaders(object state)

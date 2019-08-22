@@ -20,12 +20,12 @@ namespace BlazorBoilerplate.Server.Middleware
             try
             {
                 var request = httpContext.Request;
-                if (!request.Path.StartsWithSegments(new PathString("/api")))
-                {
-                    await _next.Invoke(httpContext);
-                }
-                else
-                {
+                //if (!request.Path.StartsWithSegments(new PathString("/api")))
+                //{
+                //    await _next.Invoke(httpContext);
+                //}
+                //else
+                //{
                     // Call the next delegate/middleware in the pipeline
                     await _next.Invoke(httpContext);
 
@@ -37,7 +37,7 @@ namespace BlazorBoilerplate.Server.Middleware
                         userSession.TenantId = -1; // ClaimsHelper.GetClaim<int>(context.User, "tenantid");
                         userSession.Roles = httpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
                     }
-                }
+             //   }
             }
             catch(Exception ex)
             {

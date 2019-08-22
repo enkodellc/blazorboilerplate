@@ -137,6 +137,7 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IApiLogService, ApiLogService>();
             services.AddTransient<ITodoService, ToDoService>();
+                     
 
             // AutoMapper Configurations
             var mappingConfig = new MapperConfiguration(mc =>
@@ -154,10 +155,13 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
+
+            //Seed Database
+            services.AddTransient<IApplicationDbContextSeed, ApplicationDbContextSeed>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApplicationDbContextSeed applicationDbContextSeed)
         {
             EmailTemplates.Initialize(env);
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -199,7 +203,8 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
-        }
 
+            applicationDbContextSeed.SeedDb();
+        }
     }
 }
