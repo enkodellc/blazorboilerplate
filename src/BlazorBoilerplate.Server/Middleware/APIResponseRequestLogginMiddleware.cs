@@ -4,11 +4,12 @@ using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -29,13 +30,14 @@ namespace BlazorBoilerplate.Server.Middleware
         private IApiLogService _apiLogService;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
         private readonly bool _enableAPILogging;
+        private List<string> _ignorePaths = new List<string>();
 
- 
-        public APIResponseRequestLogginMiddleware(RequestDelegate next, bool enableAPILogging)
+        public APIResponseRequestLogginMiddleware(RequestDelegate next, bool enableAPILogging, IConfiguration configuration)
         {
             _next = next;
             _enableAPILogging = enableAPILogging;
             _clearCacheHeadersDelegate = ClearCacheHeaders;
+            _ignorePaths = configuration.GetSection("BlazorBoilerplate:ApiLogging:IgnorePaths").Get<List<string>>();
         }
 
         public async Task Invoke(HttpContext httpContext, IApiLogService apiLogService, ILogger<APIResponseRequestLogginMiddleware> logger, UserManager<ApplicationUser> userManager)
@@ -87,14 +89,12 @@ namespace BlazorBoilerplate.Server.Middleware
                             }
 
                             #region Log Request / Response
-                            if (_enableAPILogging)
+                            if (_enableAPILogging && (_ignorePaths.Any(e => !request.Path.StartsWithSegments(new PathString(e.ToLower())))))
                             {
                                 try
                                 {
                                     stopWatch.Stop();
                                     await responseBody.CopyToAsync(originalBodyStream);
-
-                                    Guid userId = Guid.Empty;
 
                                     ApplicationUser user = httpContext.User.Identity.IsAuthenticated
                                             ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value)
@@ -118,7 +118,7 @@ namespace BlazorBoilerplate.Server.Middleware
                         }
                         catch (System.Exception ex)
                         {
-                            
+
                             _logger.LogWarning("An Inner Middleware exception occurred: " + ex.Message);
                             await HandleExceptionAsync(httpContext, ex);
                         }
@@ -233,9 +233,9 @@ namespace BlazorBoilerplate.Server.Middleware
             else
             {
                 bodyText = body.ToString();
-               // return httpContext.Response.WriteAsync(bodyText);
             }
 
+            //TODO Review the code below as it might not be necessary
             dynamic bodyContent = JsonConvert.DeserializeObject<dynamic>(bodyText);
             Type type = bodyContent?.GetType();
 
@@ -275,7 +275,7 @@ namespace BlazorBoilerplate.Server.Middleware
             return plainBodyText;
         }
 
-        // TODO Review Getting a info from VS over the Disposable of the StreamReader
+        //TODO VS Studio Info / Warining message over the Disposable of the StreamReader
         //private async Task<string> FormatResponse(HttpResponse response)
         //{
         //    using (StreamReader reader = new StreamReader(response.Body))
@@ -347,7 +347,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 RequestBody = requestBody,
                 ResponseBody = responseBody,
                 IPAddress = ipAddress,
-                User = user
+                ApplicationUserId = user == null ? Guid.Empty : user.Id
             });
         }
 

@@ -12,9 +12,9 @@ namespace BlazorBoilerplate.Server.Data.Mapping
         /// </summary>
         public MappingProfile()
         {
-            CreateMap<Todo, TodoDto>().ReverseMap();
-            //.ForMember(t => t.CreatedBy, opt => opt.MapFrom((src, dest, destMember, res) => res.Context.Options.Items["CreatedBy"])); 
-            CreateMap<ApiResponse, ApiResponseDto>();
+            CreateMap<Todo, TodoDto>().ReverseMap();           
+            CreateMap<UserProfile, UserProfileDto>().ReverseMap();
+            CreateMap<ApiLogItem, ApiLogItemDto>().ReverseMap();
         }
     }
 }

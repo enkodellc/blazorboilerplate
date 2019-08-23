@@ -33,13 +33,19 @@ namespace BlazorBoilerplate.Server.Data
             base.OnConfiguring(optionsBuilder);
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            builder.ShadowProperties();
+            //Fluent API Does not follow foreign key naming convention 
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(a => a.Profile)
+                .WithOne(b => b.ApplicationUser)
+                .HasForeignKey<UserProfile>(b => b.UserId);
 
-            base.OnModelCreating(builder);
+            modelBuilder.ShadowProperties();
 
-            SetGlobalQueryFilters(builder);
+            base.OnModelCreating(modelBuilder);
+
+            SetGlobalQueryFilters(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);

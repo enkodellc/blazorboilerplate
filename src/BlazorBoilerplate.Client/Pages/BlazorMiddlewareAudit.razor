@@ -3,9 +3,9 @@
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
-<h1>Blazor / .NET Core Middleware Audit Log (In Progress)</h1>
+<h1>Blazor / .NET Core Middleware Audit Log</h1>
 <p>
-    This is an example of the .NET Core Middleware that logs all API calls in the database. We filtor out "api/account/" calls for Login / Logout / GetUser to keep it somewhat reasonable.
+    This is an example of the .NET Core Middleware that logs all API calls in the database. We filtor out "api/account" calls for Login / Logout / GetUser to keep it somewhat reasonable.
     This code is can be easily modified to fit your needs. I think this is a great feature for you to track your useer interaction and errors. For instance if Bob logged in and filled out a form with
     erroneous data it will log the error as well as the request data. Then you could easily look through this audit log and recreate his actions. Then you could add additional validation or handle the
     input in an appropriate manner.
@@ -22,22 +22,24 @@
 }
 else
 {
-    <MatTable Items="@apiResponses" Class="mat-elevation-z5">
+    <MatTable Items="@apiLogItems" Class="mat-elevation-z5" Striped="true" PageSize="10">
         <MatTableHeader>
-            <th>Date / Time</th>
+            <th><div style="width:175px;">Date / Time</div></th>
             <th>Http Code</th>
-            <th>User</th>
+            <th>IP Address</th>
             <th>Method</th>
-            <th>Path</th>
             <th>Response Time</th>
+            <th><div style="width:175px;">UserId</div></th>
+            <th>Path</th>
         </MatTableHeader>
         <MatTableRow>
-            <td></td>
+            <td>@context.RequestTime</td>
             <td>@context.StatusCode</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td><span style="font-size:small">@context.IPAddress</span></td>
+            <td>@context.Method</td>
+            <td>@context.ResponseMillis</td>
+            <td>@context.ApplicationUserId</td>
+            <td>@context.Path</td>
         </MatTableRow>
     </MatTable>
 }
@@ -45,21 +47,21 @@ else
 
 @code {
     ApiResponseDto[] apiResponses = new ApiResponseDto[] { };
+    List<ApiLogItemDto> apiLogItems = new List<ApiLogItemDto>();
 
     protected override async Task OnInitializedAsync()
     {
-        //ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api//WeatherForecasts");
+        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/apilog");
 
-        //if (apiResponse.StatusCode == 200)
-        //{
-        //    matToaster.Add(apiResponse.Message, MatToastType.Success, "Weather Forecast Retrieved");
-        //    forecasts = Newtonsoft.Json.JsonConvert.DeserializeObject<WeatherForecast[]>(apiResponse.Result.ToString());
-        //}
-        //else
-        //{
-        //    matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Weather Forecast Retrieval Failed");
-        //}
+        if (apiResponse.StatusCode == 200)
+        {
+            Console.WriteLine(apiResponse.Result.ToString());
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "Api Log Items Retrieved");
+            apiLogItems = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiLogItemDto[]>(apiResponse.Result.ToString()).ToList<ApiLogItemDto>();            
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Danger, "Api Log Items Retrieval Failed");
+        }
     }
-
-
 }

@@ -61,20 +61,24 @@ It though is my ambition to learn and get feedback on what Best Practices can be
 
 ## Completed 
  - Basic Login / User Creation
- - Admin Theme using Material Design / MatBlazor - Free to use.
- - Log Files
+ - Admin Theme using Material Design / MatBlazor
+ - Log Files using Serilog
  - Choose between SQL Lite File or MS SQL Database
  - Email Confirmation of Registered Users
  - Forgot Password Functionality
- - Middleware to log Api Requests and Responses and Logging to Database for audit trails.
- - Todo List CRUD Example with N-Tier Layers Not just some fluff that most others do.
+ - Api Audit Trail / Middleware to log Api Requests and Responses
+ - Api Response Class to maintain consistent Api Requests and Responses
+ - Todo List CRUD Example with N-Tier Layers Not just some fluff that most others do
+ - Seed Database
 
 ## Road map
-- User profile & settings management.
-- User, claims, role, permission and organization unit management.
+- Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster
+- User profile & settings management
+- User, claims, role, permission and organization unit management
 - Real time chat and notification system. Slack Communication clone?
-- Blog or other real world functionality.
-- Audit log report UI.
+- Azure Hosting Guide
+- Docker Container 
+- Create a Nuget Package Template
 
 ## License
 This project is licensed under the terms of the [MIT license](LICENSE).
@@ -84,14 +88,13 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 ### 0.2.0 (Known Issues - Under Development)
 - CRUD Todo List example
 - Restructure Project Refactor BlazorBoilerplate.Shared for N-Tier Design
-- Implement Automapper for Models
+- Automapper for Client (dto) / Server Models
 - Removed old Migrations. Recommend to delete your database to start new.
 - Implement ShadowProperties for Auditable, SoftDelete Interfaces for Models (In Progress)
 - DB Seed Data
 
 - Known Issues: 
-  - ApiLogging Doesn't log users who are logged in because I hate Entity Framework
-  - IAuditable Doesn't save CreatedBy / ModifiedBy UserId because I hate Entity Framework / Shadow Properties
+  - IAuditable Shadow Properties not getting UserId
 
 ### 0.1.9
 - Update to SDK 3.0.0-preview8-28405-07

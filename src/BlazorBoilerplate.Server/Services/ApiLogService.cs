@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 
 namespace BlazorBoilerplate.Server.Services
 {
@@ -14,6 +15,7 @@ namespace BlazorBoilerplate.Server.Services
     {
         Task Log(ApiLogItem apiLogItem);
         Task<ApiResponse> Get();
+        Task<ApiResponse> GetByApplictionUserId(Guid applicationUserId);
     }
     public class ApiLogService : IApiLogService
     {
@@ -41,26 +43,28 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task Log(ApiLogItem apiLogItem)
         {
-            try
+            using (ApplicationDbContext _dbContext = new ApplicationDbContext(_optionsBuilder.Options))
             {
-                using (ApplicationDbContext _dbContext = new ApplicationDbContext(_optionsBuilder.Options))
+                if (apiLogItem.ApplicationUserId == Guid.Empty)
                 {
-                    _dbContext.ApiLogs.Add(apiLogItem);
-                    await _dbContext.SaveChangesAsync();
+                    apiLogItem.ApplicationUserId = null;
                 }
-            }
-            catch(Exception ex)
-            {
-                //TODO Error Fix "Violation of PRIMARY KEY constraint 'PK_AspNetUsers'. Cannot insert duplicate key in object 'dbo.AspNetUsers'. The statement has been terminated."
-                string test = ex.Message + " " + ex.InnerException;
+
+                _dbContext.ApiLogs.Add(apiLogItem);
+                await _dbContext.SaveChangesAsync();
             }
         }
 
         public async Task<ApiResponse> Get()
         {
+            return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs));
+        }
+
+        public async Task<ApiResponse> GetByApplictionUserId(Guid applicationUserId)
+        {
             try
             {
-                return new ApiResponse(200, "Retrieved Todos", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs));
+                return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == applicationUserId)));
             }
             catch (Exception ex)
             {

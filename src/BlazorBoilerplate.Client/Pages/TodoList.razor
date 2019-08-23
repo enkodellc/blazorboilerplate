@@ -8,7 +8,7 @@
     Check out the <a href="https://github.com/enkodellc/blazorboilerplate" target="_blank">repository to view the source.</a> If you find this helpful please contribute or <a href="https://www.paypal.me/enkodellc">donate</a> to support further development.</p>
 
 <MatButton Icon="playlist_add" Label="New Todo" OnClick="@((e) => OpenDialog())" Raised="true"></MatButton><br/>
-<MatTable Class="mat-elevation-z5" Items="@todos" LoadInitialData="true" Striped="true" FilterByColumnName="Title" DebounceMilliseconds="150">
+<MatTable Class="mat-elevation-z5" Items="@todos" LoadInitialData="true" Striped="true" FilterByColumnName="Title" DebounceMilliseconds="150" PageSize="10">
     <MatTableHeader>
         <th></th>
         <th>Id</th>

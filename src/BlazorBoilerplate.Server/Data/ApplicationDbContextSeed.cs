@@ -1,10 +1,7 @@
 ﻿using BlazorBoilerplate.Server.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Data
 {
@@ -43,8 +40,7 @@ namespace BlazorBoilerplate.Server.Data
                 {
                     return; //If we have roles then database has been seeded already
                 }
-            }
-   
+            }   
 
             ApplicationUser user = new ApplicationUser
             {
@@ -65,7 +61,19 @@ namespace BlazorBoilerplate.Server.Data
 
             _userManager.CreateAsync(user).Wait();
             _userManager.AddToRoleAsync(user, "Admin").Wait();
-                       
+
+
+            UserProfile userProfile = new UserProfile
+            {
+               UserId = new Guid("09C0D2E2-B003-4BE8-A62A-08D7268AF58E"),
+               Count = 2,
+               IsNavOpen = true,
+               LastPageVisited = "/dashboard",
+               IsNavMinified = false,
+               LastUpdatedDate = DateTime.Now
+            };
+            _dbContext.UserProfiles.Add(userProfile);
+
             _dbContext.Todos.AddRange(
                     new Todo
                     {
@@ -103,7 +111,7 @@ namespace BlazorBoilerplate.Server.Data
                     RequestBody = "",
                     ResponseBody = "",
                     IPAddress = "::1",
-                    UserId = new Guid("09C0D2E2-B003-4BE8-A62A-08D7268AF58E")
+                    ApplicationUserId = user.Id
                 }
             );
 

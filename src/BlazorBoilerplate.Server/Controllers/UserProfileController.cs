@@ -27,7 +27,7 @@ namespace BlazorBoilerplate.Server.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        // GET: api/UserProfile/Get
+        // GET: api/UserProfile
         [HttpGet("Get")]
         public async Task<ApiResponse> Get()
         {
@@ -35,6 +35,7 @@ namespace BlazorBoilerplate.Server.Controllers
             return await _userProfileService.Get(userId);
         }
 
+        // POST: api/UserProfile
         [HttpPost("Upsert")]
         public async Task<ApiResponse> Upsert(UserProfileDto userProfile)
         {

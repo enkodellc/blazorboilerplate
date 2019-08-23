@@ -32,6 +32,7 @@ namespace BlazorBoilerplate.Server.Services
         {
             try
             {
+                //Todo Shadow Property doesn't allow filter of IsDeleted here?
                 return new ApiResponse(200, "Retrieved Todos", _autoMapper.ProjectTo<TodoDto>(_db.Todos).ToList());
             }
             catch (Exception ex)
