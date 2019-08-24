@@ -1,0 +1,53 @@
+﻿@page "/forum"
+@inject IAuthorizationService AuthorizationService
+@inherits ForumPageModel
+@inject HttpClient Http
+
+<AuthorizeView>
+    <NotAuthorized>
+        <div class="alert alert-success">
+            <a href="Login">Log in</a> to post a message.
+        </div>
+    </NotAuthorized>
+    <Authorized>
+        <div class="card card-primary">
+            <div class="card-heading">
+                <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+                    <div class="navbar-brand">Forum</div>
+                </nav>
+            </div>
+            <div class="card-body">
+                <ul class="chat">
+                    @if (Messages == null)
+                    {
+                        <li class="left clearfix">
+                            <div class="chat-body clearfix">
+                                <p>
+                                    Loading messages..
+                                </p>
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        @foreach (var message in Messages)
+                        {
+                            <li class="left clearfix">
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">@message.Username</strong> 
+                                    </div>
+                                    <p class="@message.CSS">
+                                        @message.Body
+                                    </p>
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+
+            <ForumMessageCreateForm Send="Send" />
+        </div>
+    </Authorized>
+</AuthorizeView>

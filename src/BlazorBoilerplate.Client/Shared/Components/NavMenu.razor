@@ -5,7 +5,7 @@
         <MatNavItem Href="@uriHelper.ToAbsoluteUri(" ").AbsoluteUri">
             <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
         </MatNavItem>
-        
+
         <MatNavItem Href="@uriHelper.ToAbsoluteUri("todo_list").AbsoluteUri">
             <MatIcon>list_alt</MatIcon> <span class="miniHover">Todo List</span>
         </MatNavItem>
@@ -49,6 +49,10 @@
 
         <MatNavItem Href="@uriHelper.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="@(!IsLoggedIn)">
             <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Users</span>
+        </MatNavItem>
+
+        <MatNavItem Href="@uriHelper.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+            <MatIcon>forum</MatIcon> <span class="miniHover">Forum</span>
         </MatNavItem>
 
         <MatNavItem Href="@uriHelper.ToAbsoluteUri("sponsors").AbsoluteUri">
