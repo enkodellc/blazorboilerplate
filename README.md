@@ -92,7 +92,6 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Removed old Migrations. Recommend to delete your database to start new.
 - Implement ShadowProperties for Auditable, SoftDelete Interfaces for Models (In Progress)
 - DB Seed Data
-
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
 

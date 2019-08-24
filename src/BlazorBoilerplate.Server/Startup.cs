@@ -41,14 +41,14 @@ namespace BlazorBoilerplate.Server
             services.AddDbContext<ApplicationDbContext>(options => {
                 if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                 {
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")); //SQL Server Database                    
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")); //SQL Server Database
                 }
                 else
                 {
                     options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}");  // Sql Lite / file database
                 }
             });
-            
+
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -136,7 +136,8 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IApiLogService, ApiLogService>();
-            services.AddTransient<ITodoService, ToDoService>();                     
+            services.AddTransient<ITodoService, ToDoService>();
+            services.AddTransient<IApplicationDbContextSeed, ApplicationDbContextSeed>();
 
             // AutoMapper Configurations
             var mappingConfig = new MapperConfiguration(mc =>
@@ -154,9 +155,6 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
-
-            //Seed Database
-            services.AddTransient<IApplicationDbContextSeed, ApplicationDbContextSeed>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -174,7 +172,7 @@ namespace BlazorBoilerplate.Server
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
             app.UseMiddleware<APIResponseRequestLogginMiddleware>(Convert.ToBoolean(Configuration["BlazorBoilerplate:EnableAPILogging:Enabled"] ?? "true"));
-             
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -203,6 +201,7 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
 
+            //Seed Database
             applicationDbContextSeed.SeedDb();
         }
     }
