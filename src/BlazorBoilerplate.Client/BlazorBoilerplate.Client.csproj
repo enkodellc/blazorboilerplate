@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Forum\" />
     <Folder Include="wwwroot\fonts\fontawesome\" />
     <Folder Include="wwwroot\javascript\" />
   </ItemGroup>

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared.Dto;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -11,6 +14,16 @@ namespace BlazorBoilerplate.Server.Hubs
     /// </summary>
     public class ChatHub : Hub
     {
+        private IMessageService MessageService { get; set; }
+
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public ChatHub(IMessageService messageService, UserManager<ApplicationUser> userManager)
+        {
+            MessageService = messageService;
+            _userManager = userManager;
+        }
+
         /// <summary>
         /// connectionId-to-username lookup
         /// </summary>
@@ -19,15 +32,36 @@ namespace BlazorBoilerplate.Server.Hubs
         /// </remarks>
         private static readonly Dictionary<string, string> userLookup = new Dictionary<string, string>();
 
+
+        /// <summary>
+        /// Deletes a message
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task DeleteMessage(int id)
+        {
+            await MessageService.Delete(id);
+        }
+
         /// <summary>
         /// Send a message to all clients
         /// </summary>
-        /// <param name="username"></param>
         /// <param name="message"></param>
         /// <returns></returns>
         public async Task SendMessage(string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", Context.User.Identity.Name, message);
+            var user = await _userManager.FindByNameAsync(Context.User.Identity.Name);
+
+            MessageDto newMessage = new MessageDto()
+            {
+                Text = message,
+                UserName = user.UserName,
+                UserID = user.Id,
+                When = DateTime.UtcNow
+            };
+
+            await MessageService.Create(newMessage);
+            await Clients.All.SendAsync("ReceiveMessage", 0, user.UserName, message);
         }
 
         /// <summary>
@@ -38,12 +72,13 @@ namespace BlazorBoilerplate.Server.Hubs
         public async Task Register(string username)
         {
             var currentId = Context.ConnectionId;
+
             if (!userLookup.ContainsKey(currentId))
             {
                 // maintain a lookup of connectionId-to-username
                 userLookup.Add(currentId, username);
                 // re-use existing message for now
-                await Clients.AllExcept(currentId).SendAsync("ReceiveMessage", username, $"{username} joined the chat");
+                await Clients.AllExcept(currentId).SendAsync("ReceiveMessage", 0, username, $"{username} joined the chat");
             }
         }
 
@@ -54,6 +89,13 @@ namespace BlazorBoilerplate.Server.Hubs
         public override Task OnConnectedAsync()
         {
             Console.WriteLine("Connected");
+            List<MessageDto> messages = MessageService.GetList();
+
+            foreach (var message in messages)
+            {
+                Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", message.Id, message.UserName, message.Text);
+            }
+
             return base.OnConnectedAsync();
         }
 
@@ -70,7 +112,7 @@ namespace BlazorBoilerplate.Server.Hubs
             if (userLookup.TryGetValue(id, out string username))
             {
                 userLookup.Remove(id);
-                await Clients.AllExcept(Context.ConnectionId).SendAsync("ReceiveMessage", username, $"{username} has left the chat");
+                await Clients.AllExcept(Context.ConnectionId).SendAsync("ReceiveMessage", 0, username, $"{username} has left the chat");
             }
             await base.OnDisconnectedAsync(e);
         }

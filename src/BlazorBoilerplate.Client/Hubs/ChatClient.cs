@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using BlazorBoilerplate.Client.Pages;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace BlazorBoilerplate.Client.Hubs
         /// This method is called from Javascript when amessage is received
         /// </remarks>
         [JSInvokable]
-        public static void ReceiveMessage(string key, string method, string username, string message)
+        public static void ReceiveMessage(string key, string method, int id, string username, string message)
         {
             if (_clients.ContainsKey(key))
             {
@@ -39,7 +40,7 @@ namespace BlazorBoilerplate.Client.Hubs
                 switch (method)
                 {
                     case "ReceiveMessage":
-                        client.HandleReceiveMessage(username, message);
+                        client.HandleReceiveMessage(id, username, message);
                         return;
 
                     default:
@@ -125,10 +126,10 @@ namespace BlazorBoilerplate.Client.Hubs
         /// </summary>
         /// <param name="method">event name</param>
         /// <param name="message">message content</param>
-        private void HandleReceiveMessage(string username, string message)
+        private void HandleReceiveMessage(int id, string username, string message)
         {
             // raise an event to subscribers
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(username, message));
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(id, username, message));
         }
 
         /// <summary>
@@ -150,6 +151,19 @@ namespace BlazorBoilerplate.Client.Hubs
                 throw new InvalidOperationException("Client not started");
             // send the message
             await _JSruntime.InvokeAsync<object>("ChatClient.Send", _key, message);
+        }
+
+        /// <summary>
+        /// Delete a message from the hub by id
+        /// </summary>
+        /// <param name="id">message of id to be deleted</param>
+        public async Task Delete(int id)
+        {
+            // check we are connected
+            if (!_started)
+                throw new InvalidOperationException("Client not started");
+            // send the message
+            await _JSruntime.InvokeAsync<object>("ChatClient.Delete", _key, id);
         }
 
         /// <summary>
@@ -198,8 +212,9 @@ namespace BlazorBoilerplate.Client.Hubs
     /// </summary>
     public class MessageReceivedEventArgs : EventArgs
     {
-        public MessageReceivedEventArgs(string username, string message)
+        public MessageReceivedEventArgs(int id, string username, string message)
         {
+            Id = id;
             Username = username;
             Message = message;
         }
@@ -214,5 +229,9 @@ namespace BlazorBoilerplate.Client.Hubs
         /// </summary>
         public string Message { get; set; }
 
+        /// <summary>
+        /// Message id
+        /// </summary>
+        public int Id { get; internal set; }
     }
 }

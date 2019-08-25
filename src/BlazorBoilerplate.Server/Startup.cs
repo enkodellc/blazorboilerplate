@@ -138,6 +138,7 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IApiLogService, ApiLogService>();
             services.AddTransient<ITodoService, ToDoService>();
+            services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IApplicationDbContextSeed, ApplicationDbContextSeed>();
 
             // AutoMapper Configurations

@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Server.Data.Interfaces;
+﻿using BlazorBoilerplate.Server.Data.Configurations;
+using BlazorBoilerplate.Server.Data.Interfaces;
 using BlazorBoilerplate.Server.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace BlazorBoilerplate.Server.Data
         public DbSet<ApiLogItem> ApiLogs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Todo> Todos { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         private IUserSession _userSession { get; set; }
         
@@ -44,6 +46,12 @@ namespace BlazorBoilerplate.Server.Data
             modelBuilder.ShadowProperties();
 
             base.OnModelCreating(modelBuilder);
+            // Customize the ASP.NET Identity model and override the defaults if needed.
+            // For example, you can rename the ASP.NET Identity table names and more.
+            // Add your customizations after calling base.OnModelCreating(builder);
+            modelBuilder.Entity<Message>().ToTable("Messages");
+
+            modelBuilder.ApplyConfiguration(new MessageConfiguration());
 
             SetGlobalQueryFilters(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
