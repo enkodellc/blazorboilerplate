@@ -13,7 +13,7 @@ Blazor is a web framework designed to run  in the browser on a WebAssembly-based
 ## Goals
 - To create a boilerplate with Blazor / Razor components that includes the most common functionality for an app that is lean yet powerful for anyone to start their own project rapidly. 
 - This repository is community driven. It is not and never will be controlled by a corporation. 
-- Javascript Free or a least limited Javascript code. We may us components with JS in them but so far no Javascript has been written specifically for anything in the repository.
+- Minimal Javascript. Currently only using them for SignalR for the Forum. We may us components with JS in them but so far no Javascript has been written specifically for anything in the repository.
 
 # Live demo
 [Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. 
@@ -70,6 +70,7 @@ It though is my ambition to learn and get feedback on what Best Practices can be
  - Api Response Class to maintain consistent Api Requests and Responses
  - Todo List CRUD Example with N-Tier Layers Not just some fluff that most others do
  - Seed Database
+ - Forum chat and notification system - Thanks <a href="https://github.com/ajgoldenwings" target="_blank">ajgoldenwings</a>
 
 ## Road map
 - Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster
@@ -85,13 +86,18 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.2.0 (Known Issues - Under Development)
+### 0.2.1 (Known Issues - Under Development)
+- Known Issues: 
+  - IAuditable Shadow Properties not getting UserId
+
+### 0.2.0 
 - CRUD Todo List example
 - Restructure Project Refactor BlazorBoilerplate.Shared for N-Tier Design
 - Automapper for Client (dto) / Server Models
 - Removed old Migrations. Recommend to delete your database to start new.
 - Implement ShadowProperties for Auditable, SoftDelete Interfaces for Models (In Progress)
 - DB Seed Data
+- Forum chat and notification system - Thanks <a href="https://github.com/ajgoldenwings" target="_blank">ajgoldenwings</a>
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
 
