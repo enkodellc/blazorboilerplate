@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+<EditForm Model="@messageDto" OnValidSubmit="@DeleteMessage">
+    <MatListItem>
+        <MatListItemText Class="@messageDto.CSS" Style="width: 100%;">
+            <MatListItemPrimaryText>
+                @messageDto.UserName
+            </MatListItemPrimaryText>
+            <MatListItemSecondaryText>
+                @messageDto.Text
+            </MatListItemSecondaryText>
+        </MatListItemText>
+        <MatIconButton Icon="delete"
+                       Type="submit"
+                       Style="float: right;">
+        </MatIconButton>
+    </MatListItem>
+    <MatListDivider></MatListDivider>
+</EditForm>
+
+@code
+{    
+    MessageDto messageDto { get; set; }
+
+    [Parameter]
+    public Func<MessageDto, Task> Delete { get; set; }
+
+    [Parameter]
+    public MessageDto message { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        messageDto = message;
+    }
+
+    async Task DeleteMessage()
+    {
+        await Delete(messageDto);
+    }
+}

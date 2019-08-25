@@ -114,6 +114,7 @@ namespace BlazorBoilerplate.Server
             });
 
             services.AddControllers().AddNewtonsoftJson();
+            services.AddSignalR();
 
             services.AddSwaggerDocument(config =>
             {
@@ -137,6 +138,7 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IApiLogService, ApiLogService>();
             services.AddTransient<ITodoService, ToDoService>();
+            services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IApplicationDbContextSeed, ApplicationDbContextSeed>();
 
             // AutoMapper Configurations
@@ -198,6 +200,8 @@ namespace BlazorBoilerplate.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                // new SignalR endpoint routing setup
+                endpoints.MapHub<Hubs.ChatHub>("/chathub");
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
 

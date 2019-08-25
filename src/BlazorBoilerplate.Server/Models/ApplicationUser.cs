@@ -16,5 +16,7 @@ namespace BlazorBoilerplate.Server.Models
         public ICollection<ApiLogItem> ApiLogItems { get; set; }
 
         public UserProfile Profile { get; set; }
+
+        public virtual ICollection<Message> Messages { get; set; }
     }
 }
