@@ -55,7 +55,6 @@ else
 
         if (apiResponse.StatusCode == 200)
         {
-            Console.WriteLine(apiResponse.Result.ToString());
             matToaster.Add(apiResponse.Message, MatToastType.Success, "Api Log Items Retrieved");
             apiLogItems = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiLogItemDto[]>(apiResponse.Result.ToString()).ToList<ApiLogItemDto>();            
         }

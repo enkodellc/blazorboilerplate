@@ -55,7 +55,7 @@
 
     protected override void OnInitialized()
     {
-       matToaster.Add("Password: user123", MatToastType.Info, "User Name: user");
+        matToaster.Add("Password: user123", MatToastType.Info, "User Name: user");
     }
 
     async Task SubmitLogin()
@@ -69,7 +69,7 @@
                 await appState.GetUserProfile();
                 navigationManager.NavigateTo("/dashboard");
             }
-            else
+           else
             {
                 matToaster.Add(response.Message, MatToastType.Danger, "Login Attempt Failed");
             }
@@ -91,7 +91,7 @@
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
+           matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
         }
     }
 }

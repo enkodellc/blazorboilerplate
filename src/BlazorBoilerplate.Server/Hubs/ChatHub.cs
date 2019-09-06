@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BlazorBoilerplate.Server.Hubs
 {
     /// <summary>
-    /// The SignalR hub 
+    /// The SignalR hub
     /// </summary>
     public class ChatHub : Hub
     {

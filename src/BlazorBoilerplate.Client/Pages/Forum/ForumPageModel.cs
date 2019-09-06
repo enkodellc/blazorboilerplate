@@ -59,15 +59,15 @@ namespace BlazorBoilerplate.Client.Pages
                 Client.MessageReceived += MessageReceived;
 
                 // start the client
-                Console.WriteLine($"Index: chart starting...");
+                //Console.WriteLine($"Index: chart starting...");
                 await Client.Start();
-                Console.WriteLine($"Index: chart started?");
+                //Console.WriteLine($"Index: chart started?");
             }
             catch (Exception e)
             {
                 message = $"ERROR: Failed to start chat client: {e.Message}";
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                //Console.WriteLine(e.Message);
+                //Console.WriteLine(e.StackTrace);
             }
         }
 
@@ -79,7 +79,7 @@ namespace BlazorBoilerplate.Client.Pages
         /// <param name="e"></param>
         void MessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            Console.WriteLine($"Blazor: receive {e.Username}: {e.Message}");
+            //Console.WriteLine($"Blazor: receive {e.Username}: {e.Message}");
             bool isMine = false;
             if (!string.IsNullOrWhiteSpace(e.Username))
             {

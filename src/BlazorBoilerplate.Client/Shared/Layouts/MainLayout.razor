@@ -1,8 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject AppState appState
-
-        <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
+     <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
             <MatDrawer @bind-Opened="@_navMenuOpened">
                 <header class="drawer-header">
                     <div class="drawer-logo">
@@ -66,7 +65,7 @@
         </section>
         <footer class="page-footer">
             <div class="flex-1">
-                        © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a> Version 0.2.1 - Developed by <a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
+                © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a> Version 0.2.1 - Developed by <a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
             </div>
         </footer>
     </MatAppBarContent>
