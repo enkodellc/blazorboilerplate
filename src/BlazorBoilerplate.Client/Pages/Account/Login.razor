@@ -1,6 +1,6 @@
 ﻿@page "/account/login"
 @layout LoginLayout
-@inject IUriHelper uriHelper
+@inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
@@ -55,7 +55,7 @@
 
     protected override void OnInitialized()
     {
-        matToaster.Add("Password: user123", MatToastType.Info, "User Name: user");
+       matToaster.Add("Password: user123", MatToastType.Info, "User Name: user");
     }
 
     async Task SubmitLogin()
@@ -67,7 +67,7 @@
             {
                 //Load User Profile
                 await appState.GetUserProfile();
-                uriHelper.NavigateTo("/dashboard");
+                navigationManager.NavigateTo("/dashboard");
             }
             else
             {

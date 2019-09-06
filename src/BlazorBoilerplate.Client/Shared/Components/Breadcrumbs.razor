@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components
 
 @inject AppState appState;
-@inject IUriHelper uriHelper
+@inject NavigationManager navigationManager
 @implements IDisposable
 
 <ul class="breadcrumb">
@@ -34,9 +34,9 @@
 
     protected override void OnInitialized()
     {
-        baseUrl = uriHelper.GetBaseUri();
+        baseUrl = navigationManager.BaseUri;
         BuildBreadcrumbs();
-        uriHelper.OnLocationChanged += OnLocationChanges;
+        navigationManager.LocationChanged += OnLocationChanges;
     }
 
     public void OnLocationChanges(object sender, LocationChangedEventArgs e) => BuildBreadcrumbs();
@@ -44,13 +44,13 @@
     private void BuildBreadcrumbs()
     {
         //TODO Store lastVisited URL in appState.
-        string uri = uriHelper.GetAbsoluteUri().Replace(baseUrl, "").Trim();
+        string uri = navigationManager.BaseUri.Replace(baseUrl, "").Trim();
         paths = String.IsNullOrEmpty(uri) ? new string[] { } : uri.Split('/');
         StateHasChanged();
     }
 
     public void Dispose()
     {
-        uriHelper.OnLocationChanged -= OnLocationChanges;
+        navigationManager.LocationChanged -= OnLocationChanges;
     }
 }

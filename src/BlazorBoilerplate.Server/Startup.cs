@@ -1,27 +1,26 @@
-using System;
-using System.Net;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
+using BlazorBoilerplate.Server.Authorization;
+using BlazorBoilerplate.Server.Data;
+using BlazorBoilerplate.Server.Data.Interfaces;
+using BlazorBoilerplate.Server.Data.Mapping;
+using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Middleware;
+using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Server.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.Configuration;
-using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Server.Authorization;
-using BlazorBoilerplate.Server.Helpers;
-using BlazorBoilerplate.Server.Middleware;
-using BlazorBoilerplate.Server.Data.Mapping;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using BlazorBoilerplate.Server.Data.Interfaces;
+using System;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server
 {
@@ -120,7 +119,7 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version     = "v0.2.0";
+                    document.Info.Version     = "v0.2.1";
                     document.Info.Title       = "Blazor Boilerplate";
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  (ASP.NET Core Hosted) (dotnet new blazorhosted) model. Hosted by an ASP.NET Core server";
                 };
@@ -186,6 +185,7 @@ namespace BlazorBoilerplate.Server
             //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
             //}
 
+            //app.UseStaticFiles();
             app.UseClientSideBlazorFiles<Client.Startup>();
 
             //app.UseHttpsRedirection();

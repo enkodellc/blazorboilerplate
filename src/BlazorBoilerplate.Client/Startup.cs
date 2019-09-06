@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Blazor.Http;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Blazor.Http;
+using Microsoft.AspNetCore.Components.Authorization;
 using BlazorBoilerplate.Client.Services.Contracts;
 using BlazorBoilerplate.Client.Services.Implementations;
 using BlazorBoilerplate.Client.States;
@@ -21,7 +21,7 @@ namespace BlazorBoilerplate.Client
             services.AddLoadingBar();
             services.Add(new ServiceDescriptor(typeof(IUserProfileApi), typeof(UserProfileApi), ServiceLifetime.Scoped));
             services.AddScoped<AppState>();
-            
+
             services.AddMatToaster(config =>
             {
                 config.Position = MatToastPosition.BottomRight;

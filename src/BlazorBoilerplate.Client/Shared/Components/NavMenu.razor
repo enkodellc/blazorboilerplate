@@ -1,12 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Components;
-@inject IUriHelper uriHelper
+@inject NavigationManager navigationManager
 
     <MatNavMenu Multi="true" Class="app-sidebar">
-        <MatNavItem Href="@uriHelper.ToAbsoluteUri(" ").AbsoluteUri">
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri">
             <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
         </MatNavItem>
 
-        <MatNavItem Href="@uriHelper.ToAbsoluteUri("todo_list").AbsoluteUri">
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri">
             <MatIcon>list_alt</MatIcon> <span class="miniHover">Todo List</span>
         </MatNavItem>
 
@@ -17,16 +17,16 @@
                 </MatNavItem>
             </MatNavSubMenuHeader>
             <MatNavSubMenuList>
-                <MatNavItem Href="@uriHelper.ToAbsoluteUri("blazor_middlware_audit").AbsoluteUri">
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("blazor_middlware_audit").AbsoluteUri">
                     <MatIcon>change_history</MatIcon> <span class="miniHover">Api Audit Log</span>
                 </MatNavItem>
-                <MatNavItem Href="@uriHelper.ToAbsoluteUri("screenshots").AbsoluteUri">
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("screenshots").AbsoluteUri">
                     <MatIcon>screen_share</MatIcon> <span class="miniHover">Screenshots</span>
                 </MatNavItem>
             </MatNavSubMenuList>
         </MatNavSubMenu>
 
-        <MatNavItem Href="@uriHelper.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
             <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
         </MatNavItem>
 
@@ -38,24 +38,24 @@
                 </MatNavItem>
             </MatNavSubMenuHeader>
             <MatNavSubMenuList>
-                <MatNavItem Href="@uriHelper.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
                     <MatIcon>inbox</MatIcon> <span class="miniHover">Read Email</span>
                 </MatNavItem>
-                <MatNavItem Href="@uriHelper.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
                     <MatIcon>send</MatIcon> <span class="miniHover">Send Email</span>
                 </MatNavItem>
             </MatNavSubMenuList>
         </MatNavSubMenu>
 
-        <MatNavItem Href="@uriHelper.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="@(!IsLoggedIn)">
             <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Users</span>
         </MatNavItem>
 
-        <MatNavItem Href="@uriHelper.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
             <MatIcon>forum</MatIcon> <span class="miniHover">Forum</span>
         </MatNavItem>
 
-        <MatNavItem Href="@uriHelper.ToAbsoluteUri("sponsors").AbsoluteUri">
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri">
             <MatIcon>attach_money</MatIcon> <span class="miniHover">Sponsors</span>
         </MatNavItem>
     </MatNavMenu>

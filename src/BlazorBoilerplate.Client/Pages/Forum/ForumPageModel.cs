@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using Microsoft.JSInterop;
 using BlazorBoilerplate.Client.States;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BlazorBoilerplate.Client.Pages
 {

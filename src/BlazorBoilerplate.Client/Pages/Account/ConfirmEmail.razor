@@ -2,7 +2,7 @@
 @page "/account/confirmemail/{UserId}"
 
 @layout LoginLayout
-@inject IUriHelper uriHelper
+@inject NavigationManager navigationManager
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
@@ -38,7 +38,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Blazor does not have query string accessible parameters yet so a hack is needed. Token is too long for path parameter
-        var absoluteUrl = uriHelper.GetAbsoluteUri();
+        var absoluteUrl = navigationManager.Uri;
         var token = absoluteUrl.Substring(absoluteUrl.IndexOf("?token=") + 7);
         if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(token))
         {
@@ -58,7 +58,7 @@
             await authStateProvider.ConfirmEmail(confirmEmailParameters);
             matToaster.Add("Account has been Approved and Activated", MatToastType.Success);
             //Todo Take user to their profile page to edit their profile.
-            uriHelper.NavigateTo("/");
+            navigationManager.NavigateTo("/");
         }
         catch (Exception ex)
         {
