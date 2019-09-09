@@ -28,6 +28,11 @@ namespace BlazorBoilerplate.Client.Services.Implementations
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
         }
 
+        public async Task<ApiResponseDto> Create(RegisterDto registerParameters)
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Create", registerParameters);
+        }
+
         public async Task<ApiResponseDto> Register(RegisterDto registerParameters)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Register", registerParameters);

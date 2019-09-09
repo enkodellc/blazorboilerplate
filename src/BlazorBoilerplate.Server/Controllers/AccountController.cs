@@ -43,25 +43,6 @@ namespace BlazorBoilerplate.Server.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("GetUser")]
-        [Authorize]
-        public ApiResponse GetUser()
-        {
-            UserInfoDto userInfo = User != null && User.Identity.IsAuthenticated
-                ? new UserInfoDto { UserName = User.Identity.Name, IsAuthenticated = true }
-                : LoggedOutUser;
-            return new ApiResponse(200, "Get User Successful", userInfo);
-        }
-
-        [Authorize]
-        // GET: api/Account/User
-        [HttpGet]
-        public async Task<ApiResponse> Get()
-        {
-            var users = _userManager.Users;
-            return new ApiResponse(200, "Get User Successful", users);
-        }
-
         // POST: api/Account/Login
         [HttpPost("Login")]
 
@@ -131,10 +112,9 @@ namespace BlazorBoilerplate.Server.Controllers
                 {
                     return new ApiResponse(400, "Register User Failed: " + result.Errors.FirstOrDefault()?.Description);
                 }
-
-
-                //Role - Here we tie the new user to the "Admin" role
-                await _userManager.AddToRoleAsync(user, "Admin");
+                
+                //Role - Here we tie the new user to the "User" role
+                await _userManager.AddToRoleAsync(user, "User");
 
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
@@ -386,10 +366,97 @@ namespace BlazorBoilerplate.Server.Controllers
 
             return new ApiResponse(200, "User Updated Successfully");
         }
+        
 
+        ///----------Admin User Management Interface Methods
+        
+        [Authorize("RequireElevatedRights")]
+        // POST: api/Account/Create
+        [HttpPost("Create")]
+        public async Task<ApiResponse> Create(RegisterDto parameters)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ApiResponse(400, "User Model is Invalid");
+                }
 
+                var user = new ApplicationUser
+                {
+                    UserName = parameters.UserName,
+                    Email = parameters.Email
+                };
 
-        ///---------------------------------------------------------------Admin Interface controls-------------------------------------------------------///
+                user.UserName = parameters.UserName;
+                var result = await _userManager.CreateAsync(user, parameters.Password);
+                if (!result.Succeeded)
+                {
+                    return new ApiResponse(400, "Register User Failed: " + result.Errors.FirstOrDefault()?.Description);
+                }
+
+                //Role - Here we tie the new user to the "Admin" role
+                await _userManager.AddToRoleAsync(user, "Admin");
+
+                if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
+                {
+                    #region New  User Confirmation Email
+                    try
+                    {
+                        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token);
+
+                        var email = new EmailMessageDto();
+                        email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
+                        email = EmailTemplates.BuildNewUserConfirmationEmail(email, user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
+
+                        _logger.LogInformation("New user created: {0}", user);
+                        await _emailService.SendEmailAsync(email);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogInformation("New user email failed: {0}", ex.Message);
+                    }
+                    #endregion
+                    return new ApiResponse(200, "Create User Success");
+                }
+
+                #region New  User Email
+                try
+                {
+                    var email = new EmailMessageDto();
+                    email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
+                    email = EmailTemplates.BuildNewUserEmail(email, user.UserName, user.Email, parameters.Password); //Replace First UserName with Name if you want to add name to Registration Form
+
+                    _logger.LogInformation("New user created: {0}", user);
+                    await _emailService.SendEmailAsync(email);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogInformation("New user email failed: {0}", ex.Message);
+                }
+                #endregion
+
+                UserInfoDto userInfo = new UserInfoDto
+                {
+                    IsAuthenticated = false,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    //ExposedClaims = user.Claims.ToDictionary(c => c.Type, c => c.Value),
+                    Roles = new List<string> { "User" }
+                };
+
+                return new ApiResponse(200, "Created New User", userInfo);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Create User Failed: {0}", ex.Message);
+                return new ApiResponse(400, "Create User Failed");
+            }
+        }
 
         [Authorize("RequireElevatedRights")]
         // DELETE: api/Account/5
@@ -412,11 +479,20 @@ namespace BlazorBoilerplate.Server.Controllers
 
             return new ApiResponse(200, "User Deletion Successful");
         }
+        
+        [HttpGet("GetUser")]
+        [Authorize]
+        public ApiResponse GetUser()
+        {
+            UserInfoDto userInfo = User != null && User.Identity.IsAuthenticated
+                ? new UserInfoDto { UserName = User.Identity.Name, IsAuthenticated = true }
+                : LoggedOutUser;
+            return new ApiResponse(200, "Get User Successful", userInfo);
+        }
 
-        [HttpGet("ListUsers")]
         [Authorize("RequireElevatedRights")]
-        //[AllowAnonymous]
-        public async Task<ApiResponse> ListUsers([FromQuery] int pageSize, [FromQuery] int pageNumber = 0)
+        [HttpGet]
+        public async Task<ApiResponse> Get([FromQuery] int pageSize, [FromQuery] int pageNumber = 0)
         {
 
             var userDtoList = new List<UserInfoDto>();
@@ -454,7 +530,6 @@ namespace BlazorBoilerplate.Server.Controllers
                         Roles = (List<string>)(await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true))
                     });
                 }
-
             }
             catch (Exception ex)
             {
@@ -480,23 +555,17 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             // retrieve full user object for updating
             var appUser = await _userManager.FindByIdAsync(userInfo.UserId.ToString()).ConfigureAwait(true);
-
-
+            
             // TODO move to using automapper
             //update values
             appUser.UserName = userInfo.UserName;
             appUser.FirstName = userInfo.FirstName;
             appUser.LastName = userInfo.LastName;
             appUser.Email = userInfo.Email;
-
-
-
-
-
+                                          
             try
             {
                 var result = await _userManager.UpdateAsync(appUser).ConfigureAwait(true);
-
             }
             catch (Exception ex)
             {
@@ -537,7 +606,6 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(203, "User Modified");
         }
 
-
         [HttpPost("AddUserRoleGlobal")]
         [Authorize("RequireElevatedRights")]
         public async Task<ApiResponse> AddUserRoletoAppAsync([FromBody] string newRole)
@@ -560,6 +628,5 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
             }
         }
-
     }
 }

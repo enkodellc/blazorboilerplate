@@ -46,6 +46,7 @@ namespace BlazorBoilerplate.Server.Services
                 userProfile.IsNavOpen = profile.IsNavOpen;
                 userProfile.LastPageVisited = profile.LastPageVisited;
                 userProfile.IsNavMinified = profile.IsNavMinified;
+                userProfile.UserId = userId;
             }
 
             return new ApiResponse(200, "Retrieved User Profile", userProfile);

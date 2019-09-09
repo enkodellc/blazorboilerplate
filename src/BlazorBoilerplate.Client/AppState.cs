@@ -41,7 +41,7 @@ namespace BlazorBoilerplate.Client
 
         public async Task<UserProfileDto> GetUserProfile()
         {
-            if (UserProfile != null)
+            if (UserProfile != null && UserProfile.UserId != Guid.Empty)
             {
                 return UserProfile;
             }

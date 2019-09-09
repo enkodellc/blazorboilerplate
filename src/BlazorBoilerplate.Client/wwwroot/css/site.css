@@ -88,7 +88,7 @@ app {
 
 .login-container, .loading-container, .mdc-card {
     border-radius: 0 !important;
-    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;    
+    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;
 }
 
     .login-container .mdc-card {
@@ -146,8 +146,8 @@ app {
     color: #404040;
 }
 
-.mdc-icon-button {
-    color: #5D2E8F !important;
+.mdc-top-app-bar__section .mdc-icon-button i {
+    color: #5D2E8F;
 }
 
 .logo-img {

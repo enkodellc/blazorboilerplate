@@ -88,8 +88,10 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ### 0.2.1 (Known Issues - Under Development)
 - Update to .NET Core 3.0 Preview 9
+- User Management Screen (CRUD) - Thanks [npraskins](https://github.com/npraskins) 
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
+  - User delete with ApiLog foreign key
 
 ### 0.2.0 
 - CRUD Todo List example

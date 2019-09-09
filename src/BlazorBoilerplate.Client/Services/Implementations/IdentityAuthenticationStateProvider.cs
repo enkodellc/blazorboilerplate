@@ -33,6 +33,12 @@ namespace BlazorBoilerplate.Client.States
             return apiResponse;
         }
 
+        public async Task<ApiResponseDto> Create(RegisterDto registerParameters)
+        {            
+            ApiResponseDto apiResponse = await _authorizeApi.Create(registerParameters);
+            return apiResponse;
+        }
+
         public async Task<ApiResponseDto> Logout()
         {
             ApiResponseDto apiResponse = await _authorizeApi.Logout();
