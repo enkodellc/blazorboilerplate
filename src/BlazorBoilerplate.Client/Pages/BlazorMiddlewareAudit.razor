@@ -1,0 +1,66 @@
+﻿@page "/blazor_middlware_audit"
+
+@inject HttpClient Http
+@inject IMatToaster matToaster
+
+<h1>Blazor / .NET Core Middleware Audit Log</h1>
+<p>
+    This is an example of the .NET Core Middleware that logs all API calls into the database. We filter out "api/account" calls for Login / Logout / GetUser to keep it somewhat reasonable.
+    This code can be easily modified to fit your needs. I think this is a great feature for you to track your user interactions and errors. For instance, if Bob logged in and filled out a form with
+    erroneous data, it will log the error as well as the request data. Then you could easily look through this audit log and recreate his actions. Afterwards, you could add additional validation or handle the
+    input in an appropriate manner.
+</p>
+<p>
+    <MatButton Link="https://www.paypal.me/enkodellc"><i class="fa fa-cc-paypal"></i> Donate</MatButton>&nbsp;&nbsp; - If you use the repo please donate.  Other devs are charging $30+ to download their code with similar functionality.
+</p>
+
+@if (apiResponses == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>Loading ApI Log Data</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Items="@apiLogItems" Class="mat-elevation-z5" Striped="true" PageSize="10">
+        <MatTableHeader>
+            <th><div style="width:175px;">Date / Time</div></th>
+            <th>Http Code</th>
+            <th>IP Address</th>
+            <th>Method</th>
+            <th>Response Time</th>
+            <th><div style="width:175px;">UserId</div></th>
+            <th>Path</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.RequestTime</td>
+            <td>@context.StatusCode</td>
+            <td><span style="font-size:small">@context.IPAddress</span></td>
+            <td>@context.Method</td>
+            <td>@context.ResponseMillis</td>
+            <td>@context.ApplicationUserId</td>
+            <td>@context.Path</td>
+        </MatTableRow>
+    </MatTable>
+}
+
+
+@code {
+    ApiResponseDto[] apiResponses = new ApiResponseDto[] { };
+    List<ApiLogItemDto> apiLogItems = new List<ApiLogItemDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/apilog");
+
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "Api Log Items Retrieved");
+            apiLogItems = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiLogItemDto[]>(apiResponse.Result.ToString()).ToList<ApiLogItemDto>();            
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Danger, "Api Log Items Retrieval Failed");
+        }
+    }
+}

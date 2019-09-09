@@ -1,9 +1,8 @@
 ﻿@page "/email_view"
 @attribute [Authorize]
-@using BlazorBoilerplate.Shared
+
 @inject HttpClient Http
 @inject IMatToaster matToaster
-
 
 <h1>Secure Page</h1>
 <p>This is a secure page. You must be logged in to have access.</p>
@@ -32,9 +31,9 @@ else
             @foreach (var email in emails)
             {
                 <tr>
-                    <td>@foreach (EmailAddress sender in email.FromAddresses)
+                    <td>@foreach (EmailAddressDto sender in email.FromAddresses)
                     {<figure>@sender.Name (@sender.Address)</figure>}</td>
-                    <td>@foreach (EmailAddress receipient in email.ToAddresses)
+                    <td>@foreach (EmailAddressDto receipient in email.ToAddresses)
                     {<figure>@receipient.Name (@receipient.Address)</figure>}</td>
                     <td>@email.Subject</td>
                     <td>
@@ -60,7 +59,7 @@ else
                         <form>
                             <div class="form-group">
                                 <label for="From" class="control-label">From:</label>
-                                <figure for="From" class="form-control"> @foreach (EmailAddress sender in email.FromAddresses)
+                                <figure for="From" class="form-control"> @foreach (EmailAddressDto sender in email.FromAddresses)
                                 {<figure>@sender.Name (@sender.Address)</figure>}</figure>
                             </div>
                             <div class="form-group container" style="max-height: calc(80vh - 210px); overflow-y:auto; overflow-x:auto; padding-bottom:50px">
@@ -81,8 +80,8 @@ else
 
 @code {
 
-    List<EmailMessage> emails;
-    EmailMessage email = new EmailMessage();
+    List<EmailMessageDto> emails;
+    EmailMessageDto email = new EmailMessageDto();
 
     bool ModalOpen { get; set; }
     //   string emailsAsString { get; set; }
@@ -102,7 +101,7 @@ else
         this.ModalOpen = false;
     }
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         await GetMessagesAsync();
     }
@@ -114,7 +113,8 @@ else
             // In theory GetJsonAsync should work, but unable to get functional; string--> JsonConvert is a temporary workaround
             //  emails = await Http.GetJsonAsync<List<EmailMessage>>("api/Email/Receive");
             string emailsAsString = await Http.GetStringAsync("api/Email/Receive");
-            emails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EmailMessage>>(emailsAsString);
+            emails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EmailMessageDto>>(emailsAsString);
+            //emails = JsonSerializer.Deserialize<List<EmailMessage>>(emailsAsString);
 
         }
         catch (Exception ex)

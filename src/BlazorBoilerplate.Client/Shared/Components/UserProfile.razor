@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Components
+@inject IdentityAuthenticationStateProvider authStateProvider
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <div class="drawer-profile">
+            <MatIconButton Icon="account_circle" Link="/account/profile"></MatIconButton>
+            <span class="miniHover"><b><a href="/account/profile">@userInfo.UserName</a></b></span>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    public bool IsLoggedIn = false;
+    UserInfoDto userInfo = null;
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        userInfo = null;
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            userInfo = await authStateProvider.GetUserInfo();
+        }
+    }
+}

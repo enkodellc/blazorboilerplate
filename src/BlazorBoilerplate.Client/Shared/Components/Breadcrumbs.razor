@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Components
+
+@inject AppState appState;
+@inject NavigationManager navigationManager
+@implements IDisposable
+
+<ul class="breadcrumb">
+    <li>
+        <a href="/">@RootLinkTitle</a>
+    </li>
+    @foreach (var path in paths.Select((value, i) => (value, i)))
+    {
+        if (path.i == paths.Count())
+        {
+            <li><a href="@(baseUrl + String.Join("/", paths))">@path.value.Replace("_", " ")</a></li>
+        }
+        else
+        {
+            <li>@path.value.Replace("_", " ")</li>
+        }
+    }
+</ul>
+
+@code {
+    // This is just for demo and is VERY Hackish  for several reasons
+    // Blazor does not have page implemented for client side... as far as I know so we split page names with underscore for now.
+    // Path system is hack as well as the Url.. Maybe you have a better solution?
+
+    [Parameter]
+    public string RootLinkTitle { get; set; }
+
+    public string[] paths;
+    public string baseUrl;
+
+    protected override void OnInitialized()
+    {
+        baseUrl = navigationManager.BaseUri;
+        BuildBreadcrumbs();
+        navigationManager.LocationChanged += OnLocationChanges;
+    }
+
+    public void OnLocationChanges(object sender, LocationChangedEventArgs e) => BuildBreadcrumbs();
+
+    private void BuildBreadcrumbs()
+    {
+        //TODO Store lastVisited URL in appState.
+        string uri = navigationManager.BaseUri.Replace(baseUrl, "").Trim();
+        paths = String.IsNullOrEmpty(uri) ? new string[] { } : uri.Split('/');
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        navigationManager.LocationChanged -= OnLocationChanges;
+    }
+}

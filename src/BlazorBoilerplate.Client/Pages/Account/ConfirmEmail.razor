@@ -2,10 +2,7 @@
 @page "/account/confirmemail/{UserId}"
 
 @layout LoginLayout
-
-@using BlazorBoilerplate.Shared
-
-@inject IUriHelper uriHelper
+@inject NavigationManager navigationManager
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
@@ -20,10 +17,10 @@
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-value="@confirmEmailParameters.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@confirmEmailParameters.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-value="@confirmEmailParameters.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@confirmEmailParameters.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group d-flex justify-content-end">
                 <MatButton Type="submit" Raised="true">Send Confirmation</MatButton>
@@ -31,21 +28,21 @@
         </fieldset>
     </EditForm>
 </MatCard>
-@functions {
 
-    ConfirmEmailParameters confirmEmailParameters { get; set; } = new ConfirmEmailParameters();
+@code {
+    ConfirmEmailDto confirmEmailParameters { get; set; } = new ConfirmEmailDto();
 
     [Parameter]
     public string UserId { get; set; }
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         // Blazor does not have query string accessible parameters yet so a hack is needed. Token is too long for path parameter
-        var absoluteUrl = uriHelper.GetAbsoluteUri();
+        var absoluteUrl = navigationManager.Uri;
         var token = absoluteUrl.Substring(absoluteUrl.IndexOf("?token=") + 7);
         if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(token))
         {
-            confirmEmailParameters = new ConfirmEmailParameters
+            confirmEmailParameters = new ConfirmEmailDto
             {
                 Token = token,
                 UserId = this.UserId
@@ -61,7 +58,7 @@
             await authStateProvider.ConfirmEmail(confirmEmailParameters);
             matToaster.Add("Account has been Approved and Activated", MatToastType.Success);
             //Todo Take user to their profile page to edit their profile.
-            uriHelper.NavigateTo("/");
+            navigationManager.NavigateTo("/");
         }
         catch (Exception ex)
         {

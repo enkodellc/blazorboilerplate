@@ -1,8 +1,9 @@
 ﻿@page "/account/login"
 @layout LoginLayout
-@inject IUriHelper uriHelper
+@inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
+@inject AppState appState
 @*TODO: Add client-side validation*@
 
 <MatCard>
@@ -15,10 +16,10 @@
 
     <fieldset>
         <div class="form-group">
-            <MatTextField @bind-value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
         </div>
         <div class="form-group">
             <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
@@ -38,7 +39,7 @@
         </MatExpansionPanelSummary>
         <MatExpansionPanelDetails>
             <div class="form-group">
-                <MatTextField @bind-value="@forgotPasswordParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
                 <MatButton class="float-right" OnClick="@ForgotPassword" Raised="true">Submit</MatButton>
@@ -47,17 +48,31 @@
     </MatExpansionPanel>
 </MatAccordion>
 
-@functions {
+@code {
     bool forgotPasswordToggle = false;
-    LoginParameters loginParameters { get; set; } = new LoginParameters();
-    ForgotPasswordParameters forgotPasswordParameters { get; set; } = new ForgotPasswordParameters();
+    LoginDto loginParameters { get; set; } = new LoginDto();
+    ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
+
+    protected override void OnInitialized()
+    {
+        matToaster.Add("Password: user123", MatToastType.Info, "User Name: user");
+    }
 
     async Task SubmitLogin()
     {
         try
         {
-            await authStateProvider.Login(loginParameters);
-            uriHelper.NavigateTo("/dashboard");
+            var response = await authStateProvider.Login(loginParameters);
+            if (response.StatusCode == 200)
+            {
+                //Load User Profile
+                await appState.GetUserProfile();
+                navigationManager.NavigateTo("/dashboard");
+            }
+           else
+            {
+                matToaster.Add(response.Message, MatToastType.Danger, "Login Attempt Failed");
+            }
         }
         catch (Exception ex)
         {
@@ -76,7 +91,7 @@
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
+           matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
         }
     }
 }

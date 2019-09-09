@@ -1,0 +1,21 @@
+﻿<div class="triangle-container">
+    <div class="triangles">
+    </div>
+</div>
+
+@if (ShowLogoBox)
+{
+    <div class="loading-container">
+        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />
+        @ChildContent
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public bool ShowLogoBox { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

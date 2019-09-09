@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="author" content="Enkodellc / Keith Fimreite">
-    <meta name="description" content="Blazor Boilerplate & Starter Kit">
+    <meta name="description" content="Blazor Boilerplate & Starter Kit - A real world Example ">
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -41,5 +41,8 @@
         </div>
     </app>
     <script src="_framework/blazor.webassembly.js"></script>
+    <!-- load signalR and chatClient after blazor boot loads -->
+    <script src="javascript/signalr.min.js"></script>
+    <script src="javascript/chatClient.js"></script>
 </body>
 </html>

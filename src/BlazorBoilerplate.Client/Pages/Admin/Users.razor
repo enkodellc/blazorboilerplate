@@ -1,6 +1,5 @@
 ﻿@page "/admin/users"
 @attribute [Authorize]
-@using BlazorBoilerplate.Shared
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
@@ -16,7 +15,7 @@
 else
 {
     <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
-                DebounceMilliseconds="150">
+              DebounceMilliseconds="150">
         <MatTableHeader>
             <th><MatButton Icon="person_add" Label="New User" OnClick="@((e) => OpenDialog())"></MatButton></th>
             <th>User Name</th>
@@ -37,7 +36,7 @@ else
                     @foreach (var role in @UserRow.Roles)
                         {
                         <MatChip Label="@role"></MatChip>
-                        }
+                        }                   
                 </MatChipSet>
             </td>
         </MatTableRow>
@@ -49,13 +48,13 @@ else
     <MatDialogContent>
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
         </fieldset>
     </MatDialogContent>
@@ -65,14 +64,25 @@ else
     </MatDialogActions>
 </MatDialog>
 
-@functions {
+@code {
     bool dialogIsOpen = false;
-    DemoUser[] users;
-    RegisterParameters registerParameters { get; set; } = new RegisterParameters();
+    ApiResponseDto apiResponse;
+    DemoUserDto[] users;
+    RegisterDto registerParameters { get; set; } = new RegisterDto();
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
-        users = await Http.GetJsonAsync<DemoUser[]>("api/SampleData/GetDemoUsers");
+        apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/SampleData/GetDemoUsers");
+
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "Demo Users Retrieved");
+            users = Newtonsoft.Json.JsonConvert.DeserializeObject<DemoUserDto[]>(apiResponse.Result.ToString());
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "User Retrieval Failed");
+        }
     }
 
     public void OpenDialog()

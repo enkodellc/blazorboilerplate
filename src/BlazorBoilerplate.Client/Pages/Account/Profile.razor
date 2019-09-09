@@ -2,9 +2,6 @@
 @page "/account/profile/{UserId}"
 @attribute [Authorize]
 
-@using BlazorBoilerplate.Shared
-
-@inject IUriHelper uriHelper
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
@@ -16,20 +13,20 @@
     <ValidationSummary />
     <fieldset>
         <div class="form-group">
-            <MatTextField @bind-value="@userInfo.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
+            <MatTextField @bind-Value="@userInfo.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-value="@userInfo.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-        </div>
-       <div class="form-group">
-            <MatTextField @bind-value="@userInfo.FirstName" Label="First Name" FullWidth="true"></MatTextField>
+            <MatTextField @bind-Value="@userInfo.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-value="@userInfo.LastName" Label="Last Name" FullWidth="true"></MatTextField>
+            <MatTextField @bind-Value="@userInfo.FirstName" Label="First Name" FullWidth="true"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-Value="@userInfo.LastName" Label="Last Name" FullWidth="true"></MatTextField>
         </div>
 
         <div class="form-group">
-            <strong>Roles</strong><br/>
+            <strong>Roles</strong><br />
             <MatChipSet>
                 @foreach (var role in userInfo.Roles)
                 {
@@ -44,13 +41,13 @@
 </EditForm>
 
 
-@functions {
-    UserInfo userInfo { get; set; } = new UserInfo();
+@code {
+    UserInfoDto userInfo { get; set; } = new UserInfoDto();
 
     [Parameter]
     public string UserId { get; set; }
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         userInfo = await authStateProvider.GetUserInfo();
     }
@@ -58,9 +55,18 @@
     async Task UpdateUser()
     {
         try
-        {            
-            await authStateProvider.UpdateUser(userInfo);
-            matToaster.Add("Profile update was Successful", MatToastType.Success);
+        {
+            ApiResponseDto apiResponse = await authStateProvider.UpdateUser(userInfo);
+
+            if (apiResponse.StatusCode == 200)
+            {
+                userInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
+                matToaster.Add("Profile update was Successful", MatToastType.Success);
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, "Profile Update Failed");
+            }
         }
         catch (Exception ex)
         {

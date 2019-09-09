@@ -1,0 +1,39 @@
+﻿@page "/forum"
+@inject IAuthorizationService AuthorizationService
+@inherits ForumPageModel
+@inject HttpClient Http
+
+<AuthorizeView>
+    <NotAuthorized>
+        <div class="alert alert-success">
+            <a href="/account/login">Log in</a> to post a message.
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+<h1>Forum</h1>
+<p>This forum page uses SignalR and persists in a database. </p>
+
+<AuthorizeView>
+    <Authorized>
+        <ForumMessageCreateForm Send="Send" />
+
+        <MatList SingleSelection="true" TwoLine="true">
+            @if (Messages == null || Messages.Count == 0)
+            {
+                <MatListItem>
+                    <MatListItemText>
+                        Loading messages...
+                    </MatListItemText>
+                </MatListItem>
+            }
+            else
+            {
+                @foreach (var message in Messages)
+                {
+                    <ForumMessage Delete="Delete" Message="@message"  />
+                }
+            }
+        </MatList>
+    </Authorized>
+</AuthorizeView>

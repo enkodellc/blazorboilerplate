@@ -70,6 +70,7 @@ app {
     text-align: center;
     background-color: #fff;
     margin: 10% auto 0 auto;
+    padding: 20px;
 }
 
 /* Login page */
@@ -87,7 +88,7 @@ app {
 
 .login-container, .loading-container, .mdc-card {
     border-radius: 0 !important;
-    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;
+    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;    
 }
 
     .login-container .mdc-card {
@@ -98,6 +99,11 @@ app {
     .login-container .mat-accordion {
         width: 500px;
     }
+
+.container-fluid .login-container {
+    display: block;
+    max-width: 500px;
+}
 
 .additional-info {
     color: #636c72;
@@ -160,6 +166,7 @@ app {
 .mdc-top-app-bar__title a {
     color: white;
 }
+
 
 .sub-menu {
     visibility: hidden; /* hides sub-menu */
@@ -234,12 +241,12 @@ app {
 /* Drawer */
 .mini .mdc-drawer,
 .mini .app-sidebar {
-    width: 52px;
+    width: 54px;
     transition: width .4s ease-in-out;
 }
 
     .mini .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
-        margin-left: 52px;
+        margin-left: 54px;
         transition: margin-left .4s ease-in-out;
     }
 
@@ -247,6 +254,7 @@ app {
     padding: 0 4px;
 }
 
+.mini .mdc-sub-menu-icon,
 .mini .miniHover {
     transform: translateX(200%);
     animation: slide-out 1s forwards;
@@ -256,6 +264,7 @@ app {
     position: fixed;
 }
 
+.mini .mdc-drawer:hover .mdc-sub-menu-icon,
 .mini .mdc-drawer:hover .miniHover {
     transform: translateX(0%);
     animation: slide-in 1s forwards;
@@ -306,7 +315,7 @@ app {
 }
 
 .mdc-drawere .mdc-list-item:active {
-   box-shadow: inset 3px 0 0 #886ab5;
+    box-shadow: inset 3px 0 0 #886ab5;
 }
 
 .mdc-drawer .mdc-list-item--disabled {
@@ -319,6 +328,22 @@ app {
 
 .mdc-drawer .mdc-list-item--selected {
     border-left: solid 3px rgba(255, 255, 255, .5);
+}
+
+    .mdc-drawer .mdc-list-item--selected::before {
+        opacity: 0.3 !important;
+    }
+
+.mdc-expansion-panel--selected .mat-expansion-panel__summary {
+    border-left: solid 3px rgba(255, 255, 255, .3);
+}
+
+    .mdc-expansion-panel--selected .mat-expansion-panel__summary::before {
+        opacity: 0.2 !important;
+    }
+
+.mat-accordion .mdc-nav-menu .mat-expansion-panel.mat-expansion-panel--expanded {
+    margin: 0;
 }
 
 .drawer-logo {
@@ -353,6 +378,12 @@ app {
 
 .app-sidebar .material-icons {
     margin-right: 8px;
+    padding-left: 7px;
+}
+
+.app-sidebar .mat-expansion-panel__content .material-icons {
+    padding-left: 2px;
+    margin-left: -3px;
 }
 
 .mdc-drawer {
@@ -432,6 +463,8 @@ ul.breadcrumb {
             text-decoration: underline;
         }
 
+
+
 /* misc */
 .contrib-card {
     padding: 20px;
@@ -466,9 +499,9 @@ ul.breadcrumb {
 
 /* Small devices (landscape phones, less than 768px)*/
 @media (max-width: 767.98px) {
-    .mdc-drawer,
-    .app-sidebar {
-        width: 52px !important;
+
+    .mdc-drawer, .app-sidebar {
+        width: 54px !important;
         transform: translateX(0%);
         transition: width .4s ease-in-out;
     }
@@ -478,10 +511,19 @@ ul.breadcrumb {
     }
 
     .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
-        margin-left: 52px !important;
+        margin-left: 54px !important;
         transition: margin-left .2s ease-in-out;
     }
 
+    .mat-accordion .mdc-nav-menu .mat-expansion-panel__content {
+        padding-left: 6px;
+    }
+
+    .full .mdc-drawer:hover .mat-accordion .mdc-nav-menu .mat-expansion-panel__content {
+        padding-left: 13px;
+    }
+
+    .mdc-sub-menu-icon,
     .drawer-profile span,
     .miniHover,
     .brand {
@@ -526,10 +568,10 @@ ul.breadcrumb {
         transition: width .4s ease-in-out;
     }
 
-    .closed .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
-        margin-left: 0 !important;
-        transition: margin-left .2s ease-in-out;
-    }
+        .closed .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+            margin-left: 0 !important;
+            transition: margin-left .2s ease-in-out;
+        }
 
     .drawer-footer {
         padding: 0;
@@ -562,6 +604,7 @@ ul.breadcrumb {
 /* Large devices (desktops, less than 1200px) */
 @media (max-width: 1199.98px) {
 }
+
 
 
 /* MatBlazor temp */

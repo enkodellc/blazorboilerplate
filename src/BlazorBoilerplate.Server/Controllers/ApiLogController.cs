@@ -1,33 +1,36 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Shared;
+using System;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
     public class ApiLogController : ControllerBase
     {
-        ILogger<ApiLogController> _logger;
-        private readonly ApiLogService _apiLogService;
+        private readonly IApiLogService _apiLogService;
 
-        public ApiLogController(ApiLogService apiLogService, ILogger<ApiLogController> logger)
+        public ApiLogController(IApiLogService apiLogService)
         {
-            _logger = logger;
             _apiLogService = apiLogService;
         }
 
-        // GET: api/ApiLogs
+        // GET: api/ApiLog
         [HttpGet]
-        public async Task<IEnumerable<ApiLogItem>> Get()
+        public async Task<ApiResponse> Get()
         {
-            var apiLogItems = await _apiLogService.Get();
-            return apiLogItems;
+            return await _apiLogService.Get();
+        }
+
+        // GET: api/ApiLog/ApplicationUserId
+        [HttpGet("[action]")]
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public async Task<ApiResponse> GetByApplicationUserId(string userId)
+        {
+            return await _apiLogService.GetByApplictionUserId(new Guid(userId));
         }
     }
 }

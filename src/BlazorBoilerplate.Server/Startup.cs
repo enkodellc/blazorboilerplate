@@ -1,25 +1,26 @@
+using AutoMapper;
+using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Data;
+using BlazorBoilerplate.Server.Data.Interfaces;
+using BlazorBoilerplate.Server.Data.Mapping;
+using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Server.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
-using System.Net.Mime;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Server.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
-using BlazorBoilerplate.Server.Helpers;
-using BlazorBoilerplate.Server.Middleware;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server
 {
@@ -36,9 +37,16 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}"));  // Sql Lite / file database
-                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); //SQL Server Database
+            services.AddDbContext<ApplicationDbContext>(options => {
+                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")); //SQL Server Database
+                }
+                else
+                {
+                    options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}");  // Sql Lite / file database
+                }
+            });
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
@@ -73,7 +81,7 @@ namespace BlazorBoilerplate.Server
                 options.Lockout.AllowedForNewUsers = true;
 
                 // Require Confirmed Email User settings
-                if (Convert.ToBoolean(Configuration["RequireConfirmedEmail"]))
+                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
                     options.User.RequireUniqueEmail = false;
                     options.SignIn.RequireConfirmedEmail = true;
@@ -105,33 +113,53 @@ namespace BlazorBoilerplate.Server
             });
 
             services.AddControllers().AddNewtonsoftJson();
+            services.AddSignalR();
 
             services.AddSwaggerDocument(config =>
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version     = "v1";
+                    document.Info.Version     = "v0.2.1";
                     document.Info.Title       = "Blazor Boilerplate";
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  (ASP.NET Core Hosted) (dotnet new blazorhosted) model. Hosted by an ASP.NET Core server";
                 };
             });
 
-            services.AddResponseCompression(options =>
+            services.AddResponseCompression(opts =>
             {
-                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
-                {
-                    MediaTypeNames.Application.Octet,
-                    WasmMediaTypeNames.Application.Wasm,
-                });
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
             });
 
+            services.AddScoped<IUserSession, UserSession>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
             services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<ApiLogService>();
+            services.AddTransient<IUserProfileService, UserProfileService>();
+            services.AddTransient<IApiLogService, ApiLogService>();
+            services.AddTransient<ITodoService, ToDoService>();
+            services.AddTransient<IMessageService, MessageService>();
+            services.AddTransient<IApplicationDbContextSeed, ApplicationDbContextSeed>();
+
+            // AutoMapper Configurations
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
+
+            var automapperConfig = new MapperConfiguration(configuration =>
+            {
+                configuration.AddProfile(new MappingProfile());
+            });
+
+            var autoMapper = automapperConfig.CreateMapper();
+
+            services.AddSingleton(autoMapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApplicationDbContextSeed applicationDbContextSeed)
         {
             EmailTemplates.Initialize(env);
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -139,20 +167,25 @@ namespace BlazorBoilerplate.Server
                 serviceScope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
             }
 
-            app.UseMiddleware<ApiLoggingMiddleware>();
-            app.UseResponseCompression();
+            app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
+
+            app.UseMiddleware<UserSessionMiddleware>();
+            // A REST API global exception handler and response wrapper for a consistent API
+            // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
+            app.UseMiddleware<APIResponseRequestLogginMiddleware>(Convert.ToBoolean(Configuration["BlazorBoilerplate:EnableAPILogging:Enabled"] ?? "true"));
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBlazorDebugging();
             }
-            //            else
-            //            {
-            //                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //                app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
-            //            }
+            //else
+            //{
+            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
+            //}
 
+            //app.UseStaticFiles();
             app.UseClientSideBlazorFiles<Client.Startup>();
 
             //app.UseHttpsRedirection();
@@ -167,8 +200,13 @@ namespace BlazorBoilerplate.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                // new SignalR endpoint routing setup
+                endpoints.MapHub<Hubs.ChatHub>("/chathub");
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
+
+            //Seed Database
+            applicationDbContextSeed.SeedDb();
         }
     }
 }

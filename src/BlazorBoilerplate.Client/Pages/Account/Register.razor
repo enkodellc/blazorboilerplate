@@ -1,7 +1,8 @@
 ﻿@page "/account/register"
 
+@using  BlazorBoilerplate.Shared.Dto
 @layout LoginLayout
-@inject IUriHelper uriHelper
+@inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 
@@ -17,16 +18,16 @@
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
             <div class="form-group d-flex justify-content-end">
                 <MatButton Type="submit" Raised="true">Create account</MatButton>
@@ -39,9 +40,8 @@
     </EditForm>
 </MatCard>
 
-@functions {
-
-    RegisterParameters registerParameters { get; set; } = new RegisterParameters();
+@code {
+    RegisterDto registerParameters { get; set; } = new RegisterDto();
 
     async Task RegisterUser()
     {
@@ -49,7 +49,7 @@
         {
             await authStateProvider.Register(registerParameters);
             matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, "User Creation Sucessful");
-            uriHelper.NavigateTo("");
+            navigationManager.NavigateTo("");
         }
         catch (Exception ex)
         {
