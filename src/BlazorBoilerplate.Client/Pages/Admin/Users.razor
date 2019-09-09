@@ -5,7 +5,10 @@
 @inject IMatToaster matToaster
 
 <h1>Users</h1>
-<p>This admin page is under construction. It is not connected to the live dataset and is not fully functional.</p>
+<p>This admin page is under construction. It is not fully functional.</p>
+<MatButton Raised="true" TrailingIcon="refresh" OnClick="@(() => RetrieveUserListAsync())" Label="Refresh User List" />
+<MatButton Raised="true" TrailingIcon="add_group" OnClick="@(e => { this.newRoleDialogOpen = true; })" Label="Add New Global Role" />
+
 @if (users == null)
 {
     <LoadingBackground ShowLogoBox="true">
@@ -17,7 +20,7 @@ else
     <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th><MatButton Icon="person_add" Label="New User" OnClick="@((e) => OpenDialog())"></MatButton></th>
+            <th><MatButton Icon="person_add" Label="New User" OnClick="@(e => { creationDialogOpen = true; })"></MatButton></th>
             <th>User Name</th>
             <th>Email</th>
             <th>Roles</th>
@@ -25,8 +28,8 @@ else
         <MatTableRow Context="UserRow">
             <td>
                 <div style="width:130px;">
-                    <MatIconButton Icon="edit" OnClick="@((e) => Edit())"></MatIconButton>
-                    <MatIconButton Icon="delete" OnClick="@((e) => Delete())"></MatIconButton>
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => Delete(UserRow.UserId))"></MatIconButton>
                 </div>
             </td>
             <td><div style="width:130px;">@UserRow.UserName</div></td>
@@ -36,19 +39,24 @@ else
                     @foreach (var role in @UserRow.Roles)
                         {
                         <MatChip Label="@role"></MatChip>
-                        }                   
+                        }
+                    /**/
+                    /**/
                 </MatChipSet>
             </td>
         </MatTableRow>
     </MatTable>
 }
 
-<MatDialog @bind-IsOpen="@dialogIsOpen">
+<MatDialog @bind-IsOpen="@creationDialogOpen">
     <MatDialogTitle>Create User</MatDialogTitle>
     <MatDialogContent>
         <fieldset>
             <div class="form-group">
                 <MatTextField @bind-Value="@registerParameters.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@registerParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
                 <MatTextField @bind-Value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
@@ -59,40 +67,219 @@ else
         </fieldset>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { dialogIsOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@CreateUser">Create User</MatButton>
+        <MatButton OnClick="@(e => { creationDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@(e => { confirmDialogOpen = true; })">Create User</MatButton>
     </MatDialogActions>
 </MatDialog>
 
+<MatDialog @bind-IsOpen="@editDialogOpen">
+    <MatDialogTitle>Edit User</MatDialogTitle>
+    <MatDialogContent>
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@user.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@user.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
+            </div>
+            <MatChipSet>
+                @foreach (var role in roleSelections.OrderBy(x => x.Name))
+                {
+                    <MatChip Label="@role.Name" LeadingIcon="@( (role.Selected) ? "done" : "")" @onclick="@(()=>UpdateChipContactGroups(role))" />
+                }
+            </MatChipSet>
+        </fieldset>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { editDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@(e => { confirmDialogOpen = true; })">Modify User</MatButton>
+    </MatDialogActions>
+</MatDialog>
+<MatDialog @bind-IsOpen="@confirmDialogOpen" Style="z-index:100">
+    <MatDialogTitle>Confirm</MatDialogTitle>
+    <MatDialogContent>
+        <p>
+            <strong>
+                Confirm Action?
+            </strong>
+        </p>
+    </MatDialogContent>
+    <MatButton OnClick="@(() => ConfirmAction() )">Proceed</MatButton>
+    <MatButton OnClick="@(e => { confirmDialogOpen = false; deleteUser = false; })">Cancel</MatButton>
+</MatDialog>
+<MatDialog @bind-IsOpen="@newRoleDialogOpen">
+    <MatDialogTitle>
+        Add New Role
+    </MatDialogTitle>
+    <MatDialogContent>
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@newRoletoAdd" Label="New Role to Add" Icon="add" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+        </fieldset>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { newRoleDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@(e => { confirmDialogOpen = true; } )">Add Role</MatButton>
+
+    </MatDialogActions>
+</MatDialog>
 @code {
-    bool dialogIsOpen = false;
+    int pageSize { get; set; } = 15;
+    int currentPage { get; set; } = 0;
+
+
+
+    bool creationDialogOpen = false;
+    bool editDialogOpen = false;
+    bool confirmDialogOpen = false;
+    bool deleteUser = false;
+    bool newRoleDialogOpen = false;
+
     ApiResponseDto apiResponse;
-    DemoUserDto[] users;
+    UserInfoDto[] users;
+    public UserInfoDto user { get; set; } = new UserInfoDto(); // Holds user being actively modified
     RegisterDto registerParameters { get; set; } = new RegisterDto();
+    public class roleSelection
+    {
+        public bool Selected { get; set; }
+        public string Name { get; set; }
+    };
+    List<roleSelection> roleSelections { get; set; } = new List<roleSelection>();
+
+    public string newRoletoAdd { get; set; } = "";
+
 
     protected override async Task OnInitializedAsync()
     {
-        apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/SampleData/GetDemoUsers");
+        await RetrieveUserListAsync();
+        await PopulateRoleList();
+    }
+    protected async Task RetrieveUserListAsync()
+    {
+        //apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/SampleData/GetDemoUsers");
+
+
+        string queryString = "?pageSize=" + pageSize.ToString() + "&pageNumber=" + currentPage.ToString(); // this is to support pagination in the future, need to integrate with MatTable
+        apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Account/ListUsers" + queryString);
 
         if (apiResponse.StatusCode == 200)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "Demo Users Retrieved");
-            users = Newtonsoft.Json.JsonConvert.DeserializeObject<DemoUserDto[]>(apiResponse.Result.ToString());
+            users = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfoDto[]>(apiResponse.Result.ToString());
         }
         else
         {
             matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "User Retrieval Failed");
         }
     }
-
-    public void OpenDialog()
+    async Task ConfirmAction()
     {
-        dialogIsOpen = true;
+        try
+        {
+            if (creationDialogOpen)
+            {
+                await CreateUser();
+
+            }
+            else if (editDialogOpen)
+            {
+                await ModifyUserAsync(user);
+            }
+            else if (deleteUser)
+            {
+                await DeleteUserSubmit();
+            }
+            else if (newRoleDialogOpen)
+            {
+                await AddNewRole();
+            }
+            // if things worked, zero out all the modal switches
+            this.confirmDialogOpen = false;
+            this.editDialogOpen = false;
+            this.creationDialogOpen = false;
+            this.deleteUser = false;
+            this.newRoleDialogOpen = false;
+            await PopulateRoleList();  // get latest version of user list
+            StateHasChanged();
+
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add("Error", MatToastType.Danger, ex.InnerException.Message);
+
+        }
+
+    }
+    void OpenEditDialog(Guid userId)
+    {
+        user = users.Where(x => x.UserId == userId).FirstOrDefault();  // load the user information into the temp user object for worry free editing
+        foreach (var role in roleSelections)
+        {
+            if (user.Roles.Contains(role.Name))
+            {
+                role.Selected = true;
+            }
+            else
+            {
+                role.Selected = false;
+            }
+        }
+        this.editDialogOpen = true;
+        StateHasChanged();
+    }
+    async Task ModifyUserAsync(UserInfoDto user)
+    {
+
+        //update the user object's role list with the new selection set
+        user.Roles = roleSelections.Where(x => x.Selected == true).Select(x => x.Name).ToList();
+
+
+        try
+        {
+            var apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/ModifyUser", user);
+
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add("Error!", MatToastType.Danger, ex.Message);
+
+
+        }
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add("User Updated", MatToastType.Success);
+        }
+        else
+        {
+            matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
+        }
+
+    }
+
+
+    async Task OpenDialog(string dialogType)
+    {
+
+        switch (dialogType)
+        {
+            case ("EditUser"):
+                this.editDialogOpen = true;
+                break;
+            case ("CreateUser"):
+                this.creationDialogOpen = true;
+                break;
+            case ("ConfirmAction"):
+                this.confirmDialogOpen = true;
+                break;
+            default:
+                break;
+        }
+        StateHasChanged();
     }
 
     async Task CreateUser()
     {
-        dialogIsOpen = false;
         try
         {
             //Todo Create AdminUserModel and update this for AdminUserModel
@@ -105,14 +292,96 @@ else
             matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
         }
     }
-
-    public void Edit()
+    public async void Delete(Guid userId)
     {
-        matToaster.Add("Not Implemented", MatToastType.Danger, "User Edit Failed");
+        user.UserId = userId;
+        this.deleteUser = true;
+        await OpenDialog("ConfirmAction");
     }
 
-    public void Delete()
+    public async Task DeleteUserSubmit()
     {
-        matToaster.Add("Not Implemented", MatToastType.Danger, "User Delete Failed");
+        try
+        {
+            var response = await Http.SendJsonAsync<ApiResponseDto>(HttpMethod.Delete, "api/Account/" + user.UserId, null);
+            if (response.StatusCode == 200)
+            {
+                matToaster.Add("User Deleted", MatToastType.Success);
+            }
+            else
+            {
+                throw new Exception(response.ResponseException);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add("Error", MatToastType.Danger, ex.Message);
+
+        }
+    }
+    async Task PopulateRoleList()
+    {
+        List<string> roleNames = new List<string>();
+        var response = await Http.GetJsonAsync<ApiResponseDto>("api/Account/ListRoles");
+        try
+        {
+            roleNames = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Result.ToString());
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add("Error", MatToastType.Danger, ex.Message);
+            return;
+
+        }
+
+        roleSelections = new List<roleSelection>();// clear out list
+                                                   // initialize selection list with all un-selected
+        foreach (string role in roleNames)
+        {
+            roleSelections.Add(new roleSelection
+            {
+                Name = role,
+                Selected = false
+            });
+        }
+
+    }
+    protected void UpdateChipContactGroups(roleSelection roleSelectionItem)
+    {
+        roleSelectionItem.Selected = !roleSelectionItem.Selected;
+
+        StateHasChanged();
+    }
+
+
+    async Task AddNewRole()
+    {
+        if (!String.IsNullOrWhiteSpace(newRoletoAdd))
+        {
+            try
+            {
+                apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/AddUserRoleGlobal", newRoletoAdd);
+                if (apiResponse.StatusCode == 200)
+                {
+                    matToaster.Add("Role Added", MatToastType.Success);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                matToaster.Add("Error", MatToastType.Danger, ex.Message);
+            }
+        }
+        else
+        {
+            matToaster.Add("Error", MatToastType.Danger);
+        }
+        await PopulateRoleList();
+        StateHasChanged();
     }
 }
