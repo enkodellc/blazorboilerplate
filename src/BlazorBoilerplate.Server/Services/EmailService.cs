@@ -12,15 +12,16 @@ using MailKit.Net.Smtp;
 using MailKit.Search;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
 
 namespace BlazorBoilerplate.Server.Services
 {
     public interface IEmailService
     {
-        Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessageDto emailMessage);
+        Task<ApiResponse> SendEmailAsync(EmailMessageDto emailMessage);
         List<EmailMessageDto> ReceiveEmail(int maxCount = 10);
-        Task<(bool success, string errorMsg, List<EmailMessageDto>)> ReceiveMailImapAsync();
-        Task<(bool success, string errorMsg, List<EmailMessageDto>)> ReceiveMailPopAsync(int min = 0, int max = 0);
+        Task<ApiResponse> ReceiveMailImapAsync();
+        Task<ApiResponse> ReceiveMailPopAsync(int min = 0, int max = 0);
         void Send(EmailMessageDto emailMessage);
     }
 
@@ -42,7 +43,7 @@ namespace BlazorBoilerplate.Server.Services
             throw new NotImplementedException();
         }
 
-        public async Task<(bool success, string errorMsg, List<EmailMessageDto>)> ReceiveMailImapAsync()
+        public async Task<ApiResponse> ReceiveMailImapAsync()
         {
             using (var emailClient = new ImapClient())
             {
@@ -83,17 +84,17 @@ namespace BlazorBoilerplate.Server.Services
                     }
 
                     await emailClient.DisconnectAsync(true);
-                    return (true, null, emails);
+                    return new ApiResponse(200, null, emails);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError("Imap Email Retrieval failed: {0}", ex.Message);
-                    return (false, ex.Message, null);
+                    return new ApiResponse(500, ex.Message);
                 }
             }
         }
 
-        public async Task<(bool success, string errorMsg, List<EmailMessageDto>)> ReceiveMailPopAsync(int min = 0, int max = 0)
+        public async Task<ApiResponse> ReceiveMailPopAsync(int min = 0, int max = 0)
         {
             using (var emailClient = new Pop3Client())
             {
@@ -130,21 +131,21 @@ namespace BlazorBoilerplate.Server.Services
                     }
 
                     await emailClient.DisconnectAsync(true);
-                    return (true, null, emails);
+                    return new ApiResponse(200, null, emails);
                 }
                 catch (Exception ex)
                 {
-                    return (false, ex.Message, null);
+                    return new ApiResponse(500, ex.Message);
                 }
             }
         }
-    
+
         public void Send(EmailMessageDto emailMessage)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<(bool success, string errorMsg)> SendEmailAsync(EmailMessageDto emailMessage)
+        public async Task<ApiResponse> SendEmailAsync(EmailMessageDto emailMessage)
         {
             try
             {
@@ -195,13 +196,13 @@ namespace BlazorBoilerplate.Server.Services
                     await emailClient.SendAsync(message).ConfigureAwait(false);
 
                     await emailClient.DisconnectAsync(true).ConfigureAwait(false);
-                    return (true, null);
+                    return new ApiResponse(203);
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError("Email Send Failed: {0}", ex.Message);
-                return (false, ex.Message);
+                return new ApiResponse(500, ex.Message);
             }
         }
     }

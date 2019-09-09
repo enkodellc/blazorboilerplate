@@ -7,6 +7,7 @@ using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
+using System;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -63,10 +64,17 @@ namespace BlazorBoilerplate.Server.Controllers
             //Add a new From Address if you so choose, default is set in appsettings.json
             //email.FromAddresses.Add(new EmailAddress("New From Name", "email@domain.com"));
             _logger.LogInformation("Test Email: {0}", email.Subject);
+            try
+            {
+                await _emailService.SendEmailAsync(email);
+                return new ApiResponse(200, "Email Successfuly Sent");
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse(500, ex.Message);
+            }
 
-            await _emailService.SendEmailAsync(email);
 
-            return new ApiResponse(200, "Email Successfuly Sent");
         }
 
         [HttpGet("Receive")]
@@ -82,14 +90,7 @@ namespace BlazorBoilerplate.Server.Controllers
             // To use Pop3 uncomment the following and comment out the Imap line (above):
             //var results = await _emailService.ReceiveMailPopAsync();
 
-            if (results.success)
-            {
-                return new ApiResponse(200, "Email Received", results);
-            }
-            else
-            {
-                return new ApiResponse(400, "Email Receiving Failed");
-            }
+            return results;
         }
     }
 }

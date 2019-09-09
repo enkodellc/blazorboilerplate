@@ -129,7 +129,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 var result = await _userManager.CreateAsync(user, parameters.Password);
                 if (!result.Succeeded)
                 {
-                    return new ApiResponse(400, "Register User Failed: " +  result.Errors.FirstOrDefault()?.Description);
+                    return new ApiResponse(400, "Register User Failed: " + result.Errors.FirstOrDefault()?.Description);
                 }
 
 
@@ -388,20 +388,177 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
 
-        [Authorize]
+
+        ///---------------------------------------------------------------Admin Interface controls-------------------------------------------------------///
+
+        [Authorize("RequireElevatedRights")]
         // DELETE: api/Account/5
         [HttpDelete("{id}")]
         public async Task<ApiResponse> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            if (user.Id == null)
             {
                 return new ApiResponse(404, "User does not exist");
             }
-
-            await _userManager.DeleteAsync(user);
+            try
+            {
+                await _userManager.DeleteAsync(user);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(null, ex);
+            }
 
             return new ApiResponse(200, "User Deletion Successful");
+        }
+
+        [HttpGet("ListUsers")]
+        [Authorize("RequireElevatedRights")]
+        //[AllowAnonymous]
+        public async Task<ApiResponse> ListUsers([FromQuery] int pageSize, [FromQuery] int pageNumber = 0)
+        {
+
+            var userDtoList = new List<UserInfoDto>();
+            List<ApplicationUser> listResponse;
+
+            if (pageSize == null || pageSize == 0)
+            {
+                return new ApiResponse(400, "page size input empty");
+            }
+
+            // get paginated list of users
+            try
+            {
+                var userList = _userManager.Users.AsQueryable();
+                listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(null, ex);
+            }
+
+            // create the dto object with mapped properties and fetch roles associated with each user
+            try
+            {
+                foreach (var applicationUser in listResponse)
+                {
+                    userDtoList.Add(new UserInfoDto
+                    {
+                        FirstName = applicationUser.FirstName,
+                        LastName = applicationUser.LastName,
+                        UserName = applicationUser.UserName,
+                        Email = applicationUser.Email,
+                        UserId = applicationUser.Id,
+                        Roles = (List<string>)(await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true))
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(null, ex);
+            }
+
+            return new ApiResponse(200, "User list fetched", userDtoList);
+        }
+
+        [HttpGet("ListRoles")]
+        [Authorize("RequireElevatedRights")]
+        //  [AllowAnonymous]
+        public async Task<ApiResponse> ListRoles()
+        {
+            var roleList = _roleManager.Roles.Select(x => x.Name).ToList();
+            return new ApiResponse(200, "", roleList);
+        }
+
+        [HttpPost("ModifyUser")]
+        //[AllowAnonymous]
+        [Authorize("RequireElevatedRights")]
+        public async Task<ApiResponse> ModifyUser([FromBody] UserInfoDto userInfo)
+        {
+            // retrieve full user object for updating
+            var appUser = await _userManager.FindByIdAsync(userInfo.UserId.ToString()).ConfigureAwait(true);
+
+
+            // TODO move to using automapper
+            //update values
+            appUser.UserName = userInfo.UserName;
+            appUser.FirstName = userInfo.FirstName;
+            appUser.LastName = userInfo.LastName;
+            appUser.Email = userInfo.Email;
+
+
+
+
+
+            try
+            {
+                var result = await _userManager.UpdateAsync(appUser).ConfigureAwait(true);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error modifying user", ex);
+            }
+            if (userInfo.Roles != null)
+            {
+                try
+                {
+                    List<string> rolesToAdd = new List<string>();
+                    List<string> rolesToRemove = new List<string>();
+                    var currentUserRoles = (List<string>)(await _userManager.GetRolesAsync(appUser).ConfigureAwait(true));
+                    foreach (var newUserRole in userInfo.Roles)
+                    {
+                        if (!currentUserRoles.Contains(newUserRole))
+                        {
+                            rolesToAdd.Add(newUserRole);
+                        }
+
+                    }
+                    await _userManager.AddToRolesAsync(appUser, rolesToAdd).ConfigureAwait(true);
+
+
+                    foreach (var role in currentUserRoles)
+                    {
+                        if (!userInfo.Roles.Contains(role))
+                        {
+                            rolesToRemove.Add(role);
+                        }
+                    }
+                    await _userManager.RemoveFromRolesAsync(appUser, rolesToRemove).ConfigureAwait(true);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error Updating Roles", ex);
+                }
+            }
+            return new ApiResponse(203, "User Modified");
+        }
+
+
+        [HttpPost("AddUserRoleGlobal")]
+        [Authorize("RequireElevatedRights")]
+        public async Task<ApiResponse> AddUserRoletoAppAsync([FromBody] string newRole)
+        {
+            // first make sure the role doesn't already exist
+            if (_roleManager.Roles.Any(r => r.Name == newRole))
+            {
+                return new ApiResponse(400, "role already exists");
+            }
+            else
+            {
+                try
+                {
+                    _roleManager.CreateAsync(new IdentityRole<Guid>(newRole)).Wait();
+                    return new ApiResponse(200);
+                }
+                catch (Exception ex)
+                {
+                    return new ApiResponse(500, ex.Message);
+                }
+            }
         }
 
     }
