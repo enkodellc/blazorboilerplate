@@ -27,9 +27,10 @@ else
         </MatTableHeader>
         <MatTableRow Context="UserRow">
             <td>
-                <div style="width:130px;">
+                <div style="width:155px;">
                     <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
-                    <MatIconButton Icon="delete" OnClick="@(() => Delete(UserRow.UserId))" Disabled="@(UserRow.UserId == userProfile.UserId)" ></MatIconButton>
+                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => Delete(UserRow.UserId))" Disabled="@(UserRow.UserId == userProfile.UserId)"></MatIconButton>
                 </div>
             </td>
             <td><div style="width:130px;">@UserRow.UserName</div></td>
@@ -123,6 +124,23 @@ else
         <MatButton OnClick="@CreateRole">Add Role</MatButton>
     </MatDialogActions>
 </MatDialog>
+<MatDialog @bind-IsOpen="@resetPasswordDialogOpen">
+    <MatDialogTitle>Manual Password Reset for @registerParameters.UserName</MatDialogTitle>
+    <MatDialogContent>
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            </div>
+        </fieldset>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { resetPasswordDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@(()=>ConfirmAction())">Reset User Password</MatButton>
+    </MatDialogActions>
+</MatDialog>
 
 @code {
     int pageSize { get; set; } = 15;
@@ -133,6 +151,7 @@ else
     bool confirmDialogOpen = false;
     bool deleteUser = false;
     bool newRoleDialogOpen = false;
+    bool resetPasswordDialogOpen = false;
 
     ApiResponseDto apiResponse;
     List<UserInfoDto> users;
@@ -190,10 +209,15 @@ else
             else if (deleteUser)
             {
                 await DeleteUserSubmit();
+                users.Remove(user);
             }
             else if (newRoleDialogOpen)
             {
                 await CreateRole();
+            }
+            else if (resetPasswordDialogOpen)
+            {
+                await ResetUserPassword();
             }
             // if things worked, zero out all the modal switches
             this.confirmDialogOpen = false;
@@ -201,6 +225,7 @@ else
             this.creationDialogOpen = false;
             this.deleteUser = false;
             this.newRoleDialogOpen = false;
+            this.resetPasswordDialogOpen = false;
             await PopulateRoleList();  // get latest version of user list
             StateHasChanged();
         }
@@ -227,6 +252,17 @@ else
         this.editDialogOpen = true;
         StateHasChanged();
     }
+    public void OpenResetPasswordDialog(string userName, Guid userId)
+    {
+        // reusing the registerParameters and User objects
+
+        registerParameters = new RegisterDto();  // zero it out
+
+        registerParameters.UserName = userName;
+        user.UserId = userId;
+        this.resetPasswordDialogOpen = true;
+        StateHasChanged();
+    }
 
     public async Task ModifyUserAsync(UserInfoDto user)
     {
@@ -250,25 +286,6 @@ else
         {
             matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
         }
-    }
-
-    public async Task OpenDialog(string dialogType)
-    {
-        switch (dialogType)
-        {
-            case ("EditUser"):
-                this.editDialogOpen = true;
-                break;
-            case ("CreateUser"):
-                this.creationDialogOpen = true;
-                break;
-            case ("ConfirmAction"):
-                this.confirmDialogOpen = true;
-                break;
-            default:
-                break;
-        }
-        StateHasChanged();
     }
 
     public async Task CreateUser()
@@ -299,8 +316,8 @@ else
     {
         user.UserId = userId;
         this.deleteUser = true;
-        await OpenDialog("ConfirmAction");
-        users.Remove(user);
+        this.confirmDialogOpen = true;
+        StateHasChanged();
     }
 
     public async Task DeleteUserSubmit()
@@ -385,5 +402,32 @@ else
         }
         await PopulateRoleList();
         StateHasChanged();
+    }
+
+    protected async Task ResetUserPassword()
+    {
+        if (registerParameters.Password != registerParameters.PasswordConfirm)
+        {
+            matToaster.Add("Passwords Must Match", MatToastType.Warning);
+        }
+        else
+        {
+            try
+            {
+                apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/AdminUserPasswordReset/" + user.UserId.ToString(), registerParameters.Password);
+                if (apiResponse.StatusCode == 204 || apiResponse.StatusCode == 200) // api is returning status code 200 for some reason, should be 204
+                {
+                    matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch (Exception ex)
+            {
+                matToaster.Add("Error", MatToastType.Danger, apiResponse.ResponseException);
+            }
+        }
     }
 }
