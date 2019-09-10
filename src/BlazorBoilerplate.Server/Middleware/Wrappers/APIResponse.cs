@@ -11,7 +11,7 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         public string Version { get; set; }
 
         [DataMember]
-        public int StatusCode { get; set; }
+        public int StatusCode { get; set; } = 0;
 
         [DataMember]
         public string Message { get; set; }

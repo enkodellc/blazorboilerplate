@@ -243,7 +243,7 @@ namespace BlazorBoilerplate.Server.Middleware
             if (type.Equals(typeof(Newtonsoft.Json.Linq.JObject)))
             {
                 apiResponse = JsonConvert.DeserializeObject<ApiResponse>(bodyText);
-                if (apiResponse.StatusCode != code)
+                if (apiResponse.StatusCode == 0)
                 {
                     apiResponse.StatusCode = code;
                 }

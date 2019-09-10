@@ -588,7 +588,6 @@ namespace BlazorBoilerplate.Server.Controllers
                     }
                     await _userManager.AddToRolesAsync(appUser, rolesToAdd).ConfigureAwait(true);
 
-
                     foreach (var role in currentUserRoles)
                     {
                         if (!userInfo.Roles.Contains(role))
@@ -675,10 +674,7 @@ namespace BlazorBoilerplate.Server.Controllers
                             resultErrorsString += identityError.Description + ", ";
                         }
                         resultErrorsString.TrimEnd(',');
-
-
-                        throw new Exception(resultErrorsString);
-
+                        return new ApiResponse(400, resultErrorsString);
                     }
                     else
                     {
@@ -690,9 +686,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 _logger.LogInformation(user.UserName + "'s password reset failed; Requested from Admin interface by:" + User.Identity.Name);
                 return new ApiResponse(400, ex.Message);
-            }
-
-            
+            }            
         }
     }
 }

@@ -38,9 +38,9 @@ else
             <td>
                 <MatChipSet>
                     @foreach (var role in @UserRow.Roles)
-                        {
+                    {
                         <MatChip Label="@role"></MatChip>
-                        }
+                    }
                 </MatChipSet>
             </td>
         </MatTableRow>
@@ -412,21 +412,14 @@ else
         }
         else
         {
-            try
+            apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/AdminUserPasswordReset/" + user.UserId.ToString(), registerParameters.Password);
+            if (apiResponse.StatusCode == 204 || apiResponse.StatusCode == 200)
             {
-                apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/AdminUserPasswordReset/" + user.UserId.ToString(), registerParameters.Password);
-                if (apiResponse.StatusCode == 204 || apiResponse.StatusCode == 200) // api is returning status code 200 for some reason, should be 204
-                {
-                    matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);
-                }
-                else
-                {
-                    throw new Exception();
-                }
+                matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);
             }
-            catch (Exception ex)
+            else
             {
-                matToaster.Add("Error", MatToastType.Danger, apiResponse.ResponseException);
+                matToaster.Add(apiResponse.Message, MatToastType.Danger);
             }
         }
     }
