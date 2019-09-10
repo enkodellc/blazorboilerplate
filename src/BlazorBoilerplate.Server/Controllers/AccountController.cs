@@ -628,5 +628,71 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
             }
         }
+
+        [HttpPost("AdminUserPasswordReset/{id}")]
+        [Authorize("RequireElevatedRights")]
+        [ProducesResponseType(204)]
+        public async Task<ApiResponse> AdminResetUserPasswordAsync(Guid id, [FromBody] string newPassword)
+        {
+            ApplicationUser user;
+
+            if (!ModelState.IsValid)
+            {
+                return new ApiResponse(400, "Model is Invalid");
+            }
+
+            try
+            {
+                user = await _userManager.FindByIdAsync(id.ToString());
+                if (user.Id == null)
+                {
+                    throw new KeyNotFoundException();
+                }
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return new ApiResponse(400, "Unable to find user" + ex.Message);
+            }
+            try
+            {
+                var passToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, passToken, newPassword);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation(user.UserName + "'s password reset; Requested from Admin interface by:" + User.Identity.Name);
+                    return new ApiResponse(204, user.UserName + " password reset");
+                }
+                else
+                {
+                    _logger.LogInformation(user.UserName + "'s password reset failed; Requested from Admin interface by:" + User.Identity.Name);
+
+                    // this is going to an authenticated Admin so it should be safe/useful to send back raw error messages
+                    if (result.Errors.Any())
+                    {
+                        string resultErrorsString = "";
+                        foreach (var identityError in result.Errors)
+                        {
+                            resultErrorsString += identityError.Description + ", ";
+                        }
+                        resultErrorsString.TrimEnd(',');
+
+
+                        throw new Exception(resultErrorsString);
+
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
+                }
+            }
+            catch (Exception ex) // not sure if failed password reset result will throw an exception
+            {
+                _logger.LogInformation(user.UserName + "'s password reset failed; Requested from Admin interface by:" + User.Identity.Name);
+                return new ApiResponse(400, ex.Message);
+            }
+
+            
+        }
     }
 }
