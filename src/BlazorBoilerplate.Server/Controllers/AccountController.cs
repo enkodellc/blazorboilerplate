@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -370,7 +371,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         ///----------Admin User Management Interface Methods
         
-        [Authorize("RequireElevatedRights")]
+        [Authorize(Policy = Policies.IsAdmin)]
         // POST: api/Account/Create
         [HttpPost("Create")]
         public async Task<ApiResponse> Create(RegisterDto parameters)
@@ -458,7 +459,7 @@ namespace BlazorBoilerplate.Server.Controllers
             }
         }
 
-        [Authorize("RequireElevatedRights")]
+        [Authorize(Policy = Policies.IsAdmin)]
         // DELETE: api/Account/5
         [HttpDelete("{id}")]
         public async Task<ApiResponse> Delete(string id)
@@ -489,7 +490,7 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(200, "Get User Successful", userInfo);
         }
 
-        [Authorize("RequireElevatedRights")]
+        [Authorize(Policy = Policies.IsAdmin)]
         [HttpGet]
         public async Task<ApiResponse> Get([FromQuery] int pageSize, [FromQuery] int pageNumber = 0)
         {
@@ -539,7 +540,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet("ListRoles")]
-        [Authorize("RequireElevatedRights")]
+        [Authorize(Policy = Policies.IsAdmin)]
         //  [AllowAnonymous]
         public async Task<ApiResponse> ListRoles()
         {
@@ -549,7 +550,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpPost]
         //[AllowAnonymous]
-        [Authorize("RequireElevatedRights")]
+        [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> Update([FromBody] UserInfoDto userInfo)
         {
             // retrieve full user object for updating
@@ -604,7 +605,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost("AddUserRoleGlobal")]
-        [Authorize("RequireElevatedRights")]
+        [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> AddUserRoletoAppAsync([FromBody] string newRole)
         {
             // first make sure the role doesn't already exist
@@ -627,7 +628,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost("AdminUserPasswordReset/{id}")]
-        [Authorize("RequireElevatedRights")]
+        [Authorize(Policy = Policies.IsAdmin)]
         [ProducesResponseType(204)]
         public async Task<ApiResponse> AdminResetUserPasswordAsync(Guid id, [FromBody] string newPassword)
         {
