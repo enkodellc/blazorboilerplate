@@ -115,6 +115,7 @@
                 matToaster.Add("Totdo Delete Failed", MatToastType.Danger);
             }
             deleteDialogOpen = false;
+            todo = new TodoDto(); //reset todo after delete
         }
         catch (Exception ex)
         {
