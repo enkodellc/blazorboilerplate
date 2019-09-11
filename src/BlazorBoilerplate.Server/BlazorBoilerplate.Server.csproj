@@ -40,7 +40,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="3.0.1-dev-00099" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.1-dev-00209" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0-dev-00850" />
-    <PackageReference Include="MailKit" Version="2.3.0" />
+    <PackageReference Include="MailKit" Version="2.3.1.6" />
   </ItemGroup>
 
   <ItemGroup>

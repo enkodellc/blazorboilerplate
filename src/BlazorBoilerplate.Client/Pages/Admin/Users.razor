@@ -7,7 +7,7 @@
 
 <h1>Users</h1>
 <p>User management Screen. Mostly Functional, still under construction</p>
-<MatButton Raised="true" TrailingIcon="add_group" OnClick="@(e => { this.newRoleDialogOpen = true; })" Label="Add Role" />
+<MatButton Raised="true" TrailingIcon="add_group" OnClick="@(e => { this.createRoleDialogOpen = true; })" Label="Add Role" />
 
 @if (users == null)
 {
@@ -20,7 +20,7 @@ else
     <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th><MatButton Icon="person_add" Label="New User" OnClick="@(e => { creationDialogOpen = true; })"></MatButton></th>
+            <th><MatButton Icon="person_add" Label="New User" OnClick="@(e => { createUserDialogOpen = true; })"></MatButton></th>
             <th>User Name</th>
             <th>Email</th>
             <th>Roles</th>
@@ -30,7 +30,7 @@ else
                 <div style="width:155px;">
                     <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
                     <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))"></MatIconButton>
-                    <MatIconButton Icon="delete" OnClick="@(() => Delete(UserRow.UserId))" Disabled="@(UserRow.UserId == userProfile.UserId)"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="@(UserRow.UserId == userProfile.UserId)"></MatIconButton>
                 </div>
             </td>
             <td><div style="width:130px;">@UserRow.UserName</div></td>
@@ -38,16 +38,16 @@ else
             <td>
                 <MatChipSet>
                     @foreach (var role in @UserRow.Roles)
-                    {
+                     {
                         <MatChip Label="@role"></MatChip>
-                    }
+                     }                
                 </MatChipSet>
             </td>
         </MatTableRow>
     </MatTable>
 }
 
-<MatDialog @bind-IsOpen="@creationDialogOpen">
+<MatDialog @bind-IsOpen="@createUserDialogOpen">
     <MatDialogTitle>Create User</MatDialogTitle>
     <MatDialogContent>
         <fieldset>
@@ -66,8 +66,8 @@ else
         </fieldset>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { creationDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@CreateUser">Create User</MatButton>
+        <MatButton OnClick="@(e => { createUserDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@CreateUserAsync">Create User</MatButton>
     </MatDialogActions>
 </MatDialog>
 
@@ -84,31 +84,29 @@ else
             <MatChipSet>
                 @foreach (var role in roleSelections.OrderBy(x => x.Name))
                 {
-                    <MatChip Label="@role.Name" LeadingIcon="@( (role.Selected) ? "done" : "")" @onclick="@(()=>UpdateChipContactGroups(role))" />
+                    <MatChip Label="@role.Name" LeadingIcon="@( (role.Selected) ? "done" : "")" @onclick="@(()=>UpdateUserRole(role))" />
                 }
             </MatChipSet>
         </fieldset>
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { editDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@(e => { confirmDialogOpen = true; })">Modify User</MatButton>
+        <MatButton OnClick="@UpdateUserAsync">Update User</MatButton>
     </MatDialogActions>
 </MatDialog>
 
-<MatDialog @bind-IsOpen="@confirmDialogOpen" Style="z-index:100">
-    <MatDialogTitle>Confirm</MatDialogTitle>
+<MatDialog @bind-IsOpen="@deleteUserDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
     <MatDialogContent>
-        <p>
-            <strong>
-                Confirm Action?
-            </strong>
-        </p>
+        Are you sure you want to delete user "@user.UserName" ?
     </MatDialogContent>
-    <MatButton OnClick="@(() => ConfirmAction() )">Proceed</MatButton>
-    <MatButton OnClick="@(e => { confirmDialogOpen = false; deleteUser = false; })">Cancel</MatButton>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { deleteUserDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@DeleteUserAsync">Delete</MatButton>
+    </MatDialogActions>
 </MatDialog>
 
-<MatDialog @bind-IsOpen="@newRoleDialogOpen">
+<MatDialog @bind-IsOpen="@createRoleDialogOpen">
     <MatDialogTitle>
         Add New Role
     </MatDialogTitle>
@@ -120,10 +118,11 @@ else
         </fieldset>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { newRoleDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@(e => { createRoleDialogOpen = false; })">Cancel</MatButton>
         <MatButton OnClick="@CreateRole">Add Role</MatButton>
     </MatDialogActions>
 </MatDialog>
+
 <MatDialog @bind-IsOpen="@resetPasswordDialogOpen">
     <MatDialogTitle>Manual Password Reset for @registerParameters.UserName</MatDialogTitle>
     <MatDialogContent>
@@ -138,7 +137,7 @@ else
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { resetPasswordDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@(()=>ConfirmAction())">Reset User Password</MatButton>
+        <MatButton OnClick="@ResetUserPasswordAsync">Reset User Password</MatButton>
     </MatDialogActions>
 </MatDialog>
 
@@ -146,11 +145,10 @@ else
     int pageSize { get; set; } = 15;
     int currentPage { get; set; } = 0;
 
-    bool creationDialogOpen = false;
+    bool createUserDialogOpen = false;
     bool editDialogOpen = false;
-    bool confirmDialogOpen = false;
-    bool deleteUser = false;
-    bool newRoleDialogOpen = false;
+    bool deleteUserDialogOpen = false;
+    bool createRoleDialogOpen = false;
     bool resetPasswordDialogOpen = false;
 
     ApiResponseDto apiResponse;
@@ -178,7 +176,7 @@ else
         userProfile = await appState.GetUserProfile();
     }
 
-    protected async Task RetrieveUserListAsync()
+    public async Task RetrieveUserListAsync()
     {
         string queryString = "?pageSize=" + pageSize.ToString() + "&pageNumber=" + currentPage.ToString(); // this is to support pagination in the future, need to integrate with MatTable
         apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Account" + queryString);
@@ -194,49 +192,9 @@ else
         }
     }
 
-    public async Task ConfirmAction()
-    {
-        try
-        {
-            if (creationDialogOpen)
-            {
-                await CreateUser();
-            }
-            else if (editDialogOpen)
-            {
-                await ModifyUserAsync(user);
-            }
-            else if (deleteUser)
-            {
-                await DeleteUserSubmit();
-                users.Remove(user);
-            }
-            else if (newRoleDialogOpen)
-            {
-                await CreateRole();
-            }
-            else if (resetPasswordDialogOpen)
-            {
-                await ResetUserPassword();
-            }
-            // if things worked, zero out all the modal switches
-            this.confirmDialogOpen = false;
-            this.editDialogOpen = false;
-            this.creationDialogOpen = false;
-            this.deleteUser = false;
-            this.newRoleDialogOpen = false;
-            this.resetPasswordDialogOpen = false;
-            await PopulateRoleList();  // get latest version of user list
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add("Error", MatToastType.Danger, ex.InnerException.Message);
-        }
-    }
-
     public void OpenEditDialog(Guid userId)
     {
+        user = new UserInfoDto(); // reset user object
         user = users.Where(x => x.UserId == userId).FirstOrDefault();  // load the user information into the temp user object for worry free editing
         foreach (var role in roleSelections)
         {
@@ -250,97 +208,29 @@ else
             }
         }
         this.editDialogOpen = true;
-        StateHasChanged();
     }
+
     public void OpenResetPasswordDialog(string userName, Guid userId)
     {
         // reusing the registerParameters and User objects
-
-        registerParameters = new RegisterDto();  // zero it out
-
+        registerParameters = new RegisterDto();  // reset object
         registerParameters.UserName = userName;
         user.UserId = userId;
         this.resetPasswordDialogOpen = true;
-        StateHasChanged();
     }
 
-    public async Task ModifyUserAsync(UserInfoDto user)
+    public void OpenDeleteDialog(Guid userId)
     {
-        //update the user object's role list with the new selection set
-        user.Roles = roleSelections.Where(x => x.Selected == true).Select(x => x.Name).ToList();
-
-        try
-        {
-            var apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/ModifyUser", user);
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add("Error!", MatToastType.Danger, ex.Message);
-        }
-
-        if (apiResponse.StatusCode == 200)
-        {
-            matToaster.Add("User Updated", MatToastType.Success);
-        }
-        else
-        {
-            matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
-        }
+        user = users.Where(x => x.UserId == userId).FirstOrDefault();
+        this.deleteUserDialogOpen = true;
     }
-
-    public async Task CreateUser()
+       
+    protected void UpdateUserRole(roleSelection roleSelectionItem)
     {
-        try
-        {
-            ApiResponseDto apiResponse = await authStateProvider.Create(registerParameters);
-            if (apiResponse.StatusCode == 200)
-            {
-                matToaster.Add(apiResponse.Message, MatToastType.Success);
-                user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
-                users.Add(user);
-                registerParameters = new RegisterDto(); //reset create user object after insert
-                creationDialogOpen = false;
-            }
-            else
-            {
-                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Todo Creation Failed");
-            }
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
-        }
+        roleSelectionItem.Selected = !roleSelectionItem.Selected;        
     }
 
-    public async void Delete(Guid userId)
-    {
-        user.UserId = userId;
-        this.deleteUser = true;
-        this.confirmDialogOpen = true;
-        StateHasChanged();
-    }
-
-    public async Task DeleteUserSubmit()
-    {
-        try
-        {
-            var response = await Http.SendJsonAsync<ApiResponseDto>(HttpMethod.Delete, "api/Account/" + user.UserId, null);
-            if (response.StatusCode == 200)
-            {
-                matToaster.Add("User Deleted", MatToastType.Success);
-            }
-            else
-            {
-                throw new Exception(response.ResponseException);
-            }
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add("Error", MatToastType.Danger, ex.Message);
-
-        }
-    }
-    async Task PopulateRoleList()
+    public async Task PopulateRoleList()
     {
         List<string> roleNames = new List<string>();
         var response = await Http.GetJsonAsync<ApiResponseDto>("api/Account/ListRoles");
@@ -352,7 +242,6 @@ else
         {
             matToaster.Add("Error", MatToastType.Danger, ex.Message);
             return;
-
         }
 
         roleSelections = new List<roleSelection>();// clear out list
@@ -368,43 +257,78 @@ else
         }
     }
 
-    protected void UpdateChipContactGroups(roleSelection roleSelectionItem)
+    public async Task UpdateUserAsync()
     {
-        roleSelectionItem.Selected = !roleSelectionItem.Selected;
+        try
+        {
+            //update the user object's role list with the new selection set
+            user.Roles = roleSelections.Where(x => x.Selected == true).Select(x => x.Name).ToList();
 
-        StateHasChanged();
+            var apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account", user);
+            if (apiResponse.StatusCode == 200)
+            {
+                matToaster.Add("User Updated", MatToastType.Success);
+            }
+            else
+            {
+                matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
+            }
+            editDialogOpen = false;
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "User Update Failed");
+        }
+    }
+
+    public async Task CreateUserAsync()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = await authStateProvider.Create(registerParameters);
+            if (apiResponse.StatusCode == 200)
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Success);
+                user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
+                users.Add(user);
+                registerParameters = new RegisterDto(); //reset create user object after insert
+                createUserDialogOpen = false;
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "User Creation Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
+        }
     }
 
     public async Task CreateRole()
     {
         if (!String.IsNullOrWhiteSpace(newRoletoAdd))
         {
-            try
+            apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/AddUserRoleGlobal", newRoletoAdd);
+            if (apiResponse.StatusCode == 200)
             {
-                apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/AddUserRoleGlobal", newRoletoAdd);
-                if (apiResponse.StatusCode == 200)
-                {
-                    matToaster.Add("Role Added", MatToastType.Success);
-                }
-                else
-                {
-                    throw new Exception();
-                }
+                matToaster.Add("Role Added", MatToastType.Success);
+                await PopulateRoleList();
+                StateHasChanged();
             }
-            catch (Exception ex)
+            else
             {
-                matToaster.Add("Error", MatToastType.Danger, ex.Message);
+                matToaster.Add(apiResponse.Message, MatToastType.Danger);
             }
+            createRoleDialogOpen = false;
         }
         else
         {
-            matToaster.Add("Error", MatToastType.Danger);
+            matToaster.Add("Role Creation Error", MatToastType.Danger, "Enter in a Role Name");
         }
-        await PopulateRoleList();
-        StateHasChanged();
     }
 
-    protected async Task ResetUserPassword()
+    public async Task ResetUserPasswordAsync()
     {
         if (registerParameters.Password != registerParameters.PasswordConfirm)
         {
@@ -421,6 +345,23 @@ else
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Danger);
             }
+            resetPasswordDialogOpen = false;
+        }
+    }
+
+    public async Task DeleteUserAsync()
+    {
+        var response = await Http.DeleteAsync("api/Account/" + user.UserId);
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            matToaster.Add("User Deleted", MatToastType.Success);
+            users.Remove(user);
+            deleteUserDialogOpen = false;
+            StateHasChanged();
+        }
+        else
+        {
+            matToaster.Add("User Delete Failed", MatToastType.Danger);
         }
     }
 }

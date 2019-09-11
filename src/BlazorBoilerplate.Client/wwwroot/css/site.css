@@ -464,6 +464,24 @@ ul.breadcrumb {
         }
 
 
+/* dialog */
+.mdc-dialog__content {
+    min-width: 300px;
+
+}
+
+.mdc-dialog__title + .mdc-dialog__content {
+    padding: 20px 24px !important;
+}
+
+.mdc-dialog__title {
+    color: #fff !important;
+    background: #5D2E8F;
+}
+
+.mdc-dialog__actions {
+    border-top: 1px solid #e1e1e1 !important;
+}
 
 /* misc */
 .contrib-card {

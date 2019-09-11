@@ -471,13 +471,12 @@ namespace BlazorBoilerplate.Server.Controllers
             try
             {
                 await _userManager.DeleteAsync(user);
+                return new ApiResponse(200, "User Deletion Successful");
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception(null, ex);
-            }
-
-            return new ApiResponse(200, "User Deletion Successful");
+                return new ApiResponse(400, "User Deletion Failed");                
+            }            
         }
         
         [HttpGet("GetUser")]
@@ -548,15 +547,14 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(200, "", roleList);
         }
 
-        [HttpPost("ModifyUser")]
+        [HttpPost]
         //[AllowAnonymous]
         [Authorize("RequireElevatedRights")]
-        public async Task<ApiResponse> ModifyUser([FromBody] UserInfoDto userInfo)
+        public async Task<ApiResponse> Update([FromBody] UserInfoDto userInfo)
         {
             // retrieve full user object for updating
             var appUser = await _userManager.FindByIdAsync(userInfo.UserId.ToString()).ConfigureAwait(true);
             
-            // TODO move to using automapper
             //update values
             appUser.UserName = userInfo.UserName;
             appUser.FirstName = userInfo.FirstName;
@@ -567,10 +565,11 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 var result = await _userManager.UpdateAsync(appUser).ConfigureAwait(true);
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception("Error modifying user", ex);
+                return new ApiResponse(500, "Error Updating User");
             }
+
             if (userInfo.Roles != null)
             {
                 try
@@ -584,7 +583,6 @@ namespace BlazorBoilerplate.Server.Controllers
                         {
                             rolesToAdd.Add(newUserRole);
                         }
-
                     }
                     await _userManager.AddToRolesAsync(appUser, rolesToAdd).ConfigureAwait(true);
 
@@ -597,12 +595,12 @@ namespace BlazorBoilerplate.Server.Controllers
                     }
                     await _userManager.RemoveFromRolesAsync(appUser, rolesToRemove).ConfigureAwait(true);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    throw new Exception("Error Updating Roles", ex);
+                    return new ApiResponse(500, "Error Updating Roles");
                 }
             }
-            return new ApiResponse(203, "User Modified");
+            return new ApiResponse(200, "User Updated");
         }
 
         [HttpPost("AddUserRoleGlobal")]

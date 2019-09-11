@@ -15,15 +15,15 @@
         <th>Completed</th>
         <th style="min-width:180px;">Todo</th>
     </MatTableHeader>
-    <MatTableRow>
+    <MatTableRow Context="TodoRow">
         <td>
             <div style="width:50px;">
-                <MatIconButton Icon="delete" OnClick="@((e) => Delete(context))"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(TodoRow.Id))"></MatIconButton>
             </div>
         </td>
-        <td>@String.Format("{0:d}", @context.Id)</td>
-        <td><MatCheckbox Checked="@context.IsCompleted" class="filled-in chk-col-blue" CheckedChanged="@((e) => Save(context))"></MatCheckbox></td>
-        <td>@context.Title</td>
+        <td>@String.Format("{0:d}", TodoRow.Id)</td>
+        <td><MatCheckbox Checked="@TodoRow.IsCompleted" class="filled-in chk-col-blue" CheckedChanged="@((e) => Save(TodoRow))"></MatCheckbox></td>
+        <td>@TodoRow.Title</td>
     </MatTableRow>
 </MatTable>
 
@@ -45,10 +45,22 @@
     </MatDialogActions>
 </MatDialog>
 
+<MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure you want to delete todo "@todo.Title" ?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { deleteDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@Delete">Delete</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
 @code {
-        bool dialogIsOpen = false;
-        List<TodoDto> todos = new List<TodoDto>();
-        TodoDto todo { get; set; } = new TodoDto();
+     bool deleteDialogOpen = false;
+     bool dialogIsOpen = false;
+     List<TodoDto> todos = new List<TodoDto>();
+     TodoDto todo { get; set; } = new TodoDto();
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,23 +100,21 @@
         }
     }
 
-    public async Task Delete(TodoDto todo)
+    public async Task Delete()
     {
         try
         {
-            var apiResponse = await Http.DeleteAsync("api/todo/" + todo.Id);
-
-            //TODO Implement: Are you sure you want to delete dialog
-            //TODO Delete Async doesn't pass back a json apiResponse to determine how to handle this
-            //if (apiResponse.StatusCode == 200)
-            //{
-            matToaster.Add("Todo Deleted", MatToastType.Success);
-            todos.Remove(todo);
-            //}
-            //else
-            //{
-            //    matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Todo Save Failed");
-            //}
+            var response = await Http.DeleteAsync("api/todo/" + todo.Id);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                matToaster.Add("Todo Deleted", MatToastType.Success);
+                todos.Remove(todo);
+            }
+            else
+            {
+                matToaster.Add("Totdo Delete Failed", MatToastType.Danger);
+            }
+            deleteDialogOpen = false;
         }
         catch (Exception ex)
         {
@@ -117,7 +127,13 @@
         dialogIsOpen = true;
     }
 
-    async Task CreateTodo()
+    public void OpenDeleteDialog(long todoId)
+    {
+        todo = todos.Where(x => x.Id == todoId).FirstOrDefault();
+        this.deleteDialogOpen = true;
+    }
+
+    public async Task CreateTodo()
     {
         dialogIsOpen = false;
         try
@@ -129,7 +145,6 @@
                 todo = Newtonsoft.Json.JsonConvert.DeserializeObject<TodoDto>(apiResponse.Result.ToString());
                 todos.Add(todo);
                 todo = new TodoDto(); //reset todo after insert
-
             }
             else
             {
