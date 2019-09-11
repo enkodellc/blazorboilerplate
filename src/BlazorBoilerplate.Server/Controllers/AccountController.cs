@@ -673,7 +673,7 @@ namespace BlazorBoilerplate.Server.Controllers
                         {
                             resultErrorsString += identityError.Description + ", ";
                         }
-                        resultErrorsString.TrimEnd(',');
+                        resultErrorsString.TrimEnd(',');                        
                         return new ApiResponse(400, resultErrorsString);
                     }
                     else

@@ -89,6 +89,7 @@ namespace BlazorBoilerplate.Server.Middleware
                             }
 
                             #region Log Request / Response
+                            //Search the Ignore paths from appsettings to ignore the loggin of certian api paths
                             if (_enableAPILogging && (_ignorePaths.Any(e => !request.Path.StartsWithSegments(new PathString(e.ToLower())))))
                             {
                                 try

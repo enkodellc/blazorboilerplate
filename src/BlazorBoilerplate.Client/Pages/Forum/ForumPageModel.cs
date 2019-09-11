@@ -31,8 +31,6 @@ namespace BlazorBoilerplate.Client.Pages
         public string MessagePost { get; set; }
 
         public List<MessageDto> Messages = new List<MessageDto>();
-
-        //public ApiError Error { get; set; }
         
         protected override async Task OnInitializedAsync()
         {
