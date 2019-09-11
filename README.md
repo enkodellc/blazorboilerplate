@@ -92,7 +92,6 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Confirmation Dialog Stylize & Implementation
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
-  - User delete with ApiLog foreign key
 
 ### 0.2.0 
 - CRUD Todo List example

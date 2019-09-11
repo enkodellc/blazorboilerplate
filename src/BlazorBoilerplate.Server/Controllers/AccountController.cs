@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Server.Helpers;
+﻿using BlazorBoilerplate.Server.Data;
+using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
@@ -6,6 +7,7 @@ using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -30,8 +32,9 @@ namespace BlazorBoilerplate.Server.Controllers
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
+        private readonly ApplicationDbContext _db;
 
-        public AccountController(UserManager<ApplicationUser> userManager,
+        public AccountController(UserManager<ApplicationUser> userManager, ApplicationDbContext db,
             SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger,
             RoleManager<IdentityRole<Guid>> roleManager, IEmailService emailService, IConfiguration configuration)
         {
@@ -41,6 +44,7 @@ namespace BlazorBoilerplate.Server.Controllers
             _roleManager = roleManager;
             _emailService = emailService;
             _configuration = configuration;
+            _db = db;
         }
 
         // POST: api/Account/Login
@@ -470,6 +474,14 @@ namespace BlazorBoilerplate.Server.Controllers
             }
             try
             {
+                //EF: not a fan this will delete old ApiLogs
+                var apiLogs = _db.ApiLogs.Where(a => a.ApplicationUserId == user.Id);
+                foreach (var apiLog in apiLogs)
+                {
+                    _db.ApiLogs.Remove(apiLog);
+                }
+                _db.SaveChanges();
+
                 await _userManager.DeleteAsync(user);
                 return new ApiResponse(200, "User Deletion Successful");
             }
