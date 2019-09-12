@@ -67,7 +67,7 @@ namespace BlazorBoilerplate.Server
                 options.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
                 options.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
                 options.AddPolicy(Policies.IsReadOnly, Policies.IsReadOnlyPolicy());
-                options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations        
+                options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations
             });
 
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
@@ -127,7 +127,7 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version     = "v0.2.1";
+                    document.Info.Version     = "v0.2.2";
                     document.Info.Title       = "Blazor Boilerplate";
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  (ASP.NET Core Hosted) (dotnet new blazorhosted) model. Hosted by an ASP.NET Core server";
                 };

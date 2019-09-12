@@ -73,10 +73,10 @@ It though is my ambition to learn and get feedback on what Best Practices can be
  - Forum chat and notification system - Thanks <a href="https://github.com/ajgoldenwings" target="_blank">ajgoldenwings</a>
 
 ## Road map
+- Drag and Drop Example
 - Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster
 - User profile & settings management
 - User, claims, role, permission and organization unit management
-- Real time chat and notification system. Slack Communication clone?
 - Azure Hosting Guide
 - Docker Container 
 - Create a Nuget Package Template
@@ -86,10 +86,14 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.2.1 (Known Issues - Under Development)
+### 0.2.2 (Known Issues - Under Development)
+- Known Issues: 
+  - IAuditable Shadow Properties not getting UserId
+
+### 0.2.1 
 - Update to .NET Core 3.0 Preview 9
 - User Management Screen (CRUD) & User Password Reset - Thanks [npraskins](https://github.com/npraskins) 
-- Confirmation Dialog Stylize & Implementation
+- Confirmation Delete Dialog Stylize & Implementation
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
 
