@@ -7,7 +7,6 @@ using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;

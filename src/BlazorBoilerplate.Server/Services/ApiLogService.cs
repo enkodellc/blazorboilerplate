@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using BlazorBoilerplate.Server.Data;
+using BlazorBoilerplate.Server.Data.Interfaces;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
-using BlazorBoilerplate.Server.Data.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Services
 {

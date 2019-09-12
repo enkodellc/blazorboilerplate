@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-
-
 // see https://chrissainty.com/securing-your-blazor-apps-configuring-policy-based-authorization-with-blazor/
 namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
 {
@@ -35,14 +33,13 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
                 .RequireClaim("ReadOnly", "true")
                 .Build();
         }
+
         public static AuthorizationPolicy IsMyDomainPolicy()
         {
             return new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
             .AddRequirements(new DomainRequirement("blazorboilerplate.com"))
-            .Build();
-
-                
+            .Build();                
         }
     }
 }

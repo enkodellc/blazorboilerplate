@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
-using System.Linq;
 using System.Security.Claims;
 
 namespace BlazorBoilerplate.Server.Data
@@ -15,7 +14,9 @@ namespace BlazorBoilerplate.Server.Data
             ApplicationDbContext dbContext = (ApplicationDbContext)changeTracker.Context;
             Guid userId = Guid.Empty;
             var timestamp = DateTime.UtcNow;
-            var user = ClaimsPrincipal.Current;
+
+            //TODO Fix UserId not found on API calls
+            //var user = ClaimsPrincipal.Current;
 
             if (userSession.UserId != Guid.Empty)
             {

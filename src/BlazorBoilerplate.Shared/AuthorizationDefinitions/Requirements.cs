@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 // using modified example from https://chrissainty.com/securing-your-blazor-apps-configuring-policy-based-authorization-with-blazor/
 
@@ -18,8 +15,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
             RequiredDomain = requiredDomain;
         }
     }
-
-   
+    
     public class DomainRequirementHandler : AuthorizationHandler<DomainRequirement>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, DomainRequirement requirement)
@@ -36,8 +32,6 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
                 context.Succeed(requirement);
             }
             
-
-
             // you can add as many checks as your want for a given policy
             return Task.CompletedTask;
         }

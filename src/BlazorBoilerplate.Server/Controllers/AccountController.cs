@@ -553,7 +553,6 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpGet("ListRoles")]
         [Authorize(Policy = Policies.IsAdmin)]
-        //  [AllowAnonymous]
         public async Task<ApiResponse> ListRoles()
         {
             var roleList = _roleManager.Roles.Select(x => x.Name).ToList();
@@ -561,7 +560,6 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost]
-        //[AllowAnonymous]
         [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> Update([FromBody] UserInfoDto userInfo)
         {
