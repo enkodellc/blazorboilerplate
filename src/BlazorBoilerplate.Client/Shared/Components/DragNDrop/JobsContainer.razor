@@ -1,0 +1,31 @@
+﻿<div class="jobs-container">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter]
+    public List<JobDto>
+    Jobs
+    { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public EventCallback<JobDto>
+        OnStatusUpdated
+    { get; set; }
+
+    public JobDto Payload { get; set; }
+
+    public async Task UpdateJobAsync(JobStatuses newStatus)
+    {
+        var task = Jobs.SingleOrDefault(x => x.Id == Payload.Id);
+
+        if (task != null)
+        {
+            task.Status = newStatus;
+            task.LastUpdated = DateTime.Now;
+            await OnStatusUpdated.InvokeAsync(Payload);
+        }
+    }
+}
