@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
+using BlazorBoilerplate.Server.Data.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace BlazorBoilerplate.Server.Services
 {
@@ -17,16 +20,23 @@ namespace BlazorBoilerplate.Server.Services
         Task<ApiResponse> Get();
         Task<ApiResponse> GetByApplictionUserId(Guid applicationUserId);
     }
+
     public class ApiLogService : IApiLogService
     {
         private readonly ApplicationDbContext _db;
         private readonly DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
         private readonly IMapper _autoMapper;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserSession _userSession;
 
-        public ApiLogService(IConfiguration configuration, ApplicationDbContext db, IMapper autoMapper)
+        public ApiLogService(IConfiguration configuration, ApplicationDbContext db, IMapper autoMapper, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, IUserSession userSession)
         {
             _db = db;
             _autoMapper = autoMapper;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
+            _userSession = userSession;
 
             // Calling Log from the API Middlware results in a disposed ApplicationDBContext. This is here to build a DB Context for logging API Calls
             // If you have a better solution please let me know.
@@ -43,13 +53,15 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task Log(ApiLogItem apiLogItem)
         {
-            using (ApplicationDbContext _dbContext = new ApplicationDbContext(_optionsBuilder.Options))
+            var currentUser = _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            UserSession userSession = new UserSession();
+            if (currentUser != null)
             {
-                if (apiLogItem.ApplicationUserId == Guid.Empty)
-                {
-                    apiLogItem.ApplicationUserId = null;
-                }
+                userSession = new UserSession(currentUser.Result);
+            }
 
+            using (ApplicationDbContext _dbContext = new ApplicationDbContext(_optionsBuilder.Options, userSession))
+            {
                 _dbContext.ApiLogs.Add(apiLogItem);
                 await _dbContext.SaveChangesAsync();
             }

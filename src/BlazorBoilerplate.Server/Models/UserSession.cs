@@ -18,5 +18,16 @@ namespace BlazorBoilerplate.Server.Models
         public List<string> Roles { get; set; }
         public Dictionary<string, string> ExposedClaims { get; set; }
         public bool DisableTenantFilter { get; set; }
+
+        public UserSession()
+        {
+
+        }
+
+        public UserSession(ApplicationUser user)
+        {
+            UserId = user.Id;
+            UserName = user.UserName;
+        }
     }
 }

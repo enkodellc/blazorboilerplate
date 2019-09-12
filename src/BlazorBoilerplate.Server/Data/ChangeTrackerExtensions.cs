@@ -11,25 +11,29 @@ namespace BlazorBoilerplate.Server.Data
     {
         public static void SetShadowProperties(this ChangeTracker changeTracker, IUserSession userSession)
         {
-            changeTracker.DetectChanges();
+            changeTracker.DetectChanges();        
+            ApplicationDbContext dbContext = (ApplicationDbContext)changeTracker.Context;
             Guid userId = Guid.Empty;
+            var timestamp = DateTime.UtcNow;
             var user = ClaimsPrincipal.Current;
 
-            //TODO Fix this is not working, I cannot get the current User Id
-            if (user != null)
+            if (userSession.UserId != Guid.Empty)
             {
-                var identity = user.Identity;
-                if (identity != null)
-                {
-                    userId = user.Identity.IsAuthenticated ? new Guid(user.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value) : Guid.Empty;
-                }
+                userId = userSession.UserId;
             }
-
-            ApplicationDbContext dbContext = (ApplicationDbContext)changeTracker.Context;
-            var timestamp = DateTime.UtcNow;
-
+            
+            //if (userId != Guid.Empty && user != null)
+            //{
+            //    var identity = user.Identity;
+            //    if (identity != null)
+            //    {
+            //        userId = user.Identity.IsAuthenticated ? new Guid(user.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value) : Guid.Empty;
+            //    }
+            //}
+                       
             foreach (var entry in changeTracker.Entries())
             {
+                //Auditable Entity Model
                 if (entry.Entity is IAuditable)
                 {
                     if (entry.State == EntityState.Added)
@@ -51,6 +55,7 @@ namespace BlazorBoilerplate.Server.Data
                     }
                 }
 
+                //Soft Delete Entity Model
                 if (entry.State == EntityState.Deleted && entry.Entity is ISoftDelete)
                 {
                     entry.State = EntityState.Modified;

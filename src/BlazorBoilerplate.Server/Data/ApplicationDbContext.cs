@@ -21,7 +21,7 @@ namespace BlazorBoilerplate.Server.Data
         public DbSet<Message> Messages { get; set; }
 
         private IUserSession _userSession { get; set; }
-        
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { }
 
@@ -37,7 +37,7 @@ namespace BlazorBoilerplate.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //Fluent API Does not follow foreign key naming convention 
+            //Fluent API Does not follow foreign key naming convention
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(a => a.Profile)
                 .WithOne(b => b.ApplicationUser)
@@ -110,10 +110,10 @@ namespace BlazorBoilerplate.Server.Data
             return base.SaveChanges();
         }
 
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             ChangeTracker.SetShadowProperties(_userSession);
-            return await base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(true, cancellationToken);
         }
     }
 }
