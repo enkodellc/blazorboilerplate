@@ -7,7 +7,10 @@ using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -62,9 +65,14 @@ namespace BlazorBoilerplate.Server
             //Add Policies / Claims / Authorization - https://stormpath.com/blog/tutorial-policy-based-authorization-asp-net-core
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireElevatedRights", policy => policy.RequireRole("SuperAdmin", "Admin"));
-                options.AddPolicy("ReadOnly", policy => policy.RequireClaim("ReadOnly", "true"));
+                options.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
+                options.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
+                options.AddPolicy(Policies.IsReadOnly, Policies.IsReadOnlyPolicy());
+                options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations        
             });
+
+            services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
+
 
             services.Configure<IdentityOptions>(options =>
             {

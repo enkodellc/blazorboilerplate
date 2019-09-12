@@ -46,6 +46,10 @@ namespace BlazorBoilerplate.Server.Authorization
             {
                 ((ClaimsIdentity)principal.Identity).AddClaims(new[] { new Claim(ClaimTypes.Surname, user.LastName) });
             }
+            if (!string.IsNullOrWhiteSpace(user.Email))
+            {
+                ((ClaimsIdentity)principal.Identity).AddClaims(new[] { new Claim(ClaimTypes.Email, user.Email) });
+            }
 
             //Example of a trivial claim - https://www.c-sharpcorner.com/article/claim-based-and-policy-based-authorization-with-asp-net-core-2-1/
             if (user.Email == "readonly@blazorboilerplate.com")
