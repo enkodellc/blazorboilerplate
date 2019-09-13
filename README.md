@@ -71,9 +71,9 @@ It though is my ambition to learn and get feedback on what Best Practices can be
  - Todo List CRUD Example with N-Tier Layers Not just some fluff that most others do
  - Seed Database
  - Forum chat and notification system - Thanks <a href="https://github.com/ajgoldenwings" target="_blank">ajgoldenwings</a>
+ - Drag and Drop Examples - <a href="https://chrissainty.com/investigating-drag-and-drop-with-blazor/" target="_blank">Chris Sainty Blazor Blog</a>
 
 ## Road map
-- Drag and Drop Example
 - Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster
 - User profile & settings management
 - User, claims, role, permission and organization unit management
@@ -87,6 +87,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 ## News
 
 ### 0.2.2 (Known Issues - Under Development)
+- Drag and Drop Examples - 
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
 

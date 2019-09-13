@@ -16,7 +16,10 @@
                     <MatIcon>stars</MatIcon><span class="miniHover"> Features</span>
                 </MatNavItem>
             </MatNavSubMenuHeader>
-            <MatNavSubMenuList>
+            <MatNavSubMenuList>                
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri">
+                    <MatIcon>touch_app</MatIcon> <span class="miniHover">Drag and Drop</span>
+                </MatNavItem>
                 <MatNavItem Href="@navigationManager.ToAbsoluteUri("blazor_middlware_audit").AbsoluteUri">
                     <MatIcon>change_history</MatIcon> <span class="miniHover">Api Audit Log</span>
                 </MatNavItem>
