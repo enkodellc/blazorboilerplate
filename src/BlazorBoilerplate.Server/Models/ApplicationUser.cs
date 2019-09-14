@@ -13,6 +13,9 @@ namespace BlazorBoilerplate.Server.Models
         [MaxLength(64)]
         public string LastName { get; set; }
 
+        [MaxLength(64)]
+        public string FullName { get; set; }
+
         public ICollection<ApiLogItem> ApiLogItems { get; set; }
 
         public UserProfile Profile { get; set; }

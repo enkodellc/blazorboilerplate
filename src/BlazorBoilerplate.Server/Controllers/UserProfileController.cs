@@ -8,12 +8,14 @@ using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using IdentityModel;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
+    [AllowAnonymous]
     public class UserProfileController : ControllerBase
     {
         private readonly ILogger<UserProfileController> _logger;
@@ -28,10 +30,12 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         // GET: api/UserProfile
+        [Authorize]
+        [AllowAnonymous]
         [HttpGet("Get")]
         public async Task<ApiResponse> Get()
         {
-            Guid userId = new Guid(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Guid userId = new Guid(_httpContextAccessor.HttpContext.User.FindFirst(JwtClaimTypes.Subject).Value);
             return await _userProfileService.Get(userId);
         }
 

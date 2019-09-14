@@ -20,7 +20,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\Backup\**" />
+    <Content Remove="Migrations\Backup\**" />
+    <EmbeddedResource Remove="Migrations\Backup\**" />
+    <None Remove="Migrations\Backup\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20190824003914_BlazorBoilerplate.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="IdentityServer4" Version="3.0.0-preview8.19" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.0-preview.2" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="3.0.0-preview8.19" />
+    <PackageReference Include="IdentityServer4.EntityFramework" Version="3.0.0-preview8.19" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0-preview9.19423.6" />
@@ -50,6 +65,7 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
