@@ -21,6 +21,7 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AccountController : ControllerBase
     {
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
@@ -301,6 +302,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [Authorize]
+        [AllowAnonymous]
         // POST: api/Account/Logout
         [HttpPost("Logout")]
         public async Task<ApiResponse> Logout()
@@ -323,21 +325,36 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            return new UserInfoDto
+            if (user != null)
             {
-                IsAuthenticated = User.Identity.IsAuthenticated,
-                UserName = User.Identity.Name,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                ExposedClaims = User.Claims
-                        //Optionally: filter the claims you want to expose to the client
-                        //.Where(c => c.Type == "test-claim")
-                        .ToDictionary(c => c.Type, c => c.Value),
-                Roles = ((ClaimsIdentity)User.Identity).Claims
-                        .Where(c => c.Type == ClaimTypes.Role)
-                        .Select(c => c.Value).ToList()
-            };
+                try
+                {
+                    return new UserInfoDto
+                    {
+                        IsAuthenticated = User.Identity.IsAuthenticated,
+                        UserName = user.UserName,
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        ExposedClaims = User.Claims
+                                //Optionally: filter the claims you want to expose to the client
+                                //.Where(c => c.Type == "test-claim")
+                                .ToDictionary(c => c.Type, c => c.Value),
+                        Roles = ((ClaimsIdentity)User.Identity).Claims
+                                .Where(c => c.Type == ClaimTypes.Role)
+                                .Select(c => c.Value).ToList()
+                    };
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            else 
+            {
+                return new UserInfoDto();
+            }
+
+            return null;
         }
 
         [AllowAnonymous]

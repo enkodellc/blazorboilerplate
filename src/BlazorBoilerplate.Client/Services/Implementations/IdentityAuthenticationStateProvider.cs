@@ -68,12 +68,13 @@ namespace BlazorBoilerplate.Client.States
         }
 
         public async Task<UserInfoDto> GetUserInfo()
-        {
+        {            
             if (_userInfoCache != null && _userInfoCache.IsAuthenticated)
             {
                 return _userInfoCache;
             }
 
+            //If the user is not authenticated then an empt UserInfoDto is returned
             _userInfoCache = await _authorizeApi.GetUserInfo();
             return _userInfoCache;
         }

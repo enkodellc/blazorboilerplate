@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class ToDoController : ControllerBase
     {
         private readonly ILogger<ToDoController> _logger;

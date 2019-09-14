@@ -16,6 +16,7 @@ namespace BlazorBoilerplate.Server.Controllers
     [Route("api/[controller]")]
     // [Authorize(Roles = "Admin")]
     [ApiController]
+    [AllowAnonymous]
     public class SampleDataController : ControllerBase
     {
         // Logger instance

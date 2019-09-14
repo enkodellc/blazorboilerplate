@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Server.Data.Interfaces;
+using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
@@ -32,10 +33,10 @@ namespace BlazorBoilerplate.Server.Middleware
                     if (httpContext.User.Identity.IsAuthenticated)
                     //if (httpContext.User.Identities.Any(id => id.IsAuthenticated))
                     {
-                        userSession.UserId = new Guid(httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value);
+                        userSession.UserId = new Guid(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value);
                         userSession.UserName = httpContext.User.Identity.Name;
                         userSession.TenantId = -1; // ClaimsHelper.GetClaim<int>(context.User, "tenantid");
-                        userSession.Roles = httpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+                        userSession.Roles = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Role).Select(c => c.Value).ToList();
                     }
              //   }
             }
