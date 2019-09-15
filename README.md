@@ -86,8 +86,13 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.2.2 (Known Issues - Under Development)
-- Drag and Drop Examples - 
+### 0.3.0 (Breaking Changes - Under Development)
+- Identity Server 4 - Delete your DB Thanks to [ganmuru](https://github.com/ganmuru)
+- Known Issues: 
+  - IAuditable Shadow Properties not getting UserId
+
+### 0.2.2
+- Drag and Drop Examples 
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
 

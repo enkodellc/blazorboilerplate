@@ -1,9 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace BlazorBoilerplate.Server.Data.Core
 {
@@ -28,7 +25,6 @@ namespace BlazorBoilerplate.Server.Data.Core
             {
                 ViewUsers,
                 ManageUsers,
-
                 ViewRoles,
                 ManageRoles,
                 AssignRoles

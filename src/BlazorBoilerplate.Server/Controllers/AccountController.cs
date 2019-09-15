@@ -25,10 +25,8 @@ namespace BlazorBoilerplate.Server.Controllers
     public class AccountController : ControllerBase
     {
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
-
-        // Logger instance
+               
         private readonly ILogger<AccountController> _logger;
-
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
@@ -84,14 +82,21 @@ namespace BlazorBoilerplate.Server.Controllers
                 return new ApiResponse(400, "Invalid password");
             }
 
-            _logger.LogInformation("Logged In: {0}, {1}", parameters.UserName, parameters.Password);
-
             // add custom claims here, before signin if needed
             //var claims = await _userManager.GetClaimsAsync(user);
             //await _userManager.RemoveClaimsAsync(user, claims);
             user.SecurityStamp = Guid.NewGuid().ToString();
-            await _signInManager.SignInAsync(user, parameters.RememberMe);
-            return new ApiResponse(200, "Login Successful");
+            try
+            {
+                await _signInManager.SignInAsync(user, parameters.RememberMe);
+                _logger.LogInformation("Logged In: {0}, {1}", parameters.UserName, parameters.Password);
+                return new ApiResponse(200, "Login Successful");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("Login Failed: " + ex.Message);
+            }
+            return new ApiResponse(400, "Login Failed");
         }
 
         [AllowAnonymous]
