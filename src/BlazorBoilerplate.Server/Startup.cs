@@ -29,6 +29,8 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
+using TempCertGenerator;
+
 namespace BlazorBoilerplate.Server
 {
     public class Startup
@@ -113,7 +115,15 @@ namespace BlazorBoilerplate.Server
             }
             else
             {
+                if (!File.Exists(_environment.ContentRootPath + "/AuthSample.pfx"))
+                {
+
+                    string[] certGenArgs = { "../BlazorBoilerplate.Server" }; // relative path from TempCertGenerator Project to Server Project Folder
+
+                    TempCertGenerator.Program.Main(certGenArgs);
+                }
                 cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123");
+
             }
 
             // Adds IdentityServer.

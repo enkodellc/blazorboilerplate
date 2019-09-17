@@ -61,17 +61,12 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
+    <ProjectReference Include="..\TempCertGenerator\TempCertGenerator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Logs\" />
     <Folder Include="Migrations\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="AuthSample.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
