@@ -16,7 +16,7 @@ Blazor is a web framework designed to run  in the browser on a WebAssembly-based
 - Minimal Javascript. Currently only using them for SignalR for the Forum. We may us components with JS in them but so far no Javascript has been written specifically for anything in the repository.
 
 # Live demo
-[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. 
+[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. *Note Firewall does block some foreign IP addresses.
 
 ## Prerequisites
 Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-3.0)
