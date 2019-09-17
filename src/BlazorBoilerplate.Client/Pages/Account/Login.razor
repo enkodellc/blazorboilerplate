@@ -19,7 +19,7 @@
             <MatTextField @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" OnKeyPress="@(e => LoginOnEnter(e))"></MatTextField>
+            <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
         </div>
         <div class="form-group">
             <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
@@ -69,7 +69,7 @@
                 await appState.GetUserProfile();
                 navigationManager.NavigateTo("/dashboard");
             }
-           else
+            else
             {
                 matToaster.Add(response.Message, MatToastType.Danger, "Login Attempt Failed");
             }
@@ -91,13 +91,13 @@
         }
         catch (Exception ex)
         {
-           matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
+            matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
         }
     }
 
-    async Task LoginOnEnter(KeyboardEventArgs args)
-    {
-        if (args.Key == "Enter")
-            await SubmitLogin();
-    }
+    //async Task LoginOnEnter(KeyboardEventArgs args)
+    //{
+    //    if (args.Key == "Enter")
+    //        await SubmitLogin();
+    //}
 }

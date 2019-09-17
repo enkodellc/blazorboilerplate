@@ -13,7 +13,7 @@ namespace BlazorBoilerplate.Shared.Dto
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public List<string> Roles { get; set; }
-        public Dictionary<string, string> ExposedClaims { get; set; }
+        public List<KeyValuePair<string, string>> ExposedClaims { get; set; }
         public bool DisableTenantFilter { get; set; }
     }
 

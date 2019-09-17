@@ -330,10 +330,8 @@ namespace BlazorBoilerplate.Server.Controllers
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                ExposedClaims = User.Claims
-                        //Optionally: filter the claims you want to expose to the client
-                        //.Where(c => c.Type == "test-claim")
-                        .ToDictionary(c => c.Type, c => c.Value),
+                //Optionally: filter the claims you want to expose to the client
+                ExposedClaims = User.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
                 Roles = ((ClaimsIdentity)User.Identity).Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value).ToList()

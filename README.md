@@ -23,13 +23,13 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- .NET Core 3.0 Preview 9 SDK SDK 3.0.0-preview9.19424.4
+- .NET Core 3.0 Preview 9 SDK SDK 3.0.0-rc1.19457.4
 - Visual Studio 2019 Preview  with the ASP.NET and web development workload selected.
-- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19424.4**
-- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.0.0-preview9.19424.4**
+- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-rc1.19457.4**
+- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.0.0-rc1.19457.4**
 
 ### How to run
-1. Install **dotnet-sdk 3.0.0-preview9.19424.4** and the latest **Visual Studio 2019 Preview**.
+1. Install **dotnet-sdk 3.0.0-rc1.19457.4** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
@@ -87,7 +87,8 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 ## News
 
 ### 0.2.2 (Known Issues - Under Development)
-- Drag and Drop Examples - 
+- Drag and Drop Examples
+- .NET Core 3.0.0-rc1.19457.4 update
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
 
