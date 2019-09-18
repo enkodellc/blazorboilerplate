@@ -75,7 +75,7 @@ It though is my ambition to learn and get feedback on what Best Practices can be
 
 ## Road map
 - Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster
-- User profile & settings management
+- User profile & theme options management
 - User, claims, role, permission and organization unit management
 - Azure Hosting Guide
 - Docker Container 
@@ -86,7 +86,13 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.2.2 (Known Issues - Under Development)
+### 0.3.0 - IS4 Branch (Breaking Changes - Under Development)
+- Identity Server 4 - Delete your DB Thanks to [ganmuru](https://github.com/ganmuru)
+- Known Issues: 
+  - IAuditable Shadow Properties not getting UserId
+  - User Profile broken  
+
+### 0.2.2
 - Drag and Drop Examples
 - .NET Core 3.0.0-rc1.19457.4 update
 - Known Issues: 
@@ -98,7 +104,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Confirmation Delete Dialog Stylize & Implementation
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
-
+  
 ### 0.2.0 
 - CRUD Todo List example
 - Restructure Project Refactor BlazorBoilerplate.Shared for N-Tier Design
