@@ -7,8 +7,7 @@ namespace BlazorBoilerplate.Server.Data.Core
     public static class ApplicationPermissions
     {
         public static ReadOnlyCollection<ApplicationPermission> AllPermissions;
-
-
+        
         public const string UsersPermissionGroupName = "User Permissions";
         public static ApplicationPermission ViewUsers = new ApplicationPermission("View Users", "users.view", UsersPermissionGroupName, "Permission to view other users account details");
         public static ApplicationPermission ManageUsers = new ApplicationPermission("Manage Users", "users.manage", UsersPermissionGroupName, "Permission to create, delete and modify other users account details");
@@ -17,8 +16,7 @@ namespace BlazorBoilerplate.Server.Data.Core
         public static ApplicationPermission ViewRoles = new ApplicationPermission("View Roles", "roles.view", RolesPermissionGroupName, "Permission to view available roles");
         public static ApplicationPermission ManageRoles = new ApplicationPermission("Manage Roles", "roles.manage", RolesPermissionGroupName, "Permission to create, delete and modify roles");
         public static ApplicationPermission AssignRoles = new ApplicationPermission("Assign Roles", "roles.assign", RolesPermissionGroupName, "Permission to assign roles to users");
-
-
+        
         static ApplicationPermissions()
         {
             List<ApplicationPermission> allPermissions = new List<ApplicationPermission>()
@@ -53,9 +51,7 @@ namespace BlazorBoilerplate.Server.Data.Core
             return new string[] { ManageUsers, ManageRoles, AssignRoles };
         }
     }
-
-
-
+       
     public class ApplicationPermission
     {
         public ApplicationPermission()
@@ -68,20 +64,16 @@ namespace BlazorBoilerplate.Server.Data.Core
             GroupName = groupName;
             Description = description;
         }
-
-
-
+               
         public string Name { get; set; }
         public string Value { get; set; }
         public string GroupName { get; set; }
         public string Description { get; set; }
 
-
         public override string ToString()
         {
             return Value;
         }
-
 
         public static implicit operator string(ApplicationPermission permission)
         {

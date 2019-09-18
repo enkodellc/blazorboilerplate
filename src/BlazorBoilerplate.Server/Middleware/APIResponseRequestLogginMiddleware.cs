@@ -116,7 +116,7 @@ namespace BlazorBoilerplate.Server.Middleware
                                     );
                                 }
                                 catch (Exception ex) {
-                                    
+                                    _logger.LogWarning("An Inner Middleware exception occurred on SafeLog: " + ex.Message);
                                 }
                             }
                             #endregion

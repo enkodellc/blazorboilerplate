@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlazorBoilerplate.Server.Data.Core
+﻿namespace BlazorBoilerplate.Server.Data.Core
 {
     public enum Gender
     {

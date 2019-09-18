@@ -341,10 +341,8 @@ namespace BlazorBoilerplate.Server.Controllers
                         Email = user.Email,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
-                        ExposedClaims = User.Claims
-                                //Optionally: filter the claims you want to expose to the client
-                                //.Where(c => c.Type == "test-claim")
-                                .ToDictionary(c => c.Type, c => c.Value),
+                        //Optionally: filter the claims you want to expose to the client
+                        ExposedClaims = User.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
                         Roles = ((ClaimsIdentity)User.Identity).Claims
                                 .Where(c => c.Type == ClaimTypes.Role)
                                 .Select(c => c.Value).ToList()
@@ -352,6 +350,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogWarning("Could not build UserInfoDto: " + ex.Message);
                 }
             }
             else 
@@ -526,16 +525,11 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [Authorize(Policy = Policies.IsAdmin)]
         [HttpGet]
-        public async Task<ApiResponse> Get([FromQuery] int pageSize, [FromQuery] int pageNumber = 0)
+        public async Task<ApiResponse> Get([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
         {
 
             var userDtoList = new List<UserInfoDto>();
             List<ApplicationUser> listResponse;
-
-            if (pageSize == null || pageSize == 0)
-            {
-                return new ApiResponse(400, "page size input empty");
-            }
 
             // get paginated list of users
             try

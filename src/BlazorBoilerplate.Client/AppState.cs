@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using BlazorBoilerplate.Client.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Client.Services.Contracts;
 using Newtonsoft.Json;
+using System;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Client
 {

@@ -1,6 +1,5 @@
 ﻿
 using BlazorBoilerplate.Server.Data.Core;
-using BlazorBoilerplate.Server.Data.Interfaces;
 using BlazorBoilerplate.Server.Models;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -12,9 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-
 
 namespace BlazorBoilerplate.Server.Data
 {
@@ -27,7 +24,7 @@ namespace BlazorBoilerplate.Server.Data
     {
         private readonly PersistedGrantDbContext _persistedGrantContext;
         private readonly ConfigurationDbContext _configurationContext;
-        private readonly ApplicationDbContext _context;        
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly ILogger _logger;
@@ -59,7 +56,7 @@ namespace BlazorBoilerplate.Server.Data
             //Seed blazorboilerplate data
             await SeedBlazorBoilerplateAsync();
         }
-        
+
         private async Task MigrateAsync()
         {
             await _context.Database.MigrateAsync().ConfigureAwait(false);
@@ -78,8 +75,8 @@ namespace BlazorBoilerplate.Server.Data
                 await EnsureRoleAsync(adminRoleName, "Default administrator", ApplicationPermissions.GetAllPermissionValues());
                 await EnsureRoleAsync(userRoleName, "Default user", new string[] { });
 
-                await CreateUserAsync("admin", "admin123", "Administrator", "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { adminRoleName });                
-                await CreateUserAsync("user", "user123", "Standard User", "user@blazoreboilerplate.com", "+1 (123) 456-7890`", new string[] { userRoleName });
+                await CreateUserAsync("admin", "admin123", "Admin", "Blazor", "Administrator", "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { adminRoleName });
+                await CreateUserAsync("user", "user123", "User", "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890`", new string[] { userRoleName });
 
                 _logger.LogInformation("Inbuilt account generation completed");
             }
@@ -187,7 +184,7 @@ namespace BlazorBoilerplate.Server.Data
         }
 
         private async Task EnsureRoleAsync(string roleName, string description, string[] claims)
-        {            
+        {
             if ((await _roleManager.FindByNameAsync(roleName)) == null)
             {
                 if (claims == null)
@@ -196,7 +193,7 @@ namespace BlazorBoilerplate.Server.Data
                 string[] invalidClaims = claims.Where(c => ApplicationPermissions.GetPermissionByValue(c) == null).ToArray();
                 if (invalidClaims.Any())
                     throw new Exception("The following claim types are invalid: " + string.Join(", ", invalidClaims));
-                
+
                 IdentityRole<Guid> applicationRole = new IdentityRole<Guid>(roleName);
 
                 var result = await _roleManager.CreateAsync(applicationRole);
@@ -209,13 +206,13 @@ namespace BlazorBoilerplate.Server.Data
 
                     if (!result.Succeeded)
                     {
-                        await _roleManager.DeleteAsync(role);                       
+                        await _roleManager.DeleteAsync(role);
                     }
                 }
             }
         }
 
-        private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string fullname, string email, string phoneNumber, string[] roles)
+        private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string firstName, string fullName, string lastName, string email, string phoneNumber, string[] roles)
         {
             var applicationUser = _userManager.FindByNameAsync(userName).Result;
 
@@ -223,7 +220,12 @@ namespace BlazorBoilerplate.Server.Data
             {
                 applicationUser = new ApplicationUser
                 {
-                    UserName = userName
+                    UserName = userName,
+                    Email = email,
+                    PhoneNumber = phoneNumber,
+                    FullName = fullName,
+                    FirstName = firstName,
+                    LastName = lastName
                 };
 
                 var result = _userManager.CreateAsync(applicationUser, password).Result;
@@ -233,9 +235,9 @@ namespace BlazorBoilerplate.Server.Data
                 }
 
                 result = _userManager.AddClaimsAsync(applicationUser, new Claim[]{
-                        new Claim(JwtClaimTypes.Name, fullname),
-                        new Claim(JwtClaimTypes.GivenName, fullname),
-                        new Claim(JwtClaimTypes.FamilyName, fullname),
+                        new Claim(JwtClaimTypes.Name, userName),
+                        new Claim(JwtClaimTypes.GivenName, firstName),
+                        new Claim(JwtClaimTypes.FamilyName, lastName),
                         new Claim(JwtClaimTypes.Email, email),
                         new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber)

@@ -46,7 +46,6 @@ namespace TempCertGenerator
         {
             var certBuffer = cert.Export(X509ContentType.Pfx, certPassword);
 
-
             try
             {
                 File.WriteAllBytes(filePath + "/" + fileName, certBuffer);
@@ -55,8 +54,6 @@ namespace TempCertGenerator
             {
                 throw new Exception(null, ex);
             }
-
-
         }
 
 
@@ -74,8 +71,7 @@ namespace TempCertGenerator
             // Serial Number
             BigInteger serialNumber = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(Int64.MaxValue), random);
             certificateGenerator.SetSerialNumber(serialNumber);
-
-
+            
             // Issuer and Subject Name
             X509Name subjectDN = new X509Name(subjectName);
             X509Name issuerDN = subjectDN;
@@ -108,7 +104,6 @@ namespace TempCertGenerator
             CaPrivateKey = issuerKeyPair.Private;
 
             return x509;
-
         }
         private static X509Certificate2 CreateSelfSignedCertificateBasedOnCertificateAuthorityPrivateKey(string subjectName, string issuerName, AsymmetricKeyParameter issuerPrivKey)
         {
@@ -159,7 +154,6 @@ namespace TempCertGenerator
 
             return x509;
         }
-
 
         private static AsymmetricAlgorithm ToDotNetKey(RsaPrivateCrtKeyParameters privateKey)
         {

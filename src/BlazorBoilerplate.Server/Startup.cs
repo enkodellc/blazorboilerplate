@@ -8,7 +8,6 @@ using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -28,8 +27,6 @@ using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-
-using TempCertGenerator;
 
 namespace BlazorBoilerplate.Server
 {
@@ -70,8 +67,8 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
 
-            var useLocalCertStore = Convert.ToBoolean(Configuration["UseLocalCertStore"]);
-            var certificateThumbprint = Configuration["CertificateThumbprint"];
+            var useLocalCertStore = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseLocalCertStore"]);
+            var certificateThumbprint = Configuration["BlazorBoilerplate:CertificateThumbprint"];
             X509Certificate2 cert = null;
 
             if (_environment.IsProduction())
@@ -173,14 +170,12 @@ namespace BlazorBoilerplate.Server
               })
               .AddAspNetIdentity<ApplicationUser>();
 
-            //var applicationUrl = Configuration["IS4ApplicationUrl"].TrimEnd('/');
-
             //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
             //    .AddIdentityServerAuthentication(options =>
             //    {
-            //        options.Authority = applicationUrl;
+            //        options.Authority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
             //        options.SupportedTokens = SupportedTokens.Jwt;
-            //        options.RequireHttpsMetadata = false; // Note: Set to true in production
+            //        options.RequireHttpsMetadata = _environment.IsProduction() ? true : false; 
             //        options.ApiName = IdentityServerConfig.ApiName;
             //    });
 
@@ -272,8 +267,6 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IApiLogService, ApiLogService>();
             services.AddTransient<ITodoService, ToDoService>();
             services.AddTransient<IMessageService, MessageService>();
-            services.AddTransient<IApplicationDbContextSeed, ApplicationDbContextSeed>();
-
 
             // DB Creation and Seeding
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
@@ -297,7 +290,7 @@ namespace BlazorBoilerplate.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApplicationDbContextSeed applicationDbContextSeed)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             EmailTemplates.Initialize(env);
 
@@ -345,9 +338,6 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
-
-            //Seed Database
-            //applicationDbContextSeed.SeedDb();
         }
     }
 }
