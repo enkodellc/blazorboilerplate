@@ -5,10 +5,10 @@ using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
+using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -123,7 +123,15 @@ namespace BlazorBoilerplate.Server.Controllers
                 {
                     return new ApiResponse(400, "Register User Failed: " + result.Errors.FirstOrDefault()?.Description);
                 }
-                
+                else
+                {
+                    var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
+                        new Claim(JwtClaimTypes.Name, parameters.UserName),
+                        new Claim(JwtClaimTypes.Email, parameters.Email),
+                        new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
+                    }).Result;
+                }
+
                 //Role - Here we tie the new user to the "User" role
                 await _userManager.AddToRoleAsync(user, "User");
 
@@ -420,9 +428,17 @@ namespace BlazorBoilerplate.Server.Controllers
                 {
                     return new ApiResponse(400, "Register User Failed: " + result.Errors.FirstOrDefault()?.Description);
                 }
+                else
+                {
+                   var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
+                        new Claim(JwtClaimTypes.Name, parameters.UserName),
+                        new Claim(JwtClaimTypes.Email, parameters.Email),
+                        new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
+                    }).Result;
+                }
 
-                //Role - Here we tie the new user to the "Admin" role
-                await _userManager.AddToRoleAsync(user, "Admin");
+                //Role - Here we tie the new user to the "User" role
+                await _userManager.AddToRoleAsync(user, "User");
 
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
@@ -575,10 +591,16 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(200, "", roleList);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Authorize(Policy = Policies.IsAdmin)]
+        // PUT: api/Account/5
         public async Task<ApiResponse> Update([FromBody] UserInfoDto userInfo)
         {
+            if (!ModelState.IsValid)
+            {
+                return new ApiResponse(400, "User Model is Invalid");
+            }
+
             // retrieve full user object for updating
             var appUser = await _userManager.FindByIdAsync(userInfo.UserId.ToString()).ConfigureAwait(true);
             

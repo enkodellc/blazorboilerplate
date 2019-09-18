@@ -10,7 +10,7 @@ namespace BlazorBoilerplate.Client
     {
         public event Action OnChange;
         private readonly IUserProfileApi _userProfileApi;
-        public UserProfileDto UserProfile { get; private set; }
+        public UserProfileDto UserProfile { get; set; }
 
         public AppState(IUserProfileApi userProfileApi)
         {
@@ -37,7 +37,7 @@ namespace BlazorBoilerplate.Client
         public async Task UpdateUserProfile()
         {
             await _userProfileApi.Upsert(UserProfile);
-        }
+        }               
 
         public async Task<UserProfileDto> GetUserProfile()
         {

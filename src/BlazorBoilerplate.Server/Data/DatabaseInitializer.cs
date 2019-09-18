@@ -69,8 +69,8 @@ namespace BlazorBoilerplate.Server.Data
             if (!await _context.Users.AnyAsync())
             {
                 //Generating inbuilt accounts
-                const string adminRoleName = "administrator";
-                const string userRoleName = "user";
+                const string adminRoleName = "Administrator";
+                const string userRoleName = "User";
 
                 await EnsureRoleAsync(adminRoleName, "Default administrator", ApplicationPermissions.GetAllPermissionValues());
                 await EnsureRoleAsync(userRoleName, "Default user", new string[] { });

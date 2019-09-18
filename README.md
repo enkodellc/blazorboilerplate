@@ -90,7 +90,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Identity Server 4 - Delete your DB Thanks to [ganmuru](https://github.com/ganmuru)
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
-  - User Profile broken  
+
 
 ### 0.2.2 (Known Issues - Under Development)
 - Drag and Drop Examples
