@@ -1,4 +1,4 @@
-﻿html, body {
+html, body {
     font-family: HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
@@ -254,7 +254,7 @@ app {
     padding: 0 4px;
 }
 
-.mini .mdc-sub-menu-icon,
+.mini .after.mdc-sub-menu-icon,
 .mini .miniHover {
     transform: translateX(200%);
     animation: slide-out 1s forwards;
@@ -264,7 +264,7 @@ app {
     position: fixed;
 }
 
-.mini .mdc-drawer:hover .mdc-sub-menu-icon,
+.mini .mdc-drawer:hover .after.mdc-sub-menu-icon,
 .mini .mdc-drawer:hover .miniHover {
     transform: translateX(0%);
     animation: slide-in 1s forwards;
@@ -272,6 +272,10 @@ app {
     visibility: visible;
     opacity: 1;
     position: relative;
+}
+
+.mini .mdc-drawer:hover .after.mdc-sub-menu-icon {
+    position: absolute;
 }
 
 .mini .drawer-footer .mdc-button {
