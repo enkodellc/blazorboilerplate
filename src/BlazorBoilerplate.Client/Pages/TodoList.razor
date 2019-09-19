@@ -11,16 +11,18 @@
 
 <MatTable Class="mat-elevation-z5" Items="@todos" LoadInitialData="true" Striped="true" FilterByColumnName="Title" DebounceMilliseconds="150" PageSize="10">
     <MatTableHeader>
-        <th><MatButton Icon="playlist_add" Label="New Todo" OnClick="@((e) => OpenDialog())" Raised="true"></MatButton></th>
+        <th>
+            <div style="width:135px;">
+                <MatButton Icon="playlist_add" Label="New Todo" OnClick="@((e) => OpenDialog())" Raised="true"></MatButton>
+            </div>
+        </th>
         <th>Id</th>
         <th>Completed</th>
         <th style="min-width:180px;">Todo</th>
     </MatTableHeader>
     <MatTableRow Context="TodoRow">
         <td>
-            <div style="width:50px;">
-                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(TodoRow.Id))"></MatIconButton>
-            </div>
+            <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(TodoRow.Id))"></MatIconButton>            
         </td>
         <td>@String.Format("{0:d}", TodoRow.Id)</td>
         <td><MatCheckbox Checked="@TodoRow.IsCompleted" class="filled-in chk-col-blue" CheckedChanged="@((e) => Save(TodoRow))"></MatCheckbox></td>
@@ -81,14 +83,13 @@
             matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Todo List Retrieval Failed");
         }
     }
-
-
+    
     public async Task Save(TodoDto todo)
     {
         try
         {
             todo.IsCompleted = !todo.IsCompleted;
-            ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/todo", todo);
+            ApiResponseDto apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/todo", todo);
 
             if (apiResponse.StatusCode == 200)
             {
@@ -144,7 +145,7 @@
         dialogIsOpen = false;
         try
         {
-            ApiResponseDto apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/todo", todo);
+            ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/todo", todo);
             if (apiResponse.StatusCode == 200)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);

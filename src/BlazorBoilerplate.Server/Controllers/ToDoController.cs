@@ -41,8 +41,8 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         // POST: api/Todos
-        [HttpPut]
-        public async Task<ApiResponse> Put([FromBody] TodoDto todo)
+        [HttpPost]
+        public async Task<ApiResponse> Post([FromBody] TodoDto todo)
         {
             if (!ModelState.IsValid)
             {
@@ -51,9 +51,9 @@ namespace BlazorBoilerplate.Server.Controllers
             return await _todoService.Create(todo);
         }
 
-        // POST: api/Todos
-        [HttpPost]
-        public async Task<ApiResponse> Post([FromBody] TodoDto todo)
+        // Put: api/Todos
+        [HttpPut]
+        public async Task<ApiResponse> Put([FromBody] TodoDto todo)
         {
             if (!ModelState.IsValid)
             {
