@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components
 
 @inject AppState appState;
 @inject NavigationManager navigationManager
@@ -37,14 +37,15 @@
         baseUrl = navigationManager.BaseUri;
         BuildBreadcrumbs();
         navigationManager.LocationChanged += OnLocationChanges;
+        base.OnInitialized();
     }
 
-    public void OnLocationChanges(object sender, LocationChangedEventArgs e) => BuildBreadcrumbs();
+    void OnLocationChanges(object sender, LocationChangedEventArgs e) => BuildBreadcrumbs();
 
     private void BuildBreadcrumbs()
     {
         //TODO Store lastVisited URL in appState.
-        string uri = navigationManager.BaseUri.Replace(baseUrl, "").Trim();
+        string uri = navigationManager.Uri.Replace(baseUrl, "").Trim();
         paths = String.IsNullOrEmpty(uri) ? new string[] { } : uri.Split('/');
         StateHasChanged();
     }
