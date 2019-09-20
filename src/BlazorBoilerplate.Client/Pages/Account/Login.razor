@@ -52,9 +52,9 @@
 </MatAccordion>
 
 @code {
-        bool forgotPasswordToggle = false;
-        LoginDto loginParameters { get; set; } = new LoginDto();
-        ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
+    bool forgotPasswordToggle = false;
+    LoginDto loginParameters { get; set; } = new LoginDto();
+    ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
 
     protected override void OnInitialized()
     {
@@ -69,8 +69,16 @@
             if (response.StatusCode == 200)
             {
                 //Load User Profile
-                await appState.GetUserProfile();
-                navigationManager.NavigateTo("/dashboard");
+                UserProfileDto userProfileDto = await appState.GetUserProfile();
+
+                if (string.IsNullOrEmpty(userProfileDto.LastPageVisited))
+                {
+                    navigationManager.NavigateTo(navigationManager.BaseUri + userProfileDto.LastPageVisited);
+                }
+                else
+                {
+                    navigationManager.NavigateTo("/dashboard");
+                }                
             }
             else
             {

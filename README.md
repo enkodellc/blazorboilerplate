@@ -88,6 +88,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ### 0.3.0 (Breaking Changes - Under Development)
 - Identity Server 4 - Delete your DB Thanks to [ganmuru](https://github.com/ganmuru)
+- User Profile Store Last Page Visited / Return on Login
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
 
