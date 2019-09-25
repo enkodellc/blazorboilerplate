@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         [DataMember(EmitDefaultValue = false)]
         public object Result { get; set; }
 
-        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "0.2.2")
+        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "0.2.3")
         {
             this.StatusCode = statusCode;
             this.Message = message;

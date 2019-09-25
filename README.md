@@ -1,6 +1,6 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
-Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template (Core-Hosted) built with Blazor with a .NET Core 3 Server API. The UI for this application is by Material Design provided mostly by MatBlazor.  
+Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template (WebAssembly / Core-Hosted) built with Blazor with a .NET Core 3 Server API. The UI for this application is by Material Design provided mostly by MatBlazor.  
 
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
@@ -23,13 +23,13 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- .NET Core 3.0 Preview 9 SDK SDK 3.0.0-rc1.19457.4
+- .NET Core SDK 3.0.100
 - Visual Studio 2019 Preview  with the ASP.NET and web development workload selected.
-- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-rc1.19457.4**
-- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.0.0-rc1.19457.4**
+- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19465.2**
+- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version "3.0.0**
 
 ### How to run
-1. Install **dotnet-sdk 3.0.0-rc1.19457.4** and the latest **Visual Studio 2019 Preview**.
+1. Install **dotnet-sdk 3.0.100** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
@@ -75,7 +75,7 @@ It though is my ambition to learn and get feedback on what Best Practices can be
 
 ## Road map
 - Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster
-- User profile & theme options management
+- User profile & settings management
 - User, claims, role, permission and organization unit management
 - Azure Hosting Guide
 - Docker Container 
@@ -86,13 +86,20 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.3.0 - IS4 Branch (Breaking Changes - Under Development)
+### 0.3.0 (Breaking Changes - Under Development)
 - Identity Server 4 - Delete your DB Thanks to [ganmuru](https://github.com/ganmuru)
+- User Profile Store Last Page Visited / Return on Login
+- .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
-  - User Profile broken  
 
-### 0.2.2
+### 0.2.3 (Known Issues - Under Development)
+- .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update
+- Known Issues: 
+  - IAuditable Shadow Properties not getting UserId
+
+
+### 0.2.2 
 - Drag and Drop Examples
 - .NET Core 3.0.0-rc1.19457.4 update
 - Known Issues: 
@@ -104,7 +111,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Confirmation Delete Dialog Stylize & Implementation
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
-  
+
 ### 0.2.0 
 - CRUD Todo List example
 - Restructure Project Refactor BlazorBoilerplate.Shared for N-Tier Design
