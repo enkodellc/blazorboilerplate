@@ -15,7 +15,7 @@ steps:
 - task: DotNetCoreInstaller@0
   displayName: 'Install SDK'
   inputs:
-    version: '3.0.100-rc1-014190'
+    version: '3.0.100'
 
 - task: NuGetToolInstaller@0
 
