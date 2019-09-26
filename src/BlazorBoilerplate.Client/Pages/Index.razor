@@ -5,11 +5,11 @@
 <p>Welcome to the Blazor Boilerplate app / starter template.</p>
 <p>
     <strong>Blazor Boilerplate </strong> is just getting started. Our goal is to be an <strong>enterprise level solution</strong> to jump start your new web project with Blazor.
-    It's based on WebAssembly Blazor &amp; Razor components for the client and the server is .Net Core Framework 3+. Expect a lot of changes in the future as Blazor is growing and changing rapidly.
+    It's based on Blazor &amp; Razor components for the client [WebAssembly] and the server is .Net Core Framework 3+. Expect a lot of changes in the future as Blazor is growing and changing rapidly.
 </p>
 <p>
     This project utilizes the <a href="https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.0"><b>Blazor (ASP.NET Core Hosted) (dotnet new blazorhosted)</b></a> – Hosted by an ASP.NET Core server.
-    The ASP.NET Core app serves the Blazor app to clients. The client-side Blazor app can interact with the server over the network using web API calls or SignalR. We are interested in this hosted model the most to keep the load on the server low.
+    The ASP.NET Core app serves the Blazor app to clients. The WebAssembly / client-side Blazor app can interact with the server over the network using web API calls or SignalR. We are interested in this hosted model the most to keep the load on the server low.
 </p>
 <p>The repo is moving along... it takes time to build as I am often contributing to <a href="https://github.com/SamProf/MatBlazor" target="_blank">MatBlazor</a> as well to obtain UI changes that are needed for the theme. With more support each project can grow faster. Please contribute, or at minimum star the repositories on Github</p>
 <p>
@@ -25,6 +25,7 @@
 <h2>Blazor Boilerplate Highlights:</h2>
 <p>
     <ul class="list-unstyled">
+        <li><i class="fa fa-check"></i> Identity Server 4 - Thanks <a href="https://github.com/ganmuru" target="_blank">ganmuru</a></li>
         <li><i class="fa fa-check"></i> Responsive Admin Theme - [Blazor Sidebar Navigation Menu]</li>
         <li><i class="fa fa-check"></i> Loading Screen</li>
         <li><i class="fa fa-check"></i> Material Design / MatBlazor Components</li>
@@ -43,7 +44,6 @@
     <ul>
         <li>Enterprise Admin Authorization Management {Policies, Roles, Claims}</li>
         <li>Seperate Data Layer for Entity Framework or Dapper. (I so far do not like EF)</li>
-        <li>Identity Server 4 possible integration</li>
         <li>Review Application Architecture / Patterns</li>
         <li>Client-side & Server side Caching / Performance improvements</li>
         <li>Tests</li>

@@ -13,23 +13,26 @@
         <h4>Log In</h4>
         User Name: <b>user</b> Password: <b>user123</b>
     </div>
-
-    <fieldset>
-        <div class="form-group">
-            <MatTextField @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
-            <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
-        </div>
-        <hr />
-        <NavLink href="account/register">
-            <h6 class="font-weight-normal text-center">Create account</h6>
-        </NavLink>
-    </fieldset>
+    <EditForm Model="@loginParameters" OnValidSubmit="@SubmitLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
+                <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
+            </div>
+            <hr />
+            <NavLink href="account/register">
+                <h6 class="font-weight-normal text-center">Create account</h6>
+            </NavLink>
+        </fieldset>
+    </EditForm>
 </MatCard>
 <MatAccordion>
     <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
@@ -66,8 +69,16 @@
             if (response.StatusCode == 200)
             {
                 //Load User Profile
-                await appState.GetUserProfile();
-                navigationManager.NavigateTo("/dashboard");
+                UserProfileDto userProfileDto = await appState.GetUserProfile();
+
+                if (string.IsNullOrEmpty(userProfileDto.LastPageVisited))
+                {
+                    navigationManager.NavigateTo(navigationManager.BaseUri + userProfileDto.LastPageVisited);
+                }
+                else
+                {
+                    navigationManager.NavigateTo("/dashboard");
+                }                
             }
             else
             {
@@ -94,10 +105,4 @@
             matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
         }
     }
-
-    //async Task LoginOnEnter(KeyboardEventArgs args)
-    //{
-    //    if (args.Key == "Enter")
-    //        await SubmitLogin();
-    //}
 }

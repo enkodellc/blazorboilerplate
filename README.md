@@ -1,6 +1,7 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
-Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template (WebAssembly / Core-Hosted) built with Blazor with a .NET Core 3 Server API. The UI for this application is by Material Design provided mostly by MatBlazor.  
+Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template (WebAssembly / Core-Hosted) built with Blazor with a .NET Core 3 Server API. The UI for this application is by Material Design provided mostly by MatBlazor.
+Version 0.2.3 and below utlize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4.  
 
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
@@ -87,17 +88,16 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 ## News
 
 ### 0.3.0 (Breaking Changes - Under Development)
-- Identity Server 4 - Delete your DB Thanks to [ganmuru](https://github.com/ganmuru)
+- Identity Server 4 First Release - Delete your DB! Thanks to [ganmuru](https://github.com/ganmuru)
 - User Profile Store Last Page Visited / Return on Login
 - .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
 
-### 0.2.3 (Known Issues - Under Development)
+### 0.2.3 - .Net Core Authentication / Authorization
 - .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
-
 
 ### 0.2.2 
 - Drag and Drop Examples

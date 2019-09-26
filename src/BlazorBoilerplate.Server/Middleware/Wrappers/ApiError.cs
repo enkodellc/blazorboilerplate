@@ -19,6 +19,12 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
             this.IsError = true;
         }
 
+        public ApiError(string message, IEnumerable<ValidationError> validationErrors)
+        {
+            this.ExceptionMessage = message;
+            this.ValidationErrors = validationErrors;
+        }
+
         public ApiError(ModelStateDictionary modelState)
         {
             this.IsError = true;

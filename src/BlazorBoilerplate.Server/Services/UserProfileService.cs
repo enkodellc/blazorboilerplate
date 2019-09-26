@@ -71,16 +71,18 @@ namespace BlazorBoilerplate.Server.Services
                 }
                 else
                 {
-                    UserProfile profile = new UserProfile();
                     //TODO review automapper settings
                     //_autoMapper.Map<UserProfileDto, UserProfile>(userProfileDto, profile);
 
-                    profile.UserId = userProfileDto.UserId;
-                    profile.Count = userProfileDto.Count;
-                    profile.IsNavOpen = userProfileDto.IsNavOpen;
-                    profile.LastPageVisited = userProfileDto.LastPageVisited;
-                    profile.IsNavMinified = userProfileDto.IsNavMinified;
-                    profile.LastUpdatedDate = DateTime.Now;
+                    UserProfile profile = new UserProfile
+                    {
+                        UserId = userProfileDto.UserId,
+                        Count = userProfileDto.Count,
+                        IsNavOpen = userProfileDto.IsNavOpen,
+                        LastPageVisited = userProfileDto.LastPageVisited,
+                        IsNavMinified = userProfileDto.IsNavMinified,
+                        LastUpdatedDate = DateTime.Now
+                    };
                     _db.UserProfiles.Add(profile);
                 }
 

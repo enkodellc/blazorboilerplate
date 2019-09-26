@@ -13,10 +13,12 @@ namespace BlazorBoilerplate.Client.States
     {
         private UserInfoDto _userInfoCache = null;
         private readonly IAuthorizeApi _authorizeApi;
+        private readonly AppState _appState;
 
-        public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi)
+        public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi, AppState appState)
         {
-            this._authorizeApi = authorizeApi;
+            _authorizeApi = authorizeApi;
+            _appState = appState;
         }
 
         public async Task<ApiResponseDto> Login(LoginDto loginParameters)
@@ -41,6 +43,7 @@ namespace BlazorBoilerplate.Client.States
 
         public async Task<ApiResponseDto> Logout()
         {
+            _appState.UserProfile = null;
             ApiResponseDto apiResponse = await _authorizeApi.Logout();
             _userInfoCache = null;
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
@@ -68,12 +71,13 @@ namespace BlazorBoilerplate.Client.States
         }
 
         public async Task<UserInfoDto> GetUserInfo()
-        {
+        {            
             if (_userInfoCache != null && _userInfoCache.IsAuthenticated)
             {
                 return _userInfoCache;
             }
 
+            //If the user is not authenticated then an empt UserInfoDto is returned
             _userInfoCache = await _authorizeApi.GetUserInfo();
             return _userInfoCache;
         }

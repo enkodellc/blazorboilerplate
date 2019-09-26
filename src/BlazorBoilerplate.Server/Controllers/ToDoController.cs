@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class ToDoController : ControllerBase
     {
         private readonly ILogger<ToDoController> _logger;
@@ -39,8 +41,8 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         // POST: api/Todos
-        [HttpPut]
-        public async Task<ApiResponse> Put([FromBody] TodoDto todo)
+        [HttpPost]
+        public async Task<ApiResponse> Post([FromBody] TodoDto todo)
         {
             if (!ModelState.IsValid)
             {
@@ -49,9 +51,9 @@ namespace BlazorBoilerplate.Server.Controllers
             return await _todoService.Create(todo);
         }
 
-        // POST: api/Todos
-        [HttpPost]
-        public async Task<ApiResponse> Post([FromBody] TodoDto todo)
+        // Put: api/Todos
+        [HttpPut]
+        public async Task<ApiResponse> Put([FromBody] TodoDto todo)
         {
             if (!ModelState.IsValid)
             {

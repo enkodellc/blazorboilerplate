@@ -53,14 +53,23 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task Log(ApiLogItem apiLogItem)
         {
-            var currentUser = _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-            UserSession userSession = new UserSession();
-            if (currentUser != null)
+            if (apiLogItem.ApplicationUserId != Guid.Empty)
             {
-                userSession = new UserSession(currentUser.Result);
+                //TODO populate _userSession??
+
+                //var currentUser = _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+                //UserSession userSession = new UserSession();
+                //if (currentUser != null)
+                //{
+                //    userSession = new UserSession(currentUser.Result);
+                //}
+            } 
+            else
+            {
+                apiLogItem.ApplicationUserId = null;
             }
 
-            using (ApplicationDbContext _dbContext = new ApplicationDbContext(_optionsBuilder.Options, userSession))
+            using (ApplicationDbContext _dbContext = new ApplicationDbContext(_optionsBuilder.Options, _userSession))
             {
                 _dbContext.ApiLogs.Add(apiLogItem);
                 await _dbContext.SaveChangesAsync();

@@ -2,12 +2,15 @@
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
+using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Text;
 using System.Text.RegularExpressions;
 //using System.Text.Json; //Does not work for this middleware, at least as in preview
 using System.Threading.Tasks;
@@ -23,16 +27,17 @@ namespace BlazorBoilerplate.Server.Middleware
 {
     //Logging  -> https://salslab.com/a/safely-logging-api-requests-and-responses-in-asp-net-core
     //Response -> https://www.c-sharpcorner.com/article/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consiste/
-    public class APIResponseRequestLogginMiddleware
+    //Latest: https://github.com/proudmonkey/AutoWrapper
+    public class APIResponseRequestLoggingMiddleware
     {
         private readonly RequestDelegate _next;
-        ILogger<APIResponseRequestLogginMiddleware> _logger;
+        ILogger<APIResponseRequestLoggingMiddleware> _logger;
         private IApiLogService _apiLogService;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
         private readonly bool _enableAPILogging;
         private List<string> _ignorePaths = new List<string>();
 
-        public APIResponseRequestLogginMiddleware(RequestDelegate next, bool enableAPILogging, IConfiguration configuration)
+        public APIResponseRequestLoggingMiddleware(RequestDelegate next, bool enableAPILogging, IConfiguration configuration)
         {
             _next = next;
             _enableAPILogging = enableAPILogging;
@@ -40,7 +45,7 @@ namespace BlazorBoilerplate.Server.Middleware
             _ignorePaths = configuration.GetSection("BlazorBoilerplate:ApiLogging:IgnorePaths").Get<List<string>>();
         }
 
-        public async Task Invoke(HttpContext httpContext, IApiLogService apiLogService, ILogger<APIResponseRequestLogginMiddleware> logger, UserManager<ApplicationUser> userManager)
+        public async Task Invoke(HttpContext httpContext, IApiLogService apiLogService, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _apiLogService = apiLogService;
@@ -57,13 +62,7 @@ namespace BlazorBoilerplate.Server.Middleware
                     Stopwatch stopWatch = Stopwatch.StartNew();
                     var requestTime = DateTime.UtcNow;
 
-                    //  Enable seeking
-                    httpContext.Request.EnableBuffering();
-                    //  Read the stream as text
-                    var requestBodyContent = await new StreamReader(httpContext.Request.Body).ReadToEndAsync();
-                    //  Set the position of the stream to 0 to enable re-reading
-                    httpContext.Request.Body.Position = 0;
-
+                    var formattedRequest = await FormatRequest(request);
                     var originalBodyStream = httpContext.Response.Body;
 
                     using (var responseBody = new MemoryStream())
@@ -88,17 +87,19 @@ namespace BlazorBoilerplate.Server.Middleware
                                 await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
                             }
 
+                            stopWatch.Stop();
+
                             #region Log Request / Response
                             //Search the Ignore paths from appsettings to ignore the loggin of certian api paths
                             if (_enableAPILogging && (_ignorePaths.Any(e => !request.Path.StartsWithSegments(new PathString(e.ToLower())))))
                             {
                                 try
-                                {
-                                    stopWatch.Stop();
+                                {                                    
                                     await responseBody.CopyToAsync(originalBodyStream);
 
+                                    //User id = "sub" y default
                                     ApplicationUser user = httpContext.User.Identity.IsAuthenticated
-                                            ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value)
+                                            ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value)
                                             : null;
 
                                 await SafeLog(requestTime,
@@ -107,13 +108,15 @@ namespace BlazorBoilerplate.Server.Middleware
                                     request.Method,
                                     request.Path,
                                     request.QueryString.ToString(),
-                                    requestBodyContent,
+                                    formattedRequest,
                                     responseBodyContent,
                                     httpContext.Connection.RemoteIpAddress.ToString(),
                                     user
                                     );
                                 }
-                                catch { }
+                                catch (Exception ex) {
+                                    _logger.LogWarning("An Inner Middleware exception occurred on SafeLog: " + ex.Message);
+                                }
                             }
                             #endregion
                         }
@@ -156,7 +159,7 @@ namespace BlazorBoilerplate.Server.Middleware
             if (exception is ApiException)
             {
                 var ex = exception as ApiException;
-                apiError = new ApiError(ex.Message)
+                apiError = new ApiError(ResponseMessageEnum.ValidationError.GetDescription(), ex.Errors)
                 {
                     ValidationErrors = ex.Errors,
                     ReferenceErrorCode = ex.ReferenceErrorCode,
@@ -197,34 +200,38 @@ namespace BlazorBoilerplate.Server.Middleware
             await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
         }
 
-        private static Task HandleNotSuccessRequestAsync(HttpContext httpContext, int code)
+        private Task HandleNotSuccessRequestAsync(HttpContext httpContext, int code)
         {
-            httpContext.Response.ContentType = "application/json";
-
             ApiError apiError;
 
             if (code == (int)HttpStatusCode.NotFound)
             {
-                apiError = new ApiError("The specified URI does not exist. Please verify and try again.");
+                apiError = new ApiError(ResponseMessageEnum.NotFound.GetDescription());
             }
-            else if (code == (int)HttpStatusCode.NoContent)
+            else if (code == (int)HttpStatusCode.NoContent) 
             {
-                apiError = new ApiError("The specified URI does not contain any content.");
+                apiError = new ApiError(ResponseMessageEnum.NotContent.GetDescription());
+            }
+            else if (code == (int)HttpStatusCode.MethodNotAllowed)
+            { 
+                apiError = new ApiError(ResponseMessageEnum.MethodNotAllowed.GetDescription());
             }
             else
-            {
-                apiError = new ApiError("Your request cannot be processed. Please contact a support.");
+            { 
+                apiError = new ApiError(ResponseMessageEnum.Unknown.GetDescription());
             }
 
-            ApiResponse apiResponse = new ApiResponse(code, ResponseMessageEnum.Failure.GetDescription(), null, apiError);
+            ApiResponse apiResponse = new ApiResponse(code, apiError);
             httpContext.Response.StatusCode = code;
+            httpContext.Response.ContentType = "application/json";
             return httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
         }
 
-        private static Task HandleSuccessRequestAsync(HttpContext httpContext, object body, int code)
+        private Task HandleSuccessRequestAsync(HttpContext httpContext, object body, int code)
         {
-            httpContext.Response.ContentType = "application/json";
-            string jsonString, bodyText;
+            string jsonString = string.Empty;
+            var bodyText = !body.ToString().IsValidJson() ? ConvertToJSONString(body) : body.ToString();
+            
             ApiResponse apiResponse = null;
 
             if (!body.ToString().IsValidJson())
@@ -265,7 +272,20 @@ namespace BlazorBoilerplate.Server.Middleware
                 jsonString = JsonConvert.SerializeObject(apiResponse);
             }
 
+            httpContext.Response.ContentType = "application/json";
             return httpContext.Response.WriteAsync(jsonString);
+        }
+
+        private async Task<string> FormatRequest(HttpRequest request)
+        {
+            request.EnableBuffering();
+
+            var buffer = new byte[Convert.ToInt32(request.ContentLength)];
+            await request.Body.ReadAsync(buffer, 0, buffer.Length);
+            var bodyAsText = Encoding.UTF8.GetString(buffer);
+            request.Body.Seek(0, SeekOrigin.Begin);
+
+            return $"{request.Method} {request.Scheme} {request.Host}{request.Path} {request.QueryString} {bodyAsText}";
         }
 
         private async Task<string> FormatResponse(HttpResponse response)
@@ -288,11 +308,32 @@ namespace BlazorBoilerplate.Server.Middleware
         //    }
         //}
 
+        private string ConvertToJSONString(int code, object content)
+        {
+            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content,  null, "0.3.0"), JSONSettings());
+        }
+        private string ConvertToJSONString(ApiResponse apiResponse)
+        {
+            return JsonConvert.SerializeObject(apiResponse, JSONSettings());
+        }
+        private string ConvertToJSONString(object rawJSON)
+        {
+            return JsonConvert.SerializeObject(rawJSON, JSONSettings());
+        }
+
         private bool IsSwagger(HttpContext context)
         {
             return context.Request.Path.StartsWithSegments("/swagger");
         }
 
+        private JsonSerializerSettings JSONSettings()
+        {
+            return new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Converters = new List<JsonConverter> { new StringEnumConverter() }
+            };
+        }
         private async Task SafeLog(DateTime requestTime,
                             long responseMillis,
                             int statusCode,
@@ -363,5 +404,6 @@ namespace BlazorBoilerplate.Server.Middleware
 
             return Task.CompletedTask;
         }
+        
     }
 }

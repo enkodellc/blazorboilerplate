@@ -24,6 +24,8 @@ namespace BlazorBoilerplate.Server
 
             try
             {
+                //IdentityServer4 seed should be happening here but because of this bug https://github.com/aspnet/AspNetCore/issues/12349
+                //the seeding is not implemented here.
                 Log.Information("Starting BlazorBoilerplate web server host");
                 BuildWebHost(args).Run();
                 return 0;
