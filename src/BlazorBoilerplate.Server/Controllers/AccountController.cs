@@ -67,13 +67,13 @@ namespace BlazorBoilerplate.Server.Controllers
                 if (result.IsLockedOut)
                 {
                     _logger.LogInformation("User Locked out: {0}", parameters.UserName);
-                    return new ApiResponse(401, "Login Failed!");
+                    return new ApiResponse(401, "User is locked out!");
                 }
 
                 if (result.IsNotAllowed)
                 {
                     _logger.LogInformation("User not allowed to log in: {0}", parameters.UserName);
-                    return new ApiResponse(401, "Login Failed!");
+                    return new ApiResponse(401, "Login not allowed!");
                 }
 
                 if (result.Succeeded)
