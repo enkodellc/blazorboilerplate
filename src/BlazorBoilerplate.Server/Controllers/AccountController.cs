@@ -52,7 +52,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [AllowAnonymous]
         [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         public async Task<ApiResponse> Login(LoginDto parameters)
         {
             if (!ModelState.IsValid)
