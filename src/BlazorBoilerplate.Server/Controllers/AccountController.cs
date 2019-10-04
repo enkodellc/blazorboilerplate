@@ -64,12 +64,14 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 var result = await _signInManager.PasswordSignInAsync(parameters.UserName, parameters.Password,  parameters.RememberMe, true);
 
+                // If lock out activated and the max. amounts of attempts is reached.
                 if (result.IsLockedOut)
                 {
                     _logger.LogInformation("User Locked out: {0}", parameters.UserName);
                     return new ApiResponse(401, "User is locked out!");
                 }
 
+                // If your email is not confirmed but you require it in the settings for login.
                 if (result.IsNotAllowed)
                 {
                     _logger.LogInformation("User not allowed to log in: {0}", parameters.UserName);
