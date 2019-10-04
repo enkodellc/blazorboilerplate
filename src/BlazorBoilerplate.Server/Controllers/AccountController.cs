@@ -67,13 +67,13 @@ namespace BlazorBoilerplate.Server.Controllers
                 if (result.IsLockedOut)
                 {
                     _logger.LogInformation("User Locked out: {0}", parameters.UserName);
-                    return new ApiResponse(400, "Login Failed!");
+                    return new ApiResponse(401, "Login Failed!");
                 }
 
                 if (result.IsNotAllowed)
                 {
                     _logger.LogInformation("User not allowed to log in: {0}", parameters.UserName);
-                    return new ApiResponse(400, "Login Failed!");
+                    return new ApiResponse(401, "Login Failed!");
                 }
 
                 if (result.Succeeded)
@@ -88,7 +88,7 @@ namespace BlazorBoilerplate.Server.Controllers
             }
 
             _logger.LogInformation("Invalid Password for user {0}}", parameters.UserName);
-            return new ApiResponse(400, "Login Failed");
+            return new ApiResponse(401, "Login Failed");
         }
 
         [AllowAnonymous]
