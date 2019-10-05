@@ -1,20 +1,19 @@
-﻿using System;
-using System.IO;
+﻿using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Prng;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Crypto.Operators;
-using Org.BouncyCastle.X509;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Operators;
 using Org.BouncyCastle.Crypto.Parameters;
-using X509Certificate2 = System.Security.Cryptography.X509Certificates.X509Certificate2;
+using Org.BouncyCastle.Crypto.Prng;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
+using Org.BouncyCastle.X509;
+using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
-
+using X509Certificate2 = System.Security.Cryptography.X509Certificates.X509Certificate2;
 
 // this creates a self signed CA, generates a new certificate based on it and saves that cert to the local file system.
 namespace TempCertGenerator
@@ -39,9 +38,8 @@ namespace TempCertGenerator
             Console.WriteLine("Saving New Certificate to File: " + certFileName);
 
             SaveCertToLocalFile(certificate, certFileName, args[0]);
-
-
         }
+
         private static void SaveCertToLocalFile(X509Certificate2 cert, string fileName, string filePath)
         {
             var certBuffer = cert.Export(X509ContentType.Pfx, certPassword);
@@ -55,7 +53,6 @@ namespace TempCertGenerator
                 throw new Exception(null, ex);
             }
         }
-
 
         private static X509Certificate2 CreateCertificateAuthorityCertificate(string subjectName, ref AsymmetricKeyParameter CaPrivateKey)
         {

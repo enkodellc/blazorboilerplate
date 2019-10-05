@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,6 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
     public class ToDoController : ControllerBase
     {
         private readonly ILogger<ToDoController> _logger;
@@ -22,6 +22,7 @@ namespace BlazorBoilerplate.Server.Controllers
             _todoService = todoService;
         }
 
+        [AllowAnonymous]
         // GET: api/Todo
         [HttpGet]
         public async Task<ApiResponse> Get()
@@ -29,6 +30,7 @@ namespace BlazorBoilerplate.Server.Controllers
             return await _todoService.Get();
         }
 
+        [AllowAnonymous]
         // GET: api/Todo/5
         [HttpGet("{id}")]
         public async Task<ApiResponse> Get(int id)
@@ -40,6 +42,7 @@ namespace BlazorBoilerplate.Server.Controllers
             return await _todoService.Get(id);
         }
 
+        [AllowAnonymous]
         // POST: api/Todos
         [HttpPost]
         public async Task<ApiResponse> Post([FromBody] TodoDto todo)
@@ -51,6 +54,7 @@ namespace BlazorBoilerplate.Server.Controllers
             return await _todoService.Create(todo);
         }
 
+        [AllowAnonymous]
         // Put: api/Todos
         [HttpPut]
         public async Task<ApiResponse> Put([FromBody] TodoDto todo)
@@ -62,6 +66,7 @@ namespace BlazorBoilerplate.Server.Controllers
             return await _todoService.Update(todo);
         }
 
+        [Authorize(Policy = Policies.IsAdmin)]
         // DELETE: api/Todos/5
         [HttpDelete("{id}")]
         public async Task<ApiResponse> Delete(long id)

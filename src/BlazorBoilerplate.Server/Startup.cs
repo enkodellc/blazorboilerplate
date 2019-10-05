@@ -8,6 +8,7 @@ using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -73,7 +74,10 @@ namespace BlazorBoilerplate.Server
 
             if (_environment.IsProduction())
             {
-                cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123");
+                cert = new X509Certificate2("AuthSample.pfx", "Admin123",
+                    X509KeyStorageFlags.MachineKeySet |
+                    X509KeyStorageFlags.PersistKeySet |
+                   X509KeyStorageFlags.Exportable);
 
                 //if (useLocalCertStore)
                 //{
@@ -119,7 +123,11 @@ namespace BlazorBoilerplate.Server
 
                     TempCertGenerator.Program.Main(certGenArgs);
                 }
-                cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123");
+
+                cert = new X509Certificate2("AuthSample.pfx", "Admin123",
+                    X509KeyStorageFlags.MachineKeySet |
+                    X509KeyStorageFlags.PersistKeySet |
+                   X509KeyStorageFlags.Exportable);
 
             }
 
@@ -143,7 +151,7 @@ namespace BlazorBoilerplate.Server
                   options.ConfigureDbContext = builder => {
                       if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                       {
-                          builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database 
+                          builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database
                       }
                       else
                       {
@@ -156,7 +164,7 @@ namespace BlazorBoilerplate.Server
                   options.ConfigureDbContext = builder => {
                       if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                       {
-                          builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database 
+                          builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database
                       }
                       else
                       {
@@ -164,20 +172,20 @@ namespace BlazorBoilerplate.Server
                       }
                   };
 
-                  // this enables automatic token cleanup. this is optional. 
+                  // this enables automatic token cleanup. this is optional.
                   options.EnableTokenCleanup = true;
                   options.TokenCleanupInterval = 30;
               })
               .AddAspNetIdentity<ApplicationUser>();
 
-            //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-            //    .AddIdentityServerAuthentication(options =>
-            //    {
-            //        options.Authority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
-            //        options.SupportedTokens = SupportedTokens.Jwt;
-            //        options.RequireHttpsMetadata = _environment.IsProduction() ? true : false; 
-            //        options.ApiName = IdentityServerConfig.ApiName;
-            //    });
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
+                    options.SupportedTokens = SupportedTokens.Jwt;
+                    options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
+                    options.ApiName = IdentityServerConfig.ApiName;
+                });
 
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 

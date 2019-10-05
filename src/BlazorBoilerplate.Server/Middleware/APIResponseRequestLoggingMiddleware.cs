@@ -94,7 +94,7 @@ namespace BlazorBoilerplate.Server.Middleware
                             if (_enableAPILogging && (_ignorePaths.Any(e => !request.Path.StartsWithSegments(new PathString(e.ToLower())))))
                             {
                                 try
-                                {                                    
+                                {
                                     await responseBody.CopyToAsync(originalBodyStream);
 
                                     //User id = "sub" y default
@@ -208,16 +208,20 @@ namespace BlazorBoilerplate.Server.Middleware
             {
                 apiError = new ApiError(ResponseMessageEnum.NotFound.GetDescription());
             }
-            else if (code == (int)HttpStatusCode.NoContent) 
+            else if (code == (int)HttpStatusCode.NoContent)
             {
                 apiError = new ApiError(ResponseMessageEnum.NotContent.GetDescription());
             }
             else if (code == (int)HttpStatusCode.MethodNotAllowed)
-            { 
+            {
                 apiError = new ApiError(ResponseMessageEnum.MethodNotAllowed.GetDescription());
             }
+            else if (code == (int)HttpStatusCode.Unauthorized)
+            {
+                apiError = new ApiError(ResponseMessageEnum.UnAuthorized.GetDescription());
+            }
             else
-            { 
+            {
                 apiError = new ApiError(ResponseMessageEnum.Unknown.GetDescription());
             }
 
@@ -231,7 +235,7 @@ namespace BlazorBoilerplate.Server.Middleware
         {
             string jsonString = string.Empty;
             var bodyText = !body.ToString().IsValidJson() ? ConvertToJSONString(body) : body.ToString();
-            
+
             ApiResponse apiResponse = null;
 
             if (!body.ToString().IsValidJson())
@@ -404,6 +408,6 @@ namespace BlazorBoilerplate.Server.Middleware
 
             return Task.CompletedTask;
         }
-        
+
     }
 }

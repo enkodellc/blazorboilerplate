@@ -40,6 +40,7 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         public ApiResponse(int statusCode, ApiError apiError)
         {
             this.StatusCode = statusCode;
+            this.Message = apiError.ExceptionMessage;
             this.ResponseException = apiError;
             this.IsError = true;
         }

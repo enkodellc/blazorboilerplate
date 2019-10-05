@@ -12,6 +12,9 @@ namespace BlazorBoilerplate.Shared.Dto
         public int StatusCode { get; set; }
 
         [DataMember]
+        public bool IsError { get; set; }
+
+        [DataMember]
         public string Message { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
