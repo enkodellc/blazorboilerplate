@@ -25,7 +25,7 @@ namespace BlazorBoilerplate.Server.Controllers
     public class AccountController : ControllerBase
     {
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
-               
+
         private readonly ILogger<AccountController> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -52,7 +52,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [AllowAnonymous]
         [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         public async Task<ApiResponse> Login(LoginDto parameters)
         {
             if (!ModelState.IsValid)
@@ -60,43 +60,37 @@ namespace BlazorBoilerplate.Server.Controllers
                 return new ApiResponse(400, "User Model is Invalid");
             }
 
-            var user = await _userManager.FindByEmailAsync(parameters.UserName)
-                       ?? await _userManager.FindByNameAsync(parameters.UserName);
-
-            if (!user.EmailConfirmed && Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
-            {
-                return new ApiResponse(401, "User has not confirmed their email.");
-            }
-
-            if (user == null)
-            {
-                _logger.LogInformation("User does not exist: {0}", parameters.UserName);
-                return new ApiResponse(404, "User does not exist");
-            }
-
-            var singInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password, false);
-
-            if (!singInResult.Succeeded)
-            {
-                _logger.LogInformation("Invalid password: {0}, {1}", parameters.UserName, parameters.Password);
-                return new ApiResponse(400, "Invalid password");
-            }
-
-            // add custom claims here, before signin if needed
-            //var claims = await _userManager.GetClaimsAsync(user);
-            //await _userManager.RemoveClaimsAsync(user, claims);
-            user.SecurityStamp = Guid.NewGuid().ToString();
             try
             {
-                await _signInManager.SignInAsync(user, parameters.RememberMe);
-                _logger.LogInformation("Logged In: {0}, {1}", parameters.UserName, parameters.Password);
-                return new ApiResponse(200, "Login Successful");
+                var result = await _signInManager.PasswordSignInAsync(parameters.UserName, parameters.Password,  parameters.RememberMe, true);
+
+                // If lock out activated and the max. amounts of attempts is reached.
+                if (result.IsLockedOut)
+                {
+                    _logger.LogInformation("User Locked out: {0}", parameters.UserName);
+                    return new ApiResponse(401, "User is locked out!");
+                }
+
+                // If your email is not confirmed but you require it in the settings for login.
+                if (result.IsNotAllowed)
+                {
+                    _logger.LogInformation("User not allowed to log in: {0}", parameters.UserName);
+                    return new ApiResponse(401, "Login not allowed!");
+                }
+
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("Logged In: {0}", parameters.UserName);
+                    return new ApiResponse(200, "Login Successful");
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogInformation("Login Failed: " + ex.Message);
             }
-            return new ApiResponse(400, "Login Failed");
+
+            _logger.LogInformation("Invalid Password for user {0}}", parameters.UserName);
+            return new ApiResponse(401, "Login Failed");
         }
 
         [AllowAnonymous]
@@ -361,7 +355,7 @@ namespace BlazorBoilerplate.Server.Controllers
                     _logger.LogWarning("Could not build UserInfoDto: " + ex.Message);
                 }
             }
-            else 
+            else
             {
                 return new UserInfoDto();
             }
@@ -400,10 +394,10 @@ namespace BlazorBoilerplate.Server.Controllers
 
             return new ApiResponse(200, "User Updated Successfully");
         }
-        
+
 
         ///----------Admin User Management Interface Methods
-        
+
         [Authorize(Policy = Policies.IsAdmin)]
         // POST: api/Account/Create
         [HttpPost("Create")]
@@ -525,10 +519,10 @@ namespace BlazorBoilerplate.Server.Controllers
             }
             catch
             {
-                return new ApiResponse(400, "User Deletion Failed");                
-            }            
+                return new ApiResponse(400, "User Deletion Failed");
+            }
         }
-        
+
         [HttpGet("GetUser")]
         [Authorize]
         public ApiResponse GetUser()
@@ -603,13 +597,13 @@ namespace BlazorBoilerplate.Server.Controllers
 
             // retrieve full user object for updating
             var appUser = await _userManager.FindByIdAsync(userInfo.UserId.ToString()).ConfigureAwait(true);
-            
+
             //update values
             appUser.UserName = userInfo.UserName;
             appUser.FirstName = userInfo.FirstName;
             appUser.LastName = userInfo.LastName;
             appUser.Email = userInfo.Email;
-                                          
+
             try
             {
                 var result = await _userManager.UpdateAsync(appUser).ConfigureAwait(true);
@@ -720,7 +714,7 @@ namespace BlazorBoilerplate.Server.Controllers
                         {
                             resultErrorsString += identityError.Description + ", ";
                         }
-                        resultErrorsString.TrimEnd(',');                        
+                        resultErrorsString.TrimEnd(',');
                         return new ApiResponse(400, resultErrorsString);
                     }
                     else
@@ -733,7 +727,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 _logger.LogInformation(user.UserName + "'s password reset failed; Requested from Admin interface by:" + User.Identity.Name);
                 return new ApiResponse(400, ex.Message);
-            }            
+            }
         }
     }
 }
