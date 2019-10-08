@@ -43,7 +43,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [AllowAnonymous]
-        // POST: api/Todos
+        // POST: api/Todo
         [HttpPost]
         public async Task<ApiResponse> Post([FromBody] TodoDto todo)
         {
@@ -55,7 +55,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [AllowAnonymous]
-        // Put: api/Todos
+        // Put: api/Todo
         [HttpPut]
         public async Task<ApiResponse> Put([FromBody] TodoDto todo)
         {
@@ -67,7 +67,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [Authorize(Policy = Policies.IsAdmin)]
-        // DELETE: api/Todos/5
+        // DELETE: api/Todo/5
         [HttpDelete("{id}")]
         public async Task<ApiResponse> Delete(long id)
         {

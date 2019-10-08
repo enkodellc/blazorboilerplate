@@ -17,7 +17,7 @@ Version 0.2.3 and below utlize AspNETCore Authorization / Authentication. Versio
 - Minimal Javascript. Currently only using them for SignalR for the Forum. We may us components with JS in them but so far no Javascript has been written specifically for anything in the repository.
 
 # Live demo
-[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. *Note Firewall does block some foreign IP addresses.
+[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. *Note Firewall does block some foreign IP addresses. Swagger UI to view the server API [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html).
 
 ## Prerequisites
 Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-3.0)
@@ -34,6 +34,8 @@ Complete all Blazor dependencies.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
+5. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
+[https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html)
 
 ## Publish on IIS
 1. Publish both the Client and Server projects.
@@ -63,6 +65,7 @@ It though is my ambition to learn and get feedback on what Best Practices can be
 ## Completed 
  - Basic Login / User Creation
  - Admin Theme using Material Design / MatBlazor
+ - Swagger Ui API visualizer 
  - Log Files using Serilog
  - Choose between SQL Lite File or MS SQL Database
  - Email Confirmation of Registered Users
