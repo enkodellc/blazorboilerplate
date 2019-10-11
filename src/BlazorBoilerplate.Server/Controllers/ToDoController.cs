@@ -66,7 +66,10 @@ namespace BlazorBoilerplate.Server.Controllers
             return await _todoService.Update(todo);
         }
 
-        [Authorize(Policy = Policies.IsAdmin)]
+        //Todo find out why this doesn't work!
+        //[Authorize(Roles = "User")]
+        [Authorize(Policy = Policies.IsUser)]
+        //[AllowAnonymous]
         // DELETE: api/Todo/5
         [HttpDelete("{id}")]
         public async Task<ApiResponse> Delete(long id)

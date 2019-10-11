@@ -1,5 +1,4 @@
-﻿
-using BlazorBoilerplate.Server.Data.Core;
+﻿using BlazorBoilerplate.Server.Data.Core;
 using BlazorBoilerplate.Server.Models;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;

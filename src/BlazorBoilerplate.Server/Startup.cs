@@ -68,67 +68,65 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
 
-            var useLocalCertStore = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseLocalCertStore"]);
-            var certificateThumbprint = Configuration["BlazorBoilerplate:CertificateThumbprint"];
             X509Certificate2 cert = null;
 
             if (_environment.IsProduction())
             {
-                cert = new X509Certificate2("AuthSample.pfx", "Admin123",
-                    X509KeyStorageFlags.MachineKeySet |
-                    X509KeyStorageFlags.PersistKeySet |
-                   X509KeyStorageFlags.Exportable);
+                // Works for IIS, finds cert by the thumbprint in appsettings.json
+                // Make sure Certificate is in the Web Hosting folder && installed to LocalMachine or update settings below
+                var useLocalCertStore = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseLocalCertStore"]);
+                var certificateThumbprint = Configuration["BlazorBoilerplate:CertificateThumbprint"];
 
-                //if (useLocalCertStore)
-                //{
-                //    using (X509Store store = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine))
-                //    {
-                //        store.Open(OpenFlags.ReadOnly);
-                //        var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
-                //        Console.WriteLine("Certificat count = " + certs.Count);
-                //        Console.WriteLine("Certificate path = " + StoreName.CertificateAuthority);
-                //        if (certs.Count > 0)
-                //        {
-                //            cert = certs[0];
-                //        }
-                //        else
-                //        {
-                //            // import PFX
-                //            cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123",
-                //                X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet);
-                //            // save certificate and private key
-                //            X509Store storeMy = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine);
-                //            storeMy.Open(OpenFlags.ReadWrite);
-                //            storeMy.Add(cert);
-                //        }
-                //        store.Close();
-
-
-                //    }
-                //}
-                //else
-                //{
-                //    // Azure deployment, will be used if deployed to Azure
-                //    var vaultConfigSection = Configuration.GetSection("Vault");
-                //    var keyVaultService = new KeyVaultCertificateService(vaultConfigSection["Url"], vaultConfigSection["ClientId"], vaultConfigSection["ClientSecret"]);
-                //    cert = keyVaultService.GetCertificateFromKeyVault(vaultConfigSection["CertificateName"]);
-                //}
+                if (useLocalCertStore)
+                {
+                    using (X509Store store = new X509Store("WebHosting", StoreLocation.LocalMachine))
+                    {
+                        store.Open(OpenFlags.ReadOnly);
+                        var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
+                        Console.WriteLine("Certificat count = " + certs.Count);
+                        Console.WriteLine("Certificate path = " + StoreName.CertificateAuthority);
+                        if (certs.Count > 0)
+                        {
+                            cert = certs[0];
+                        }
+                        else
+                        {
+                            // import PFX
+                            cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123",
+                                                X509KeyStorageFlags.MachineKeySet |
+                                                X509KeyStorageFlags.PersistKeySet |
+                                                X509KeyStorageFlags.Exportable);
+                            // save certificate and private key
+                            X509Store storeMy = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine);
+                            storeMy.Open(OpenFlags.ReadWrite);
+                            storeMy.Add(cert);
+                        }
+                        store.Close();
+                    }
+                }
+                else
+                {
+                    // Azure deployment, will be used if deployed to Azure - Not tested
+                    //var vaultConfigSection = Configuration.GetSection("Vault");
+                    //var keyVaultService = new KeyVaultCertificateService(vaultConfigSection["Url"], vaultConfigSection["ClientId"], vaultConfigSection["ClientSecret"]);
+                    //cert = keyVaultService.GetCertificateFromKeyVault(vaultConfigSection["CertificateName"]);
+                }
             }
             else
             {
                 if (!File.Exists(_environment.ContentRootPath + "/AuthSample.pfx"))
                 {
-
                     string[] certGenArgs = { "../BlazorBoilerplate.Server" }; // relative path from TempCertGenerator Project to Server Project Folder
 
                     TempCertGenerator.Program.Main(certGenArgs);
                 }
-
-                cert = new X509Certificate2("AuthSample.pfx", "Admin123",
-                    X509KeyStorageFlags.MachineKeySet |
-                    X509KeyStorageFlags.PersistKeySet |
-                   X509KeyStorageFlags.Exportable);
-
+                else
+                {
+                    cert = new X509Certificate2("AuthSample.pfx", "Admin123",
+                        X509KeyStorageFlags.MachineKeySet |
+                        X509KeyStorageFlags.PersistKeySet |
+                        X509KeyStorageFlags.Exportable);
+                }
             }
 
             // Adds IdentityServer.
@@ -199,7 +197,6 @@ namespace BlazorBoilerplate.Server
             });
 
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
-
 
             services.Configure<IdentityOptions>(options =>
             {

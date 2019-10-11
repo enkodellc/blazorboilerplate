@@ -40,7 +40,7 @@ namespace BlazorBoilerplate.Client
         public async Task UpdateUserProfile()
         {
             await _userProfileApi.Upsert(UserProfile);
-        }               
+        }
 
         public async Task<UserProfileDto> GetUserProfile()
         {
@@ -77,14 +77,13 @@ namespace BlazorBoilerplate.Client
         }
 
         public async Task SaveLastVisitedUri(string uri)
-        {            
+        {
             if (UserProfile ==  null)
             {
                 UserProfile = await GetUserProfile();
             }
             if (UserProfile != null)
             {
-                Console.WriteLine("UserProfile: " + UserProfile.UserId);
                 UserProfile.LastPageVisited = uri;
                 await UpdateUserProfile();
                 NotifyStateChanged();

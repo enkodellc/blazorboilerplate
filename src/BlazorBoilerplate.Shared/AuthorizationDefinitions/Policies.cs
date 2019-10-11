@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-// see https://chrissainty.com/securing-your-blazor-apps-configuring-policy-based-authorization-with-blazor/
+//This is ASP.Net Core Identity
+//see https://chrissainty.com/securing-your-blazor-apps-configuring-policy-based-authorization-with-blazor/
+
 namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
 {
     public static class Policies
@@ -14,7 +16,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
         {
             return new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .RequireRole("Administrator", "User")
+                .RequireRole("Administrator")
                 .Build();
         }
 
