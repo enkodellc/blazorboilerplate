@@ -68,82 +68,15 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
 
-            X509Certificate2 cert = null;
-
-            if (_environment.IsProduction())
-            {
-                // Works for IIS, finds cert by the thumbprint in appsettings.json
-                // Make sure Certificate is in the Web Hosting folder && installed to LocalMachine or update settings below
-                var useLocalCertStore = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseLocalCertStore"]);
-                var certificateThumbprint = Configuration["BlazorBoilerplate:CertificateThumbprint"];
-
-                if (useLocalCertStore)
-                {
-                    using (X509Store store = new X509Store("WebHosting", StoreLocation.LocalMachine))
-                    {
-                        store.Open(OpenFlags.ReadOnly);
-                        var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
-                        Console.WriteLine("Certificat count = " + certs.Count);
-                        Console.WriteLine("Certificate path = " + StoreName.CertificateAuthority);
-                        if (certs.Count > 0)
-                        {
-                            cert = certs[0];
-                        }
-                        else
-                        {
-                            // import PFX
-                            cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123",
-                                                X509KeyStorageFlags.MachineKeySet |
-                                                X509KeyStorageFlags.PersistKeySet |
-                                                X509KeyStorageFlags.Exportable);
-                            // save certificate and private key
-                            X509Store storeMy = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine);
-                            storeMy.Open(OpenFlags.ReadWrite);
-                            storeMy.Add(cert);
-                        }
-                        store.Close();
-                    }
-                }
-                else
-                {
-                    // Azure deployment, will be used if deployed to Azure - Not tested
-                    //var vaultConfigSection = Configuration.GetSection("Vault");
-                    //var keyVaultService = new KeyVaultCertificateService(vaultConfigSection["Url"], vaultConfigSection["ClientId"], vaultConfigSection["ClientSecret"]);
-                    //cert = keyVaultService.GetCertificateFromKeyVault(vaultConfigSection["CertificateName"]);
-                }
-            }
-            else
-            {
-                if (!File.Exists(_environment.ContentRootPath + "/AuthSample.pfx"))
-                {
-                    string[] certGenArgs = { "../BlazorBoilerplate.Server" }; // relative path from TempCertGenerator Project to Server Project Folder
-
-                    TempCertGenerator.Program.Main(certGenArgs);
-                }
-                else
-                {
-                    cert = new X509Certificate2("AuthSample.pfx", "Admin123",
-                        X509KeyStorageFlags.MachineKeySet |
-                        X509KeyStorageFlags.PersistKeySet |
-                        X509KeyStorageFlags.Exportable);
-                }
-            }
-
-            // Adds IdentityServer.
-            services.AddIdentityServer(options =>
+            // Adds IdentityServer
+            var identityServerBuilder = services.AddIdentityServer(options =>
             {
                 options.IssuerUri = "blazorboilerplate_spa";
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-            })
-              // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
-              // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
-              // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
-              // https://stackoverflow.com/questions/42351274/identityserver4-hosting-in-iis
-              //.AddDeveloperSigningCredential(true, @"C:\tempkey.rsa")
-              .AddSigningCredential(cert)
+            })             
               .AddConfigurationStore(options =>
               {
                   options.ConfigureDbContext = builder => {
@@ -176,6 +109,69 @@ namespace BlazorBoilerplate.Server
               })
               .AddAspNetIdentity<ApplicationUser>();
 
+            X509Certificate2 cert = null;
+
+
+            if (_environment.IsDevelopment())
+            {
+                // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
+                // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
+                // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
+                // https://stackoverflow.com/questions/42351274/identityserver4-hosting-in-iis
+                //.AddDeveloperSigningCredential(true, @"C:\tempkey.rsa")
+                identityServerBuilder.AddDeveloperSigningCredential();
+            }
+            else 
+            {
+                // Works for IIS, finds cert by the thumbprint in appsettings.json
+                // Make sure Certificate is in the Web Hosting folder && installed to LocalMachine or update settings below
+                var useLocalCertStore = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseLocalCertStore"]);
+                var certificateThumbprint = Configuration["BlazorBoilerplate:CertificateThumbprint"];
+
+                if (useLocalCertStore)
+                {
+                    using (X509Store store = new X509Store("WebHosting", StoreLocation.LocalMachine))
+                    {
+                        store.Open(OpenFlags.ReadOnly);
+                        var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
+                        //Console.WriteLine("Certificat count = " + certs.Count);
+                        //Console.WriteLine("Certificate path = " + StoreName.CertificateAuthority);
+                        if (certs.Count > 0)
+                        {
+                            cert = certs[0];
+                        }
+                        else
+                        {
+                            // import PFX
+                            cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123",
+                                                X509KeyStorageFlags.MachineKeySet |
+                                                X509KeyStorageFlags.PersistKeySet |
+                                                X509KeyStorageFlags.Exportable);
+                            // save certificate and private key
+                            X509Store storeMy = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine);
+                            storeMy.Open(OpenFlags.ReadWrite);
+                            storeMy.Add(cert);
+                        }
+                        store.Close();
+                    }
+                }
+                else
+                {
+                    // Azure deployment, will be used if deployed to Azure - Not tested
+                    //var vaultConfigSection = Configuration.GetSection("Vault");
+                    //var keyVaultService = new KeyVaultCertificateService(vaultConfigSection["Url"], vaultConfigSection["ClientId"], vaultConfigSection["ClientSecret"]);
+                    ////cert = keyVaultService.GetCertificateFromKeyVault(vaultConfigSection["CertificateName"]);
+                    
+                    /// I was informed that this will work as a temp solution in Azure
+                    cert = new X509Certificate2("AuthSample.pfx", "Admin123",
+                        X509KeyStorageFlags.MachineKeySet |
+                        X509KeyStorageFlags.PersistKeySet |
+                        X509KeyStorageFlags.Exportable);
+                }
+                identityServerBuilder.AddSigningCredential(cert);
+            }
+
+            
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
