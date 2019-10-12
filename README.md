@@ -3,7 +3,6 @@
 Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template (WebAssembly / Core-Hosted) built with Blazor with a .NET Core 3 Server API. The UI for this application is by Material Design provided mostly by MatBlazor.
 Version 0.2.3 and below utlize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4.  
 
-
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
 [![GitHub Stars](https://img.shields.io/github/stars/enkodellc/blazorboilerplate.svg)](https://github.com/enkodellc/blazorboilerplate/stargazers)
@@ -96,8 +95,9 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
+  - Authorization is broken / doesn't work. I need help sorting out IS4 / Asp.net Identity working together. Do
 
-### 0.2.3 - .Net Core Authentication / Authorization
+### 0.2.3 - .Net Core Authentication / Authorization (Stable Version)
 - .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
