@@ -14,7 +14,7 @@ namespace BlazorBoilerplate.Server.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    [AllowAnonymous]
+    
     public class EmailController : ControllerBase
     {
         // Logger instance

@@ -33,6 +33,7 @@ namespace BlazorBoilerplate.Server.Controllers
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _db;
+        
 
         public AccountController(UserManager<ApplicationUser> userManager, ApplicationDbContext db,
             SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger,
@@ -138,7 +139,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
 
                 //Role - Here we tie the new user to the "User" role
-                // await _userManager.AddToRoleAsync(user, "User");
+                 await _userManager.AddToRoleAsync(user, "User");
                 await _userManager.AddClaimAsync(user, new Claim(Policies.IsUser, "")); // Replacing roles with claims, if IsUser is present we interpret it as the equivalent of having the User role
 
 
@@ -445,7 +446,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
 
                 //Role - Here we tie the new user to the "User" role
-                //   await _userManager.AddToRoleAsync(user, "User");
+                   await _userManager.AddToRoleAsync(user, "User");
                 await _userManager.AddClaimAsync(user, new Claim(Policies.IsUser, "")); // Replacing roles with claims, if IsUser is present we interpret it as the equivalent of having the User role
 
 
@@ -599,6 +600,7 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> ListRoles()
         {
             var roleList = _roleManager.Roles.Select(x => x.Name).ToList();
+            
             return new ApiResponse(200, "", roleList);
         }
 
@@ -644,7 +646,14 @@ namespace BlazorBoilerplate.Server.Controllers
                             rolesToAdd.Add(newUserRole);
                         }
                     }
+                    
                     await _userManager.AddToRolesAsync(appUser, rolesToAdd).ConfigureAwait(true);
+                    //HACK to switch to claims auth
+                    foreach (var role in rolesToAdd)
+                    {
+                        await _userManager.AddClaimAsync(appUser, new Claim($"Is{role}", "true")).ConfigureAwait(true);
+
+                    }
 
                     foreach (var role in currentUserRoles)
                     {
@@ -654,6 +663,12 @@ namespace BlazorBoilerplate.Server.Controllers
                         }
                     }
                     await _userManager.RemoveFromRolesAsync(appUser, rolesToRemove).ConfigureAwait(true);
+
+                    //HACK to switch to claims auth
+                    foreach (var role in rolesToRemove)
+                    {
+                        await _userManager.RemoveClaimAsync(appUser, new Claim($"Is{role}", "true")).ConfigureAwait(true);
+                    }
                 }
                 catch
                 {

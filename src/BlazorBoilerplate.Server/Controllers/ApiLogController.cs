@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,7 +29,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // GET: api/ApiLog/ApplicationUserId
         [HttpGet("[action]")]
-        [Authorize(Roles = "SuperAdmin, Admin")]
+        [Authorize(Policies.IsAdmin)]
         public async Task<ApiResponse> GetByApplicationUserId(string userId)
         {
             return await _apiLogService.GetByApplictionUserId(new Guid(userId));
