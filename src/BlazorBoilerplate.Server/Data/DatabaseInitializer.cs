@@ -240,7 +240,15 @@ namespace BlazorBoilerplate.Server.Data
                         new Claim(JwtClaimTypes.Email, email),
                         new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber)
+                        
+
                     }).Result;
+
+                //add claims version of roles
+                foreach (var role in roles.Distinct())
+                {
+                    await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", "true"));
+                }
 
                 ApplicationUser user = await _userManager.FindByNameAsync(applicationUser.UserName);
 
@@ -248,6 +256,7 @@ namespace BlazorBoilerplate.Server.Data
                 {
                     result = await _userManager.AddToRolesAsync(user, roles.Distinct());
                 }
+
                 catch
                 {
                     await _userManager.DeleteAsync(user);

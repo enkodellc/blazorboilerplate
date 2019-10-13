@@ -16,7 +16,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
         {
             return new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .RequireRole("Administrator")
+                .RequireClaim("IsAdministrator")
                 .Build();
         }
 
@@ -24,7 +24,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
         {
             return new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .RequireRole("User")
+                .RequireClaim("IsUser")
                 .Build();
         }
 

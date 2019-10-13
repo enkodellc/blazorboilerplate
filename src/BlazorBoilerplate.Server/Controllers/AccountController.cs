@@ -21,7 +21,7 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
+  
     public class AccountController : ControllerBase
     {
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
@@ -93,6 +93,17 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(401, "Login Failed");
         }
 
+
+        // This is a policy test endpoint, feel free to delete it 
+        [Authorize(Policies.IsAdmin)]
+        [HttpGet("amiadmin")]
+        public async Task<ApiResponse> Testing()
+        {
+            var claims = HttpContext.User.Claims.ToList();
+            var claimsResponse = claims.Distinct().Select(x=>(x.Type.ToString(), x.Value.ToString())).ToList();
+            return new ApiResponse(200, $"policy {Policies.IsAdmin} has allowed you through", claimsResponse);
+        }
+
         [AllowAnonymous]
         // POST: api/Account/Register
         [HttpPost("Register")]
@@ -127,7 +138,9 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
 
                 //Role - Here we tie the new user to the "User" role
-                await _userManager.AddToRoleAsync(user, "User");
+                // await _userManager.AddToRoleAsync(user, "User");
+                await _userManager.AddClaimAsync(user, new Claim(Policies.IsUser, "")); // Replacing roles with claims, if IsUser is present we interpret it as the equivalent of having the User role
+
 
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
@@ -432,7 +445,11 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
 
                 //Role - Here we tie the new user to the "User" role
-                await _userManager.AddToRoleAsync(user, "User");
+                //   await _userManager.AddToRoleAsync(user, "User");
+                await _userManager.AddClaimAsync(user, new Claim(Policies.IsUser, "")); // Replacing roles with claims, if IsUser is present we interpret it as the equivalent of having the User role
+
+
+                
 
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {

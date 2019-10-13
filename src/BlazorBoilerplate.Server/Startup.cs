@@ -61,12 +61,13 @@ namespace BlazorBoilerplate.Server
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
-                .AddRoles<IdentityRole<Guid>>()
+               // .AddRoles<IdentityRole<Guid>>()
+                .AddClaimsPrincipalFactory<AdditionalUserClaimsPrincipalFactory>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
-                AdditionalUserClaimsPrincipalFactory>();
+            //services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
+            //    AdditionalUserClaimsPrincipalFactory>();
 
             // Adds IdentityServer
             var identityServerBuilder = services.AddIdentityServer(options =>
@@ -171,7 +172,7 @@ namespace BlazorBoilerplate.Server
                 identityServerBuilder.AddSigningCredential(cert);
             }
 
-            
+
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
@@ -180,6 +181,7 @@ namespace BlazorBoilerplate.Server
                     options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
                     options.ApiName = IdentityServerConfig.ApiName;
                 });
+                
 
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
@@ -322,11 +324,12 @@ namespace BlazorBoilerplate.Server
             //app.UseStaticFiles();
             app.UseClientSideBlazorFiles<Client.Startup>();
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseRouting();
             //app.UseAuthentication();
-            app.UseAuthorization();
             app.UseIdentityServer();
+
+            app.UseAuthorization();
 
             // NSwag
             app.UseOpenApi();
@@ -335,6 +338,7 @@ namespace BlazorBoilerplate.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");

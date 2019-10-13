@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BlazorBoilerplate.Server.Data.Core;
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
@@ -38,6 +39,8 @@ namespace BlazorBoilerplate.Server.Data
                         JwtClaimTypes.Email,
                         JwtClaimTypes.PhoneNumber,
                         JwtClaimTypes.Role,
+                        Policies.IsUser,
+                        Policies.IsAdmin,
                         ClaimConstants.Permission
                     }
                 }
