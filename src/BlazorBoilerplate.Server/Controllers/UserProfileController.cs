@@ -15,7 +15,6 @@ namespace BlazorBoilerplate.Server.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    [AllowAnonymous]
     public class UserProfileController : ControllerBase
     {
         private readonly ILogger<UserProfileController> _logger;
