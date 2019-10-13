@@ -21,7 +21,6 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-  
     public class AccountController : ControllerBase
     {
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
@@ -33,7 +32,6 @@ namespace BlazorBoilerplate.Server.Controllers
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _db;
-        
 
         public AccountController(UserManager<ApplicationUser> userManager, ApplicationDbContext db,
             SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger,
@@ -94,17 +92,6 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(401, "Login Failed");
         }
 
-
-        // This is a policy test endpoint, feel free to delete it 
-        [Authorize(Policies.IsAdmin)]
-        [HttpGet("amiadmin")]
-        public async Task<ApiResponse> Testing()
-        {
-            var claims = HttpContext.User.Claims.ToList();
-            var claimsResponse = claims.Distinct().Select(x=>(x.Type.ToString(), x.Value.ToString())).ToList();
-            return new ApiResponse(200, $"policy {Policies.IsAdmin} has allowed you through", claimsResponse);
-        }
-
         [AllowAnonymous]
         // POST: api/Account/Register
         [HttpPost("Register")]
@@ -132,6 +119,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 else
                 {
                     var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
+                        new Claim(Policies.IsUser,""),
                         new Claim(JwtClaimTypes.Name, parameters.UserName),
                         new Claim(JwtClaimTypes.Email, parameters.Email),
                         new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
@@ -139,9 +127,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
 
                 //Role - Here we tie the new user to the "User" role
-                 await _userManager.AddToRoleAsync(user, "User");
-                await _userManager.AddClaimAsync(user, new Claim(Policies.IsUser, "")); // Replacing roles with claims, if IsUser is present we interpret it as the equivalent of having the User role
-
+                await _userManager.AddToRoleAsync(user, "User");
 
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
@@ -439,6 +425,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 else
                 {
                    var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
+                        new Claim(Policies.IsUser,""),
                         new Claim(JwtClaimTypes.Name, parameters.UserName),
                         new Claim(JwtClaimTypes.Email, parameters.Email),
                         new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
@@ -446,11 +433,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
 
                 //Role - Here we tie the new user to the "User" role
-                   await _userManager.AddToRoleAsync(user, "User");
-                await _userManager.AddClaimAsync(user, new Claim(Policies.IsUser, "")); // Replacing roles with claims, if IsUser is present we interpret it as the equivalent of having the User role
-
-
-                
+                await _userManager.AddToRoleAsync(user, "User");
 
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
@@ -600,7 +583,6 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> ListRoles()
         {
             var roleList = _roleManager.Roles.Select(x => x.Name).ToList();
-            
             return new ApiResponse(200, "", roleList);
         }
 
@@ -646,7 +628,6 @@ namespace BlazorBoilerplate.Server.Controllers
                             rolesToAdd.Add(newUserRole);
                         }
                     }
-                    
                     await _userManager.AddToRolesAsync(appUser, rolesToAdd).ConfigureAwait(true);
                     //HACK to switch to claims auth
                     foreach (var role in rolesToAdd)

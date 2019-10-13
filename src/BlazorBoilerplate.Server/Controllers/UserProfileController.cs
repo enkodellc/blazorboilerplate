@@ -7,14 +7,13 @@ using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 using IdentityModel;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
+    [Authorize]
     public class UserProfileController : ControllerBase
     {
         private readonly ILogger<UserProfileController> _logger;
@@ -29,8 +28,6 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         // GET: api/UserProfile
-        [Authorize]
-        [AllowAnonymous]
         [HttpGet("Get")]
         public async Task<ApiResponse> Get()
         {

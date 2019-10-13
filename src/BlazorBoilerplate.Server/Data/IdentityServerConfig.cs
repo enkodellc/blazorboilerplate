@@ -39,9 +39,9 @@ namespace BlazorBoilerplate.Server.Data
                         JwtClaimTypes.Email,
                         JwtClaimTypes.PhoneNumber,
                         JwtClaimTypes.Role,
+                        ClaimConstants.Permission,
                         Policies.IsUser,
-                        Policies.IsAdmin,
-                        ClaimConstants.Permission
+                        Policies.IsAdmin
                     }
                 }
             };
@@ -56,11 +56,12 @@ namespace BlazorBoilerplate.Server.Data
                 // http://docs.identityserver.io/en/release/reference/client.html.
                 new IdentityServer4.Models.Client
                 {
-                    ClientId = IdentityServerConfig.AppClientID,
+                    //AbsoluteRefreshTokenLifetime = 7200,
+                    //AccessTokenLifetime = 900, // Lifetime of access token in seconds.
+                    AccessTokenType = AccessTokenType.Jwt,
+                    //AllowedCorsOrigin = "https://localhost:5003",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Resource Owner Password Credential grant.
                     AllowAccessTokensViaBrowser = true,
-                    RequireClientSecret = false, // This client does not need a secret to request tokens from the token endpoint.
-                    
                     AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId, // For UserInfo endpoint.
                         IdentityServerConstants.StandardScopes.Profile,
@@ -69,11 +70,18 @@ namespace BlazorBoilerplate.Server.Data
                         ScopeConstants.Roles,
                         ApiName
                     },
+                    AllowRememberConsent = true,
                     AllowOfflineAccess = true, // For refresh token.
+                    ClientId = IdentityServerConfig.AppClientID,
+                    ClientName = IdentityServerConfig.ApiName,
+                    //ClientUri = "https://localhost:5003",
+                    ClientSecrets = new List<Secret> { new Secret { Value = "BlazorBoilerplate".Sha512() }},
+                    Enabled = true,
+                    //PostLogoutRedirectUris = new List<string> {"http://localhost:5436"},
+                    RequireClientSecret = true, // This client does not need a secret to request tokens from the token endpoint.
+                    //RedirectUris = new List<string> {"http://localhost:5436/account/oAuth2"},
                     RefreshTokenExpiration = TokenExpiration.Sliding,
                     RefreshTokenUsage = TokenUsage.OneTimeOnly,
-                    //AccessTokenLifetime = 900, // Lifetime of access token in seconds.
-                    //AbsoluteRefreshTokenLifetime = 7200,
                     //SlidingRefreshTokenLifetime = 900,
                 },
 

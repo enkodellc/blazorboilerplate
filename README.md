@@ -95,7 +95,6 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
-  - Authorization is broken / doesn't work. I need help sorting out IS4 / Asp.net Identity working together. Do
 
 ### 0.2.3 - .Net Core Authentication / Authorization (Stable Version)
 - .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update

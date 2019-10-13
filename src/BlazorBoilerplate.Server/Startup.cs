@@ -61,13 +61,12 @@ namespace BlazorBoilerplate.Server
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
-               // .AddRoles<IdentityRole<Guid>>()
-                .AddClaimsPrincipalFactory<AdditionalUserClaimsPrincipalFactory>()
+                .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            //services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
-            //    AdditionalUserClaimsPrincipalFactory>();
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
+                AdditionalUserClaimsPrincipalFactory>();
 
             // Adds IdentityServer
             var identityServerBuilder = services.AddIdentityServer(options =>
@@ -77,7 +76,7 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-            })             
+            })
               .AddConfigurationStore(options =>
               {
                   options.ConfigureDbContext = builder => {
@@ -106,12 +105,11 @@ namespace BlazorBoilerplate.Server
 
                   // this enables automatic token cleanup. this is optional.
                   options.EnableTokenCleanup = true;
-                  options.TokenCleanupInterval = 30;
+                  options.TokenCleanupInterval = 3600; //In Seconds 1 hour
               })
               .AddAspNetIdentity<ApplicationUser>();
 
             X509Certificate2 cert = null;
-
 
             if (_environment.IsDevelopment())
             {
@@ -122,7 +120,7 @@ namespace BlazorBoilerplate.Server
                 //.AddDeveloperSigningCredential(true, @"C:\tempkey.rsa")
                 identityServerBuilder.AddDeveloperSigningCredential();
             }
-            else 
+            else
             {
                 // Works for IIS, finds cert by the thumbprint in appsettings.json
                 // Make sure Certificate is in the Web Hosting folder && installed to LocalMachine or update settings below
@@ -162,7 +160,7 @@ namespace BlazorBoilerplate.Server
                     //var vaultConfigSection = Configuration.GetSection("Vault");
                     //var keyVaultService = new KeyVaultCertificateService(vaultConfigSection["Url"], vaultConfigSection["ClientId"], vaultConfigSection["ClientSecret"]);
                     ////cert = keyVaultService.GetCertificateFromKeyVault(vaultConfigSection["CertificateName"]);
-                    
+
                     /// I was informed that this will work as a temp solution in Azure
                     cert = new X509Certificate2("AuthSample.pfx", "Admin123",
                         X509KeyStorageFlags.MachineKeySet |
@@ -172,7 +170,6 @@ namespace BlazorBoilerplate.Server
                 identityServerBuilder.AddSigningCredential(cert);
             }
 
-
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
@@ -181,7 +178,6 @@ namespace BlazorBoilerplate.Server
                     options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
                     options.ApiName = IdentityServerConfig.ApiName;
                 });
-                
 
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
@@ -315,11 +311,11 @@ namespace BlazorBoilerplate.Server
                 app.UseDeveloperExceptionPage();
                 app.UseBlazorDebugging();
             }
-            //else
-            //{
+            else
+            {
             //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
-            //}
+            }
 
             //app.UseStaticFiles();
             app.UseClientSideBlazorFiles<Client.Startup>();
@@ -328,7 +324,6 @@ namespace BlazorBoilerplate.Server
             app.UseRouting();
             //app.UseAuthentication();
             app.UseIdentityServer();
-
             app.UseAuthorization();
 
             // NSwag
