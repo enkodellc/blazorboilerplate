@@ -1,0 +1,20 @@
+version: "3"
+services:
+    web:
+        build: ./src/
+        ports:
+            - "8000:80"
+        depends_on:
+            - db
+        environment:
+            DOCKER_COMPOSE_SQL: "db"
+            MSSQL_USER: "sa"
+            SA_PASSWORD: "Your_password123"
+            ASPNETCORE_ENVIRONMENT: "Development"
+            
+    db:
+        image: "mcr.microsoft.com/mssql/server"
+        environment:
+            SA_PASSWORD: "Your_password123"
+            ACCEPT_EULA: "Y"
+
