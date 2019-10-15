@@ -59,7 +59,8 @@ attempt to create something that developers can start a Blazor project with seve
 I have a lot of experience with ASP.Net webforms an new to .NET Core and Blazor. This code is not meant to be perfect or follow every Best Practice. 
 It though is my ambition to learn and get feedback on what Best Practices can be implemented. 
  I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and 
- suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository.
+ suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository. If you wish to hire me for 
+ consulting or as a contractor please reach out via [email](support@blazorboilerplate.com) or [https://gitter.im/enkodellc](https://gitter.im/enkodellc).
 
 ## Completed 
  - Basic Login / User Creation
@@ -89,7 +90,12 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.3.0 (Breaking Changes - Under Development)
+### 0.3.2 (Under Development)
+- Identity Server 4 - Authentication with ASP.Net Identity Authorization with Policies  
+- Known Issues: 
+  - IAuditable Shadow Properties not getting UserId
+
+### 0.3.0 - IS4 (Breaking Changes from 0.2.3)
 - Identity Server 4 First Release - Delete your DB! Thanks to [ganmuru](https://github.com/ganmuru)
 - User Profile Store Last Page Visited / Return on Login
 - .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update

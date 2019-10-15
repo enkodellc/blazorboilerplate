@@ -92,9 +92,10 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(401, "Login Failed");
         }
 
-        [AllowAnonymous]
+
         // POST: api/Account/Register
         [HttpPost("Register")]
+        [AllowAnonymous]
         public async Task<ApiResponse> Register(RegisterDto parameters)
         {
             try
@@ -183,9 +184,9 @@ namespace BlazorBoilerplate.Server.Controllers
             }
         }
 
-        [AllowAnonymous]
         // POST: api/Account/ConfirmEmail
         [HttpPost("ConfirmEmail")]
+        [AllowAnonymous]
         public async Task<ApiResponse> ConfirmEmail(ConfirmEmailDto parameters)
         {
             if (!ModelState.IsValid)
@@ -218,9 +219,10 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(200, "Success");
         }
 
-        [AllowAnonymous]
+
         // POST: api/Account/ForgotPassword
         [HttpPost("ForgotPassword")]
+        [AllowAnonymous]
         public async Task<ApiResponse> ForgotPassword(ForgotPasswordDto parameters)
         {
             if (!ModelState.IsValid)
@@ -259,9 +261,9 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(200, "Success");
         }
 
-        [AllowAnonymous]
         // PUT: api/Account/ResetPassword
         [HttpPost("ResetPassword")]
+        [AllowAnonymous]
         public async Task<ApiResponse> ResetPassword(ResetPasswordDto parameters)
         {
             if (!ModelState.IsValid)
@@ -308,18 +310,17 @@ namespace BlazorBoilerplate.Server.Controllers
             #endregion
         }
 
-        [Authorize]
-        [AllowAnonymous]
         // POST: api/Account/Logout
         [HttpPost("Logout")]
+        [Authorize]
         public async Task<ApiResponse> Logout()
         {
             await _signInManager.SignOutAsync();
             return new ApiResponse(200, "Logout Successful");
         }
 
-        //[Authorize]
         [HttpGet("UserInfo")]
+        [Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         public async Task<ApiResponse> UserInfo()
@@ -363,9 +364,9 @@ namespace BlazorBoilerplate.Server.Controllers
             return null;
         }
 
-        [AllowAnonymous]
         // DELETE: api/Account/5
         [HttpPost("UpdateUser")]
+        [Authorize]
         public async Task<ApiResponse> UpdateUser(UserInfoDto userInfo)
         {
             if (!ModelState.IsValid)
@@ -398,9 +399,9 @@ namespace BlazorBoilerplate.Server.Controllers
 
         ///----------Admin User Management Interface Methods
 
-        [Authorize(Policy = Policies.IsAdmin)]
         // POST: api/Account/Create
         [HttpPost("Create")]
+        [Authorize]
         public async Task<ApiResponse> Create(RegisterDto parameters)
         {
             try
@@ -495,9 +496,9 @@ namespace BlazorBoilerplate.Server.Controllers
             }
         }
 
-        [Authorize(Policy = Policies.IsAdmin)]
         // DELETE: api/Account/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -524,6 +525,7 @@ namespace BlazorBoilerplate.Server.Controllers
             }
         }
 
+
         [HttpGet("GetUser")]
         [Authorize]
         public ApiResponse GetUser()
@@ -534,11 +536,11 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(200, "Get User Successful", userInfo);
         }
 
-        [Authorize(Policy = Policies.IsAdmin)]
+
         [HttpGet]
+        [Authorize]
         public async Task<ApiResponse> Get([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
         {
-
             var userDtoList = new List<UserInfoDto>();
             List<ApplicationUser> listResponse;
 

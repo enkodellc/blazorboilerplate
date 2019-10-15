@@ -21,18 +21,18 @@ namespace BlazorBoilerplate.Server.Controllers
             _logger = logger;
             _todoService = todoService;
         }
-
-        [AllowAnonymous]
+                
         // GET: api/Todo
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ApiResponse> Get()
         {
             return await _todoService.Get();
         }
-
-        [AllowAnonymous]
+                
         // GET: api/Todo/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ApiResponse> Get(int id)
         {
             if (!ModelState.IsValid)
@@ -41,10 +41,10 @@ namespace BlazorBoilerplate.Server.Controllers
             }
             return await _todoService.Get(id);
         }
-
-        [AllowAnonymous]
+                
         // POST: api/Todo
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ApiResponse> Post([FromBody] TodoDto todo)
         {
             if (!ModelState.IsValid)
@@ -53,10 +53,10 @@ namespace BlazorBoilerplate.Server.Controllers
             }
             return await _todoService.Create(todo);
         }
-
-        [AllowAnonymous]
+                
         // Put: api/Todo
         [HttpPut]
+        [AllowAnonymous]
         public async Task<ApiResponse> Put([FromBody] TodoDto todo)
         {
             if (!ModelState.IsValid)
@@ -64,11 +64,11 @@ namespace BlazorBoilerplate.Server.Controllers
                 return new ApiResponse(400, "Todo Model is Invalid");
             }
             return await _todoService.Update(todo);
-        }
-                
-        [Authorize(Policy = Policies.IsAdmin)]
+        }                
+        
         // DELETE: api/Todo/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> Delete(long id)
         {
             return await _todoService.Delete(id); // Delete from DB
