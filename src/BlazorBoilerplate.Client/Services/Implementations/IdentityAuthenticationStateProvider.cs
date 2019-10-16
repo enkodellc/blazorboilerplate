@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorBoilerplate.Client.States
 {
@@ -14,11 +15,13 @@ namespace BlazorBoilerplate.Client.States
         private UserInfoDto _userInfoCache = null;
         private readonly IAuthorizeApi _authorizeApi;
         private readonly AppState _appState;
+        private readonly NavigationManager _navigationManager;
 
-        public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi, AppState appState)
+        public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi, AppState appState, NavigationManager navigationManager)
         {
             _authorizeApi = authorizeApi;
             _appState = appState;
+            _navigationManager = navigationManager;
         }
 
         public async Task<ApiResponseDto> Login(LoginDto loginParameters)
@@ -84,21 +87,14 @@ namespace BlazorBoilerplate.Client.States
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var identity = new ClaimsIdentity();
-            try
-            {
-                var userInfo = await GetUserInfo();
-                if (userInfo.IsAuthenticated)
-                {
-                    var claims = new[] { new Claim(ClaimTypes.Name, _userInfoCache.UserName) }.Concat(_userInfoCache.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
-                    identity = new ClaimsIdentity(claims, "Server authentication");
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine("Request failed:" + ex.ToString());
-            }
-
+            // hack: create a new HttpClient rather than relying on the registered service as the AuthenticationStateProvider is initialized prior to IUriHelper ( https://github.com/aspnet/AspNetCore/issues/11867 )
+            HttpClient http = new HttpClient();
+            Uri uri = new Uri(_navigationManager.BaseUri);
+            string apiurl = uri.Scheme + "://" + uri.Authority + "/~/api/User/authenticate";
+            UserInfoDto user = await http.GetJsonAsync<UserInfoDto>(apiurl);
+            var identity = user.IsAuthenticated
+                ? new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.UserName) }, "serverauth")
+                : new ClaimsIdentity();
             return new AuthenticationState(new ClaimsPrincipal(identity));
         }
 

@@ -25,9 +25,18 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Client;
+using BlazorBoilerplate.Client.Services.Contracts;
+using BlazorBoilerplate.Client.Services.Implementations;
+using BlazorBoilerplate.Client.States;
+using MatBlazor;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Server
 {
@@ -286,6 +295,47 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
+
+            services.AddServerSideBlazor();
+            services.AddRazorPages();
+
+            services.AddAuthorizationCore(config =>
+            {
+                config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
+                config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
+                config.AddPolicy(Policies.IsReadOnly, Policies.IsUserPolicy());
+                // config.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  Only works on the server end
+            });
+            services.AddScoped<IdentityAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
+            services.AddScoped<IAuthorizeApi, AuthorizeApi>();
+            services.AddLoadingBar();
+            services.Add(new ServiceDescriptor(typeof(IUserProfileApi), typeof(UserProfileApi), ServiceLifetime.Scoped));
+            services.AddScoped<AppState>();
+            services.AddMatToaster(config =>
+            {
+                config.Position = MatToastPosition.BottomRight;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = true;
+                config.ShowCloseButton = true;
+                config.MaximumOpacity = 95;
+                config.VisibleStateDuration = 3000;
+            });
+
+            //// Server Side Blazor doesn't register HttpClient by default
+            //if (!services.Any(x => x.ServiceType == typeof(HttpClient)))
+            //{
+            //    // Setup HttpClient for server side in a client side compatible fashion
+            //    services.AddScoped<HttpClient>(s =>
+            //    {
+            //        // Creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
+            //        var uriHelper = s.GetRequiredService<NavigationManager>();
+            //        return new HttpClient
+            //        {
+            //            BaseAddress = new Uri(uriHelper.BaseUri)
+            //        };
+            //    });
+            //}
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -332,11 +382,12 @@ namespace BlazorBoilerplate.Server
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapBlazorHub();
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapFallbackToPage("/_Host");
                 endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
-                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
         }
     }

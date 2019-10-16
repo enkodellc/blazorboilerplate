@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@page "/"
+@namespace BlazorBoilerplate.Client.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
@@ -31,6 +34,7 @@
 </head>
 <body>
     <app>
+        @(await Html.RenderComponentAsync<BlazorBoilerplate.Client.App>(RenderMode.ServerPrerendered))
         <div class="triangle-container">
             <div class="triangles">
             </div>
@@ -40,9 +44,13 @@
             Loading Blazor Boilerplate...
         </div>
     </app>
-    <script src="_framework/blazor.webassembly.js"></script>
+    <script id="blazorMode"></script>
+    <script>
+        document.getElementById("blazorMode").src = window.location.search.includes("mode=server") ? "_framework/blazor.server.js" : "_framework/blazor.webassembly.js";
+    </script>
     <!-- load signalR and chatClient after blazor boot loads -->
     <script src="javascript/signalr.min.js"></script>
     <script src="javascript/chatClient.js"></script>
 </body>
 </html>
+
