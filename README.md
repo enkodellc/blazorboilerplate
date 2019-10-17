@@ -23,13 +23,13 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- .NET Core SDK 3.0.100
+- [.Net Core SDK 3.1.100-preview1-014459](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 - Visual Studio 2019 Preview  with the ASP.NET and web development workload selected.
-- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19465.2**
-- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version "3.0.0**
+- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.1.0-preview1.19508.20**
+- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.1.100**
 
 ### How to run
-1. Install **dotnet-sdk 3.0.100** and the latest **Visual Studio 2019 Preview**.
+1. Install **dotnet-sdk 3.1.100** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
@@ -92,6 +92,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ### 0.3.2 (Under Development)
 - Identity Server 4 - Authentication with ASP.Net Identity Authorization with Policies  
+- v3.1.0-preview1 / Nuget Package updates
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
 
