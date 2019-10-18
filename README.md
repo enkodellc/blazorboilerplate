@@ -36,10 +36,10 @@ Complete all Blazor dependencies.
 5. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
 [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html)
 
-## Publish on IIS
-1. Publish both the Client and Server projects.
-2. Upload Server project to website folder.
-3. Upload Client 'BlazorBoilerplate.Client' directory 
+## Publish on IIS - What works for me on my Windows Server 2014 (Enkodellc)
+1. Publish both the Client and Server projects to local folder
+2. Upload / Copy published Server directory to website folder.
+3. Upload / Copy published Client directory ON TOP of to the same root website directory of Server, it will add some files and overwrite some.
 
 ### Thanks To
 - [Blazor](https://blazor.net)
