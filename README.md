@@ -24,22 +24,21 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 Complete all Blazor dependencies.
 
 - [.Net Core SDK 3.1.100-preview1-014459](https://dotnet.microsoft.com/download/dotnet-core/3.1)
-- Visual Studio 2019 Preview  with the ASP.NET and web development workload selected.
-- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.1.0-preview1.19508.20**
-- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.1.100**
+- Install the Latest Visual Studio 2019 Preview with the ASP.NET and web development workload selected.
+- Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.1.100**
 
 ### How to run
 1. Install **dotnet-sdk 3.1.100** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
-4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
-5. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
+4. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
 [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html)
 
 ## Publish on IIS - What works for me on my Windows Server 2014 (Enkodellc)
 1. Publish both the Client and Server projects to local folder
 2. Upload / Copy published Server directory to website folder.
 3. Upload / Copy published Client directory ON TOP of to the same root website directory of Server, it will add some files and overwrite some.
+4. Configure your appsettings.config - ConnectionString, Thumbprint / SSL.
 
 ### Thanks To
 - [Blazor](https://blazor.net)
