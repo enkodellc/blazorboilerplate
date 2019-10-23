@@ -58,10 +58,10 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                     Title = table.Column<string>(maxLength: 128, nullable: false),
                     IsCompleted = table.Column<bool>(nullable: false),
                     CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedOn = table.Column<DateTime>(nullable: false, defaultValueSql: "GetUtcDate()"),
+                    CreatedOn = table.Column<DateTime>(nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     IsDeleted = table.Column<bool>(nullable: false),
                     ModifiedBy = table.Column<Guid>(nullable: false),
-                    ModifiedOn = table.Column<DateTime>(nullable: false, defaultValueSql: "GetUtcDate()")
+                    ModifiedOn = table.Column<DateTime>(nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {

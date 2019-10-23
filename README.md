@@ -88,6 +88,13 @@ It though is my ambition to learn and get feedback on what Best Practices can be
 ## License
 This project is licensed under the terms of the [MIT license](LICENSE).
 
+### Problem Solving Tips
+- Make sure you have all pre-requisites installed.
+- Go back to the Origin: BlazorBoilerplate was built off of [BlazorWithIdentity](https://github.com/stavroskasidis/BlazorWithIdentity) so first step is to run this and try and publish. The reasoning is that this is a very lean project to reduce the amount of code and resources requiring debugging.
+- Keep It Simple Stupid: If you are running into issues with SQL / connection string. Test out with SQLlite / file db. Then test out with a known good connection string.
+- If still failing get on [Gitter BlazorBoilerplate](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+ for BlazorBoilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
+
 ## News
 
 ### 0.3.2 (Under Development)
