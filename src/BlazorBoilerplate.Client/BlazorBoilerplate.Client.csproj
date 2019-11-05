@@ -22,13 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.0-preview1.19508.20" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.1.0-preview1.19508.20" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.1.0-preview1.19508.20" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.1.0-preview1.19508.20" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.1.0-preview1.19508.20" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.0-preview2.19528.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.1.0-preview2.19528.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.1.0-preview2.19528.8" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.1.0-preview2.19528.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.1.0-preview2.19528.8" PrivateAssets="all" />
     <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="7.0.0" />
-    <PackageReference Include="MatBlazor" Version="1.10.0" />
+    <PackageReference Include="MatBlazor" Version="1.10.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -23,12 +23,12 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- [.Net Core SDK 3.1.100-preview1-014459](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- [.Net Core SDK 3.1.100-preview2-014569](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 - Install the Latest Visual Studio 2019 Preview with the ASP.NET and web development workload selected.
-- Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.1.100**
+- Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.1.0-preview2.19525.5**
 
 ### How to run
-1. Install **dotnet-sdk 3.1.100** and the latest **Visual Studio 2019 Preview**.
+1. Install the latest .NET Core SDK **3.1.100-preview2** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
