@@ -89,17 +89,19 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ### Problem Solving Tips
 - Make sure you have all pre-requisites installed.
+- Keep It Simple Stupid: If you are running into issues with SQL / connection string. First CHECK both appsettings.json (for production) and appsettings.development.json (for development). 
+Test out with SQLlite / file db. Then test out with a known good connection string.
 - Go back to the Origin: BlazorBoilerplate was built off of [BlazorWithIdentity](https://github.com/stavroskasidis/BlazorWithIdentity) so first step is to run this and try and publish. The reasoning is that this is a very lean project to reduce the amount of code and resources requiring debugging.
-- Keep It Simple Stupid: If you are running into issues with SQL / connection string. Test out with SQLlite / file db. Then test out with a known good connection string.
 - If still failing get on [Gitter BlazorBoilerplate](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
- for BlazorBoilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
+ for Blazor Boilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
 
 ## News
 
 ### 0.3.2 (Under Development)
 - Identity Server 4 - Authentication with ASP.Net Identity Authorization with Policies  
-- v3.1.0-preview1 / Nuget Package updates
+- v3.1.0-preview2 / Nuget Package updates
 - Known Issues: 
+  - Client-side Auth Policies on Users Page not coming through on AuthorizeView
   - IAuditable Shadow Properties not getting UserId
 
 ### 0.3.0 - IS4 (Breaking Changes from 0.2.3)

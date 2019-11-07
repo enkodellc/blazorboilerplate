@@ -3,7 +3,7 @@
 @inherits ForumPageModel
 @inject HttpClient Http
 
-<AuthorizeView>
+<AuthorizeView Context="AuthorizeContext">
     <NotAuthorized>
         <div class="alert alert-success">
             <a href="/account/login">Log in</a> to post a message.
@@ -14,7 +14,7 @@
 <h1>Forum</h1>
 <p>This forum page uses SignalR and persists in a database. </p>
 
-<AuthorizeView>
+<AuthorizeView Context="AuthorizeContext">
     <Authorized>
         <ForumMessageCreateForm Send="Send" />
 

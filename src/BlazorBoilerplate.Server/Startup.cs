@@ -270,14 +270,7 @@ namespace BlazorBoilerplate.Server
             // DB Creation and Seeding
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
 
-            // AutoMapper Configurations
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingProfile());
-            });
-
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
-
             var automapperConfig = new MapperConfiguration(configuration =>
             {
                 configuration.AddProfile(new MappingProfile());

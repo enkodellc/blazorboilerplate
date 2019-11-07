@@ -581,7 +581,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet("ListRoles")]
-        [Authorize(Policy = Policies.IsAdmin)]
+        [Authorize]
         public async Task<ApiResponse> ListRoles()
         {
             var roleList = _roleManager.Roles.Select(x => x.Name).ToList();
