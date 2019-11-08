@@ -100,8 +100,8 @@ Test out with SQLlite / file db. Then test out with a known good connection stri
 ### 0.3.2 (Under Development)
 - Identity Server 4 - Authentication with ASP.Net Identity Authorization with Policies  
 - v3.1.0-preview2 / Nuget Package updates
+- Authorize / Policy Examples on Users Page
 - Known Issues: 
-  - Client-side Auth Policies on Users Page not coming through on AuthorizeView
   - IAuditable Shadow Properties not getting UserId
 
 ### 0.3.0 - IS4 (Breaking Changes from 0.2.3)
