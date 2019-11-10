@@ -391,7 +391,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 Path = path,
                 QueryString = queryString,
                 RequestBody = requestBody,
-                ResponseBody = responseBody,
+                ResponseBody = responseBody ?? String.Empty,
                 IPAddress = ipAddress,
                 ApplicationUserId = user == null ? Guid.Empty : user.Id
             });

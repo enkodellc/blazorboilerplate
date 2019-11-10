@@ -663,7 +663,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpPost("AddUserRoleGlobal")]
         [Authorize(Policy = Policies.IsAdmin)]
-        public async Task<ApiResponse> AddUserRoletoAppAsync([FromBody] string newRole)
+        public async Task<ApiResponse> AddUserRoleToAppAsync([FromBody] string newRole)
         {
             // first make sure the role doesn't already exist
             if (_roleManager.Roles.Any(r => r.Name == newRole))
