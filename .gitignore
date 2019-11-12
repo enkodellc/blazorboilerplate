@@ -340,3 +340,4 @@ ASALocalRun/
 healthchecksdb
 /BlazorBoilerplate.Server/data.db
 /src/BlazorBoilerplate.Server/*.db
+*.rsa
