@@ -41,7 +41,7 @@ namespace BlazorBoilerplate.Client
 
         public void Configure(IComponentsApplicationBuilder app)
         {
-            WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
+            //WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include; //Not sure if we need this https://github.com/aspnet/AspNetCore/issues/17115 Preview4
             app.UseLoadingBar();
             app.AddComponent<App>("app");
         }

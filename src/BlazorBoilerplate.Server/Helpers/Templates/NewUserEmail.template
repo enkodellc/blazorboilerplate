@@ -2,7 +2,7 @@
   <h1>
     <img style="width:100px; vertical-align: middle;" src="https://blazorboilerplate.com/images/logo.png" alt="Blazor Boilerplate"/> Blazor Boilerplate
   </h1>
-  <p>Hello {userName},</p>
+  <p>Hello {fullName},</p>
   <p>
     You have been added as a new user to <a href="https://blazorboilerplate.com" target="_blank">https://blazorboilerplate.com</a> Below are your new credentials.
   </p>

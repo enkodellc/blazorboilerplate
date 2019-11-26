@@ -97,9 +97,12 @@ Test out with SQLlite / file db. Then test out with a known good connection stri
 
 ## News
 
+- I've been busy with some personal projects. After Thanksgiving I will be back reviewing some suggested edits / PR's. 
+Thanks to everyone using Blazor Boilerplate and helping it grow!
+
 ### 0.3.2 (Under Development)
 - Identity Server 4 - Authentication with ASP.Net Identity Authorization with Policies  
-- v3.1.0-preview2 / Nuget Package updates
+- v3.1.0-preview3 / Nuget Package updates
 - Authorize / Policy Examples on Users Page
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId

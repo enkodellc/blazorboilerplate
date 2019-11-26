@@ -159,7 +159,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 {
                     var email = new EmailMessageDto();
                     email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                    email = EmailTemplates.BuildNewUserEmail(email, user.UserName, user.Email, parameters.Password); //Replace First UserName with Name if you want to add name to Registration Form
+                    email = EmailTemplates.BuildNewUserEmail(email, user.FullName, user.UserName, user.Email, parameters.Password);
 
                     _logger.LogInformation("New user registered: {0}", user);
                     await _emailService.SendEmailAsync(email);
@@ -465,7 +465,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 {
                     var email = new EmailMessageDto();
                     email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                    email = EmailTemplates.BuildNewUserEmail(email, user.UserName, user.Email, parameters.Password); //Replace First UserName with Name if you want to add name to Registration Form
+                    email = EmailTemplates.BuildNewUserEmail(email, user.FullName, user.UserName, user.Email, parameters.Password);
 
                     _logger.LogInformation("New user created: {0}", user);
                     await _emailService.SendEmailAsync(email);
