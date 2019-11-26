@@ -17,7 +17,7 @@ steps:
   inputs:
     version: '3.1.100-preview3-014645'
 
-- task: NuGetToolInstaller@0014569
+- task: NuGetToolInstaller@0
 
 - script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration)
   displayName: 'dotnet build blazorboilerplate'
