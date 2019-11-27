@@ -191,7 +191,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                     b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GetUtcDate()");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
@@ -205,7 +205,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                     b.Property<DateTime>("ModifiedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GetUtcDate()");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Title")
                         .IsRequired()

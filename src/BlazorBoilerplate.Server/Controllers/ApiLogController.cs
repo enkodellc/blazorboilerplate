@@ -10,7 +10,7 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize]
     public class ApiLogController : ControllerBase
     {
         private readonly IApiLogService _apiLogService;
@@ -29,7 +29,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // GET: api/ApiLog/ApplicationUserId
         [HttpGet("[action]")]
-        [Authorize(Policies.IsAdmin)]
+        [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> GetByApplicationUserId(string userId)
         {
             return await _apiLogService.GetByApplictionUserId(new Guid(userId));

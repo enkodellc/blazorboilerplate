@@ -23,23 +23,22 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- .NET Core SDK 3.0.100
-- Visual Studio 2019 Preview  with the ASP.NET and web development workload selected.
-- The Blazor templates on the command-line: **dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19465.2**
-- For Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version "3.0.0**
+- [.Net Core SDK 3.1.100-preview2-014569](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- Install the Latest Visual Studio 2019 Preview with the ASP.NET and web development workload selected.
+- Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.1.0-preview2.19525.5**
 
 ### How to run
-1. Install **dotnet-sdk 3.0.100** and the latest **Visual Studio 2019 Preview**.
+1. Install the latest .NET Core SDK **3.1.100-preview2** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
-4. Create a user using the `Create Account` button in the login page or login if you have already created a user.
-5. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
+4. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
 [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html)
 
-## Publish on IIS
-1. Publish both the Client and Server projects.
-2. Upload Server project to website folder.
-3. Upload Client 'BlazorBoilerplate.Client' directory 
+## Publish on IIS - What works for me on my Windows Server 2014 (Enkodellc)
+1. Publish both the Client and Server projects to local folder
+2. Upload / Copy published Server directory to website folder.
+3. Upload / Copy published Client directory ON TOP of to the same root website directory of Server, it will add some files and overwrite some.
+4. Configure your appsettings.config - ConnectionString, Thumbprint / SSL.
 
 ### Thanks To
 - [Blazor](https://blazor.net)
@@ -59,7 +58,8 @@ attempt to create something that developers can start a Blazor project with seve
 I have a lot of experience with ASP.Net webforms an new to .NET Core and Blazor. This code is not meant to be perfect or follow every Best Practice. 
 It though is my ambition to learn and get feedback on what Best Practices can be implemented. 
  I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and 
- suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository.
+ suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository. If you wish to hire me for 
+ consulting or as a contractor please reach out via [email](support@blazorboilerplate.com) or [https://gitter.im/enkodellc](https://gitter.im/enkodellc).
 
 ## Completed 
  - Basic Login / User Creation
@@ -87,9 +87,27 @@ It though is my ambition to learn and get feedback on what Best Practices can be
 ## License
 This project is licensed under the terms of the [MIT license](LICENSE).
 
+### Problem Solving Tips
+- Make sure you have all pre-requisites installed.
+- Keep It Simple Stupid: If you are running into issues with SQL / connection string. First CHECK both appsettings.json (for production) and appsettings.development.json (for development). 
+Test out with SQLlite / file db. Then test out with a known good connection string.
+- Go back to the Origin: BlazorBoilerplate was built off of [BlazorWithIdentity](https://github.com/stavroskasidis/BlazorWithIdentity) so first step is to run this and try and publish. The reasoning is that this is a very lean project to reduce the amount of code and resources requiring debugging.
+- If still failing get on [Gitter BlazorBoilerplate](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+ for Blazor Boilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
+
 ## News
 
-### 0.3.0 (Breaking Changes - Under Development)
+- I've been busy with some personal projects. After Thanksgiving I will be back reviewing some suggested edits / PR's. 
+Thanks to everyone using Blazor Boilerplate and helping it grow!
+
+### 0.3.2 (Under Development)
+- Identity Server 4 - Authentication with ASP.Net Identity Authorization with Policies  
+- v3.1.0-preview3 / Nuget Package updates
+- Authorize / Policy Examples on Users Page
+- Known Issues: 
+  - IAuditable Shadow Properties not getting UserId
+
+### 0.3.0 - IS4 (Breaking Changes from 0.2.3)
 - Identity Server 4 First Release - Delete your DB! Thanks to [ganmuru](https://github.com/ganmuru)
 - User Profile Store Last Page Visited / Return on Login
 - .NET Core 3.0.100 / Blazor 3.0.0-preview9.19457.4 update
@@ -134,7 +152,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ### 0.1.8
 - Middleware to log Api Requests and Responses for auditing and debugging. Thanks [salslab](https://github.com/salslab/AspNetCoreApiLoggingSample)
-- Middleware for consistent API Responses and Exception Handlin. Thanks [proudmonkey](http://vmsdurano.com/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consistent-responses/)
+- Middleware for consistent API Responses and Exception Handling. Thanks [proudmonkey](http://vmsdurano.com/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consistent-responses/)
 - Email Pop3 / IMAP retrieval. Thanks [npraskins](https://github.com/npraskins)
 - Responsive Navigation / Closed / Full / Minified / Minified & Hover effect
 - Added MatNavMenu PR for MatBlazor - Ver 1.5

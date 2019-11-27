@@ -1,6 +1,7 @@
 ﻿@page "/admin/users"
 @attribute [Authorize]
 @inject HttpClient Http
+@inject IAuthorizationService AuthorizationService
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
@@ -27,11 +28,20 @@ else
         </MatTableHeader>
         <MatTableRow Context="UserRow">
             <td>
-                <div style="width:155px;">
-                    <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
-                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))"></MatIconButton>
-                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="@(UserRow.UserId == userProfile.UserId)"></MatIconButton>
-                </div>
+                <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
+                    <div style="width:155px;">
+                        <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
+                        <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))"></MatIconButton>
+                        <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="@(UserRow.UserId == userProfile.UserId)"></MatIconButton>
+                    </div>
+                </AuthorizeView>
+                <AuthorizeView Policy="@Policies.IsUser" Context="AuthorizeContext">
+                    <div style="width:155px;">
+                        <MatIconButton Icon="edit" Disabled="true"></MatIconButton>
+                        <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))" Disabled="@(UserRow.UserId != userProfile.UserId)"></MatIconButton>
+                        <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="true"></MatIconButton>
+                    </div>              
+                </AuthorizeView>
             </td>
             <td><div style="width:130px;">@UserRow.UserName</div></td>
             <td>@UserRow.Email</td>
@@ -154,6 +164,9 @@ else
 </MatDialog>
 
 @code {
+    //Auth documentation
+    //https://docs.microsoft.com/en-us/aspnet/core/security/blazor/?view=aspnetcore-3.0&tabs=visual-studio
+
     int pageSize { get; set; } = 15;
     int currentPage { get; set; } = 0;
 
@@ -184,7 +197,6 @@ else
     {
         await RetrieveUserListAsync();
         await PopulateRoleList();
-
         userProfile = await appState.GetUserProfile();
     }
 
@@ -275,7 +287,7 @@ else
         {
             //update the user object's role list with the new selection set
             user.Roles = roleSelections.Where(x => x.Selected == true).Select(x => x.Name).ToList();
-            
+
             var apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Account", user);
             if (apiResponse.StatusCode == 200)
             {

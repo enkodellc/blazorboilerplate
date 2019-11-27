@@ -314,7 +314,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
         private string ConvertToJSONString(int code, object content)
         {
-            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content,  null, "0.3.0"), JSONSettings());
+            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content,  null, "0.3.2"), JSONSettings());
         }
         private string ConvertToJSONString(ApiResponse apiResponse)
         {
@@ -391,7 +391,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 Path = path,
                 QueryString = queryString,
                 RequestBody = requestBody,
-                ResponseBody = responseBody,
+                ResponseBody = responseBody ?? String.Empty,
                 IPAddress = ipAddress,
                 ApplicationUserId = user == null ? Guid.Empty : user.Id
             });

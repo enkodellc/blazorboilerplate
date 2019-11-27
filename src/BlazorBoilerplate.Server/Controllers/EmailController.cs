@@ -13,8 +13,7 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [Authorize]
-    [ApiController]
-    
+    [ApiController]    
     public class EmailController : ControllerBase
     {
         // Logger instance

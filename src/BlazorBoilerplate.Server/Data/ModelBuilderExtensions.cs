@@ -65,8 +65,8 @@ namespace BlazorBoilerplate.Server.Data
         public static void SetAuditingShadowProperties<T>(ModelBuilder builder) where T : class, IAuditable
         {
             // define shadow properties
-            builder.Entity<T>().Property<DateTime>("CreatedOn").HasDefaultValueSql("GetUtcDate()");
-            builder.Entity<T>().Property<DateTime>("ModifiedOn").HasDefaultValueSql("GetUtcDate()");
+            builder.Entity<T>().Property<DateTime>("CreatedOn").HasDefaultValueSql("CURRENT_TIMESTAMP");
+            builder.Entity<T>().Property<DateTime>("ModifiedOn").HasDefaultValueSql("CURRENT_TIMESTAMP");
             builder.Entity<T>().Property<Guid>("CreatedBy");
             builder.Entity<T>().Property<Guid>("ModifiedBy");
 

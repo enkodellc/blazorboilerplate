@@ -64,17 +64,19 @@ namespace BlazorBoilerplate.Server.Helpers
 
             return emailMessage;
         }
-        public static EmailMessageDto BuildNewUserEmail(EmailMessageDto emailMessage, string recepientName, string userName, string password)
+        public static EmailMessageDto BuildNewUserEmail(EmailMessageDto emailMessage, string fullName, string userName, string emailAddress, string password)
         {
             if (newUserEmailTemplate == null)
                 newUserEmailTemplate = ReadPhysicalFile("Helpers/Templates/NewUserEmail.template");
 
             emailMessage.Body = newUserEmailTemplate
-                //.Replace("{name}", recepientName) // Uncomment if you want to add name to the registration form
+                //.Replace("{fullName}", fullName) // Uncomment if you want to add name to the registration form has First / Last Name
+                .Replace("{fullName}", userName) //Comment out if you want have First / Last Name in registration form.
                 .Replace("{userName}", userName)
+                .Replace("{email}", emailAddress)
                 .Replace("{password}", password);
 
-            emailMessage.Subject = string.Format("Welcome {0} to Blazor Boilerplate", recepientName);
+            emailMessage.Subject = string.Format("Welcome {0} to Blazor Boilerplate", fullName);
 
             return emailMessage;
         }

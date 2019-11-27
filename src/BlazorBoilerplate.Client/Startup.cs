@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Components.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Blazor.Http;
-using Microsoft.AspNetCore.Components.Authorization;
 using BlazorBoilerplate.Client.Services.Contracts;
 using BlazorBoilerplate.Client.Services.Implementations;
 using BlazorBoilerplate.Client.States;
-using MatBlazor;
-using Toolbelt.Blazor.Extensions.DependencyInjection;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using MatBlazor;
+using Microsoft.AspNetCore.Blazor.Http;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Client
 {
@@ -41,7 +41,7 @@ namespace BlazorBoilerplate.Client
 
         public void Configure(IComponentsApplicationBuilder app)
         {
-            WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
+            //WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include; //Not sure if we need this https://github.com/aspnet/AspNetCore/issues/17115 Preview4
             app.UseLoadingBar();
             app.AddComponent<App>("app");
         }
