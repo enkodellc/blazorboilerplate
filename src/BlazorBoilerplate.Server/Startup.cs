@@ -8,6 +8,7 @@ using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -185,14 +186,24 @@ namespace BlazorBoilerplate.Server
                 identityServerBuilder.AddSigningCredential(cert);
             }
 
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
-                    options.SupportedTokens = SupportedTokens.Jwt;
-                    options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
-                    options.ApiName = IdentityServerConfig.ApiName;
-                });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddGoogle(options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                options.ClientId = "516968398545-fh19hvpudqgtn976580erdrn24ggipb7.apps.googleusercontent.com";
+                options.ClientSecret = "6bHWkHa28dYtbNXq20-0DxzF";
+            })
+            .AddIdentityServerAuthentication(options =>
+            {
+                options.Authority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
+                options.SupportedTokens = SupportedTokens.Jwt;
+                options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
+                options.ApiName = IdentityServerConfig.ApiName;
+            });
 
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 

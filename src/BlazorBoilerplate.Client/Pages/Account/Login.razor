@@ -12,6 +12,7 @@
         <br />
         <h4>Log In</h4>
         User Name: <b>user</b> Password: <b>user123</b>
+        <MatButton class="float-right" OnClick="@GoogleSignIn" Raised="true">GoogleSignIn</MatButton>
     </div>
     <EditForm Model="@loginParameters" OnValidSubmit="@SubmitLogin">
         <DataAnnotationsValidator />
@@ -61,6 +62,11 @@
         matToaster.Add("Password: user123", MatToastType.Info, "User Name: user");
     }
 
+    async Task GoogleSignIn()
+    {
+         navigationManager.NavigateTo(navigationManager.BaseUri + "api/account/challengegoogle", true);
+    }
+
     async Task SubmitLogin()
     {
         try
@@ -78,7 +84,7 @@
                 else
                 {
                     navigationManager.NavigateTo("/dashboard");
-                }                
+                }
             }
             else
             {
