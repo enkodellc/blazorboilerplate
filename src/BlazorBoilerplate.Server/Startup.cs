@@ -49,8 +49,14 @@ namespace BlazorBoilerplate.Server
         {
             string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
+            //assemble the connection string from docker-compose variables
+            string constring = $"Server={Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")};Database=master;User={Configuration.GetValue<string>("MSSQL_USER")};Password={Configuration.GetValue<string>("SA_PASSWORD")}";
             services.AddDbContext<ApplicationDbContext>(options => {
-                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
+                if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
+                {
+                    options.UseSqlServer(constring);  // SQL Server from docker-compose
+                }
+                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                 {
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));//SQL Server Database
                 }
@@ -80,7 +86,11 @@ namespace BlazorBoilerplate.Server
               .AddConfigurationStore(options =>
               {
                   options.ConfigureDbContext = builder => {
-                      if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
+                      if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
+                      {
+                          builder.UseSqlServer(constring, sql => sql.MigrationsAssembly(migrationsAssembly)); // SQL Server from docker-compose
+                      }
+                      else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                       {
                           builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database
                       }
@@ -93,6 +103,11 @@ namespace BlazorBoilerplate.Server
               .AddOperationalStore(options =>
               {
                   options.ConfigureDbContext = builder => {
+                      if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
+                      {
+                          builder.UseSqlServer(constring, sql => sql.MigrationsAssembly(migrationsAssembly)); // SQL Server from docker-compose
+                      }
+                      else
                       if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                       {
                           builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database

@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+    blazorboilerplate:
+        build:
+          context: ./
+        ports:
+            - "8000:80"
+        depends_on:
+            - db
+        environment:
+            DOCKER_COMPOSE_SQL: "db"
+            MSSQL_USER: "sa"
+            SA_PASSWORD: "Your_password123"
+            ASPNETCORE_ENVIRONMENT: "Development"
+            
+    db:
+        image: "mcr.microsoft.com/mssql/server"
+        volumes:
+            - db_data:/var/opt/mssql
+        environment:
+            SA_PASSWORD: "Your_password123"
+            ACCEPT_EULA: "Y"
+
+volumes:
+    db_data:

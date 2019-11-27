@@ -8,6 +8,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Client", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Shared", "BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj", "{10C5F5DE-4DB1-4368-837B-3A90394073E4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{683E9CAE-E8CE-4093-9665-58B12F12E6DB}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +61,18 @@ Global
 		{10C5F5DE-4DB1-4368-837B-3A90394073E4}.Release|x64.Build.0 = Release|Any CPU
 		{10C5F5DE-4DB1-4368-837B-3A90394073E4}.Release|x86.ActiveCfg = Release|Any CPU
 		{10C5F5DE-4DB1-4368-837B-3A90394073E4}.Release|x86.Build.0 = Release|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Debug|x64.Build.0 = Debug|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Debug|x86.Build.0 = Debug|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Release|x64.ActiveCfg = Release|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Release|x64.Build.0 = Release|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Release|x86.ActiveCfg = Release|Any CPU
+		{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
