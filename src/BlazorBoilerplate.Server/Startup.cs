@@ -75,6 +75,32 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                // User settings
+                options.User.RequireUniqueEmail = true;
+
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                //options.Password.RequiredUniqueChars = 6;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // Require Confirmed Email User settings
+                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
+                {
+                    options.User.RequireUniqueEmail = false;
+                    options.SignIn.RequireConfirmedEmail = true;
+                }
+            });
+
             // Adds IdentityServer
             var identityServerBuilder = services.AddIdentityServer(options =>
             {
@@ -186,16 +212,9 @@ namespace BlazorBoilerplate.Server
                 identityServerBuilder.AddSigningCredential(cert);
             }
 
-            services.AddAuthentication(options =>
+            var authBuilder = services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddGoogle(options =>
-            {
-                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
-                options.ClientId = "516968398545-fh19hvpudqgtn976580erdrn24ggipb7.apps.googleusercontent.com";
-                options.ClientSecret = "6bHWkHa28dYtbNXq20-0DxzF";
             })
             .AddIdentityServerAuthentication(options =>
             {
@@ -204,6 +223,17 @@ namespace BlazorBoilerplate.Server
                 options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
                 options.ApiName = IdentityServerConfig.ApiName;
             });
+
+            if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Google:Enabled"] ?? "false"))
+            {
+                authBuilder.AddGoogle(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = Configuration["ExternalAuthProviders:Google:ClientId"];
+                    options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
+                });
+            }
 
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
@@ -218,28 +248,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Password settings
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
-                //options.Password.RequiredUniqueChars = 6;
-
-                // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-                options.Lockout.MaxFailedAccessAttempts = 10;
-                options.Lockout.AllowedForNewUsers = true;
-
-                // Require Confirmed Email User settings
-                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
-                {
-                    options.User.RequireUniqueEmail = false;
-                    options.SignIn.RequireConfirmedEmail = true;
-                }
-            });
+            
 
             services.ConfigureApplicationCookie(options =>
             {

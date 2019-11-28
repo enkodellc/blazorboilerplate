@@ -12,7 +12,7 @@
         <br />
         <h4>Log In</h4>
         User Name: <b>user</b> Password: <b>user123</b>
-        <MatButton class="float-right" OnClick="@GoogleSignIn" Raised="true">GoogleSignIn</MatButton>
+        <br />
     </div>
     <EditForm Model="@loginParameters" OnValidSubmit="@SubmitLogin">
         <DataAnnotationsValidator />
@@ -29,9 +29,10 @@
                 <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
             </div>
             <hr />
-            <NavLink href="account/register">
-                <h6 class="font-weight-normal text-center">Create account</h6>
-            </NavLink>
+            <div>
+                <MatButton class="float-left" OnClick="@Register" Raised="true">Create account</MatButton>
+                <MatButton class="float-right" OnClick="@GoogleSignIn" Raised="true">Sign in with <img height="18" style="margin-left: 5px" src="https://www.google.pl/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" /></MatButton>
+            </div>
         </fieldset>
     </EditForm>
 </MatCard>
@@ -64,7 +65,12 @@
 
     async Task GoogleSignIn()
     {
-         navigationManager.NavigateTo(navigationManager.BaseUri + "api/account/challengegoogle", true);
+         navigationManager.NavigateTo(navigationManager.BaseUri + "api/externalauth/challenge/google", true);
+    }
+
+    async Task Register()
+    {
+         navigationManager.NavigateTo("/account/register");
     }
 
     async Task SubmitLogin()

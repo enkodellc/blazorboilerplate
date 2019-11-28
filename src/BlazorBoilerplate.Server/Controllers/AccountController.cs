@@ -6,6 +6,7 @@ using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
 using IdentityModel;
+using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -47,27 +48,7 @@ namespace BlazorBoilerplate.Server.Controllers
             _db = db;
         }
 
-        //challengegoogle
-        [HttpGet("challengegoogle")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ChallengeGoogle()
-        {
-            var callbackUrl = Url.Action("signin-google");
-            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
-
-            var props = new AuthenticationProperties
-            {
-                RedirectUri = callbackUrl,
-                Items =
-                {
-                    { "scheme", "Google" },
-                    { "returnUrl", "http://localhost:53414/signin-google" }
-                }
-            };
-
-            return Challenge(props, "Google");
-        }
-
+        
         // POST: api/Account/Login
         [HttpPost("Login")]
 
