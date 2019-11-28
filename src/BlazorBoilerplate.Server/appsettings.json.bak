@@ -1,6 +1,5 @@
 {
   "ConnectionStrings": {
-    "PostgresConnection": "host=localhost;database=productfly;user id=postgres;password=Dorian3210#",
     "DefaultConnection": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=blazor_boilerplate;Trusted_Connection=True;MultipleActiveResultSets=true",
     "SqlLiteConnectionFileName": "data.db"
   },
@@ -12,8 +11,7 @@
       "Enabled": true,
       "IgnorePaths": [ "/api/userprofile" ]
     },
-    "UsePostgresServer": true,
-    "UseSqlServer": false,
+    "UseSqlServer": true,
     "UseSqlLite": false,
     "IS4ApplicationUrl": "https://blazorboilerplate.com",
     "UseLocalCertStore": "true",
