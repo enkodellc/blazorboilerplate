@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
 {
-    public partial class InitialApplicationDbMigration : Migration
+    public partial class Migrate_ApplicationDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +55,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(maxLength: 128, nullable: false),
                     IsCompleted = table.Column<bool>(nullable: false),
                     CreatedBy = table.Column<Guid>(nullable: false),
@@ -73,7 +74,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RoleId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -94,7 +95,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RequestTime = table.Column<DateTime>(nullable: false),
                     ResponseMillis = table.Column<long>(nullable: false),
                     StatusCode = table.Column<int>(nullable: false),
@@ -122,7 +123,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -207,7 +208,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserName = table.Column<string>(nullable: false),
                     Text = table.Column<string>(nullable: false),
                     When = table.Column<DateTime>(nullable: false),
@@ -229,7 +230,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<Guid>(nullable: false),
                     LastPageVisited = table.Column<string>(nullable: true),
                     IsNavOpen = table.Column<bool>(nullable: false),
@@ -262,8 +263,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -289,8 +289,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_UserID",

@@ -56,6 +56,10 @@ namespace BlazorBoilerplate.Server
                 {
                     options.UseSqlServer(constring);  // SQL Server from docker-compose
                 }
+                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
+                {
+                    options.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                }
                 else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                 {
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));//SQL Server Database
@@ -90,6 +94,10 @@ namespace BlazorBoilerplate.Server
                       {
                           builder.UseSqlServer(constring, sql => sql.MigrationsAssembly(migrationsAssembly)); // SQL Server from docker-compose
                       }
+                      else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgressServer"] ?? "false"))
+                      {
+                          builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                      }
                       else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                       {
                           builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database
@@ -107,8 +115,11 @@ namespace BlazorBoilerplate.Server
                       {
                           builder.UseSqlServer(constring, sql => sql.MigrationsAssembly(migrationsAssembly)); // SQL Server from docker-compose
                       }
-                      else
-                      if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
+                      else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
+                      {
+                          builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                      }
+                      else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                       {
                           builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database
                       }
