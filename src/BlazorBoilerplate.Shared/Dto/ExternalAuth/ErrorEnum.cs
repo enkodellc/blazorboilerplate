@@ -14,5 +14,6 @@ namespace BlazorBoilerplate.Shared.Dto.ExternalAuth
         ExternalAuthError = 3,
         ExternalUnknownUserId = 4,
         ProviderNotFound = 5,
+        Domain = 6,
     }
 }

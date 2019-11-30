@@ -1,6 +1,5 @@
-﻿@page "/externalauth/success"
+﻿@page "/externalauth/confirm"
 
-@attribute [Authorize]
 @inject AppState appState
 @inject NavigationManager navigationManager
 @inject HttpClient Http
@@ -10,7 +9,7 @@
     <div class="logo">
         <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
         <br />
-        <h4>External authentication success</h4>
+        <h4>External authentication success - check your email inbox for confirmation email and login again</h4>
         <MatButton Link="/" Raised="true">Home</MatButton>
 
     </div>

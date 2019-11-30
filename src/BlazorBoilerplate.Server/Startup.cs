@@ -48,29 +48,103 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
-            //assemble the connection string from docker-compose variables
-            string constring = $"Server={Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")};Database=master;User={Configuration.GetValue<string>("MSSQL_USER")};Password={Configuration.GetValue<string>("SA_PASSWORD")}";
-            services.AddDbContext<ApplicationDbContext>(options => {
-                if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
-                {
-                    options.UseSqlServer(constring);  // SQL Server from docker-compose
-                }
-                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
-                {
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));//SQL Server Database
-                }
-                else
-                {
-                    options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}", sql => sql.MigrationsAssembly(migrationsAssembly));  // Sql Lite / file database
-                }
+            ConfigurePersistencyDatabase(services);
+            ConfigureAuthentication(services);
+
+            //Add Policies / Claims / Authorization - https://stormpath.com/blog/tutorial-policy-based-authorization-asp-net-core
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
+                options.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
+                options.AddPolicy(Policies.IsReadOnly, Policies.IsReadOnlyPolicy());
+                options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations
             });
 
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = false;
+
+                // Suppress redirect on API URLs in ASP.NET Core -> https://stackoverflow.com/a/56384729/54159
+                options.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToAccessDenied = context =>
+                    {
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            context.Response.StatusCode = (int)(HttpStatusCode.Unauthorized);
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToLogin = context =>
+                    {
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            services.AddControllers()
+                .AddNewtonsoftJson();
+
+            services.AddSignalR();
+
+            services.AddSwaggerDocument(config =>
+            {
+                config.PostProcess = document =>
+                {
+                    document.Info.Version = "v0.2.3";
+                    document.Info.Title = "Blazor Boilerplate";
+                    document.Info.Description = "Blazor Boilerplate / Starter Template using the  (ASP.NET Core Hosted) (dotnet new blazorhosted) model. Hosted by an ASP.NET Core server";
+                };
+            });
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
+            RegisterServicesForDependacyInjection(services);
+
+
+        }
+
+        private void RegisterServicesForDependacyInjection(IServiceCollection services)
+        {
+            services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IUserSession, UserSession>();
+            services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IUserProfileService, UserProfileService>();
+            services.AddTransient<IApiLogService, ApiLogService>();
+            services.AddTransient<ITodoService, ToDoService>();
+            services.AddTransient<IMessageService, MessageService>();
+            services.AddTransient<IAccountService, AccountService>();
+
+
+            // DB Creation and Seeding
+            services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
+
+
+            //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
+            var autoMapper = new MapperConfiguration(configuration =>
+            {
+                configuration.AddProfile(new MappingProfile());
+            }).CreateMapper();
+
+            services.AddSingleton(autoMapper);
+
+        }
+
+        private void ConfigureAuthentication(IServiceCollection services)
+        {
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
-                .AddRoles<IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                            .AddRoles<IdentityRole<Guid>>()
+                            .AddEntityFrameworkStores<ApplicationDbContext>()
+                            .AddDefaultTokenProviders();
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
@@ -112,7 +186,13 @@ namespace BlazorBoilerplate.Server
             })
               .AddConfigurationStore(options =>
               {
-                  options.ConfigureDbContext = builder => {
+                  options.ConfigureDbContext = builder =>
+                  {
+                      var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+                      //assemble the connection string from docker-compose variables
+                      var constring = $"Server={Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")};Database=master;User={Configuration.GetValue<string>("MSSQL_USER")};Password={Configuration.GetValue<string>("SA_PASSWORD")}";
+
                       if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
                       {
                           builder.UseSqlServer(constring, sql => sql.MigrationsAssembly(migrationsAssembly)); // SQL Server from docker-compose
@@ -129,7 +209,14 @@ namespace BlazorBoilerplate.Server
               })
               .AddOperationalStore(options =>
               {
-                  options.ConfigureDbContext = builder => {
+                  options.ConfigureDbContext = builder =>
+                  {
+                      var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+                      //assemble the connection string from docker-compose variables
+                      var constring = $"Server={Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")};Database=master;User={Configuration.GetValue<string>("MSSQL_USER")};Password={Configuration.GetValue<string>("SA_PASSWORD")}";
+
+
                       if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
                       {
                           builder.UseSqlServer(constring, sql => sql.MigrationsAssembly(migrationsAssembly)); // SQL Server from docker-compose
@@ -234,86 +321,29 @@ namespace BlazorBoilerplate.Server
                     options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
                 });
             }
+        }
 
-            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+        private void ConfigurePersistencyDatabase(IServiceCollection services)
+        {
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            //Add Policies / Claims / Authorization - https://stormpath.com/blog/tutorial-policy-based-authorization-asp-net-core
-            services.AddAuthorization(options =>
+            //assemble the connection string from docker-compose variables
+            var constring = $"Server={Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")};Database=master;User={Configuration.GetValue<string>("MSSQL_USER")};Password={Configuration.GetValue<string>("SA_PASSWORD")}";
+            services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
-                options.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
-                options.AddPolicy(Policies.IsReadOnly, Policies.IsReadOnlyPolicy());
-                options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations
-            });
-
-            services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
-
-            
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.HttpOnly = false;
-
-                // Suppress redirect on API URLs in ASP.NET Core -> https://stackoverflow.com/a/56384729/54159
-                options.Events = new CookieAuthenticationEvents()
+                if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
                 {
-                    OnRedirectToAccessDenied = context =>
-                    {
-                        if (context.Request.Path.StartsWithSegments("/api"))
-                        {
-                            context.Response.StatusCode = (int) (HttpStatusCode.Unauthorized);
-                        }
-
-                        return Task.CompletedTask;
-                    },
-                    OnRedirectToLogin = context =>
-                    {
-                        context.Response.StatusCode = 401;
-                        return Task.CompletedTask;
-                    }
-                };
-            });
-
-            services.AddControllers().AddNewtonsoftJson();
-            services.AddSignalR();
-
-            services.AddSwaggerDocument(config =>
-            {
-                config.PostProcess = document =>
+                    options.UseSqlServer(constring);  // SQL Server from docker-compose
+                }
+                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
                 {
-                    document.Info.Version     = "v0.2.3";
-                    document.Info.Title       = "Blazor Boilerplate";
-                    document.Info.Description = "Blazor Boilerplate / Starter Template using the  (ASP.NET Core Hosted) (dotnet new blazorhosted) model. Hosted by an ASP.NET Core server";
-                };
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));//SQL Server Database
+                }
+                else
+                {
+                    options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}", sql => sql.MigrationsAssembly(migrationsAssembly));  // Sql Lite / file database
+                }
             });
-
-            services.AddResponseCompression(opts =>
-            {
-                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                    new[] { "application/octet-stream" });
-            });
-
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IUserSession, UserSession>();
-            services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
-            services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<IUserProfileService, UserProfileService>();
-            services.AddTransient<IApiLogService, ApiLogService>();
-            services.AddTransient<ITodoService, ToDoService>();
-            services.AddTransient<IMessageService, MessageService>();
-
-            // DB Creation and Seeding
-            services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
-
-            //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
-            var automapperConfig = new MapperConfiguration(configuration =>
-            {
-                configuration.AddProfile(new MappingProfile());
-            });
-
-            var autoMapper = automapperConfig.CreateMapper();
-
-            services.AddSingleton(autoMapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -341,8 +371,8 @@ namespace BlazorBoilerplate.Server
             }
             else
             {
-            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
+                //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
             }
 
             //app.UseStaticFiles();

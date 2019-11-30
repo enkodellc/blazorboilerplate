@@ -3,6 +3,7 @@ using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
@@ -26,27 +27,25 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class ExternalAuthController : ControllerBase
     {
-        private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
 
         private readonly ILogger<AccountController> _logger;
+        private readonly IAccountService _accountService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-        private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
-        private readonly ApplicationDbContext _db;
 
-        public ExternalAuthController(UserManager<ApplicationUser> userManager, ApplicationDbContext db,
-            SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger,
-            RoleManager<IdentityRole<Guid>> roleManager, IEmailService emailService, IConfiguration configuration)
+        public ExternalAuthController(IAccountService accountService, 
+            UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager, 
+            ILogger<AccountController> logger,
+            IEmailService emailService, 
+            IConfiguration configuration)
         {
+            _accountService = accountService;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _roleManager = roleManager;
-            _emailService = emailService;
             _configuration = configuration;
-            _db = db;
         }
         
         [HttpGet("challenge/{provider}")]
@@ -76,9 +75,9 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
 
-        [HttpGet("SignIn", Name = "ExternalSignIn")]
+        [HttpGet("ExternalSignIn", Name = "ExternalSignIn")]
         [AllowAnonymous]
-        public async Task<IActionResult> SignIn()
+        public async Task<IActionResult> ExternalSignIn()
         {
             try
             {
@@ -123,101 +122,65 @@ namespace BlazorBoilerplate.Server.Controllers
                     return Redirect("~/externalauth/success");
                 }
 
-                //If external login signin failed, start the fun part
+                //If external login/signin failed
                 var userNameClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
                 var userEmailClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
 
                 //get the user by Email (we are forcing it to be unique)
                 var user = await _userManager.FindByEmailAsync(userEmailClaim.Value);
-
-                // ToDO, duplicate code from Account/Register
-                if (user == null)
+                if (user != null)
                 {
-                    user = new ApplicationUser
+                    //check if the login for this provider exists
+                    var userLogins = await _userManager.GetLoginsAsync(user);
+                    if (userLogins.Any(ul => ul.LoginProvider == externalProvider && ul.ProviderKey == externalUserId))
                     {
-                        UserName = userNameClaim.Value,
-                        Email = userEmailClaim.Value
-                    };
+                        //something went wrong, it should get logged in
 
-                    var createUserResult = await _userManager.CreateAsync(user);
-                    if (!createUserResult.Succeeded)
-                    {
-                        return Redirect($"~/externalauth/error/{ErrorEnum.UserCreationFailed}");
+                        // If lock out activated and the max. amounts of attempts is reached.
+                        if (externalSignInResult.IsLockedOut)
+                        {
+                            _logger.LogInformation("User Locked out: {0}", user.UserName);
+                            return Redirect($"~/externalauth/error/{ErrorEnum.UserLockedOut}");
+                        }
+
+                        // If your email is not confirmed but you require it in the settings for login.
+                        if (externalSignInResult.IsNotAllowed)
+                        {
+                            _logger.LogInformation("User not allowed to log in: {0}", user.UserName);
+                            return Redirect($"~/externalauth/error/{ErrorEnum.UserIsNotAllowed}");
+                        }
+
+                        return Redirect($"~/externalauth/error/{ErrorEnum.Unknown}");
                     }
 
-                    var claimsResult = await _userManager.AddClaimsAsync(user, new Claim[]{
-                        new Claim(Policies.IsUser,""),
-                        new Claim(JwtClaimTypes.Name, user.UserName),
-                        new Claim(JwtClaimTypes.Email, user.Email),
-                        new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
-                    });
-
-                    //Role - Here we tie the new user to the "User" role
-                    await _userManager.AddToRoleAsync(user, "User");
-
-                    if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
-                    {
-                        #region New  User Confirmation Email
-                        try
-                        {
-                            // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                            string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token);
-
-                            var email = new EmailMessageDto();
-                            email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                            email = EmailTemplates.BuildNewUserConfirmationEmail(email, user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
-
-                            _logger.LogInformation("New user registered: {0}", user);
-                            await _emailService.SendEmailAsync(email);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogInformation("New user email failed: {0}", ex.Message);
-                        }
-                        #endregion
-                    }
-
-                    #region New  User Email
+                }
+                else // create new user first
+                {
+                    var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
                     try
                     {
-                        var email = new EmailMessageDto();
-                        email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                        email = EmailTemplates.BuildNewUserEmail(email, user.FullName, user.UserName, user.Email, "");
-
-                        _logger.LogInformation("New user registered: {0}", user);
-                        await _emailService.SendEmailAsync(email);
+                        user = await _accountService.RegisterNewUserAsync(userNameClaim.Value, userEmailClaim.Value, null, requireConfirmEmail);
+                    }
+                    catch (DomainException ex)
+                    {
+                        _logger.LogError("External login Failed: {0}, {1}", ex.Description, ex.Message);
+                        return Redirect($"~/externalauth/error/{ErrorEnum.UserCreationFailed}/{ex.Description}");
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogInformation("New user email failed: {0}", ex.Message);
+                        _logger.LogInformation("External login Failed: " + ex.Message);
+                        return Redirect($"~/externalauth/error/{ErrorEnum.UserCreationFailed}");
                     }
-                    #endregion
+
+                    if (requireConfirmEmail)
+                    {
+                        //ToDo: suggestion - after confirm, the sign in might fail, user needs to relogin using the external provider
+                        //Consider removing this constrain and auto-confirm the email - it has been confirmed by the 3rd party auth provider already
+                        return Redirect($"~/externalauth/confirm");
+                    }
                 }
 
-                //check if the login for this provider exists
-                var userLogins = await _userManager.GetLoginsAsync(user);
-                if (userLogins.Any(ul => ul.LoginProvider == externalProvider && ul.ProviderKey == externalUserId))
-                {
-                    //something went wrong, it should get logged in
-
-                    // If lock out activated and the max. amounts of attempts is reached.
-                    if (externalSignInResult.IsLockedOut)
-                    {
-                        _logger.LogInformation("User Locked out: {0}", user.UserName);
-                        return Redirect($"~/externalauth/error/{ErrorEnum.UserLockedOut}");
-                    }
-
-                    // If your email is not confirmed but you require it in the settings for login.
-                    if (externalSignInResult.IsNotAllowed)
-                    {
-                        _logger.LogInformation("User not allowed to log in: {0}", user.UserName);
-                        return Redirect($"~/externalauth/error/{ErrorEnum.UserIsNotAllowed}");
-                    }
-
-                    return Redirect($"~/externalauth/error/{ErrorEnum.Unknown}");
-                }
-
+                
                 //All if fine, this user (email) did not try to log in before using this external provider
                 //Add external login info
                 var addExternalLoginResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(externalProvider, externalUserId, userNameClaim.Value));
@@ -229,7 +192,13 @@ namespace BlazorBoilerplate.Server.Controllers
                 //Try to sign in again
                 externalSignInResult = await _signInManager.ExternalLoginSignInAsync(externalProvider, externalUserId, true);
 
-                if (externalSignInResult.Succeeded == false)
+                if (externalSignInResult.Succeeded)
+                {
+                    //// delete temporary cookie used during external authentication
+                    await HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+                    return Redirect("~/externalauth/success");
+                }
+                else
                 {
                     //Something went terrible wrong, user exists, external login info added
                     // If lock out activated and the max. amounts of attempts is reached.
@@ -248,13 +217,14 @@ namespace BlazorBoilerplate.Server.Controllers
 
                     return Redirect($"~/externalauth/error/{ErrorEnum.Unknown}");
                 }
+
             }
             catch (Exception ex)
             {
                 _logger.LogInformation("External login Failed: " + ex.Message);
+                return Redirect($"~/externalauth/error/{ErrorEnum.Unknown}");
             }
 
-            return Redirect($"~/externalauth/error/{ErrorEnum.Unknown}");
         }
 
     }
