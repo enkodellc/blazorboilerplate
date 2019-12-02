@@ -8,10 +8,11 @@
 
 <MatCard>
     <div class="logo">
-        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
+        <a href="/" title="Blazor Boilerplate Home"><img src="images/blazorboilerplate.svg" style="width:100px;" title="Blazor Boilerplate Home" alt="Blazor Boilerplate"/><br />Blazor Boilerplate</a>
         <br />
         <h4>Log In</h4>
-        User Name: <b>user</b> Password: <b>user123</b>
+        User -> Username: <b>user</b> Password: <b>user123</b><br />
+        Admin -> Username: <b>admin</b> Password: <b>admin123</b><br />
     </div>
     <EditForm Model="@loginParameters" OnValidSubmit="@SubmitLogin">
         <DataAnnotationsValidator />
@@ -28,9 +29,10 @@
                 <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
             </div>
             <hr />
-            <NavLink href="account/register">
-                <h6 class="font-weight-normal text-center">Create account</h6>
-            </NavLink>
+            <div class="font-weight-normal text-center">
+                <MatButton Outlined="true" Icon="person_add" Link="account/register">Create account</MatButton>
+                <MatButton Outlined="true" Icon="home" Link="/">Home Page</MatButton>
+            </div>
         </fieldset>
     </EditForm>
 </MatCard>
@@ -55,12 +57,7 @@
     bool forgotPasswordToggle = false;
     LoginDto loginParameters { get; set; } = new LoginDto();
     ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
-
-    protected override void OnInitialized()
-    {
-        matToaster.Add("Password: user123", MatToastType.Info, "User Name: user");
-    }
-
+       
     async Task SubmitLogin()
     {
         try

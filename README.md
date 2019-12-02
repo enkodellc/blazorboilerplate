@@ -39,6 +39,7 @@ Complete all Blazor dependencies.
 2. Upload / Copy published Server directory to website folder.
 3. Upload / Copy published Client directory ON TOP of to the same root website directory of Server, it will add some files and overwrite some.
 4. Configure your appsettings.config - ConnectionString, Thumbprint / SSL.
+5. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
 
 ### Thanks To
 - [Blazor](https://blazor.net)
@@ -48,7 +49,7 @@ Complete all Blazor dependencies.
 ## Contributing
 
 Please star, watch and fork! We'd greatly appreciate any contribution you make. I am very open to updates and features, though most feature requests 
-will be depending on how much community support for it is.
+will be depending on how much community support exists.
 
 ## Disclaimer / About the Author
 
@@ -95,10 +96,15 @@ Test out with SQLlite / file db. Then test out with a known good connection stri
 - If still failing get on [Gitter BlazorBoilerplate](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
  for Blazor Boilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
 
-## News
+### Docker Support
+- Looking for additional help with Docker documentation and steps. Would like to include the files but keep the project lean enough that if someone wants to use
+Docker it is simple but does not force users to install Docker to get the project going. I want to keep first build as simple as possible as that is where more new users
+have issues.
 
-- I've been busy with some personal projects. After Thanksgiving I will be back reviewing some suggested edits / PR's. 
-Thanks to everyone using Blazor Boilerplate and helping it grow!
+### Azure Support
+-  Looking for additional help with Azure documentation and steps.
+
+## News
 
 ### 0.4.0 (Under Development)
  - Docker Support. Thanks [npraskins](https://github.com/npraskins) & [acid12](https://github.com/acid12)

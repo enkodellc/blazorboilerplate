@@ -401,7 +401,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // POST: api/Account/Create
         [HttpPost("Create")]
-        [Authorize]
+        [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> Create(RegisterDto parameters)
         {
             try
@@ -538,7 +538,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> Get([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
         {
             var userDtoList = new List<UserInfoDto>();

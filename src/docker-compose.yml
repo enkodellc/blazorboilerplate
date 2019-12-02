@@ -13,7 +13,7 @@ services:
             MSSQL_USER: "sa"
             SA_PASSWORD: "Your_password123"
             ASPNETCORE_ENVIRONMENT: "Development"
-            
+
     db:
         image: "mcr.microsoft.com/mssql/server"
         volumes:
