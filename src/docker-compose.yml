@@ -18,6 +18,7 @@ services:
       - BlazorBoilerplate__IS4ApplicationUrl=blazorboilerplate
     networks:
       - bb
+    restart: on-failure
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server
