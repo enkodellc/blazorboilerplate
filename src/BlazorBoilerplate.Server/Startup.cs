@@ -336,7 +336,6 @@ namespace BlazorBoilerplate.Server
             //must be AFTER the Auth middleware to get the User/Identity info
             app.UseMiddleware<UserSessionMiddleware>();
 
-
             // NSwag
             app.UseOpenApi();
             app.UseSwaggerUi3();

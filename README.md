@@ -78,12 +78,12 @@ It though is my ambition to learn and get feedback on what Best Practices can be
  - Drag and Drop Examples - <a href="https://chrissainty.com/investigating-drag-and-drop-with-blazor/" target="_blank">Chris Sainty Blazor Blog</a>
 
 ## Road map
-- Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster
 - User profile & settings management
 - User, claims, role, permission and organization unit management
 - Azure Hosting Guide
-- Docker Container 
+- Docker Container support
 - Create a Nuget Package Template
+- Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster just my opinion. I like SQL code, less automagic code with more control. Just my style.
 
 ## License
 This project is licensed under the terms of the [MIT license](LICENSE).
@@ -95,6 +95,7 @@ Test out with SQLlite / file db. Then test out with a known good connection stri
 - Go back to the Origin: BlazorBoilerplate was built off of [BlazorWithIdentity](https://github.com/stavroskasidis/BlazorWithIdentity) so first step is to run this and try and publish. The reasoning is that this is a very lean project to reduce the amount of code and resources requiring debugging.
 - If still failing get on [Gitter BlazorBoilerplate](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
  for Blazor Boilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
+- Debugging is very limited on Webassembly / Client-side Blazor, which this project is. Look at the "Dual" branch for SSB / CSB options. It may be a bit outdated.
 
 ### Docker Support
 - Looking for additional help with Docker documentation and steps. Would like to include the files but keep the project lean enough that if someone wants to use
@@ -108,8 +109,7 @@ have issues.
 
 ### 0.4.0 (Under Development)
  - Docker Support. Thanks [npraskins](https://github.com/npraskins) & [acid12](https://github.com/acid12)
- - Known Issues: 
-  - IAuditable Shadow Properties not getting UserId
+ - Fixed IAuditable / ShadowProperties for CreatedOn, CreatedBy, ModifiedOn, ModifiedBy.  Thanks [acid12](https://github.com/acid12)
 
 ### 0.3.2 
 - Identity Server 4 - Authentication with ASP.Net Identity Authorization with Policies  

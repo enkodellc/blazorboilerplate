@@ -43,7 +43,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 await _next.Invoke(httpContext);
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // We can't do anything if the response has already started, just abort.
                 if (httpContext.Response.HasStarted)
