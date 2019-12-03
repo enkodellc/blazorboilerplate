@@ -309,7 +309,6 @@ namespace BlazorBoilerplate.Server
 
             app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
 
-            app.UseMiddleware<UserSessionMiddleware>();
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
             app.UseMiddleware<APIResponseRequestLoggingMiddleware>(Convert.ToBoolean(Configuration["BlazorBoilerplate:EnableAPILogging:Enabled"] ?? "true"));
@@ -333,6 +332,10 @@ namespace BlazorBoilerplate.Server
             //app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
+
+            //must be AFTER the Auth middleware to get the User/Identity info
+            app.UseMiddleware<UserSessionMiddleware>();
+
 
             // NSwag
             app.UseOpenApi();
