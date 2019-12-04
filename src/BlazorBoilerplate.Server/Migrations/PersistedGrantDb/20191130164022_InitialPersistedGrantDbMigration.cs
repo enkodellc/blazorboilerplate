@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlazorBoilerplate.Server.Migrations.PersistedGrantDb
 {
-    public partial class Migrate_PersistedGrantDb : Migration
+    public partial class InitialPersistedGrantDbMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

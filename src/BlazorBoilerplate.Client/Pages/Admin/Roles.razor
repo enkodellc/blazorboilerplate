@@ -1,0 +1,258 @@
+﻿@page "/admin/roles"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject IAuthorizationService AuthorizationService
+@inject IdentityAuthenticationStateProvider authStateProvider
+@inject IMatToaster matToaster
+@inject AppState appState
+
+<h1>Roles</h1>
+<p>Roles management.</p>
+
+@if (roles == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>Loading Roles</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Class="mat-elevation-z5" Items="@roles" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/roles"
+              DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th><MatButton Icon="add" Label="New Role" OnClick="@(() => OpenCreateRoleDialog())"></MatButton></th>
+            <th>Name</th>
+            <th>Permissions</th>
+        </MatTableHeader>
+        <MatTableRow Context="RoleRow">
+            <td>
+                <div style="width:155px;">
+                    @*<MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(@RoleRow.Name))"></MatIconButton>*@
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))"></MatIconButton>
+                </div>
+            </td>
+            <td><div style="width:130px;">@RoleRow.Name</div></td>
+            <td>@RoleRow.FormattedPermissions</td>
+        </MatTableRow>
+    </MatTable>
+}
+
+<MatDialog @bind-IsOpen="@createRoleDialogOpen">
+    <MatDialogTitle>
+        Add New Role
+    </MatDialogTitle>
+    <MatDialogContent>
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@newRoletoAdd" Label="New Role to Add" Icon="add" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+        </fieldset>
+
+        <MatTable Items="@permissionsStatus" Class="mat-elevation-z5">
+            <MatTableHeader>
+                <th>Permissions</th>
+                <th>Allow</th>
+            </MatTableHeader>
+            <MatTableRow>
+                <td>@context.Value</td>
+                <td><MatCheckbox @bind-Checked="@context.IsAllowed"></MatCheckbox></td>
+            </MatTableRow>
+        </MatTable>
+
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { createRoleDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@CreateRole">Add Role</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@deleteRoleDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure you want to delete the role "@currentRoleName" ?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { deleteRoleDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@DeleteRoleAsync">Delete</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    //Auth documentation
+    //https://docs.microsoft.com/en-us/aspnet/core/security/blazor/?view=aspnetcore-3.0&tabs=visual-studio
+
+    int pageSize { get; set; } = 15;
+    int currentPage { get; set; } = 0;
+
+    ApiResponseDto apiResponse;
+
+    List<RoleDto> roles;
+
+    public string newRoletoAdd { get; set; } = "";
+
+    List<roleSelection> roleSelections
+    {
+        get;
+        set; 
+    } = new List<roleSelection>();
+
+    public class roleSelection
+    {
+        public bool Selected { get; set; }
+        public string Name { get; set; }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RetrieveRolesListAsync();
+        await PopulateRoleList();
+    }
+
+    public async Task RetrieveRolesListAsync()
+    {
+        string queryString = "?pageSize=" + pageSize.ToString() + "&pageNumber=" + currentPage.ToString(); // this is to support pagination in the future, need to integrate with MatTable
+        apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Admin/roles" + queryString);
+
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "Roles Retrieved");
+            roles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoleDto>>(apiResponse.Result.ToString());
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Roles Retrieval Failed");
+        }
+    }
+
+    public async Task PopulateRoleList()
+    {
+        List<string> roleNames = new List<string>();
+        var response = await Http.GetJsonAsync<ApiResponseDto>("api/Account/ListRoles");
+        try
+        {
+            roleNames = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Result.ToString());
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add("Error", MatToastType.Danger, ex.Message);
+            return;
+        }
+
+        roleSelections = new List<roleSelection>(); // clear out list
+
+        // initialize selection list with all un-selected
+        foreach (string role in roleNames)
+        {
+            roleSelections.Add(new roleSelection
+            {
+                Name = role,
+                Selected = false
+            });
+        }
+    }
+
+    //--------------------------------------------------
+    // OpenCreateRoleDialog
+    //--------------------------------------------------
+
+    public class PermissionStatus
+    {
+        public string Value;
+
+        public bool IsAllowed;
+    }
+
+    bool createRoleDialogOpen = false;
+    List<PermissionStatus> permissionsStatus;
+
+    public async Task OpenCreateRoleDialog()
+    {
+        permissionsStatus = new List<PermissionStatus>();
+        var response = await Http.GetJsonAsync<ApiResponseDto>("api/Admin/permissions");
+        try
+        {
+            var permissions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Result.ToString());
+            foreach (var permission in permissions)
+            {
+                permissionsStatus.Add(new PermissionStatus
+                {
+                    Value = permission,
+                    IsAllowed = false
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add("Error", MatToastType.Danger, ex.Message);
+            return;
+        }
+
+        this.createRoleDialogOpen = true;
+    }
+
+    public async Task CreateRole()
+    {
+        if (String.IsNullOrWhiteSpace(newRoletoAdd))
+        {
+            matToaster.Add("Role Creation Error", MatToastType.Danger, "Enter in a Role Name");
+            return;
+        }
+
+        RoleDto request = new RoleDto
+        {
+            Name = newRoletoAdd,
+            Permissions = new List<string>()
+        };
+
+        foreach (var status in permissionsStatus)
+            if (status.IsAllowed)
+                request.Permissions.Add(status.Value);
+
+        apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Admin/Role", request);
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add("Role Added", MatToastType.Success);
+            await PopulateRoleList();
+            StateHasChanged();
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Danger);
+        }
+
+        // this.StateHasChanged();
+        await OnInitializedAsync();
+
+        createRoleDialogOpen = false;
+    }
+
+    //--------------------------------------------------
+    // OpenDeleteDialog
+    //--------------------------------------------------
+
+    bool deleteRoleDialogOpen = false;
+    string currentRoleName;
+
+    public void OpenDeleteDialog(string roleName)
+    {
+        currentRoleName = roleName;
+        this.deleteRoleDialogOpen = true;
+    }
+
+    public async Task DeleteRoleAsync()
+    {
+        var response = await Http.DeleteAsync("api/Admin/Role/" + currentRoleName);
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            matToaster.Add("Role Deleted", MatToastType.Success);
+            await OnInitializedAsync();
+            deleteRoleDialogOpen = false;
+            StateHasChanged();
+        }
+        else
+        {
+            matToaster.Add("Role Delete Failed", MatToastType.Danger);
+        }
+    }
+
+}
