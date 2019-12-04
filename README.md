@@ -57,31 +57,35 @@ I (Enkodellc) started this repository as I was frustrated with the examples out 
 incomplete or closed source. I paid for 4-5 of these solutions with an Angular front-end and none of them were what I was looking for. This is my
 attempt to create something that developers can start a Blazor project with several great features to build from. 
 I have a lot of experience with ASP.Net webforms an new to .NET Core and Blazor. This code is not meant to be perfect or follow every Best Practice. 
-It though is my ambition to learn and get feedback on what Best Practices can be implemented. 
- I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and 
+It though is my ambition to learn and get feedback on what Best Practices can be implemented. I will be migrating a Webforms app to Blazor so this is my 
+opportunity to learn, share, grow and get feedback on what hopefully will be a great Blazor Starter Kit.
+  
+I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and 
  suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository. If you wish to hire me for 
  consulting or as a contractor please reach out via [email](support@blazorboilerplate.com) or [https://gitter.im/enkodellc](https://gitter.im/enkodellc).
 
 ## Completed 
  - Basic Login / User Creation
  - Admin Theme using Material Design / MatBlazor
- - Swagger Ui API visualizer 
+ - Swagger UI API visualizer 
  - Log Files using Serilog
  - Choose between SQL Lite File or MS SQL Database
  - Email Confirmation of Registered Users
  - Forgot Password Functionality
+ - ISoftDelete Interface for Models - Allows for "trash / restore" of data **IsDeleted** property
+ - IAuditable Interface for Models - Allows for **CreatedOn, CreatedBy, ModifiedOn, ModifiedBy** properties  
  - Api Audit Trail / Middleware to log Api Requests and Responses
  - Api Response Class to maintain consistent Api Requests and Responses
  - Todo List CRUD Example with N-Tier Layers Not just some fluff that most others do
- - Seed Database
+ - Seed Database & Database Migrations
  - Forum chat and notification system - Thanks <a href="https://github.com/ajgoldenwings" target="_blank">ajgoldenwings</a>
  - Drag and Drop Examples - <a href="https://chrissainty.com/investigating-drag-and-drop-with-blazor/" target="_blank">Chris Sainty Blazor Blog</a>
+ - Docker Container Support
 
 ## Road map
 - User profile & settings management
 - User, claims, role, permission and organization unit management
 - Azure Hosting Guide
-- Docker Container support
 - Create a Nuget Package Template
 - Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster just my opinion. I like SQL code, less automagic code with more control. Just my style.
 
@@ -95,12 +99,13 @@ Test out with SQLlite / file db. Then test out with a known good connection stri
 - Go back to the Origin: BlazorBoilerplate was built off of [BlazorWithIdentity](https://github.com/stavroskasidis/BlazorWithIdentity) so first step is to run this and try and publish. The reasoning is that this is a very lean project to reduce the amount of code and resources requiring debugging.
 - If still failing get on [Gitter BlazorBoilerplate](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
  for Blazor Boilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
-- Debugging is very limited on Webassembly / Client-side Blazor, which this project is. Look at the "Dual" branch for SSB / CSB options. It may be a bit outdated.
+- Debugging is very limited on WebAssembly / Client-side Blazor, which this project is. The server side of the project can easily be debugged, just not there yet on the client-side code.
+ Take a look at the "Dual" branch for SSB / CSB options. It may be a bit outdated.
 
 ### Docker Support
-- Looking for additional help with Docker documentation and steps. Would like to include the files but keep the project lean enough that if someone wants to use
-Docker it is simple but does not force users to install Docker to get the project going. I want to keep first build as simple as possible as that is where more new users
-have issues.
+- Prerequisite: Install [Docker Desktop](https://go.microsoft.com/fwlink/?linkid=847268) 
+- Include / Reload **docker-compose** project in solution.
+- [Do Docker stuff](https://docs.docker.com/v17.09/docker-for-windows/install/) - I don't have much experience with Docker.
 
 ### Azure Support
 -  Looking for additional help with Azure documentation and steps.
@@ -110,6 +115,8 @@ have issues.
 ### 0.4.0 (Under Development)
  - Docker Support. Thanks [npraskins](https://github.com/npraskins) & [acid12](https://github.com/acid12)
  - Fixed IAuditable / ShadowProperties for CreatedOn, CreatedBy, ModifiedOn, ModifiedBy.  Thanks [acid12](https://github.com/acid12)
+ - Known Issues:
+    - Drag and Drop example does not work in FF. Known FF issue.
 
 ### 0.3.2 
 - Identity Server 4 - Authentication with ASP.Net Identity Authorization with Policies  
@@ -117,6 +124,7 @@ have issues.
 - Authorize / Policy Examples on Users Page
 - Known Issues: 
   - IAuditable Shadow Properties not getting UserId
+  - Drag and Drop example does not work in FF. Known FF issue.
 
 ### 0.3.0 - IS4 (Breaking Changes from 0.2.3)
 - Identity Server 4 First Release - Delete your DB! Thanks to [ganmuru](https://github.com/ganmuru)
