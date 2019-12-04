@@ -30,7 +30,7 @@ services:
     ports:
       - 1533:1433 #expose port, so can connect to it using host: 'localhost,1533' | user: sa, password: yourVeryStrong(!)Password
     networks:
-      - bb  
+      - bb
 
 volumes:
   dbdata:
