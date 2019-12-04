@@ -47,24 +47,23 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
+            var dbConnString = useSqlServer
+                ? Configuration.GetConnectionString("DefaultConnection")
+                : $"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}";
 
-            //assemble the connection string from docker-compose variables
-            string constring = $"Server={Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")};Database=master;User={Configuration.GetValue<string>("MSSQL_USER")};Password={Configuration.GetValue<string>("SA_PASSWORD")}";
-            services.AddDbContext<ApplicationDbContext>(options => {
-                if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
-                {
-                    options.UseSqlServer(constring);  // SQL Server from docker-compose
-                }
-                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
-                {
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));//SQL Server Database
-                }
+            var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
+
+            void DbContextOptionsBuilder(DbContextOptionsBuilder builder)
+            {
+                if (useSqlServer)
+                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
                 else
-                {
-                    options.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}", sql => sql.MigrationsAssembly(migrationsAssembly));  // Sql Lite / file database
-                }
-            });
+                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+            }
+
+            services.AddDbContext<ApplicationDbContext>(DbContextOptionsBuilder);
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
@@ -77,7 +76,7 @@ namespace BlazorBoilerplate.Server
             // Adds IdentityServer
             var identityServerBuilder = services.AddIdentityServer(options =>
             {
-                options.IssuerUri = "blazorboilerplate_spa";
+                options.IssuerUri = authAuthority;
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -85,38 +84,11 @@ namespace BlazorBoilerplate.Server
             })
               .AddConfigurationStore(options =>
               {
-                  options.ConfigureDbContext = builder => {
-                      if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
-                      {
-                          builder.UseSqlServer(constring, sql => sql.MigrationsAssembly(migrationsAssembly)); // SQL Server from docker-compose
-                      }
-                      else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
-                      {
-                          builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database
-                      }
-                      else
-                      {
-                          builder.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}", sql => sql.MigrationsAssembly(migrationsAssembly));  // Sql Lite / file database
-                      }
-                  };
+                  options.ConfigureDbContext = DbContextOptionsBuilder;
               })
               .AddOperationalStore(options =>
               {
-                  options.ConfigureDbContext = builder => {
-                      if (!String.IsNullOrWhiteSpace(Configuration.GetValue<string>("DOCKER_COMPOSE_SQL")))
-                      {
-                          builder.UseSqlServer(constring, sql => sql.MigrationsAssembly(migrationsAssembly)); // SQL Server from docker-compose
-                      }
-                      else
-                      if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
-                      {
-                          builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)); //SQL Server Database
-                      }
-                      else
-                      {
-                          builder.UseSqlite($"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}", sql => sql.MigrationsAssembly(migrationsAssembly));  // Sql Lite / file database
-                      }
-                  };
+                  options.ConfigureDbContext = DbContextOptionsBuilder;
 
                   // this enables automatic token cleanup. this is optional.
                   options.EnableTokenCleanup = true;
@@ -148,8 +120,6 @@ namespace BlazorBoilerplate.Server
                     {
                         store.Open(OpenFlags.ReadOnly);
                         var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
-                        //Console.WriteLine("Certificat count = " + certs.Count);
-                        //Console.WriteLine("Certificate path = " + StoreName.CertificateAuthority);
                         if (certs.Count > 0)
                         {
                             cert = certs[0];
@@ -188,7 +158,7 @@ namespace BlazorBoilerplate.Server
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
+                    options.Authority = authAuthority;
                     options.SupportedTokens = SupportedTokens.Jwt;
                     options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
                     options.ApiName = IdentityServerConfig.ApiName;
