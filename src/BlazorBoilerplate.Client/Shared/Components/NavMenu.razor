@@ -16,7 +16,7 @@
                     <MatIcon>stars</MatIcon><span class="miniHover"> Features</span>
                 </MatNavItem>
             </MatNavSubMenuHeader>
-            <MatNavSubMenuList>                
+            <MatNavSubMenuList>
                 <MatNavItem Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri">
                     <MatIcon>touch_app</MatIcon> <span class="miniHover">Drag and Drop</span>
                 </MatNavItem>
@@ -50,9 +50,28 @@
             </MatNavSubMenuList>
         </MatNavSubMenu>
 
-        <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Users</span>
-        </MatNavItem>
+        <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
+            <MatNavSubMenu>
+                <MatNavSubMenuHeader>
+                    <MatNavItem AllowSelection="false">
+                        <MatIcon>settings_applications</MatIcon> <span class="miniHover">Admin</span>
+                    </MatNavItem>
+                </MatNavSubMenuHeader>
+                <MatNavSubMenuList>
+                    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri">
+                        <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Users</span>
+                    </MatNavItem>
+                    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri">
+                        <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Roles</span>
+                    </MatNavItem>
+                </MatNavSubMenuList>
+            </MatNavSubMenu>
+        </AuthorizeView>
+        <AuthorizeView Policy="@Policies.IsUser" Context="AuthorizeContext">
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="true">
+                <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Admin</span>
+            </MatNavItem>
+        </AuthorizeView>
 
         <MatNavItem Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
             <MatIcon>forum</MatIcon> <span class="miniHover">Forum</span>
@@ -61,7 +80,7 @@
         <MatNavItem Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri">
             <MatIcon>attach_money</MatIcon> <span class="miniHover">Sponsors</span>
         </MatNavItem>
-    </MatNavMenu>
+</MatNavMenu>
 
 @code {
     public bool IsLoggedIn = false;
