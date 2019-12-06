@@ -183,7 +183,7 @@ else
     public async Task RetrieveUserListAsync()
     {
         string queryString = "?pageSize=" + pageSize.ToString() + "&pageNumber=" + currentPage.ToString(); // this is to support pagination in the future, need to integrate with MatTable
-        apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/admin/users" + queryString);
+        apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Admin/Users" + queryString);
 
         if (apiResponse.StatusCode == 200)
         {
