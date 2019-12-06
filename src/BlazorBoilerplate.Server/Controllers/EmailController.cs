@@ -49,7 +49,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 switch (parameters.TemplateName)
                 {
                     case "Test":
-                        email = EmailTemplates.BuildTestEmail(email); //example of email Template usage
+                        email.BuildTestEmail(); //example of email Template usage
                         break;
                     default:
                         break;

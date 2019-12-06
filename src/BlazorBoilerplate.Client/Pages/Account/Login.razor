@@ -1,4 +1,4 @@
-﻿@page "/account/login"
+@page "/account/login"
 @layout LoginLayout
 @inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
@@ -6,36 +6,37 @@
 @inject AppState appState
 @*TODO: Add client-side validation*@
 
-<MatCard>
-    <div class="logo">
-        <a href="/" title="Blazor Boilerplate Home"><img src="images/blazorboilerplate.svg" style="width:100px;" title="Blazor Boilerplate Home" alt="Blazor Boilerplate"/><br />Blazor Boilerplate</a>
-        <br />
-        <h4>Log In</h4>
-        User -> Username: <b>user</b> Password: <b>user123</b><br />
-        Admin -> Username: <b>admin</b> Password: <b>admin123</b><br />
-    </div>
-    <EditForm Model="@loginParameters" OnValidSubmit="@SubmitLogin">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <fieldset>
-            <div class="form-group">
-                <MatTextField @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-            </div>
-            <div class="form-group">
-                <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
-            </div>
-            <div class="form-group">
-                <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
-                <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
-            </div>
-            <hr />
-            <div class="font-weight-normal text-center">
-                <MatButton Outlined="true" Icon="person_add" Link="account/register">Create account</MatButton>
-                <MatButton Outlined="true" Icon="home" Link="/">Home Page</MatButton>
-            </div>
-        </fieldset>
-    </EditForm>
-</MatCard>
+    <MatCard>
+        <MatIconButton Icon="home" Link="/" Class="float-right"></MatIconButton>
+        <div class="logo">
+            <a href="/" title="Blazor Boilerplate Home"><img src="images/blazorboilerplate.svg" style="width:100px;" title="Blazor Boilerplate Home" alt="Blazor Boilerplate" /><br />Blazor Boilerplate</a>
+            <br />
+            <h4>Log In</h4>
+            User -> Username: <b>user</b> Password: <b>user123</b><br />
+            Admin -> Username: <b>admin</b> Password: <b>admin123</b><br />
+        </div>
+        <EditForm Model="@loginParameters" OnValidSubmit="@SubmitLogin">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
+                    <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
+                </div>
+                <hr />
+                <div>
+                    <MatButton class="float-left" OnClick="@Register" Raised="true">Create account</MatButton>
+                    <MatButton class="float-right" OnClick="@GoogleSignIn" Raised="true">Sign in with <img height="18" style="margin-left: 5px" src="https://www.google.pl/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" /></MatButton><br />
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatCard>
 <MatAccordion>
     <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
         <MatExpansionPanelSummary>
@@ -57,7 +58,17 @@
     bool forgotPasswordToggle = false;
     LoginDto loginParameters { get; set; } = new LoginDto();
     ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
-       
+
+    async Task GoogleSignIn()
+    {
+         navigationManager.NavigateTo(navigationManager.BaseUri + "api/externalauth/challenge/google", true);
+    }
+
+    async Task Register()
+    {
+         navigationManager.NavigateTo("/account/register");
+    }
+
     async Task SubmitLogin()
     {
         try
@@ -75,7 +86,7 @@
                 else
                 {
                     navigationManager.NavigateTo("/dashboard");
-                }                
+                }
             }
             else
             {

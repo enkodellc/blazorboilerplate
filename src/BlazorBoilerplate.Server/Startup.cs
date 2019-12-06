@@ -8,6 +8,7 @@ using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -47,6 +48,8 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
@@ -155,14 +158,29 @@ namespace BlazorBoilerplate.Server
                 identityServerBuilder.AddSigningCredential(cert);
             }
 
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
+            var authBuilder = services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddIdentityServerAuthentication(options =>
+            {
+                options.Authority = authAuthority;
+                options.SupportedTokens = SupportedTokens.Jwt;
+                options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
+                options.ApiName = IdentityServerConfig.ApiName;
+            });
+
+            //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/google-logins?view=aspnetcore-3.1
+            if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Google:Enabled"] ?? "false"))
+            {
+                authBuilder.AddGoogle(options =>
                 {
-                    options.Authority = authAuthority;
-                    options.SupportedTokens = SupportedTokens.Jwt;
-                    options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
-                    options.ApiName = IdentityServerConfig.ApiName;
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = Configuration["ExternalAuthProviders:Google:ClientId"];
+                    options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
                 });
+            }
 
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
@@ -246,6 +264,7 @@ namespace BlazorBoilerplate.Server
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUserSession, UserSession>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+            services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IApiLogService, ApiLogService>();
@@ -290,8 +309,8 @@ namespace BlazorBoilerplate.Server
             }
             else
             {
-            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
+              // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+              //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
             }
 
             //app.UseStaticFiles();
