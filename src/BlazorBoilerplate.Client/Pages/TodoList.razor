@@ -26,8 +26,7 @@
             <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(TodoRow.Id))"></MatIconButton>
         </td>
         <td>@String.Format("{0:d}", TodoRow.Id)</td>
-        @*ValueChanged="@((e) => Update(TodoRow))"*@
-        <td><MatCheckbox @bind-Value="@TodoRow.IsCompleted" class="filled-in chk-col-blue"></MatCheckbox></td>
+        <td><MatCheckbox class="filled-in chk-col-blue" TValue="bool" Value="@TodoRow.IsCompleted" ValueChanged="@((item) => Update(TodoRow))"></MatCheckbox></td>
         <td>@TodoRow.Title</td>
     </MatTableRow>
 </MatTable>
@@ -91,8 +90,7 @@
         }
     }
 
-
-    public async Task Update(TodoDto todo)
+    public async void Update(TodoDto todo)
     {
         //this updates the IsCompleted flag only
         try
