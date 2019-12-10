@@ -26,7 +26,7 @@
                     <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
+                    <MatCheckbox @bind-Value="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
                     <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
                 </div>
                 <hr />

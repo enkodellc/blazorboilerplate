@@ -112,7 +112,14 @@ Test out with SQLlite / file db. Then test out with a known good connection stri
 
 ## News
 
-### 0.4.0 (Under Development)
+### 0.5.0 (Under Development)
+- MatBlazor 2.0 Breaking Changes
+- .NET Core 3.1.0 / v3.1.0-preview4 Blazor Nuget package updates
+ - Known Issues:
+    - Drag and Drop example does not work in FF. Known FF issue.
+    - MatCheckbox on TodoList not updating persistent data.
+    
+### 0.4.0
  - Docker Support. Thanks [npraskins](https://github.com/npraskins) & [acid12](https://github.com/acid12)
  - Fixed IAuditable / ShadowProperties for CreatedOn, CreatedBy, ModifiedOn, ModifiedBy.  Thanks [acid12](https://github.com/acid12)
  - Known Issues:

@@ -26,7 +26,8 @@
             <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(TodoRow.Id))"></MatIconButton>
         </td>
         <td>@String.Format("{0:d}", TodoRow.Id)</td>
-        <td><MatCheckbox Checked="@TodoRow.IsCompleted" class="filled-in chk-col-blue" CheckedChanged="@((e) => Update(TodoRow))"></MatCheckbox></td>
+        @*ValueChanged="@((e) => Update(TodoRow))"*@
+        <td><MatCheckbox @bind-Value="@TodoRow.IsCompleted" class="filled-in chk-col-blue"></MatCheckbox></td>
         <td>@TodoRow.Title</td>
     </MatTableRow>
 </MatTable>
@@ -42,7 +43,7 @@
                     <MatTextField @bind-Value="@todo.Title" Label="Title" Icon="title" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatCheckbox @bind-Checked="@todo.IsCompleted" Label="Completed"></MatCheckbox>
+                    <MatCheckbox @bind-Value="@todo.IsCompleted" Label="Completed"></MatCheckbox>
                 </div>
             </fieldset>
         </EditForm>
