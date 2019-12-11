@@ -1,7 +1,7 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
-Blazor is a web framework designed to run  in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template (WebAssembly / Core-Hosted) built with Blazor with a .NET Core 3 Server API. The UI for this application is by Material Design provided mostly by MatBlazor.
-Version 0.2.3 and below utlize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4.  
+Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template (WebAssembly / Core-Hosted) built with Blazor with a .NET Core 3.1 Server API. The UI for this application is by Material Design provided mostly by MatBlazor.
+Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4.  
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
@@ -12,23 +12,24 @@ Version 0.2.3 and below utlize AspNETCore Authorization / Authentication. Versio
 
 ## Goals
 - To create a boilerplate with Blazor / Razor components that includes the most common functionality for an app that is lean yet powerful for anyone to start their own project rapidly. 
+- Avoid many library's which make it difficult to track down code and issues.
 - This repository is community driven. It is not and never will be controlled by a corporation. 
-- Minimal Javascript. Currently only using them for SignalR for the Forum. We may us components with JS in them but so far no Javascript has been written specifically for anything in the repository.
+- Minimal Javascript. Currently only using them for SignalR for the Forum and MatBlazor / Material Desing. We may us components with JS in them but so far no Javascript has been written specifically for anything in the repository.
 
 # Live demo
-[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires. The functionality grows every week. *Note Firewall does block some foreign IP addresses. Swagger UI to view the server API [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html).
+[Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires.  *Note Firewall does block some foreign IP addresses. Swagger UI to view the server API [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html).
 
 ## Prerequisites
 Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-3.0)
 
 Complete all Blazor dependencies.
 
-- [.Net Core SDK 3.1.100-preview2-014569](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- [.Net Core SDK 3.1.0-preview4.19579.2](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 - Install the Latest Visual Studio 2019 Preview with the ASP.NET and web development workload selected.
-- Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.1.0-preview2.19525.5**
+- Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.1.0-preview4.19579.2**
 
 ### How to run
-1. Install the latest .NET Core SDK **3.1.100-preview2** and the latest **Visual Studio 2019 Preview**.
+1. Install the latest .NET Core SDK **https://dotnet.microsoft.com/download/dotnet-core/3.1** and the latest **Visual Studio 2019 Preview**.
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
@@ -38,7 +39,7 @@ Complete all Blazor dependencies.
 1. Publish both the Client and Server projects to local folder
 2. Upload / Copy published Server directory to website folder.
 3. Upload / Copy published Client directory ON TOP of to the same root website directory of Server, it will add some files and overwrite some.
-4. Configure your appsettings.config - ConnectionString, Thumbprint / SSL.
+4. Configure your appsettings.production.config - ConnectionString, Thumbprint / SSL.
 5. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
 
 ### Thanks To
@@ -94,8 +95,8 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ### Problem Solving Tips
 - Make sure you have all pre-requisites installed.
-- Keep It Simple Stupid: If you are running into issues with SQL / connection string. First CHECK both appsettings.json (for production) and appsettings.development.json (for development). 
-Test out with SQLlite / file db. Then test out with a known good connection string.
+- Keep It Simple Stupid: If you are running into issues with SQL / connection string. First CHECK both appsettings.json (appsettings.production.json for production) and (appsettings.development.json for development). 
+- Test out with SQLlite / file db. Then test out with a known good connection string.
 - Go back to the Origin: BlazorBoilerplate was built off of [BlazorWithIdentity](https://github.com/stavroskasidis/BlazorWithIdentity) so first step is to run this and try and publish. The reasoning is that this is a very lean project to reduce the amount of code and resources requiring debugging.
 - If still failing get on [Gitter BlazorBoilerplate](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
  for Blazor Boilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
@@ -115,8 +116,6 @@ Test out with SQLlite / file db. Then test out with a known good connection stri
 ### 0.5.0 (Under Development)
 - MatBlazor 2.0 Breaking Changes
 - .NET Core 3.1.0 / v3.1.0-preview4 Blazor Nuget package updates
- - Known Issues:
-    - Drag and Drop example does not work in FF. Known FF issue.
     
 ### 0.4.0
  - Docker Support. Thanks [npraskins](https://github.com/npraskins) & [acid12](https://github.com/acid12)

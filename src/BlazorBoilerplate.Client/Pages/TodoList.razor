@@ -95,6 +95,7 @@
         //this updates the IsCompleted flag only
         try
         {
+
             todo.IsCompleted = !todo.IsCompleted;
             ApiResponseDto apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/todo", todo);
 
