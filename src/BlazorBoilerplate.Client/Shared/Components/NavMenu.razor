@@ -1,38 +1,37 @@
-﻿@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Components;
 @inject NavigationManager navigationManager
-@*@inject IAuthorizationService AuthorizationService*@
 
-<MatNavMenu Multi="true" Class="app-sidebar">
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri">
-        <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
-    </MatNavItem>
+    <MatNavMenu Multi="true" Class="app-sidebar">
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri">
+            <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
+        </MatNavItem>
 
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri">
-        <MatIcon>list_alt</MatIcon> <span class="miniHover">Todo List</span>
-    </MatNavItem>
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri">
+            <MatIcon>list_alt</MatIcon> <span class="miniHover">Todo List</span>
+        </MatNavItem>
 
-    <MatNavSubMenu>
-        <MatNavSubMenuHeader>
-            <MatNavItem AllowSelection="false">
-                <MatIcon>stars</MatIcon><span class="miniHover"> Features</span>
-            </MatNavItem>
-        </MatNavSubMenuHeader>
-        <MatNavSubMenuList>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri">
-                <MatIcon>touch_app</MatIcon> <span class="miniHover">Drag and Drop</span>
-            </MatNavItem>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("blazor_middlware_audit").AbsoluteUri">
-                <MatIcon>change_history</MatIcon> <span class="miniHover">Api Audit Log</span>
-            </MatNavItem>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("screenshots").AbsoluteUri">
-                <MatIcon>screen_share</MatIcon> <span class="miniHover">Screenshots</span>
-            </MatNavItem>
-        </MatNavSubMenuList>
-    </MatNavSubMenu>
+        <MatNavSubMenu>
+            <MatNavSubMenuHeader>
+                <MatNavItem AllowSelection="false">
+                    <MatIcon>stars</MatIcon><span class="miniHover"> Features</span>
+                </MatNavItem>
+            </MatNavSubMenuHeader>
+            <MatNavSubMenuList>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri">
+                    <MatIcon>touch_app</MatIcon> <span class="miniHover">Drag and Drop</span>
+                </MatNavItem>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("blazor_middlware_audit").AbsoluteUri">
+                    <MatIcon>change_history</MatIcon> <span class="miniHover">Api Audit Log</span>
+                </MatNavItem>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("screenshots").AbsoluteUri">
+                    <MatIcon>screen_share</MatIcon> <span class="miniHover">Screenshots</span>
+                </MatNavItem>
+            </MatNavSubMenuList>
+        </MatNavSubMenu>
 
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-        <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
-    </MatNavItem>
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+            <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
+        </MatNavItem>
 
     <MatNavSubMenu>
         <MatNavSubMenuHeader>
@@ -51,23 +50,36 @@
         </MatNavSubMenuList>
     </MatNavSubMenu>
 
-    <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
-        <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Users</span>
+        <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
+            <MatNavSubMenu>
+                <MatNavSubMenuHeader>
+                    <MatNavItem AllowSelection="false">
+                        <MatIcon>settings_applications</MatIcon> <span class="miniHover">Admin</span>
+                    </MatNavItem>
+                </MatNavSubMenuHeader>
+                <MatNavSubMenuList>
+                    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri">
+                        <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Users</span>
+                    </MatNavItem>
+                    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri">
+                        <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Roles</span>
+                    </MatNavItem>
+                </MatNavSubMenuList>
+            </MatNavSubMenu>
+        </AuthorizeView>
+        <AuthorizeView Policy="@Policies.IsUser" Context="AuthorizeContext">
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri" Disabled="true">
+                <MatIcon>supervisor_account</MatIcon> <span class="miniHover">Admin</span>
+            </MatNavItem>
+        </AuthorizeView>
+
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+            <MatIcon>forum</MatIcon> <span class="miniHover">Forum</span>
         </MatNavItem>
 
-        <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>verified_user</MatIcon> <span class="miniHover">Roles</span>
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri">
+            <MatIcon>attach_money</MatIcon> <span class="miniHover">Sponsors</span>
         </MatNavItem>
-    </AuthorizeView>
-
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-        <MatIcon>forum</MatIcon> <span class="miniHover">Forum</span>
-    </MatNavItem>
-
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri">
-        <MatIcon>attach_money</MatIcon> <span class="miniHover">Sponsors</span>
-    </MatNavItem>
 </MatNavMenu>
 
 @code {

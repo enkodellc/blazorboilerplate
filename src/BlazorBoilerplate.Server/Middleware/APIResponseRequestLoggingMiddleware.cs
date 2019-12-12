@@ -314,7 +314,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
         private string ConvertToJSONString(int code, object content)
         {
-            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content,  null, "0.3.2"), JSONSettings());
+            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content,  null, "0.4.0"), JSONSettings());
         }
         private string ConvertToJSONString(ApiResponse apiResponse)
         {

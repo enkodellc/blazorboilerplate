@@ -27,7 +27,7 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         public object Result { get; set; }
 
         [JsonConstructor]
-        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "0.3.2")
+        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "0.4.0")
         {
             this.StatusCode = statusCode;
             this.Message = message;

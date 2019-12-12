@@ -1,4 +1,4 @@
-﻿@page "/admin/roles"
+@page "/admin/roles"
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IAuthorizationService AuthorizationService
@@ -55,7 +55,7 @@ else
             </MatTableHeader>
             <MatTableRow>
                 <td>@context.Name</td>
-                <td><MatCheckbox @bind-Checked="@context.IsSelected"></MatCheckbox></td>
+                <td><MatCheckbox TValue="bool" @bind-Checked="@context.IsSelected"></MatCheckbox></td>
             </MatTableRow>
         </MatTable>
 
@@ -133,7 +133,7 @@ else
 
         isInsertOperation = (roleName == "");
 
-        // Update the UI 
+        // Update the UI
         if (isInsertOperation)
         {
             labelUpsertDialogTitle = "Add New Role";
