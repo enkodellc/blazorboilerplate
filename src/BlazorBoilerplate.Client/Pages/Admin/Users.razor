@@ -8,7 +8,6 @@
 
 <h1>Users</h1>
 <p>User management Screen. Mostly Functional, still under construction</p>
-<MatButton Raised="true" TrailingIcon="add_group" OnClick="@(e => { this.createRoleDialogOpen = true; })" Label="Add Role" />
 
 @if (users == null)
 {
@@ -124,23 +123,6 @@ else
     </MatDialogActions>
 </MatDialog>
 
-<MatDialog @bind-IsOpen="@createRoleDialogOpen">
-    <MatDialogTitle>
-        Add New Role
-    </MatDialogTitle>
-    <MatDialogContent>
-        <fieldset>
-            <div class="form-group">
-                <MatTextField @bind-Value="@newRoletoAdd" Label="New Role to Add" Icon="add" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-            </div>
-        </fieldset>
-    </MatDialogContent>
-    <MatDialogActions>
-        <MatButton OnClick="@(e => { createRoleDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@CreateRole">Add Role</MatButton>
-    </MatDialogActions>
-</MatDialog>
-
 <MatDialog @bind-IsOpen="@resetPasswordDialogOpen">
     <MatDialogTitle>Manual Password Reset for @registerParameters.UserName</MatDialogTitle>
     <MatDialogContent>
@@ -180,8 +162,6 @@ else
     List<UserInfoDto> users;
     List<roleSelection> roleSelections { get; set; } = new List<roleSelection>();
 
-    public string newRoletoAdd { get; set; } = "";
-
     public UserInfoDto user { get; set; } = new UserInfoDto(); // Holds user being actively modified or created
     RegisterDto registerParameters { get; set; } = new RegisterDto();
 
@@ -203,7 +183,7 @@ else
     public async Task RetrieveUserListAsync()
     {
         string queryString = "?pageSize=" + pageSize.ToString() + "&pageNumber=" + currentPage.ToString(); // this is to support pagination in the future, need to integrate with MatTable
-        apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Account" + queryString);
+        apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Admin/Users" + queryString);
 
         if (apiResponse.StatusCode == 200)
         {
@@ -332,29 +312,6 @@ else
         catch (Exception ex)
         {
             matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
-        }
-    }
-
-    public async Task CreateRole()
-    {
-        if (!String.IsNullOrWhiteSpace(newRoletoAdd))
-        {
-            apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/AddUserRoleGlobal", newRoletoAdd);
-            if (apiResponse.StatusCode == 200)
-            {
-                matToaster.Add("Role Added", MatToastType.Success);
-                await PopulateRoleList();
-                StateHasChanged();
-            }
-            else
-            {
-                matToaster.Add(apiResponse.Message, MatToastType.Danger);
-            }
-            createRoleDialogOpen = false;
-        }
-        else
-        {
-            matToaster.Add("Role Creation Error", MatToastType.Danger, "Enter in a Role Name");
         }
     }
 

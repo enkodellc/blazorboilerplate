@@ -61,9 +61,17 @@ namespace BlazorBoilerplate.Server
             void DbContextOptionsBuilder(DbContextOptionsBuilder builder)
             {
                 if (useSqlServer)
+                {
                     builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                }
+                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
+                {
+                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                }
                 else
+                {
                     builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                }
             }
 
             services.AddDbContext<ApplicationDbContext>(DbContextOptionsBuilder);
