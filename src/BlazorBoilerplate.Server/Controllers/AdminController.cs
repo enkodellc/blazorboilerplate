@@ -109,7 +109,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [Authorize]
         public ApiResponse GetPermissions()
         {
-            var permissions = ApplicationPermissions.GetAllPermissionValues();
+            var permissions = ApplicationPermissions.GetAllPermissionNames();
             return new ApiResponse(200, "Permissions list fetched", permissions);
         }
 
@@ -124,7 +124,7 @@ namespace BlazorBoilerplate.Server.Controllers
             var roleDtoList = new List<RoleDto>();
             List<IdentityRole<Guid>> listResponse;
 
-            // get paginated list of users
+            // get paginated list of roles
             try
             {
                 var roleList = _roleManager.Roles.AsQueryable();
@@ -140,7 +140,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 foreach (var role in listResponse)
                 {
                     var claims = await _roleManager.GetClaimsAsync(role);
-                    var permissions = claims.Where(x => x.Type == "permission").Select(x => x.Value).ToList();
+                    var permissions = claims.Where(x => x.Type == "permission").Select(x => ApplicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
                     roleDtoList.Add(new RoleDto
                     {
@@ -181,7 +181,7 @@ namespace BlazorBoilerplate.Server.Controllers
             try
             {
                 var claims = await _roleManager.GetClaimsAsync(identityRole);
-                var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => x.Value).ToList();
+                var permissions = claims.Where(x => x.Type == "permission").Select(x => ApplicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
                 roleDto = new RoleDto
                 {
@@ -200,7 +200,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         #endregion
 
-        #region CRUD : CreateRoleAsync 
+        #region CRUD : CreateRoleAsync
 
         [HttpPost("Role")]
         [Authorize(Policy = Policies.IsAdmin)]
@@ -208,10 +208,9 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             try
             {
-
                 // first make sure the role doesn't already exist
                 if (_roleManager.Roles.Any(r => r.Name == newRole.Name))
-                    return new ApiResponse(400, "role already exists");
+                    return new ApiResponse(400, "Role already exists");
 
                 // Create the role
                 var result = await _roleManager.CreateAsync(new IdentityRole<Guid>(newRole.Name));
@@ -227,7 +226,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
                 foreach (string claim in newRole.Permissions)
                 {
-                    var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByValue(claim)));
+                    var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
 
                     if (!resultAddClaim.Succeeded)
                         await _roleManager.DeleteAsync(role);
@@ -261,23 +260,24 @@ namespace BlazorBoilerplate.Server.Controllers
 
                 var claims = await _roleManager.GetClaimsAsync(identityRole);
                 var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => x.Value).ToList();
+
                 foreach (var permission in permissions)
+                {
                     await _roleManager.RemoveClaimAsync(identityRole, new Claim(ClaimConstants.Permission, permission));
+                }
 
                 foreach (string claim in newRole.Permissions)
                 {
-                    var result = await _roleManager.AddClaimAsync(identityRole, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByValue(claim)));
+                    var result = await _roleManager.AddClaimAsync(identityRole, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
 
                     if (!result.Succeeded)
                         await _roleManager.DeleteAsync(identityRole);
                 }
-
             }
             catch (Exception ex)
             {
                 return new ApiResponse(500, ex.Message);
             }
-
             return new ApiResponse(200);
         }
 
@@ -308,8 +308,6 @@ namespace BlazorBoilerplate.Server.Controllers
                 return new ApiResponse(400, "Role Deletion Failed");
             }
         }
-
         #endregion
-
     }
 }

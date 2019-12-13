@@ -46,6 +46,11 @@ namespace BlazorBoilerplate.Server.Data.Core
             return AllPermissions.Select(p => p.Value).ToArray();
         }
 
+        public static string[] GetAllPermissionNames()
+        {
+            return AllPermissions.Select(p => p.Name).ToArray();
+        }
+
         public static string[] GetAdministrativePermissionValues()
         {
             return new string[] { ManageUsers, ManageRoles, AssignRoles };

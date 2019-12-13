@@ -44,18 +44,5 @@ namespace BlazorBoilerplate.Server.Controllers
                 Summary      = Summaries[rng.Next(Summaries.Length)]
             });
         }
-
-        //For testing Admin UI
-        [HttpGet("[action]")]
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
-        public async Task<ApiResponse> GetDemoUsers()
-        {
-            using (var client = new HttpClient())
-            {
-                string content = await client.GetStringAsync("https://blazorboilerplate.com/users.json");
-                IEnumerable<DemoUserDto> users = JsonConvert.DeserializeObject<IEnumerable<DemoUserDto>>(content);
-                return new ApiResponse(200, "Retrieved Demo Users", users);
-            }
-        }
     }
 }

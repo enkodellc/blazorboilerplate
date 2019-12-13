@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BlazorBoilerplate.Shared.Dto
 {
     public class RoleDto
     {
-
         public string Name { get; set; }
 
         public List<string> Permissions { get; set; }
@@ -18,7 +16,5 @@ namespace BlazorBoilerplate.Shared.Dto
                 return String.Join(", ", Permissions.ToArray());
             }
         }
-
     }
-
 }

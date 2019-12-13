@@ -239,6 +239,10 @@ app {
 }
 
 /* Drawer */
+.mdc-nav-li {
+    list-style: none;
+}
+
 .mini .mdc-drawer,
 .mini .app-sidebar {
     width: 54px;
@@ -349,6 +353,8 @@ app {
 .mat-accordion .mdc-nav-menu .mat-expansion-panel.mat-expansion-panel--expanded {
     margin: 0;
 }
+
+
 
 .drawer-logo {
     display: flex;

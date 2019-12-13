@@ -7,7 +7,7 @@
 @inject AppState appState
 
 <h1>Roles</h1>
-<p>Roles management.</p>
+<p>Roles Management.</p>
 
 @if (roles == null)
 {
@@ -32,7 +32,14 @@ else
                 </div>
             </td>
             <td><div style="width:130px;">@RoleRow.Name</div></td>
-            <td>@RoleRow.FormattedPermissions</td>
+            <td>
+                <MatChipSet>
+                    @foreach (var permission in @RoleRow.Permissions)
+                        {
+                        <MatChip Label="@permission"></MatChip>
+                        }                            
+                </MatChipSet>
+            </td>
         </MatTableRow>
     </MatTable>
 }
@@ -44,7 +51,7 @@ else
     <MatDialogContent>
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-Value="@currentRoleName" Disabled="@isCurrentRoleReadOnly" Label="@labelUpsertDialogRole" Icon="add" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@currentRoleName" Disabled="@isCurrentRoleReadOnly" Label="Role Name" Icon="add" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
         </fieldset>
 
@@ -55,7 +62,7 @@ else
             </MatTableHeader>
             <MatTableRow>
                 <td>@context.Name</td>
-                <td><MatCheckbox TValue="bool" @bind-Checked="@context.IsSelected"></MatCheckbox></td>
+                <td><MatCheckbox TValue="bool" @bind-Value="@context.IsSelected"></MatCheckbox></td>
             </MatTableRow>
         </MatTable>
 
@@ -118,7 +125,6 @@ else
     List<PermissionSelection> permissionsSelections = new List<PermissionSelection>();
 
     string labelUpsertDialogTitle;
-    string labelUpsertDialogRole;
     string labelUpsertDialogOkButton;
 
     public class PermissionSelection
@@ -136,14 +142,12 @@ else
         // Update the UI
         if (isInsertOperation)
         {
-            labelUpsertDialogTitle = "Add New Role";
-            labelUpsertDialogRole = "New Role to Add";
-            labelUpsertDialogOkButton = "Add Role";
+            labelUpsertDialogTitle = "Create Role";
+            labelUpsertDialogOkButton = "Create Role";
         }
         else
         {
-            labelUpsertDialogTitle = "Update the Role";
-            labelUpsertDialogRole = "";
+            labelUpsertDialogTitle = "Edit Role";
             labelUpsertDialogOkButton = "Update Role";
         }
 
@@ -162,12 +166,13 @@ else
         try
         {
             var permissions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Result.ToString());
-            foreach(var name in permissions)
+
+            foreach (var name in permissions)
             {
                 permissionsSelections.Add(new PermissionSelection
                 {
                     Name = name,
-                    IsSelected = (role == null) ? false :  role.Permissions.Contains(name)
+                    IsSelected = (role == null) ? false : role.Permissions.Contains(name)
                 });
             }
         }
@@ -195,18 +200,21 @@ else
         };
 
         foreach (var status in permissionsSelections)
+        {
             if (status.IsSelected)
                 request.Permissions.Add(status.Name);
+        }
 
         ApiResponseDto apiResponse;
         if (isInsertOperation)
             apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Admin/Role", request);
         else
             apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Admin/Role", request);
+
         if (apiResponse.StatusCode == 200)
         {
             if (isInsertOperation)
-                matToaster.Add("Role Added", MatToastType.Success);
+                matToaster.Add("Role Created", MatToastType.Success);
             else
                 matToaster.Add("Role Updated", MatToastType.Success);
             //await PopulateRoleList();
