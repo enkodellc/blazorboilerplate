@@ -496,50 +496,6 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(200, "Get User Successful", userInfo);
         }
 
-
-        [HttpGet]
-        [Authorize(Policy = Policies.IsAdmin)]
-        public async Task<ApiResponse> Get([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
-        {
-            var userDtoList = new List<UserInfoDto>();
-            List<ApplicationUser> listResponse;
-
-            // get paginated list of users
-            try
-            {
-                var userList = _userManager.Users.AsQueryable();
-                listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            // create the dto object with mapped properties and fetch roles associated with each user
-            try
-            {
-                foreach (var applicationUser in listResponse)
-                {
-                    userDtoList.Add(new UserInfoDto
-                    {
-                        FirstName = applicationUser.FirstName,
-                        LastName = applicationUser.LastName,
-                        UserName = applicationUser.UserName,
-                        Email = applicationUser.Email,
-                        UserId = applicationUser.Id,
-                        Roles = (List<string>)(await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true))
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            return new ApiResponse(200, "User list fetched", userDtoList);
-        }
-
         [HttpGet("ListRoles")]
         [Authorize]
         public async Task<ApiResponse> ListRoles()
@@ -619,29 +575,6 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
             }
             return new ApiResponse(200, "User Updated");
-        }
-
-        [HttpPost("AddUserRoleGlobal")]
-        [Authorize(Policy = Policies.IsAdmin)]
-        public async Task<ApiResponse> AddUserRoleToAppAsync([FromBody] string newRole)
-        {
-            // first make sure the role doesn't already exist
-            if (_roleManager.Roles.Any(r => r.Name == newRole))
-            {
-                return new ApiResponse(400, "role already exists");
-            }
-            else
-            {
-                try
-                {
-                    _roleManager.CreateAsync(new IdentityRole<Guid>(newRole)).Wait();
-                    return new ApiResponse(200);
-                }
-                catch (Exception ex)
-                {
-                    return new ApiResponse(500, ex.Message);
-                }
-            }
         }
 
         [HttpPost("AdminUserPasswordReset/{id}")]

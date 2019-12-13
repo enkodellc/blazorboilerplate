@@ -23,17 +23,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\Backup\**" />
-    <Content Remove="Migrations\Backup\**" />
-    <EmbeddedResource Remove="Migrations\Backup\**" />
-    <None Remove="Migrations\Backup\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Migrations\20190824003914_BlazorBoilerplate.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="IdentityServer4" Version="3.1.0-preview.1.4" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
@@ -54,6 +43,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.1.6" />
@@ -71,7 +61,6 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
