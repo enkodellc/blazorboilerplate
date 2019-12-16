@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlazorBoilerplate.Server.Migrations.PersistedGrantDb
 {
-    public partial class InitialPersistedGrantDbMigration : Migration
+    public partial class InitialIdentityServerPersistedGrantDbMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,14 +53,9 @@ namespace BlazorBoilerplate.Server.Migrations.PersistedGrantDb
                 column: "Expiration");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PersistedGrants_Expiration",
+                name: "IX_PersistedGrants_SubjectId_ClientId_Type_Expiration",
                 table: "PersistedGrants",
-                column: "Expiration");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PersistedGrants_SubjectId_ClientId_Type",
-                table: "PersistedGrants",
-                columns: new[] { "SubjectId", "ClientId", "Type" });
+                columns: new[] { "SubjectId", "ClientId", "Type", "Expiration" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

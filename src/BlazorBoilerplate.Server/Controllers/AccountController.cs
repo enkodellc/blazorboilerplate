@@ -33,15 +33,17 @@ namespace BlazorBoilerplate.Server.Controllers
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
+        private readonly IUserProfileService _userProfileService;
         private readonly ApplicationDbContext _db;
 
         public AccountController(IAccountService accountService,
-            UserManager<ApplicationUser> userManager, 
+            UserManager<ApplicationUser> userManager,
             ApplicationDbContext db,
-            SignInManager<ApplicationUser> signInManager, 
+            SignInManager<ApplicationUser> signInManager,
             ILogger<AccountController> logger,
-            RoleManager<IdentityRole<Guid>> roleManager, 
-            IEmailService emailService, 
+            RoleManager<IdentityRole<Guid>> roleManager,
+            IEmailService emailService,
+            IUserProfileService userProfileService,
             IConfiguration configuration)
         {
             _accountService = accountService;
@@ -50,11 +52,12 @@ namespace BlazorBoilerplate.Server.Controllers
             _logger = logger;
             _roleManager = roleManager;
             _emailService = emailService;
+            _userProfileService = userProfileService;
             _configuration = configuration;
             _db = db;
         }
 
-        
+
         // POST: api/Account/Login
         [HttpPost("Login")]
 
@@ -70,7 +73,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
             try
             {
-                var result = await _signInManager.PasswordSignInAsync(parameters.UserName, parameters.Password,  parameters.RememberMe, true);
+                var result = await _signInManager.PasswordSignInAsync(parameters.UserName, parameters.Password, parameters.RememberMe, true);
 
                 // If lock out activated and the max. amounts of attempts is reached.
                 if (result.IsLockedOut)
@@ -89,7 +92,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("Logged In: {0}", parameters.UserName);
-                    return new ApiResponse(200, "Login Successful");
+                    return new ApiResponse(200, _userProfileService.GetLastPageVisited(parameters.UserName));
                 }
             }
             catch (Exception ex)
@@ -117,7 +120,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
 
                 await _accountService.RegisterNewUserAsync(parameters.UserName, parameters.Email, parameters.Password, requireConfirmEmail);
-                
+
                 if (requireConfirmEmail)
                 {
                     return new ApiResponse(200, "Register User Success");
@@ -143,7 +146,7 @@ namespace BlazorBoilerplate.Server.Controllers
             }
         }
 
-        
+
         // POST: api/Account/ConfirmEmail
         [HttpPost("ConfirmEmail")]
         [AllowAnonymous]
@@ -385,7 +388,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 }
                 else
                 {
-                   var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
+                    var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
                         new Claim(Policies.IsUser,""),
                         new Claim(JwtClaimTypes.Name, parameters.UserName),
                         new Claim(JwtClaimTypes.Email, parameters.Email),
