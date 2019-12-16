@@ -13,6 +13,7 @@ namespace BlazorBoilerplate.Server.Services
     {
         Task<ApiResponse> Get(Guid userId);
         Task<ApiResponse> Upsert(UserProfileDto userProfile);
+        string GetLastPageVisited(string userName);
     }
     public class UserProfileService : IUserProfileService
     {
@@ -25,11 +26,27 @@ namespace BlazorBoilerplate.Server.Services
             _autoMapper = autoMapper;
         }
 
+        public string GetLastPageVisited(string userName)
+        {
+            string lastPageVisited = "/dashboard";
+            var userProfile = from userProf in _db.UserProfiles
+                              join user in _db.Users on userProf.UserId equals user.Id
+                              where user.UserName == userName
+                              select userProf;
+
+            if (userProfile.Any())
+            {
+                lastPageVisited = !String.IsNullOrEmpty(userProfile.First().LastPageVisited) ? userProfile.First().LastPageVisited : lastPageVisited;
+            }
+
+            return lastPageVisited;
+        }
+
         public async Task<ApiResponse> Get(Guid userId)
         {
             var profileQuery = from userProf in _db.UserProfiles
-                            where userProf.UserId == userId
-                            select userProf;
+                               where userProf.UserId == userId
+                               select userProf;
 
             UserProfileDto userProfile = new UserProfileDto();
             if (!profileQuery.Any())
