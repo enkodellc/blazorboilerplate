@@ -1,12 +1,12 @@
-﻿using BlazorBoilerplate.Client.Services.Contracts;
-using BlazorBoilerplate.Client.States;
+﻿using BlazorBoilerplate.CommonUI.Services.Contracts;
+using BlazorBoilerplate.CommonUI.States;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Client
+namespace BlazorBoilerplate.CommonUI
 {
     public class AppState
     {

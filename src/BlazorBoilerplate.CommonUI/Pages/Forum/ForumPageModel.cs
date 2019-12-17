@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Client.Hubs;
+using BlazorBoilerplate.CommonUI.Hubs;
 using System.Collections.Generic;
 using System;
 using Microsoft.JSInterop;
-using BlazorBoilerplate.Client.States;
+using BlazorBoilerplate.CommonUI.States;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace BlazorBoilerplate.Client.Pages
+namespace BlazorBoilerplate.CommonUI.Pages
 {
     public class ForumPageModel : ComponentBase
     {

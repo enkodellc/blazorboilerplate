@@ -1,10 +1,10 @@
-﻿using BlazorBoilerplate.Client.Services.Contracts;
+﻿using BlazorBoilerplate.CommonUI.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Client.Services.Implementations
+namespace BlazorBoilerplate.CommonUI.Services.Implementations
 {
     public class UserProfileApi : IUserProfileApi
     {

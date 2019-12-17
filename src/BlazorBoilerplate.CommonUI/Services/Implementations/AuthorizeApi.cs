@@ -3,11 +3,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
-using BlazorBoilerplate.Client.Services.Contracts;
+using BlazorBoilerplate.CommonUI.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
 using System.Collections.Generic;
 
-namespace BlazorBoilerplate.Client.Services.Implementations
+namespace BlazorBoilerplate.CommonUI.Services.Implementations
 {
     public class AuthorizeApi : IAuthorizeApi
     {

@@ -1,4 +1,13 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+
 using AutoMapper;
+
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Data.Interfaces;
@@ -8,8 +17,10 @@ using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -22,13 +33,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server
 {
@@ -269,9 +273,11 @@ namespace BlazorBoilerplate.Server
                     new[] { "application/octet-stream" });
             });
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUserSession, UserSession>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
@@ -321,7 +327,7 @@ namespace BlazorBoilerplate.Server
               //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
             }
 
-            //app.UseStaticFiles();
+            app.UseStaticFiles();
             app.UseClientSideBlazorFiles<Client.Startup>();
 
             app.UseHttpsRedirection();
@@ -343,7 +349,7 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
-                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index_csb.html");
             });
         }
     }

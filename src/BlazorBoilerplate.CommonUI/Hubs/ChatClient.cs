@@ -1,10 +1,10 @@
-﻿using BlazorBoilerplate.Client.Pages;
+﻿using BlazorBoilerplate.CommonUI.Pages;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Client.Hubs
+namespace BlazorBoilerplate.CommonUI.Hubs
 {
 
     /// <summary>
