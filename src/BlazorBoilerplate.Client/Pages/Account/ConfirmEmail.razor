@@ -23,7 +23,7 @@
                 <MatTextField @bind-Value="@confirmEmailParameters.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group d-flex justify-content-end">
-                <MatButton Type="submit" Raised="true">Send Confirmation</MatButton>
+                <MatButton Type="submit" Raised="true" Disabled="@disableConfirmButton">Send Confirmation</MatButton>
             </div>
         </fieldset>
     </EditForm>
@@ -31,6 +31,7 @@
 
 @code {
     ConfirmEmailDto confirmEmailParameters { get; set; } = new ConfirmEmailDto();
+    bool disableConfirmButton = false;
 
     [Parameter]
     public string UserId { get; set; }
@@ -40,8 +41,10 @@
         // Blazor does not have query string accessible parameters yet so a hack is needed. Token is too long for path parameter
         var absoluteUrl = navigationManager.Uri;
         var token = absoluteUrl.Substring(absoluteUrl.IndexOf("?token=") + 7);
+
         if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(token))
         {
+            disableConfirmButton = true;
             confirmEmailParameters = new ConfirmEmailDto
             {
                 Token = token,
