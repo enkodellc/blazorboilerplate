@@ -39,8 +39,9 @@ Complete all Blazor dependencies.
 1. Publish both the Client and Server projects to local folder
 2. Upload / Copy published Server directory to website folder.
 3. Upload / Copy published Client directory ON TOP of to the same root website directory of Server, it will add some files and overwrite some.
-4. Configure your appsettings.production.config - ConnectionString, Thumbprint / SSL.
-5. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
+4. Configure your appsettings.production.config - Connection String, Thumbprint / SSL.
+5. Make sure your SSL is in the WebHosting Certificate Store.
+6. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
 
 ### Thanks To
 - [Blazor](https://blazor.net)
