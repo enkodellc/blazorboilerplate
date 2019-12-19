@@ -28,10 +28,13 @@ namespace BlazorBoilerplate.Server.Data
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly ILogger _logger;
 
-        public DatabaseInitializer(ApplicationDbContext context,
+        public DatabaseInitializer(
+            ApplicationDbContext context,
             PersistedGrantDbContext persistedGrantContext,
-            ConfigurationDbContext configurationContext, ILogger<DatabaseInitializer> logger,
-             UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<Guid>> roleManager)
+            ConfigurationDbContext configurationContext, 
+            ILogger<DatabaseInitializer> logger,
+            UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole<Guid>> roleManager)
         {
             _persistedGrantContext = persistedGrantContext;
             _configurationContext = configurationContext;

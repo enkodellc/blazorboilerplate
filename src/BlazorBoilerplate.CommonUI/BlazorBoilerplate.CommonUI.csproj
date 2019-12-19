@@ -1,12 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
     <LangVersion>8.0</LangVersion>
     <Version>0.5.0</Version>
     <Authors>Keith Fimreite</Authors>
     <Company>EnkodeLLC</Company>
-    <Title>Blazor Boilerplate Shared</Title>
+    <Title>Blazor Boilerplate Server</Title>
     <Description>Blazor Boilerplate is starter kit / SPA Admin Template for Blazor</Description>
     <WebPage>https://blazorboilerplate.com/</WebPage>
     <PackageProjectUrl>https://blazorboilerplate.com/</PackageProjectUrl>
@@ -36,10 +37,23 @@
     <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
   </PropertyGroup>
 
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    <PackageReference Include="MatBlazor" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.0" />
+    <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="8.0.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="wwwroot\fonts\fontawesome\" />
   </ItemGroup>
 
 </Project>

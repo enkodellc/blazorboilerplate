@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BlazorBoilerplate.Shared.Dto;
 
-namespace BlazorBoilerplate.Client.Services.Contracts
+namespace BlazorBoilerplate.CommonUI.Services.Contracts
 {
     public interface IAuthorizeApi
     {

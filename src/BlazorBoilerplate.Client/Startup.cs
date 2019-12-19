@@ -1,12 +1,15 @@
-using BlazorBoilerplate.Client.Services.Contracts;
-using BlazorBoilerplate.Client.Services.Implementations;
-using BlazorBoilerplate.Client.States;
+using BlazorBoilerplate.CommonUI;
+using BlazorBoilerplate.CommonUI.Services.Contracts;
+using BlazorBoilerplate.CommonUI.Services.Implementations;
+using BlazorBoilerplate.CommonUI.States;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+
 using MatBlazor;
-using Microsoft.AspNetCore.Blazor.Http;
+
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
+
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Client

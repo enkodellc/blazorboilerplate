@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Client.Services.Contracts;
+﻿using BlazorBoilerplate.CommonUI.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Client.States
+namespace BlazorBoilerplate.CommonUI.States
 {
     public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {

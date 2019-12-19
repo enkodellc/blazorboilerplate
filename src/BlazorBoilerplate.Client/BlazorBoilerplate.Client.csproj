@@ -19,24 +19,39 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+
+    <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CSB|AnyCPU'">
+    <DefineConstants>ClientSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSB|AnyCPU'">
+    <DefineConstants>ServerSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_CSB|AnyCPU'">
+    <DefineConstants>ClientSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
+    <BlazorLinkOnBuild>true</BlazorLinkOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_SSB|AnyCPU'">
+    <DefineConstants>ServerSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.1.0-preview4.19579.2" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.1.0-preview4.19579.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.1.0-preview4.19579.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.1.0-preview4.19579.2" PrivateAssets="all" />
-    <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="8.0.0" />
-    <PackageReference Include="MatBlazor" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlazorBoilerplate.CommonUI\BlazorBoilerplate.CommonUI.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\fonts\fontawesome\" />
   </ItemGroup>
 
 </Project>
