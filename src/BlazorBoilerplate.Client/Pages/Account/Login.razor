@@ -4,7 +4,6 @@
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
-@*TODO: Add client-side validation*@
 
 <MatCard>
     <MatIconButton Icon="home" Link="/" Class="float-right"></MatIconButton>
@@ -27,7 +26,7 @@
             </div>
             <div class="form-group">
                 <MatCheckbox @bind-Value="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
-                <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
+                <MatButton class="float-right" Type="submit" Raised="true">Login</MatButton>
             </div>
             <hr />
             <div>
@@ -44,20 +43,39 @@
             <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
         </MatExpansionPanelSummary>
         <MatExpansionPanelDetails>
-            <div class="form-group">
-                <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-            </div>
-            <div class="form-group">
-                <MatButton class="float-right" OnClick="@ForgotPassword" Raised="true">Submit</MatButton>
-            </div>
+            <EditForm Model="@forgotPasswordParameters" OnValidSubmit="@ForgotPassword">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group">
+                    <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatButton class="float-right" Type="submit" Raised="true">Submit</MatButton>
+                </div>
+            </EditForm>
         </MatExpansionPanelDetails>
     </MatExpansionPanel>
 </MatAccordion>
 
 @code {
+    string navigateTo = "";
     bool forgotPasswordToggle = false;
     LoginDto loginParameters { get; set; } = new LoginDto();
     ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            navigationManager.NavigateTo(navigationManager.BaseUri + navigateTo);
+        }
+    }
 
     async Task GoogleSignIn()
     {
@@ -76,14 +94,15 @@
             var response = await authStateProvider.Login(loginParameters);
             if (response.StatusCode == 200)
             {
-                // On successful Login the response.Message is the Last Page Visited
+                // On successful Login the response.Message is the Last Page Visited from User Profile
+                // We can't navigate yet as the setup is proceeding asynchronously
                 if (!string.IsNullOrEmpty(response.Message))
                 {
-                    navigationManager.NavigateTo(navigationManager.BaseUri + response.Message);
+                    navigateTo = response.Message;
                 }
                 else
                 {
-                    navigationManager.NavigateTo("/dashboard");
+                    navigateTo = "/dashboard";
                 }
             }
             else

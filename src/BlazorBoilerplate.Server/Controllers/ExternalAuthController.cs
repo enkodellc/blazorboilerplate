@@ -1,11 +1,6 @@
-﻿using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Helpers;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
+﻿using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using IdentityModel;
 using IdentityServer4;
@@ -16,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -27,7 +21,6 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class ExternalAuthController : ControllerBase
     {
-
         private readonly ILogger<AccountController> _logger;
         private readonly IAccountService _accountService;
         private readonly UserManager<ApplicationUser> _userManager;

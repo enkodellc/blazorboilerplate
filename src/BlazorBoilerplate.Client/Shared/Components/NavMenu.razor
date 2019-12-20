@@ -33,22 +33,22 @@
             <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
         </MatNavItem>
 
-    <MatNavSubMenu>
-        <MatNavSubMenuHeader>
-            <MatNavItem AllowSelection="false" Disabled="@(!IsLoggedIn)">
-                <MatIcon>mail_outline</MatIcon>
-                <span class="miniHover"> Email</span>
-            </MatNavItem>
-        </MatNavSubMenuHeader>
-        <MatNavSubMenuList>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-                <MatIcon>inbox</MatIcon> <span class="miniHover">Read Email</span>
-            </MatNavItem>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-                <MatIcon>send</MatIcon> <span class="miniHover">Send Email</span>
-            </MatNavItem>
-        </MatNavSubMenuList>
-    </MatNavSubMenu>
+        <MatNavSubMenu>
+            <MatNavSubMenuHeader>
+                <MatNavItem AllowSelection="false" Disabled="@(!IsLoggedIn)">
+                    <MatIcon>mail_outline</MatIcon>
+                    <span class="miniHover"> Email</span>
+                </MatNavItem>
+            </MatNavSubMenuHeader>
+            <MatNavSubMenuList>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                    <MatIcon>inbox</MatIcon> <span class="miniHover">Read Email</span>
+                </MatNavItem>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                    <MatIcon>send</MatIcon> <span class="miniHover">Send Email</span>
+                </MatNavItem>
+            </MatNavSubMenuList>
+        </MatNavSubMenu>
 
         <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
             <MatNavSubMenu>
