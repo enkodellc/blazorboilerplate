@@ -579,6 +579,22 @@ ul.breadcrumb {
         max-width: 100%;
     }
 
+#blazor-error-ui::before{
+    margin: auto;
+}
+
+#blazor-error-ui {
+    background: #fff;
+    margin: 0 auto;
+    padding: 10px 20px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;
+}
+
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 596.98px) {
     .drawer-logo {
