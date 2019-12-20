@@ -1,10 +1,10 @@
-﻿using BlazorBoilerplate.CommonUI.Services.Contracts;
-using BlazorBoilerplate.CommonUI.States;
-using BlazorBoilerplate.Shared.Dto;
-using Microsoft.AspNetCore.Components.Authorization;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+
+using BlazorBoilerplate.CommonUI.Services.Contracts;
+using BlazorBoilerplate.Shared.Dto;
+
+using Newtonsoft.Json;
 
 namespace BlazorBoilerplate.CommonUI
 {

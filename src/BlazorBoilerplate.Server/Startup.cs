@@ -210,7 +210,6 @@ namespace BlazorBoilerplate.Server
                     options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
                 });
             }
-
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
             //Add Policies / Claims / Authorization - https://stormpath.com/blog/tutorial-policy-based-authorization-asp-net-core
@@ -226,13 +225,6 @@ namespace BlazorBoilerplate.Server
 
 #if ServerSideBlazor
 
-            services.AddAuthorizationCore(config =>
-            {
-                config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
-                config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
-                config.AddPolicy(Policies.IsReadOnly, Policies.IsUserPolicy());
-               // config.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  Only works on the server end
-            });
             services.AddScoped<IdentityAuthenticationStateProvider>();
             services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
