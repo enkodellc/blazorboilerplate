@@ -4,7 +4,6 @@
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
-@*TODO: Add client-side validation*@
 
 <MatCard>
     <MatIconButton Icon="home" Link="/" Class="float-right"></MatIconButton>
@@ -44,12 +43,17 @@
             <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
         </MatExpansionPanelSummary>
         <MatExpansionPanelDetails>
-            <div class="form-group">
-                <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-            </div>
-            <div class="form-group">
-                <MatButton class="float-right" Type="submit" Raised="true">Submit</MatButton>
-            </div>
+            <EditForm Model="@forgotPasswordParameters" OnValidSubmit="@ForgotPassword">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group">
+                    <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatButton class="float-right" Type="submit" Raised="true">Submit</MatButton>
+                </div>
+            </EditForm>
         </MatExpansionPanelDetails>
     </MatExpansionPanel>
 </MatAccordion>
@@ -90,10 +94,8 @@
             var response = await authStateProvider.Login(loginParameters);
             if (response.StatusCode == 200)
             {
-                //
-                // On successful Login the response.Message is the Last Page Visited
+                // On successful Login the response.Message is the Last Page Visited from User Profile
                 // We can't navigate yet as the setup is proceeding asynchronously
-                //
                 if (!string.IsNullOrEmpty(response.Message))
                 {
                     navigateTo = response.Message;
