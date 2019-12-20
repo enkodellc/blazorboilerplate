@@ -7,7 +7,7 @@
       https://dotnet.myget.org/F/blazor-dev/api/v3/index.json;
     </RestoreAdditionalProjectSources>
     <LangVersion>8.0</LangVersion>
-    <Version>0.5.0</Version>
+    <Version>0.6.0</Version>
     <Authors>Keith Fimreite</Authors>
     <Company>EnkodeLLC</Company>
     <Title>Blazor Boilerplate Server</Title>

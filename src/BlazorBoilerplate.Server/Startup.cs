@@ -403,6 +403,7 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
+
 #if ClientSideBlazor
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index_csb.html");
 #else

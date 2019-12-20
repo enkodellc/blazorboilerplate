@@ -9,7 +9,7 @@
     </RestoreAdditionalProjectSources>
     <LangVersion>8.0</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <Version>0.5.0</Version>
+    <Version>0.6.0</Version>
     <Authors>Keith Fimreite</Authors>
     <Company>EnkodeLLC</Company>
     <Title>Blazor Boilerplate Client</Title>
