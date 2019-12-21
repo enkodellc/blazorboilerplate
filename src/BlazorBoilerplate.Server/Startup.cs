@@ -338,10 +338,11 @@ namespace BlazorBoilerplate.Server
               //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
             }
 
+            app.UseHttpsRedirection();
             //app.UseStaticFiles();
+            app.UseCookiePolicy();
             app.UseClientSideBlazorFiles<Client.Startup>();
 
-            app.UseHttpsRedirection();
             app.UseRouting();
             //app.UseAuthentication();
             app.UseIdentityServer();
