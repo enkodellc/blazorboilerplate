@@ -283,7 +283,6 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet("UserInfo")]
-        [Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         public async Task<ApiResponse> UserInfo()

@@ -77,7 +77,7 @@ namespace BlazorBoilerplate.Client.States
                 return _userInfoCache;
             }
 
-            //If the user is not authenticated then an empt UserInfoDto is returned
+            //If the user is not authenticated then an empty UserInfoDto is returned
             _userInfoCache = await _authorizeApi.GetUserInfo();
             return _userInfoCache;
         }

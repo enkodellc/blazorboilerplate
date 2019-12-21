@@ -326,11 +326,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            //app.UseAuthentication();
+            //app.UseAuthentication(); //Removed for IS4
             app.UseIdentityServer();
             app.UseAuthorization();
 
-            //must be AFTER the Auth middleware to get the User/Identity info
+            //Must be AFTER the Auth middleware to get the User/Identity info
             app.UseMiddleware<UserSessionMiddleware>();
 
             // NSwag
