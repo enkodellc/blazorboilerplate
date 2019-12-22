@@ -57,10 +57,8 @@ namespace BlazorBoilerplate.Server.Controllers
             _db = db;
         }
 
-
         // POST: api/Account/Login
         [HttpPost("Login")]
-
         [AllowAnonymous]
         [ProducesResponseType(204)]
         [ProducesResponseType(401)]
@@ -104,7 +102,6 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(401, "Login Failed");
         }
 
-
         // POST: api/Account/Register
         [HttpPost("Register")]
         [AllowAnonymous]
@@ -146,7 +143,6 @@ namespace BlazorBoilerplate.Server.Controllers
             }
         }
 
-
         // POST: api/Account/ConfirmEmail
         [HttpPost("ConfirmEmail")]
         [AllowAnonymous]
@@ -182,7 +178,6 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(200, "Success");
         }
 
-
         // POST: api/Account/ForgotPassword
         [HttpPost("ForgotPassword")]
         [AllowAnonymous]
@@ -202,6 +197,7 @@ namespace BlazorBoilerplate.Server.Controllers
             }
 
             #region Forgot Password Email
+
             try
             {
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
@@ -220,7 +216,9 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 _logger.LogInformation("Forgot Password email failed: {0}", ex.Message);
             }
-            #endregion
+
+            #endregion Forgot Password Email
+
             return new ApiResponse(200, "Success");
         }
 
@@ -242,19 +240,22 @@ namespace BlazorBoilerplate.Server.Controllers
             }
 
             #region Reset Password Successful Email
+
             try
             {
                 IdentityResult result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
                 if (result.Succeeded)
                 {
                     #region Email Successful Password change
+
                     var email = new EmailMessageDto();
                     email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
                     email.BuildPasswordResetEmail(user.UserName); //Replace First UserName with Name if you want to add name to Registration Form
 
                     _logger.LogInformation("Reset Password Successful Email Sent: {0}", user.Email);
                     await _emailService.SendEmailAsync(email);
-                    #endregion
+
+                    #endregion Email Successful Password change
 
                     return new ApiResponse(200, String.Format("Reset Password Successful Email Sent: {0}", user.Email));
                 }
@@ -268,9 +269,9 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 _logger.LogInformation("Reset Password failed: {0}", ex.Message);
                 return new ApiResponse(400, string.Format("Error while resetting the password!: {0}", ex.Message));
-
             }
-            #endregion
+
+            #endregion Reset Password Successful Email
         }
 
         // POST: api/Account/Logout
@@ -359,7 +360,6 @@ namespace BlazorBoilerplate.Server.Controllers
             return new ApiResponse(200, "User Updated Successfully");
         }
 
-
         ///----------Admin User Management Interface Methods
 
         // POST: api/Account/Create
@@ -402,6 +402,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
                     #region New  User Confirmation Email
+
                     try
                     {
                         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
@@ -419,11 +420,14 @@ namespace BlazorBoilerplate.Server.Controllers
                     {
                         _logger.LogInformation("New user email failed: {0}", ex.Message);
                     }
-                    #endregion
+
+                    #endregion New  User Confirmation Email
+
                     return new ApiResponse(200, "Create User Success");
                 }
 
                 #region New  User Email
+
                 try
                 {
                     var email = new EmailMessageDto();
@@ -437,7 +441,8 @@ namespace BlazorBoilerplate.Server.Controllers
                 {
                     _logger.LogInformation("New user email failed: {0}", ex.Message);
                 }
-                #endregion
+
+                #endregion New  User Email
 
                 UserInfoDto userInfo = new UserInfoDto
                 {
@@ -488,9 +493,7 @@ namespace BlazorBoilerplate.Server.Controllers
             }
         }
 
-
         [HttpGet("GetUser")]
-        [Authorize]
         public ApiResponse GetUser()
         {
             UserInfoDto userInfo = User != null && User.Identity.IsAuthenticated
@@ -554,7 +557,6 @@ namespace BlazorBoilerplate.Server.Controllers
                     foreach (var role in rolesToAdd)
                     {
                         await _userManager.AddClaimAsync(appUser, new Claim($"Is{role}", "true")).ConfigureAwait(true);
-
                     }
 
                     foreach (var role in currentUserRoles)

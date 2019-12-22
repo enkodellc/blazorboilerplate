@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -11,7 +12,6 @@ namespace BlazorBoilerplate.Client.States
 {
     public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private UserInfoDto _userInfoCache = null;
         private readonly IAuthorizeApi _authorizeApi;
         private readonly AppState _appState;
 
@@ -36,7 +36,7 @@ namespace BlazorBoilerplate.Client.States
         }
 
         public async Task<ApiResponseDto> Create(RegisterDto registerParameters)
-        {            
+        {
             ApiResponseDto apiResponse = await _authorizeApi.Create(registerParameters);
             return apiResponse;
         }
@@ -45,7 +45,6 @@ namespace BlazorBoilerplate.Client.States
         {
             _appState.UserProfile = null;
             ApiResponseDto apiResponse = await _authorizeApi.Logout();
-            _userInfoCache = null;
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
@@ -71,15 +70,18 @@ namespace BlazorBoilerplate.Client.States
         }
 
         public async Task<UserInfoDto> GetUserInfo()
-        {            
-            if (_userInfoCache != null && _userInfoCache.IsAuthenticated)
+        {
+            UserInfoDto userInfo = await _authorizeApi.GetUser();
+            bool IsAuthenticated = userInfo.IsAuthenticated;
+            if (IsAuthenticated)
             {
-                return _userInfoCache;
+                userInfo = await _authorizeApi.GetUserInfo();
             }
-
-            //If the user is not authenticated then an empt UserInfoDto is returned
-            _userInfoCache = await _authorizeApi.GetUserInfo();
-            return _userInfoCache;
+            else
+            {
+                userInfo = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
+            }
+            return userInfo;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -90,7 +92,7 @@ namespace BlazorBoilerplate.Client.States
                 var userInfo = await GetUserInfo();
                 if (userInfo.IsAuthenticated)
                 {
-                    var claims = new[] { new Claim(ClaimTypes.Name, _userInfoCache.UserName) }.Concat(_userInfoCache.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
+                    var claims = new[] { new Claim(ClaimTypes.Name, userInfo.UserName) }.Concat(userInfo.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
                     identity = new ClaimsIdentity(claims, "Server authentication");
                 }
             }
