@@ -90,9 +90,9 @@
         // Set Default landing page if you want
         //navigationManager.NavigateTo("/");
 
-        var user = await authStateProvider.GetUserInfo();
+        var user = (await authenticationStateTask).User;
 
-        if (user.IsAuthenticated)
+        if (user.Identity.IsAuthenticated)
         {
             var profile = await appState.GetUserProfile();
             _navMenuOpened = profile.IsNavOpen;
