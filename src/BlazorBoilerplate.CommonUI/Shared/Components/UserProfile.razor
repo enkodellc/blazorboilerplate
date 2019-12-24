@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components
-@inject IdentityAuthenticationStateProvider authStateProvider
+@inject AuthenticationStateProvider authStateProvider
 
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
@@ -24,7 +24,7 @@
 
         if (user.Identity.IsAuthenticated)
         {
-            userInfo = await authStateProvider.GetUserInfo();
+            userInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserInfo();
         }
     }
 }

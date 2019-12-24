@@ -224,39 +224,6 @@ namespace BlazorBoilerplate.Server
 
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
 
-#if ServerSideBlazor
-
-            services.AddScoped<IdentityAuthenticationStateProvider>();
-            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
-            services.AddScoped<IAuthorizeApi, AuthorizeApi>();
-            services.AddScoped<IUserProfileApi, UserProfileApi>();
-            services.AddScoped<AppState>();
-            services.AddMatToaster(config =>
-            {
-                config.Position = MatToastPosition.BottomRight;
-                config.PreventDuplicates = true;
-                config.NewestOnTop = true;
-                config.ShowCloseButton = true;
-                config.MaximumOpacity = 95;
-                config.VisibleStateDuration = 3000;
-            });
-
-            // Setup HttpClient for server side in a client side compatible fashion
-            services.AddScoped<HttpClient>(s =>
-            {
-                // Creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
-                var uriHelper = s.GetRequiredService<NavigationManager>();
-                return new HttpClient
-                {
-                    BaseAddress = new Uri(uriHelper.BaseUri)
-                };
-            });
-
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-
-#endif
-
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings
@@ -348,11 +315,46 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton(autoMapper);
 
-//            Log.Logger.Debug($"Total Services Registered: {services.Count}");
-//            foreach (var service in services)
-//            {
-//                Log.Logger.Debug($"\n      Service: {service.ServiceType.FullName}\n      Lifetime: {service.Lifetime}\n      Instance: {service.ImplementationType?.FullName}");
-//            }
+#if ServerSideBlazor
+
+            services.AddScoped<IAuthorizeApi, AuthorizeApi>();
+            services.AddScoped<IUserProfileApi, UserProfileApi>();
+            services.AddScoped<AppState>();
+            services.AddMatToaster(config =>
+            {
+                config.Position = MatToastPosition.BottomRight;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = true;
+                config.ShowCloseButton = true;
+                config.MaximumOpacity = 95;
+                config.VisibleStateDuration = 3000;
+            });
+
+            // Setup HttpClient for server side
+            services.AddScoped<HttpClient>();
+
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+
+            // Authentication providers
+
+            Log.Logger.Debug("Removing AuthenticationStateProvider...");
+            var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(AuthenticationStateProvider));
+            if (serviceDescriptor != null)
+            {
+                services.Remove(serviceDescriptor);
+            }
+
+            Log.Logger.Debug("Adding AuthenticationStateProvider...");
+            services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
+
+#endif
+
+            Log.Logger.Debug($"Total Services Registered: {services.Count}");
+            foreach (var service in services)
+            {
+                Log.Logger.Debug($"\n      Service: {service.ServiceType.FullName}\n      Lifetime: {service.Lifetime}\n      Instance: {service.ImplementationType?.FullName}");
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

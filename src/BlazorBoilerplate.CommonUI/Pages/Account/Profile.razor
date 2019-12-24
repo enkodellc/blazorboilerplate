@@ -3,7 +3,7 @@
 @attribute [Authorize]
 
 @inject HttpClient Http
-@inject IdentityAuthenticationStateProvider authStateProvider
+@inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 
 <h1>User Profile</h1>
@@ -49,14 +49,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        userInfo = await authStateProvider.GetUserInfo();
+        userInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserInfo();
     }
 
     async Task UpdateUser()
     {
         try
         {
-            ApiResponseDto apiResponse = await authStateProvider.UpdateUser(userInfo);
+            ApiResponseDto apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).UpdateUser(userInfo);
 
             if (apiResponse.StatusCode == 200)
             {

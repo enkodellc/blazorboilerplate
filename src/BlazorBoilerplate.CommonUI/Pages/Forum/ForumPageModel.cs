@@ -13,7 +13,7 @@ namespace BlazorBoilerplate.CommonUI.Pages
     public class ForumPageModel : ComponentBase
     {
         [Inject]
-        private IdentityAuthenticationStateProvider IdentityAuthenticationStateProvider { get; set; }
+        private AuthenticationStateProvider authStateProvider { get; set; }
 
         [Inject]
         private IJSRuntime JsRuntime { get; set; }
@@ -34,7 +34,7 @@ namespace BlazorBoilerplate.CommonUI.Pages
         
         protected override async Task OnInitializedAsync()
         {
-            UserInfo = await IdentityAuthenticationStateProvider.GetUserInfo();
+            UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserInfo();
 
             await AuthenticationStateTask;
             await Chat();
