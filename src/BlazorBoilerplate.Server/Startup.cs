@@ -50,6 +50,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace BlazorBoilerplate.Server
 {
@@ -346,6 +347,12 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
+
+//            Log.Logger.Debug($"Total Services Registered: {services.Count}");
+//            foreach (var service in services)
+//            {
+//                Log.Logger.Debug($"\n      Service: {service.ServiceType.FullName}\n      Lifetime: {service.Lifetime}\n      Instance: {service.ImplementationType?.FullName}");
+//            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
