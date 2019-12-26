@@ -113,13 +113,16 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 -  Looking for additional help with Azure documentation and steps.
 
 ## News
+### 0.6.0 (Breaking Changes - Under Development - DualModeV2 Branch)
+- Dual Mode CSB & SSB [View Wiki](https://github.com/enkodellc/blazorboilerplate/wiki/Dual-Mode-CSB---SSB-Tips). Thanks [MarkStega](https://github.com/MarkStega
 
 ### 0.5.0 (Under Development)
 - MatBlazor 2.0 Breaking Changes
 - .NET Core 3.1.0 / v3.1.0-preview4 Blazor Nuget package updates
 - Admin Roles / Permissions Management. Thanks [vd3d](https://github.com/vd3d)
 - Fix Login EditForm / Double submit of Login. Thanks [MarkStega](https://github.com/MarkStega)
-- UserProfile Fixes [mobinseven](https://github.com/mobinseven)
+- UserProfile Fixes. Thanks [mobinseven](https://github.com/mobinseven)
+- Chrome Cookie updates. Thanks [oneparameter](oneparameter)
     
 ### 0.4.0
  - Docker Support. Thanks [npraskins](https://github.com/npraskins) & [acid12](https://github.com/acid12)
