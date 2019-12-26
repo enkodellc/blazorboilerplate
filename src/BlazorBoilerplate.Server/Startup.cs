@@ -48,6 +48,23 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.ConfigureExternalCookie(options =>
+            {
+                // macOS login fix
+                options.Cookie.SameSite = SameSiteMode.None;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // macOS login fix
+                options.Cookie.SameSite = SameSiteMode.None;
+            });
+
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
