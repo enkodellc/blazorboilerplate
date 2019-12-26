@@ -84,10 +84,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Uncomment to secure entire app
+        // Uncomment to secure entire app with no anonymous user access
         //navigationManager.NavigateTo("/account/login");
 
-        // Set Default landing page if you want
+        // Set Default landing page if you want for anonymous user.
+        // Authenticated users are redirected after successful login.
         //navigationManager.NavigateTo("/");
 
         var user = (await authenticationStateTask).User;
@@ -97,7 +98,6 @@
             var profile = await appState.GetUserProfile();
             _navMenuOpened = profile.IsNavOpen;
             _navMinified = profile.IsNavMinified;
-            // navigationManager.NavigateTo(AppState.UserProfile.LastPageVisited); //Not Implemented
         }
     }
 
