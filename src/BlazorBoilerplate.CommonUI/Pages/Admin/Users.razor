@@ -2,7 +2,7 @@
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IAuthorizationService AuthorizationService
-@inject IdentityAuthenticationStateProvider authStateProvider
+@inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
 
@@ -295,7 +295,7 @@ else
                 return;
             }
 
-            ApiResponseDto apiResponse = await authStateProvider.Create(registerParameters);
+            ApiResponseDto apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).Create(registerParameters);
             if (apiResponse.StatusCode == 200)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);
