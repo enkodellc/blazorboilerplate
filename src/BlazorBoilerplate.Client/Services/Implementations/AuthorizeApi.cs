@@ -57,13 +57,20 @@ namespace BlazorBoilerplate.Client.Services.Implementations
         {
             UserInfoDto userInfo = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
             ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Account/UserInfo");
-            
+
             if (apiResponse.StatusCode == 200)
             {
                 userInfo = JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
                 return userInfo;
             }
             return userInfo;
+        }
+
+        public async Task<UserInfoDto> GetUser()
+        {
+            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Account/GetUser");
+            UserInfoDto user = JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
+            return user;
         }
 
         public async Task<ApiResponseDto> UpdateUser(UserInfoDto userInfo)

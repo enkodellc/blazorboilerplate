@@ -8,41 +8,46 @@
 
 <h1>User Profile</h1>
 <p>User profile management. Work in progress.</p>
-<EditForm Model="@userInfo" OnValidSubmit="@UpdateUser">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <fieldset>
-        <div class="form-group">
-            <MatTextField @bind-Value="@userInfo.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatTextField @bind-Value="@userInfo.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatTextField @bind-Value="@userInfo.FirstName" Label="First Name" FullWidth="true"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatTextField @bind-Value="@userInfo.LastName" Label="Last Name" FullWidth="true"></MatTextField>
-        </div>
+@if (userInfo == null)
+{
+    <LoadingBackground ShowLogoBox="true"></LoadingBackground>
+}
+else
+{
+    <EditForm Model="@userInfo" OnValidSubmit="@UpdateUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userInfo.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userInfo.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userInfo.FirstName" Label="First Name" FullWidth="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userInfo.LastName" Label="Last Name" FullWidth="true"></MatTextField>
+            </div>
 
-        <div class="form-group">
-            <strong>Roles</strong><br />
-            <MatChipSet>
-                @foreach (var role in userInfo.Roles)
-                {
-                    <MatChip Label="@role"></MatChip>
-                }
-            </MatChipSet>
-        </div>
-        <div class="form-group d-flex justify-content-end">
-            <MatButton Type="submit" Raised="true">Update Profile</MatButton>
-        </div>
-    </fieldset>
-</EditForm>
-
-
+            <div class="form-group">
+                <strong>Roles</strong><br />
+                <MatChipSet>
+                    @foreach (var role in userInfo.Roles)
+                    {
+                        <MatChip Label="@role"></MatChip>
+                    }
+                </MatChipSet>
+            </div>
+            <div class="form-group d-flex justify-content-end">
+                <MatButton Type="submit" Raised="true">Update Profile</MatButton>
+            </div>
+        </fieldset>
+    </EditForm>
+}
 @code {
-    UserInfoDto userInfo { get; set; } = new UserInfoDto();
+    UserInfoDto userInfo;
 
     [Parameter]
     public string UserId { get; set; }

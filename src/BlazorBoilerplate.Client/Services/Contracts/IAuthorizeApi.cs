@@ -14,5 +14,6 @@ namespace BlazorBoilerplate.Client.Services.Contracts
         Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto confirmEmailParameters);
         Task<UserInfoDto> GetUserInfo();
         Task<ApiResponseDto> UpdateUser(UserInfoDto userInfo);
+        Task<UserInfoDto> GetUser();
     }
 }
