@@ -309,7 +309,7 @@ namespace BlazorBoilerplate.Server.Controllers
                         //Optionally: filter the claims you want to expose to the client
                         ExposedClaims = User.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
                         Roles = ((ClaimsIdentity)User.Identity).Claims
-                                .Where(c => c.Type == ClaimTypes.Role)
+                                .Where(c => c.Type == "role")
                                 .Select(c => c.Value).ToList()
                     };
                 }
