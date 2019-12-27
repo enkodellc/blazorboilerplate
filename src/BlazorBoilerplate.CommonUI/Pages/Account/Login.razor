@@ -1,7 +1,7 @@
 @page "/account/login"
 @layout LoginLayout
 @inject NavigationManager navigationManager
-@inject IdentityAuthenticationStateProvider authStateProvider
+@inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
 
@@ -91,7 +91,7 @@
     {
         try
         {
-            var response = await authStateProvider.Login(loginParameters);
+            var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Login(loginParameters);
             if (response.StatusCode == 200)
             {
                 // On successful Login the response.Message is the Last Page Visited from User Profile
@@ -120,7 +120,7 @@
     {
         try
         {
-            await authStateProvider.ForgotPassword(forgotPasswordParameters);
+            await ((IdentityAuthenticationStateProvider)authStateProvider).ForgotPassword(forgotPasswordParameters);
             matToaster.Add("Forgot Password Email Sent", MatToastType.Success);
             forgotPasswordParameters.Email = "";
             forgotPasswordToggle = false;

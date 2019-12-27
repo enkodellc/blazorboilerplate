@@ -3,7 +3,7 @@
 @using  BlazorBoilerplate.Shared.Dto
 @layout LoginLayout
 @inject NavigationManager navigationManager
-@inject IdentityAuthenticationStateProvider authStateProvider
+@inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 
 <MatCard>
@@ -53,7 +53,7 @@
 
         try
         {
-            await authStateProvider.Register(registerParameters);
+            await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters);
             matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, "User Creation Sucessful");
             navigationManager.NavigateTo("");
         }

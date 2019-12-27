@@ -25,8 +25,7 @@ namespace BlazorBoilerplate.Client
                 config.AddPolicy(Policies.IsReadOnly, Policies.IsUserPolicy());
                // config.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  Only works on the server end
             });
-            services.AddScoped<IdentityAuthenticationStateProvider>();
-            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
+            services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             services.AddLoadingBar();
             services.Add(new ServiceDescriptor(typeof(IUserProfileApi), typeof(UserProfileApi), ServiceLifetime.Scoped));
