@@ -1,0 +1,54 @@
+﻿@page "/"
+@namespace BlazorBoilerplate.Server.Pages
+@using BlazorBoilerplate.CommonUI
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlazorBoilerplate &amp; Starter Kit (SSB)</title>
+    <link rel="shortcut icon" type="image/x-icon" href="_content/BlazorBoilerplate.CommonUI/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="_content/BlazorBoilerplate.CommonUI/images/favicon.ico">
+    <base href="~/" />
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="_content/BlazorBoilerplate.CommonUI/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="_content/BlazorBoilerplate.CommonUI/css/site.css" rel="stylesheet" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-55161075-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-55161075-2');
+    </script>
+
+</head>
+<body>
+    <!-- SSB -->
+    <app>
+        <component type="typeof(App)" render-mode="ServerPrerendered" />
+    </app>
+
+    <div id="blazor-error-ui">
+        <i class="material-icons">error</i>
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
+    <!-- load remaining JS after blazor boot loads -->
+    <script src="_content/MatBlazor/dist/matBlazor.js"></script>
+    <script src="_content/BlazorBoilerplate.CommonUI/javascript/signalr.min.js"></script>
+    <script src="_content/BlazorBoilerplate.CommonUI/javascript/chatClient.js"></script>
+</body>
+</html>
