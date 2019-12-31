@@ -599,6 +599,7 @@ ul.breadcrumb {
 }
 
 #blazor-error-ui {
+    z-index:9999;
     display: none;
     background: #fff;
     margin: 0 auto;

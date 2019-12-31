@@ -73,6 +73,7 @@
     <li>Icon Button</li>
     <li>List</li>
     <li>Nav Bar</li>
+    <li>SnackBar</li>
     <li>Table</li>
     <li>TextField</li>
     <li>Toast</li>
@@ -95,9 +96,26 @@
     .Net WebForms project. Please take the time to Star, Contribute or Donate to support my efforts to continue to drive the project, especially if you use it in production.
 </p>
 
-<MatSnackbar IsOpen="true">
+<MatSnackbar @bind-IsOpen="@lazySnackbarIsOpen">
     <MatSnackbarContent>If you like BlazorBoilerplate, please put a <a href="https://github.com/enkodellc/blazorboilerplate" target="_blank">star on GitHub</a>.</MatSnackbarContent>
     <MatSnackbarActions>
         <MatIconButton Icon="@MatIconNames.Stars" Link="https://github.com/enkodellc/blazorboilerplate" style="color: white !important;" target="_blank"></MatIconButton>
     </MatSnackbarActions>
 </MatSnackbar>
+
+@code{
+    bool lazySnackbarIsOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await Task.Delay(TimeSpan.FromSeconds(3)).ContinueWith((_) => {
+            this.lazySnackbarIsOpen = true;
+        });
+    }
+
+    public void Dispose()
+    {
+    }
+}
