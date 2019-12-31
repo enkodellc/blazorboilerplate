@@ -31,7 +31,7 @@ window.ChatClient = {
             // console.log("Connection message received for " + key + " from " + username);
             // invoke Blazor dotnet method 
             // we pass the key in so we know which client received the message
-            DotNet.invokeMethod(assembly, method, key, "ReceiveMessage", id, username, message);
+            DotNet.invokeMethodAsync(assembly, method, key, "ReceiveMessage", id, username, message);
         });
 
         // start the connection
