@@ -108,7 +108,7 @@ namespace BlazorBoilerplate.CommonUI.Hubs
             if (!_started)
             {
                 // the callback method for inbound messages
-                const string assembly = "BlazorBoilerplate.Client";//TODO: Make this dynamic with the application
+                const string assembly = "BlazorBoilerplate.CommonUI";//TODO: Make this dynamic with the application
                 const string method = "ReceiveMessage";
                 // invoke the JS interop start client method
                 Console.WriteLine("ChatClient: calling Start()");
