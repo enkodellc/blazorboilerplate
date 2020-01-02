@@ -103,6 +103,12 @@ This project is licensed under the terms of the [MIT license](LICENSE).
  for Blazor Boilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
 - Debugging is very limited on WebAssembly / Client-side Blazor, which this project is. The server side of the project can easily be debugged, just not there yet on the client-side code.
  Take a look at the "Dual" branch for SSB / CSB options. It may be a bit outdated.
+ 
+### Postgres Support
+Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and then create your own migrations:  
+  `dotnet ef migrations add InitialApplicationDbMigration --context ApplicationDbContext -o Migrations\ApplicationDb`  
+  `dotnet ef migrations add InitialConfigurationDbMigration --context DbContextOptionsBuilder -o Migrations\ConfigurationDb`  
+  `dotnet ef migrations add PersistedGrantDbContext --context PersistedGrantDbContext -o Migrations\PersistedGrantDb`  
 
 ### Docker Support
 - Prerequisite: Install [Docker Desktop](https://go.microsoft.com/fwlink/?linkid=847268) 
