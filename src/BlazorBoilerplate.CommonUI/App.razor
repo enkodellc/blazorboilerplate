@@ -1,0 +1,43 @@
+﻿<Router AppAssembly="typeof(App).Assembly">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <NotAuthorized>
+                <div class="login-container">
+                    <LoadingBackground ShowLogoBox="true">
+                        <div class="login-body">
+                            <label>Sorry, You're not authorized to reach this page. You may need to log in as a different user.</label><br />
+                            <MatButton Link="/" Raised="true">Home</MatButton>
+                        </div>
+                    </LoadingBackground>
+                </div>
+            </NotAuthorized>
+        </AuthorizeRouteView>
+    </Found>
+    <NotFound>
+        <CascadingAuthenticationState>
+            <LayoutView Layout="typeof(MainLayout)">
+                <LoadingBackground ShowLogoBox="true">
+                    <div class="login-body">
+                        <h1>We lost this page</h1>
+                        <label>We searched high and low but couldn't find what you're looking for.<br />Don't worry our junior developer is working on it between his naps and <a href="https://www.youtube.com/watch?v=y7LAbdoNBJA" target="_blank">youtube videos</a> on Blazor!</label><br />
+                        <MatButton Link="/" Raised="true">Return Home</MatButton>
+                    </div>
+                </LoadingBackground>
+            </LayoutView>
+        </CascadingAuthenticationState>
+    </NotFound>
+</Router>
+<MatToastContainer />
+
+@code
+{
+    [Inject] HttpClient _httpClient { get; set; }
+    [Inject] NavigationManager _navigationManager { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _httpClient.BaseAddress = new Uri(_navigationManager.BaseUri);
+    }
+}

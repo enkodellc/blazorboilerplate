@@ -1,0 +1,146 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject AppState appState
+
+<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
+    <MatDrawer @bind-Opened="@_navMenuOpened">
+        <header class="drawer-header">
+            <div class="drawer-logo">
+                <img alt="Blazor Boilerplate" class="logo-img" src="_content/BlazorBoilerplate.CommonUI/images/blazorboilerplate-dark.svg" title="Blazor Boilerplate">
+                <a class="miniHover" href="/">Blazor Boilerplate</a>
+            </div>
+            <UserProfile />
+        </header>
+        <NavMenu />
+        <footer class="drawer-footer">
+            <MatTooltip Tooltip="Help">
+                <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">Help & Support</span></MatButton>
+            </MatTooltip>
+        </footer>
+    </MatDrawer>
+    <MatDrawerContent>
+        <MatAppBarContainer>
+            <MatAppBar Fixed="true">
+                <MatAppBarRow>
+                    <MatAppBarSection>
+                        <MatAppBarTitle>
+
+                        </MatAppBarTitle>
+                        <div class="hidden-mdc-down">
+                            @*<nav>
+                                <ul>
+                                    <li>*@
+                            <MatTooltip Tooltip="Toggle Navigation">
+                                <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                            </MatTooltip>
+                            @*</li>
+                                <li>*@
+                            <MatTooltip Tooltip="Minify Navigation">
+                                <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
+                            </MatTooltip>
+                            @*</li>
+                                <li>
+                                    <MatTooltip Tooltip="Lock Navigation" >
+                                        <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
+                                    </MatTooltip>
+                                    </li>*@
+                            @*</ul>
+                                </nav>*@
+                        </div>
+                    </MatAppBarSection>
+                    <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                        <MatTooltip Tooltip="Donate to Support">
+                            <MatIconButton Link="https://www.paypal.me/enkodellc" RefBack="@context"><i class="fa fa-cc-paypal"></i></MatIconButton>
+                        </MatTooltip>
+                        <MatTooltip Tooltip="Github Repository">
+                            <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
+                        </MatTooltip>
+                        <Login></Login>
+                    </MatAppBarSection>
+                </MatAppBarRow>
+            </MatAppBar>
+            <MatAppBarContent>
+                <Breadcrumbs RootLinkTitle="Home"></Breadcrumbs>
+                <section class="container-fluid">
+                    @Body
+                </section>
+                <footer class="page-footer">
+                    <div class="flex-1">
+                        © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a> Version 0.6.0 - Developed by <a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
+                    </div>
+                </footer>
+            </MatAppBarContent>
+        </MatAppBarContainer>
+    </MatDrawerContent>
+</MatDrawerContainer>
+
+@code {
+    bool _navMenuOpened = true;
+    bool _navMinified = false;
+    public string bbDrawerClass = "";
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Uncomment to secure entire app  with no anonymous user access
+        //navigationManager.NavigateTo("/account/login");
+
+        // Set Default landing page if you want for anonymous user.
+        // Authenticated users are redirected after successful login.
+        //navigationManager.NavigateTo("/");
+
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var profile = await appState.GetUserProfile();
+            _navMenuOpened = profile.IsNavOpen;
+            _navMinified = profile.IsNavMinified;
+        }
+    }
+
+    void NavToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+        if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+        else
+        {
+            bbDrawerClass = "closed";
+        }
+
+        this.StateHasChanged();
+    }
+
+    void NavLock()
+    {
+        //Todo Lock Nav
+    }
+
+    void NavMinify()
+    {
+        _navMinified = !_navMinified;
+
+        if (!_navMenuOpened)
+        {
+            _navMinified = true;
+        }
+
+        if (_navMinified)
+        {
+            bbDrawerClass = "mini";
+            _navMenuOpened = true;
+        }
+        else if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+
+        _navMenuOpened = true;
+        this.StateHasChanged();
+    }
+}

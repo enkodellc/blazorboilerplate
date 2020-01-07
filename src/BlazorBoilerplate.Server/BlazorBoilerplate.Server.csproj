@@ -7,7 +7,7 @@
       https://dotnet.myget.org/F/blazor-dev/api/v3/index.json;
     </RestoreAdditionalProjectSources>
     <LangVersion>8.0</LangVersion>
-    <Version>0.5.0</Version>
+    <Version>0.6.0</Version>
     <Authors>Keith Fimreite</Authors>
     <Company>EnkodeLLC</Company>
     <Title>Blazor Boilerplate Server</Title>
@@ -20,6 +20,28 @@
     <DockerfileFile>../Dockerfile</DockerfileFile>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+
+    <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CSB|AnyCPU'">
+    <DefineConstants>ClientSideBlazor;TRACE;DEBUG;NETCOREAPP3_1;</DefineConstants>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSB|AnyCPU'">
+    <DefineConstants>ServerSideBlazor;TRACE;DEBUG;NETCOREAPP3_1;</DefineConstants>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_CSB|AnyCPU'">
+    <DefineConstants>ClientSideBlazor;RELEASE;NETCOREAPP3_1;</DefineConstants>
+    <BlazorLinkOnBuild>true</BlazorLinkOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_SSB|AnyCPU'">
+    <DefineConstants>ServerSideBlazor;RELEASE;NETCOREAPP3_1;</DefineConstants>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,8 +50,10 @@
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="3.1.0" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="3.1.0" />
+    <PackageReference Include="MatBlazor" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="3.1.0-preview4.19579.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0">
@@ -56,6 +80,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
+    <ProjectReference Include="..\BlazorBoilerplate.CommonUI\BlazorBoilerplate.CommonUI.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
   </ItemGroup>
 
