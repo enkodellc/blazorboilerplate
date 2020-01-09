@@ -1,4 +1,29 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+
 using AutoMapper;
+
+#if ServerSideBlazor
+
+using BlazorBoilerplate.CommonUI;
+using BlazorBoilerplate.CommonUI.Services.Contracts;
+using BlazorBoilerplate.CommonUI.Services.Implementations;
+using BlazorBoilerplate.CommonUI.States;
+
+using MatBlazor;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
+
+using System.Net.Http;
+
+#endif
+
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Data.Interfaces;
@@ -8,11 +33,14 @@ using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -22,13 +50,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
+using Serilog;
 
 namespace BlazorBoilerplate.Server
 {
@@ -189,7 +211,6 @@ namespace BlazorBoilerplate.Server
                     options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
                 });
             }
-
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
             //Add Policies / Claims / Authorization - https://stormpath.com/blog/tutorial-policy-based-authorization-asp-net-core
@@ -282,9 +303,11 @@ namespace BlazorBoilerplate.Server
                     new[] { "application/octet-stream" });
             });
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUserSession, UserSession>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
@@ -304,6 +327,47 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
+
+#if ServerSideBlazor
+
+            services.AddScoped<IAuthorizeApi, AuthorizeApi>();
+            services.AddScoped<IUserProfileApi, UserProfileApi>();
+            services.AddScoped<AppState>();
+            services.AddMatToaster(config =>
+            {
+                config.Position = MatToastPosition.BottomRight;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = true;
+                config.ShowCloseButton = true;
+                config.MaximumOpacity = 95;
+                config.VisibleStateDuration = 3000;
+            });
+
+            // Setup HttpClient for server side
+            services.AddScoped<HttpClient>();
+
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+
+            // Authentication providers
+
+            Log.Logger.Debug("Removing AuthenticationStateProvider...");
+            var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(AuthenticationStateProvider));
+            if (serviceDescriptor != null)
+            {
+                services.Remove(serviceDescriptor);
+            }
+
+            Log.Logger.Debug("Adding AuthenticationStateProvider...");
+            services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
+
+#endif
+
+            Log.Logger.Debug($"Total Services Registered: {services.Count}");
+            foreach (var service in services)
+            {
+                Log.Logger.Debug($"\n      Service: {service.ServiceType.FullName}\n      Lifetime: {service.Lifetime}\n      Instance: {service.ImplementationType?.FullName}");
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -326,7 +390,9 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+#if ClientSideBlazor
                 app.UseBlazorDebugging();
+#endif
             }
             else
             {
@@ -335,9 +401,11 @@ namespace BlazorBoilerplate.Server
             }
 
             app.UseHttpsRedirection();
-            //app.UseStaticFiles();
-            app.UseCookiePolicy();
+            app.UseStaticFiles();
+
+#if ClientSideBlazor
             app.UseClientSideBlazorFiles<Client.Startup>();
+#endif
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
@@ -357,8 +425,15 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
-                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+
+#if ClientSideBlazor
+                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index_csb.html");
+#else
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/index_ssb");
+#endif
             });
+
         }
     }
 }

@@ -1,0 +1,55 @@
+﻿@page "/externalauth/error/{ErrorEnumValue}"
+@page "/externalauth/error/{ErrorEnumValue}/{Description}"
+
+@inject NavigationManager navigationManager
+@inject HttpClient Http
+@inject AuthenticationStateProvider authStateProvider
+@inject IMatToaster matToaster
+<MatCard>
+    <div class="logo">
+        <img src="_content/BlazorBoilerplate.CommonUI/images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
+        <br />
+        <h4>External authentication error</h4>
+        <h4>@errorText</h4>
+        <h5>@Description</h5>
+        <MatButton Link="/" Raised="true">Home</MatButton>
+
+    </div>
+    
+</MatCard>
+
+@code {
+
+    [Parameter]
+    public string ErrorEnumValue { get; set; }
+
+    [Parameter]
+    public string Description { get; set; }
+
+    ErrorEnum error =  ErrorEnum.Unknown;
+    string errorText;
+
+
+    protected override void OnInitialized()
+    {
+        var result = Enum.TryParse(ErrorEnumValue, out error);
+        if (result == false)
+            error = ErrorEnum.Unknown;
+
+        switch (error)
+        {
+            case ErrorEnum.UserCreationFailed: errorText = "User cannot be created"; break;
+            case ErrorEnum.UserIsNotAllowed: errorText = "Login not allowed, check email inbox for account confirmation"; break;
+            case ErrorEnum.UserLockedOut: errorText = "User is locked out"; break;
+            case ErrorEnum.CannotAddExternalLogin: errorText = "Cannot create binding for this external login provider to the account"; break;
+            case ErrorEnum.ExternalAuthError: errorText = "External auhentication error"; break;
+            case ErrorEnum.ExternalUnknownUserId: errorText = "External authentication provider did not pass user identifier"; break;
+            case ErrorEnum.ProviderNotFound: errorText = "Choosen provider has not been found/configured"; break;
+            case ErrorEnum.Domain: errorText = string.Empty; break;
+            case ErrorEnum.Unknown: errorText = "Unknown reason"; break;
+            default: errorText = "Unknown reason"; break;
+        }
+
+    }
+
+}

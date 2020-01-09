@@ -1,0 +1,24 @@
+﻿@page "/externalauth/success"
+
+@attribute [Authorize]
+@inject AppState appState
+@inject NavigationManager navigationManager
+@inject HttpClient Http
+@inject AuthenticationStateProvider authStateProvider
+@inject IMatToaster matToaster
+<MatCard>
+    <div class="logo">
+        <img src="_content/BlazorBoilerplate.CommonUI/images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
+        <br />
+        <h4>External authentication success</h4>
+        <MatButton Link="/" Raised="true">Home</MatButton>
+
+    </div>
+
+</MatCard>
+
+@code {
+
+
+
+}

@@ -1,7 +1,7 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
-Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template (WebAssembly / Core-Hosted) built with Blazor with a .NET Core 3.1 Server API. The UI for this application is by Material Design provided mostly by MatBlazor.
-Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4.  
+Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to BOTH (WebAssembly / Core-Hosted) and Server-Side Blazor with a .NET Core 3.1 Server. The UI for this application is by Material Design provided mostly by MatBlazor.
+Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4. Version 0.6.0 and up is capable of both CSB and SSB!    
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
@@ -12,7 +12,7 @@ Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Versi
 
 ## Goals
 - To create a boilerplate with Blazor / Razor components that includes the most common functionality for an app that is lean yet powerful for anyone to start a real world application quickly.
-- Avoid many external compnents & libraries which make it difficult to maintain, update, track down code, learn code and issues.
+- Avoid many external components & libraries which make it difficult to maintain, update, track down code, learn code and issues.
 - This repository is community driven. It is not and never will be controlled by a corporation.
 - Minimal Javascript. Currently only using them for SignalR for the Forum and MatBlazor / Material Desing. We may use components with JS in them but so far no Javascript has been written specifically for anything in the repository.
 
@@ -83,6 +83,7 @@ I have taken small solutions from other repositories and will do my best to reco
  - Forum chat and notification system - Thanks <a href="https://github.com/ajgoldenwings" target="_blank">ajgoldenwings</a>
  - Drag and Drop Examples - <a href="https://chrissainty.com/investigating-drag-and-drop-with-blazor/" target="_blank">Chris Sainty Blazor Blog</a>
  - Docker Container Support
+ - Dual Mode (CSB / SSB) - Client Side / Webassembly & Sever Side. Thanks [MarkStega](https://github.com/MarkStega)
 
 ## Road map
 - User profile & settings management
@@ -122,7 +123,10 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 ### 0.6.0 (Breaking Changes - Under Development - DualModeV2 Branch)
 - Dual Mode CSB & SSB [View Wiki](https://github.com/enkodellc/blazorboilerplate/wiki/Dual-Mode-CSB---SSB-Tips). Thanks [MarkStega](https://github.com/MarkStega
 
-### 0.5.0 (Under Development)
+### 0.6.0 (Breaking Changes - Under Development)
+- Dual Mode CSB & SSB [View Wiki](https://github.com/enkodellc/blazorboilerplate/wiki/Dual-Mode-CSB---SSB-Tips). Thanks [MarkStega](https://github.com/MarkStega
+
+### 0.5.0
 - MatBlazor 2.0 Breaking Changes
 - .NET Core 3.1.0 / v3.1.0-preview4 Blazor Nuget package updates
 - Admin Roles / Permissions Management. Thanks [vd3d](https://github.com/vd3d)

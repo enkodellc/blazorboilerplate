@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta charset="utf-8" />
+    <title>Blazor Boilerplate &amp; Starter Kit (CSB)</title>
+    <meta name="viewport" content="width=device-width">
+    <base href="/" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="author" content="Enkodellc / Keith Fimreite">
+    <meta name="description" content="Blazor Boilerplate & Starter Kit - A real world Example ">
+    <link rel="shortcut icon" type="image/x-icon" href="_content/BlazorBoilerplate.CommonUI/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="_content/BlazorBoilerplate.CommonUI/images/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="_content/BlazorBoilerplate.CommonUI/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="_content/BlazorBoilerplate.CommonUI/css/site.css" rel="stylesheet" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-55161075-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-55161075-2');
+    </script>
+
+</head>
+<body>
+    <app>
+        <div class="triangle-container">
+            <div class="triangles">
+            </div>
+        </div>
+        <div class="loading-container">
+            <img src="_content/BlazorBoilerplate.CommonUI/images/blazorboilerplate.svg" alt="Loading" title="Loading Blazor Boilerplate" /><br />
+            Loading Blazor Boilerplate (CSB)...
+        </div>
+    </app>
+
+    <div id="blazor-error-ui">
+        <i class="material-icons">error</i>
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <!-- load remaining JS after blazor boot loads -->
+    <script src="_content/MatBlazor/dist/matBlazor.js"></script>
+    <script src="_content/BlazorBoilerplate.CommonUI/javascript/signalr.min.js"></script>
+    <script src="_content/BlazorBoilerplate.CommonUI/javascript/chatClient.js"></script>
+</body>
+</html>
