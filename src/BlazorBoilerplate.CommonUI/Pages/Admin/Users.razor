@@ -25,23 +25,29 @@ else
             <th>Email</th>
             <th>Roles</th>
         </MatTableHeader>
-        <MatTableRow Context="UserRow">
+        <MatTableRow Context="UserRow">           
             <td>
-                <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
-                    <div style="width:155px;">
-                        <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
-                        <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))"></MatIconButton>
-                        <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="@(UserRow.UserId == userProfile.UserId)"></MatIconButton>
-                    </div>
-                </AuthorizeView>
-                <AuthorizeView Policy="@Policies.IsUser" Context="AuthorizeContext">
-                    <div style="width:155px;">
-                        <MatIconButton Icon="edit" Disabled="true"></MatIconButton>
-                        <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))" Disabled="@(UserRow.UserId != userProfile.UserId)"></MatIconButton>
-                        <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="true"></MatIconButton>
-                    </div>              
-                </AuthorizeView>
+                <div style="width:155px;">
+                    <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
+                        <Authorized>
+                            <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
+                        </Authorized>
+                        <NotAuthorized>
+                            <MatIconButton Icon="edit" Disabled="true"></MatIconButton>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))" Disabled="@(UserRow.UserId != userProfile.UserId)"></MatIconButton>
+                    <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
+                        <Authorized>
+                            <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))"></MatIconButton>
+                        </Authorized>
+                        <NotAuthorized>
+                            <MatIconButton Icon="delete" Disabled="true"></MatIconButton>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
             </td>
+                          
             <td><div style="width:130px;">@UserRow.UserName</div></td>
             <td>@UserRow.Email</td>
             <td>

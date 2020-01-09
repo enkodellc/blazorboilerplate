@@ -307,6 +307,7 @@ namespace BlazorBoilerplate.Server.Controllers
                         Email = user.Email,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
+                        UserId = user.Id,
                         //Optionally: filter the claims you want to expose to the client
                         ExposedClaims = User.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
                         Roles = ((ClaimsIdentity)User.Identity).Claims
@@ -347,6 +348,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
             user.FirstName = userInfo.FirstName;
             user.LastName = userInfo.LastName;
+            user.Email = userInfo.Email;
 
             var result = await _userManager.UpdateAsync(user);
 

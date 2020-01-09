@@ -1,4 +1,4 @@
-# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.Client/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
+# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.CommonUI/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
 Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to BOTH (WebAssembly / Core-Hosted) and Server-Side Blazor with a .NET Core 3.1 Server. The UI for this application is by Material Design provided mostly by MatBlazor.
 Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4. Version 0.6.0 and up is capable of both CSB and SSB!    
@@ -120,11 +120,10 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 -  Looking for additional help with Azure documentation and steps.
 
 ## News
-### 0.6.0 (Breaking Changes - Under Development - DualModeV2 Branch)
-- Dual Mode CSB & SSB [View Wiki](https://github.com/enkodellc/blazorboilerplate/wiki/Dual-Mode-CSB---SSB-Tips). Thanks [MarkStega](https://github.com/MarkStega
-
 ### 0.6.0 (Breaking Changes - Under Development)
 - Dual Mode CSB & SSB [View Wiki](https://github.com/enkodellc/blazorboilerplate/wiki/Dual-Mode-CSB---SSB-Tips). Thanks [MarkStega](https://github.com/MarkStega
+    - There are changes to solution structure for Dual Mode. Switching can be tricky with browser so if you see something strange use incognito mode or a different browser. 
+    Best solution is to pick your version and stick with it, then expect to clear cache when switching. Read the Wiki!
 
 ### 0.5.0
 - MatBlazor 2.0 Breaking Changes
