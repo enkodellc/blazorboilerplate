@@ -9,7 +9,7 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  buildConfiguration: 'Release_CSB'
 
 steps:
 - task: DotNetCoreInstaller@0
