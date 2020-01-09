@@ -354,8 +354,6 @@ app {
     margin: 0;
 }
 
-
-
 .drawer-logo {
     display: flex;
     align-items: center;
@@ -394,6 +392,11 @@ app {
 .app-sidebar .mat-expansion-panel__content .material-icons {
     padding-left: 2px;
     margin-left: -3px;
+}
+
+.app-sidebar .mdc-nav-li .material-icons {
+    margin-right: 8px;
+    padding-left: 0;
 }
 
 .mdc-drawer {
