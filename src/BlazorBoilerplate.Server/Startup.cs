@@ -291,9 +291,14 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version     = "v0.2.3";
+                    document.Info.Version     = "0.6.0";
                     document.Info.Title       = "Blazor Boilerplate";
-                    document.Info.Description = "Blazor Boilerplate / Starter Template using the  (ASP.NET Core Hosted) (dotnet new blazorhosted) model. Hosted by an ASP.NET Core server";
+#if ServerSideBlazor
+                    document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
+#endif
+#if ClientSideBlazor
+                    document.Info.Description = "Blazor Boilerplate / Starter Template using the Client Side / Webassembly Version.";
+#endif
                 };
             });
 

@@ -36,12 +36,10 @@ Complete all Blazor dependencies.
 [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html)
 
 ## Publish on IIS - What works for me on my Windows Server 2016 & SQL Server 2014 (Enkodellc)
-1. Publish both the Client and Server projects to local folder
-2. Upload / Copy published Server directory to website folder.
-3. Upload / Copy published Client directory ON TOP of to the same root website directory of Server, it will add some files and overwrite some.
-4. Install your SSL, use self-signed if you don't have one. Make sure your SSL is in the WebHosting Certificate Store.
-5. Configure your appsettings.production.config - Connection String, Thumbprint / SSL. 
-6. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
+1. Publish Server project to your IIS website folder.
+2. Install your SSL, use self-signed if you don't have one. Make sure your SSL is in the WebHosting Certificate Store.
+3. Configure your appsettings.production.config - Connection String, Thumbprint / SSL. 
+4. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
 
 ### Thanks To
 - [Blazor](https://blazor.net)
@@ -69,7 +67,7 @@ I have taken small solutions from other repositories and will do my best to reco
 ## Completed 
  - Basic Login / User Creation
  - Admin Theme using Material Design / MatBlazor
- - Swagger UI API visualizer 
+ - Swagger UI API visualizer - [View the live API](https://blazorboilerplate.com/swagger/index.html)
  - Log Files using Serilog
  - Choose between SQL Lite File or MS SQL Database
  - Email Confirmation of Registered Users

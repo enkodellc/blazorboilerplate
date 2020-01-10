@@ -4,11 +4,12 @@
 
 <p>Welcome to the Blazor Boilerplate app / starter template.</p>
 <p>
-    <strong>Blazor Boilerplate </strong> is now a fairly mature repository thanks to time and contributors. Our goal is to be an <strong>enterprise level solution</strong> to jump start your new web project with Blazor.
-    It's based on Blazor &amp; Razor components for both Client-Side [WebAssembly] (CSB) or Server-Side (SSB) with the .Net Core Framework 3+. Expect a lot of changes in the future as Blazor is growing and changing rapidly.
+    <strong>Blazor Boilerplate </strong> is now a fairly mature repository thanks to time and contributors. Our goal is to be an <strong>enterprise level solution</strong>, to jump start your new web project with Blazor.
+    It's based on Blazor &amp; Razor components for both Client-Side [WebAssembly] (CSB) or Server-Side (SSB) with the .Net Core Framework 3.1+.
+    Expect a lot of changes in the future as Blazor is growing and changing rapidly. <a href="https://blazorboilerplate.com/swagger/index.html" target="_blank"> View the live server-side API</a>
 </p>
 <p>
-    This project can now run Client Side / Webassembly Blazor OR Server Side Blazor. Just select which way you want to run with Visual Studio.
+    This project can now run Client Side / Webassembly Blazor OR Server Side Blazor. Just select which way you want to debug / release with Visual Studio.
     The ASP.NET Core app serves the Blazor app to clients. The WebAssembly / client-side Blazor app can interact with the server over the network using web API calls or SignalR. I / Enkode is more interested in this hosted model the most to keep the load on the server low. The server-side hosted model is primarily for debugging the the UI.
 </p>
 <p>The repo is moving along... it takes time to build as I am often contributing to <a href="https://github.com/SamProf/MatBlazor" target="_blank">MatBlazor</a> as well to obtain UI changes that are needed for the theme. With more support each project can grow faster. Please contribute, or at minimum star the repositories on Github</p>
@@ -28,7 +29,9 @@
 <h2>Blazor Boilerplate Highlights:</h2>
 <p>
     <ul class="list-unstyled">
+        <li><i class="fa fa-check"></i> Client Side Blazor / Server Side Blazor options for debug / release  - Thanks <a href="https://github.com/markstega" target="_blank">Mark Stega</a></li>
         <li><i class="fa fa-check"></i> Identity Server 4 - Thanks <a href="https://github.com/ganmuru" target="_blank">ganmuru</a></li>
+        <li><i class="fa fa-check"></i> User, role, permission and organization unit management UI</li>
         <li><i class="fa fa-check"></i> Responsive Admin Theme - [Blazor Sidebar Navigation Menu]</li>
         <li><i class="fa fa-check"></i> Loading Screen</li>
         <li><i class="fa fa-check"></i> Swagger Ui API visualizer <a href="https://blazorboilerplate.com/swagger/index.html" target="_blank">https://blazorboilerplate.com/swagger/index.html</a></li>
@@ -38,9 +41,7 @@
         <li><i class="fa fa-check"></i> Response Middleware for Consistent API Responses and Error Handling with Toasts</li>
         <li><i class="fa fa-check"></i> Audit Log to track all API calls, great for debugging and audit user history - Audit Log screen in progress.</li>
         <li><i class="fa fa-check"></i> Real time chat and notification system - Thanks <a href="https://github.com/ajgoldenwings" target="_blank">ajgoldenwings</a></li>
-        <li><i class="fa fa-check"></i> In Progress - User, role, permission and organization unit management UI</li>
-        <li><i class="fa fa-check"></i> In Progress - Docker configuration</li>
-        <li><i class="fa fa-check"></i> In Progress - CSB / SSB options for debug / deployment</li>
+        <li><i class="fa fa-check"></i> Docker configuration</li>
     </ul>
 </p>
 <hr />
@@ -48,7 +49,6 @@
 <p>
     Looking for contributors in the following areas:
     <ul>
-        <li>Enterprise Admin Authorization Management {Policies, Roles, Claims}</li>
         <li>Separate Data Layer for Entity Framework or Dapper. (I so far do not like EF)</li>
         <li>Review Application Architecture / Patterns</li>
         <li>Client-side & Server side Caching / Performance improvements</li>
