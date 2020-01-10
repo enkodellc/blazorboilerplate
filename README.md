@@ -36,7 +36,7 @@ Complete all Blazor dependencies.
 [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html)
 
 ## Publish on IIS - What works for me on my Windows Server 2016 & SQL Server 2014 (Enkodellc)
-1. Publish Server project to your IIS website folder.
+1. Publish BlazorBoilerplate.Server project to your IIS website folder using CSB or SSB.
 2. Install your SSL, use self-signed if you don't have one. Make sure your SSL is in the WebHosting Certificate Store.
 3. Configure your appsettings.production.config - Connection String, Thumbprint / SSL. 
 4. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
@@ -120,7 +120,7 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 ## News
 ### 0.6.0 (Breaking Changes - Under Development)
 - Dual Mode CSB & SSB [View Wiki](https://github.com/enkodellc/blazorboilerplate/wiki/Dual-Mode-CSB---SSB-Tips). Thanks [MarkStega](https://github.com/MarkStega)
-    - There are changes to solution structure for Dual Mode. Switching can be tricky with the browser cache so if you see something strange use incognito mode or a different browser. 
+    - There are changes to solution structure for Dual Mode. Switching modes can be tricky with the browser cache so if you see something strange use incognito mode or a different browser. 
     Best solution is to pick your version and stick with it, then expect to clear cache when switching. Read the Wiki!
 
 ### 0.5.0
