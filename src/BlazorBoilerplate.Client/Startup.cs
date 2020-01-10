@@ -4,6 +4,7 @@ using BlazorBoilerplate.CommonUI.Services.Implementations;
 using BlazorBoilerplate.CommonUI.States;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 
+using Blazor.Fluxor;
 using MatBlazor;
 
 using Microsoft.AspNetCore.Components.Authorization;
@@ -38,6 +39,12 @@ namespace BlazorBoilerplate.Client
                 config.ShowCloseButton = true;
                 config.MaximumOpacity = 95;
                 config.VisibleStateDuration = 3000;
+            });
+
+            services.AddFluxor(options =>
+            {
+                options.UseDependencyInjection(typeof(Startup).Assembly);
+                options.AddMiddleware<Blazor.Fluxor.ReduxDevTools.ReduxDevToolsMiddleware>();
             });
         }
 

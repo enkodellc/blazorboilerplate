@@ -1,0 +1,72 @@
+﻿@inject IDispatcher Dispatcher
+
+
+<div class="col">
+	<!-- Airport selection -->
+	<div class="row py-1">
+		<!-- From airport -->
+		<div class="col pr-0">
+			<div class="form-control d-flex">
+				<div><i>✈</i>&nbsp;&nbsp;From:</div>
+				<input list="airports" placeholder="..." @bind=criteria.FromAirport />
+			</div>
+		</div>
+		<div class="col px-2 py-1 align-self-end arrow">➝</div>
+
+		<!-- To airport -->
+		<div class="col pl-0">
+			<div class="form-control d-flex">
+				<div><i>✈</i>&nbsp;&nbsp;To:</div>
+				<input list="airports" placeholder="..." @bind=criteria.ToAirport />
+			</div>
+		</div>
+	</div>
+
+	<!-- Departure / arrival dates -->
+	<div class="row py-1">
+		<!-- Depart date -->
+		<div class="col pr-0">
+			<div class="form-control d-flex">
+				<div><i>🗓</i>&nbsp;&nbsp;Depart:</div>
+				<input type="date" @bind=criteria.OutboundDate @bind:format="yyyy-MM-dd" />
+			</div>
+		</div>
+		<div class="col px-2 py-1 align-self-end arrow">➝</div>
+
+		<!-- Arrive date -->
+		<div class="col pl-0">
+			<div class="form-control d-flex">
+				<div><i>🗓</i>&nbsp;&nbsp;Arrive:</div>
+				<input type="date" @bind=criteria.ReturnDate @bind:format="yyyy-MM-dd" />
+			</div>
+		</div>
+	</div>
+
+	<!-- Class / search -->
+	<div class="row py-1 d-flex px-3">
+		<div>
+			<select class="custom-select" @bind=criteria.TicketClass>
+				<option value=@TicketClass.Economy>Economy</option>
+				<option value=@TicketClass.PremiumEconomy>Premium Economy</option>
+				<option value=@TicketClass.Business>Business</option>
+				<option value=@TicketClass.First>First</option>
+			</select>
+		</div>
+		<div class="ml-auto">
+			<button @onclick=@(() => OnSearch()) type="button" class="btn btn-danger px-5">
+				Search ➝
+			</button>
+		</div>
+	</div>
+</div>
+<AirportsList />
+
+@code
+{
+	void OnSearch()
+	{
+		Dispatcher.Dispatch(new BlazorBoilerplate.CommonUI.FlightFinder.Store.SearchAction(criteria));
+	}
+
+	private SearchCriteria criteria = new SearchCriteria("LHR", "SEA");
+}

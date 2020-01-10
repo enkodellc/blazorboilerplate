@@ -1,0 +1,32 @@
+﻿@page "/flightfinder"
+
+@inject IStore Store
+@inject IState<BlazorBoilerplate.CommonUI.FlightFinder.Store.AppState> AppState
+@*
+@Store.Initialize()*@
+
+<h1>Flight Finder</h1>
+@*<div id="search-and-results-area">
+    <div id="search-area" class="px-2 py-3">
+        <Search />
+    </div>
+    <div id="results-area">
+        <GreyOutZone IsGreyedOut=AppState.Value.SearchInProgress>
+            <SearchResults />
+        </GreyOutZone>
+    </div>
+</div>
+<div id="selections-area" class="p-3 pl-4">
+    <Shortlist />
+</div>*@
+
+@code
+{
+    public bool ShowShortlist { get; set; } = true;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+       // AppState.Subscribe(this);
+    }
+}

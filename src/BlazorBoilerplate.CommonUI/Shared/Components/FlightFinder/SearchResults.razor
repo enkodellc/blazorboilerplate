@@ -1,0 +1,52 @@
+﻿@inherits Blazor.Fluxor.Components.FluxorComponent
+@inject IState<BlazorBoilerplate.CommonUI.FlightFinder.Store.AppState> AppState
+@inject IDispatcher Dispatcher
+
+<div class="px-4">
+	@if (AppState.Value.SearchResults.Any())
+	{
+		<div class="title">
+			<h2 class="my-3">@AppState.Value.SearchResults.Length results</h2>
+			<select class="custom-select" @bind=chosenSortOrder>
+				<option value=@SortOrder.Price>Cheapest</option>
+				<option value=@SortOrder.Duration>Quickest</option>
+			</select>
+		</div>
+
+		@foreach (var item in sortedSearchResults)
+		{
+			<div class="mb-4 d-flex align-items-center">
+				<ul class="list-group">
+					<li class="list-group-item d-flex align-items-center">
+						<SearchResultFlightSegment Symbol="▶" Flight=item.Outbound />
+					</li>
+					<li class="list-group-item d-flex align-items-center">
+						<SearchResultFlightSegment Symbol="◀" Flight=item.Return />
+					</li>
+				</ul>
+				<div class="price ml-3">
+					<h3>@item.Price.ToString("$0")</h3>
+					<button class="btn" @onclick=@(() => AddToShortlist(item))>Add</button>
+				</div>
+			</div>
+		}
+	}
+</div>
+
+@code
+{
+	// Private state
+	private SortOrder chosenSortOrder;
+	private IEnumerable<Itinerary> sortedSearchResults
+		=> chosenSortOrder == SortOrder.Price
+		? AppState.Value.SearchResults.OrderBy(x => x.Price)
+		: AppState.Value.SearchResults.OrderBy(x => x.TotalDurationHours);
+
+	enum SortOrder { Price, Duration }
+
+	private void AddToShortlist(Itinerary itinerary)
+	{
+		var action = new BlazorBoilerplate.CommonUI.FlightFinder.Store.AddToShortlistAction(itinerary);
+		Dispatcher.Dispatch(action);
+	}
+}

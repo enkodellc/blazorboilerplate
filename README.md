@@ -84,11 +84,9 @@ I have taken small solutions from other repositories and will do my best to reco
  - Dual Mode (CSB / SSB) - Client Side / Webassembly & Sever Side. Thanks [MarkStega](https://github.com/MarkStega)
 
 ## Road map
-- User profile & settings management
-- User, claims, role, permission and organization unit management
 - Azure Hosting Guide
 - Create a Nuget Package Template
-- Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster just my opinion. I like SQL code, less automagic code with more control. Just my style.
+- Possibly switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster just my opinion. I like SQL code, less automagic code with more control. Just my style.
 
 ## License
 This project is licensed under the terms of the [MIT license](LICENSE).

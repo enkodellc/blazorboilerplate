@@ -1,0 +1,39 @@
+﻿@inherits Blazor.Fluxor.Components.FluxorComponent
+@inject IState<BlazorBoilerplate.CommonUI.FlightFinder.Store.AppState> AppState
+@inject IDispatcher Dispatcher
+
+<h2>Shortlist (@AppState.Value.Shortlist.Length)</h2>
+
+@foreach (var item in AppState.Value.Shortlist)
+{
+	<ul class="list-group mb-4">
+		<li class="list-group-item justify-content-between">
+			<div>
+				<nobr>@item.Outbound.FromAirportCode</nobr> -
+				<nobr>@item.Outbound.ToAirportCode</nobr>
+			</div>
+			<button type="button" class="close" aria-label="Close" @onclick=@(() => RemoveFromShortlist(item))>
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</li>
+		<li class="list-group-item">
+			<ShortlistFlightSegment Flight=item.Outbound />
+		</li>
+		<li class="list-group-item">
+			<ShortlistFlightSegment Flight=item.Return />
+		</li>
+		<li class="list-group-item d-flex justify-content-between align-items-center py-2">
+			<div class="airline"><h4>@item.AirlineName</h4></div>
+			<div class="price"><h2>@item.Price.ToString("$0")</h2></div>
+		</li>
+	</ul>
+}
+
+@code
+{
+	private void RemoveFromShortlist(Itinerary itinerary)
+	{
+		var action = new BlazorBoilerplate.CommonUI.FlightFinder.Store.RemoveFromShortlistAction(itinerary);
+		Dispatcher.Dispatch(action);
+	}
+}

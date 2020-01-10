@@ -1,0 +1,21 @@
+﻿<div class="date">
+	<h4>@Flight.DepartureTime.ToString("ddd MMM d")</h4>
+	@Flight.TicketClass.ToDisplayString()
+</div>
+
+<div class="departure">
+	<h4>@Flight.DepartureTime.ToShortTimeString()</h4>
+	@Flight.FromAirportCode
+</div>
+
+<div class="arrow">➝</div>
+
+<div class="arrival">
+	<h4>@Flight.ArrivalTime.ToShortTimeString()</h4>
+	@Flight.ToAirportCode
+</div>
+
+@code
+{
+	[Parameter] public FlightSegment Flight { get; set; }
+}
