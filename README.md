@@ -84,11 +84,12 @@ I have taken small solutions from other repositories and will do my best to reco
  - Dual Mode (CSB / SSB) - Client Side / Webassembly & Sever Side. Thanks [MarkStega](https://github.com/MarkStega)
 
 ## Road map
-- User profile & settings management
-- User, claims, role, permission and organization unit management
+- Caching speed review
+- Security Audit
+- Add Tests
 - Azure Hosting Guide
 - Create a Nuget Package Template
-- Switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster just my opinion. I like SQL code, less automagic code with more control. Just my style.
+- Possibly switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster just my opinion. I like SQL code, less automagic code with more control. Just my style.
 
 ## License
 This project is licensed under the terms of the [MIT license](LICENSE).
@@ -102,6 +103,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
  for Blazor Boilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
 - Debugging is very limited on WebAssembly / Client-side Blazor, which this project is. The server side of the project can easily be debugged, just not there yet on the client-side code.
  Take a look at the "Dual" branch for SSB / CSB options. It may be a bit outdated.
+ - If you are getting compiler errors try and close VS delete your .vs directory in the solution folder. If that doesn't work delete the solution and redownload the repo.
  
 ### Postgres Support
 Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and then create your own migrations:  
