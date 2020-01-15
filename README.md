@@ -120,7 +120,7 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 -  Looking for additional help with Azure documentation and steps.
 
 ## News
-### 0.6.1 (Major Breaking Changes)
+### 0.6.1 (Under Development - No Major Breaking Changes)
 - .NET Core 3.1.1 - Microsoft Nuget package updates - security patches no code changes 
 
 ### 0.6.0 (Major Breaking Changes)
