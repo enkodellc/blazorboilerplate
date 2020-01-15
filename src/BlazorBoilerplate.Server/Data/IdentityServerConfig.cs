@@ -61,7 +61,7 @@ namespace BlazorBoilerplate.Server.Data
                     AccessTokenType = AccessTokenType.Jwt,
                     //AllowedCorsOrigin = "https://localhost:5003",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Resource Owner Password Credential grant.
-                    AllowAccessTokensViaBrowser = true,
+                    AllowAccessTokensViaBrowser = true,                    
                     AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId, // For UserInfo endpoint.
                         IdentityServerConstants.StandardScopes.Profile,
