@@ -476,6 +476,11 @@ ul.breadcrumb {
             text-decoration: underline;
         }
 
+.mdc-checkbox label {
+    margin-bottom: 0px !important;
+}
+
+
 /** Simple drag and drop with Blazor CSS **/
 
 .jobs-container {
