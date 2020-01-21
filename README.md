@@ -39,7 +39,8 @@ Complete all Blazor dependencies.
 ## Publish on IIS - What works for me on my Windows Server 2016 & SQL Server 2014 (Enkodellc)
 1. Publish BlazorBoilerplate.Server project to your IIS website folder using CSB or SSB.
 2. Install your SSL, use self-signed if you don't have one. Make sure your SSL is in the WebHosting Certificate Store.
-3. Configure your appsettings.production.config - Connection String, Thumbprint / SSL. 
+4. Make sure you IIS Website Bindings has an https type with the SSL certificate set. Port 443 for default.
+3. Configure your appsettings.production.config - Connection String, Thumbprint / SSL. Thumbprint example:  **143fbd7bc36e78b1bcf9a53c13336eaebe33353a**
 4. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
 
 ### Thanks To
