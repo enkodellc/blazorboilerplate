@@ -22,6 +22,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 //using System.Text.Json; //Does not work for this middleware, at least as in preview
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Managers;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
@@ -32,7 +33,7 @@ namespace BlazorBoilerplate.Server.Middleware
     {
         private readonly RequestDelegate _next;
         ILogger<APIResponseRequestLoggingMiddleware> _logger;
-        private IApiLogService _apiLogService;
+        private IApiLogManager _apiLogManager;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
         private readonly bool _enableAPILogging;
         private List<string> _ignorePaths = new List<string>();
@@ -45,10 +46,10 @@ namespace BlazorBoilerplate.Server.Middleware
             _ignorePaths = configuration.GetSection("BlazorBoilerplate:ApiLogging:IgnorePaths").Get<List<string>>();
         }
 
-        public async Task Invoke(HttpContext httpContext, IApiLogService apiLogService, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
+        public async Task Invoke(HttpContext httpContext, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
-            _apiLogService = apiLogService;
+            _apiLogManager = apiLogManager;
 
             try
             {
@@ -382,7 +383,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 queryString = $"(Truncated to 200 chars) {queryString.Substring(0, 200)}";
             }
 
-            await _apiLogService.Log(new ApiLogItem
+            await _apiLogManager.Log(new ApiLogItem
             {
                 RequestTime = requestTime,
                 ResponseMillis = responseMillis,

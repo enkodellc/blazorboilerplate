@@ -14,6 +14,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Managers;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -22,19 +23,18 @@ namespace BlazorBoilerplate.Server.Controllers
     public class ExternalAuthController : ControllerBase
     {
         private readonly ILogger<AccountController> _logger;
-        private readonly IAccountService _accountService;
+        private readonly IAccountManager _accountManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
 
-        public ExternalAuthController(IAccountService accountService, 
+        public ExternalAuthController(IAccountManager accountManager, 
             UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager, 
             ILogger<AccountController> logger,
-            IEmailService emailService, 
             IConfiguration configuration)
         {
-            _accountService = accountService;
+            _accountManager = accountManager;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
@@ -47,7 +47,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             var callbackUrl = Url.RouteUrl("ExternalSignIn");
             var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
-            var schema = schemes.SingleOrDefault(s => string.Compare(s.Name, provider, ignoreCase: true) == 0);
+            var schema = schemes.SingleOrDefault(s => string.Compare(s.Name, provider, StringComparison.OrdinalIgnoreCase) == 0);
 
             if (schema == null)
             {
@@ -152,7 +152,7 @@ namespace BlazorBoilerplate.Server.Controllers
                     var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
                     try
                     {
-                        user = await _accountService.RegisterNewUserAsync(userNameClaim.Value, userEmailClaim.Value, null, requireConfirmEmail);
+                        user = await _accountManager.RegisterNewUserAsync(userNameClaim.Value, userEmailClaim.Value, null, requireConfirmEmail);
                     }
                     catch (DomainException ex)
                     {

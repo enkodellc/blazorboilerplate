@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Data.Interfaces;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
@@ -8,20 +11,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Server.Services
+namespace BlazorBoilerplate.Server.Managers
 {
-    public interface IApiLogService
-    {
-        Task Log(ApiLogItem apiLogItem);
-        Task<ApiResponse> Get();
-        Task<ApiResponse> GetByApplictionUserId(Guid applicationUserId);
-    }
-
-    public class ApiLogService : IApiLogService
+    public class ApiLogManager : IApiLogManager
     {
         private readonly ApplicationDbContext _db;
         private readonly DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
@@ -30,7 +23,7 @@ namespace BlazorBoilerplate.Server.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserSession _userSession;
 
-        public ApiLogService(IConfiguration configuration, ApplicationDbContext db, IMapper autoMapper, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, IUserSession userSession)
+        public ApiLogManager(IConfiguration configuration, ApplicationDbContext db, IMapper autoMapper, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, IUserSession userSession)
         {
             _db = db;
             _autoMapper = autoMapper;
@@ -86,7 +79,7 @@ namespace BlazorBoilerplate.Server.Services
             return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs));
         }
 
-        public async Task<ApiResponse> GetByApplictionUserId(Guid applicationUserId)
+        public async Task<ApiResponse> GetByApplicationUserId(Guid applicationUserId)
         {
             try
             {

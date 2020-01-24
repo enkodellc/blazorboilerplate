@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Managers;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -14,12 +15,12 @@ namespace BlazorBoilerplate.Server.Controllers
     public class ToDoController : ControllerBase
     {
         private readonly ILogger<ToDoController> _logger;
-        private readonly ITodoService _todoService;
+        private readonly ITodoManager _todoManager;
 
-        public ToDoController(ITodoService todoService, ILogger<ToDoController> logger)
+        public ToDoController(ITodoManager todoManager, ILogger<ToDoController> logger)
         {
             _logger = logger;
-            _todoService = todoService;
+            _todoManager = todoManager;
         }
                 
         // GET: api/Todo
@@ -27,7 +28,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [AllowAnonymous]
         public async Task<ApiResponse> Get()
         {
-            return await _todoService.Get();
+            return await _todoManager.Get();
         }
                 
         // GET: api/Todo/5
@@ -39,7 +40,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 return new ApiResponse(400, "Todo Model is Invalid");
             }
-            return await _todoService.Get(id);
+            return await _todoManager.Get(id);
         }
                 
         // POST: api/Todo
@@ -51,7 +52,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 return new ApiResponse(400, "Todo Model is Invalid");
             }
-            return await _todoService.Create(todo);
+            return await _todoManager.Create(todo);
         }
                 
         // Put: api/Todo
@@ -63,7 +64,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 return new ApiResponse(400, "Todo Model is Invalid");
             }
-            return await _todoService.Update(todo);
+            return await _todoManager.Update(todo);
         }                
         
         // DELETE: api/Todo/5
@@ -71,7 +72,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> Delete(long id)
         {
-            return await _todoService.Delete(id); // Delete from DB
+            return await _todoManager.Delete(id); // Delete from DB
         }
     }
 }

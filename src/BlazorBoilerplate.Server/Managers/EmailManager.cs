@@ -4,41 +4,78 @@ using System.Linq;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using MimeKit;
-using MailKit.Net.Pop3;
+using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 using MailKit.Net.Imap;
+using MailKit.Net.Pop3;
 using MailKit.Net.Smtp;
 using MailKit.Search;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+using Microsoft.Extensions.Logging;
+using MimeKit;
 
-namespace BlazorBoilerplate.Server.Services
+namespace BlazorBoilerplate.Server.Managers
 {
-    public interface IEmailService
-    {
-        Task<ApiResponse> SendEmailAsync(EmailMessageDto emailMessage);
-        List<EmailMessageDto> ReceiveEmail(int maxCount = 10);
-        Task<ApiResponse> ReceiveMailImapAsync();
-        Task<ApiResponse> ReceiveMailPopAsync(int min = 0, int max = 0);
-        void Send(EmailMessageDto emailMessage);
-    }
-
-    public class EmailService : IEmailService
+    public class EmailManager : IEmailManager
     {
         private readonly IEmailConfiguration _emailConfiguration;
+        private readonly ILogger<EmailManager> _logger;
 
-        // Logger instance
-        ILogger<EmailService> _logger;
-
-        public EmailService(IEmailConfiguration emailConfiguration, ILogger<EmailService> logger)
+        public EmailManager(IEmailConfiguration emailConfiguration, ILogger<EmailManager> logger)
         {
             _emailConfiguration = emailConfiguration;
             _logger = logger;
         }
 
-        public List<EmailMessageDto> ReceiveEmail(int maxCount = 10)
+        public async Task<ApiResponse> Send(EmailDto parameters)
+        {
+            var email = new EmailMessageDto();
+
+            email.ToAddresses.Add(new EmailAddressDto(parameters.ToName, parameters.ToAddress));
+
+            //This forces all emails from the API to use the Test template to prevent spam
+            parameters.TemplateName = "Test";
+
+            //Send a Template email or a custom one since it is hardcoded to Test template it will not do a custom email.
+            if (!string.IsNullOrEmpty(parameters.TemplateName))
+            {
+                switch (parameters.TemplateName)
+                {
+                    case "Test":
+                        email.BuildTestEmail(); //example of email Template usage
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                email.Subject = parameters.Subject;
+                email.Body = parameters.Body;
+            }
+
+            //Add a new From Address if you so choose, default is set in appsettings.json
+            //email.FromAddresses.Add(new EmailAddress("New From Name", "email@domain.com"));
+            _logger.LogInformation("Test Email: {0}", email.Subject);
+            try
+            {
+                await SendEmailAsync(email);
+                return new ApiResponse(200, "Email Successfuly Sent");
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse(500, ex.Message);
+            }
+        }
+
+        public Task<ApiResponse> Receive()
+        {
+            throw new System.NotImplementedException();
+        }
+        
+                public List<EmailMessageDto> ReceiveEmail(int maxCount = 10)
         {
             throw new NotImplementedException();
         }
