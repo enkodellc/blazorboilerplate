@@ -2,8 +2,8 @@
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Email;
 
 namespace BlazorBoilerplate.Server.Helpers
 {

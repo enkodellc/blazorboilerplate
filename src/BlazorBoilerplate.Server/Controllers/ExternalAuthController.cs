@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared;
+﻿using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using IdentityModel;
 using IdentityServer4;
@@ -14,6 +13,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Shared.DataModels;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

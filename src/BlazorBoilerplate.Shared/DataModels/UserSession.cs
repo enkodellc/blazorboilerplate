@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BlazorBoilerplate.Shared.DataInterfaces;
 
-namespace BlazorBoilerplate.Server.Models
+namespace BlazorBoilerplate.Shared.DataModels
 {
     public class UserSession : IUserSession
     {

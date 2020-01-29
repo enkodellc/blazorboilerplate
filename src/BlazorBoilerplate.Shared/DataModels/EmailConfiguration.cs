@@ -1,4 +1,4 @@
-﻿namespace BlazorBoilerplate.Server.Models
+﻿namespace BlazorBoilerplate.Shared.DataModels
 {
     public interface IEmailConfiguration
     {

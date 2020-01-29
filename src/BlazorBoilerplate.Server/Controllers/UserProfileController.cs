@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.AspNetCore.Http;
 using IdentityModel;
 

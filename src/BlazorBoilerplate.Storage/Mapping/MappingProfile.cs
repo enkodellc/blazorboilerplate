@@ -1,9 +1,11 @@
 ﻿using AutoMapper.Configuration;
+using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Shared.Models;
-using ApiLogItem = BlazorBoilerplate.Server.Models.ApiLogItem;
-using Message = BlazorBoilerplate.Server.Models.Message;
-using UserProfile = BlazorBoilerplate.Server.Models.UserProfile;
+using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Dto.Sample;
+using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
+using Message = BlazorBoilerplate.Shared.DataModels.Message;
+using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
 
 namespace BlazorBoilerplate.Storage.Mapping
 {

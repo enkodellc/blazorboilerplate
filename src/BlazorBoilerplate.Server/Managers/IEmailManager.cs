@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Email;
 
 namespace BlazorBoilerplate.Server.Managers
 {

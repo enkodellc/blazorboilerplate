@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Server.Models
+namespace BlazorBoilerplate.Shared.DataModels
 {
     public class Tenant
     {

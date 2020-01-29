@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Account;
 
 namespace BlazorBoilerplate.Server.Managers
 {

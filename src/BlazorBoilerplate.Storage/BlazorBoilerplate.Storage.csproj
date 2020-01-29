@@ -22,9 +22,4 @@
       </Reference>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Entities" />
-      <Folder Include="Stores" />
-    </ItemGroup>
-
 </Project>

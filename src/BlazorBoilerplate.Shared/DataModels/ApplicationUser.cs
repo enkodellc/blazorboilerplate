@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
-namespace BlazorBoilerplate.Server.Models
+namespace BlazorBoilerplate.Shared.DataModels
 {
     public class ApplicationUser : IdentityUser<Guid>
     {

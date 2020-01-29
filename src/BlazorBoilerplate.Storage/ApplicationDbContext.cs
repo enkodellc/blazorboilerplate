@@ -3,16 +3,15 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.DataInterfaces;
-using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ApiLogItem = BlazorBoilerplate.Server.Models.ApiLogItem;
-using Message = BlazorBoilerplate.Server.Models.Message;
-using UserProfile = BlazorBoilerplate.Server.Models.UserProfile;
+using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
+using Message = BlazorBoilerplate.Shared.DataModels.Message;
+using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
 
 namespace BlazorBoilerplate.Storage
 {

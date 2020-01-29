@@ -3,6 +3,7 @@ using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Shared.Dto.Account;
 
 namespace BlazorBoilerplate.CommonUI.Services.Implementations
 {

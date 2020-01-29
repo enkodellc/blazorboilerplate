@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared.DataModels;
 
 namespace BlazorBoilerplate.Server.Managers
 {

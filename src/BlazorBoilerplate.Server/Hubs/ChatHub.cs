@@ -1,11 +1,12 @@
-﻿using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared.Dto;
+﻿using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.Sample;
 
 namespace BlazorBoilerplate.Server.Hubs
 {

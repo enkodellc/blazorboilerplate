@@ -27,11 +27,12 @@ using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
+using BlazorBoilerplate.Storage.Stores;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 
@@ -320,6 +321,8 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IMessageManager, MessageManager>();
             services.AddTransient<ITodoManager, ToDoManager>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();
+
+            services.AddTransient<IMessageStore, MessageStore>();
 
 
             // DB Creation and Seeding

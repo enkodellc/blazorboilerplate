@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace BlazorBoilerplate.Shared.Dto
+namespace BlazorBoilerplate.Shared.Dto.Sample
 {
     public class ReportPeriodDto
     {

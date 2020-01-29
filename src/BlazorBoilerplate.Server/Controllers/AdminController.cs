@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Shared.Dto.Admin;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

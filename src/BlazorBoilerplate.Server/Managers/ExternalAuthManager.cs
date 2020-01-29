@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper.Configuration;
 using BlazorBoilerplate.Server.Controllers;
-using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared.DataModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

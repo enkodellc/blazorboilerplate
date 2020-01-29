@@ -1,5 +1,4 @@
 ﻿using System;
-using BlazorBoilerplate.Server.DataInterfaces;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

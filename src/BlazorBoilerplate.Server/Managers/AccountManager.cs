@@ -1,5 +1,4 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +11,9 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Storage;
 using IdentityModel;
 

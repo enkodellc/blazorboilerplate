@@ -4,8 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.Shared.Dto.Sample;
 using BlazorBoilerplate.Storage;
 
 namespace BlazorBoilerplate.Server.Managers

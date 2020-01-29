@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Shared.Dto.Sample;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

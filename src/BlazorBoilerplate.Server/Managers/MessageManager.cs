@@ -4,8 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Sample;
 using BlazorBoilerplate.Storage;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -14,19 +16,18 @@ namespace BlazorBoilerplate.Server.Managers
     {
         private readonly IApplicationDbContext _db;
         private readonly IMapper _autoMapper;
+        private readonly IMessageStore _messageStore;
 
-        public MessageManager(IApplicationDbContext db, IMapper autoMapper)
+        public MessageManager(IApplicationDbContext db, IMapper autoMapper, IMessageStore messageStore)
         {
             _db = db;
             _autoMapper = autoMapper;
+            _messageStore = messageStore;
         }
 
         public async Task<ApiResponse> Create(MessageDto messageDto)
         {
-            Message message = _autoMapper.Map<MessageDto, Message>(messageDto);
-            await _db.Messages.AddAsync(message);
-            await _db.SaveChangesAsync(CancellationToken.None);
-
+            var message = await _messageStore.AddMessage(messageDto);
             return new ApiResponse(200, "Created Message", message);
         }
 

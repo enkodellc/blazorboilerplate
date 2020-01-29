@@ -4,8 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Storage.Core;
 using Microsoft.AspNetCore.Identity;
 
