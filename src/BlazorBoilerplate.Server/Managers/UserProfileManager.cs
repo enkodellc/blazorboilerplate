@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BlazorBoilerplate.EntityFramework;
-using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Storage;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 
@@ -14,11 +14,11 @@ namespace BlazorBoilerplate.Server.Managers
 {
     public class UserProfileManager : IUserProfileManager
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IApplicationDbContext _db;
         private readonly IMapper _autoMapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserProfileManager(ApplicationDbContext db, IMapper autoMapper, IHttpContextAccessor httpContextAccessor)
+        public UserProfileManager(IApplicationDbContext db, IMapper autoMapper, IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
             _autoMapper = autoMapper;
@@ -27,7 +27,7 @@ namespace BlazorBoilerplate.Server.Managers
 
         public string GetLastPageVisited(string userName)
         {
-            string lastPageVisited = "/dashboard";
+            var lastPageVisited = "/dashboard";
             var userProfile = from userProf in _db.UserProfiles
                               join user in _db.Users on userProf.UserId equals user.Id
                               where user.UserName == userName
@@ -35,7 +35,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (userProfile.Any())
             {
-                lastPageVisited = !String.IsNullOrEmpty(userProfile.First().LastPageVisited) ? userProfile.First().LastPageVisited : lastPageVisited;
+                lastPageVisited = !string.IsNullOrEmpty(userProfile.First().LastPageVisited) ? userProfile.First().LastPageVisited : lastPageVisited;
             }
 
             return lastPageVisited;
@@ -48,7 +48,7 @@ namespace BlazorBoilerplate.Server.Managers
                                where userProf.UserId == userId
                                select userProf;
 
-            UserProfileDto userProfile = new UserProfileDto();
+            var userProfile = new UserProfileDto();
             if (!profileQuery.Any())
             {
                 userProfile = new UserProfileDto
@@ -58,7 +58,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
             else
             {
-                UserProfile profile = profileQuery.First();
+                var profile = profileQuery.First();
                 userProfile.Count = profile.Count;
                 userProfile.IsNavOpen = profile.IsNavOpen;
                 userProfile.LastPageVisited = profile.LastPageVisited;
@@ -103,7 +103,7 @@ namespace BlazorBoilerplate.Server.Managers
                     _db.UserProfiles.Add(profile);
                 }
 
-                await _db.SaveChangesAsync();
+                await _db.SaveChangesAsync(CancellationToken.None);
 
                 return new ApiResponse(200, "Updated User Profile");
             }

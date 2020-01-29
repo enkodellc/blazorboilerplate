@@ -2,13 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using BlazorBoilerplate.EntityFramework;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.DataInterfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using BlazorBoilerplate.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -19,16 +17,12 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly ApplicationDbContext _db;
         private readonly DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
         private readonly IMapper _autoMapper;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserSession _userSession;
 
-        public ApiLogManager(IConfiguration configuration, ApplicationDbContext db, IMapper autoMapper, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, IUserSession userSession)
+        public ApiLogManager(IConfiguration configuration, ApplicationDbContext db, IMapper autoMapper, IUserSession userSession)
         {
             _db = db;
             _autoMapper = autoMapper;
-            _userManager = userManager;
-            _httpContextAccessor = httpContextAccessor;
             _userSession = userSession;
 
             // Calling Log from the API Middlware results in a disposed ApplicationDBContext. This is here to build a DB Context for logging API Calls

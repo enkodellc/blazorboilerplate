@@ -1,23 +1,21 @@
-﻿using AutoMapper;
-using BlazorBoilerplate.Server.Data;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BlazorBoilerplate.EntityFramework;
-using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Storage;
 
-namespace BlazorBoilerplate.Server.Services
+namespace BlazorBoilerplate.Server.Managers
 {
     public class MessageManager : IMessageManager
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IApplicationDbContext _db;
         private readonly IMapper _autoMapper;
 
-        public MessageManager(ApplicationDbContext db, IMapper autoMapper)
+        public MessageManager(IApplicationDbContext db, IMapper autoMapper)
         {
             _db = db;
             _autoMapper = autoMapper;
@@ -27,7 +25,7 @@ namespace BlazorBoilerplate.Server.Services
         {
             Message message = _autoMapper.Map<MessageDto, Message>(messageDto);
             await _db.Messages.AddAsync(message);
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(CancellationToken.None);
 
             return new ApiResponse(200, "Created Message", message);
         }
@@ -35,7 +33,7 @@ namespace BlazorBoilerplate.Server.Services
         public async Task<ApiResponse> Delete(int id)
         {
             _db.Messages.Remove(new Message() { Id = id });
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(CancellationToken.None);
 
             return new ApiResponse(200, "Deleted Message", id);
         }

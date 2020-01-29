@@ -1,5 +1,4 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;

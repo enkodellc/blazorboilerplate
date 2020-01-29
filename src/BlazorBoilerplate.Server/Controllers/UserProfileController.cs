@@ -4,7 +4,6 @@ using BlazorBoilerplate.Server.Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using Microsoft.AspNetCore.Http;

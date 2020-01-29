@@ -7,8 +7,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 using AutoMapper;
-using BlazorBoilerplate.EntityFramework;
-using BlazorBoilerplate.EntityFramework.Mapping;
 #if ServerSideBlazor
 
 using BlazorBoilerplate.CommonUI;
@@ -26,14 +24,14 @@ using System.Net.Http;
 #endif
 
 using BlazorBoilerplate.Server.Authorization;
-using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Storage;
+using BlazorBoilerplate.Storage.Mapping;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 
@@ -97,6 +95,7 @@ namespace BlazorBoilerplate.Server
             }
 
             services.AddDbContext<ApplicationDbContext>(DbContextOptionsBuilder);
+            services.AddScoped<IApplicationDbContext>(s => s.GetRequiredService<ApplicationDbContext>());
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()

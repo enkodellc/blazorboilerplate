@@ -6,7 +6,7 @@ using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlazorBoilerplate.EntityFramework
+namespace BlazorBoilerplate.Storage
 {
     //https://trailheadtechnology.com/entity-framework-core-2-1-automate-all-that-boring-boiler-plate/
     public static class ModelBuilderExtensions

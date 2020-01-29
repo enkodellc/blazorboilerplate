@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BlazorBoilerplate.EntityFramework;
-using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.Storage;
 
 namespace BlazorBoilerplate.Server.Managers
 {
     public class ToDoManager : ITodoManager
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IApplicationDbContext _db;
         private readonly IMapper _autoMapper;
 
-        public ToDoManager(ApplicationDbContext db, IMapper autoMapper)
+        public ToDoManager(IApplicationDbContext db, IMapper autoMapper)
         {
             _db = db;
             _autoMapper = autoMapper;
@@ -59,7 +58,7 @@ namespace BlazorBoilerplate.Server.Managers
             
             Todo todo = _autoMapper.Map<TodoDto, Todo>(todoDto);
             await _db.Todos.AddAsync(todo);
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(CancellationToken.None);
 
             return new ApiResponse(200, "Created Todo", todo);
         }
@@ -76,7 +75,7 @@ namespace BlazorBoilerplate.Server.Managers
                 */
 
                 _autoMapper.Map<TodoDto, Todo>(todoDto, todo);
-                await _db.SaveChangesAsync();
+                await _db.SaveChangesAsync(CancellationToken.None);
                 return new ApiResponse(200, "Updated Todo", todo);
             }
             else
@@ -91,7 +90,7 @@ namespace BlazorBoilerplate.Server.Managers
             if (todo != null)
             {
                 _db.Todos.Remove(todo);
-                await _db.SaveChangesAsync();
+                await _db.SaveChangesAsync(CancellationToken.None);
                 return new ApiResponse(200, "Soft Delete Todo");
             }
             else

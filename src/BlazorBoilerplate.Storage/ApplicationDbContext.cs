@@ -3,22 +3,21 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using BlazorBoilerplate.EntityFramework.Configurations;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.Storage.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using ApiLogItem = BlazorBoilerplate.Server.Models.ApiLogItem;
 using Message = BlazorBoilerplate.Server.Models.Message;
 using UserProfile = BlazorBoilerplate.Server.Models.UserProfile;
 
-namespace BlazorBoilerplate.EntityFramework
+namespace BlazorBoilerplate.Storage
 {
     //https://trailheadtechnology.com/entity-framework-core-2-1-automate-all-that-boring-boiler-plate/
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
     {
         public DbSet<ApiLogItem> ApiLogs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
@@ -27,17 +26,12 @@ namespace BlazorBoilerplate.EntityFramework
 
         private IUserSession _userSession { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        { }
+        // public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        // { }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUserSession userSession) : base(options)
         {
             _userSession = userSession;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

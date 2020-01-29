@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using BlazorBoilerplate.Server.Data.Core;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using BlazorBoilerplate.Storage.Core;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
 
-namespace BlazorBoilerplate.EntityFramework
+namespace BlazorBoilerplate.Storage
 {
     public class IdentityServerConfig
     {

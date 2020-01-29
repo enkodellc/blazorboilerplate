@@ -4,7 +4,7 @@ using BlazorBoilerplate.Shared.DataInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace BlazorBoilerplate.EntityFramework
+namespace BlazorBoilerplate.Storage
 {
     public static class ChangeTrackerExtensions
     {

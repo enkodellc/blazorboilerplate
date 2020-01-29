@@ -5,7 +5,7 @@ using ApiLogItem = BlazorBoilerplate.Server.Models.ApiLogItem;
 using Message = BlazorBoilerplate.Server.Models.Message;
 using UserProfile = BlazorBoilerplate.Server.Models.UserProfile;
 
-namespace BlazorBoilerplate.EntityFramework.Mapping
+namespace BlazorBoilerplate.Storage.Mapping
 {
     public class MappingProfile : MapperConfigurationExpression
     {

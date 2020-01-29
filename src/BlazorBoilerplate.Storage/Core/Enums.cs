@@ -1,4 +1,4 @@
-﻿namespace BlazorBoilerplate.Server.Data.Core
+﻿namespace BlazorBoilerplate.Storage.Core
 {
     public enum Gender
     {

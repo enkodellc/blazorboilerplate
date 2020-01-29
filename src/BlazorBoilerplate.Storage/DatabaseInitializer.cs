@@ -2,10 +2,9 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Data.Core;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.Storage.Core;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
@@ -15,7 +14,7 @@ using Microsoft.Extensions.Logging;
 using ApiLogItem = BlazorBoilerplate.Server.Models.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Server.Models.UserProfile;
 
-namespace BlazorBoilerplate.EntityFramework
+namespace BlazorBoilerplate.Storage
 {
     public interface IDatabaseInitializer
     {

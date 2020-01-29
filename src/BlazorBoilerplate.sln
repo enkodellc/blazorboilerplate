@@ -19,7 +19,7 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.CommonUI", "BlazorBoilerplate.CommonUI\BlazorBoilerplate.CommonUI.csproj", "{BD33A0D0-8628-447B-AC4C-77A076B2BDA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.EntityFramework", "BlazorBoilerplate.EntityFramework\BlazorBoilerplate.EntityFramework.csproj", "{E557B788-61DB-486E-A011-588964074C0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.Storage", "BlazorBoilerplate.Storage\BlazorBoilerplate.Storage.csproj", "{E557B788-61DB-486E-A011-588964074C0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

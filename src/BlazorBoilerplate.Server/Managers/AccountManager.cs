@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.Dto;
@@ -11,9 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
-using BlazorBoilerplate.EntityFramework;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using BlazorBoilerplate.Storage;
 using IdentityModel;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -21,7 +20,7 @@ namespace BlazorBoilerplate.Server.Managers
     public class AccountManager : IAccountManager
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _db;
+        private readonly IApplicationDbContext _db;
         private readonly ILogger<AccountManager> _logger;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IEmailManager _emailManager;
@@ -32,7 +31,7 @@ namespace BlazorBoilerplate.Server.Managers
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
 
         public AccountManager(UserManager<ApplicationUser> userManager,
-            ApplicationDbContext db,
+            IApplicationDbContext db,
             SignInManager<ApplicationUser> signInManager,
             ILogger<AccountManager> logger,
             RoleManager<IdentityRole<Guid>> roleManager,

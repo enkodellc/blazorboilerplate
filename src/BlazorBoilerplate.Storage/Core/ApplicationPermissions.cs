@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace BlazorBoilerplate.Server.Data.Core
+namespace BlazorBoilerplate.Storage.Core
 {
     public static class ApplicationPermissions
     {
