@@ -16,10 +16,4 @@
       <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="BlazorBoilerplate.Storage, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\BlazorBoilerplate.Server\bin\Debug_CSB\netcoreapp3.1\BlazorBoilerplate.Storage.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>
