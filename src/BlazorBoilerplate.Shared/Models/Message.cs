@@ -12,6 +12,6 @@ namespace BlazorBoilerplate.Server.Models
         public string Text { get; set; }
         public DateTime When { get; set; }
         public Guid UserID { get; set; }
-        public virtual ApplicationUser Sender { get; set; }
+        public ApplicationUser Sender { get; set; }
     }
 }

@@ -1,10 +1,10 @@
-﻿using BlazorBoilerplate.Server.Data.Interfaces;
+﻿using System;
+using BlazorBoilerplate.Server.DataInterfaces;
+using BlazorBoilerplate.Shared.DataInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Security.Claims;
 
-namespace BlazorBoilerplate.Server.Data
+namespace BlazorBoilerplate.EntityFramework
 {
     public static class ChangeTrackerExtensions
     {

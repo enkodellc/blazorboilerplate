@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using BlazorBoilerplate.EntityFramework;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using IdentityModel;

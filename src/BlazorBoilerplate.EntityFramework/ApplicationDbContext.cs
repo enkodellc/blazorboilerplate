@@ -1,16 +1,21 @@
-﻿using BlazorBoilerplate.Server.Data.Configurations;
-using BlazorBoilerplate.Server.Data.Interfaces;
-using BlazorBoilerplate.Server.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using BlazorBoilerplate.EntityFramework.Configurations;
+using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using ApiLogItem = BlazorBoilerplate.Server.Models.ApiLogItem;
+using Message = BlazorBoilerplate.Server.Models.Message;
+using UserProfile = BlazorBoilerplate.Server.Models.UserProfile;
 
-namespace BlazorBoilerplate.Server.Data
+namespace BlazorBoilerplate.EntityFramework
 {
     //https://trailheadtechnology.com/entity-framework-core-2-1-automate-all-that-boring-boiler-plate/
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>

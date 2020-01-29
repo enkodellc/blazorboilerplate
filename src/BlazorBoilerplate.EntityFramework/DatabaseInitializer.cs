@@ -1,18 +1,21 @@
-﻿using BlazorBoilerplate.Server.Data.Core;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Data;
+using BlazorBoilerplate.Server.Data.Core;
 using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared.Models;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using ApiLogItem = BlazorBoilerplate.Server.Models.ApiLogItem;
+using UserProfile = BlazorBoilerplate.Server.Models.UserProfile;
 
-namespace BlazorBoilerplate.Server.Data
+namespace BlazorBoilerplate.EntityFramework
 {
     public interface IDatabaseInitializer
     {

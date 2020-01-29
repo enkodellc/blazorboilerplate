@@ -1,9 +1,11 @@
 ﻿using AutoMapper.Configuration;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Models;
+using ApiLogItem = BlazorBoilerplate.Server.Models.ApiLogItem;
+using Message = BlazorBoilerplate.Server.Models.Message;
+using UserProfile = BlazorBoilerplate.Server.Models.UserProfile;
 
-namespace BlazorBoilerplate.Server.Data.Mapping
+namespace BlazorBoilerplate.EntityFramework.Mapping
 {
     public class MappingProfile : MapperConfigurationExpression
     {

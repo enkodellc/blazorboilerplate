@@ -2,10 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using BlazorBoilerplate.EntityFramework;
 using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Models;
 
 namespace BlazorBoilerplate.Server.Managers
 {

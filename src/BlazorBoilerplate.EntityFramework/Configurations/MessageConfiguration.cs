@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BlazorBoilerplate.Server.Data.Configurations
+namespace BlazorBoilerplate.EntityFramework.Configurations
 {
     public class MessageConfiguration : IEntityTypeConfiguration<Message>
     {

@@ -1,6 +1,6 @@
-﻿using BlazorBoilerplate.Server.Data.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using BlazorBoilerplate.Shared.DataInterfaces;
 
 namespace BlazorBoilerplate.Server.Models
 {

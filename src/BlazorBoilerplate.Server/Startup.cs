@@ -7,7 +7,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 using AutoMapper;
-
+using BlazorBoilerplate.EntityFramework;
+using BlazorBoilerplate.EntityFramework.Mapping;
 #if ServerSideBlazor
 
 using BlazorBoilerplate.CommonUI;
@@ -26,15 +27,13 @@ using System.Net.Http;
 
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Data.Interfaces;
-using BlazorBoilerplate.Server.Data.Mapping;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-
+using BlazorBoilerplate.Shared.DataInterfaces;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 

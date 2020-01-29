@@ -81,12 +81,12 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.CommonUI\BlazorBoilerplate.CommonUI.csproj" />
+    <ProjectReference Include="..\BlazorBoilerplate.EntityFramework\BlazorBoilerplate.EntityFramework.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Logs\" />
-    <Folder Include="Services" />
   </ItemGroup>
 
 </Project>

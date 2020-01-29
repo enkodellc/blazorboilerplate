@@ -1,11 +1,12 @@
-﻿using BlazorBoilerplate.Server.Data.Interfaces;
-using BlazorBoilerplate.Server.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
+using BlazorBoilerplate.Server.DataInterfaces;
+using BlazorBoilerplate.Server.Models;
+using BlazorBoilerplate.Shared.DataInterfaces;
+using Microsoft.EntityFrameworkCore;
 
-namespace BlazorBoilerplate.Server.Data
+namespace BlazorBoilerplate.EntityFramework
 {
     //https://trailheadtechnology.com/entity-framework-core-2-1-automate-all-that-boring-boiler-plate/
     public static class ModelBuilderExtensions

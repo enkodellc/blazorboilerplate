@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.0.0
 MinimumVisualStudioVersion = 16.0.0.0
@@ -18,6 +18,8 @@ EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.CommonUI", "BlazorBoilerplate.CommonUI\BlazorBoilerplate.CommonUI.csproj", "{BD33A0D0-8628-447B-AC4C-77A076B2BDA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.EntityFramework", "BlazorBoilerplate.EntityFramework\BlazorBoilerplate.EntityFramework.csproj", "{E557B788-61DB-486E-A011-588964074C0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,6 +155,30 @@ Global
 		{BD33A0D0-8628-447B-AC4C-77A076B2BDA3}.Release_SSB|x64.Build.0 = Release_SSB|Any CPU
 		{BD33A0D0-8628-447B-AC4C-77A076B2BDA3}.Release_SSB|x86.ActiveCfg = Release_SSB|Any CPU
 		{BD33A0D0-8628-447B-AC4C-77A076B2BDA3}.Release_SSB|x86.Build.0 = Release_SSB|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_CSB|Any CPU.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_CSB|Any CPU.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_CSB|x64.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_CSB|x64.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_CSB|x86.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_CSB|x86.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_SSB|Any CPU.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_SSB|Any CPU.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_SSB|x64.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_SSB|x64.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_SSB|x86.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Debug_SSB|x86.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_CSB|Any CPU.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_CSB|Any CPU.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_CSB|x64.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_CSB|x64.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_CSB|x86.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_CSB|x86.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_SSB|Any CPU.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_SSB|Any CPU.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_SSB|x64.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_SSB|x64.Build.0 = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_SSB|x86.ActiveCfg = Debug|Any CPU
+		{E557B788-61DB-486E-A011-588964074C0D}.Release_SSB|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
