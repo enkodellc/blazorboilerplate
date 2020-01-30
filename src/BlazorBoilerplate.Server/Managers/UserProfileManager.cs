@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Account;
-using BlazorBoilerplate.Storage;
-using BlazorBoilerplate.Storage.Stores;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 

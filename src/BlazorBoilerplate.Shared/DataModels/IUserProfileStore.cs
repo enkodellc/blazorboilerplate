@@ -12,5 +12,6 @@ namespace BlazorBoilerplate.Shared.DataModels
 
         Task Upsert(UserProfileDto userProfileDto);
 
+        Task DeleteAllApiLogsForUser(Guid userId);
     }
 }

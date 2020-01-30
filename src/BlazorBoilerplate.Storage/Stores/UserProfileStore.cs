@@ -89,5 +89,15 @@ namespace BlazorBoilerplate.Storage.Stores
 
             await _applicationDbContext.SaveChangesAsync(CancellationToken.None);
         }
+
+        public async Task DeleteAllApiLogsForUser(Guid userId)
+        {
+            var apiLogs = _applicationDbContext.ApiLogs.Where(a => a.ApplicationUserId == userId); // This could be handled in a store, getting rid of the ugliness here. 
+            foreach (var apiLog in apiLogs)
+            {
+                _applicationDbContext.ApiLogs.Remove(apiLog);
+            }
+            _applicationDbContext.SaveChanges();
+        }
     }
 }
