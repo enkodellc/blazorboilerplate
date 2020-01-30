@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.Dto.Sample;
-using BlazorBoilerplate.Storage.Stores;
 
 namespace BlazorBoilerplate.Server.Managers
 {
