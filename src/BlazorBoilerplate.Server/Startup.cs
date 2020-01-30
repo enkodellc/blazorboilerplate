@@ -324,7 +324,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddTransient<IMessageStore, MessageStore>();
             services.AddTransient<IUserProfileStore, UserProfileStore>();
-
+            services.AddTransient<IToDoStore, ToDoStore>();
 
             // DB Creation and Seeding
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
