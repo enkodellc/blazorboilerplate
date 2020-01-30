@@ -323,6 +323,7 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IUserProfileManager, UserProfileManager>();
 
             services.AddTransient<IMessageStore, MessageStore>();
+            services.AddTransient<IUserProfileStore, UserProfileStore>();
 
 
             // DB Creation and Seeding
