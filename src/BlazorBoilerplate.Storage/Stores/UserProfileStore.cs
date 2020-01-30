@@ -90,14 +90,4 @@ namespace BlazorBoilerplate.Storage.Stores
             await _applicationDbContext.SaveChangesAsync(CancellationToken.None);
         }
     }
-
-    public interface IUserProfileStore
-    {
-        string GetLastPageVisited(string username);
-
-        UserProfileDto Get(Guid userId);
-
-        Task Upsert(UserProfileDto userProfileDto);
-
-    }
 }
