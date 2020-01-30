@@ -123,7 +123,11 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 -  Looking for additional help with Azure documentation and steps.
 
 ## News
-### 0.6.1 (Under Development - No Major Breaking Changes)
+
+### 0.7.0 (Under Development - Breaking Changes)
+- .NET Core 3.2 Preview 1- Microsoft & Other Nuget package updates - Program.cs refactored for CSB
+
+### 0.6.1 (No Major Breaking Changes)
 - .NET Core 3.1.1 - Microsoft Nuget package updates - security patches no code changes 
 
 ### 0.6.0 (Major Breaking Changes)
