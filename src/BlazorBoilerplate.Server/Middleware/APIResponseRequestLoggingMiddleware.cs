@@ -382,6 +382,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 queryString = $"(Truncated to 200 chars) {queryString.Substring(0, 200)}";
             }
 
+            // Pass in the context to resolve the instance, and save to a store? 
             await _apiLogManager.Log(new ApiLogItem
             {
                 RequestTime = requestTime,
