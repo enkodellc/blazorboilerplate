@@ -124,8 +124,9 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 
 ## News
 
-### 0.7.0 (Under Development - Breaking Changes)
+### 0.7.0 (Under Development - !Breaking Changes)
 - .NET Core 3.2 Preview 1- Microsoft & Other Nuget package updates - Program.cs refactored for CSB
+- (Known Issues) - I am having issues with this release. Auth, Menu issues, https://github.com/dotnet/aspnetcore/issues/18655 - I get an missing PROJECT.pdb 404 for each project when debugging. I have one other person saying this works fine for them. It does not for me and I have tried a slew of things. I am frustrated with Blazor at this point. Taking a break, will be back at in February.
 
 ### 0.6.1 (No Major Breaking Changes)
 - .NET Core 3.1.1 - Microsoft Nuget package updates - security patches no code changes 
