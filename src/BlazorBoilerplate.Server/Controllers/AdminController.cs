@@ -1,20 +1,10 @@
-﻿using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Data.Core;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Services;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Managers;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -25,289 +15,48 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
+        private readonly IAdminManager _adminManager;
 
-        #region Variables
-
-        private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
-
-        private readonly ILogger<AccountController> _logger;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-        private readonly IEmailService _emailService;
-        private readonly IConfiguration _configuration;
-        private readonly ApplicationDbContext _db;
-
-        #endregion
-
-        #region Constructors
-
-        public AdminController(UserManager<ApplicationUser> userManager, ApplicationDbContext db,
-            SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger,
-            RoleManager<IdentityRole<Guid>> roleManager, IEmailService emailService, IConfiguration configuration)
+        public AdminController(IAdminManager adminManager)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
-            _roleManager = roleManager;
-            _emailService = emailService;
-            _configuration = configuration;
-            _db = db;
+            _adminManager = adminManager;
         }
-
-        #endregion
-
-        #region GetUsers
 
         [HttpGet("Users")]
         [Authorize]
         public async Task<ApiResponse> GetUsers([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
-        {
-            var userDtoList = new List<UserInfoDto>();
-            List<ApplicationUser> listResponse;
-
-            // get paginated list of users
-            try
-            {
-                var userList = _userManager.Users.AsQueryable();
-                listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            // create the dto object with mapped properties and fetch roles associated with each user
-            try
-            {
-                foreach (var applicationUser in listResponse)
-                {
-                    userDtoList.Add(new UserInfoDto
-                    {
-                        FirstName = applicationUser.FirstName,
-                        LastName = applicationUser.LastName,
-                        UserName = applicationUser.UserName,
-                        Email = applicationUser.Email,
-                        UserId = applicationUser.Id,
-                        Roles = (List<string>)(await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true))
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            return new ApiResponse(200, "User list fetched", userDtoList);
-        }
-
-        #endregion
-
-        #region GetPermissions
+            => await _adminManager.GetUsers(pageSize, pageNumber);
 
         [HttpGet("Permissions")]
         [Authorize]
         public ApiResponse GetPermissions()
-        {
-            var permissions = ApplicationPermissions.GetAllPermissionNames();
-            return new ApiResponse(200, "Permissions list fetched", permissions);
-        }
+            => _adminManager.GetPermissions();
 
-        #endregion
-
-        #region GetRoles
 
         [HttpGet("Roles")]
         [Authorize]
         public async Task<ApiResponse> GetRoles([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
-        {
-            var roleDtoList = new List<RoleDto>();
-            List<IdentityRole<Guid>> listResponse;
+            => await _adminManager.GetRoles(pageSize, pageNumber);
 
-            // get paginated list of roles
-            try
-            {
-                var roleList = _roleManager.Roles.AsQueryable();
-                listResponse = roleList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            try
-            {
-                foreach (var role in listResponse)
-                {
-                    var claims = await _roleManager.GetClaimsAsync(role);
-                    var permissions = claims.Where(x => x.Type == "permission").Select(x => ApplicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
-
-                    roleDtoList.Add(new RoleDto
-                    {
-                        Name = role.Name,
-                        Permissions = permissions
-                    }); ;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            return new ApiResponse(200, "Roles list fetched", roleDtoList);
-        }
-
-        #endregion
-
-        #region CRUD : GetRoleAsync
-
-        [HttpGet("Role/{roleName}")]
+    [HttpGet("Role/{roleName}")]
         [Authorize]
-        public async Task<ApiResponse> GetRoleAsync(string roleName)
-        {
-            RoleDto roleDto;
-            IdentityRole<Guid> identityRole;
-
-            // get paginated list of users
-            try
-            {
-                identityRole = await _roleManager.FindByNameAsync(roleName);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            try
-            {
-                var claims = await _roleManager.GetClaimsAsync(identityRole);
-                var permissions = claims.Where(x => x.Type == "permission").Select(x => ApplicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
-
-                roleDto = new RoleDto
-                {
-                    Name = roleName,
-                    Permissions = permissions
-                };
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            return new ApiResponse(200, "Role fetched", roleDto);
-        }
-
-        #endregion
-
-        #region CRUD : CreateRoleAsync
+        public async Task<ApiResponse> GetRoleAsync(string roleName) 
+            => await _adminManager.GetRoleAsync(roleName);
 
         [HttpPost("Role")]
         [Authorize(Policy = Policies.IsAdmin)]
-        public async Task<ApiResponse> CreateRoleAsync([FromBody] RoleDto newRole)
-        {
-            try
-            {
-                // first make sure the role doesn't already exist
-                if (_roleManager.Roles.Any(r => r.Name == newRole.Name))
-                    return new ApiResponse(400, "Role already exists");
-
-                // Create the role
-                var result = await _roleManager.CreateAsync(new IdentityRole<Guid>(newRole.Name));
-
-                if (!result.Succeeded)
-                {
-                    string errorMessage = result.Errors.Select(x => x.Description).Aggregate((i, j) => i + " - " + j);
-                    return new ApiResponse(500, errorMessage);
-                }
-
-                // Re-create the permissions
-                IdentityRole<Guid> role = await _roleManager.FindByNameAsync(newRole.Name);
-
-                foreach (string claim in newRole.Permissions)
-                {
-                    var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
-
-                    if (!resultAddClaim.Succeeded)
-                        await _roleManager.DeleteAsync(role);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse(500, ex.Message);
-            }
-
-            return new ApiResponse(200);
-        }
-
-        #endregion
-
-        #region CRUD : UpdateRoleAsync
+        public async Task<ApiResponse> CreateRoleAsync([FromBody] RoleDto newRole) 
+            => await _adminManager.CreateRoleAsync(newRole);
 
         [HttpPut("Role")]
         [Authorize(Policy = Policies.IsAdmin)]
-        public async Task<ApiResponse> UpdateRoleAsync([FromBody] RoleDto newRole)
-        {
-            try
-            {
-                // first make sure the role already exist
-                if (!_roleManager.Roles.Any(r => r.Name == newRole.Name))
-                    return new ApiResponse(400, "This role doesn't exists");
-
-                // Create the permissions
-                IdentityRole<Guid> identityRole = await _roleManager.FindByNameAsync(newRole.Name);
-
-                var claims = await _roleManager.GetClaimsAsync(identityRole);
-                var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => x.Value).ToList();
-
-                foreach (var permission in permissions)
-                {
-                    await _roleManager.RemoveClaimAsync(identityRole, new Claim(ClaimConstants.Permission, permission));
-                }
-
-                foreach (string claim in newRole.Permissions)
-                {
-                    var result = await _roleManager.AddClaimAsync(identityRole, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
-
-                    if (!result.Succeeded)
-                        await _roleManager.DeleteAsync(identityRole);
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse(500, ex.Message);
-            }
-            return new ApiResponse(200);
-        }
-
-        #endregion
-
-        #region CRUD : DeleteRoleAsync
+        public async Task<ApiResponse> UpdateRoleAsync([FromBody] RoleDto newRole) 
+            => await _adminManager.UpdateRoleAsync(newRole);
 
         // DELETE: api/Admin/Role/5
         [HttpDelete("Role/{name}")]
         [Authorize(Policy = Policies.IsAdmin)]
         public async Task<ApiResponse> DeleteRoleAsync(string name)
-        {
-            try
-            {
-                // Check if the role is used by a user
-                var users = await _userManager.GetUsersInRoleAsync(name);
-                if (users.Any())
-                    return new ApiResponse(404, "This role is still used by a user, you cannot delete it");
-
-                // Delete the role
-                var role = await _roleManager.FindByNameAsync(name);
-                await _roleManager.DeleteAsync(role);
-
-                return new ApiResponse(200, "Role Deletion Successful");
-            }
-            catch
-            {
-                return new ApiResponse(400, "Role Deletion Failed");
-            }
-        }
-        #endregion
+            => await _adminManager.DeleteRoleAsync(name);
     }
 }

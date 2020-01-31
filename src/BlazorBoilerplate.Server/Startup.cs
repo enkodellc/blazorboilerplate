@@ -29,6 +29,7 @@ using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Data.Interfaces;
 using BlazorBoilerplate.Server.Data.Mapping;
 using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
@@ -312,13 +313,16 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+            
+            services.AddTransient<IAccountManager, AccountManager>();
+            services.AddTransient<IAdminManager, AdminManager>();
+            services.AddTransient<IApiLogManager, ApiLogManager>();
+            services.AddTransient<IEmailManager, EmailManager>();
+            services.AddTransient<IExternalAuthManager, ExternalAuthManager>(); // Currently not being used. 
+            services.AddTransient<IMessageManager, MessageManager>();
+            services.AddTransient<ITodoManager, ToDoManager>();
+            services.AddTransient<IUserProfileManager, UserProfileManager>();
 
-            services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<IUserProfileService, UserProfileService>();
-            services.AddTransient<IApiLogService, ApiLogService>();
-            services.AddTransient<ITodoService, ToDoService>();
-            services.AddTransient<IMessageService, MessageService>();
 
             // DB Creation and Seeding
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();

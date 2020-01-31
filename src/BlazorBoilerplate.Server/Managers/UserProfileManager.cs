@@ -1,29 +1,27 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using IdentityModel;
+using Microsoft.AspNetCore.Http;
 
-namespace BlazorBoilerplate.Server.Services
+namespace BlazorBoilerplate.Server.Managers
 {
-    public interface IUserProfileService
-    {
-        Task<ApiResponse> Get(Guid userId);
-        Task<ApiResponse> Upsert(UserProfileDto userProfile);
-        string GetLastPageVisited(string userName);
-    }
-    public class UserProfileService : IUserProfileService
+    public class UserProfileManager : IUserProfileManager
     {
         private readonly ApplicationDbContext _db;
         private readonly IMapper _autoMapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserProfileService(ApplicationDbContext db, IMapper autoMapper)
+        public UserProfileManager(ApplicationDbContext db, IMapper autoMapper, IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
             _autoMapper = autoMapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public string GetLastPageVisited(string userName)
@@ -42,8 +40,9 @@ namespace BlazorBoilerplate.Server.Services
             return lastPageVisited;
         }
 
-        public async Task<ApiResponse> Get(Guid userId)
+        public async Task<ApiResponse> Get()
         {
+            var userId = new Guid(_httpContextAccessor.HttpContext.User.FindFirst(JwtClaimTypes.Subject).Value);
             var profileQuery = from userProf in _db.UserProfiles
                                where userProf.UserId == userId
                                select userProf;

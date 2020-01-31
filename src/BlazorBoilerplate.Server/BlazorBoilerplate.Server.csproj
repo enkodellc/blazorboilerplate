@@ -86,6 +86,7 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="Services" />
   </ItemGroup>
 
 </Project>

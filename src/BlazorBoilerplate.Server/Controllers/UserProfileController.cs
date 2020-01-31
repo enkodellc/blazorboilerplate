@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,36 +18,26 @@ namespace BlazorBoilerplate.Server.Controllers
     public class UserProfileController : ControllerBase
     {
         private readonly ILogger<UserProfileController> _logger;
-        private readonly IUserProfileService _userProfileService;
+        private readonly IUserProfileManager _userProfileManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserProfileController(IUserProfileService userProfileService, ILogger<UserProfileController> logger, IHttpContextAccessor httpContextAccessor)
+        public UserProfileController(IUserProfileManager userProfileManager, ILogger<UserProfileController> logger, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
-            _userProfileService = userProfileService;
+            _userProfileManager = userProfileManager;
             _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: api/UserProfile
         [HttpGet("Get")]
-        public async Task<ApiResponse> Get()
-        {
-            Guid userId = new Guid(_httpContextAccessor.HttpContext.User.FindFirst(JwtClaimTypes.Subject).Value);
-            return await _userProfileService.Get(userId);
-        }
+        public async Task<ApiResponse> Get() 
+            => await _userProfileManager.Get();
 
         // POST: api/UserProfile
         [HttpPost("Upsert")]
-        public async Task<ApiResponse> Upsert(UserProfileDto userProfile)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new ApiResponse(400, "User Model is Invalid");
-            }
-
-            await _userProfileService.Upsert(userProfile);
-            return new ApiResponse(200, "Email Successfuly Sent");
-        }
-
+        public async Task<ApiResponse> Upsert(UserProfileDto userProfile) 
+            => ModelState.IsValid ? 
+                await _userProfileManager.Upsert(userProfile) :
+                new ApiResponse(400, "User Model is Invalid");
     }
 }

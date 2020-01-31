@@ -1,28 +1,20 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Server.Services
+namespace BlazorBoilerplate.Server.Managers
 {
-    public interface ITodoService
-    {
-        Task<ApiResponse> Get();
-        Task<ApiResponse> Get(long id);
-        Task<ApiResponse> Create(TodoDto todo);
-        Task<ApiResponse> Update(TodoDto todo);
-        Task<ApiResponse> Delete(long id);
-    }
-    public class ToDoService : ITodoService
+    public class ToDoManager : ITodoManager
     {
         private readonly ApplicationDbContext _db;
         private readonly IMapper _autoMapper;
 
-        public ToDoService(ApplicationDbContext db, IMapper autoMapper)
+        public ToDoManager(ApplicationDbContext db, IMapper autoMapper)
         {
             _db = db;
             _autoMapper = autoMapper;

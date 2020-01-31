@@ -7,21 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Managers;
 
 namespace BlazorBoilerplate.Server.Services
 {
-    public interface IMessageService
-    {
-        Task<ApiResponse> Create(MessageDto messageDto);
-        List<MessageDto> GetList();
-        Task<ApiResponse> Delete(int id);
-    }
-    public class MessageService : IMessageService
+    public class MessageManager : IMessageManager
     {
         private readonly ApplicationDbContext _db;
         private readonly IMapper _autoMapper;
 
-        public MessageService(ApplicationDbContext db, IMapper autoMapper)
+        public MessageManager(ApplicationDbContext db, IMapper autoMapper)
         {
             _db = db;
             _autoMapper = autoMapper;
