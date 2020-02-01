@@ -1,4 +1,5 @@
-﻿<li class="draggable" draggable="true" title="@JobDto.Description" @ondragstart="@(() => HandleDragStart(JobDto))">
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+<li class="draggable" draggable="true" title="@JobDto.Description" @ondragstart="@(() => HandleDragStart(JobDto))">
     <p class="description">@JobDto.Description</p>
     <p class="last-updated"><small>Last Updated</small> @JobDto.LastUpdated.ToString("HH:mm.ss tt")</p>
 </li>

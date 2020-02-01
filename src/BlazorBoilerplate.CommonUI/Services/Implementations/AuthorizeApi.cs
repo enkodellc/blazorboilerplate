@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using BlazorBoilerplate.CommonUI.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
 using System.Collections.Generic;
+using BlazorBoilerplate.Shared.Dto.Account;
 
 namespace BlazorBoilerplate.CommonUI.Services.Implementations
 {

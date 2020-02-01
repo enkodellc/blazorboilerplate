@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Data.Core;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Dto.Admin;
+using BlazorBoilerplate.Storage.Core;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -25,23 +26,13 @@ namespace BlazorBoilerplate.Server.Managers
         
         public async Task<ApiResponse> GetUsers(int pageSize = 10, int pageNumber = 0)
         {
-            var userDtoList = new List<UserInfoDto>();
-            List<ApplicationUser> listResponse;
-
             // get paginated list of users
             try
             {
                 var userList = _userManager.Users.AsQueryable();
-                listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            // create the dto object with mapped properties and fetch roles associated with each user
-            try
-            {
+                var listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
+                
+                var userDtoList = new List<UserInfoDto>(); // This sucks, but Select isn't async happy, and the passing into a 'ProcessEventAsync' is another level of misdirection 
                 foreach (var applicationUser in listResponse)
                 {
                     userDtoList.Add(new UserInfoDto
@@ -51,16 +42,16 @@ namespace BlazorBoilerplate.Server.Managers
                         UserName = applicationUser.UserName,
                         Email = applicationUser.Email,
                         UserId = applicationUser.Id,
-                        Roles = (List<string>)(await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true))
+                        Roles = await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true) as List<string> 
                     });
                 }
+                
+                return new ApiResponse(200, "User list fetched", userDtoList);
             }
             catch (Exception ex)
             {
                 throw new Exception(null, ex);
             }
-
-            return new ApiResponse(200, "User list fetched", userDtoList);
         }
 
         public ApiResponse GetPermissions()
@@ -71,22 +62,14 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> GetRoles(int pageSize = 10, int pageNumber = 0)
         {
-            var roleDtoList = new List<RoleDto>();
-            List<IdentityRole<Guid>> listResponse;
-
             // get paginated list of roles
             try
             {
                 var roleList = _roleManager.Roles.AsQueryable();
-                listResponse = roleList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            try
-            {
+                var listResponse = roleList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
+                
+                var roleDtoList = new List<RoleDto>();
+                
                 foreach (var role in listResponse)
                 {
                     var claims = await _roleManager.GetClaimsAsync(role);
@@ -98,48 +81,37 @@ namespace BlazorBoilerplate.Server.Managers
                         Permissions = permissions
                     }); ;
                 }
+                
+                return new ApiResponse(200, "Roles list fetched", roleDtoList);
             }
             catch (Exception ex)
             {
                 throw new Exception(null, ex);
             }
-
-            return new ApiResponse(200, "Roles list fetched", roleDtoList);
         }
 
         public async Task<ApiResponse> GetRoleAsync(string roleName)
         {
-            RoleDto roleDto;
-            IdentityRole<Guid> identityRole;
-
             // get paginated list of users
             try
             {
-                identityRole = await _roleManager.FindByNameAsync(roleName);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(null, ex);
-            }
-
-            try
-            {
+                var identityRole = await _roleManager.FindByNameAsync(roleName);
+                
                 var claims = await _roleManager.GetClaimsAsync(identityRole);
                 var permissions = claims.Where(x => x.Type == "permission").Select(x => ApplicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
-                roleDto = new RoleDto
+                var roleDto = new RoleDto
                 {
                     Name = roleName,
                     Permissions = permissions
                 };
-
+                
+                return new ApiResponse(200, "Role fetched", roleDto);
             }
             catch (Exception ex)
             {
                 throw new Exception(null, ex);
             }
-
-            return new ApiResponse(200, "Role fetched", roleDto);
         }
 
         public async Task<ApiResponse> CreateRoleAsync(RoleDto newRole)
@@ -155,28 +127,27 @@ namespace BlazorBoilerplate.Server.Managers
 
                 if (!result.Succeeded)
                 {
-                    string errorMessage = result.Errors.Select(x => x.Description).Aggregate((i, j) => i + " - " + j);
+                    var errorMessage = result.Errors.Select(x => x.Description).Aggregate((i, j) => i + " - " + j);
                     return new ApiResponse(500, errorMessage);
                 }
 
                 // Re-create the permissions
-                IdentityRole<Guid> role = await _roleManager.FindByNameAsync(newRole.Name);
+                var role = await _roleManager.FindByNameAsync(newRole.Name);
 
-                foreach (string claim in newRole.Permissions)
+                foreach (var claim in newRole.Permissions)
                 {
                     var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
 
                     if (!resultAddClaim.Succeeded)
                         await _roleManager.DeleteAsync(role);
                 }
-
+                
+                return new ApiResponse(200);
             }
             catch (Exception ex)
             {
                 return new ApiResponse(500, ex.Message);
             }
-
-            return new ApiResponse(200);
         }
 
         public async Task<ApiResponse> UpdateRoleAsync(RoleDto newRole)
@@ -188,7 +159,7 @@ namespace BlazorBoilerplate.Server.Managers
                     return new ApiResponse(400, "This role doesn't exists");
 
                 // Create the permissions
-                IdentityRole<Guid> identityRole = await _roleManager.FindByNameAsync(newRole.Name);
+                var identityRole = await _roleManager.FindByNameAsync(newRole.Name);
 
                 var claims = await _roleManager.GetClaimsAsync(identityRole);
                 var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => x.Value).ToList();
@@ -198,19 +169,20 @@ namespace BlazorBoilerplate.Server.Managers
                     await _roleManager.RemoveClaimAsync(identityRole, new Claim(ClaimConstants.Permission, permission));
                 }
 
-                foreach (string claim in newRole.Permissions)
+                foreach (var claim in newRole.Permissions)
                 {
                     var result = await _roleManager.AddClaimAsync(identityRole, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
 
                     if (!result.Succeeded)
                         await _roleManager.DeleteAsync(identityRole);
                 }
+
+                return new ApiResponse(200);
             }
             catch (Exception ex)
             {
                 return new ApiResponse(500, ex.Message);
             }
-            return new ApiResponse(200);
         }
 
         public async Task<ApiResponse> DeleteRoleAsync(string name)

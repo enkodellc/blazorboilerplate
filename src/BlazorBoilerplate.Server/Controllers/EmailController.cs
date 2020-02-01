@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Shared.Dto.Email;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

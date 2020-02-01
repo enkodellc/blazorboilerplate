@@ -1,47 +1,39 @@
-﻿using AutoMapper;
-using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.Dto.Sample;
+using Microsoft.Extensions.Logging;
 
-namespace BlazorBoilerplate.Server.Services
+namespace BlazorBoilerplate.Server.Managers
 {
     public class MessageManager : IMessageManager
     {
-        private readonly ApplicationDbContext _db;
-        private readonly IMapper _autoMapper;
+        private readonly IMessageStore _messageStore;
+        private readonly ILogger<MessageManager> _logger;
 
-        public MessageManager(ApplicationDbContext db, IMapper autoMapper)
+        public MessageManager(IMessageStore messageStore, ILogger<MessageManager> logger)
         {
-            _db = db;
-            _autoMapper = autoMapper;
+            _messageStore = messageStore;
+            _logger = logger;
         }
 
         public async Task<ApiResponse> Create(MessageDto messageDto)
         {
-            Message message = _autoMapper.Map<MessageDto, Message>(messageDto);
-            await _db.Messages.AddAsync(message);
-            await _db.SaveChangesAsync();
-
+            _logger.LogDebug("Adding message: {@messageDto}", messageDto);
+            var message = await _messageStore.AddMessage(messageDto);
             return new ApiResponse(200, "Created Message", message);
         }
 
         public async Task<ApiResponse> Delete(int id)
         {
-            _db.Messages.Remove(new Message() { Id = id });
-            await _db.SaveChangesAsync();
-
+            await _messageStore.DeleteById(id);
             return new ApiResponse(200, "Deleted Message", id);
         }
 
         public List<MessageDto> GetList()
         {
-            return _autoMapper.ProjectTo<MessageDto>(_db.Messages).OrderBy(i => i.When).Take(10).ToList();
+            return _messageStore.GetMessages();
         }
     }
 }

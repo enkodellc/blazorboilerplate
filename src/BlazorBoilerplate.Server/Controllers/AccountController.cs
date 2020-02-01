@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Shared.Dto.Account;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

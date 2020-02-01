@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Data.Interfaces;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Storage;
+using BlazorBoilerplate.Storage.Stores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -16,19 +16,16 @@ namespace BlazorBoilerplate.Server.Managers
 {
     public class ApiLogManager : IApiLogManager
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IApiLogStore _apiLogStore;
+        private readonly IApplicationDbContext _db;
         private readonly DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
         private readonly IMapper _autoMapper;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserSession _userSession;
 
-        public ApiLogManager(IConfiguration configuration, ApplicationDbContext db, IMapper autoMapper, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, IUserSession userSession)
+        public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IApplicationDbContext db, IUserSession userSession)
         {
+            _apiLogStore = apiLogStore;
             _db = db;
-            _autoMapper = autoMapper;
-            _userManager = userManager;
-            _httpContextAccessor = httpContextAccessor;
             _userSession = userSession;
 
             // Calling Log from the API Middlware results in a disposed ApplicationDBContext. This is here to build a DB Context for logging API Calls
@@ -67,23 +64,23 @@ namespace BlazorBoilerplate.Server.Managers
                 apiLogItem.ApplicationUserId = null;
             }
 
-            using (ApplicationDbContext _dbContext = new ApplicationDbContext(_optionsBuilder.Options, _userSession))
+            using (var dbContext = new ApplicationDbContext(_optionsBuilder.Options, _userSession))
             {
-                _dbContext.ApiLogs.Add(apiLogItem);
-                await _dbContext.SaveChangesAsync();
+                dbContext.ApiLogs.Add(apiLogItem);
+                await dbContext.SaveChangesAsync(CancellationToken.None);
             }
         }
 
         public async Task<ApiResponse> Get()
         {
-            return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs));
+            return new ApiResponse(200, "Retrieved Api Log", _apiLogStore.Get());
         }
 
         public async Task<ApiResponse> GetByApplicationUserId(Guid applicationUserId)
         {
             try
             {
-                return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == applicationUserId)));
+                return new ApiResponse(200, "Retrieved Api Log", _apiLogStore.GetByUserId(applicationUserId));
             }
             catch (Exception ex)
             {
