@@ -72,7 +72,7 @@ namespace BlazorBoilerplate.Server
         {
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name; // Change this to the storage project once this is moved into Extention methods there. 
             var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
                 ? Configuration.GetConnectionString("DefaultConnection")

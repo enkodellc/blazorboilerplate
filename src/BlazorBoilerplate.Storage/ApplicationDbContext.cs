@@ -25,9 +25,6 @@ namespace BlazorBoilerplate.Storage
 
         private IUserSession _userSession { get; set; }
 
-        // public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        // { }
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUserSession userSession) : base(options)
         {
             _userSession = userSession;

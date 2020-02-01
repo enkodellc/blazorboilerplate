@@ -21,25 +21,10 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class ExternalAuthController : ControllerBase
     {
-        private readonly ILogger<AccountController> _logger;
-        private readonly IAccountManager _accountManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IConfiguration _configuration;
         private readonly IExternalAuthManager _externalAuthManager;
 
-        public ExternalAuthController(IAccountManager accountManager, 
-            UserManager<ApplicationUser> userManager, 
-            SignInManager<ApplicationUser> signInManager, 
-            ILogger<AccountController> logger,
-            IConfiguration configuration,
-            IExternalAuthManager externalAuthManager)
+        public ExternalAuthController(IExternalAuthManager externalAuthManager)
         {
-            _accountManager = accountManager;
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
-            _configuration = configuration;
             _externalAuthManager = externalAuthManager;
         }
         
