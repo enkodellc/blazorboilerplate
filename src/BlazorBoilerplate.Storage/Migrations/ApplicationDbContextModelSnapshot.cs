@@ -4,24 +4,22 @@ using BlazorBoilerplate.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
+namespace BlazorBoilerplate.Storage.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190913051137_InitialApplicationDbMigration")]
-    partial class InitialApplicationDbMigration
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.0.0-preview9.19423.6")
+                .HasAnnotation("ProductVersion", "3.1.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.ApiLogItem", b =>
+            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.ApiLogItem", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,7 +70,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                     b.ToTable("ApiLogs");
                 });
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.ApplicationUser", b =>
+            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,7 +148,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.Message", b =>
+            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -178,7 +176,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.Todo", b =>
+            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.Todo", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -217,7 +215,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                     b.ToTable("Todos");
                 });
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.UserProfile", b =>
+            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.UserProfile", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -379,27 +377,27 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.ApiLogItem", b =>
+            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.ApiLogItem", b =>
                 {
-                    b.HasOne("BlazorBoilerplate.Server.Models.ApplicationUser", null)
+                    b.HasOne("BlazorBoilerplate.Shared.DataModels.ApplicationUser", null)
                         .WithMany("ApiLogItems")
                         .HasForeignKey("ApplicationUserId");
                 });
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.Message", b =>
+            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.Message", b =>
                 {
-                    b.HasOne("BlazorBoilerplate.Server.Models.ApplicationUser", "Sender")
+                    b.HasOne("BlazorBoilerplate.Shared.DataModels.ApplicationUser", "Sender")
                         .WithMany("Messages")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BlazorBoilerplate.Server.Models.UserProfile", b =>
+            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.UserProfile", b =>
                 {
-                    b.HasOne("BlazorBoilerplate.Server.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("BlazorBoilerplate.Shared.DataModels.ApplicationUser", "ApplicationUser")
                         .WithOne("Profile")
-                        .HasForeignKey("BlazorBoilerplate.Server.Models.UserProfile", "UserId")
+                        .HasForeignKey("BlazorBoilerplate.Shared.DataModels.UserProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -415,7 +413,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("BlazorBoilerplate.Server.Models.ApplicationUser", null)
+                    b.HasOne("BlazorBoilerplate.Shared.DataModels.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -424,7 +422,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("BlazorBoilerplate.Server.Models.ApplicationUser", null)
+                    b.HasOne("BlazorBoilerplate.Shared.DataModels.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -439,7 +437,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BlazorBoilerplate.Server.Models.ApplicationUser", null)
+                    b.HasOne("BlazorBoilerplate.Shared.DataModels.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -448,7 +446,7 @@ namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("BlazorBoilerplate.Server.Models.ApplicationUser", null)
+                    b.HasOne("BlazorBoilerplate.Shared.DataModels.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

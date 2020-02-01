@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Core;
 using IdentityModel;
@@ -15,11 +16,6 @@ using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
 
 namespace BlazorBoilerplate.Storage
 {
-    public interface IDatabaseInitializer
-    {
-        Task SeedAsync();
-    }
-
     public class DatabaseInitializer : IDatabaseInitializer
     {
         private readonly PersistedGrantDbContext _persistedGrantContext;

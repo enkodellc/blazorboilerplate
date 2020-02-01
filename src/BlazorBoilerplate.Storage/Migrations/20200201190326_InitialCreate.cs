@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BlazorBoilerplate.Server.Migrations.ApplicationDb
+namespace BlazorBoilerplate.Storage.Migrations
 {
-    public partial class InitialApplicationDbMigration : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

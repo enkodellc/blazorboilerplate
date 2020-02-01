@@ -27,6 +27,7 @@ using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
+using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
@@ -72,32 +73,9 @@ namespace BlazorBoilerplate.Server
         {
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name; // Change this to the storage project once this is moved into Extention methods there. 
-            var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
-            var dbConnString = useSqlServer
-                ? Configuration.GetConnectionString("DefaultConnection")
-                : $"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}";
-
             var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
 
-            void DbContextOptionsBuilder(DbContextOptionsBuilder builder)
-            {
-                if (useSqlServer)
-                {
-                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
-                }
-                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
-                {
-                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
-                }
-                else
-                {
-                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
-                }
-            }
-
-            services.AddDbContext<ApplicationDbContext>(DbContextOptionsBuilder);
-            services.AddScoped<IApplicationDbContext>(s => s.GetRequiredService<ApplicationDbContext>());
+            services.RegisterStorage(Configuration);
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
@@ -118,11 +96,11 @@ namespace BlazorBoilerplate.Server
             })
               .AddConfigurationStore(options =>
               {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
+                  options.ConfigureDbContext = x=>  ServiceCollectionExtensions.GetDbContextOptions(x, Configuration);
               })
               .AddOperationalStore(options =>
               {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
+                  options.ConfigureDbContext = x=>  ServiceCollectionExtensions.GetDbContextOptions(x, Configuration);
 
                   // this enables automatic token cleanup. this is optional.
                   options.EnableTokenCleanup = true;
@@ -322,14 +300,6 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IMessageManager, MessageManager>();
             services.AddTransient<ITodoManager, ToDoManager>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();
-
-            services.AddTransient<IMessageStore, MessageStore>();
-            services.AddTransient<IUserProfileStore, UserProfileStore>();
-            services.AddTransient<IToDoStore, ToDoStore>();
-            services.AddTransient<IApiLogStore, ApiLogStore>();
-
-            // DB Creation and Seeding
-            services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
 
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
             var automapperConfig = new MapperConfiguration(configuration =>
