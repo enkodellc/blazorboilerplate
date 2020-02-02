@@ -55,7 +55,10 @@
                         <MatTooltip Tooltip="Github Repository">
                             <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
                         </MatTooltip>
-                        <Login></Login>
+                        @*<Login></Login>*@
+                        <MatTooltip Tooltip="Login">
+                            <MatIconButton @onclick="CallLogin" RefBack="@context"><i class="material-icons">account_box</i></MatIconButton>
+                        </MatTooltip>
                     </MatAppBarSection>
                 </MatAppBarRow>
             </MatAppBar>
@@ -79,6 +82,13 @@
     bool _navMinified = false;
     public string bbDrawerClass = "";
 
+    
+    private void CallLogin()
+    {
+        var returnUrl =
+              navigationManager.ToBaseRelativePath(navigationManager.Uri);
+        navigationManager.NavigateTo($"/account/Login/{returnUrl}", forceLoad: false);
+    }
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
