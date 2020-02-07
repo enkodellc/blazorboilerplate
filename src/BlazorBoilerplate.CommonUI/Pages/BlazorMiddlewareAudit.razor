@@ -24,6 +24,11 @@ else
 {
     <MatTable Items="@apiLogItems" Class="mat-elevation-z5" Striped="true" PageSize="10">
         <MatTableHeader>
+            <th>
+                <div style="width:145px;">
+                    <MatButton Icon="refresh" Label="Refresh" OnClick="@(() => LoadData())" Raised="true"></MatButton>
+                </div>
+            </th>
             <th><div style="width:175px;">Date / Time</div></th>
             <th>Http Code</th>
             <th>IP Address</th>
@@ -33,6 +38,7 @@ else
             <th>Path</th>
         </MatTableHeader>
         <MatTableRow>
+            <td></td>
             <td>@context.RequestTime</td>
             <td>@context.StatusCode</td>
             <td><span style="font-size:small">@context.IPAddress</span></td>
@@ -42,6 +48,7 @@ else
             <td>@context.Path</td>
         </MatTableRow>
     </MatTable>
+
 }
 
 
@@ -51,12 +58,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadData();
+    }
+
+    protected async Task LoadData()
+    {
         ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/apilog");
 
         if (apiResponse.StatusCode == 200)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "Api Log Items Retrieved");
-            apiLogItems = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiLogItemDto[]>(apiResponse.Result.ToString()).ToList<ApiLogItemDto>();            
+            apiLogItems = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiLogItemDto[]>(apiResponse.Result.ToString()).ToList<ApiLogItemDto>();
         }
         else
         {
