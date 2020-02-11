@@ -55,10 +55,7 @@
                         <MatTooltip Tooltip="Github Repository">
                             <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
                         </MatTooltip>
-                        @*<Login></Login>*@
-                        <MatTooltip Tooltip="Login">
-                            <MatIconButton @onclick="CallLogin" RefBack="@context"><i class="material-icons">account_box</i></MatIconButton>
-                        </MatTooltip>
+                        <Login></Login>
                     </MatAppBarSection>
                 </MatAppBarRow>
             </MatAppBar>
@@ -82,7 +79,7 @@
     bool _navMinified = false;
     public string bbDrawerClass = "";
 
-    
+
     private void CallLogin()
     {
         var returnUrl =
