@@ -34,10 +34,29 @@
     [Inject] HttpClient _httpClient { get; set; }
     [Inject] NavigationManager _navigationManager { get; set; }
 
+#if ServerSideBlazor
+    [Inject] IHttpContextAccessor _http { get; set; }
+#endif
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         _httpClient.BaseAddress = new Uri(_navigationManager.BaseUri);
+
+#if ServerSideBlazor
+        // likely user refreshed page, we need to grab the cookies if they exist and pass it to the HttpClient for this request
+        if (_http != null && _http.HttpContext.Request.Cookies.Any())
+        {
+            var cks = new List<string>();
+
+            foreach (var cookie in _http.HttpContext.Request.Cookies)
+            {
+                cks.Add($"{cookie.Key}={cookie.Value}");
+            }
+
+            _httpClient.DefaultRequestHeaders.Add("Cookie", String.Join(';', cks));
+        }
+#endif
     }
 }
