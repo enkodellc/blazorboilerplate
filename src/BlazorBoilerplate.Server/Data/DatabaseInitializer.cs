@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -44,7 +43,7 @@ namespace BlazorBoilerplate.Server.Data
             _logger = logger;
         }
 
-        virtual public async Task SeedAsync()
+        public virtual async Task SeedAsync()
         {
             //Apply EF Core migration scripts
             await MigrateAsync();
