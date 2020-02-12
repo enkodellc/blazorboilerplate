@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BlazorBoilerplate.Shared.Dto
+namespace BlazorBoilerplate.Shared.Dto.Admin
 {
     public class RoleDto
     {

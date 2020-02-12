@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
-namespace BlazorBoilerplate.Shared.Dto
+namespace BlazorBoilerplate.Shared.Dto.Account
 {
     //Use Profile field until .NET Core has aspnetprofile table / functionality is created
     public class UserProfileDto

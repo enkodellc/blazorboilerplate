@@ -1,31 +1,27 @@
 ﻿using System;
-using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
-using AutoMapper;
-using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.Dto.Sample;
 
 namespace BlazorBoilerplate.Server.Managers
 {
     public class ToDoManager : ITodoManager
     {
-        private readonly ApplicationDbContext _db;
-        private readonly IMapper _autoMapper;
+        private readonly IToDoStore _toDoStore;
 
-        public ToDoManager(ApplicationDbContext db, IMapper autoMapper)
+        public ToDoManager(IToDoStore toDoStore)
         {
-            _db = db;
-            _autoMapper = autoMapper;
+            _toDoStore = toDoStore;
         }
 
         public async Task<ApiResponse> Get()
         {
             try
             {
-                //Todo Shadow Property doesn't allow filter of IsDeleted here?
-                return new ApiResponse(200, "Retrieved Todos", _autoMapper.ProjectTo<TodoDto>(_db.Todos).ToList());
+                var todos = _toDoStore.GetAll();
+                return new ApiResponse(200, "Retrieved Todos", todos);
             }
             catch (Exception ex)
             {
@@ -35,12 +31,12 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> Get(long id)
         {
-            Todo todo = _db.Todos.FirstOrDefault(t => t.Id == id);
-            if (todo != null)
+            try
             {
-                return new ApiResponse(200, "Retrived Todo", _autoMapper.Map<TodoDto>(todo));
+                var todo = _toDoStore.GetById(id);
+                return new ApiResponse(200, "Retrived Todo", todo);
             }
-            else
+            catch (Exception e)
             {
                 return new ApiResponse(400, "Failed to Retrieve Todo");
             }
@@ -48,36 +44,18 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> Create(TodoDto todoDto)
         {
-            /* Without AutoMapper
-            Todo newTodo = new Todo()
-            {
-                Title = todo.Title,
-                IsCompleted = todo.IsCompleted
-            };*/
-            
-            Todo todo = _autoMapper.Map<TodoDto, Todo>(todoDto);
-            await _db.Todos.AddAsync(todo);
-            await _db.SaveChangesAsync();
-
+            var todo = await _toDoStore.Create(todoDto);
             return new ApiResponse(200, "Created Todo", todo);
         }
 
         public async Task<ApiResponse> Update(TodoDto todoDto)
         {
-            Todo todo = _db.Todos.FirstOrDefault(t => t.Id == todoDto.Id);
-            if (todo != null)
+            try
             {
-                /* Without AutoMapper
-                todo.Title = todoDto.Title;
-                todo.IsCompleted = todoDto.IsCompleted;
-                todo.Modified = DateTime.Now;
-                */
-
-                _autoMapper.Map<TodoDto, Todo>(todoDto, todo);
-                await _db.SaveChangesAsync();
+                var todo = await _toDoStore.Update(todoDto);
                 return new ApiResponse(200, "Updated Todo", todo);
             }
-            else
+            catch (InvalidDataException dataException)
             {
                 return new ApiResponse(400, "Failed to update Todo");
             }
@@ -85,14 +63,12 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> Delete(long id)
         {
-            Todo todo = _db.Todos.FirstOrDefault(t => t.Id == id);
-            if (todo != null)
+            try
             {
-                _db.Todos.Remove(todo);
-                await _db.SaveChangesAsync();
+                await _toDoStore.DeleteById(id);
                 return new ApiResponse(200, "Soft Delete Todo");
             }
-            else
+            catch (InvalidDataException dataException)
             {
                 return new ApiResponse(400, "Failed to update Todo");
             }

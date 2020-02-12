@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Server.Data.Interfaces;
-using BlazorBoilerplate.Server.Middleware.Extensions;
+﻿using BlazorBoilerplate.Server.Middleware.Extensions;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
@@ -8,8 +7,8 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Shared.DataInterfaces;
 
 namespace BlazorBoilerplate.Server.Middleware
 {

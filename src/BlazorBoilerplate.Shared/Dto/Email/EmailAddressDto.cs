@@ -1,4 +1,4 @@
-﻿namespace BlazorBoilerplate.Shared.Dto
+﻿namespace BlazorBoilerplate.Shared.Dto.Email
 {
     public class EmailAddressDto
     {

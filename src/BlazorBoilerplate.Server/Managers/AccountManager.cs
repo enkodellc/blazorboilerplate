@@ -1,8 +1,5 @@
-﻿using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -13,6 +10,9 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Dto.Email;
 using IdentityModel;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -20,32 +20,29 @@ namespace BlazorBoilerplate.Server.Managers
     public class AccountManager : IAccountManager
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _db;
         private readonly ILogger<AccountManager> _logger;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IEmailManager _emailManager;
-        private readonly IUserProfileManager _userProfileManager;
+        private readonly IUserProfileStore _userProfileStore;
         private readonly IConfiguration _configuration;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
 
         public AccountManager(UserManager<ApplicationUser> userManager,
-            ApplicationDbContext db,
             SignInManager<ApplicationUser> signInManager,
             ILogger<AccountManager> logger,
             RoleManager<IdentityRole<Guid>> roleManager,
             IEmailManager emailManager,
-            IUserProfileManager userProfileManager,
+            IUserProfileStore userProfileStore,
             IConfiguration configuration)
         {
             _userManager = userManager;
-            _db = db;
             _signInManager = signInManager;
             _logger = logger;
             _roleManager = roleManager;
             _emailManager = emailManager;
-            _userProfileManager = userProfileManager;
+            _userProfileStore = userProfileStore;
             _configuration = configuration;
         }
 
@@ -63,7 +60,7 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(404, "User does not exist");
             }
 
-            string token = parameters.Token;
+            var token = parameters.Token;
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (!result.Succeeded)
             {
@@ -136,7 +133,7 @@ namespace BlazorBoilerplate.Server.Managers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("Logged In: {0}", parameters.UserName);
-                    return new ApiResponse(200, _userProfileManager.GetLastPageVisited(parameters.UserName));
+                    return new ApiResponse(200, _userProfileStore.GetLastPageVisited(parameters.UserName));
                 }
             }
             catch (Exception ex)
@@ -195,13 +192,12 @@ namespace BlazorBoilerplate.Server.Managers
                 _logger.LogInformation("User does not exist: {0}", parameters.UserId);
                 return new ApiResponse(404, "User does not exist");
             }
-
             
              // TODO: Break this out into it's own self-contained Email Helper service. 
 
             try
             {
-                IdentityResult result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
+                var result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
                 if (result.Succeeded)
                 {
                     #region Email Successful Password change
@@ -232,7 +228,7 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> UserInfo(ClaimsPrincipal userClaimsPrincipal)
         {
-            UserInfoDto userInfo = await BuildUserInfo(userClaimsPrincipal);
+            var userInfo = await BuildUserInfo(userClaimsPrincipal);
             return new ApiResponse(200, "Retrieved UserInfo", userInfo);
         }
 
@@ -357,13 +353,9 @@ namespace BlazorBoilerplate.Server.Managers
             }
             try
             {
+               
                 //EF: not a fan this will delete old ApiLogs
-                var apiLogs = _db.ApiLogs.Where(a => a.ApplicationUserId == user.Id); // This could be handled in a store, getting rid of the ugliness here. 
-                foreach (var apiLog in apiLogs)
-                {
-                    _db.ApiLogs.Remove(apiLog);
-                }
-                _db.SaveChanges();
+                await _userProfileStore.DeleteAllApiLogsForUser(user.Id);
 
                 await _userManager.DeleteAsync(user);
                 return new ApiResponse(200, "User Deletion Successful");
@@ -401,7 +393,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             try
             {
-                var result = await _userManager.UpdateAsync(appUser).ConfigureAwait(true);
+                await _userManager.UpdateAsync(appUser).ConfigureAwait(true);
             }
             catch
             {
@@ -412,8 +404,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 try
                 {
-                    List<string> rolesToAdd = new List<string>();
-                    List<string> rolesToRemove = new List<string>();
+                    var rolesToAdd = new List<string>();
                     var currentUserRoles = (List<string>)(await _userManager.GetRolesAsync(appUser).ConfigureAwait(true));
                     foreach (var newUserRole in userInfo.Roles)
                     {
@@ -429,13 +420,9 @@ namespace BlazorBoilerplate.Server.Managers
                         await _userManager.AddClaimAsync(appUser, new Claim($"Is{role}", "true")).ConfigureAwait(true);
                     }
 
-                    foreach (var role in currentUserRoles)
-                    {
-                        if (!userInfo.Roles.Contains(role))
-                        {
-                            rolesToRemove.Add(role);
-                        }
-                    }
+                    var rolesToRemove = currentUserRoles
+                        .Where(role => !userInfo.Roles.Contains(role)).ToList();
+                    
                     await _userManager.RemoveFromRolesAsync(appUser, rolesToRemove).ConfigureAwait(true);
 
                     //HACK to switch to claims auth
@@ -484,13 +471,7 @@ namespace BlazorBoilerplate.Server.Managers
                     // this is going to an authenticated Admin so it should be safe/useful to send back raw error messages
                     if (result.Errors.Any())
                     {
-                        string resultErrorsString = "";
-                        foreach (var identityError in result.Errors)
-                        {
-                            resultErrorsString += identityError.Description + ", ";
-                        }
-                        resultErrorsString.TrimEnd(',');
-                        return new ApiResponse(400, resultErrorsString);
+                        return new ApiResponse(400, string.Join(',', result.Errors.Select(x => x.Description)));
                     }
                     else
                     {
@@ -540,7 +521,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token);
+                var callbackUrl = $"{_configuration["BlazorBoilerplate:ApplicationUrl"]}/Account/ConfirmEmail/{user.Id}?token={token}";
 
                 emailMessage.BuildNewUserConfirmationEmail(user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
             }

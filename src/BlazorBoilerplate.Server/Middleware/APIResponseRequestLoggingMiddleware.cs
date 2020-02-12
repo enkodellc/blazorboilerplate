@@ -1,7 +1,5 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Extensions;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Services;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +21,7 @@ using System.Text.RegularExpressions;
 //using System.Text.Json; //Does not work for this middleware, at least as in preview
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Shared.DataModels;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
@@ -383,6 +382,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 queryString = $"(Truncated to 200 chars) {queryString.Substring(0, 200)}";
             }
 
+            // Pass in the context to resolve the instance, and save to a store? 
             await _apiLogManager.Log(new ApiLogItem
             {
                 RequestTime = requestTime,
