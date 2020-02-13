@@ -54,5 +54,22 @@ namespace BlazorBoilerplate.Storage
                 builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
             }
         }
+        
+        public static IIdentityServerBuilder AddIdentityServerStores(this IIdentityServerBuilder builder, IConfiguration configuration)
+        => builder.AddConfigurationStore(options =>
+            {
+                options.ConfigureDbContext = x =>
+                    ServiceCollectionExtensions.GetDbContextOptions(x, configuration);
+            })
+            .AddOperationalStore(options =>
+            {
+                options.ConfigureDbContext = x => ServiceCollectionExtensions.GetDbContextOptions(x, configuration);
+
+                // this enables automatic token cleanup. this is optional.
+                options.EnableTokenCleanup = true;
+                
+                options.TokenCleanupInterval = 3600; //In Seconds 1 hour
+            });
+        
     }
 }

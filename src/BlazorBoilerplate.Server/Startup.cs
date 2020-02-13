@@ -84,18 +84,7 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
-              .AddConfigurationStore(options =>
-              {
-                  options.ConfigureDbContext = x=>  ServiceCollectionExtensions.GetDbContextOptions(x, Configuration);
-              })
-              .AddOperationalStore(options =>
-              {
-                  options.ConfigureDbContext = x=>  ServiceCollectionExtensions.GetDbContextOptions(x, Configuration);
-
-                  // this enables automatic token cleanup. this is optional.
-                  options.EnableTokenCleanup = true;
-                  options.TokenCleanupInterval = 3600; //In Seconds 1 hour
-              })
+              .AddIdentityServerStores(Configuration)
               .AddAspNetIdentity<ApplicationUser>();
 
             X509Certificate2 cert = null;
