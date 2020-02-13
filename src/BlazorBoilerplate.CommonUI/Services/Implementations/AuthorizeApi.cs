@@ -21,7 +21,7 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
         public AuthorizeApi(NavigationManager navigationManager, HttpClient httpClient, IJSRuntime jsRuntime)
         {
             _navigationManager = navigationManager;
-            _httpClient = httpClient; 
+            _httpClient = httpClient;
             _jsRuntime = jsRuntime;
         }
 
@@ -68,7 +68,9 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
         public async Task<ApiResponseDto> Logout()
         {
 #if ServerSideBlazor
-            var cookies = _httpClient.DefaultRequestHeaders?.GetValues("Cookie")?.ToList();            
+            List<string> cookies = null;
+            if (_httpClient.DefaultRequestHeaders.TryGetValues("Cookie", out IEnumerable<string> cookieEntries))
+                cookies = cookieEntries.ToList();
 #endif
 
             var resp = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
