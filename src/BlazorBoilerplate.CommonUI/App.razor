@@ -46,7 +46,7 @@
 
 #if ServerSideBlazor
         // likely user refreshed page, we need to grab the cookies if they exist and pass it to the HttpClient for this request
-        if (_http != null && _http.HttpContext.Request.Cookies.Any())
+        if (_http != null && _http.HttpContext != null && _http.HttpContext.Request.Cookies.Any())
         {
             var cks = new List<string>();
 
