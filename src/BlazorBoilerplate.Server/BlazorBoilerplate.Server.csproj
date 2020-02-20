@@ -48,7 +48,7 @@
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="IdentityServer4" Version="3.1.1" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
-    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="3.1.1" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="3.1.2" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="3.1.1" />
     <PackageReference Include="MatBlazor" Version="2.2.0-preview" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.2" />
