@@ -7,6 +7,7 @@
 @inject IMatToaster matToaster
 @inject AppState appState
 @inject NavigationManager NavigationManager
+@inject IJSRuntime js
 
     <MatCard>
         <div class="hidden-mdc-down">
@@ -26,7 +27,7 @@
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField id="userName" @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
                     <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
@@ -93,6 +94,12 @@
         {
             navigationManager.NavigateTo(navigationManager.BaseUri + navigateTo);
         }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("SetFocus", "userName");
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     async Task GoogleSignIn()
