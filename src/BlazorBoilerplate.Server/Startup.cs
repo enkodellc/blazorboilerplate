@@ -149,7 +149,7 @@ namespace BlazorBoilerplate.Server
             else
             {
 
-                // running on aure
+                // running on azure
                 // please make sure to replace your vault URI and your certificate name in appsettings.json!
                 if (Convert.ToBoolean(Configuration["HostingOnAzure:RunsOnAzure"]) == true)
                 {
