@@ -148,12 +148,10 @@ namespace BlazorBoilerplate.Server
             }
             else
             {
-
                 // running on azure
                 // please make sure to replace your vault URI and your certificate name in appsettings.json!
                 if (Convert.ToBoolean(Configuration["HostingOnAzure:RunsOnAzure"]) == true)
                 {
-
                     // if we use a key vault
                     if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UsingKeyVault"]) == true)
                     {
@@ -177,7 +175,6 @@ namespace BlazorBoilerplate.Server
                             }
                         }
 
-
                         // if app id and app secret are used
                         if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UsingKeyVault"]) == false)
                         {
@@ -185,9 +182,6 @@ namespace BlazorBoilerplate.Server
                         }
 
                     }
-
-                    
-
                 }
 
                 // using local cert store
@@ -227,14 +221,7 @@ namespace BlazorBoilerplate.Server
                 {
                     throw new FileNotFoundException("No certificate for Identity Server could be retrieved.");
                 }
-
             }
-
-
-
-
-
-
 
             var authBuilder = services.AddAuthentication(options =>
             {

@@ -124,11 +124,13 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 
 ## News
 
-### 0.7.0 (Under Development - !Breaking Changes)
+### 0.7.0 (Breaking Changes)
 - .NET Core 3.2 Preview 1- Microsoft & Other Nuget package updates - Program.cs refactored for CSB
 - MatBlazor 2.1.2
 - Server-Side Blazor Auth Cookie Issue [#138](https://github.com/enkodellc/blazorboilerplate/issues/138) -  Thanks [marcotana](https://github.com/marcotana)
 - Exit from Login dialog [#139](https://github.com/enkodellc/blazorboilerplate/issues/139) -  Thanks [Oleg26Dev](https://github.com/Oleg26Dev)
+- Focus on Login Form Entry - Thanks [responsive-edge](https://github.com/responsive-edge)
+- Azure Hosting Wiki and Project update - Thanks [soomon](https://github.com/soomon)
 
 ### 0.6.1 (No Major Breaking Changes)
 - .NET Core 3.1.1 - Microsoft Nuget package updates - security patches no code changes 
