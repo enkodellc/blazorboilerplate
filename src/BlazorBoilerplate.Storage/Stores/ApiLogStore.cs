@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.Dto;
 
 namespace BlazorBoilerplate.Storage.Stores
@@ -22,12 +23,5 @@ namespace BlazorBoilerplate.Storage.Stores
 
         public List<ApiLogItemDto> GetByUserId(Guid userId)
         => _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == userId)).ToList();
-    }
-
-    public interface IApiLogStore
-    {
-        List<ApiLogItemDto> Get();
-
-        List<ApiLogItemDto> GetByUserId(Guid userId);
     }
 }
