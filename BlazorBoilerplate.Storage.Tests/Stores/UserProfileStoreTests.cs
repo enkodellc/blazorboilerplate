@@ -9,26 +9,25 @@ using System.Text;
 namespace BlazorBoilerplate.Storage.Tests.Stores
 {
     [TestFixture]
-    class ApiLogStoreTests
+    class UserProfileStoreTests
     {
-        private ApiLogStore _apiLogStore;
+        private UserProfileStore _userProfileStore;
 
         private Mock<IApplicationDbContext> _dbContext;
-        private Mock<IMapper> _mapper;
 
         [SetUp]
         public void SetUp()
         {
             _dbContext = new Mock<IApplicationDbContext>();
-            _mapper = new Mock<IMapper>();
 
-            _apiLogStore = new ApiLogStore(_dbContext.Object, _mapper.Object);
+            _userProfileStore = new UserProfileStore(_dbContext.Object);
         }
 
         [Test]
-        public void SetupWorked()
+        public void SetUpWorked()
         {
             Assert.Pass();
         }
+
     }
 }

@@ -9,9 +9,9 @@ using System.Text;
 namespace BlazorBoilerplate.Storage.Tests.Stores
 {
     [TestFixture]
-    class ApiLogStoreTests
+    class ToDoStoreTests
     {
-        private ApiLogStore _apiLogStore;
+        private ToDoStore _toDoStore;
 
         private Mock<IApplicationDbContext> _dbContext;
         private Mock<IMapper> _mapper;
@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Storage.Tests.Stores
             _dbContext = new Mock<IApplicationDbContext>();
             _mapper = new Mock<IMapper>();
 
-            _apiLogStore = new ApiLogStore(_dbContext.Object, _mapper.Object);
+            _toDoStore = new ToDoStore(_dbContext.Object, _mapper.Object);
         }
 
         [Test]
