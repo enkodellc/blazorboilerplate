@@ -6,6 +6,7 @@ namespace BlazorBoilerplate.Shared.Dto
     {
         [Required]
         [StringLength(64, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+        [RegularExpression(@"[^\s]+", ErrorMessage = "Spaces are not permitted.")]
         [Display(Name = "UserName")]
         public string UserName { get; set; }
 
