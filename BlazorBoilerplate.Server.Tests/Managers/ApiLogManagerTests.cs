@@ -8,5 +8,12 @@ namespace BlazorBoilerplate.Server.Tests.Managers
     [TestFixture]
     class ApiLogManagerTests
     {
+        // I will leave this for testing, for now.
+
+        [Test]
+        public void SetupWorked()
+        {
+            Assert.Pass();
+        }
     }
 }
