@@ -131,14 +131,17 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 - Exit from Login dialog [#139](https://github.com/enkodellc/blazorboilerplate/issues/139) -  Thanks [Oleg26Dev](https://github.com/Oleg26Dev)
 - Focus on Login Form Entry - Thanks [responsive-edge](https://github.com/responsive-edge)
 - Azure Hosting Wiki and Project update - Thanks [soomon](https://github.com/soomon)
+- Known Issue with new project structure - Breaks CSB Debugging (shift + alt + d) - Expect fix in .Net Core 3.2 preview 2. Use SSB for debugging.
 
 ### 0.6.1 (No Major Breaking Changes)
 - .NET Core 3.1.1 - Microsoft Nuget package updates - security patches no code changes 
+- Known Issue with new project structure - Breaks CSB Debugging (shift + alt + d) - Expect fix in .Net Core 3.2 preview 2. Use SSB for debugging.
 
 ### 0.6.0 (Major Breaking Changes)
 - Dual Mode CSB & SSB [View Wiki](https://github.com/enkodellc/blazorboilerplate/wiki/Dual-Mode-CSB---SSB-Tips). Thanks [MarkStega](https://github.com/MarkStega)
     - There are changes to solution structure for Dual Mode. Switching modes can be tricky with the browser cache so if you see something strange use incognito mode or a different browser. 
     Best solution is to pick your version and stick with it, then expect to clear cache when switching. Read the Wiki!
+    - Known Issue with new project structure - Breaks CSB (shift + alt + d) Debugging - Expect fix in .Net Core 3.2 preview 2 . Use SSB for debugging.
 
 ### 0.5.0
 - MatBlazor 2.0 Breaking Changes
