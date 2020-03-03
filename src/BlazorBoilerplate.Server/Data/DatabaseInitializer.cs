@@ -81,6 +81,19 @@ namespace BlazorBoilerplate.Server.Data
 
                 _logger.LogInformation("Inbuilt account generation completed");
             }
+            else
+            {
+                const string adminRoleName = "Administrator";
+
+                IdentityRole<Guid> role = await _roleManager.FindByNameAsync(adminRoleName);
+                var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
+                var RoleClaims = (await _roleManager.GetClaimsAsync(role)).Select(c=>c.Value).ToList();
+                var NewClaims = AllClaims.Except(RoleClaims);
+                foreach (string claim in NewClaims)
+                {
+                    await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, claim));
+                }
+            }
         }
 
         private async Task SeedBlazorBoilerplateAsync()

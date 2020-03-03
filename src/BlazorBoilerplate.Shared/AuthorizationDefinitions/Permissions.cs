@@ -45,5 +45,10 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
             [Description("Delete any user")]
             public const string Delete = nameof(User) + "." + nameof(Actions.Delete);
         }
+        public static class WeatherForecasts
+        {
+            [Description("Read Weather Forecasts")]
+            public const string Read = nameof(WeatherForecasts) + "." + nameof(Actions.Read);
+        }
     }
 }

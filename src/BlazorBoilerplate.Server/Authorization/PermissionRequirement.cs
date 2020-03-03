@@ -45,7 +45,6 @@ namespace BlazorBoilerplate.Server.Authorization
                 return;
             }
 
-            //List<Claim> roleClaims = await BuildRoleClaims(user);
             var roleClaims = from ur in _context.UserRoles
                          where ur.UserId == user.Id
                          join r in _context.Roles on ur.RoleId equals r.Id
