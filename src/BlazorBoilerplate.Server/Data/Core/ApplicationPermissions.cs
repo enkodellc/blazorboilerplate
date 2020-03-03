@@ -1,33 +1,51 @@
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BlazorBoilerplate.Server.Data.Core
 {
     public static class ApplicationPermissions
     {
         public static ReadOnlyCollection<ApplicationPermission> AllPermissions;
-        
-        public const string UsersPermissionGroupName = "User Permissions";
-        public static ApplicationPermission ViewUsers = new ApplicationPermission("View Users", "users.view", UsersPermissionGroupName, "Permission to view other users account details");
-        public static ApplicationPermission ManageUsers = new ApplicationPermission("Manage Users", "users.manage", UsersPermissionGroupName, "Permission to create, delete and modify other users account details");
-
-        public const string RolesPermissionGroupName = "Role Permissions";
-        public static ApplicationPermission ViewRoles = new ApplicationPermission("View Roles", "roles.view", RolesPermissionGroupName, "Permission to view available roles");
-        public static ApplicationPermission ManageRoles = new ApplicationPermission("Manage Roles", "roles.manage", RolesPermissionGroupName, "Permission to create, delete and modify roles");
-        public static ApplicationPermission AssignRoles = new ApplicationPermission("Assign Roles", "roles.assign", RolesPermissionGroupName, "Permission to assign roles to users");
-        
+        /// <summary>
+        /// Generates ApplicationPermissions based on Permissions Type by iterating over nested classes and getting constant strings in each class as Value and Name, DescriptionAttribute of the constant string as Description, the nested class name as GroupName.
+        /// </summary>
         static ApplicationPermissions()
         {
-            List<ApplicationPermission> allPermissions = new List<ApplicationPermission>()
+            List<ApplicationPermission> allPermissions = new List<ApplicationPermission>();
+            IEnumerable<object> permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Static | BindingFlags.Public).Cast<TypeInfo>();
+            foreach (TypeInfo permissionClass in permissionClasses)
             {
-                ViewUsers,
-                ManageUsers,
-                ViewRoles,
-                ManageRoles,
-                AssignRoles
-            };
+                IEnumerable<FieldInfo> permissions = permissionClass.DeclaredFields.Where(f => f.IsLiteral);
+                foreach (FieldInfo permission in permissions)
+                {
+                    ApplicationPermission applicationPermission = new ApplicationPermission
+                    {
+                        Value = permission.GetValue(null).ToString(),
+                        GroupName = permissionClass.Name
+                    };
+                    applicationPermission.Name = applicationPermission.Value.Replace('.', ' ');
+                    DescriptionAttribute[] attributes =
+        (DescriptionAttribute[])permission.GetCustomAttributes(
+        typeof(DescriptionAttribute),
+        false);
 
+                    if (attributes != null &&
+                        attributes.Length > 0)
+                    {
+                        applicationPermission.Description = attributes[0].Description;
+                    }
+                    else
+                    {
+                        applicationPermission.Description = applicationPermission.Value;
+                    }
+
+                    allPermissions.Add(applicationPermission);
+                }
+            }
             AllPermissions = allPermissions.AsReadOnly();
         }
 
@@ -53,10 +71,10 @@ namespace BlazorBoilerplate.Server.Data.Core
 
         public static string[] GetAdministrativePermissionValues()
         {
-            return new string[] { ManageUsers, ManageRoles, AssignRoles };
+            return GetAllPermissionNames();
         }
     }
-       
+
     public class ApplicationPermission
     {
         public ApplicationPermission()
@@ -69,7 +87,7 @@ namespace BlazorBoilerplate.Server.Data.Core
             GroupName = groupName;
             Description = description;
         }
-               
+
         public string Name { get; set; }
         public string Value { get; set; }
         public string GroupName { get; set; }

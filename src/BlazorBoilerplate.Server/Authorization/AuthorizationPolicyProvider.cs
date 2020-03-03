@@ -24,6 +24,7 @@ namespace BlazorBoilerplate.Server.Authorization
             if (policy == null)
             {
                 policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
                     .AddRequirements(new PermissionRequirement(policyName))
                     .Build();
 
