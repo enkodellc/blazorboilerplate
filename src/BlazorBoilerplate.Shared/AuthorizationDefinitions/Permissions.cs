@@ -27,7 +27,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
         {
             [Description("Create a new Role")]
             public const string Create = nameof(Role) + "." + nameof(Actions.Create);
-            [Description("Read roles data (permissions etc.")]
+            [Description("Read roles data (permissions, etc.")]
             public const string Read = nameof(Role) + "." + nameof(Actions.Read);
             [Description("Edit existing Roles")]
             public const string Update = nameof(Role) + "." + nameof(Actions.Update);

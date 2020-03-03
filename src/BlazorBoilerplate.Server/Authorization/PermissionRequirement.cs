@@ -53,6 +53,10 @@ namespace BlazorBoilerplate.Server.Authorization
             {
                 context.Succeed(requirement);
             }
+            else
+            {
+                context.Fail();
+            }
         }
         public async Task<List<Claim>> BuildRoleClaims(ApplicationUser user)
         {
