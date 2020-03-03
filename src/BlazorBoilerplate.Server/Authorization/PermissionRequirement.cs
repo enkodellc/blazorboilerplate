@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Server.Models;
+﻿using BlazorBoilerplate.Server.Data;
+using BlazorBoilerplate.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -22,14 +23,11 @@ namespace BlazorBoilerplate.Server.Authorization
         IAuthorizationRequirement
 
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly ApplicationDbContext _context;
 
-        public PermissionRequirementHandler(UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager)
+        public PermissionRequirementHandler(ApplicationDbContext context)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
+            _context = context;
         }
 
         protected override async Task HandleRequirementAsync(
@@ -41,55 +39,25 @@ namespace BlazorBoilerplate.Server.Authorization
                 return;
             }
 
-            ApplicationUser user = await _userManager.GetUserAsync(context.User);
+            ApplicationUser user = _context.Users.FirstOrDefault(u => u.UserName == context.User.Identity.Name);
             if (user == null)
             {
                 return;
             }
 
-            List<Claim> roleClaims = await BuildRoleClaims(user);
-
-            if (roleClaims.FirstOrDefault(c => c.Value == requirement.Permission) != null)
+            //List<Claim> roleClaims = await BuildRoleClaims(user);
+            var roleClaims = from ur in _context.UserRoles
+                         where ur.UserId == user.Id
+                         join r in _context.Roles on ur.RoleId equals r.Id
+                         join rc in _context.RoleClaims on r.Id equals rc.RoleId
+                         select rc;
+            if (roleClaims.Any(c => c.ClaimValue == requirement.Permission))
             {
                 context.Succeed(requirement);
             }
             else
             {
                 context.Fail();
-            }
-        }
-        public async Task<List<Claim>> BuildRoleClaims(ApplicationUser user)
-        {
-            List<Claim> roleClaims = new List<Claim>();
-            if (_userManager.SupportsUserRole)
-            {
-                IList<string> roles = await _userManager.GetRolesAsync(user);
-                foreach (string roleName in roles)
-                {
-                    if (_roleManager.SupportsRoleClaims)
-                    {
-                        IdentityRole<Guid> role = await _roleManager.FindByNameAsync(roleName);
-                        if (role != null)
-                        {
-                            IList<Claim> rc = await _roleManager.GetClaimsAsync(role);
-                            roleClaims.AddRange(rc.ToList());
-                        }
-                    }
-                    roleClaims = roleClaims.Distinct(new ClaimsComparer()).ToList();
-                }
-            }
-            return roleClaims;
-        }
-        public class ClaimsComparer : IEqualityComparer<Claim>
-        {
-            public bool Equals(Claim x, Claim y)
-            {
-                return x.Value == y.Value;
-            }
-            public int GetHashCode(Claim claim)
-            {
-                int claimValue = claim.Value?.GetHashCode() ?? 0;
-                return claimValue;
             }
         }
     }

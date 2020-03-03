@@ -25,9 +25,9 @@ namespace BlazorBoilerplate.Server.Data.Core
                     ApplicationPermission applicationPermission = new ApplicationPermission
                     {
                         Value = permission.GetValue(null).ToString(),
+                        Name = permission.GetValue(null).ToString().Replace('.', ' '),
                         GroupName = permissionClass.Name
                     };
-                    applicationPermission.Name = applicationPermission.Value.Replace('.', ' ');
                     DescriptionAttribute[] attributes =
         (DescriptionAttribute[])permission.GetCustomAttributes(
         typeof(DescriptionAttribute),
@@ -40,7 +40,7 @@ namespace BlazorBoilerplate.Server.Data.Core
                     }
                     else
                     {
-                        applicationPermission.Description = applicationPermission.Value;
+                        applicationPermission.Description = applicationPermission.Name;
                     }
 
                     allPermissions.Add(applicationPermission);
