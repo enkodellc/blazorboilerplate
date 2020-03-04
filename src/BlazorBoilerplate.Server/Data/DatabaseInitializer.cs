@@ -85,13 +85,21 @@ namespace BlazorBoilerplate.Server.Data
             {
                 const string adminRoleName = "Administrator";
 
-                IdentityRole<Guid> role = await _roleManager.FindByNameAsync(adminRoleName);
+                IdentityRole<Guid> adminRole = await _roleManager.FindByNameAsync(adminRoleName);
                 var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
-                var RoleClaims = (await _roleManager.GetClaimsAsync(role)).Select(c=>c.Value).ToList();
+                var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c=>c.Value).ToList();
                 var NewClaims = AllClaims.Except(RoleClaims);
                 foreach (string claim in NewClaims)
                 {
-                    await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, claim));
+                    await _roleManager.AddClaimAsync(adminRole, new Claim(ClaimConstants.Permission, claim));
+                }
+                var DeprecatedClaims = RoleClaims.Except(AllClaims);
+                foreach (string claim in DeprecatedClaims)
+                {
+                    foreach(var role in _roleManager.Roles)
+                    {
+                    await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, claim));
+                    }
                 }
             }
         }
