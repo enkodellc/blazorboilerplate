@@ -94,9 +94,10 @@ namespace BlazorBoilerplate.Server.Data
                     await _roleManager.AddClaimAsync(adminRole, new Claim(ClaimConstants.Permission, claim));
                 }
                 var DeprecatedClaims = RoleClaims.Except(AllClaims);
+                var roles = await _roleManager.Roles.ToListAsync();
                 foreach (string claim in DeprecatedClaims)
                 {
-                    foreach(var role in _roleManager.Roles)
+                    foreach(var role in roles)
                     {
                     await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, claim));
                     }
