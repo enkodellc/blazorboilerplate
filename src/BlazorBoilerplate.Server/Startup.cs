@@ -72,8 +72,6 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
@@ -98,6 +96,7 @@ namespace BlazorBoilerplate.Server
                 }
             }
 
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
             services.AddDbContext<ApplicationDbContext>(DbContextOptionsBuilder);
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
@@ -246,7 +245,6 @@ namespace BlazorBoilerplate.Server
                     options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
                 });
             }
-            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
             //Add Policies / Claims / Authorization - https://stormpath.com/blog/tutorial-policy-based-authorization-asp-net-core
             services.AddAuthorization(options =>
