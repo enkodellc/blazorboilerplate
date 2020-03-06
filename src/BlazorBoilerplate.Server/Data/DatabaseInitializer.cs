@@ -226,7 +226,8 @@ namespace BlazorBoilerplate.Server.Data
                     PhoneNumber = phoneNumber,
                     FullName = fullName,
                     FirstName = firstName,
-                    LastName = lastName
+                    LastName = lastName,
+                    EmailConfirmed = true
                 };
 
                 var result = _userManager.CreateAsync(applicationUser, password).Result;
