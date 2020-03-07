@@ -24,13 +24,13 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IAccountManager _accountManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ILogger<AccountController> _logger;
+        private readonly ILogger<ExternalAuthManager> _logger;
         private readonly IConfiguration _configuration;
 
         public ExternalAuthManager(IAccountManager accountManager, 
             UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager, 
-            ILogger<AccountController> logger,
+            ILogger<ExternalAuthManager> logger,
             IConfiguration configuration)
         {
             _accountManager = accountManager;
