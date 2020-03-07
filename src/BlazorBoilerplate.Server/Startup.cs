@@ -43,6 +43,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -71,6 +74,37 @@ namespace BlazorBoilerplate.Server
             var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
 
             services.RegisterStorage(Configuration);
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
+            var dbConnString = useSqlServer
+                ? Configuration.GetConnectionString("DefaultConnection")
+                : $"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}";
+
+            var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
+
+            void DbContextOptionsBuilder(DbContextOptionsBuilder builder)
+            {
+                if (useSqlServer)
+                {
+                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                }
+                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
+                {
+                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                }
+                else
+                {
+                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                }
+            }
+
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+            services.AddDbContext<ApplicationDbContext>(DbContextOptionsBuilder);
+
+            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+                .AddRoles<IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
@@ -85,9 +119,22 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseSuccessEvents = true;
             })
               .AddIdentityServerStores(Configuration)
+              .AddConfigurationStore(options =>
+              {
+                  options.ConfigureDbContext = DbContextOptionsBuilder;
+              })
+              .AddOperationalStore(options =>
+              {
+                  options.ConfigureDbContext = DbContextOptionsBuilder;
+
+                  // this enables automatic token cleanup. this is optional.
+                  options.EnableTokenCleanup = true;
+                  options.TokenCleanupInterval = 3600; //In Seconds 1 hour
+              })
               .AddAspNetIdentity<ApplicationUser>();
 
             X509Certificate2 cert = null;
+
 
             if (_environment.IsDevelopment())
             {
@@ -100,13 +147,46 @@ namespace BlazorBoilerplate.Server
             }
             else
             {
-                // Works for IIS, finds cert by the thumbprint in appsettings.json
-                // Make sure Certificate is in the Web Hosting folder && installed to LocalMachine or update settings below
-                var useLocalCertStore = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseLocalCertStore"]);
-                var certificateThumbprint = Configuration["BlazorBoilerplate:CertificateThumbprint"];
-
-                if (useLocalCertStore)
+                // running on azure
+                // please make sure to replace your vault URI and your certificate name in appsettings.json!
+                if (Convert.ToBoolean(Configuration["HostingOnAzure:RunsOnAzure"]) == true)
                 {
+                    // if we use a key vault
+                    if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UsingKeyVault"]) == true)
+                    {
+
+                        // if managed app identity is used
+                        if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UseManagedAppIdentity"]) == true)
+                        {
+                            try
+                            {
+                                AzureServiceTokenProvider azureServiceTokenProvider = new AzureServiceTokenProvider();
+
+                                var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
+
+                                var certificateBundle = keyVaultClient.GetSecretAsync(Configuration["HostingOnAzure:AzureKeyVault:VaultURI"], Configuration["HostingOnAzure:AzurekeyVault:CertificateName"]).GetAwaiter().GetResult();
+                                var certificate = System.Convert.FromBase64String(certificateBundle.Value);
+                                cert = new X509Certificate2(certificate, (string)null, X509KeyStorageFlags.MachineKeySet);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw (ex);
+                            }
+                        }
+
+                        // if app id and app secret are used
+                        if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UsingKeyVault"]) == false)
+                        {
+                            throw new NotImplementedException();
+                        }
+
+                    }
+                }
+
+                // using local cert store
+                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseLocalCertStore"]) == true)
+                {
+                    var certificateThumbprint = Configuration["BlazorBoilerplate:CertificateThumbprint"];
                     using (X509Store store = new X509Store("WebHosting", StoreLocation.LocalMachine))
                     {
                         store.Open(OpenFlags.ReadOnly);
@@ -130,20 +210,16 @@ namespace BlazorBoilerplate.Server
                         store.Close();
                     }
                 }
+
+                // pass the resulting certificate to Identity Server
+                if (cert != null)
+                {
+                    identityServerBuilder.AddSigningCredential(cert);
+                }
                 else
                 {
-                    // Azure deployment, will be used if deployed to Azure - Not tested
-                    //var vaultConfigSection = Configuration.GetSection("Vault");
-                    //var keyVaultService = new KeyVaultCertificateService(vaultConfigSection["Url"], vaultConfigSection["ClientId"], vaultConfigSection["ClientSecret"]);
-                    ////cert = keyVaultService.GetCertificateFromKeyVault(vaultConfigSection["CertificateName"]);
-
-                    /// I was informed that this will work as a temp solution in Azure
-                    cert = new X509Certificate2("AuthSample.pfx", "Admin123",
-                        X509KeyStorageFlags.MachineKeySet |
-                        X509KeyStorageFlags.PersistKeySet |
-                        X509KeyStorageFlags.Exportable);
+                    throw new FileNotFoundException("No certificate for Identity Server could be retrieved.");
                 }
-                identityServerBuilder.AddSigningCredential(cert);
             }
 
             var authBuilder = services.AddAuthentication(options =>
@@ -169,7 +245,6 @@ namespace BlazorBoilerplate.Server
                     options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
                 });
             }
-            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
             //Add Policies / Claims / Authorization - https://stormpath.com/blog/tutorial-policy-based-authorization-asp-net-core
             services.AddAuthorization(options =>
@@ -229,7 +304,7 @@ namespace BlazorBoilerplate.Server
                     {
                         if (context.Request.Path.StartsWithSegments("/api"))
                         {
-                            context.Response.StatusCode = (int) (HttpStatusCode.Unauthorized);
+                            context.Response.StatusCode = (int)(HttpStatusCode.Unauthorized);
                         }
 
                         return Task.CompletedTask;
@@ -249,8 +324,8 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version     = "0.6.1";
-                    document.Info.Title       = "Blazor Boilerplate";
+                    document.Info.Version = "0.7.0";
+                    document.Info.Title = "Blazor Boilerplate";
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
 #endif
@@ -358,15 +433,15 @@ namespace BlazorBoilerplate.Server
             }
             else
             {
-              // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-              //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
 #if ClientSideBlazor
-            app.UseClientSideBlazorFiles<Client.Startup>();
+            app.UseClientSideBlazorFiles<Client.Program>();
 #endif
 
             app.UseRouting();
@@ -389,7 +464,7 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
 
 #if ClientSideBlazor
-                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index_csb.html");
+                endpoints.MapFallbackToClientSideBlazor<Client.Program>("index_csb.html");
 #else
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/index_ssb");

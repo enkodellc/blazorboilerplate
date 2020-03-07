@@ -15,6 +15,7 @@
 
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="_content/BlazorBoilerplate.CommonUI/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />
     <link href="_content/BlazorBoilerplate.CommonUI/css/site.css" rel="stylesheet" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -25,7 +26,9 @@
         gtag('js', new Date());
         gtag('config', 'UA-55161075-2');
     </script>
-
+    <script>
+        window.SetFocus = (id) => document.getElementById(id).focus();
+    </script>
 </head>
 <body>
     <!-- SSB -->
@@ -50,5 +53,6 @@
     <script src="_content/MatBlazor/dist/matBlazor.js"></script>
     <script src="_content/BlazorBoilerplate.CommonUI/javascript/signalr.min.js"></script>
     <script src="_content/BlazorBoilerplate.CommonUI/javascript/chatClient.js"></script>
+    <script src="_content/BlazorBoilerplate.CommonUI/javascript/jsInterops.js"></script>
 </body>
 </html>

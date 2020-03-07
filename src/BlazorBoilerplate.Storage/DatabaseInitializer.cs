@@ -13,6 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -41,7 +45,7 @@ namespace BlazorBoilerplate.Storage
             _logger = logger;
         }
 
-        virtual public async Task SeedAsync()
+        public virtual async Task SeedAsync()
         {
             //Apply EF Core migration scripts
             await MigrateAsync();
@@ -224,7 +228,8 @@ namespace BlazorBoilerplate.Storage
                     PhoneNumber = phoneNumber,
                     FullName = fullName,
                     FirstName = firstName,
-                    LastName = lastName
+                    LastName = lastName,
+                    EmailConfirmed = true
                 };
 
                 var result = _userManager.CreateAsync(applicationUser, password).Result;

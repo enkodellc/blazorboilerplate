@@ -46,12 +46,6 @@
 
     async Task RegisterUser()
     {
-        if (registerParameters.Password != registerParameters.PasswordConfirm)
-        {
-            matToaster.Add("Password Confirmation Failed", MatToastType.Danger, "");
-            return;
-        }
-
         try
         {
             await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters);
