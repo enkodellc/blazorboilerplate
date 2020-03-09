@@ -50,6 +50,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using System.Reflection;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BlazorBoilerplate.Server
 {
@@ -80,7 +82,6 @@ namespace BlazorBoilerplate.Server
                 ? Configuration.GetConnectionString("DefaultConnection")
                 : $"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}";
 
-            var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
 
             void DbContextOptionsBuilder(DbContextOptionsBuilder builder)
             {
