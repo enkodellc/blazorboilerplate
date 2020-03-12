@@ -124,6 +124,11 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 
 ## News
 
+### 0.8.0 (Project Refactor - Thanks DanielBunting)
+- Refactor Project Architecture
+- Add Initial Tests
+- Known Issue with new project structure - Breaks CSB Debugging (shift + alt + d) - Expect fix in .Net Core 3.2 preview 2. Use SSB for debugging.
+
 ### 0.7.0 (Breaking Changes)
 - .NET Core 3.2 Preview 1- Microsoft & Other Nuget package updates - Program.cs refactored for CSB
 - MatBlazor 2.1.2

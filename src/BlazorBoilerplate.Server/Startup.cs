@@ -71,8 +71,6 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-
             var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
 
             services.RegisterStorage(Configuration);
@@ -81,7 +79,6 @@ namespace BlazorBoilerplate.Server
             var dbConnString = useSqlServer
                 ? Configuration.GetConnectionString("DefaultConnection")
                 : $"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}";
-
 
             void DbContextOptionsBuilder(DbContextOptionsBuilder builder)
             {
@@ -325,7 +322,7 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version = "0.7.0";
+                    document.Info.Version = "0.8.0";
                     document.Info.Title = "Blazor Boilerplate";
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
