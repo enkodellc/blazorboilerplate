@@ -22,12 +22,7 @@ namespace BlazorBoilerplate.Storage
             services.AddTransient<IUserProfileStore, UserProfileStore>();
             services.AddTransient<IToDoStore, ToDoStore>();
             services.AddTransient<IApiLogStore, ApiLogStore>();
-            
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
-                .AddRoles<IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-            
+                       
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
             
             return services;
