@@ -47,10 +47,17 @@
     async Task RegisterUser()
     {
         try
-        {
-            await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters);
-            matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, "User Creation Sucessful");
-            navigationManager.NavigateTo("");
+        {        
+            var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters););
+            if (response.StatusCode == 200)
+            {
+                matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, "User Creation Sucessful");
+                navigationManager.NavigateTo("");
+            }
+            else
+            {
+                matToaster.Add(response.Message, MatToastType.Danger, "User Creation Failed");
+            }
         }
         catch (Exception ex)
         {
