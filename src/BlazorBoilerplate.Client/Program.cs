@@ -18,7 +18,6 @@ namespace BlazorBoilerplate.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
-            builder.Services.AddLoadingBar();
 
             builder.Services.AddAuthorizationCore(config =>
             {
