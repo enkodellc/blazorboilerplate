@@ -47,8 +47,8 @@
     async Task RegisterUser()
     {
         try
-        {        
-            var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters););
+        {
+            var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters);
             if (response.StatusCode == 200)
             {
                 matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, "User Creation Sucessful");

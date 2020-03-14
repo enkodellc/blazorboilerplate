@@ -4,8 +4,8 @@ using BlazorBoilerplate.CommonUI.Services.Implementations;
 using BlazorBoilerplate.CommonUI.States;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using MatBlazor;
-using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
@@ -19,6 +19,7 @@ namespace BlazorBoilerplate.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
+            builder.Services.AddBaseAddressHttpClient();
             builder.Services.AddAuthorizationCore(config =>
             {
                 config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
@@ -29,9 +30,9 @@ namespace BlazorBoilerplate.Client
 
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
             builder.Services.AddScoped<IAuthorizeApi, AuthorizeApi>();
-            builder.Services.AddLoadingBar();
             builder.Services.Add(new ServiceDescriptor(typeof(IUserProfileApi), typeof(UserProfileApi), ServiceLifetime.Scoped));
             builder.Services.AddScoped<AppState>();
+            builder.Services.AddLoadingBar();
             builder.Services.AddMatToaster(config =>
             {
                 config.Position = MatToastPosition.BottomRight;

@@ -25,27 +25,27 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CSB|AnyCPU'">
     <DefineConstants>ClientSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
-    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSB|AnyCPU'">
     <DefineConstants>ServerSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
-    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_CSB|AnyCPU'">
     <DefineConstants>ClientSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
-    <BlazorLinkOnBuild>true</BlazorLinkOnBuild>
+    <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_SSB|AnyCPU'">
     <DefineConstants>ServerSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
-    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.2.0-preview1.20073.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.2.0-preview1.20073.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0-preview2.20160.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0-preview2.20160.5" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview2.20160.5" />
   </ItemGroup>
 

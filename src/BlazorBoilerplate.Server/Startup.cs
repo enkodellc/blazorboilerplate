@@ -343,12 +343,12 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
-            
+
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAdminManager, AdminManager>();
             services.AddTransient<IApiLogManager, ApiLogManager>();
             services.AddTransient<IEmailManager, EmailManager>();
-            services.AddTransient<IExternalAuthManager, ExternalAuthManager>(); // Currently not being used. 
+            services.AddTransient<IExternalAuthManager, ExternalAuthManager>(); // Currently not being used.
             services.AddTransient<IMessageManager, MessageManager>();
             services.AddTransient<ITodoManager, ToDoManager>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();
@@ -426,7 +426,7 @@ namespace BlazorBoilerplate.Server
             {
                 app.UseDeveloperExceptionPage();
 #if ClientSideBlazor
-                app.UseBlazorDebugging();
+                app.UseWebAssemblyDebugging();
 #endif
             }
             else
@@ -439,7 +439,7 @@ namespace BlazorBoilerplate.Server
             app.UseStaticFiles();
 
 #if ClientSideBlazor
-            app.UseClientSideBlazorFiles<Client.Program>();
+            app.UseBlazorFrameworkFiles();
 #endif
 
             app.UseRouting();
@@ -462,7 +462,7 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
 
 #if ClientSideBlazor
-                endpoints.MapFallbackToClientSideBlazor<Client.Program>("index_csb.html");
+                endpoints.MapFallbackToFile("index_csb.html");
 #else
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/index_ssb");
