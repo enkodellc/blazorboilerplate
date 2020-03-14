@@ -124,6 +124,12 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 
 ## News
 
+### 0.8.0 (In Progress Breaking Changes - ETA End of March Release)
+- Switch to "restructure" branch in repo to get the latest changes -> .Net Core 3.2.0 Preview 2
+- Refactor Project structure
+- Tests
+- Multi-Tenant
+
 ### 0.7.0 (Breaking Changes)
 - .NET Core 3.2 Preview 1- Microsoft & Other Nuget package updates - Program.cs refactored for CSB
 - MatBlazor 2.1.2
