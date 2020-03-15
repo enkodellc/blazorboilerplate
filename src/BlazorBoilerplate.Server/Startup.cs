@@ -107,6 +107,9 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
 
+            // cookie policy to deal with temporary browser incompatibilities
+            services.AddSameSiteCookiePolicy();
+
             // Adds IdentityServer
             var identityServerBuilder = services.AddIdentityServer(options =>
             {
@@ -280,23 +283,9 @@ namespace BlazorBoilerplate.Server
                 }
             });
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            services.ConfigureExternalCookie(options =>
-            {
-                // macOS login fix
-                options.Cookie.SameSite = SameSiteMode.None;
-            });
 
             services.ConfigureApplicationCookie(options =>
             {
-                // macOS login fix
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.HttpOnly = false;
-
                 // Suppress redirect on API URLs in ASP.NET Core -> https://stackoverflow.com/a/56384729/54159
                 options.Events = new CookieAuthenticationEvents()
                 {
@@ -411,6 +400,9 @@ namespace BlazorBoilerplate.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // cookie policy to deal with temporary browser incompatibilities
+            app.UseCookiePolicy();
+
             EmailTemplates.Initialize(env);
 
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
