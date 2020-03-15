@@ -1,0 +1,118 @@
+﻿<!-- build/BlazorPWA.MSBuild.ServiceWorkerRegister.targets -->
+<Project>
+
+  <Target Name="BuildServiceWorkerInstaller" Condition="!Exists('$(WWWRoot)$(ServiceWorkerRegisterFileName)') Or '$(ServiceWorkerForce)'=='true'">
+    <!-- bit of info in the build output -->
+    <Message Importance="high" Text="Building Service Worker Register $(ServiceWorkerRegisterFileName)" Condition="!Exists('$(WWWRoot)$(ServiceWorkerRegisterFileName)')"/>
+    <Message Importance="high" Text="Re-Building Service Worker Register $(ServiceWorkerRegisterFileName)" Condition="Exists('$(WWWRoot)$(ServiceWorkerRegisterFileName)')"/>
+
+    <!-- The "Templates" properties are used to define where to find templates for the service worker register -->
+    <PropertyGroup Label="Templates">
+      <!-- The template folder location ** probably never change ** -->
+      <ServiceWorkerRegisterTemplatePath Condition="'$(ServiceWorkerRegisterTemplatePath)' == ''">$(MSBuildThisFileDirectory)Templates\ServiceWorker\</ServiceWorkerRegisterTemplatePath>
+      <!-- The file that contains template code for the service worker register file -->
+      <ServiceWorkerRegisterTemplate Condition="'$(ServiceWorkerRegisterTemplate)' == ''">$(ServiceWorkerRegisterTemplatePath)sw_register.template.js</ServiceWorkerRegisterTemplate>
+      <!-- Update available alert type -->
+      <ServiceWorkerRegisterUpdateType Condition="'$(ServiceWorkerRegisterUpdateType)'==''">update-alert</ServiceWorkerRegisterUpdateType>
+      <!-- The file that contains template code for the service worker "update available"  -->
+      <ServiceWorkerRegisterUpdateTemplate Condition="'$(ServiceWorkerRegisterUpdateTemplate)' == ''">$(ServiceWorkerRegisterTemplatePath)sw_register-$(ServiceWorkerRegisterUpdateType).template.js</ServiceWorkerRegisterUpdateTemplate>
+      <!-- Update available alert type -->
+      <ServiceWorkerRegisterInstallableType Condition="'$(ServiceWorkerRegisterInstallableType)'==''">installable-banner</ServiceWorkerRegisterInstallableType>
+      <!-- The file that contains template code for the service worker "update available"  -->
+      <ServiceWorkerRegisterInstallableTemplate Condition="'$(ServiceWorkerRegisterInstallableTemplate)' == ''">$(ServiceWorkerRegisterTemplatePath)sw_register-$(ServiceWorkerRegisterInstallableType).template.js</ServiceWorkerRegisterInstallableTemplate>
+      <!-- Before Install Prompt handler type -->
+      <ServiceWorkerRegisterBeforeInstallPromptType Condition="'$(ServiceWorkerRegisterBeforeInstallPromptType)'==''">beforeinstallprompt</ServiceWorkerRegisterBeforeInstallPromptType>
+      <!-- The file that contains template code for the service worker register "beforeinstallprompt"  -->
+      <ServiceWorkerRegisterBeforeInstallPromptTemplate Condition="'$(ServiceWorkerRegisterBeforeInstallPromptTemplate)' == ''">$(ServiceWorkerRegisterTemplatePath)sw_register-$(ServiceWorkerRegisterBeforeInstallPromptType).template.js</ServiceWorkerRegisterBeforeInstallPromptTemplate>
+      <!-- event fired by browser when the service worker has installed ** probably never change **-->
+      <ServiceWorkerInstalledEvent Condition="'$(ServiceWorkerInstalledEvent)'==''">installed</ServiceWorkerInstalledEvent>
+      <!-- Text to display when an update is available -->
+      <ServiceWorkerUpdateAlertText Condition="'$(ServiceWorkerUpdateAlertText)'==''">Update available. Reload the page when convenient.</ServiceWorkerUpdateAlertText>
+      <!-- The Blazor namespace for callbacks -->
+      <ServiceWorkerBlazorAssembly Condition="'$(ServiceWorkerBlazorAssembly)'==''">$(ProjectName)</ServiceWorkerBlazorAssembly>
+      <!-- The Blazor method to call when a PWA is installable -->
+      <ServiceWorkerBlazorInstallMethod Condition="'$(ServiceWorkerBlazorInstallMethod)'==''">PWAInstallable</ServiceWorkerBlazorInstallMethod>
+      <!-- Setup the declarations for the Service Worker Register -->
+      <ServiceWorkerRegisterConstants Condition="'$(ServiceWorkerRegisterConstants)' == ''">
+        const serviceWorkerFileName = '$(ServiceWorkerBaseUrl)$(ServiceWorkerFileName)'%3B;
+        <!--const swInstalledEvent = '$(ServiceWorkerInstalledEvent)'%3B;-->
+        <!--const staticCachePrefix = '$(ServiceWorkerCacheName)-v'%3B;-->
+        const updateAlertMessage = '$(ServiceWorkerUpdateAlertText)'%3B;
+      </ServiceWorkerRegisterConstants>
+      <ServiceWorkerRegisterConstants Condition="'$(ServiceWorkerIgnoreHosts)' != ''">
+        $(ServiceWorkerRegisterConstants);
+        const ignoreHosts = [$(ServiceWorkerIgnoreHosts)]%3B;
+      </ServiceWorkerRegisterConstants>
+      <ServiceWorkerRegisterConstants Condition="'$(ServiceWorkerRegisterInstallableType)' == 'installable-blazor'">
+        $(ServiceWorkerRegisterConstants);
+        const blazorAssembly = '$(ServiceWorkerBlazorAssembly)'%3B;
+        const blazorInstallMethod = '$(ServiceWorkerBlazorInstallMethod)'%3B;
+      </ServiceWorkerRegisterConstants>
+    </PropertyGroup>
+    <ItemGroup>
+      <!-- Read the Service Worker Register template-->
+      <ServiceWorkerRegisterTemplateLines
+        Condition="Exists('$(ServiceWorkerRegisterTemplate)')"
+        Include="$([System.IO.File]::ReadAllText($(ServiceWorkerRegisterTemplate)))"/>
+      <!-- Read the Service Worker Update template-->
+      <ServiceWorkerRegisterTemplateLines
+        Condition="Exists('$(ServiceWorkerRegisterUpdateTemplate)')"
+        Include="$([System.IO.File]::ReadAllText($(ServiceWorkerRegisterUpdateTemplate)))"/>
+      <!-- Read the Service Worker Installable template-->
+      <ServiceWorkerRegisterTemplateLines
+        Condition="Exists('$(ServiceWorkerRegisterInstallableTemplate)')"
+        Include="$([System.IO.File]::ReadAllText($(ServiceWorkerRegisterInstallableTemplate)))"/>
+      <!-- Read the Service Worker Register Before Install Prompt template-->
+      <ServiceWorkerRegisterTemplateLines
+        Condition="Exists('$(ServiceWorkerRegisterBeforeInstallPromptTemplate)')"
+        Include="$([System.IO.File]::ReadAllText($(ServiceWorkerRegisterBeforeInstallPromptTemplate)))"/>
+    </ItemGroup>
+    <!-- Debugging -->
+    <Message
+      Importance="high"
+      Text="Service Worker Register Template: $(ServiceWorkerRegisterTemplate)"/>
+    <Message
+      Importance="high"
+      Text="Service Worker Update Template: $(ServiceWorkerRegisterUpdateTemplate)"/>
+    <Message
+      Importance="high"
+      Text="Service Worker Installable Template: $(ServiceWorkerRegisterInstallableTemplate)"/>
+    <Message
+      Importance="high"
+      Text="Service Worker Before Install Prompt Template: $(ServiceWorkerRegisterBeforeInstallPromptTemplate)"/>
+    <!-- (Re)Create the ServiceWorkerRegister.js file -->
+    <WriteLinesToFile
+      Condition="'$(ServiceWorkerRegisterConstants)@(ServiceWorkerRegisterTemplateLines)' != ''"
+      File="$(WWWRoot)$(ServiceWorkerRegisterFileName)"
+      Overwrite="true"
+      Lines="$(ServiceWorkerRegisterConstants);@(ServiceWorkerRegisterTemplateLines);"
+      />
+    <!-- Call the target for adding the ServiceWorkerRegister.js file to index.html -->
+    <CallTarget
+      Condition="Exists('$(WWWRoot)$(ServiceWorkerRegisterFileName)')"
+      Targets="_ServiceWorkerUpdateIndex"
+      />
+  </Target>
+
+  <Target Name="_ServiceWorkerUpdateIndex">
+    <!-- Add ServiceWorkerRegister.js to index.html -->
+    <PropertyGroup>
+      <IndexFile Condition="'$(BlazorProjectType)' == 'CSB'">$(WWWRoot)$(ProjectIndexPage)</IndexFile>
+      <IndexFile Condition="'$(BlazorProjectType)' == 'SSB'">$(ProjectHomePage)</IndexFile>
+      <IndexLines>$([System.IO.File]::ReadAllText($(IndexFile)))</IndexLines>
+    </PropertyGroup>
+
+    <Message 
+      Importance="high" 
+      Text="Adding $(ServiceWorkerRegisterFileName) to $(IndexFile)"
+      Condition="'$(IndexLines.Contains($(ServiceWorkerRegisterFileName)))'=='false'"
+      />
+    <WriteLinesToFile
+      File="$(IndexFile)"
+      Overwrite="true"
+      Lines="$(IndexLines.Replace('&lt;/head&gt;','    &lt;script src=&quot;$(ServiceWorkerBaseUrl)$(ServiceWorkerRegisterFileName)&quot;&gt;&lt;/script&gt;%0D%0A&lt;/head&gt;'))"
+      Condition="'$(IndexLines.Contains($(ServiceWorkerRegisterFileName)))'=='false'"
+      />
+
+  </Target>
+</Project>

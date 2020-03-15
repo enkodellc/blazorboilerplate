@@ -1,0 +1,118 @@
+﻿<!-- build/BlazorPWA.MSBuild.ServiceWorker.targets -->
+<Project>
+
+  <Target Name="BuildServiceWorker" Condition="!Exists('$(WWWRoot)$(ServiceWorkerFileName)') Or '$(ServiceWorkerForce)'=='true'">
+    <!-- bit of info in the build output -->
+    <Message Importance="high" Text="Building Service Worker $(ServiceWorkerFileName)" Condition="!Exists('$(WWWRoot)$(ServiceWorkerFileName)')"/>
+    <Message Importance="high" Text="Re-Building Service Worker $(ServiceWorkerFileName)" Condition="Exists('$(WWWRoot)$(ServiceWorkerFileName)')"/>
+
+    <!-- The "Implementation" properties are used to control the content of the ServiceWorker and its Installer -->
+    <PropertyGroup Label="Implementation">
+
+      <!-- The name of the install event for the service worker ** probably never change ** -->
+      <ServiceWorkerInstallEvent Condition="'$(ServiceWorkerInstallEvent)' == ''">install</ServiceWorkerInstallEvent>
+
+      <!-- The name of the installed event for the service worker ** probably never change ** -->
+      <ServiceWorkerInstalledEvent Condition="'$(ServiceWorkerInstalledEvent)' == ''">installed</ServiceWorkerInstalledEvent>
+
+      <!-- The name of the activate event for the service worker ** probably never change ** -->
+      <ServiceWorkerActivateEvent Condition="'$(ServiceWorkerActivateEvent)' == ''">activate</ServiceWorkerActivateEvent>
+
+      <!-- The name of the network fetch event for the service worker ** probably never change ** -->
+      <ServiceWorkerNetworkFetchEvent Condition="'$(ServiceWorkerNetworkFetchEvent)' == ''">fetch</ServiceWorkerNetworkFetchEvent>
+
+      <!-- A list of file matching patterns used to generate the list of 'required files' for offline use of the app -->
+      <!-- This should include all files required for basic offline usage of the application -->
+      <ServiceWorkerPreCacheIncludeFiles Condition="'$(ServiceWorkerPreCacheIncludeFiles)' == ''">
+        $(OutputPath)dist\**\*.*;
+        $(WWWRoot)**\*.*;
+      </ServiceWorkerPreCacheIncludeFiles>
+
+      <!-- A list of file matching patterns used to exclude files from the 'required files' list -->
+      <ServiceWorkerPreCacheExcludeFiles>
+        $(ServiceWorkerPreCacheExcludeFiles);
+        $(OutputPath)dist\_content\**\*.*;
+        $(WWWRoot)**\.*.*;
+      </ServiceWorkerPreCacheExcludeFiles>
+
+      <!-- A list of file matching patterns used to exclude files from the 'required files' list -->
+      <ServiceWorkerPreCacheExcludeReleaseFiles Condition="'$(Configuration)' == 'Release'">
+        $(ServiceWorkerPreCacheExcludeReleaseFiles);
+        $(OutputPath)dist\**\*.pdb;
+      </ServiceWorkerPreCacheExcludeReleaseFiles>
+
+      <!-- These are the files we generate and want to cache -->
+      <ServiceWorkerPreCacheGeneratedFiles>
+        $(WWWRoot)**\$(ServiceWorkerRegisterFileName);
+        $(WWWRoot)**\$(ManifestFileName);
+      </ServiceWorkerPreCacheGeneratedFiles>
+
+      <!-- Setup the declarations for the Service Worker -->
+      <ServiceWorkerConstants Condition="'$(ServiceWorkerConstants)' == '' AND '$(BlazorProjectType)' == 'CSB'">
+        const baseURL = '$(ServiceWorkerBaseUrl)'%3B;
+        const indexURL = '$(ServiceWorkerBaseUrl)$(ProjectIndexPage)'%3B;
+        const networkFetchEvent = '$(ServiceWorkerNetworkFetchEvent)'%3B;
+        const swInstallEvent = '$(ServiceWorkerInstallEvent)'%3B;
+        const swInstalledEvent = '$(ServiceWorkerInstalledEvent)'%3B;
+        const swActivateEvent = '$(ServiceWorkerActivateEvent)'%3B;
+        const staticCachePrefix = '$(ServiceWorkerCacheName)-v'%3B;
+        const staticCacheName = '$(ServiceWorkerCacheName)-v$(ServiceWorkerCacheVersion)'%3B;
+      </ServiceWorkerConstants>
+
+      <!-- Setup the declarations for the Service Worker -->
+      <ServiceWorkerConstants Condition="'$(ServiceWorkerConstants)' == '' AND '$(BlazorProjectType)' == 'SSB'">
+        const baseURL = '$(ServiceWorkerBaseUrl)'%3B;
+        const indexURL = '$(ServiceWorkerBaseUrl)$(ProjectHomePage)'%3B;
+        const networkFetchEvent = '$(ServiceWorkerNetworkFetchEvent)'%3B;
+        const swInstallEvent = '$(ServiceWorkerInstallEvent)'%3B;
+        const swInstalledEvent = '$(ServiceWorkerInstalledEvent)'%3B;
+        const swActivateEvent = '$(ServiceWorkerActivateEvent)'%3B;
+      </ServiceWorkerConstants>
+    </PropertyGroup>
+
+    <!-- The "Templates" properties are used to define where to find templates for the service worker sections -->
+    <PropertyGroup Label="Templates">
+      <!-- The template folder location ** probably never change ** -->
+      <ServiceWorkerTemplatePath Condition="'$(ServiceWorkerTemplatePath)' == ''">$(MSBuildThisFileDirectory)Templates\ServiceWorker\</ServiceWorkerTemplatePath>
+      <!-- The file that contains template code for the install event in the service worker -->
+      <ServiceWorkerTemplateInstall Condition="'$(ServiceWorkerTemplateInstall)' == ''">$(ServiceWorkerTemplatePath)sw_$(ServiceWorkerInstallEvent).template.js</ServiceWorkerTemplateInstall>
+      <!-- The file that contains template code for the network fetch event in the service worker -->
+      <ServiceWorkerTemplateNetwork Condition="'$(ServiceWorkerTemplateNetwork)' == ''">$(ServiceWorkerTemplatePath)sw_$(ServiceWorkerNetworkFetchEvent)-$(ServiceWorkerPattern).template.js</ServiceWorkerTemplateNetwork>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <!-- Build a list of files to pre-cache -->
+      <DistFiles Include="$(ServiceWorkerPreCacheIncludeFiles);" />
+      <!-- Remove any files the project doesn't want caching -->
+      <DistFiles Remove="$(ServiceWorkerPreCacheExcludeFiles);" />
+      <!-- Remove any files the project doesn't want caching for Release build -->
+      <DistFiles Remove="$(ServiceWorkerPreCacheExcludeReleaseFiles);" />
+      <!-- Remove the files we generate in case they already existed -->
+      <DistFiles Remove="$(ServiceWorkerPreCacheGeneratedFiles);" />
+      <!-- Add the files we generate -->
+      <DistFiles Include="$(ServiceWorkerPreCacheGeneratedFiles);" />
+      <!-- Also remove the service worker - not needed in cache -->
+      <DistFiles Remove="$(WWWRoot)$(ServiceWorkerFileName);" />
+      <!-- Read in the templates for the current configuration -->
+      <InstallTemplateLines Include="$([System.IO.File]::ReadAllText($(ServiceWorkerTemplateInstall)))"/>
+      <PatternTemplateLines Include="$([System.IO.File]::ReadAllText($(ServiceWorkerTemplateNetwork)))"/>
+    </ItemGroup>
+
+    <!--Create the Serviceworker.js file-->
+    <WriteLinesToFile File="$(WWWRoot)$(ServiceWorkerFileName)"
+                      Overwrite="true"
+                      Lines="$(ServiceWorkerConstants)" />
+    <WriteLinesToFile Condition="'$(BlazorProjectType)' == 'CSB'"
+                      File="$(WWWRoot)$(ServiceWorkerFileName)"
+                      Overwrite="false"
+                      Lines="const requiredFiles = [;@(DistFiles -> '&quot;$(ServiceWorkerBaseUrl)%(RecursiveDir)%(FileName)%(Extension)&quot;'->Replace('\','/'),',%0D%0A');]%3B;" />
+    <WriteLinesToFile Condition="'$(BlazorProjectType)' == 'CSB'"
+                      File="$(WWWRoot)$(ServiceWorkerFileName)"
+                      Overwrite="false"
+                      Lines="@(InstallTemplateLines);" />
+    <WriteLinesToFile File="$(WWWRoot)$(ServiceWorkerFileName)"
+                      Overwrite="false"
+                      Lines="@(PatternTemplateLines);" />
+  </Target>
+
+</Project>

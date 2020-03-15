@@ -21,6 +21,8 @@
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
 
     <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CSB|AnyCPU'">
@@ -42,7 +44,12 @@
     <DefineConstants>ServerSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
-
+<ItemGroup>
+    <ServiceWorkerAssetsManifestItem
+        Include="BlazorBoilerplate.CommonUI/wwwroot/*"
+        RelativePath="../BlazorBoilerplate.CommonUI/wwwroot/*"
+        />
+</ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0-preview2.20160.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0-preview2.20160.5" PrivateAssets="all" />

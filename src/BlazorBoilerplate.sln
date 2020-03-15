@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{683E9CAE-E8CE-4093-9665-58B12F12E6DB}"
 	ProjectSection(SolutionItems) = preProject
 		..\ctag.cmd = ..\ctag.cmd
+		Directory.Build.props = Directory.Build.props
 		Dockerfile = Dockerfile
 		..\README.md = ..\README.md
 	EndProjectSection
@@ -24,9 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Storage",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1921F468-24D6-43B8-8274-2C980DF05237}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.Server.Tests", "..\BlazorBoilerplate.Server.Tests\BlazorBoilerplate.Server.Tests.csproj", "{24EFF7D1-2E8C-4065-8477-055EABD5B124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Server.Tests", "..\BlazorBoilerplate.Server.Tests\BlazorBoilerplate.Server.Tests.csproj", "{24EFF7D1-2E8C-4065-8477-055EABD5B124}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.Storage.Tests", "..\BlazorBoilerplate.Storage.Tests\BlazorBoilerplate.Storage.Tests.csproj", "{9F7E36C4-F05E-4CEE-BE0B-15CC660E7E2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Storage.Tests", "..\BlazorBoilerplate.Storage.Tests\BlazorBoilerplate.Storage.Tests.csproj", "{9F7E36C4-F05E-4CEE-BE0B-15CC660E7E2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

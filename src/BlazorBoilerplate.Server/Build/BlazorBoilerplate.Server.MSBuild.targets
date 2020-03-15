@@ -1,0 +1,77 @@
+﻿<!-- build/BlazorPWA.MSBuild.targets -->
+<Project>
+  <Import Project="..\Build\BlazorBoilerplate.Server.MSBuild.ServiceWorker.targets" />
+  <Import Project="..\Build\BlazorBoilerplate.Server.MSBuild.ServiceWorkerRegister.targets" />
+  <Import Project="..\Build\BlazorBoilerplate.Server.MSBuild.Manifest.targets" />
+
+  <PropertyGroup Label="ProjectTypes">
+    <!-- Project type -->
+    <!--<BlazorProjectType Condition="'$(BlazorProjectType)' == '' AND '$(TargetFramework)' == 'netcoreapp3.1'">SSB</BlazorProjectType>
+    <BlazorProjectType Condition="'$(BlazorProjectType)' == '' AND '$(TargetFramework)' == 'netcoreapp3.0'">SSB</BlazorProjectType>
+    <BlazorProjectType Condition="'$(BlazorProjectType)' == '' AND '$(TargetFramework)' == 'netstandard2.0'">CSB</BlazorProjectType>
+    <BlazorProjectType Condition="'$(BlazorProjectType)' == '' AND '$(TargetFramework)' == 'netstandard2.1'">CSB</BlazorProjectType>-->
+    <BlazorProjectType>CSB</BlazorProjectType>
+  </PropertyGroup>
+
+  <PropertyGroup Label="ServiceWorker">
+    <!-- The service worker file names to generate -->
+    <ServiceWorkerFileName Condition="'$(ServiceWorkerFileName)' == ''">ServiceWorker.js</ServiceWorkerFileName>
+    <ServiceWorkerRegisterFileName Condition="'$(ServiceWorkerRegisterFileName)' == ''">ServiceWorkerRegister.js</ServiceWorkerRegisterFileName>
+
+    <!-- The PWA strategy to implement in the service worker -->
+    <!-- Currently only supports offline-first or none -->
+    <ServiceWorkerPattern Condition="'$(BlazorProjectType)' == 'CSB' AND '$(ServiceWorkerPattern)' == ''">offline-first</ServiceWorkerPattern>
+    <ServiceWorkerPattern Condition="'$(BlazorProjectType)' == 'SSB' AND '$(ServiceWorkerPattern)' == ''">none</ServiceWorkerPattern>
+    <ServiceWorkerPattern Condition="'$(ServiceWorkerPattern)' == ''">offline-first</ServiceWorkerPattern>
+
+    <!-- The Cache name and version together form the name of the application browser cache e.g. blazor-cache-v1 -->
+    <ServiceWorkerCacheName Condition="'$(ServiceWorkerCacheName)' == ''">blazor-cache</ServiceWorkerCacheName>
+    <ServiceWorkerCacheVersion Condition="'$(ServiceWorkerCacheVersion)' == ''">1</ServiceWorkerCacheVersion>
+
+    <!-- The "home route" url for the application -->
+    <ServiceWorkerBaseUrl Condition="'$(ServiceWorkerBaseUrl)' == ''">/</ServiceWorkerBaseUrl>
+    <ServiceWorkerBaseUrl Condition="!'$(ServiceWorkerBaseUrl.StartsWith(/))'">/$(ServiceWorkerBaseUrl)</ServiceWorkerBaseUrl>
+    <ServiceWorkerBaseUrl Condition="!'$(ServiceWorkerBaseUrl.EndsWith(/))'">$(ServiceWorkerBaseUrl)/</ServiceWorkerBaseUrl>
+
+    <!-- The CSB home page served up for the base URL -->
+    <ProjectIndexPage Condition="'$(ProjectIndexPage)' == ''">index_csb.html</ProjectIndexPage>
+
+    <!-- The SSB home page served up for the base URL -->
+    <ProjectHomePage Condition="'$(ProjectHomePage)' == ''">Pages/index_ssb.cshtml</ProjectHomePage>
+
+  </PropertyGroup>
+
+  <PropertyGroup Label="Manifest">
+    <!-- The manifest file name to generate -->
+    <ManifestFileName Condition="'$(ManifestFileName)' == ''">manifest.json</ManifestFileName>
+
+    <!-- Force re-creation of the manifest.json -->
+    <ManifestForce Condition="'$(ManifestForce)' == ''">$(ServiceWorkerForce)</ManifestForce>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Register">
+    <!-- Force re-creation of the ServiceWorkerRegister.js -->
+    <ServiceWorkerRegisterForce Condition="'$(ServiceWorkerRegisterForce)' == ''">$(ServiceWorkerForce)</ServiceWorkerRegisterForce>
+  </PropertyGroup>
+
+  <PropertyGroup Label="BuildBehaviours">
+    <CreatePWAAfterTargets Condition="'$(CreatePWAAfterTargets)' == ''">AfterBuild</CreatePWAAfterTargets>
+    <CreatePWABeforeTargets Condition="'$(CreatePWABeforeTargets)' == ''"></CreatePWABeforeTargets>
+  </PropertyGroup>
+
+  <PropertyGroup Label="ProjectLocations">
+    <WWWRoot Condition="'$(WWWRoot)' == ''">$(MsBuildProjectDirectory)\wwwroot\</WWWRoot>
+  </PropertyGroup>
+
+  <Target Name="CreatePWA"
+          AfterTargets="$(CreatePWAAfterTargets)"
+          BeforeTargets="$(CreatePWABeforeTargets)"
+          Condition="'$(ServiceWorkerPattern)'!='' AND '$(ServiceWorkerCacheName)'!='' AND '$(ServiceWorkerCacheVersion)'!='' AND (!Exists('$(WWWRoot)$(ServiceWorkerFileName)') OR '$(ServiceWorkerForce)'=='true')">
+
+    <Message Importance="high" Text="Building Your $(BlazorProjectType) PWA: Type: $(ServiceWorkerPattern) CacheName: $(ServiceWorkerCacheName) CacheVersion: $(ServiceWorkerCacheVersion)"/>
+    <!--<CallTarget Targets="BuildServiceWorkerInstaller"/>
+    <CallTarget Targets="BuildServiceWorkerManifest"/>
+    <CallTarget Targets="BuildServiceWorker"/>-->
+  </Target>
+
+</Project>

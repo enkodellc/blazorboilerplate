@@ -52,6 +52,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Reflection;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Data.SqlClient;
 
 namespace BlazorBoilerplate.Server
 {
@@ -413,7 +414,19 @@ namespace BlazorBoilerplate.Server
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
-                databaseInitializer.SeedAsync().Wait();
+                try
+                {
+                    databaseInitializer.SeedAsync().Wait();
+
+                }
+                catch (SqlException ex)
+                {
+                    Log.Logger.Error(ex, "message error during migration");
+                }
+                catch (System.AggregateException ex)
+                {
+                    Log.Logger.Error(ex, "message error during migration");
+                }
             }
 
             app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response

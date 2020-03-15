@@ -13,7 +13,7 @@
     <PackageProjectUrl>https://blazorboilerplate.com/</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
-
+    <ServiceWorkerAssetsManifest>mani.json</ServiceWorkerAssetsManifest>
     <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
   </PropertyGroup>
 

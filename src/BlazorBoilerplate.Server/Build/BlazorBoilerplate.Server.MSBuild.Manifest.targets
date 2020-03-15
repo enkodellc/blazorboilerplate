@@ -1,0 +1,93 @@
+﻿<!-- build/BlazorPWA.MSBuild.Manifest.targets -->
+<Project>
+  <PropertyGroup Label="ProjectTypes">
+    <BlazorProjectType>CSB</BlazorProjectType>
+  </PropertyGroup>
+  <Target Name="BuildServiceWorkerManifest" Condition="!Exists('$(WWWRoot)$(ManifestFileName)') Or '$(ManifestForce)'=='true'">
+    <!-- bit of info in the build output -->
+    <Message Importance="high" Text="Building Manifest $(ManifestFileName)" Condition="!Exists('$(WWWRoot)$(ManifestFileName)')"/>
+    <Message Importance="high" Text="Re-Building Manifest $(ManifestFileName)" Condition="Exists('$(WWWRoot)$(ManifestFileName)')"/>
+
+    <PropertyGroup Label="Manifest">
+
+      <!-- A manifest needs names - if none were provided, use the Solution/Project names -->
+      <ManifestShortName Condition="'$(ManifestShortName)' == ''">$(SolutionName)</ManifestShortName>
+      <ManifestLongName Condition="'$(ManifestLongName)' == ''">$(ProjectName)</ManifestLongName>
+
+      <!-- Base URL for the app -->
+      <ManifestBaseUrl Condition="'$(ManifestBaseUrl)' == ''">/</ManifestBaseUrl>
+      <ManifestBaseUrl Condition="!'$(ManifestBaseUrl.StartsWith(/))'">/$(ManifestBaseUrl)</ManifestBaseUrl>
+      <ManifestBaseUrl Condition="!'$(ManifestBaseUrl.EndsWith(/))'">$(ManifestBaseUrl)/</ManifestBaseUrl>
+
+      <!-- Please see https://developers.google.com/web/fundamentals/web-app-manifest/#display for options -->
+      <ManifestDisplay Condition="'$(ManifestDisplay)' == ''">standalone</ManifestDisplay>
+
+      <!-- Icons to use if none are supplierd - manifest requires 192x192 and 512x512 -->
+      <ManifestTemplatePath Condition="'$(ManifestTemplatePath)' == ''">$(MSBuildThisFileDirectory)Templates\</ManifestTemplatePath>
+      <ManifestDefaultIcon192 Condition="'$(ManifestDefaultIcon192)' == ''">$(ManifestTemplatePath)Images\default-icon-192x192.png</ManifestDefaultIcon192>
+      <ManifestDefaultIcon512 Condition="'$(ManifestDefaultIcon512)' == ''">$(ManifestTemplatePath)Images\default-icon-512x512.png</ManifestDefaultIcon512>
+    </PropertyGroup>
+
+
+
+    <!-- Find required icons @ 192x192 and 512x512 -->
+    <ItemGroup>
+      <ImageFiles Include="$(ServiceWorkerPreCacheImageFiles);" />
+      <IconFiles192 Include="$(WWWRoot)**\*icon*192*.*;">
+        <Size>192x192</Size>
+      </IconFiles192>
+      <IconFiles512 Include="$(WWWRoot)**\*icon*512*.*;">
+        <Size>512x512</Size>
+      </IconFiles512>
+    </ItemGroup>
+
+    <!-- Use defualt icons if none were provided as they are required for PWA -->
+    <Copy Condition="'@(IconFiles192)' == ''"
+          SourceFiles="$(ManifestDefaultIcon192)"
+          DestinationFolder="$(WWWRoot)"/>
+    <Copy Condition="'@(IconFiles512)' == ''"
+          SourceFiles="$(ManifestDefaultIcon512)"
+          DestinationFolder="$(WWWRoot)"/>
+
+    <!-- Now we should definitely have the icons we need -->
+    <ItemGroup>
+      <IconFiles Include="$(WWWRoot)**\*icon*192*.*;">
+        <Size>192x192</Size>
+      </IconFiles>
+      <IconFiles Include="$(WWWRoot)**\*icon*512*.*;">
+        <Size>512x512</Size>
+      </IconFiles>
+      <ManifestText Include="{
+  &quot;short_name&quot;: &quot;$(ManifestShortName)&quot;,
+  &quot;name&quot;: &quot;$(ManifestLongName)&quot;,
+  &quot;start_url&quot;: &quot;$(ManifestBaseUrl)&quot;,
+  &quot;display&quot;: &quot;$(ManifestDisplay)&quot;,
+  "/>
+      <ManifestText Include="%20%20&quot;icons&quot;: ["/>
+      <ManifestText Include="@(IconFiles-> '    {
+      &quot;src&quot;:&quot;$(ManifestBaseUrl)%(RecursiveDir)%(Filename)%(Extension)&quot;,
+      &quot;type&quot;:&quot;image/%(Extension)&quot;,
+      &quot;sizes&quot;:&quot;%(Size)&quot;
+    }'->Replace('/.','/')->Replace('\','/'),',%0D%0A');%20%20];}"/>
+    </ItemGroup>
+
+    <!-- Write the manifest -->
+    <WriteLinesToFile File="$(WWWRoot)$(ManifestFileName)" Overwrite="true" Lines="@(ManifestText);" />
+
+    <!-- Add manifest to index.html -->
+    <PropertyGroup>
+      <IndexFile Condition="'$(BlazorProjectType)' == 'CSB'">$(WWWRoot)$(ProjectIndexPage)</IndexFile>
+      <IndexFile Condition="'$(BlazorProjectType)' == 'SSB'">$(ProjectHomePage)</IndexFile>
+      <IndexLines>$([System.IO.File]::ReadAllText($(IndexFile)))</IndexLines>
+    </PropertyGroup>
+    <Message Importance="high" Text="Blazor Project Type detected as $(BlazorProjectType)"/>
+    <Message Importance="high" Text="Adding manifest to $(IndexFile)"
+      Condition="'$(IndexLines.Contains(rel=&quot;manifest&quot;))'=='false'"/>
+
+    <WriteLinesToFile
+      File="$(IndexFile)"
+      Overwrite="true"
+      Lines="$(IndexLines.Replace('&lt;/head&gt;','    &lt;link href=&quot;$(ManifestBaseUrl)$(ManifestFileName)&quot; rel=&quot;manifest&quot;/&gt;%0D%0A&lt;/head&gt;'))"
+      Condition="'$(IndexLines.Contains(rel=&quot;manifest&quot;))'=='false'"/>
+  </Target>
+</Project>

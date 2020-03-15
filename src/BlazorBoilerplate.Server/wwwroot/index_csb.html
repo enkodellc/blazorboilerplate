@@ -21,7 +21,7 @@
     <link href="_content/BlazorBoilerplate.CommonUI/css/site.css" rel="stylesheet" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-55161075-2"></script>
+    <!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55161075-2"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
@@ -30,7 +30,8 @@
     </script>
     <script>
         window.SetFocus = (id) => document.getElementById(id).focus();
-    </script>
+    </script>-->
+    <link href="/manifest.json" rel="manifest"/>
 </head>
 <body>
     <app>
@@ -56,5 +57,7 @@
     <script src="_content/MatBlazor/dist/matBlazor.js"></script>
     <script src="_content/BlazorBoilerplate.CommonUI/javascript/signalr.min.js"></script>
     <script src="_content/BlazorBoilerplate.CommonUI/javascript/chatClient.js"></script>
+    <script>navigator.serviceWorker.register('/service-worker.published.js');</script>
+    <!--<script src="ServiceWorker.js" ></script>-->
 </body>
 </html>
