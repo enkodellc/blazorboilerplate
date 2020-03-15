@@ -102,12 +102,12 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    async Task GoogleSignIn()
+    void GoogleSignIn()
     {
         navigationManager.NavigateTo(navigationManager.BaseUri + "api/externalauth/challenge/google", true);
     }
 
-    async Task Register()
+    void Register()
     {
         navigationManager.NavigateTo("/account/register");
     }

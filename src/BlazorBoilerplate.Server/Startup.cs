@@ -72,7 +72,8 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName();
+            var migrationsAssemblyName = migrationsAssembly.Name;
             var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
                 ? Configuration.GetConnectionString("DefaultConnection")
@@ -84,15 +85,15 @@ namespace BlazorBoilerplate.Server
             {
                 if (useSqlServer)
                 {
-                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
                 }
                 else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
                 {
-                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssemblyName));
                 }
                 else
                 {
-                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
                 }
             }
 
@@ -119,22 +120,19 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
+            .AddConfigurationStore(options =>
+            {
+                options.ConfigureDbContext = DbContextOptionsBuilder;
+            })
+            .AddOperationalStore(options =>
+            {
+                options.ConfigureDbContext = DbContextOptionsBuilder;
 
-
-
-              .AddConfigurationStore(options =>
-              {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
-              })
-              .AddOperationalStore(options =>
-              {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
-
-                  // this enables automatic token cleanup. this is optional.
-                  options.EnableTokenCleanup = true;
-                  options.TokenCleanupInterval = 3600; //In Seconds 1 hour
-              })
-              .AddAspNetIdentity<ApplicationUser>();
+                // this enables automatic token cleanup. this is optional.
+                options.EnableTokenCleanup = true;
+                options.TokenCleanupInterval = 3600; //In Seconds 1 hour
+            })
+            .AddAspNetIdentity<ApplicationUser>();
 
             X509Certificate2 cert = null;
 
@@ -313,7 +311,7 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version = "0.7.0";
+                    document.Info.Version = migrationsAssembly.Version.ToString();
                     document.Info.Title = "Blazor Boilerplate";
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,7 +91,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("Logged In: {0}", parameters.UserName);
-                    return new ApiResponse(200, _userProfileService.GetLastPageVisited(parameters.UserName));
+                    return new ApiResponse(200, await _userProfileService.GetLastPageVisited(parameters.UserName));
                 }
             }
             catch (Exception ex)
@@ -507,8 +508,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [Authorize]
         public async Task<ApiResponse> ListRoles()
         {
-            var roleList = _roleManager.Roles.Select(x => x.Name).ToList();
-            return new ApiResponse(200, "", roleList);
+            return new ApiResponse(200, "", await _roleManager.Roles.Select(x => x.Name).ToListAsync());
         }
 
         [HttpPut]

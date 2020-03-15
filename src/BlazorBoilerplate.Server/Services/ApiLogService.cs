@@ -83,14 +83,14 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task<ApiResponse> Get()
         {
-            return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs));
+            return new ApiResponse(200, "Retrieved Api Log", await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs).ToListAsync());
         }
 
         public async Task<ApiResponse> GetByApplictionUserId(Guid applicationUserId)
         {
             try
             {
-                return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == applicationUserId)));
+                return new ApiResponse(200, "Retrieved Api Log", await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == applicationUserId)).ToListAsync());
             }
             catch (Exception ex)
             {

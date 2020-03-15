@@ -3,6 +3,7 @@ using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace BlazorBoilerplate.Server.Services
             try
             {
                 //Todo Shadow Property doesn't allow filter of IsDeleted here?
-                return new ApiResponse(200, "Retrieved Todos", _autoMapper.ProjectTo<TodoDto>(_db.Todos).ToList());
+                return new ApiResponse(200, "Retrieved Todos", await _autoMapper.ProjectTo<TodoDto>(_db.Todos).ToListAsync());
             }
             catch (Exception ex)
             {
@@ -43,7 +44,7 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task<ApiResponse> Get(long id)
         {
-            Todo todo = _db.Todos.FirstOrDefault(t => t.Id == id);
+            Todo todo = await _db.Todos.FirstOrDefaultAsync(t => t.Id == id);
             if (todo != null)
             {
                 return new ApiResponse(200, "Retrived Todo", _autoMapper.Map<TodoDto>(todo));
