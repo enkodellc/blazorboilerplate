@@ -12,7 +12,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{683E9CAE-E8CE-4093-9665-58B12F12E6DB}"
 	ProjectSection(SolutionItems) = preProject
 		..\ctag.cmd = ..\ctag.cmd
-		Directory.Build.props = Directory.Build.props
 		Dockerfile = Dockerfile
 		..\README.md = ..\README.md
 	EndProjectSection

@@ -1,4 +1,5 @@
 ﻿<!-- build/BlazorPWA.MSBuild.targets -->
+<!--Mostly lifted from https://github.com/SQL-MisterMagoo/Blazor.PWA.MSBuild with some tweaks to work with BlazorBoilerplate-->
 <Project>
   <Import Project="..\Build\BlazorBoilerplate.Server.MSBuild.ServiceWorker.targets" />
   <Import Project="..\Build\BlazorBoilerplate.Server.MSBuild.ServiceWorkerRegister.targets" />
@@ -6,11 +7,11 @@
 
   <PropertyGroup Label="ProjectTypes">
     <!-- Project type -->
-    <!--<BlazorProjectType Condition="'$(BlazorProjectType)' == '' AND '$(TargetFramework)' == 'netcoreapp3.1'">SSB</BlazorProjectType>
-    <BlazorProjectType Condition="'$(BlazorProjectType)' == '' AND '$(TargetFramework)' == 'netcoreapp3.0'">SSB</BlazorProjectType>
-    <BlazorProjectType Condition="'$(BlazorProjectType)' == '' AND '$(TargetFramework)' == 'netstandard2.0'">CSB</BlazorProjectType>
-    <BlazorProjectType Condition="'$(BlazorProjectType)' == '' AND '$(TargetFramework)' == 'netstandard2.1'">CSB</BlazorProjectType>-->
-    <BlazorProjectType>CSB</BlazorProjectType>
+    <BlazorProjectType Condition="'$(Configuration)|$(Platform)'=='Release_CSB|AnyCPU'">CSB</BlazorProjectType>
+    <BlazorProjectType Condition="'$(Configuration)|$(Platform)'=='Debug_CSB|AnyCPU'">CSB</BlazorProjectType>
+    <BlazorProjectType Condition="'$(Configuration)|$(Platform)'=='Release_SSB|AnyCPU'">SSB</BlazorProjectType>
+    <BlazorProjectType Condition="'$(Configuration)|$(Platform)'=='Debug_SSB|AnyCPU'">SSB</BlazorProjectType>
+
   </PropertyGroup>
 
   <PropertyGroup Label="ServiceWorker">
@@ -69,9 +70,9 @@
           Condition="'$(ServiceWorkerPattern)'!='' AND '$(ServiceWorkerCacheName)'!='' AND '$(ServiceWorkerCacheVersion)'!='' AND (!Exists('$(WWWRoot)$(ServiceWorkerFileName)') OR '$(ServiceWorkerForce)'=='true')">
 
     <Message Importance="high" Text="Building Your $(BlazorProjectType) PWA: Type: $(ServiceWorkerPattern) CacheName: $(ServiceWorkerCacheName) CacheVersion: $(ServiceWorkerCacheVersion)"/>
-    <!--<CallTarget Targets="BuildServiceWorkerInstaller"/>
+    <CallTarget Targets="BuildServiceWorkerInstaller"/>
     <CallTarget Targets="BuildServiceWorkerManifest"/>
-    <CallTarget Targets="BuildServiceWorker"/>-->
+    <CallTarget Targets="BuildServiceWorker"/>
   </Target>
 
 </Project>

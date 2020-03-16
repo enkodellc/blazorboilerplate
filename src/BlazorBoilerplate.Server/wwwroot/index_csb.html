@@ -32,6 +32,7 @@
         window.SetFocus = (id) => document.getElementById(id).focus();
     </script>-->
     <link href="/manifest.json" rel="manifest"/>
+    <script src="/ServiceWorkerRegister.js"></script>
 </head>
 <body>
     <app>
@@ -57,7 +58,5 @@
     <script src="_content/MatBlazor/dist/matBlazor.js"></script>
     <script src="_content/BlazorBoilerplate.CommonUI/javascript/signalr.min.js"></script>
     <script src="_content/BlazorBoilerplate.CommonUI/javascript/chatClient.js"></script>
-    <script>navigator.serviceWorker.register('/service-worker.published.js');</script>
-    <!--<script src="ServiceWorker.js" ></script>-->
 </body>
 </html>

@@ -1,4 +1,4 @@
-  <Project>
+<Project>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CSB|AnyCPU'">
     <DefineConstants>ClientSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
@@ -18,4 +18,5 @@
     <DefineConstants>ServerSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
- </Project>
+  
+</Project>

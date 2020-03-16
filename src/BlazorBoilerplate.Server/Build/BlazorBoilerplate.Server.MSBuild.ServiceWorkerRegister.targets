@@ -30,12 +30,14 @@
       <ServiceWorkerUpdateAlertText Condition="'$(ServiceWorkerUpdateAlertText)'==''">Update available. Reload the page when convenient.</ServiceWorkerUpdateAlertText>
       <!-- The Blazor namespace for callbacks -->
       <ServiceWorkerBlazorAssembly Condition="'$(ServiceWorkerBlazorAssembly)'==''">$(ProjectName)</ServiceWorkerBlazorAssembly>
+      <!-- ADDED: Specifies alternate assembly in which to look for the blazorInstallMethod-->
+      <ServiceWorkerRefBlazorAssembly Condition="'$(ServiceWorkerRefBlazorAssembly)'==''">$(ServiceWorkerBlazorAssembly)</ServiceWorkerRefBlazorAssembly>
       <!-- The Blazor method to call when a PWA is installable -->
       <ServiceWorkerBlazorInstallMethod Condition="'$(ServiceWorkerBlazorInstallMethod)'==''">PWAInstallable</ServiceWorkerBlazorInstallMethod>
       <!-- Setup the declarations for the Service Worker Register -->
       <ServiceWorkerRegisterConstants Condition="'$(ServiceWorkerRegisterConstants)' == ''">
         const serviceWorkerFileName = '$(ServiceWorkerBaseUrl)$(ServiceWorkerFileName)'%3B;
-        <!--const swInstalledEvent = '$(ServiceWorkerInstalledEvent)'%3B;-->
+        const swInstalledEvent = '$(ServiceWorkerInstalledEvent)'%3B;
         <!--const staticCachePrefix = '$(ServiceWorkerCacheName)-v'%3B;-->
         const updateAlertMessage = '$(ServiceWorkerUpdateAlertText)'%3B;
       </ServiceWorkerRegisterConstants>
@@ -45,7 +47,7 @@
       </ServiceWorkerRegisterConstants>
       <ServiceWorkerRegisterConstants Condition="'$(ServiceWorkerRegisterInstallableType)' == 'installable-blazor'">
         $(ServiceWorkerRegisterConstants);
-        const blazorAssembly = '$(ServiceWorkerBlazorAssembly)'%3B;
+        const blazorAssembly = '$(ServiceWorkerRefBlazorAssembly)'%3B;
         const blazorInstallMethod = '$(ServiceWorkerBlazorInstallMethod)'%3B;
       </ServiceWorkerRegisterConstants>
     </PropertyGroup>

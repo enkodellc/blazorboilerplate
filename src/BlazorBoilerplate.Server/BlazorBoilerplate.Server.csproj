@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-  <Import Project="Build\BlazorBoilerplate.Server.MSBuild.targets" />
+  
+
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -23,7 +24,6 @@
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
 
     <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
-    <ServiceWorkerAssetsManifest>mani.json</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CSB|AnyCPU'">
@@ -92,9 +92,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj">
-      <IncludeAssets>service-worker-assets.js</IncludeAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj"     />
     <ProjectReference Include="..\BlazorBoilerplate.CommonUI\BlazorBoilerplate.CommonUI.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Storage\BlazorBoilerplate.Storage.csproj" />
@@ -103,5 +101,30 @@
   <ItemGroup>
     <Folder Include="Logs\" />
   </ItemGroup>
+  
+  
+  <!--START PWA CONFIGURATION-->
+  <Import Project="Build\BlazorBoilerplate.Server.MSBuild.targets" />
+  
+  <PropertyGroup Label="PWA">
+    <ServiceWorkerForce Condition="'$(Configuration)' == 'Debug_CSB' Or '$(Configuration)' == 'Debug_SSB'">true</ServiceWorkerForce>
+    
+    <!--Uncomment this to allow the ServiceWorker to locate the PWAInstall function in UI code-->
+    <!--<ServiceWorkerRefBlazorAssembly>BlazorBoilerplate.CommonUI</ServiceWorkerRefBlazorAssembly>-->
+    
+    
+    <ServiceWorkerRegisterInstallableType>installable-blazor</ServiceWorkerRegisterInstallableType>
+
+  </PropertyGroup>
+  <Target Name="PWAExclude" BeforeTargets="CreatePWA">
+    <PropertyGroup>
+      <ServiceWorkerPreCacheExcludeFiles>
+        $(OutputPath)dist\_redirects;
+        $(WWWRoot)_redirects;
+      </ServiceWorkerPreCacheExcludeFiles>
+    </PropertyGroup>
+    <Message Importance="high" Text="Removing: $(ServiceWorkerPreCacheExcludeFiles)" />
+  </Target>
+<!--END PWA CONFIGURATION-->
 
 </Project>
