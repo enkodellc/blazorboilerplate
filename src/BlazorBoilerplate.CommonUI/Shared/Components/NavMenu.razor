@@ -100,10 +100,10 @@
             IsLoggedIn = true;
         }
 
-        //https://gist.github.com/SteveSandersonMS/175a08dcdccb384a52ba760122cd2eda Examples
-        //if (user.IsInRole("Admin"))
-        //{
-        // Perform some action only available to users in the 'admin' role
-        //}
+        if (user.IsInRole("Administrator"))
+        {
+            // Perform some action only available to users in the 'admin' role
+            //Console.WriteLine("Administrator");
+        }
     }
 }
