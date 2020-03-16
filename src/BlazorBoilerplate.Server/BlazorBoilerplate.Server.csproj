@@ -77,7 +77,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.1-dev-00147" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.1-dev-00216" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00864" />
-    <PackageReference Include="MailKit" Version="2.5.1" />
+    <PackageReference Include="MailKit" Version="2.5.2" />
   </ItemGroup>
 
   <ItemGroup>
