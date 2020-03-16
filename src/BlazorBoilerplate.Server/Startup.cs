@@ -414,19 +414,8 @@ namespace BlazorBoilerplate.Server
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
-                try
-                {
-                    databaseInitializer.SeedAsync().Wait();
 
-                }
-                catch (SqlException ex)
-                {
-                    Log.Logger.Error(ex, "message error during migration");
-                }
-                catch (System.AggregateException ex)
-                {
-                    Log.Logger.Error(ex, "message error during migration");
-                }
+                    databaseInitializer.SeedAsync().Wait();
             }
 
             app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
