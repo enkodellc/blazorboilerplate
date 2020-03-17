@@ -37,7 +37,8 @@ else
                     @foreach (var permission in @RoleRow.Permissions)
                         {
                         <MatChip Label="@permission"></MatChip>
-                        }                            
+                        }
+                    /**/
                 </MatChipSet>
             </td>
         </MatTableRow>
@@ -102,8 +103,7 @@ else
 
     public async Task InitializeRolesListAsync()
     {
-        string queryString = "?pageSize=" + pageSize.ToString() + "&pageNumber=" + currentPage.ToString(); // this is to support pagination in the future, need to integrate with MatTable
-        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Admin/Roles" + queryString);
+        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>($"api/Admin/Roles?pageSize={pageSize}&pageNumber={currentPage}");
 
         if (apiResponse.StatusCode == 200)
         {
