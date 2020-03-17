@@ -448,6 +448,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
                 UserInfoDto userInfo = new UserInfoDto
                 {
+                    UserId = user.Id,
                     IsAuthenticated = false,
                     UserName = user.UserName,
                     Email = user.Email,
