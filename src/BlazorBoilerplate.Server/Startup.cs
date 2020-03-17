@@ -415,7 +415,16 @@ namespace BlazorBoilerplate.Server
             {
                 var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
 
+                // HACK.  Temporary workaround for db exception (does not appear to affect functionality)
+                try
+                {
                     databaseInitializer.SeedAsync().Wait();
+
+                }
+                catch (AggregateException ex)
+                {
+                    Log.Error(ex, "error during database initialization");
+                }
             }
 
             app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
