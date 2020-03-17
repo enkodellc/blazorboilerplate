@@ -9,7 +9,9 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release_CSB'
+  buildConfiguration_CSB: 'Release_CSB'
+  buildConfiguration_SSB: 'Release_SSB'
+
 
 steps:
 - task: UseDotNet@2
@@ -21,11 +23,14 @@ steps:
 
 # - task: NuGetToolInstaller@0
 
-- script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration)
-  displayName: 'dotnet build blazorboilerplate'
+- script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration_CSB)
+  displayName: 'dotnet build blazorboilerplate ClientSide'
+
+- script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration_SSB)
+  displayName: 'dotnet build blazorBoilerplate ServerSide'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Publishing App...'
+  displayName: 'Publishing ClientSide App...'
   inputs:
     command: publish
     publishWebProjects: true
