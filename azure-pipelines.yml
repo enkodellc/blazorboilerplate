@@ -12,12 +12,14 @@ variables:
   buildConfiguration: 'Release_CSB'
 
 steps:
-- task: DotNetCoreInstaller@0
+- task: UseDotNet@2
   displayName: 'Install SDK'
   inputs:
-    version: '3.1.200'
+    packageType: sdk
+    version: '3.1.x'
+    includePreviewVersions: true
 
-- task: NuGetToolInstaller@0
+# - task: NuGetToolInstaller@0
 
 - script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration)
   displayName: 'dotnet build blazorboilerplate'
