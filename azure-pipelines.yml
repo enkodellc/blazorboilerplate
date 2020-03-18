@@ -4,30 +4,37 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 pool:
-  vmImage: 'vs2017-win2016'
+  vmImage: 'windows-2019'
 
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release_CSB'
+  buildConfiguration_CSB: 'Release_CSB'
+  buildConfiguration_SSB: 'Release_SSB'
+
 
 steps:
-- task: DotNetCoreInstaller@0
+- task: UseDotNet@2
   displayName: 'Install SDK'
   inputs:
-    version: '3.1.100-preview3-014645'
+    packageType: sdk
+    version: '3.1.x'
+    includePreviewVersions: true
 
-- task: NuGetToolInstaller@0
+# - task: NuGetToolInstaller@0
 
-- script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration)
-  displayName: 'dotnet build blazorboilerplate'
+- script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration_CSB)
+  displayName: 'dotnet build blazorboilerplate ClientSide'
+
+- script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration_SSB)
+  displayName: 'dotnet build blazorBoilerplate ServerSide'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Publishing App...'
+  displayName: 'Publishing ClientSide App...'
   inputs:
     command: publish
     publishWebProjects: true
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--configuration $(buildConfiguration_CSB) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: false
 
 - task: PublishBuildArtifacts@1

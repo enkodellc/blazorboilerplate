@@ -15,7 +15,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 //using System.Text.Json; //Does not work for this middleware, at least as in preview
@@ -102,19 +101,20 @@ namespace BlazorBoilerplate.Server.Middleware
                                             ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value)
                                             : null;
 
-                                await SafeLog(requestTime,
-                                    stopWatch.ElapsedMilliseconds,
-                                    response.StatusCode,
-                                    request.Method,
-                                    request.Path,
-                                    request.QueryString.ToString(),
-                                    formattedRequest,
-                                    responseBodyContent,
-                                    httpContext.Connection.RemoteIpAddress.ToString(),
-                                    user
-                                    );
+                                    await SafeLog(requestTime,
+                                        stopWatch.ElapsedMilliseconds,
+                                        response.StatusCode,
+                                        request.Method,
+                                        request.Path,
+                                        request.QueryString.ToString(),
+                                        formattedRequest,
+                                        responseBodyContent,
+                                        httpContext.Connection.RemoteIpAddress.ToString(),
+                                        user
+                                        );
                                 }
-                                catch (Exception ex) {
+                                catch (Exception ex)
+                                {
                                     _logger.LogWarning("An Inner Middleware exception occurred on SafeLog: " + ex.Message);
                                 }
                             }
@@ -260,7 +260,7 @@ namespace BlazorBoilerplate.Server.Middleware
                     apiResponse.StatusCode = code;
                 }
 
-                if ( (apiResponse.Result != null) || (!string.IsNullOrEmpty(apiResponse.Message)) )
+                if ((apiResponse.Result != null) || (!string.IsNullOrEmpty(apiResponse.Message)))
                 {
                     jsonString = JsonConvert.SerializeObject(apiResponse);
                 }
@@ -314,7 +314,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
         private string ConvertToJSONString(int code, object content)
         {
-            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content,  null, "0.6.1"), JSONSettings());
+            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content, null, "0.6.1"), JSONSettings());
         }
         private string ConvertToJSONString(ApiResponse apiResponse)
         {
@@ -351,7 +351,7 @@ namespace BlazorBoilerplate.Server.Middleware
         {
             // Do not log these events login, logout, getuserinfo...
             if ((path.ToLower().StartsWith("/api/account/")) ||
-                (path.ToLower().StartsWith("/api/UserProfile/")) )
+                (path.ToLower().StartsWith("/api/UserProfile/")))
             {
                 return;
             }

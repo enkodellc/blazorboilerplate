@@ -13,10 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Data.Core;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -82,6 +79,28 @@ namespace BlazorBoilerplate.Storage
                 await CreateUserAsync("user", "user123", "User", "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890`", new string[] { userRoleName });
 
                 _logger.LogInformation("Inbuilt account generation completed");
+            }
+            else
+            {
+                const string adminRoleName = "Administrator";
+
+                IdentityRole<Guid> adminRole = await _roleManager.FindByNameAsync(adminRoleName);
+                var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
+                var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
+                var NewClaims = AllClaims.Except(RoleClaims);
+                foreach (string claim in NewClaims)
+                {
+                    await _roleManager.AddClaimAsync(adminRole, new Claim(ClaimConstants.Permission, claim));
+                }
+                var DeprecatedClaims = RoleClaims.Except(AllClaims);
+                var roles = await _roleManager.Roles.ToListAsync();
+                foreach (string claim in DeprecatedClaims)
+                {
+                    foreach (var role in roles)
+                    {
+                        await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, claim));
+                    }
+                }
             }
         }
 
