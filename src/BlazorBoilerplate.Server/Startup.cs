@@ -16,9 +16,9 @@ using BlazorBoilerplate.CommonUI.States;
 
 using MatBlazor;
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
+using System.Linq;
 using System.Net.Http;
 
 #endif
@@ -50,8 +50,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using System.Linq;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BlazorBoilerplate.Server
 {
