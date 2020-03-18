@@ -365,7 +365,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // POST: api/Account/Create
         [HttpPost("Create")]
-        [Authorize(Policy = Policies.IsAdmin)]
+        [Authorize(Permissions.User.Create)]
         public async Task<ApiResponse> Create(RegisterDto parameters)
         {
             try
@@ -467,7 +467,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // DELETE: api/Account/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = Policies.IsAdmin)]
+        [Authorize(Permissions.User.Delete)]
         public async Task<ApiResponse> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -504,7 +504,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet("ListRoles")]
-        [Authorize]
+        [Authorize(Permissions.Role.Read)]
         public async Task<ApiResponse> ListRoles()
         {
             var roleList = _roleManager.Roles.Select(x => x.Name).ToList();
@@ -512,7 +512,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = Policies.IsAdmin)]
+        [Authorize(Permissions.User.Update)]
         // PUT: api/Account/5
         public async Task<ApiResponse> Update([FromBody] UserInfoDto userInfo)
         {
