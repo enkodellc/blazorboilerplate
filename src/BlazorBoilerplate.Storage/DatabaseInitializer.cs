@@ -14,6 +14,8 @@ using Microsoft.Extensions.Logging;
 using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
 using BlazorBoilerplate.Server.Data.Core;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -71,14 +73,13 @@ namespace BlazorBoilerplate.Storage
 
         private async Task EnsureLogTableCreationAsync()
         {
-            // the Serilog SQL logger only works with MSSQL
+            // the Serilog SQL logger only works with MSSQL so don't bother if we're not using it
             if (!_context.Database.IsSqlServer())
                 return;
 
             // This only works with the default Serilog SQL table layout, primarily a convenience addition
             // Without this, SQL logging will not work until the project has been started twice (in the case that no db exists initially)
             using var tr = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable).ConfigureAwait(false);
-            var transaction = tr.GetDbTransaction();
             await _context
                 .Database
                 .ExecuteSqlRawAsync("IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = \'dbo\' AND  TABLE_NAME = \'Logs2\'))\r\n" +
