@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Server.Middleware.Extensions;
+using BlazorBoilerplate.Server.Middleware.Extensions;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
