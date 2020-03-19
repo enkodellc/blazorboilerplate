@@ -3,6 +3,7 @@ using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -67,7 +68,7 @@ namespace BlazorBoilerplate.Server.Services
                 userProfile.UserId = userId;
             }
 
-            return new ApiResponse(200, "Retrieved User Profile", userProfile);
+            return new ApiResponse(Status200OK, "Retrieved User Profile", userProfile);
         }
 
         public async Task<ApiResponse> Upsert(UserProfileDto userProfileDto)
@@ -106,12 +107,12 @@ namespace BlazorBoilerplate.Server.Services
 
                 await _db.SaveChangesAsync();
 
-                return new ApiResponse(200, "Updated User Profile");
+                return new ApiResponse(Status200OK, "Updated User Profile");
             }
             catch (Exception ex)
             {
                 string test = ex.Message;
-                return new ApiResponse(400, "Failed to Retrieve User Profile");
+                return new ApiResponse(Status400BadRequest, "Failed to Retrieve User Profile");
             }
         }
     }

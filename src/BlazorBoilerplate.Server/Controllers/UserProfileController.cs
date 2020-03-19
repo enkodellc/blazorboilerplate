@@ -7,6 +7,7 @@ using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using IdentityModel;
 
 namespace BlazorBoilerplate.Server.Controllers
@@ -41,11 +42,11 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new ApiResponse(400, "User Model is Invalid");
+                return new ApiResponse(Status400BadRequest, "User Model is Invalid");
             }
 
             await _userProfileService.Upsert(userProfile);
-            return new ApiResponse(200, "Email Successfuly Sent");
+            return new ApiResponse(Status200OK, "Email Successfuly Sent");
         }
 
     }

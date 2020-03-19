@@ -3,6 +3,7 @@ using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -34,11 +35,11 @@ namespace BlazorBoilerplate.Server.Services
             try
             {
                 //Todo Shadow Property doesn't allow filter of IsDeleted here?
-                return new ApiResponse(200, "Retrieved Todos", await _autoMapper.ProjectTo<TodoDto>(_db.Todos).ToListAsync());
+                return new ApiResponse(Status200OK, "Retrieved Todos", await _autoMapper.ProjectTo<TodoDto>(_db.Todos).ToListAsync());
             }
             catch (Exception ex)
             {
-                return new ApiResponse(400, ex.Message);
+                return new ApiResponse(Status400BadRequest, ex.Message);
             }
         }
 
@@ -47,11 +48,11 @@ namespace BlazorBoilerplate.Server.Services
             Todo todo = await _db.Todos.FirstOrDefaultAsync(t => t.Id == id);
             if (todo != null)
             {
-                return new ApiResponse(200, "Retrived Todo", _autoMapper.Map<TodoDto>(todo));
+                return new ApiResponse(Status200OK, "Retrieved Todo", _autoMapper.Map<TodoDto>(todo));
             }
             else
             {
-                return new ApiResponse(400, "Failed to Retrieve Todo");
+                return new ApiResponse(Status400BadRequest, "Failed to Retrieve Todo");
             }
         }
 
@@ -68,7 +69,7 @@ namespace BlazorBoilerplate.Server.Services
             await _db.Todos.AddAsync(todo);
             await _db.SaveChangesAsync();
 
-            return new ApiResponse(200, "Created Todo", todo);
+            return new ApiResponse(Status200OK, "Created Todo", todo);
         }
 
         public async Task<ApiResponse> Update(TodoDto todoDto)
@@ -84,11 +85,11 @@ namespace BlazorBoilerplate.Server.Services
 
                 _autoMapper.Map<TodoDto, Todo>(todoDto, todo);
                 await _db.SaveChangesAsync();
-                return new ApiResponse(200, "Updated Todo", todo);
+                return new ApiResponse(Status200OK, "Updated Todo", todo);
             }
             else
             {
-                return new ApiResponse(400, "Failed to update Todo");
+                return new ApiResponse(Status400BadRequest, "Failed to update Todo");
             }
         }
 
@@ -99,11 +100,11 @@ namespace BlazorBoilerplate.Server.Services
             {
                 _db.Todos.Remove(todo);
                 await _db.SaveChangesAsync();
-                return new ApiResponse(200, "Soft Delete Todo");
+                return new ApiResponse(Status200OK, "Soft Delete Todo");
             }
             else
             {
-                return new ApiResponse(400, "Failed to update Todo");
+                return new ApiResponse(Status400BadRequest, "Failed to update Todo");
             }
         }
     }

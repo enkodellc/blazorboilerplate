@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BlazorBoilerplate.Server.Helpers;
@@ -33,7 +34,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new ApiResponse(400, "User Model is Invalid");
+                return new ApiResponse(Status400BadRequest, "User Model is Invalid");
             }
 
             var email = new EmailMessageDto();
@@ -67,11 +68,11 @@ namespace BlazorBoilerplate.Server.Controllers
             try
             {
                 await _emailService.SendEmailAsync(email);
-                return new ApiResponse(200, "Email Successfuly Sent");
+                return new ApiResponse(Status200OK, "Email Successfuly Sent");
             }
             catch (Exception ex)
             {
-                return new ApiResponse(500, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.Message);
             }
 
 

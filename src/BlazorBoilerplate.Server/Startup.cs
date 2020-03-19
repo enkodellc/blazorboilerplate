@@ -41,6 +41,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.KeyVault;
@@ -288,14 +289,14 @@ namespace BlazorBoilerplate.Server
                     {
                         if (context.Request.Path.StartsWithSegments("/api"))
                         {
-                            context.Response.StatusCode = (int)(HttpStatusCode.Unauthorized);
+                            context.Response.StatusCode = Status401Unauthorized;
                         }
 
                         return Task.CompletedTask;
                     },
                     OnRedirectToLogin = context =>
                     {
-                        context.Response.StatusCode = 401;
+                        context.Response.StatusCode = Status401Unauthorized;
                         return Task.CompletedTask;
                     }
                 };

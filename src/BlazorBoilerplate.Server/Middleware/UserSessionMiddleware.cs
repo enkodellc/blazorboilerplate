@@ -3,12 +3,11 @@ using BlazorBoilerplate.Server.Middleware.Extensions;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
-using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Middleware
@@ -81,7 +80,7 @@ namespace BlazorBoilerplate.Server.Middleware
             else if (exception is UnauthorizedAccessException)
             {
                 apiError = new ApiError("Unauthorized Access");
-                code = (int)HttpStatusCode.Unauthorized;
+                code = Status401Unauthorized;
                 httpContext.Response.StatusCode = code;
             }
             else
@@ -98,7 +97,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 {
                     Details = stack
                 };
-                code = (int)HttpStatusCode.InternalServerError;
+                code = Status500InternalServerError;
                 httpContext.Response.StatusCode = code;
             }
 

@@ -5,6 +5,7 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
+@using System.Net
 
 <h1>Roles</h1>
 <p>Roles Management.</p>
@@ -104,7 +105,7 @@ else
     {
         ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>($"api/Admin/Roles?pageSize={pageSize}&pageNumber={currentPage}");
 
-        if (apiResponse.StatusCode == 200)
+        if (apiResponse.StatusCode == Status200OK)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "Roles Retrieved");
             roles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoleDto>>(apiResponse.Result.ToString());
@@ -210,7 +211,7 @@ else
         else
             apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Admin/Role", request);
 
-        if (apiResponse.StatusCode == 200)
+        if (apiResponse.StatusCode == Status200OK)
         {
             if (isInsertOperation)
                 matToaster.Add("Role Created", MatToastType.Success);
@@ -245,7 +246,7 @@ else
     public async Task DeleteRoleAsync()
     {
         var response = await Http.DeleteAsync("api/Admin/Role/" + currentRoleName);
-        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        if (response.StatusCode != (HttpStatusCode)Status200OK)
         {
             matToaster.Add("Role Delete Failed", MatToastType.Danger);
             return;

@@ -3,6 +3,7 @@ using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace BlazorBoilerplate.Server.Services
             await _db.Messages.AddAsync(message);
             await _db.SaveChangesAsync();
 
-            return new ApiResponse(200, "Created Message", message);
+            return new ApiResponse(Status200OK, "Created Message", message);
         }
 
         public async Task<ApiResponse> Delete(int id)
@@ -41,7 +42,7 @@ namespace BlazorBoilerplate.Server.Services
             _db.Messages.Remove(new Message() { Id = id });
             await _db.SaveChangesAsync();
 
-            return new ApiResponse(200, "Deleted Message", id);
+            return new ApiResponse(Status200OK, "Deleted Message", id);
         }
 
         public List<MessageDto> GetList()

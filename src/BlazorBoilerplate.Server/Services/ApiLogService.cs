@@ -5,6 +5,7 @@ using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -83,18 +84,18 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task<ApiResponse> Get()
         {
-            return new ApiResponse(200, "Retrieved Api Log", await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs).ToListAsync());
+            return new ApiResponse(Status200OK, "Retrieved Api Log", await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs).ToListAsync());
         }
 
         public async Task<ApiResponse> GetByApplictionUserId(Guid applicationUserId)
         {
             try
             {
-                return new ApiResponse(200, "Retrieved Api Log", await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == applicationUserId)).ToListAsync());
+                return new ApiResponse(Status200OK, "Retrieved Api Log", await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == applicationUserId)).ToListAsync());
             }
             catch (Exception ex)
             {
-                return new ApiResponse(400, ex.Message);
+                return new ApiResponse(Status400BadRequest, ex.Message);
             }
         }
     }

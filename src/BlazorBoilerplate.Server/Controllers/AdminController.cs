@@ -6,6 +6,7 @@ using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -98,7 +99,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 throw new Exception(null, ex);
             }
 
-            return new ApiResponse(200, "User list fetched", userDtoList);
+            return new ApiResponse(Status200OK, "User list fetched", userDtoList);
         }
 
         #endregion
@@ -110,7 +111,7 @@ namespace BlazorBoilerplate.Server.Controllers
         public ApiResponse GetPermissions()
         {
             var permissions = ApplicationPermissions.GetAllPermissionNames();
-            return new ApiResponse(200, "Permissions list fetched", permissions);
+            return new ApiResponse(Status200OK, "Permissions list fetched", permissions);
         }
 
         #endregion
@@ -154,7 +155,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 throw new Exception(null, ex);
             }
 
-            return new ApiResponse(200, "Roles list fetched", roleDtoList);
+            return new ApiResponse(Status200OK, "Roles list fetched", roleDtoList);
         }
 
         #endregion
@@ -195,7 +196,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 throw new Exception(null, ex);
             }
 
-            return new ApiResponse(200, "Role fetched", roleDto);
+            return new ApiResponse(Status200OK, "Role fetched", roleDto);
         }
 
         #endregion
@@ -210,7 +211,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 // first make sure the role doesn't already exist
                 if (_roleManager.Roles.Any(r => r.Name == newRole.Name))
-                    return new ApiResponse(400, "Role already exists");
+                    return new ApiResponse(Status400BadRequest, "Role already exists");
 
                 // Create the role
                 var result = await _roleManager.CreateAsync(new IdentityRole<Guid>(newRole.Name));
@@ -218,7 +219,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 if (!result.Succeeded)
                 {
                     string errorMessage = result.Errors.Select(x => x.Description).Aggregate((i, j) => i + " - " + j);
-                    return new ApiResponse(500, errorMessage);
+                    return new ApiResponse(Status500InternalServerError, errorMessage);
                 }
 
                 // Re-create the permissions
@@ -235,10 +236,10 @@ namespace BlazorBoilerplate.Server.Controllers
             }
             catch (Exception ex)
             {
-                return new ApiResponse(500, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.Message);
             }
 
-            return new ApiResponse(200);
+            return new ApiResponse(Status200OK);
         }
 
         #endregion
@@ -253,7 +254,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 // first make sure the role already exist
                 if (!_roleManager.Roles.Any(r => r.Name == newRole.Name))
-                    return new ApiResponse(400, "This role doesn't exists");
+                    return new ApiResponse(Status400BadRequest, "This role doesn't exists");
 
                 // Create the permissions
                 IdentityRole<Guid> identityRole = await _roleManager.FindByNameAsync(newRole.Name);
@@ -276,9 +277,9 @@ namespace BlazorBoilerplate.Server.Controllers
             }
             catch (Exception ex)
             {
-                return new ApiResponse(500, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.Message);
             }
-            return new ApiResponse(200);
+            return new ApiResponse(Status200OK);
         }
 
         #endregion
@@ -295,17 +296,17 @@ namespace BlazorBoilerplate.Server.Controllers
                 // Check if the role is used by a user
                 var users = await _userManager.GetUsersInRoleAsync(name);
                 if (users.Any())
-                    return new ApiResponse(404, "This role is still used by a user, you cannot delete it");
+                    return new ApiResponse(Status404NotFound, "This role is still used by a user, you cannot delete it");
 
                 // Delete the role
                 var role = await _roleManager.FindByNameAsync(name);
                 await _roleManager.DeleteAsync(role);
 
-                return new ApiResponse(200, "Role Deletion Successful");
+                return new ApiResponse(Status200OK, "Role Deletion Successful");
             }
             catch
             {
-                return new ApiResponse(400, "Role Deletion Failed");
+                return new ApiResponse(Status400BadRequest, "Role Deletion Failed");
             }
         }
         #endregion

@@ -4,6 +4,7 @@ using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Server.Services;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -77,10 +77,10 @@ namespace BlazorBoilerplate.Server.Middleware
 
                             string responseBodyContent = null;
 
-                            if (httpContext.Response.StatusCode == (int)HttpStatusCode.OK)
+                            if (httpContext.Response.StatusCode == Status200OK)
                             {
                                 responseBodyContent = await FormatResponse(response);
-                                await HandleSuccessRequestAsync(httpContext, responseBodyContent, httpContext.Response.StatusCode);
+                                await HandleSuccessRequestAsync(httpContext, responseBodyContent, Status200OK);
                             }
                             else
                             {
@@ -172,7 +172,7 @@ namespace BlazorBoilerplate.Server.Middleware
             else if (exception is UnauthorizedAccessException)
             {
                 apiError = new ApiError("Unauthorized Access");
-                code = (int)HttpStatusCode.Unauthorized;
+                code = Status401Unauthorized;
                 httpContext.Response.StatusCode = code;
             }
             else
@@ -189,7 +189,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 {
                     Details = stack
                 };
-                code = (int)HttpStatusCode.InternalServerError;
+                code = Status500InternalServerError;
                 httpContext.Response.StatusCode = code;
             }
 
@@ -204,19 +204,19 @@ namespace BlazorBoilerplate.Server.Middleware
         {
             ApiError apiError;
 
-            if (code == (int)HttpStatusCode.NotFound)
+            if (code == Status404NotFound)
             {
                 apiError = new ApiError(ResponseMessageEnum.NotFound.GetDescription());
             }
-            else if (code == (int)HttpStatusCode.NoContent)
+            else if (code == Status204NoContent)
             {
                 apiError = new ApiError(ResponseMessageEnum.NotContent.GetDescription());
             }
-            else if (code == (int)HttpStatusCode.MethodNotAllowed)
+            else if (code == Status405MethodNotAllowed)
             {
                 apiError = new ApiError(ResponseMessageEnum.MethodNotAllowed.GetDescription());
             }
-            else if (code == (int)HttpStatusCode.Unauthorized)
+            else if (code == Status401Unauthorized)
             {
                 apiError = new ApiError(ResponseMessageEnum.UnAuthorized.GetDescription());
             }

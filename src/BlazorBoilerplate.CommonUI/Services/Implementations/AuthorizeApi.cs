@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using BlazorBoilerplate.CommonUI.Services.Contracts;
@@ -76,7 +77,7 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
             var resp = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
 
 #if ServerSideBlazor
-            if (resp.StatusCode == 200 && cookies != null && cookies.Any())
+            if (resp.StatusCode == Status200OK && cookies != null && cookies.Any())
             {
                 _httpClient.DefaultRequestHeaders.Remove("Cookie");
 
@@ -121,7 +122,7 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
             UserInfoDto userInfo = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
             ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Account/UserInfo");
 
-            if (apiResponse.StatusCode == 200)
+            if (apiResponse.StatusCode == Status200OK)
             {
                 userInfo = JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
                 return userInfo;
