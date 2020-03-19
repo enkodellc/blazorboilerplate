@@ -289,7 +289,7 @@ namespace BlazorBoilerplate.Server
                     {
                         if (context.Request.Path.StartsWithSegments("/api"))
                         {
-                            context.Response.StatusCode = Status401Unauthorized;
+                            context.Response.StatusCode = Status403Forbidden;
                         }
 
                         return Task.CompletedTask;
