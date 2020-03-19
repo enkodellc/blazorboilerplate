@@ -69,7 +69,7 @@ namespace BlazorBoilerplate.Server.Controllers
         
         // DELETE: api/Todo/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = Policies.IsAdmin)]
+        [Authorize(Permissions.Todo.Delete)]
         public async Task<ApiResponse> Delete(long id)
         {
             return await _todoService.Delete(id); // Delete from DB

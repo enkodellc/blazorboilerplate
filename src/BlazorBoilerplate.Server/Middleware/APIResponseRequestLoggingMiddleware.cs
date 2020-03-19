@@ -362,7 +362,7 @@ namespace BlazorBoilerplate.Server.Middleware
             }
 
             // If the response body was an ApiResponse we should just save the Result object
-            if (responseBody.Contains("\"result\":"))
+            if (responseBody != null && responseBody.Contains("\"result\":"))
             {
                 try
                 {
@@ -372,7 +372,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 catch { }
             }
 
-            if (responseBody.Length > 256)
+            if (responseBody != null && responseBody.Length > 256)
             {
                 responseBody = $"(Truncated to 200 chars) {responseBody.Substring(0, 200)}";
             }

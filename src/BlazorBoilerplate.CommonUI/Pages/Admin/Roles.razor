@@ -1,5 +1,5 @@
 @page "/admin/roles"
-@attribute [Authorize]
+@attribute [Authorize(Permissions.Role.Read)]
 @inject HttpClient Http
 @inject IAuthorizationService AuthorizationService
 @inject AuthenticationStateProvider authStateProvider
@@ -21,15 +21,23 @@ else
     <MatTable Class="mat-elevation-z5" Items="@roles" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/roles"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th><MatButton Icon="add" Label="New Role" OnClick="@(() => OpenUpsertRoleDialog())"></MatButton></th>
+            <th>
+                <AuthorizeView Policy="@Permissions.Role.Create">
+                    <MatButton Icon="add" Label="New Role" OnClick="@(() => OpenUpsertRoleDialog())"></MatButton>
+                </AuthorizeView>
+            </th>
             <th>Name</th>
             <th>Permissions</th>
         </MatTableHeader>
         <MatTableRow Context="RoleRow">
             <td>
                 <div style="width:155px;">
-                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))"></MatIconButton>
-                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))"></MatIconButton>
+                    <AuthorizeView Policy="@Permissions.Role.Update">
+                        <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))"></MatIconButton>
+                    </AuthorizeView>
+                    <AuthorizeView Policy="@Permissions.Role.Delete">
+                        <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))"></MatIconButton>
+                    </AuthorizeView>
                 </div>
             </td>
             <td><div style="width:130px;">@RoleRow.Name</div></td>
@@ -56,7 +64,7 @@ else
             </div>
         </fieldset>
 
-        <MatTable Items="@permissionsSelections" Class="mat-elevation-z5" ShowPaging="false">
+        <MatTable Items="@permissionsSelections" Class="mat-elevation-z5" ShowPaging="true">
             <MatTableHeader>
                 <th>Permissions</th>
                 <th>Allow</th>
