@@ -54,7 +54,7 @@
         baseUrl = navigationManager.BaseUri;
         await BuildBreadcrumbsAsync();
         navigationManager.LocationChanged += OnLocationChanges;
-        base.OnInitializedAsync();
+        await base.OnInitializedAsync();
     }
 
     void OnLocationChanges(object sender, LocationChangedEventArgs e) => BuildBreadcrumbsAsync();

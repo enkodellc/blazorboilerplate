@@ -3,9 +3,6 @@ using BlazorBoilerplate.Shared.DataModels;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorBoilerplate.Server.Tests.Managers
 {

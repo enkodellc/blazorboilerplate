@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.Account;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Shared.Dto.Account;
 
 namespace BlazorBoilerplate.Storage.Stores
 {
@@ -16,23 +17,24 @@ namespace BlazorBoilerplate.Storage.Stores
             _applicationDbContext = applicationDbContext;
         }
 
-        public string GetLastPageVisited(string userName)
+        public async Task<string> GetLastPageVisited(string userName)
         {
-            var lastPageVisited = "/dashboard";
-            var userProfile = from userProf in _applicationDbContext.UserProfiles
-                join user in _applicationDbContext.Users on userProf.UserId equals user.Id
-                where user.UserName == userName
-                select userProf;
+            string lastPageVisited = "/dashboard";
+            var userProfile = await (from userProf in _applicationDbContext.UserProfiles
+                                     join user in _applicationDbContext.Users on userProf.UserId equals user.Id
+                                     where user.UserName == userName
+                                     select userProf).FirstOrDefaultAsync();
 
-            if (userProfile.Any())
+            if (userProfile != null)
             {
-                lastPageVisited = !string.IsNullOrEmpty(userProfile.First().LastPageVisited) ? userProfile.First().LastPageVisited : lastPageVisited;
+                lastPageVisited = !String.IsNullOrEmpty(userProfile.LastPageVisited) ? userProfile.LastPageVisited : lastPageVisited;
             }
 
             return lastPageVisited;
         }
 
-        public UserProfileDto Get(Guid userId)
+
+        public async Task<UserProfileDto> Get(Guid userId)
         {
             var profileQuery = from userProf in _applicationDbContext.UserProfiles
                 where userProf.UserId == userId
@@ -65,7 +67,7 @@ namespace BlazorBoilerplate.Storage.Stores
             if (profileQuery.Any())
             {
                 var profile = profileQuery.First();
-                
+
                 profile.Count = userProfileDto.Count;
                 profile.IsNavOpen = userProfileDto.IsNavOpen;
                 profile.LastPageVisited = userProfileDto.LastPageVisited;
@@ -92,7 +94,7 @@ namespace BlazorBoilerplate.Storage.Stores
 
         public async Task DeleteAllApiLogsForUser(Guid userId)
         {
-            var apiLogs = _applicationDbContext.ApiLogs.Where(a => a.ApplicationUserId == userId); // This could be handled in a store, getting rid of the ugliness here. 
+            var apiLogs = _applicationDbContext.ApiLogs.Where(a => a.ApplicationUserId == userId); // This could be handled in a store, getting rid of the ugliness here.
             foreach (var apiLog in apiLogs)
             {
                 _applicationDbContext.ApiLogs.Remove(apiLog);

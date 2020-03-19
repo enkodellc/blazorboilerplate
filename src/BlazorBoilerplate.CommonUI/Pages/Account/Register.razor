@@ -7,6 +7,9 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 
+@using BlazorBoilerplate.Shared.Dto
+@using static Microsoft.AspNetCore.Http.StatusCodes
+
 <MatCard>
     <div class="logo">
         <img src="_content/BlazorBoilerplate.CommonUI/images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
@@ -14,7 +17,7 @@
         <h4>Create Account</h4>
     </div>
 
-    <EditForm Model="@registerParameters" OnValidSubmit="@RegisterUser" >
+    <EditForm Model="@registerParameters" OnValidSubmit="@RegisterUser">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <fieldset>
@@ -49,7 +52,7 @@
         try
         {
             var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters);
-            if (response.StatusCode == 200)
+            if (response.StatusCode == Status200OK)
             {
                 matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, "User Creation Sucessful");
                 navigationManager.NavigateTo("");

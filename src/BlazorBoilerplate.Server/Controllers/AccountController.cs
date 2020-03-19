@@ -1,11 +1,12 @@
 ﻿using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Shared.Dto.Account;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -20,14 +21,14 @@ namespace BlazorBoilerplate.Server.Controllers
         public AccountController(IAccountManager accountManager)
         {
             _accountManager = accountManager;
-            _invalidUserModel = new ApiResponse(400, "User Model is Invalid"); // Could we inject this? As some form of 'Errors which has constant values'?
+            _invalidUserModel = new ApiResponse(Status400BadRequest, "User Model is Invalid"); // Could we inject this? As some form of 'Errors which has constant values'?
         }
 
         // POST: api/Account/Login
         [HttpPost("Login")]
         [AllowAnonymous]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(401)]
+        [ProducesResponseType((int)Status204NoContent)]
+        [ProducesResponseType((int)Status401Unauthorized)]
         public async Task<ApiResponse> Login(LoginDto parameters)
             => ModelState.IsValid ? await _accountManager.Login(parameters) : _invalidUserModel;
 
@@ -62,8 +63,8 @@ namespace BlazorBoilerplate.Server.Controllers
             => await _accountManager.Logout();
 
         [HttpGet("UserInfo")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(401)]
+        [ProducesResponseType((int)Status200OK)]
+        [ProducesResponseType((int)Status401Unauthorized)]
         public async Task<ApiResponse> UserInfo()
         =>  await _accountManager.UserInfo(User);
 
@@ -72,7 +73,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [Authorize]
         public async Task<ApiResponse> UpdateUser(UserInfoDto userInfo)
         => ModelState.IsValid ? await _accountManager.UpdateUser(userInfo) : _invalidUserModel;
-        
+
         ///----------Admin User Management Interface Methods
         // POST: api/Account/Create
         [HttpPost("Create")]
@@ -103,7 +104,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpPost("AdminUserPasswordReset/{id}")]
         [Authorize(Permissions.User.Update)]
-        [ProducesResponseType(204)]
+        [ProducesResponseType((int)Status204NoContent)]
         public async Task<ApiResponse> AdminResetUserPasswordAsync(Guid id, [FromBody] string newPassword)
         => ModelState.IsValid
                 ? await _accountManager.AdminResetUserPasswordAsync(id, newPassword, User)

@@ -26,7 +26,7 @@ else
             <th>Email</th>
             <th>Roles</th>
         </MatTableHeader>
-        <MatTableRow Context="UserRow">           
+        <MatTableRow Context="UserRow">
             <td>
                 <div style="width:155px;">
                     <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
@@ -48,7 +48,7 @@ else
                     </AuthorizeView>
                 </div>
             </td>
-                          
+
             <td><div style="width:130px;">@UserRow.UserName</div></td>
             <td>@UserRow.Email</td>
             <td>
@@ -71,7 +71,7 @@ else
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@registerParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
                     <MatTextField @bind-Value="@registerParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
@@ -189,10 +189,9 @@ else
 
     public async Task RetrieveUserListAsync()
     {
-        string queryString = "?pageSize=" + pageSize.ToString() + "&pageNumber=" + currentPage.ToString(); // this is to support pagination in the future, need to integrate with MatTable
-        apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Admin/Users" + queryString);
+        apiResponse = await Http.GetJsonAsync<ApiResponseDto>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
 
-        if (apiResponse.StatusCode == 200)
+        if (apiResponse.StatusCode == Status200OK)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "Users Retrieved");
             users = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserInfoDto>>(apiResponse.Result.ToString());
@@ -276,7 +275,7 @@ else
             user.Roles = roleSelections.Where(x => x.IsSelected == true).Select(x => x.Name).ToList();
 
             var apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Account", user);
-            if (apiResponse.StatusCode == 200)
+            if (apiResponse.StatusCode == Status200OK)
             {
                 matToaster.Add("User Updated", MatToastType.Success);
             }
@@ -303,7 +302,7 @@ else
             }
 
             ApiResponseDto apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).Create(registerParameters);
-            if (apiResponse.StatusCode == 200)
+            if (apiResponse.StatusCode == Status200OK)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);
                 user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
@@ -331,7 +330,7 @@ else
         else
         {
             apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/AdminUserPasswordReset/" + user.UserId.ToString(), registerParameters.Password);
-            if (apiResponse.StatusCode == 204 || apiResponse.StatusCode == 200)
+            if (apiResponse.StatusCode == Status204NoContent || apiResponse.StatusCode == Status200OK)
             {
                 matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);
             }

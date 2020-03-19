@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace BlazorBoilerplate.Server.Authorization
                 return;
             }
 
-            ApplicationUser user = _context.Users.FirstOrDefault(u => u.UserName == context.User.Identity.Name);
+            ApplicationUser user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == context.User.Identity.Name);
             if (user == null)
             {
                 return;
@@ -45,7 +46,8 @@ namespace BlazorBoilerplate.Server.Authorization
                              join r in _context.Roles on ur.RoleId equals r.Id
                              join rc in _context.RoleClaims on r.Id equals rc.RoleId
                              select rc;
-            if (roleClaims.Any(c => c.ClaimValue == requirement.Permission))
+
+            if (await roleClaims.AnyAsync(c => c.ClaimValue == requirement.Permission))
             {
                 context.Succeed(requirement);
             }

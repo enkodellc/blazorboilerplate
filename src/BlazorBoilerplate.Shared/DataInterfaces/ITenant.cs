@@ -1,5 +1,4 @@
-﻿
-namespace BlazorBoilerplate.Shared.DataInterfaces
+﻿namespace BlazorBoilerplate.Shared.DataInterfaces
 {
     public interface ITenant
     {

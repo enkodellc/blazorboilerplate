@@ -1,10 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -19,8 +20,8 @@ namespace BlazorBoilerplate.Server.Managers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string GetLastPageVisited(string userName)
-        => _userProfileStore.GetLastPageVisited(userName);
+        public async Task<string> GetLastPageVisited(string userName)
+        => await _userProfileStore.GetLastPageVisited(userName);
 
         public async Task<ApiResponse> Get()
         {
@@ -28,7 +29,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             var userProfile = _userProfileStore.Get(userId);
 
-            return new ApiResponse(200, "Retrieved User Profile", userProfile);
+            return new ApiResponse(Status200OK, "Retrieved User Profile", userProfile);
         }
 
         public async Task<ApiResponse> Upsert(UserProfileDto userProfileDto)
@@ -37,11 +38,11 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 await _userProfileStore.Upsert(userProfileDto);
 
-                return new ApiResponse(200, "Updated User Profile");
+                return new ApiResponse(Status200OK, "Updated User Profile");
             }
             catch (Exception ex)
             {
-                return new ApiResponse(400, "Failed to Retrieve User Profile");
+                return new ApiResponse(Status400BadRequest, "Failed to Retrieve User Profile");
             }
         }
     }

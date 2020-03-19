@@ -1,9 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.Dto.Sample;
+using static Microsoft.AspNetCore.Http.StatusCodes;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -21,11 +23,11 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 var todos = _toDoStore.GetAll();
-                return new ApiResponse(200, "Retrieved Todos", todos);
+                return new ApiResponse(Status200OK, "Retrieved Todos", todos);
             }
             catch (Exception ex)
             {
-                return new ApiResponse(400, ex.Message);
+                return new ApiResponse(Status400BadRequest, ex.Message);
             }
         }
 
@@ -34,18 +36,18 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 var todo = _toDoStore.GetById(id);
-                return new ApiResponse(200, "Retrived Todo", todo);
+                return new ApiResponse(Status200OK, "Retrieved Todo", todo);
             }
             catch (Exception e)
             {
-                return new ApiResponse(400, "Failed to Retrieve Todo");
+                return new ApiResponse(Status400BadRequest, "Failed to Retrieve Todo");
             }
         }
 
         public async Task<ApiResponse> Create(TodoDto todoDto)
         {
             var todo = await _toDoStore.Create(todoDto);
-            return new ApiResponse(200, "Created Todo", todo);
+            return new ApiResponse(Status200OK, "Created Todo", todo);
         }
 
         public async Task<ApiResponse> Update(TodoDto todoDto)
@@ -53,11 +55,11 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 var todo = await _toDoStore.Update(todoDto);
-                return new ApiResponse(200, "Updated Todo", todo);
+                return new ApiResponse(Status200OK, "Updated Todo", todo);
             }
             catch (InvalidDataException dataException)
             {
-                return new ApiResponse(400, "Failed to update Todo");
+                return new ApiResponse(Status400BadRequest, "Failed to update Todo");
             }
         }
 
@@ -66,11 +68,11 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 await _toDoStore.DeleteById(id);
-                return new ApiResponse(200, "Soft Delete Todo");
+                return new ApiResponse(Status200OK, "Soft Delete Todo");
             }
             catch (InvalidDataException dataException)
             {
-                return new ApiResponse(400, "Failed to update Todo");
+                return new ApiResponse(Status400BadRequest, "Failed to update Todo");
             }
         }
     }

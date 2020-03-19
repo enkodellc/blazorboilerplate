@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
@@ -16,11 +17,12 @@ namespace BlazorBoilerplate.Storage
         public static IServiceCollection RegisterStorage(this IServiceCollection services, IConfiguration Configuration)
         {
             services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions(builder, Configuration)); // Look into the way we initialise the PB ways. Look at the old way they did this, with side effects on the builder. 
-            services.AddScoped<IApplicationDbContext>(s => s.GetRequiredService<ApplicationDbContext>());
-            
+            services.AddScoped<IApplicationDbContext>(s => s.GetRequiredService<ApplicationDbContext>() as IApplicationDbContext);
+
             services.AddTransient<IMessageStore, MessageStore>();
             services.AddTransient<IUserProfileStore, UserProfileStore>();
             services.AddTransient<IToDoStore, ToDoStore>();
+            //services.AddTransient<ITenantStore, TenantStore>();
             services.AddTransient<IApiLogStore, ApiLogStore>();
                        
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();

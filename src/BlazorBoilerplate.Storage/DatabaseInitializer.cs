@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using BlazorBoilerplate.Server.Data;
+using BlazorBoilerplate.Server.Data.Core;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Core;
@@ -11,9 +9,12 @@ using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
-using BlazorBoilerplate.Server.Data.Core;
 
 namespace BlazorBoilerplate.Storage
 {

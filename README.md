@@ -21,16 +21,16 @@ Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Versi
 [Blazor Boilerplate](https://blazorboilerplate.com) - Kick the tires.  *Note Firewall does block some foreign IP addresses. Swagger UI to view the server API [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html).
 
 ## Prerequisites
-Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-3.0)
+Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/core/blazor)
 
 Complete all Blazor dependencies.
 
-- [.Net Core SDK 3.1.0-preview4.19579.2](https://dotnet.microsoft.com/download/dotnet-core/3.1)
-- Install the Latest Visual Studio 2019 Preview with the ASP.NET and web development workload selected.
-- Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef --version 3.1.1-preview4.19579.2**
+- The latest [.Net Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- Install the Latest Visual Studio 2019 with the ASP.NET and web development workload selected.
+- Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef**
 
 ### How to run
-1. Install the latest .NET Core SDK **https://dotnet.microsoft.com/download/dotnet-core/3.1** and the latest **Visual Studio 2019 (v16.4)**.
+1.  Install the latest .NET Core SDK **https://dotnet.microsoft.com/download/dotnet-core/3.1** and the latest **Visual Studio 2019 (v16.5)**
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
@@ -38,7 +38,11 @@ Complete all Blazor dependencies.
 
 ## Publish on IIS - What works for me on my Windows Server 2016 & SQL Server 2014 (Enkodellc)
 1. Publish BlazorBoilerplate.Server project to your IIS website folder using CSB or SSB.
-2. Install your SSL, use self-signed if you don't have one. Make sure your SSL is in the **WebHosting** Certificate Store.
+2. Install your SSL. Make sure your SSL is in the **WebHosting** Certificate Store.
+    - A free certificate from [Let's Encrypt](https://letsencrypt.org/) will work. 
+    - For steps 2 & 3 the utility [win-acme](https://github.com/win-acme/win-acme) installs the
+certificate on your server, performs renewal and configure your IIS Website Bindings to have https binding with the SSL certificate set and Port 443 for default.
+
 4. Configure your IIS Website Bindings to have https binding with the SSL certificate set and Port 443 for default.
 3. Configure / create appsettings.production.config. Set  Connection String, Thumbprint / SSL. Thumbprint example:  **143fbd7bc36e78b1bcf9a53c13336eaebe33353a**
 4. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
@@ -120,14 +124,17 @@ Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and
 - [Do Docker stuff](https://docs.docker.com/v17.09/docker-for-windows/install/) - I don't have much experience with Docker.
 
 ### Azure Support
--  Looking for additional help with Azure documentation and steps.
+- [Azure Hosting Wiki](https://github.com/enkodellc/blazorboilerplate/wiki/Hosting-Blazor-boilerplate-on-Microsoft-Azure) 
+- *Note that Azure isn't as up to date with their SDK as Blazor Boilerplate so you might have to use an older version
 
 ## News
 
-### 0.8.0 (Major Project Refactor - Thanks DanielBunting)
+### 0.8.0 Under Development (Major Project Refactor - Thanks DanielBunting)
 - Refactor Project Architecture. Thanks [DanielBunting](https://github.com/DanielBunting) 
 - Add Initial Tests. Thanks [DanielBunting](https://github.com/DanielBunting) 
+- Project Code Review. Thanks [GioviQ](https://github.com/GioviQ) 
 - Revised AuthorizationPolicyProvider. Thanks [mobinseven](https://github.com/mobinseven) 
+- Server-side Multi-Tenant V.1 (Not working / No UI) - Thanks [mobinseven](https://github.com/mobinseven) 
 - Known Issue with new project structure - Breaks CSB Debugging (shift + alt + d) - Expect fix in .Net Core 3.2 preview 2. Use SSB for debugging.
 
 ### 0.7.0 (Breaking Changes)

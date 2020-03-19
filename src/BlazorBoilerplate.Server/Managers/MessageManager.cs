@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.Dto.Sample;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -22,13 +23,13 @@ namespace BlazorBoilerplate.Server.Managers
         {
             _logger.LogDebug("Adding message: {@messageDto}", messageDto);
             var message = await _messageStore.AddMessage(messageDto);
-            return new ApiResponse(200, "Created Message", message);
+            return new ApiResponse(Status200OK, "Created Message", message);
         }
 
         public async Task<ApiResponse> Delete(int id)
         {
             await _messageStore.DeleteById(id);
-            return new ApiResponse(200, "Deleted Message", id);
+            return new ApiResponse(Status200OK, "Deleted Message", id);
         }
 
         public List<MessageDto> GetList()

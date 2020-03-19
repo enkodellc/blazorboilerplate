@@ -11,6 +11,7 @@ namespace BlazorBoilerplate.Shared.DataModels
         [Required]
         [MaxLength(128)]
         public string Title { get; set; }
+
         public bool IsCompleted { get; set; }
     }
 }

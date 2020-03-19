@@ -1,7 +1,7 @@
-﻿using System;
-using BlazorBoilerplate.Shared.DataInterfaces;
+﻿using BlazorBoilerplate.Shared.DataInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -12,14 +12,14 @@ namespace BlazorBoilerplate.Storage
             changeTracker.DetectChanges();
             ApplicationDbContext dbContext = (ApplicationDbContext)changeTracker.Context;
             Guid userId = Guid.Empty;
-            var timestamp = DateTime.UtcNow;
+            DateTime timestamp = DateTime.UtcNow;
 
             if (userSession.UserId != Guid.Empty)
             {
                 userId = userSession.UserId;
             }
 
-            foreach (var entry in changeTracker.Entries())
+            foreach (EntityEntry entry in changeTracker.Entries())
             {
                 //Auditable Entity Model
                 if (entry.Entity is IAuditable)
@@ -28,12 +28,6 @@ namespace BlazorBoilerplate.Storage
                     {
                         entry.Property("CreatedOn").CurrentValue = timestamp;
                         entry.Property("CreatedBy").CurrentValue = userId;
-
-                        //Add TenantId to Claims so we can store it in the future
-                        if (entry.Entity is ITenant)
-                        {
-                            entry.Property("TenantId").CurrentValue = userSession.TenantId;
-                        }
                     }
 
                     if (entry.State == EntityState.Deleted || entry.State == EntityState.Modified)
@@ -41,6 +35,12 @@ namespace BlazorBoilerplate.Storage
                         entry.Property("ModifiedOn").CurrentValue = timestamp;
                         entry.Property("ModifiedBy").CurrentValue = userId;
                     }
+                }
+
+                //Add TenantId to Claims so we can store it in the future
+                if (entry.Entity is ITenant)
+                {
+                    entry.Property("TenantId").CurrentValue = userSession.TenantId;
                 }
 
                 //Soft Delete Entity Model
