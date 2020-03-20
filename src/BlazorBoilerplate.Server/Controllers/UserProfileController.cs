@@ -1,14 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Managers;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using BlazorBoilerplate.Shared.Dto;
+﻿using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.Dto.Account;
-using Microsoft.AspNetCore.Http;
-using IdentityModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -26,14 +22,14 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // GET: api/UserProfile
         [HttpGet("Get")]
-        public async Task<ApiResponse> Get() 
+        public async Task<ApiResponse> Get()
             => await _userProfileManager.Get();
 
         // POST: api/UserProfile
         [HttpPost("Upsert")]
-        public async Task<ApiResponse> Upsert(UserProfileDto userProfile) 
-            => ModelState.IsValid ? 
+        public async Task<ApiResponse> Upsert(UserProfileDto userProfile)
+            => ModelState.IsValid ?
                 await _userProfileManager.Upsert(userProfile) :
-                new ApiResponse(400, "User Model is Invalid");
+                new ApiResponse(Status400BadRequest, "User Model is Invalid");
     }
 }

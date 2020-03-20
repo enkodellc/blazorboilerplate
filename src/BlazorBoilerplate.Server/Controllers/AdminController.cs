@@ -1,10 +1,10 @@
-﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Shared.Dto.Admin;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Shared.Dto.Admin;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -40,17 +40,17 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpGet("Role/{roleName}")]
         [Authorize]
-        public async Task<ApiResponse> GetRoleAsync(string roleName) 
+        public async Task<ApiResponse> GetRoleAsync(string roleName)
             => await _adminManager.GetRoleAsync(roleName);
 
         [HttpPost("Role")]
         [Authorize(Permissions.Role.Create)]
-        public async Task<ApiResponse> CreateRoleAsync([FromBody] RoleDto newRole) 
+        public async Task<ApiResponse> CreateRoleAsync([FromBody] RoleDto newRole)
             => await _adminManager.CreateRoleAsync(newRole);
 
         [HttpPut("Role")]
         [Authorize(Permissions.Role.Update)]
-        public async Task<ApiResponse> UpdateRoleAsync([FromBody] RoleDto newRole) 
+        public async Task<ApiResponse> UpdateRoleAsync([FromBody] RoleDto newRole)
             => await _adminManager.UpdateRoleAsync(newRole);
 
         // DELETE: api/Admin/Role/5

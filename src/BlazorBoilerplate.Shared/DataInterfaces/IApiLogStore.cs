@@ -1,13 +1,14 @@
-﻿using System;
+﻿using BlazorBoilerplate.Shared.Dto;
+using System;
 using System.Collections.Generic;
-using BlazorBoilerplate.Shared.Dto;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.DataInterfaces
 {
     public interface IApiLogStore
     {
-        List<ApiLogItemDto> Get();
+        Task<List<ApiLogItemDto>> Get(); 
 
-        List<ApiLogItemDto> GetByUserId(Guid userId);
+        Task<List<ApiLogItemDto>> GetByUserId(Guid userId);
     }
 }

@@ -15,6 +15,7 @@ using MailKit.Net.Pop3;
 using MailKit.Net.Smtp;
 using MailKit.Search;
 using Microsoft.Extensions.Logging;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using MimeKit;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -63,11 +64,11 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 await SendEmailAsync(email);
-                return new ApiResponse(200, "Email Successfuly Sent");
+                return new ApiResponse(Status200OK, "Email Successfuly Sent");
             }
             catch (Exception ex)
             {
-                return new ApiResponse(500, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.Message);
             }
         }
 
@@ -75,7 +76,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             throw new System.NotImplementedException();
         }
-        
+
                 public List<EmailMessageDto> ReceiveEmail(int maxCount = 10)
         {
             throw new NotImplementedException();
@@ -122,12 +123,12 @@ namespace BlazorBoilerplate.Server.Managers
                     }
 
                     await emailClient.DisconnectAsync(true);
-                    return new ApiResponse(200, null, emails);
+                    return new ApiResponse(Status200OK, null, emails);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError("Imap Email Retrieval failed: {0}", ex.Message);
-                    return new ApiResponse(500, ex.Message);
+                    return new ApiResponse(Status500InternalServerError, ex.Message);
                 }
             }
         }
@@ -169,11 +170,11 @@ namespace BlazorBoilerplate.Server.Managers
                     }
 
                     await emailClient.DisconnectAsync(true);
-                    return new ApiResponse(200, null, emails);
+                    return new ApiResponse(Status200OK, null, emails);
                 }
                 catch (Exception ex)
                 {
-                    return new ApiResponse(500, ex.Message);
+                    return new ApiResponse(Status500InternalServerError, ex.Message);
                 }
             }
         }
@@ -240,7 +241,7 @@ namespace BlazorBoilerplate.Server.Managers
             catch (Exception ex)
             {
                 _logger.LogError("Email Send Failed: {0}", ex.Message);
-                return new ApiResponse(500, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.Message);
             }
         }
     }

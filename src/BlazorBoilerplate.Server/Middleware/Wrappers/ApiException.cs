@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Middleware.Wrappers
 {
@@ -11,27 +13,27 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         public string ReferenceDocumentLink { get; set; }
 
         public ApiException(string message,
-                            int statusCode = 500,
+                            int statusCode = Status500InternalServerError,
                             string errorCode = "",
                             string refLink = "") :
             base(message)
         {
-            this.IsModelValidatonError = false;
-            this.StatusCode = statusCode;
-            this.ReferenceErrorCode = errorCode;
-            this.ReferenceDocumentLink = refLink;
+            IsModelValidatonError = false;
+            StatusCode = statusCode;
+            ReferenceErrorCode = errorCode;
+            ReferenceDocumentLink = refLink;
         }
 
-        public ApiException(IEnumerable<ValidationError> errors, int statusCode = 400)
+        public ApiException(IEnumerable<ValidationError> errors, int statusCode = Status400BadRequest)
         {
-            this.IsModelValidatonError = true;
-            this.StatusCode = statusCode;
-            this.Errors = errors;
+            IsModelValidatonError = true;
+            StatusCode = statusCode;
+            Errors = errors;
         }
 
-        public ApiException(System.Exception ex, int statusCode = 500) : base(ex.Message)
+        public ApiException(Exception ex, int statusCode = Status500InternalServerError) : base(ex.Message)
         {
-            this.IsModelValidatonError = false;
+            IsModelValidatonError = false;
             StatusCode = statusCode;
         }
     }

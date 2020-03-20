@@ -15,7 +15,7 @@ using BlazorBoilerplate.CommonUI.States;
 
 using MatBlazor;
 
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components;
 
 using System.Net.Http;
@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -49,9 +50,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Serilog;
 using System.Reflection;
-using Microsoft.AspNetCore.Components.Authorization;
+using BlazorBoilerplate.Server.Data;
+
 
 namespace BlazorBoilerplate.Server
 {
@@ -74,7 +77,8 @@ namespace BlazorBoilerplate.Server
             var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
 
             services.RegisterStorage(Configuration);
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName();
+            var migrationsAssemblyName = migrationsAssembly.Name;
             var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
                 ? Configuration.GetConnectionString("DefaultConnection")
@@ -84,15 +88,15 @@ namespace BlazorBoilerplate.Server
             {
                 if (useSqlServer)
                 {
-                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
                 }
                 else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
                 {
-                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssemblyName));
                 }
                 else
                 {
-                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
                 }
             }
 
@@ -106,6 +110,9 @@ namespace BlazorBoilerplate.Server
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
+
+            // cookie policy to deal with temporary browser incompatibilities
+            services.AddSameSiteCookiePolicy();
 
             // Adds IdentityServer
             var identityServerBuilder = services.AddIdentityServer(options =>
@@ -280,22 +287,22 @@ namespace BlazorBoilerplate.Server
                 }
             });
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+            //            services.Configure<CookiePolicyOptions>(options =>
+            //            {
+            //                options.MinimumSameSitePolicy = SameSiteMode.None;
+            //            });
 
-            services.ConfigureExternalCookie(options =>
-            {
-                // macOS login fix
-                options.Cookie.SameSite = SameSiteMode.None;
-            });
+            //services.ConfigureExternalCookie(options =>
+            // {
+            // macOS login fix
+            //options.Cookie.SameSite = SameSiteMode.None;
+            //});
 
             services.ConfigureApplicationCookie(options =>
             {
                 // macOS login fix
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.HttpOnly = false;
+                //options.Cookie.SameSite = SameSiteMode.None;
+                //options.Cookie.HttpOnly = false;
 
                 // Suppress redirect on API URLs in ASP.NET Core -> https://stackoverflow.com/a/56384729/54159
                 options.Events = new CookieAuthenticationEvents()
@@ -304,14 +311,14 @@ namespace BlazorBoilerplate.Server
                     {
                         if (context.Request.Path.StartsWithSegments("/api"))
                         {
-                            context.Response.StatusCode = (int)(HttpStatusCode.Forbidden); // https://stackoverflow.com/a/6937030/2906268
+                            context.Response.StatusCode = Status403Forbidden;
                         }
 
                         return Task.CompletedTask;
                     },
                     OnRedirectToLogin = context =>
                     {
-                        context.Response.StatusCode = 401;
+                        context.Response.StatusCode = Status401Unauthorized;
                         return Task.CompletedTask;
                     }
                 };
@@ -324,7 +331,7 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version = "0.8.0";
+                    document.Info.Version = migrationsAssembly.Version.ToString();
                     document.Info.Title = "Blazor Boilerplate";
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
@@ -346,6 +353,7 @@ namespace BlazorBoilerplate.Server
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
 
+            services.AddTransient<ITenantManager, TenantManager>();
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAdminManager, AdminManager>();
             services.AddTransient<IApiLogManager, ApiLogManager>();
@@ -410,6 +418,9 @@ namespace BlazorBoilerplate.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // cookie policy to deal with temporary browser incompatibilities
+            app.UseCookiePolicy();
+
             EmailTemplates.Initialize(env);
 
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())

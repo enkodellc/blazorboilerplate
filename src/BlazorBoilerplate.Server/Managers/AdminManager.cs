@@ -10,6 +10,7 @@ using BlazorBoilerplate.Shared.Dto.Account;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Storage.Core;
 using Microsoft.AspNetCore.Identity;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -24,7 +25,7 @@ namespace BlazorBoilerplate.Server.Managers
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        
+
         public async Task<ApiResponse> GetUsers(int pageSize = 10, int pageNumber = 0)
         {
             // get paginated list of users
@@ -32,8 +33,8 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 var userList = _userManager.Users.AsQueryable();
                 var listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
-                
-                var userDtoList = new List<UserInfoDto>(); // This sucks, but Select isn't async happy, and the passing into a 'ProcessEventAsync' is another level of misdirection 
+
+                var userDtoList = new List<UserInfoDto>(); // This sucks, but Select isn't async happy, and the passing into a 'ProcessEventAsync' is another level of misdirection
                 foreach (var applicationUser in listResponse)
                 {
                     userDtoList.Add(new UserInfoDto
@@ -43,11 +44,11 @@ namespace BlazorBoilerplate.Server.Managers
                         UserName = applicationUser.UserName,
                         Email = applicationUser.Email,
                         UserId = applicationUser.Id,
-                        Roles = await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true) as List<string> 
+                        Roles = await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true) as List<string>
                     });
                 }
-                
-                return new ApiResponse(200, "User list fetched", userDtoList);
+
+                return new ApiResponse(Status200OK, "User list fetched", userDtoList);
             }
             catch (Exception ex)
             {
@@ -58,7 +59,7 @@ namespace BlazorBoilerplate.Server.Managers
         public ApiResponse GetPermissions()
         {
             var permissions = ApplicationPermissions.GetAllPermissionNames();
-            return new ApiResponse(200, "Permissions list fetched", permissions);
+            return new ApiResponse(Status200OK, "Permissions list fetched", permissions);
         }
 
         public async Task<ApiResponse> GetRoles(int pageSize = 10, int pageNumber = 0)
@@ -68,9 +69,9 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 var roleList = _roleManager.Roles.AsQueryable();
                 var listResponse = roleList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
-                
+
                 var roleDtoList = new List<RoleDto>();
-                
+
                 foreach (var role in listResponse)
                 {
                     var claims = await _roleManager.GetClaimsAsync(role);
@@ -82,8 +83,8 @@ namespace BlazorBoilerplate.Server.Managers
                         Permissions = permissions
                     }); ;
                 }
-                
-                return new ApiResponse(200, "Roles list fetched", roleDtoList);
+
+                return new ApiResponse(Status200OK, "Roles list fetched", roleDtoList);
             }
             catch (Exception ex)
             {
@@ -97,7 +98,7 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 var identityRole = await _roleManager.FindByNameAsync(roleName);
-                
+
                 var claims = await _roleManager.GetClaimsAsync(identityRole);
                 var permissions = claims.Where(x => x.Type == "permission").Select(x => ApplicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
@@ -106,8 +107,8 @@ namespace BlazorBoilerplate.Server.Managers
                     Name = roleName,
                     Permissions = permissions
                 };
-                
-                return new ApiResponse(200, "Role fetched", roleDto);
+
+                return new ApiResponse(Status200OK, "Role fetched", roleDto);
             }
             catch (Exception ex)
             {
@@ -121,7 +122,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 // first make sure the role doesn't already exist
                 if (_roleManager.Roles.Any(r => r.Name == newRole.Name))
-                    return new ApiResponse(400, "Role already exists");
+                    return new ApiResponse(Status400BadRequest, "Role already exists");
 
                 // Create the role
                 var result = await _roleManager.CreateAsync(new IdentityRole<Guid>(newRole.Name));
@@ -129,7 +130,7 @@ namespace BlazorBoilerplate.Server.Managers
                 if (!result.Succeeded)
                 {
                     var errorMessage = result.Errors.Select(x => x.Description).Aggregate((i, j) => i + " - " + j);
-                    return new ApiResponse(500, errorMessage);
+                    return new ApiResponse(Status500InternalServerError, errorMessage);
                 }
 
                 // Re-create the permissions
@@ -142,12 +143,12 @@ namespace BlazorBoilerplate.Server.Managers
                     if (!resultAddClaim.Succeeded)
                         await _roleManager.DeleteAsync(role);
                 }
-                
-                return new ApiResponse(200);
+
+                return new ApiResponse(Status200OK, "Role Creation Successful", newRole); //fix a strange System.Text.Json exception shown only in Debug_SSB 
             }
             catch (Exception ex)
             {
-                return new ApiResponse(500, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
 
@@ -157,32 +158,32 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 // first make sure the role already exist
                 if (!_roleManager.Roles.Any(r => r.Name == newRole.Name))
-                    return new ApiResponse(400, "This role doesn't exists");
+                    return new ApiResponse(Status400BadRequest, "This role doesn't exists");
 
                 // Create the permissions
-                var identityRole = await _roleManager.FindByNameAsync(newRole.Name);
+                var role = await _roleManager.FindByNameAsync(newRole.Name);
 
-                var claims = await _roleManager.GetClaimsAsync(identityRole);
+                var claims = await _roleManager.GetClaimsAsync(role);
                 var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => x.Value).ToList();
 
                 foreach (var permission in permissions)
                 {
-                    await _roleManager.RemoveClaimAsync(identityRole, new Claim(ClaimConstants.Permission, permission));
+                    await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, permission));
                 }
 
                 foreach (var claim in newRole.Permissions)
                 {
-                    var result = await _roleManager.AddClaimAsync(identityRole, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
+                    var result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
 
                     if (!result.Succeeded)
-                        await _roleManager.DeleteAsync(identityRole);
+                        await _roleManager.DeleteAsync(role);
                 }
 
-                return new ApiResponse(200);
+                return new ApiResponse(Status200OK, "Role Update Successful", newRole);
             }
             catch (Exception ex)
             {
-                return new ApiResponse(500, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
 
@@ -193,17 +194,17 @@ namespace BlazorBoilerplate.Server.Managers
                 // Check if the role is used by a user
                 var users = await _userManager.GetUsersInRoleAsync(name);
                 if (users.Any())
-                    return new ApiResponse(404, "This role is still used by a user, you cannot delete it");
+                    return new ApiResponse(Status404NotFound, "This role is still used by a user, you cannot delete it");
 
                 // Delete the role
                 var role = await _roleManager.FindByNameAsync(name);
                 await _roleManager.DeleteAsync(role);
 
-                return new ApiResponse(200, "Role Deletion Successful");
+                return new ApiResponse(Status200OK, "Role Deletion Successful");
             }
-            catch
+            catch (Exception ex)
             {
-                return new ApiResponse(400, "Role Deletion Failed");
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
     }

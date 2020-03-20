@@ -1,14 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
 using Message = BlazorBoilerplate.Shared.DataModels.Message;
 using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
@@ -22,7 +23,7 @@ namespace BlazorBoilerplate.Storage
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Todo> Todos { get; set; }
         public DbSet<Message> Messages { get; set; }
-
+        public DbSet<Tenant> Tenants { get; set; }
         private IUserSession _userSession { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUserSession userSession) : base(options)
@@ -38,45 +39,41 @@ namespace BlazorBoilerplate.Storage
                 .WithOne(b => b.ApplicationUser)
                 .HasForeignKey<UserProfile>(b => b.UserId);
 
+            modelBuilder.Entity<Tenant>()
+                .HasOne(t => t.Owner)
+                .WithOne(a => a.Tenant)
+                .HasForeignKey<Tenant>(t => t.OwnerUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.ShadowProperties();
 
             base.OnModelCreating(modelBuilder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+
             modelBuilder.Entity<Message>().ToTable("Messages");
 
             modelBuilder.ApplyConfiguration(new MessageConfiguration());
 
             SetGlobalQueryFilters(modelBuilder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
         }
 
         private void SetGlobalQueryFilters(ModelBuilder modelBuilder)
         {
-            foreach (var tp in modelBuilder.Model.GetEntityTypes())
+            foreach (Microsoft.EntityFrameworkCore.Metadata.IMutableEntityType tp in modelBuilder.Model.GetEntityTypes())
             {
-                var t = tp.ClrType;
+                Type t = tp.ClrType;
 
-                // set global filters
+                // set Tenant Properties
+                if (typeof(ITenant).IsAssignableFrom(t))
+                {
+                    MethodInfo method = SetGlobalQueryForTenantMethodInfo.MakeGenericMethod(t);
+                    method.Invoke(this, new object[] { modelBuilder });
+                }
+
+                // set Soft Delete Property
                 if (typeof(ISoftDelete).IsAssignableFrom(t))
                 {
-                    //TODO future for Tenant
-                    //if (typeof(ITenantEntity).IsAssignableFrom(t))
-                    //{
-                    //    // softdeletable and tenant (note do not filter just ITenant - too much filtering!
-                    //    // just top level classes that have ITenantEntity
-                    //    var method = SetGlobalQueryForSoftDeleteAndTenantMethodInfo.MakeGenericMethod(t);
-                    //    method.Invoke(this, new object[] { modelBuilder });
-                    //}
-                    //else
-                    //{
-                        // softdeletable
-                        var method = SetGlobalQueryForSoftDeleteMethodInfo.MakeGenericMethod(t);
-                        method.Invoke(this, new object[] { modelBuilder });
-                    //}
+                    MethodInfo method = SetGlobalQueryForSoftDeleteMethodInfo.MakeGenericMethod(t);
+                    method.Invoke(this, new object[] { modelBuilder });
                 }
             }
         }
@@ -84,12 +81,20 @@ namespace BlazorBoilerplate.Storage
         private static readonly MethodInfo SetGlobalQueryForSoftDeleteMethodInfo = typeof(ApplicationDbContext).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQueryForSoftDelete");
 
+        private static readonly MethodInfo SetGlobalQueryForTenantMethodInfo = typeof(ApplicationDbContext).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQueryForTenant");
+
         private static readonly MethodInfo SetGlobalQueryForSoftDeleteAndTenantMethodInfo = typeof(ApplicationDbContext).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQueryForSoftDeleteAndTenant");
 
         public void SetGlobalQueryForSoftDelete<T>(ModelBuilder builder) where T : class, ISoftDelete
         {
             builder.Entity<T>().HasQueryFilter(item => !EF.Property<bool>(item, "IsDeleted"));
+        }
+
+        public void SetGlobalQueryForTenant<T>(ModelBuilder builder) where T : class, ISoftDelete
+        {
+            builder.Entity<T>().HasQueryFilter(item => (_userSession.DisableTenantFilter || EF.Property<int>(item, "TenantId") == _userSession.TenantId));
         }
 
         public void SetGlobalQueryForSoftDeleteAndTenant<T>(ModelBuilder builder) where T : class, ISoftDelete, ITenant
@@ -112,4 +117,3 @@ namespace BlazorBoilerplate.Storage
         }
     }
 }
-

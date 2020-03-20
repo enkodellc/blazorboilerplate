@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Sample;
 
 namespace BlazorBoilerplate.Server.Managers

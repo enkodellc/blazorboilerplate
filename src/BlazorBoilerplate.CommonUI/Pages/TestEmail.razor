@@ -4,6 +4,8 @@
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
+@using static Microsoft.AspNetCore.Http.StatusCodes
+
 <h1>Send Email</h1>
 <p>Test out SMTP email sending with MailKit. This will send out an email using a default "Test" template if you have setup your smtp server in <i>appsettings.json</i>.</p>
 <EditForm Model="@emailParameters" OnValidSubmit="@SendEmail">
@@ -34,7 +36,7 @@
         {
             ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Email/Send", emailParameters);
 
-            if (apiResponse.StatusCode == 200)
+            if (apiResponse.StatusCode == Status200OK)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);
             }
