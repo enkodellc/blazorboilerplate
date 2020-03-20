@@ -27,7 +27,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             var userId = new Guid(_httpContextAccessor.HttpContext.User.FindFirst(JwtClaimTypes.Subject).Value);
 
-            var userProfile = _userProfileStore.Get(userId);
+            var userProfile = await _userProfileStore.Get(userId);
 
             return new ApiResponse(Status200OK, "Retrieved User Profile", userProfile);
         }

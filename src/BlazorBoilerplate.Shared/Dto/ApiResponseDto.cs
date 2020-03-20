@@ -3,13 +3,15 @@
 namespace BlazorBoilerplate.Shared.Dto
 {
     [DataContract]
-    public class ApiResponseDto
+    public class ApiResponseDto<T>
     {
         [DataMember]
         public string Version { get; set; }
 
         [DataMember]
         public int StatusCode { get; set; }
+
+        public bool IsSuccessStatusCode => StatusCode / 200 == 1;
 
         [DataMember]
         public bool IsError { get; set; }
@@ -21,6 +23,10 @@ namespace BlazorBoilerplate.Shared.Dto
         public string ResponseException { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public object Result { get; set; }
+        public T Result { get; set; }
     }
+
+    [DataContract]
+    public class ApiResponseDto : ApiResponseDto<object>
+    { }
 }

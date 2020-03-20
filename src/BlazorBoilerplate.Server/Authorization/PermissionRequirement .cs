@@ -35,7 +35,7 @@ namespace BlazorBoilerplate.Server.Authorization
                 return;
             }
 
-            ApplicationUser user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == context.User.Identity.Name);
+            ApplicationUser user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == context.User.Identity.Name);
             if (user == null)
             {
                 return;

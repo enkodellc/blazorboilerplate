@@ -149,7 +149,7 @@
 
     public void OpenDeleteDialog(long todoId)
     {
-        todo = todos.Where(x => x.Id == todoId).FirstOrDefault();
+        todo = todos.Where(x => x.Id == todoId).SingleOrDefault();
         this.deleteDialogOpen = true;
     }
 

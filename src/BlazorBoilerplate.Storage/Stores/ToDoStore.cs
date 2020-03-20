@@ -20,38 +20,22 @@ namespace BlazorBoilerplate.Storage.Stores
         {
             _db = db;
             _autoMapper = autoMapper;
+        }       
+
+        public async Task<List<TodoDto>> GetAll()
+        {
+            return await _autoMapper.ProjectTo<TodoDto>(_db.Todos).ToListAsync();
         }
 
-
-        public List<TodoDto> GetAll()
+        public async Task<TodoDto> GetById(long id)
         {
-            return _autoMapper.ProjectTo<TodoDto>(_db.Todos).ToList();
-        }
-
-        //public async Task<List<TodoDto>> GetAll()
-        //{
-        //    return await _autoMapper.ProjectTo<TodoDto>(_db.Todos).ToListAsync();
-        //}
-
-        public TodoDto GetById(long id)
-        {
-            var todo = _db.Todos.FirstOrDefault(t => t.Id == id);
+            var todo = await _db.Todos.SingleOrDefaultAsync(t => t.Id == id);
 
             if (todo == null)
                 throw new InvalidDataException($"Unable to find Todo with ID: {id}");
 
             return _autoMapper.Map<TodoDto>(todo);
         }
-
-        //public async Task<TodoDto> GetById(long id)
-        //{
-        //    var todo = await _db.Todos.FirstOrDefaultAsync(t => t.Id == id);
-
-        //    if(todo == null)
-        //        throw new InvalidDataException($"Unable to find Todo with ID: {id}");
-
-        //    return _autoMapper.Map<TodoDto>(todo);
-        //}
 
         public async Task<Todo> Create(TodoDto todoDto)
         {
@@ -63,7 +47,7 @@ namespace BlazorBoilerplate.Storage.Stores
 
         public async Task<Todo> Update(TodoDto todoDto)
         {
-            var todo = await _db.Todos.FirstOrDefaultAsync(t => t.Id == todoDto.Id);
+            var todo = await _db.Todos.SingleOrDefaultAsync(t => t.Id == todoDto.Id);
             if (todo == null)
                 throw new InvalidDataException($"Unable to find Todo with ID: {todoDto.Id}");
 
@@ -76,7 +60,7 @@ namespace BlazorBoilerplate.Storage.Stores
 
         public async Task DeleteById(long id)
         {
-            var todo = _db.Todos.FirstOrDefault(t => t.Id == id);
+            var todo = _db.Todos.SingleOrDefault(t => t.Id == id);
 
             if (todo == null)
                 throw new InvalidDataException($"Unable to find Todo with ID: {id}");

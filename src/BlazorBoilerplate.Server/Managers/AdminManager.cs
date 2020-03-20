@@ -144,11 +144,11 @@ namespace BlazorBoilerplate.Server.Managers
                         await _roleManager.DeleteAsync(role);
                 }
 
-                return new ApiResponse(200);
+                return new ApiResponse(Status200OK, "Role Creation Successful", newRole); //fix a strange System.Text.Json exception shown only in Debug_SSB 
             }
             catch (Exception ex)
             {
-                return new ApiResponse(Status500InternalServerError, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
 
@@ -161,29 +161,29 @@ namespace BlazorBoilerplate.Server.Managers
                     return new ApiResponse(Status400BadRequest, "This role doesn't exists");
 
                 // Create the permissions
-                var identityRole = await _roleManager.FindByNameAsync(newRole.Name);
+                var role = await _roleManager.FindByNameAsync(newRole.Name);
 
-                var claims = await _roleManager.GetClaimsAsync(identityRole);
+                var claims = await _roleManager.GetClaimsAsync(role);
                 var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => x.Value).ToList();
 
                 foreach (var permission in permissions)
                 {
-                    await _roleManager.RemoveClaimAsync(identityRole, new Claim(ClaimConstants.Permission, permission));
+                    await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, permission));
                 }
 
                 foreach (var claim in newRole.Permissions)
                 {
-                    var result = await _roleManager.AddClaimAsync(identityRole, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
+                    var result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
 
                     if (!result.Succeeded)
-                        await _roleManager.DeleteAsync(identityRole);
+                        await _roleManager.DeleteAsync(role);
                 }
 
-                return new ApiResponse(200);
+                return new ApiResponse(Status200OK, "Role Update Successful", newRole);
             }
             catch (Exception ex)
             {
-                return new ApiResponse(Status500InternalServerError, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
 
@@ -194,7 +194,7 @@ namespace BlazorBoilerplate.Server.Managers
                 // Check if the role is used by a user
                 var users = await _userManager.GetUsersInRoleAsync(name);
                 if (users.Any())
-                    return new ApiResponse(404, "This role is still used by a user, you cannot delete it");
+                    return new ApiResponse(Status404NotFound, "This role is still used by a user, you cannot delete it");
 
                 // Delete the role
                 var role = await _roleManager.FindByNameAsync(name);
@@ -202,9 +202,9 @@ namespace BlazorBoilerplate.Server.Managers
 
                 return new ApiResponse(Status200OK, "Role Deletion Successful");
             }
-            catch
+            catch (Exception ex)
             {
-                return new ApiResponse(Status400BadRequest, "Role Deletion Failed");
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
     }

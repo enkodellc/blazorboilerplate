@@ -74,14 +74,14 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> Get()
         {
-            return new ApiResponse(Status200OK, "Retrieved Api Log", _apiLogStore.Get());
+            return new ApiResponse(Status200OK, "Retrieved Api Log", await _apiLogStore.Get());
         }
 
         public async Task<ApiResponse> GetByApplicationUserId(Guid applicationUserId)
         {
             try
             {
-                return new ApiResponse(Status200OK, "Retrieved Api Log", _apiLogStore.GetByUserId(applicationUserId));
+                return new ApiResponse(Status200OK, "Retrieved Api Log", await _apiLogStore.GetByUserId(applicationUserId));
             }
             catch (Exception ex)
             {

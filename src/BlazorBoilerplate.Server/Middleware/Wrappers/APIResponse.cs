@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Reflection;
 using System.Runtime.Serialization;
 
 namespace BlazorBoilerplate.Server.Middleware.Wrappers
@@ -12,7 +13,7 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         public string Version { get; set; }
 
         [DataMember]
-        public int StatusCode { get; set; } = 0;
+        public int StatusCode { get; set; }
 
         [DataMember]
         public bool IsError { get; set; }
@@ -27,13 +28,13 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         public object Result { get; set; }
 
         [JsonConstructor]
-        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "0.8.0")
+        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "")
         {
             StatusCode = statusCode;
             Message = message;
             Result = result;
             ResponseException = apiError;
-            Version = apiVersion;
+            Version = string.IsNullOrWhiteSpace(apiVersion) ? Assembly.GetEntryAssembly().GetName().Version.ToString() : apiVersion;
             IsError = false;
         }
 
