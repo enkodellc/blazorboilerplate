@@ -15,6 +15,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
+using BlazorBoilerplate.Server.Data.Core;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -30,9 +33,9 @@ namespace BlazorBoilerplate.Storage
         public DatabaseInitializer(
             ApplicationDbContext context,
             PersistedGrantDbContext persistedGrantContext,
-            ConfigurationDbContext configurationContext, 
+            ConfigurationDbContext configurationContext,
             ILogger<DatabaseInitializer> logger,
-            UserManager<ApplicationUser> userManager, 
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole<Guid>> roleManager)
         {
             _persistedGrantContext = persistedGrantContext;
@@ -56,6 +59,47 @@ namespace BlazorBoilerplate.Storage
 
             //Seed blazorboilerplate data
             await SeedBlazorBoilerplateAsync();
+
+
+            // Create Log table so SQL logging works even when target db did not exist on startup
+            try
+            {
+                await EnsureLogTableCreationAsync().ConfigureAwait(false);
+
+            }
+            catch (SqlException sqlException)
+            {
+                _logger.LogError(sqlException, "error while creating sql log table");
+            }
+        }
+
+        private async Task EnsureLogTableCreationAsync()
+        {
+            // the Serilog SQL logger only works with MSSQL so don't bother if we're not using it
+            if (!_context.Database.IsSqlServer())
+                return;
+
+            // This only works with the default Serilog SQL table layout, primarily a convenience addition
+            // Without this, SQL logging will not work until the project has been started twice (in the case that no db exists initially)
+            using var tr = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable).ConfigureAwait(false);
+            await _context
+                .Database
+                .ExecuteSqlRawAsync("IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = \'dbo\' AND  TABLE_NAME = \'Logs2\'))\r\n" +
+                "PRINT \'Table Exists\';\r\n" +
+                "ELSE\r\n" +
+                "CREATE TABLE [dbo].[Logs2] (\r\n" +
+                "[Id]              INT            IDENTITY (1, 1) NOT NULL,\r\n" +
+                "[Message]         NVARCHAR (MAX) NULL,\r\n" +
+                "[MessageTemplate] NVARCHAR (MAX) NULL,\r\n" +
+                "[Level]           NVARCHAR (MAX) NULL,\r\n" +
+                "[TimeStamp]       DATETIME       NULL,\r\n" +
+                "[Exception]       NVARCHAR (MAX) NULL,\r\n" +
+                "[Properties]      NVARCHAR (MAX) NULL,\r\n" +
+                "CONSTRAINT [PK_Logs2] PRIMARY KEY CLUSTERED ([Id] ASC)\r\n" +
+                ");"
+                 )
+                .ConfigureAwait(false);
+            await tr.CommitAsync().ConfigureAwait(false);
         }
 
         private async Task MigrateAsync()
@@ -265,7 +309,7 @@ namespace BlazorBoilerplate.Storage
                         new Claim(JwtClaimTypes.Email, email),
                         new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber)
-                        
+
 
                     }).Result;
 
