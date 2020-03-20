@@ -77,7 +77,7 @@ namespace BlazorBoilerplate.Server
             var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
 
             services.RegisterStorage(Configuration);
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName();
+            var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName();
             var migrationsAssemblyName = migrationsAssembly.Name;
             var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
