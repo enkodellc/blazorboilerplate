@@ -16,7 +16,6 @@ using BlazorBoilerplate.CommonUI.States;
 using MatBlazor;
 
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 
 using System.Net.Http;
@@ -54,7 +53,6 @@ using Microsoft.Extensions.Hosting;
 
 using Serilog;
 using System.Reflection;
-using Microsoft.AspNetCore.Components.Authorization;
 using BlazorBoilerplate.Server.Data;
 
 
@@ -289,15 +287,15 @@ namespace BlazorBoilerplate.Server
                 }
             });
 
-//            services.Configure<CookiePolicyOptions>(options =>
-//            {
-//                options.MinimumSameSitePolicy = SameSiteMode.None;
-//            });
+            //            services.Configure<CookiePolicyOptions>(options =>
+            //            {
+            //                options.MinimumSameSitePolicy = SameSiteMode.None;
+            //            });
 
             //services.ConfigureExternalCookie(options =>
-           // {
-                // macOS login fix
-                //options.Cookie.SameSite = SameSiteMode.None;
+            // {
+            // macOS login fix
+            //options.Cookie.SameSite = SameSiteMode.None;
             //});
 
             services.ConfigureApplicationCookie(options =>

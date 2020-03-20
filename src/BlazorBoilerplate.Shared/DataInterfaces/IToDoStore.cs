@@ -7,11 +7,9 @@ namespace BlazorBoilerplate.Shared.DataInterfaces
 {
     public interface IToDoStore
     {
-        //Task<List<TodoDto>> GetAll();
-        List<TodoDto> GetAll();
+        Task<List<TodoDto>> GetAll();
 
-        //Task<TodoDto> GetById(long id);
-        TodoDto GetById(long id);
+        Task<TodoDto> GetById(long id);
 
         Task<Todo> Create(TodoDto todoDto);
 

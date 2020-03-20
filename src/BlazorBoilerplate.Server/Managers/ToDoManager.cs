@@ -22,8 +22,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-                var todos = _toDoStore.GetAll();
-                return new ApiResponse(Status200OK, "Retrieved Todos", todos);
+                return new ApiResponse(Status200OK, "Retrieved Todos", await _toDoStore.GetAll());
             }
             catch (Exception ex)
             {
@@ -35,8 +34,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-                var todo = _toDoStore.GetById(id);
-                return new ApiResponse(Status200OK, "Retrieved Todo", todo);
+                return new ApiResponse(Status200OK, "Retrieved Todo", await _toDoStore.GetById(id));
             }
             catch (Exception e)
             {
@@ -54,8 +52,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-                var todo = await _toDoStore.Update(todoDto);
-                return new ApiResponse(Status200OK, "Updated Todo", todo);
+                return new ApiResponse(Status200OK, "Updated Todo", await _toDoStore.Update(todoDto));
             }
             catch (InvalidDataException dataException)
             {

@@ -99,7 +99,7 @@ else
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@user.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@user.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
                     <MatTextField @bind-Value="@user.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
@@ -162,7 +162,6 @@ else
     bool createUserDialogOpen = false;
     bool editDialogOpen = false;
     bool deleteUserDialogOpen = false;
-    bool createRoleDialogOpen = false;
     bool resetPasswordDialogOpen = false;
 
     ApiResponseDto apiResponse;
@@ -205,7 +204,7 @@ else
     public void OpenEditDialog(Guid userId)
     {
         user = new UserInfoDto(); // reset user object
-        user = users.Where(x => x.UserId == userId).FirstOrDefault();  // load the user information into the temp user object for worry free editing
+        user = users.Where(x => x.UserId == userId).SingleOrDefault();  // load the user information into the temp user object for worry free editing
         foreach (var role in roleSelections)
         {
             if (user.Roles.Contains(role.Name))
@@ -231,7 +230,7 @@ else
 
     public void OpenDeleteDialog(Guid userId)
     {
-        user = users.Where(x => x.UserId == userId).FirstOrDefault();
+        user = users.Where(x => x.UserId == userId).SingleOrDefault();
         this.deleteUserDialogOpen = true;
     }
 

@@ -139,7 +139,7 @@ else
     {
         currentRoleName = roleName;
 
-        isInsertOperation = (roleName == "");
+        isInsertOperation = string.IsNullOrWhiteSpace(roleName);
 
         // Update the UI
         if (isInsertOperation)
@@ -155,8 +155,8 @@ else
 
         // Retrieve the role
         RoleDto role = null;
-        isCurrentRoleReadOnly = (roleName != "");
-        if (roleName != "")
+
+        if (!isInsertOperation)
         {
             var roleResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Admin/Role/" + roleName);
             role = Newtonsoft.Json.JsonConvert.DeserializeObject<RoleDto>(roleResponse.Result.ToString());
@@ -165,6 +165,7 @@ else
         // Setup the permissions
         var response = await Http.GetJsonAsync<ApiResponseDto>("api/Admin/Permissions");
         permissionsSelections.Clear();
+
         try
         {
             var permissions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Result.ToString());
@@ -184,7 +185,7 @@ else
             return;
         }
 
-        this.isUpsertRoleDialogOpen = true;
+        isUpsertRoleDialogOpen = true;
     }
 
     public async Task UpsertRole()

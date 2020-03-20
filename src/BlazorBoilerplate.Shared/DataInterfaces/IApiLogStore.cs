@@ -7,10 +7,8 @@ namespace BlazorBoilerplate.Shared.DataInterfaces
 {
     public interface IApiLogStore
     {
-        //Task<List<ApiLogItemDto>> Get();
-        List<ApiLogItemDto> Get();        
+        Task<List<ApiLogItemDto>> Get(); 
 
-        //Task<List<ApiLogItemDto>> GetByUserId(Guid userId);
-        List<ApiLogItemDto> GetByUserId(Guid userId);
+        Task<List<ApiLogItemDto>> GetByUserId(Guid userId);
     }
 }

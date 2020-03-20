@@ -144,7 +144,7 @@ namespace BlazorBoilerplate.Server.Managers
                         await _roleManager.DeleteAsync(role);
                 }
 
-                return new ApiResponse(200);
+                return new ApiResponse(Status200OK);
             }
             catch (Exception ex)
             {
@@ -179,7 +179,7 @@ namespace BlazorBoilerplate.Server.Managers
                         await _roleManager.DeleteAsync(identityRole);
                 }
 
-                return new ApiResponse(200);
+                return new ApiResponse(Status200OK);
             }
             catch (Exception ex)
             {
@@ -194,7 +194,7 @@ namespace BlazorBoilerplate.Server.Managers
                 // Check if the role is used by a user
                 var users = await _userManager.GetUsersInRoleAsync(name);
                 if (users.Any())
-                    return new ApiResponse(404, "This role is still used by a user, you cannot delete it");
+                    return new ApiResponse(Status404NotFound, "This role is still used by a user, you cannot delete it");
 
                 // Delete the role
                 var role = await _roleManager.FindByNameAsync(name);

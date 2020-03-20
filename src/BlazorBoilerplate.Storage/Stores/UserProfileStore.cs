@@ -23,12 +23,10 @@ namespace BlazorBoilerplate.Storage.Stores
             var userProfile = await (from userProf in _applicationDbContext.UserProfiles
                                      join user in _applicationDbContext.Users on userProf.UserId equals user.Id
                                      where user.UserName == userName
-                                     select userProf).FirstOrDefaultAsync();
+                                     select userProf).SingleOrDefaultAsync();
 
             if (userProfile != null)
-            {
-                lastPageVisited = !String.IsNullOrEmpty(userProfile.LastPageVisited) ? userProfile.LastPageVisited : lastPageVisited;
-            }
+                lastPageVisited = !string.IsNullOrEmpty(userProfile.LastPageVisited) ? userProfile.LastPageVisited : lastPageVisited;
 
             return lastPageVisited;
         }
@@ -37,25 +35,22 @@ namespace BlazorBoilerplate.Storage.Stores
         public async Task<UserProfileDto> Get(Guid userId)
         {
             var profileQuery = from userProf in _applicationDbContext.UserProfiles
-                where userProf.UserId == userId
-                select userProf;
+                               where userProf.UserId == userId
+                               select userProf;
 
-            var userProfile = new UserProfileDto();
-            if (!profileQuery.Any())
+            var userProfile = new UserProfileDto
             {
-                userProfile = new UserProfileDto
-                {
-                    UserId = userId
-                };
-            }
-            else
+                UserId = userId
+            };
+
+            var profile = await profileQuery.SingleOrDefaultAsync();
+
+            if (profile != null)
             {
-                var profile = profileQuery.First();
                 userProfile.Count = profile.Count;
                 userProfile.IsNavOpen = profile.IsNavOpen;
                 userProfile.LastPageVisited = profile.LastPageVisited;
                 userProfile.IsNavMinified = profile.IsNavMinified;
-                userProfile.UserId = userId;
             }
 
             return userProfile;
@@ -63,43 +58,40 @@ namespace BlazorBoilerplate.Storage.Stores
 
         public async Task Upsert(UserProfileDto userProfileDto)
         {
-            var profileQuery = from prof in _applicationDbContext.UserProfiles where prof.UserId == userProfileDto.UserId select prof;
-            if (profileQuery.Any())
-            {
-                var profile = profileQuery.First();
+            var profileQuery = from prof in _applicationDbContext.UserProfiles
+                               where prof.UserId == userProfileDto.UserId
+                               select prof;
 
-                profile.Count = userProfileDto.Count;
-                profile.IsNavOpen = userProfileDto.IsNavOpen;
-                profile.LastPageVisited = userProfileDto.LastPageVisited;
-                profile.IsNavMinified = userProfileDto.IsNavMinified;
-                profile.LastUpdatedDate = DateTime.Now;
-                _applicationDbContext.UserProfiles.Update(profile);
-            }
-            else
-            {
-                var profile = new UserProfile
-                {
-                    UserId = userProfileDto.UserId,
-                    Count = userProfileDto.Count,
-                    IsNavOpen = userProfileDto.IsNavOpen,
-                    LastPageVisited = userProfileDto.LastPageVisited,
-                    IsNavMinified = userProfileDto.IsNavMinified,
-                    LastUpdatedDate = DateTime.Now
-                };
+            var profile = await profileQuery.SingleOrDefaultAsync();
+
+            bool toInsert;
+
+            if (toInsert = profile == null)
+                profile = new UserProfile();
+
+            profile.UserId = userProfileDto.UserId;
+            profile.Count = userProfileDto.Count;
+            profile.IsNavOpen = userProfileDto.IsNavOpen;
+            profile.LastPageVisited = userProfileDto.LastPageVisited;
+            profile.IsNavMinified = userProfileDto.IsNavMinified;
+            profile.LastUpdatedDate = DateTime.Now;
+
+            if (toInsert)
                 _applicationDbContext.UserProfiles.Add(profile);
-            }
+            else
+                _applicationDbContext.UserProfiles.Update(profile);
 
             await _applicationDbContext.SaveChangesAsync(CancellationToken.None);
         }
 
         public async Task DeleteAllApiLogsForUser(Guid userId)
         {
-            var apiLogs = _applicationDbContext.ApiLogs.Where(a => a.ApplicationUserId == userId); // This could be handled in a store, getting rid of the ugliness here.
-            foreach (var apiLog in apiLogs)
-            {
-                _applicationDbContext.ApiLogs.Remove(apiLog);
-            }
-            _applicationDbContext.SaveChanges();
+            var apiLogs = await _applicationDbContext.ApiLogs.Where(a => a.ApplicationUserId == userId).ToArrayAsync(); // This could be handled in a store, getting rid of the ugliness here.
+
+            //TODO change implementation, because with a huge amount of items it will time out 
+            _applicationDbContext.ApiLogs.RemoveRange(apiLogs);
+
+            await _applicationDbContext.SaveChangesAsync(CancellationToken.None);
         }
     }
 }

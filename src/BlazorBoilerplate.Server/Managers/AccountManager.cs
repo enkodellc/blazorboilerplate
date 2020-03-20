@@ -52,21 +52,21 @@ namespace BlazorBoilerplate.Server.Managers
         {
             if (parameters.UserId == null || parameters.Token == null)
             {
-                return new ApiResponse(404, "User does not exist");
+                return new ApiResponse(Status404NotFound, "User does not exist");
             }
 
             var user = await _userManager.FindByIdAsync(parameters.UserId);
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", parameters.UserId);
-                return new ApiResponse(404, "User does not exist");
+                return new ApiResponse(Status404NotFound, "User does not exist");
             }
 
             var token = parameters.Token;
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (!result.Succeeded)
             {
-                _logger.LogInformation("User Email Confirmation Failed: {0}", result.Errors.FirstOrDefault()?.Description);
+                _logger.LogInformation("User Email Confirmation Failed: {0}", string.Join(",", result.Errors.Select(i => i.Description)));
                 return new ApiResponse(Status400BadRequest, "User Email Confirmation Failed");
             }
 
@@ -192,10 +192,10 @@ namespace BlazorBoilerplate.Server.Managers
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", parameters.UserId);
-                return new ApiResponse(404, "User does not exist");
+                return new ApiResponse(Status404NotFound, "User does not exist");
             }
 
-             // TODO: Break this out into it's own self-contained Email Helper service.
+            // TODO: Break this out into it's own self-contained Email Helper service.
 
             try
             {
@@ -241,7 +241,7 @@ namespace BlazorBoilerplate.Server.Managers
             if (user == null)
             {
                 _logger.LogInformation("User does not exist: {0}", userInfo.Email);
-                return new ApiResponse(404, "User does not exist");
+                return new ApiResponse(Status404NotFound, "User does not exist");
             }
 
             user.FirstName = userInfo.FirstName;
@@ -252,7 +252,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (!result.Succeeded)
             {
-                _logger.LogInformation("User Update Failed: {0}", result.Errors.FirstOrDefault()?.Description);
+                _logger.LogInformation("User Update Failed: {0}", string.Join(",", result.Errors.Select(i => i.Description)));
                 return new ApiResponse(Status400BadRequest, "User Update Failed");
             }
 
@@ -274,7 +274,7 @@ namespace BlazorBoilerplate.Server.Managers
                 var result = await _userManager.CreateAsync(user, parameters.Password);
                 if (!result.Succeeded)
                 {
-                    return new ApiResponse(Status400BadRequest, "Register User Failed: " + result.Errors.FirstOrDefault()?.Description);
+                    return new ApiResponse(Status400BadRequest, "Register User Failed: " + string.Join(",", result.Errors.Select(i => i.Description)));
                 }
                 else
                 {
@@ -328,6 +328,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                 var userInfo = new UserInfoDto
                 {
+                    UserId = user.Id,
                     IsAuthenticated = false,
                     UserName = user.UserName,
                     Email = user.Email,
@@ -351,7 +352,7 @@ namespace BlazorBoilerplate.Server.Managers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return new ApiResponse(404, "User does not exist");
+                return new ApiResponse(Status404NotFound, "User does not exist");
             }
             try
             {
@@ -500,12 +501,10 @@ namespace BlazorBoilerplate.Server.Managers
                 await _userManager.CreateAsync(user, password);
 
             if (!createUserResult.Succeeded)
-            {
-                throw new DomainException(createUserResult.Errors.FirstOrDefault()?.Description);
-            }
+                throw new DomainException(string.Join(",", createUserResult.Errors.Select(i => i.Description)));
 
             await _userManager.AddClaimsAsync(user, new Claim[]{
-                    new Claim(Policies.IsUser,""),
+                    new Claim(Policies.IsUser, string.Empty),
                     new Claim(JwtClaimTypes.Name, user.UserName),
                     new Claim(JwtClaimTypes.Email, user.Email),
                     new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
