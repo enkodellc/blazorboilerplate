@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 using AutoMapper;
+
 #if ServerSideBlazor
 
 using BlazorBoilerplate.CommonUI;
@@ -36,7 +37,9 @@ using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
+
 using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -99,8 +102,8 @@ namespace BlazorBoilerplate.Server
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
             services.AddDbContext<ApplicationDbContext>(DbContextOptionsBuilder);
 
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
-                .AddRoles<IdentityRole<Guid>>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -133,7 +136,6 @@ namespace BlazorBoilerplate.Server
 
             X509Certificate2 cert = null;
 
-
             if (_environment.IsDevelopment())
             {
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
@@ -152,7 +154,6 @@ namespace BlazorBoilerplate.Server
                     // if we use a key vault
                     if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UsingKeyVault"]) == true)
                     {
-
                         // if managed app identity is used
                         if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UseManagedAppIdentity"]) == true)
                         {
@@ -177,7 +178,6 @@ namespace BlazorBoilerplate.Server
                         {
                             throw new NotImplementedException();
                         }
-
                     }
                 }
 
@@ -250,6 +250,7 @@ namespace BlazorBoilerplate.Server
                 options.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
                 options.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
                 options.AddPolicy(Policies.IsReadOnly, Policies.IsReadOnlyPolicy());
+                options.AddPolicy(Policies.IsInTenant, Policies.IsInTenantPolicy());
                 options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations
             });
 
@@ -354,6 +355,7 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IMessageManager, MessageManager>();
             services.AddTransient<ITodoManager, ToDoManager>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();
+            services.AddTransient<ITenantManager, TenantManager>();
 
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
             var automapperConfig = new MapperConfiguration(configuration =>
@@ -369,6 +371,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             services.AddScoped<IUserProfileApi, UserProfileApi>();
+            services.AddScoped<ITenantApi, TenantApi>();
             services.AddScoped<AppState>();
             services.AddMatToaster(config =>
             {
@@ -470,7 +473,6 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapFallbackToPage("/index_ssb");
 #endif
             });
-
         }
     }
 }

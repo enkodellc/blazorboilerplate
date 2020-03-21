@@ -23,7 +23,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet("Users")]
-        [Authorize]
+        [Authorize(Permissions.User.Read)]
         public async Task<ApiResponse> GetUsers([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
             => await _adminManager.GetUsers(pageSize, pageNumber);
 

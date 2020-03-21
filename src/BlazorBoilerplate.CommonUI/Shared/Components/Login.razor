@@ -19,6 +19,6 @@
     async Task LogoutClick()
     {
         await ((IdentityAuthenticationStateProvider)authStateProvider).Logout();
-        navigationManager.NavigateTo("/account/login");
+        navigationManager.NavigateTo("/account/login", true);
     }
 }

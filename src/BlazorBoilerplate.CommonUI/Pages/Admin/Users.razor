@@ -21,21 +21,31 @@ else
     <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th><MatButton Icon="person_add" Label="New User" OnClick="@(e => { createUserDialogOpen = true; })"></MatButton></th>
+            <th>
+                <AuthorizeView Context="TenantContext" Policy="@Policies.IsInTenant">
+                            <MatButton Icon="group_add" Label="Invite User" OnClick="@(e => { inviteUserDialogOpen = true; })"></MatButton>
+                </AuthorizeView>
+                <AuthorizeView Policy="@Policies.IsAdmin">
+                        <MatButton Icon="person_add" Label="New User" OnClick="@(e => { createUserDialogOpen = true; })"></MatButton>
+                </AuthorizeView>
+            </th>
             <th>User Name</th>
             <th>Email</th>
             <th>Roles</th>
         </MatTableHeader>
-        <MatTableRow Context="UserRow">           
+        <MatTableRow Context="UserRow">
             <td>
                 <div style="width:155px;">
-                    <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
+                    <AuthorizeView Policy="@Permissions.User.Update" Context="AuthorizeContext">
                         <Authorized>
                             <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
                         </Authorized>
                         <NotAuthorized>
                             <MatIconButton Icon="edit" Disabled="true"></MatIconButton>
                         </NotAuthorized>
+                    </AuthorizeView>
+                    <AuthorizeView Policy="@Policies.IsInTenant">
+                            <MatIconButton Icon="cancel" OnClick="@(() => OpenRemoveDialog(UserRow.UserId))"></MatIconButton>
                     </AuthorizeView>
                     <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))" Disabled="@(UserRow.UserId != userProfile.UserId)"></MatIconButton>
                     <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
@@ -48,7 +58,7 @@ else
                     </AuthorizeView>
                 </div>
             </td>
-                          
+
             <td><div style="width:130px;">@UserRow.UserName</div></td>
             <td>@UserRow.Email</td>
             <td>
@@ -91,6 +101,26 @@ else
     </MatDialogActions>
 </MatDialog>
 
+
+<MatDialog @bind-IsOpen="@inviteUserDialogOpen">
+    <MatDialogTitle>Invite User</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@user" OnValidSubmit="@AddTenantUserAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@user.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { inviteUserDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@AddTenantUserAsync">Invite User</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
 <MatDialog @bind-IsOpen="@editDialogOpen">
     <MatDialogTitle>Edit User</MatDialogTitle>
     <MatDialogContent>
@@ -130,6 +160,18 @@ else
     </MatDialogActions>
 </MatDialog>
 
+
+<MatDialog @bind-IsOpen="@removeUserDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Remove From Tenant</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure you want to remove user "@user.UserName" from tenant?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { removeUserDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@RemoveTenantUserAsync">Remove</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
 <MatDialog @bind-IsOpen="@resetPasswordDialogOpen">
     <MatDialogTitle>Manual Password Reset for @registerParameters.UserName</MatDialogTitle>
     <MatDialogContent>
@@ -160,8 +202,10 @@ else
     int currentPage { get; set; } = 0;
 
     bool createUserDialogOpen = false;
+    bool inviteUserDialogOpen = false;
     bool editDialogOpen = false;
     bool deleteUserDialogOpen = false;
+    bool removeUserDialogOpen = false;
     bool createRoleDialogOpen = false;
     bool resetPasswordDialogOpen = false;
 
@@ -234,6 +278,12 @@ else
     {
         user = users.Where(x => x.UserId == userId).FirstOrDefault();
         this.deleteUserDialogOpen = true;
+    }
+
+    public void OpenRemoveDialog(Guid userId)
+    {
+        user = users.Where(x => x.UserId == userId).FirstOrDefault();
+        this.removeUserDialogOpen = true;
     }
 
     protected void UpdateUserRole(RoleSelection roleSelectionItem)
@@ -356,6 +406,45 @@ else
         else
         {
             matToaster.Add("User Delete Failed", MatToastType.Danger);
+        }
+    }
+
+
+    public async Task AddTenantUserAsync()
+    {
+        try
+        {
+            var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Tenants/Users/{user.UserName}", null);
+            if (apiResponse.StatusCode == 200)
+            {
+                matToaster.Add("User added to tenant", MatToastType.Success);
+                await RetrieveUserListAsync();
+                user = new UserInfoDto();
+                inviteUserDialogOpen = false;
+            }
+            else
+            {
+                matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
+            }
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Failed to add user");
+        }
+    }
+    public async Task RemoveTenantUserAsync()
+    {
+        var apiResponse = await Http.DeleteAsync($"api/Tenants/Users/{user.UserId}");
+        if (apiResponse.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            matToaster.Add("User removed from tenant", MatToastType.Success);
+            await RetrieveUserListAsync();
+            user = new UserInfoDto();
+            removeUserDialogOpen = false;
+        }
+        else
+        {
+            matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
         }
     }
 }

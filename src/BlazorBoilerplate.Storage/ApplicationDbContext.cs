@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Configurations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,17 +17,37 @@ using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
 namespace BlazorBoilerplate.Storage
 {
     //https://trailheadtechnology.com/entity-framework-core-2-1-automate-all-that-boring-boiler-plate/
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>, IApplicationDbContext
     {
         public DbSet<ApiLogItem> ApiLogs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Todo> Todos { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<Book> Books { get; set; }
 
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private IUserSession _userSession { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUserSession userSession) : base(options)
+        public Guid TenantId
         {
+            get
+            {
+                if (_httpContextAccessor.HttpContext != null)
+                {
+                    System.Security.Claims.Claim tenantClaim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(predicate: c => c.Type == Core.ClaimConstants.TenantId);
+                    if (tenantClaim != null) // user belongs to a tenant
+                    {
+                        return Guid.Parse(tenantClaim.Value);
+                    }
+                }
+                return (Tenants.FirstOrDefault(t => t.Title == Core.TenantConstants.RootTenantTitle)).Id;
+            }
+        }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor, IUserSession userSession) : base(options)
+        {
+            _httpContextAccessor = httpContextAccessor;
             _userSession = userSession;
         }
 
@@ -37,6 +58,10 @@ namespace BlazorBoilerplate.Storage
                 .HasOne(a => a.Profile)
                 .WithOne(b => b.ApplicationUser)
                 .HasForeignKey<UserProfile>(b => b.UserId);
+
+            modelBuilder.Entity<Tenant>()
+                .HasIndex(t => t.Title)
+                .IsUnique(true);
 
             modelBuilder.ShadowProperties();
 
@@ -58,25 +83,18 @@ namespace BlazorBoilerplate.Storage
         {
             foreach (var tp in modelBuilder.Model.GetEntityTypes())
             {
-                var t = tp.ClrType;
+                Type t = tp.ClrType;
 
                 // set global filters
+                if (typeof(ITenant).IsAssignableFrom(t))
+                {
+                    MethodInfo method = SetGlobalQueryForTenantMethodInfo.MakeGenericMethod(t);
+                    method.Invoke(this, new object[] { modelBuilder });
+                }
                 if (typeof(ISoftDelete).IsAssignableFrom(t))
                 {
-                    //TODO future for Tenant
-                    //if (typeof(ITenantEntity).IsAssignableFrom(t))
-                    //{
-                    //    // softdeletable and tenant (note do not filter just ITenant - too much filtering!
-                    //    // just top level classes that have ITenantEntity
-                    //    var method = SetGlobalQueryForSoftDeleteAndTenantMethodInfo.MakeGenericMethod(t);
-                    //    method.Invoke(this, new object[] { modelBuilder });
-                    //}
-                    //else
-                    //{
-                        // softdeletable
-                        var method = SetGlobalQueryForSoftDeleteMethodInfo.MakeGenericMethod(t);
-                        method.Invoke(this, new object[] { modelBuilder });
-                    //}
+                    MethodInfo method = SetGlobalQueryForSoftDeleteMethodInfo.MakeGenericMethod(t);
+                    method.Invoke(this, new object[] { modelBuilder });
                 }
             }
         }
@@ -84,19 +102,18 @@ namespace BlazorBoilerplate.Storage
         private static readonly MethodInfo SetGlobalQueryForSoftDeleteMethodInfo = typeof(ApplicationDbContext).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQueryForSoftDelete");
 
-        private static readonly MethodInfo SetGlobalQueryForSoftDeleteAndTenantMethodInfo = typeof(ApplicationDbContext).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQueryForSoftDeleteAndTenant");
+        private static readonly MethodInfo SetGlobalQueryForTenantMethodInfo = typeof(ApplicationDbContext).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQueryForTenant");
 
         public void SetGlobalQueryForSoftDelete<T>(ModelBuilder builder) where T : class, ISoftDelete
         {
             builder.Entity<T>().HasQueryFilter(item => !EF.Property<bool>(item, "IsDeleted"));
         }
 
-        public void SetGlobalQueryForSoftDeleteAndTenant<T>(ModelBuilder builder) where T : class, ISoftDelete, ITenant
+        public void SetGlobalQueryForTenant<T>(ModelBuilder builder) where T : class, ITenant
         {
-            builder.Entity<T>().HasQueryFilter(
-                item => !EF.Property<bool>(item, "IsDeleted") &&
-                        (_userSession.DisableTenantFilter || EF.Property<int>(item, "TenantId") == _userSession.TenantId));
+            builder.Entity<T>().HasQueryFilter(item =>
+            (_userSession.DisableTenantFilter || EF.Property<Guid>(item, "TenantId") == TenantId));
         }
 
         public override int SaveChanges()
@@ -112,4 +129,3 @@ namespace BlazorBoilerplate.Storage
         }
     }
 }
-

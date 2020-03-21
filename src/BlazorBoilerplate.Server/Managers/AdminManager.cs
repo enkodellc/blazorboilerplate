@@ -5,35 +5,54 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Data.Core;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
 using BlazorBoilerplate.Shared.Dto.Admin;
+using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Core;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlazorBoilerplate.Server.Managers
 {
     public class AdminManager : IAdminManager
     {
+        private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AdminManager(UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager)
+        public AdminManager(ApplicationDbContext db,UserManager<ApplicationUser> userManager,
+            RoleManager<ApplicationRole> roleManager, IAuthorizationService authorizationService, IHttpContextAccessor httpContextAccessor)
         {
+            _db = db;
             _userManager = userManager;
             _roleManager = roleManager;
+            _authorizationService = authorizationService;
+            _httpContextAccessor = httpContextAccessor;
         }
-        
+
         public async Task<ApiResponse> GetUsers(int pageSize = 10, int pageNumber = 0)
         {
             // get paginated list of users
             try
             {
-                var userList = _userManager.Users.AsQueryable();
-                var listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
-                
-                var userDtoList = new List<UserInfoDto>(); // This sucks, but Select isn't async happy, and the passing into a 'ProcessEventAsync' is another level of misdirection 
+                IList<ApplicationUser> listResponse;
+                var authorizationResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, Policies.IsInTenant);
+                if (authorizationResult.Succeeded)
+                {
+                    listResponse = await _userManager.GetUsersForClaimAsync(new Claim(ClaimConstants.TenantId, _db.TenantId.ToString()));
+                }
+                else
+                {
+                    var userList = _userManager.Users.AsQueryable();
+                listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
+                }
+
+                var userDtoList = new List<UserInfoDto>(); // This sucks, but Select isn't async happy, and the passing into a 'ProcessEventAsync' is another level of misdirection
                 foreach (var applicationUser in listResponse)
                 {
                     userDtoList.Add(new UserInfoDto
@@ -43,10 +62,10 @@ namespace BlazorBoilerplate.Server.Managers
                         UserName = applicationUser.UserName,
                         Email = applicationUser.Email,
                         UserId = applicationUser.Id,
-                        Roles = await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true) as List<string> 
+                        Roles = await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true) as List<string>
                     });
                 }
-                
+
                 return new ApiResponse(200, "User list fetched", userDtoList);
             }
             catch (Exception ex)
@@ -68,9 +87,9 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 var roleList = _roleManager.Roles.AsQueryable();
                 var listResponse = roleList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
-                
+
                 var roleDtoList = new List<RoleDto>();
-                
+
                 foreach (var role in listResponse)
                 {
                     var claims = await _roleManager.GetClaimsAsync(role);
@@ -82,7 +101,7 @@ namespace BlazorBoilerplate.Server.Managers
                         Permissions = permissions
                     }); ;
                 }
-                
+
                 return new ApiResponse(200, "Roles list fetched", roleDtoList);
             }
             catch (Exception ex)
@@ -97,7 +116,7 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 var identityRole = await _roleManager.FindByNameAsync(roleName);
-                
+
                 var claims = await _roleManager.GetClaimsAsync(identityRole);
                 var permissions = claims.Where(x => x.Type == "permission").Select(x => ApplicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
@@ -106,7 +125,7 @@ namespace BlazorBoilerplate.Server.Managers
                     Name = roleName,
                     Permissions = permissions
                 };
-                
+
                 return new ApiResponse(200, "Role fetched", roleDto);
             }
             catch (Exception ex)
@@ -119,12 +138,19 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
+                // Whenever a tenant specific role is being created, in order to avoid name conflict in AspNetRoles table, we add the tenant title to the role name.
+                var authorizationResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, Policies.IsInTenant);
+                if(authorizationResult.Succeeded)
+                {
+                    string TenantTitle = (await _db.Tenants.FindAsync(_db.TenantId)).Title;
+                    newRole.Name = $"{TenantTitle}.{newRole.Name}";
+                }
                 // first make sure the role doesn't already exist
                 if (_roleManager.Roles.Any(r => r.Name == newRole.Name))
                     return new ApiResponse(400, "Role already exists");
 
                 // Create the role
-                var result = await _roleManager.CreateAsync(new IdentityRole<Guid>(newRole.Name));
+                var result = await _roleManager.CreateAsync(new ApplicationRole(newRole.Name));
 
                 if (!result.Succeeded)
                 {
@@ -133,16 +159,16 @@ namespace BlazorBoilerplate.Server.Managers
                 }
 
                 // Re-create the permissions
-                var role = await _roleManager.FindByNameAsync(newRole.Name);
+                ApplicationRole role = await _roleManager.FindByNameAsync(newRole.Name);
 
                 foreach (var claim in newRole.Permissions)
                 {
                     var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
 
                     if (!resultAddClaim.Succeeded)
-                        await _roleManager.DeleteAsync(role);
+                        throw new Exception("Claims Addition Failed.");
                 }
-                
+
                 return new ApiResponse(200);
             }
             catch (Exception ex)

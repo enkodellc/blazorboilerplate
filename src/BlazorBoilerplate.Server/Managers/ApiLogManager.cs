@@ -11,6 +11,7 @@ using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Stores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -21,17 +22,19 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
         private readonly IMapper _autoMapper;
         private readonly IUserSession _userSession;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IApplicationDbContext db, IUserSession userSession)
+        public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IApplicationDbContext db, IUserSession userSession, IHttpContextAccessor httpContextAccessor)
         {
             _apiLogStore = apiLogStore;
             _db = db;
             _userSession = userSession;
+            _httpContextAccessor = httpContextAccessor;
 
             // Calling Log from the API Middlware results in a disposed ApplicationDBContext. This is here to build a DB Context for logging API Calls
             // If you have a better solution please let me know.
             _optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            
+
             if (Convert.ToBoolean(configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
             {
                 _optionsBuilder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"));
@@ -58,13 +61,13 @@ namespace BlazorBoilerplate.Server.Managers
                 //{
                 //    userSession = new UserSession(currentUser.Result);
                 //}
-            } 
+            }
             else
             {
                 apiLogItem.ApplicationUserId = null;
             }
 
-            using (var dbContext = new ApplicationDbContext(_optionsBuilder.Options, _userSession))
+            using (var dbContext = new ApplicationDbContext(_optionsBuilder.Options, _httpContextAccessor, _userSession))
             {
                 dbContext.ApiLogs.Add(apiLogItem);
                 await dbContext.SaveChangesAsync(CancellationToken.None);

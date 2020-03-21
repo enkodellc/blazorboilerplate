@@ -23,16 +23,16 @@ namespace BlazorBoilerplate.Storage
         private readonly ConfigurationDbContext _configurationContext;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
 
         public DatabaseInitializer(
             ApplicationDbContext context,
             PersistedGrantDbContext persistedGrantContext,
-            ConfigurationDbContext configurationContext, 
+            ConfigurationDbContext configurationContext,
             ILogger<DatabaseInitializer> logger,
-            UserManager<ApplicationUser> userManager, 
-            RoleManager<IdentityRole<Guid>> roleManager)
+            UserManager<ApplicationUser> userManager,
+            RoleManager<ApplicationRole> roleManager)
         {
             _persistedGrantContext = persistedGrantContext;
             _configurationContext = configurationContext;
@@ -59,13 +59,19 @@ namespace BlazorBoilerplate.Storage
 
         private async Task MigrateAsync()
         {
-            await _context.Database.MigrateAsync().ConfigureAwait(false);
-            await _persistedGrantContext.Database.MigrateAsync().ConfigureAwait(false);
-            await _configurationContext.Database.MigrateAsync().ConfigureAwait(false);
+            await _context.Database.MigrateAsync();
+            await _persistedGrantContext.Database.MigrateAsync();
+            await _configurationContext.Database.MigrateAsync();
         }
 
         private async Task SeedASPIdentityCoreAsync()
         {
+            if (!await _context.Tenants.AnyAsync())
+            {
+                _context.Tenants.Add(new Tenant { Title = TenantConstants.RootTenantTitle });
+                await _context.SaveChangesAsync();
+            }
+
             if (!await _context.Users.AnyAsync())
             {
                 //Generating inbuilt accounts
@@ -84,7 +90,7 @@ namespace BlazorBoilerplate.Storage
             {
                 const string adminRoleName = "Administrator";
 
-                IdentityRole<Guid> adminRole = await _roleManager.FindByNameAsync(adminRoleName);
+                ApplicationRole adminRole = await _roleManager.FindByNameAsync(adminRoleName);
                 var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
                 var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
                 var NewClaims = AllClaims.Except(RoleClaims);
@@ -216,11 +222,11 @@ namespace BlazorBoilerplate.Storage
                 if (invalidClaims.Any())
                     throw new Exception("The following claim types are invalid: " + string.Join(", ", invalidClaims));
 
-                IdentityRole<Guid> applicationRole = new IdentityRole<Guid>(roleName);
+                ApplicationRole applicationRole = new ApplicationRole(roleName);
 
                 var result = await _roleManager.CreateAsync(applicationRole);
 
-                IdentityRole<Guid> role = await _roleManager.FindByNameAsync(applicationRole.Name);
+                ApplicationRole role = await _roleManager.FindByNameAsync(applicationRole.Name);
 
                 foreach (string claim in claims.Distinct())
                 {
@@ -264,8 +270,6 @@ namespace BlazorBoilerplate.Storage
                         new Claim(JwtClaimTypes.Email, email),
                         new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber)
-                        
-
                     }).Result;
 
                 //add claims version of roles
@@ -280,7 +284,6 @@ namespace BlazorBoilerplate.Storage
                 {
                     result = await _userManager.AddToRolesAsync(user, roles.Distinct());
                 }
-
                 catch
                 {
                     await _userManager.DeleteAsync(user);

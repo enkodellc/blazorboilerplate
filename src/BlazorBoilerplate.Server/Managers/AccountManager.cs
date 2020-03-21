@@ -21,7 +21,7 @@ namespace BlazorBoilerplate.Server.Managers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<AccountManager> _logger;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IEmailManager _emailManager;
         private readonly IUserProfileStore _userProfileStore;
         private readonly IConfiguration _configuration;
@@ -32,7 +32,7 @@ namespace BlazorBoilerplate.Server.Managers
         public AccountManager(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<AccountManager> logger,
-            RoleManager<IdentityRole<Guid>> roleManager,
+            RoleManager<ApplicationRole> roleManager,
             IEmailManager emailManager,
             IUserProfileStore userProfileStore,
             IConfiguration configuration)
@@ -83,7 +83,8 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(200, "Success");
             }
 
-            // TODO: Break out the email sending here, to a separate class/service etc.. 
+            // TODO: Break out the email sending here, to a separate class/service etc..
+
             #region Forgot Password Email
 
             try
@@ -192,8 +193,8 @@ namespace BlazorBoilerplate.Server.Managers
                 _logger.LogInformation("User does not exist: {0}", parameters.UserId);
                 return new ApiResponse(404, "User does not exist");
             }
-            
-             // TODO: Break this out into it's own self-contained Email Helper service. 
+
+            // TODO: Break this out into it's own self-contained Email Helper service.
 
             try
             {
@@ -261,7 +262,6 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-
                 var user = new ApplicationUser
                 {
                     UserName = parameters.UserName,
@@ -309,7 +309,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                     return new ApiResponse(200, "Create User Success");
                 }
-                
+
                 try
                 {
                     var email = new EmailMessageDto();
@@ -353,7 +353,6 @@ namespace BlazorBoilerplate.Server.Managers
             }
             try
             {
-               
                 //EF: not a fan this will delete old ApiLogs
                 await _userProfileStore.DeleteAllApiLogsForUser(user.Id);
 
@@ -422,7 +421,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                     var rolesToRemove = currentUserRoles
                         .Where(role => !userInfo.Roles.Contains(role)).ToList();
-                    
+
                     await _userManager.RemoveFromRolesAsync(appUser, rolesToRemove).ConfigureAwait(true);
 
                     //HACK to switch to claims auth

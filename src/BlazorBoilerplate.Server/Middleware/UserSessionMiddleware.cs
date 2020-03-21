@@ -14,14 +14,16 @@ namespace BlazorBoilerplate.Server.Middleware
 {
     public class UserSessionMiddleware
     {
-        ILogger<UserSessionMiddleware> _logger;
+        private ILogger<UserSessionMiddleware> _logger;
 
         //https://trailheadtechnology.com/aspnetcore-multi-tenant-tips-and-tricks/
         private readonly RequestDelegate _next;
+
         public UserSessionMiddleware(RequestDelegate next)
         {
             _next = next;
         }
+
         public async Task InvokeAsync(HttpContext httpContext, ILogger<UserSessionMiddleware> logger, IUserSession userSession)
         {
             _logger = logger;
@@ -34,13 +36,11 @@ namespace BlazorBoilerplate.Server.Middleware
                 {
                     userSession.UserId = new Guid(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value);
                     userSession.UserName = httpContext.User.Identity.Name;
-                    userSession.TenantId = -1; // ClaimsHelper.GetClaim<int>(context.User, "tenantid");
                     userSession.Roles = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Role).Select(c => c.Value).ToList();
                 }
 
                 // Call the next delegate/middleware in the pipeline
                 await _next.Invoke(httpContext);
-
             }
             catch (Exception ex)
             {
@@ -75,7 +75,6 @@ namespace BlazorBoilerplate.Server.Middleware
                 };
                 code = ex.StatusCode;
                 httpContext.Response.StatusCode = code;
-
             }
             else if (exception is UnauthorizedAccessException)
             {

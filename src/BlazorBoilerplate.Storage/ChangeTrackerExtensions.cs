@@ -28,12 +28,6 @@ namespace BlazorBoilerplate.Storage
                     {
                         entry.Property("CreatedOn").CurrentValue = timestamp;
                         entry.Property("CreatedBy").CurrentValue = userId;
-
-                        //Add TenantId to Claims so we can store it in the future
-                        if (entry.Entity is ITenant)
-                        {
-                            entry.Property("TenantId").CurrentValue = userSession.TenantId;
-                        }
                     }
 
                     if (entry.State == EntityState.Deleted || entry.State == EntityState.Modified)
@@ -41,6 +35,11 @@ namespace BlazorBoilerplate.Storage
                         entry.Property("ModifiedOn").CurrentValue = timestamp;
                         entry.Property("ModifiedBy").CurrentValue = userId;
                     }
+                }
+
+                if (entry.Entity is ITenant)
+                {
+                    entry.Property("TenantId").CurrentValue = dbContext.TenantId;
                 }
 
                 //Soft Delete Entity Model
