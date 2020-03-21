@@ -29,14 +29,14 @@
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField id="userName" @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField id="userName" @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="2"></MatTextField>
             </div>
             <div class="form-group">
+                <MatButton class="float-right" Type="submit" Raised="true" tabindex="3">Login</MatButton>
                 <MatCheckbox @bind-Value="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
-                <MatButton class="float-right" Type="submit" Raised="true">Login</MatButton>
             </div>
             <hr />
             <div>
@@ -100,7 +100,9 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await js.InvokeVoidAsync("SetFocus", "userName");
+        if (firstRender)
+          await js.InvokeVoidAsync("SetFocus", "userName");
+
         await base.OnAfterRenderAsync(firstRender);
     }
 
