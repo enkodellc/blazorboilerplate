@@ -29,20 +29,20 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         [JsonConstructor]
         public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "0.7.0")
         {
-            this.StatusCode = statusCode;
-            this.Message = message;
-            this.Result = result;
-            this.ResponseException = apiError;
-            this.Version = apiVersion;
-            this.IsError = false;
+            StatusCode = statusCode;
+            Message = message;
+            Result = result;
+            ResponseException = apiError;
+            Version = apiVersion;
+            IsError = false;
         }
 
         public ApiResponse(int statusCode, ApiError apiError)
         {
-            this.StatusCode = statusCode;
-            this.Message = apiError.ExceptionMessage;
-            this.ResponseException = apiError;
-            this.IsError = true;
+            StatusCode = statusCode;
+            Message = apiError.ExceptionMessage;
+            ResponseException = apiError;
+            IsError = true;
         }
     }
 }

@@ -4,7 +4,7 @@ using BlazorBoilerplate.CommonUI.Services.Implementations;
 using BlazorBoilerplate.CommonUI.States;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using MatBlazor;
-using Microsoft.AspNetCore.Blazor.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
@@ -27,6 +27,7 @@ namespace BlazorBoilerplate.Client
                 // config.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  Only works on the server end
             });
 
+            builder.Services.AddBaseAddressHttpClient();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
             builder.Services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             builder.Services.AddLoadingBar();

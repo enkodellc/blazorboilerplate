@@ -3,6 +3,7 @@ using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new ApiResponse(400, "Todo Model is Invalid");
+                return new ApiResponse(Status400BadRequest, "Todo Model is Invalid");
             }
             return await _todoService.Get(id);
         }
@@ -49,7 +50,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new ApiResponse(400, "Todo Model is Invalid");
+                return new ApiResponse(Status400BadRequest, "Todo Model is Invalid");
             }
             return await _todoService.Create(todo);
         }
@@ -61,7 +62,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new ApiResponse(400, "Todo Model is Invalid");
+                return new ApiResponse(Status400BadRequest, "Todo Model is Invalid");
             }
             return await _todoService.Update(todo);
         }                

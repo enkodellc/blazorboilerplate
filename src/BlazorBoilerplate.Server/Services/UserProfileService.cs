@@ -3,6 +3,8 @@ using BlazorBoilerplate.Server.Data;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
+using static Microsoft.AspNetCore.Http.StatusCodes;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +15,7 @@ namespace BlazorBoilerplate.Server.Services
     {
         Task<ApiResponse> Get(Guid userId);
         Task<ApiResponse> Upsert(UserProfileDto userProfile);
-        string GetLastPageVisited(string userName);
+        Task<string> GetLastPageVisited(string userName);
     }
     public class UserProfileService : IUserProfileService
     {
@@ -26,17 +28,17 @@ namespace BlazorBoilerplate.Server.Services
             _autoMapper = autoMapper;
         }
 
-        public string GetLastPageVisited(string userName)
+        public async Task<string> GetLastPageVisited(string userName)
         {
             string lastPageVisited = "/dashboard";
-            var userProfile = from userProf in _db.UserProfiles
-                              join user in _db.Users on userProf.UserId equals user.Id
-                              where user.UserName == userName
-                              select userProf;
+            var userProfile = await (from userProf in _db.UserProfiles
+                                     join user in _db.Users on userProf.UserId equals user.Id
+                                     where user.UserName == userName
+                                     select userProf).FirstOrDefaultAsync();
 
-            if (userProfile.Any())
+            if (userProfile != null)
             {
-                lastPageVisited = !String.IsNullOrEmpty(userProfile.First().LastPageVisited) ? userProfile.First().LastPageVisited : lastPageVisited;
+                lastPageVisited = !String.IsNullOrEmpty(userProfile.LastPageVisited) ? userProfile.LastPageVisited : lastPageVisited;
             }
 
             return lastPageVisited;
@@ -49,7 +51,7 @@ namespace BlazorBoilerplate.Server.Services
                                select userProf;
 
             UserProfileDto userProfile = new UserProfileDto();
-            if (!profileQuery.Any())
+            if (!await profileQuery.AnyAsync())
             {
                 userProfile = new UserProfileDto
                 {
@@ -58,7 +60,7 @@ namespace BlazorBoilerplate.Server.Services
             }
             else
             {
-                UserProfile profile = profileQuery.First();
+                UserProfile profile = await profileQuery.FirstAsync();
                 userProfile.Count = profile.Count;
                 userProfile.IsNavOpen = profile.IsNavOpen;
                 userProfile.LastPageVisited = profile.LastPageVisited;
@@ -66,7 +68,7 @@ namespace BlazorBoilerplate.Server.Services
                 userProfile.UserId = userId;
             }
 
-            return new ApiResponse(200, "Retrieved User Profile", userProfile);
+            return new ApiResponse(Status200OK, "Retrieved User Profile", userProfile);
         }
 
         public async Task<ApiResponse> Upsert(UserProfileDto userProfileDto)
@@ -105,12 +107,12 @@ namespace BlazorBoilerplate.Server.Services
 
                 await _db.SaveChangesAsync();
 
-                return new ApiResponse(200, "Updated User Profile");
+                return new ApiResponse(Status200OK, "Updated User Profile");
             }
             catch (Exception ex)
             {
                 string test = ex.Message;
-                return new ApiResponse(400, "Failed to Retrieve User Profile");
+                return new ApiResponse(Status400BadRequest, "Failed to Retrieve User Profile");
             }
         }
     }

@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,29 +36,23 @@ namespace BlazorBoilerplate.Server.Authorization
             PermissionRequirement requirement)
         {
             if (context.User == null)
-            {
                 return;
-            }
 
-            ApplicationUser user = _context.Users.FirstOrDefault(u => u.UserName == context.User.Identity.Name);
+            ApplicationUser user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == context.User.Identity.Name);
+
             if (user == null)
-            {
                 return;
-            }
 
             var roleClaims = from ur in _context.UserRoles
-                         where ur.UserId == user.Id
-                         join r in _context.Roles on ur.RoleId equals r.Id
-                         join rc in _context.RoleClaims on r.Id equals rc.RoleId
-                         select rc;
-            if (roleClaims.Any(c => c.ClaimValue == requirement.Permission))
-            {
+                             where ur.UserId == user.Id
+                             join r in _context.Roles on ur.RoleId equals r.Id
+                             join rc in _context.RoleClaims on r.Id equals rc.RoleId
+                             select rc;
+
+            if (await roleClaims.AnyAsync(c => c.ClaimValue == requirement.Permission))
                 context.Succeed(requirement);
-            }
             else
-            {
                 context.Fail();
-            }
         }
     }
 }

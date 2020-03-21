@@ -3,6 +3,8 @@
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
+@using static Microsoft.AspNetCore.Http.StatusCodes
+
 <h1>Blazor / .NET Core Middleware Audit Log</h1>
 <p>
     This is an example of the .NET Core Middleware that logs all API calls into the database. We filter out "api/account" calls for Login / Logout / GetUser to keep it somewhat reasonable.
@@ -24,7 +26,7 @@ else
 {
     <MatTable Items="@apiLogItems" Class="mat-elevation-z5" Striped="true" PageSize="10">
         <MatTableHeader>
-            <th><div style="width:175px;"><MatFAB  Icon="refresh" OnClick="@(() => LoadData())" Raised="true" Mini="true" Style="margin-right:16px;"></MatFAB> Date / Time</div></th>
+            <th><div style="width:175px;"><MatFAB Icon="refresh" OnClick="@(() => LoadData())" Raised="true" Mini="true" Style="margin-right:16px;"></MatFAB> Date / Time</div></th>
             <th>Http Code</th>
             <th>IP Address</th>
             <th>Method</th>
@@ -58,7 +60,7 @@ else
     {
         ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/apilog");
 
-        if (apiResponse.StatusCode == 200)
+        if (apiResponse.StatusCode == Status200OK)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "Api Log Items Retrieved");
             apiLogItems = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiLogItemDto[]>(apiResponse.Result.ToString()).ToList<ApiLogItemDto>();

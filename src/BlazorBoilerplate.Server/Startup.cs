@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -17,9 +16,9 @@ using BlazorBoilerplate.CommonUI.States;
 
 using MatBlazor;
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
+using System.Linq;
 using System.Net.Http;
 
 #endif
@@ -40,12 +39,11 @@ using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
@@ -72,7 +70,8 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName();
+            var migrationsAssemblyName = migrationsAssembly.Name;
             var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
                 ? Configuration.GetConnectionString("DefaultConnection")
@@ -84,15 +83,15 @@ namespace BlazorBoilerplate.Server
             {
                 if (useSqlServer)
                 {
-                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
                 }
                 else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
                 {
-                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssemblyName));
                 }
                 else
                 {
-                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
                 }
             }
 
@@ -107,6 +106,9 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
 
+            // cookie policy to deal with temporary browser incompatibilities
+            services.AddSameSiteCookiePolicy();
+
             // Adds IdentityServer
             var identityServerBuilder = services.AddIdentityServer(options =>
             {
@@ -116,22 +118,19 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
+            .AddConfigurationStore(options =>
+            {
+                options.ConfigureDbContext = DbContextOptionsBuilder;
+            })
+            .AddOperationalStore(options =>
+            {
+                options.ConfigureDbContext = DbContextOptionsBuilder;
 
-
-
-              .AddConfigurationStore(options =>
-              {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
-              })
-              .AddOperationalStore(options =>
-              {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
-
-                  // this enables automatic token cleanup. this is optional.
-                  options.EnableTokenCleanup = true;
-                  options.TokenCleanupInterval = 3600; //In Seconds 1 hour
-              })
-              .AddAspNetIdentity<ApplicationUser>();
+                // this enables automatic token cleanup. this is optional.
+                options.EnableTokenCleanup = true;
+                options.TokenCleanupInterval = 3600; //In Seconds 1 hour
+            })
+            .AddAspNetIdentity<ApplicationUser>();
 
             X509Certificate2 cert = null;
 
@@ -281,23 +280,9 @@ namespace BlazorBoilerplate.Server
                 }
             });
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            services.ConfigureExternalCookie(options =>
-            {
-                // macOS login fix
-                options.Cookie.SameSite = SameSiteMode.None;
-            });
 
             services.ConfigureApplicationCookie(options =>
             {
-                // macOS login fix
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.HttpOnly = false;
-
                 // Suppress redirect on API URLs in ASP.NET Core -> https://stackoverflow.com/a/56384729/54159
                 options.Events = new CookieAuthenticationEvents()
                 {
@@ -305,14 +290,14 @@ namespace BlazorBoilerplate.Server
                     {
                         if (context.Request.Path.StartsWithSegments("/api"))
                         {
-                            context.Response.StatusCode = (int)(HttpStatusCode.Forbidden);// https://stackoverflow.com/a/6937030/2906268
+                            context.Response.StatusCode = Status403Forbidden;
                         }
 
                         return Task.CompletedTask;
                     },
                     OnRedirectToLogin = context =>
                     {
-                        context.Response.StatusCode = 401;
+                        context.Response.StatusCode = Status401Unauthorized;
                         return Task.CompletedTask;
                     }
                 };
@@ -325,7 +310,7 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version = "0.7.0";
+                    document.Info.Version = migrationsAssembly.Version.ToString();
                     document.Info.Title = "Blazor Boilerplate";
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
@@ -334,12 +319,6 @@ namespace BlazorBoilerplate.Server
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the Client Side / Webassembly Version.";
 #endif
                 };
-            });
-
-            services.AddResponseCompression(opts =>
-            {
-                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                    new[] { "application/octet-stream" });
             });
 
             services.AddScoped<IUserSession, UserSession>();
@@ -412,6 +391,9 @@ namespace BlazorBoilerplate.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // cookie policy to deal with temporary browser incompatibilities
+            app.UseCookiePolicy();
+
             EmailTemplates.Initialize(env);
 
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -419,8 +401,6 @@ namespace BlazorBoilerplate.Server
                 var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
                 databaseInitializer.SeedAsync().Wait();
             }
-
-            app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
 
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
@@ -430,7 +410,7 @@ namespace BlazorBoilerplate.Server
             {
                 app.UseDeveloperExceptionPage();
 #if ClientSideBlazor
-                app.UseBlazorDebugging();
+                app.UseWebAssemblyDebugging();
 #endif
             }
             else
@@ -443,7 +423,7 @@ namespace BlazorBoilerplate.Server
             app.UseStaticFiles();
 
 #if ClientSideBlazor
-            app.UseClientSideBlazorFiles<Client.Program>();
+            app.UseBlazorFrameworkFiles();
 #endif
 
             app.UseRouting();
@@ -466,7 +446,7 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
 
 #if ClientSideBlazor
-                endpoints.MapFallbackToClientSideBlazor<Client.Program>("index_csb.html");
+                endpoints.MapFallbackToFile("index_csb.html");
 #else
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/index_ssb");

@@ -15,23 +15,23 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
 
         public ApiError(string message)
         {
-            this.ExceptionMessage = message;
-            this.IsError = true;
+            ExceptionMessage = message;
+            IsError = true;
         }
 
         public ApiError(string message, IEnumerable<ValidationError> validationErrors)
         {
-            this.ExceptionMessage = message;
-            this.ValidationErrors = validationErrors;
+            ExceptionMessage = message;
+            ValidationErrors = validationErrors;
         }
 
         public ApiError(ModelStateDictionary modelState)
         {
-            this.IsError = true;
+            IsError = true;
             if (modelState != null && modelState.Any(m => m.Value.Errors.Count > 0))
             {
-                this.ExceptionMessage = "Please correct the specified validation errors and try again.";
-                this.ValidationErrors = modelState.Keys
+                ExceptionMessage = "Please correct the specified validation errors and try again.";
+                ValidationErrors = modelState.Keys
                 .SelectMany(key => modelState[key].Errors.Select(x => new ValidationError(key, x.ErrorMessage)))
                 .ToList();
             }

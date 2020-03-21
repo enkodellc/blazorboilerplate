@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using MailKit.Net.Pop3;
@@ -84,12 +85,12 @@ namespace BlazorBoilerplate.Server.Services
                     }
 
                     await emailClient.DisconnectAsync(true);
-                    return new ApiResponse(200, null, emails);
+                    return new ApiResponse(Status200OK, null, emails);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError("Imap Email Retrieval failed: {0}", ex.Message);
-                    return new ApiResponse(500, ex.Message);
+                    return new ApiResponse(Status500InternalServerError, ex.Message);
                 }
             }
         }
@@ -131,11 +132,11 @@ namespace BlazorBoilerplate.Server.Services
                     }
 
                     await emailClient.DisconnectAsync(true);
-                    return new ApiResponse(200, null, emails);
+                    return new ApiResponse(Status200OK, null, emails);
                 }
                 catch (Exception ex)
                 {
-                    return new ApiResponse(500, ex.Message);
+                    return new ApiResponse(Status500InternalServerError, ex.Message);
                 }
             }
         }
@@ -196,13 +197,13 @@ namespace BlazorBoilerplate.Server.Services
                     await emailClient.SendAsync(message).ConfigureAwait(false);
 
                     await emailClient.DisconnectAsync(true).ConfigureAwait(false);
-                    return new ApiResponse(203);
+                    return new ApiResponse(Status203NonAuthoritative);
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError("Email Send Failed: {0}", ex.Message);
-                return new ApiResponse(500, ex.Message);
+                return new ApiResponse(Status500InternalServerError, ex.Message);
             }
         }
     }
