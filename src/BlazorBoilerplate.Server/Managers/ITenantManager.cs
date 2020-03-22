@@ -15,5 +15,9 @@ namespace BlazorBoilerplate.Server.Managers
         Task<ApiResponse> Update(TenantDto tenant);
 
         Task<ApiResponse> Delete(int id);
+
+        Task<ApiResponse> AddTenantUser(string UserName, Guid TenantId);
+
+        Task<ApiResponse> RemoveTenantUser(Guid UserId, Guid TenantId);
     }
 }

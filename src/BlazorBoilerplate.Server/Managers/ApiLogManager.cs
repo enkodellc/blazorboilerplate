@@ -22,12 +22,14 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
         private readonly IMapper _autoMapper;
         private readonly IUserSession _userSession;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IApplicationDbContext db, IUserSession userSession)
+        public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IApplicationDbContext db, IUserSession userSession, IHttpContextAccessor httpContextAccessor)
         {
             _apiLogStore = apiLogStore;
             _db = db;
             _userSession = userSession;
+            _httpContextAccessor = httpContextAccessor;
 
             // Calling Log from the API Middlware results in a disposed ApplicationDBContext. This is here to build a DB Context for logging API Calls
             // If you have a better solution please let me know.
@@ -65,7 +67,7 @@ namespace BlazorBoilerplate.Server.Managers
                 apiLogItem.ApplicationUserId = null;
             }
 
-            using (var dbContext = new ApplicationDbContext(_optionsBuilder.Options, _userSession))
+            using (var dbContext = new ApplicationDbContext(_optionsBuilder.Options, _httpContextAccessor, _userSession))
             {
                 dbContext.ApiLogs.Add(apiLogItem);
                 await dbContext.SaveChangesAsync(CancellationToken.None);

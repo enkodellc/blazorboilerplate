@@ -11,6 +11,15 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
         public const string IsUser = "IsUser";
         public const string IsReadOnly = "IsReadOnly";
         public const string IsMyDomain = "IsMyDomain";
+        public const string IsInTenant = "IsInTenant";
+
+        public static AuthorizationPolicy IsInTenantPolicy()
+        {
+            return new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .RequireClaim("TenantId")
+                .Build();
+        }
 
         public static AuthorizationPolicy IsAdminPolicy()
         {
@@ -41,7 +50,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
             return new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
             .AddRequirements(new DomainRequirement("blazorboilerplate.com"))
-            .Build();                
+            .Build();
         }
     }
 }

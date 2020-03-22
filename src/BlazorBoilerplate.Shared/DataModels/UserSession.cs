@@ -9,7 +9,6 @@ namespace BlazorBoilerplate.Shared.DataModels
         public bool IsAuthenticated { get; set; }
         public Guid UserId { get; set; }
         public string UserName { get; set; }
-        public int TenantId { get; set; } = -1;
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -17,7 +16,7 @@ namespace BlazorBoilerplate.Shared.DataModels
         public List<KeyValuePair<string, string>> ExposedClaims { get; set; }
         public bool DisableTenantFilter { get; set; } = false;
 
-        public UserSession() 
+        public UserSession()
         {
         }
 

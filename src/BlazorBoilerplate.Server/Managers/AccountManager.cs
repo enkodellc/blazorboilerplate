@@ -23,7 +23,7 @@ namespace BlazorBoilerplate.Server.Managers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<AccountManager> _logger;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IEmailManager _emailManager;
         private readonly IUserProfileStore _userProfileStore;
         private readonly IConfiguration _configuration;
@@ -34,7 +34,7 @@ namespace BlazorBoilerplate.Server.Managers
         public AccountManager(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<AccountManager> logger,
-            RoleManager<IdentityRole<Guid>> roleManager,
+            RoleManager<ApplicationRole> roleManager,
             IEmailManager emailManager,
             IUserProfileStore userProfileStore,
             IConfiguration configuration)
@@ -263,7 +263,6 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-
                 var user = new ApplicationUser
                 {
                     UserName = parameters.UserName,

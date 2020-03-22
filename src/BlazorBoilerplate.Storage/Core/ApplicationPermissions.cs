@@ -10,6 +10,7 @@ namespace BlazorBoilerplate.Server.Data.Core
     public static class ApplicationPermissions
     {
         public static ReadOnlyCollection<ApplicationPermission> AllPermissions;
+
         /// <summary>
         /// Generates ApplicationPermissions based on Permissions Type by iterating over its nested classes and getting constant strings in each class as Value and Name, DescriptionAttribute of the constant string as Description, the nested class name as GroupName.
         /// </summary>
@@ -25,7 +26,7 @@ namespace BlazorBoilerplate.Server.Data.Core
                     ApplicationPermission applicationPermission = new ApplicationPermission
                     {
                         Value = permission.GetValue(null).ToString(),
-                        Name = permission.GetValue(null).ToString().Replace('.', ' '),
+                        Name = permission.GetValue(null).ToString(),
                         GroupName = permissionClass.Name
                     };
                     DescriptionAttribute[] attributes =

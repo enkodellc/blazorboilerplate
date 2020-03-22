@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.Dto.Tenant;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -13,10 +14,12 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class TenantController : ControllerBase
     {
+        private readonly ApplicationDbContext _db;
         private readonly ITenantManager _tenantManager;
 
-        public TenantController(ITenantManager tenantManager)
+        public TenantController(ApplicationDbContext db, ITenantManager tenantManager)
         {
+            _db = db;
             _tenantManager = tenantManager;
         }
 
@@ -49,5 +52,17 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ApiResponse> Delete(int id)
             => await _tenantManager.Delete(id);
+
+        [HttpDelete("Users/{userId}")]
+        [Authorize(Permissions.Tenant.Manager)]
+        public async Task<ApiResponse> RemoveTenantUser(Guid tenantId, Guid userId) => await _tenantManager.RemoveTenantUser(userId, _db.TenantId);
+
+        [HttpPost("Users/{userName}")]
+        [Authorize(Permissions.Tenant.Manager)]
+        public async Task<ApiResponse> AddTenantUser(string userName) => await _tenantManager.AddTenantUser(userName, _db.TenantId);
+        
+        [HttpGet("GetCurrentTenant")]
+        public async Task<ApiResponse> GetCurrentTenant()
+            => await _tenantManager.Get(_db.TenantId);
     }
 }

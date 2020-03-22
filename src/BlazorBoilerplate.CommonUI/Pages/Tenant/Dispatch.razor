@@ -1,0 +1,59 @@
+﻿@page "/bookstore"
+@inject ITenantApi tenantApi
+@inject NavigationManager navigationManager
+@using  BlazorBoilerplate.CommonUI.Pages.Tenant.BookStore
+@using  BlazorBoilerplate.CommonUI.Pages.Admin
+
+<MatTabGroup>
+    <MatTab Label="Books">
+        <p>Everyone can see this.</p>
+        <Books></Books>
+    </MatTab>
+    <AuthorizeView>
+        <MatTab Label="Books Panel">
+            <p>Only @Tenant.Title users can see this.</p>
+            <BooksPanel></BooksPanel>
+        </MatTab>
+        <AuthorizeView Context="AdminContext" Policy="@Policies.IsAdmin">
+            <Authorized>
+                <MatTab Label="Book Stores">
+                    <Tenants></Tenants>
+                </MatTab>
+            </Authorized>
+            <NotAuthorized>
+                <MatTab Label="My Bookstore">
+                    <AuthorizeView Context="TenantContext" Policy="@Policies.IsInTenant">
+                        <Authorized>
+                            <h3>Hello form @Tenant.Title, @TenantContext.User.Identity.Name!</h3>
+                            <AuthorizeView Context="ManagerContext" Policy="@Permissions.Tenant.Manager">
+                                <p>Only @Tenant.Title managers can see this.</p>
+                                <MatButton Icon="group" Label="Users" OnClick="@(e => navigationManager.NavigateTo("/admin/users"))"></MatButton>
+                                <MatButton Icon="security" Label="Roles" OnClick="@(e => navigationManager.NavigateTo("/admin/roles"))"></MatButton>
+                            </AuthorizeView>
+                        </Authorized>
+                        <NotAuthorized>
+                            <Create></Create>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </MatTab>
+            </NotAuthorized>
+        </AuthorizeView>
+    </AuthorizeView>
+</MatTabGroup>
+@code {
+
+    Tenant Tenant;
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            Tenant = await tenantApi.GetUserTenant();
+        }
+    }
+
+}

@@ -18,14 +18,14 @@ using BlazorBoilerplate.Shared.DataModels;
 
 namespace BlazorBoilerplate.Server.Authorization
 {
-    public class AdditionalUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, IdentityRole<Guid>>
+    public class AdditionalUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>
     {
         public AdditionalUserClaimsPrincipalFactory(
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager,
+            RoleManager<ApplicationRole> roleManager,
             IOptions<IdentityOptions> optionsAccessor)
             : base(userManager, roleManager, optionsAccessor)
-        {  }
+        { }
 
         public async override Task<ClaimsPrincipal> CreateAsync(ApplicationUser user)
         {
@@ -51,7 +51,7 @@ namespace BlazorBoilerplate.Server.Authorization
             {
                 identity.AddClaim(new Claim("ReadOnly", "true"));
             }
-            return principal;         
+            return principal;
         }
     }
 }

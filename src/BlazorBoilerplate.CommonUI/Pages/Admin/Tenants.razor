@@ -1,0 +1,45 @@
+﻿
+@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+@inject IMatToaster matToaster
+    <h3>Book Stores (Tenants) List</h3>
+@if (tenants == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>Loading Tenants</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Class="mat-elevation-z5" Items="@tenants" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true"
+              DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th>Id</th>
+            <th>Title</th>
+        </MatTableHeader>
+        <MatTableRow Context="TenantRow">
+            <td><div style="width:130px;">@TenantRow.Id</div></td>
+            <td><div style="width:130px;">@TenantRow.Title</div></td>
+        </MatTableRow>
+    </MatTable>
+}
+@code {
+    List<Tenant> tenants;
+    protected override async Task OnInitializedAsync()
+    {
+        await RetrieveTenantsList();
+    }
+    public async Task RetrieveTenantsList()
+    {
+        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("/api/Tenants");
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "Tenants Retrieved");
+            tenants = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Tenant>>(apiResponse.Result.ToString());
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Tenants Retrieval Failed");
+        }
+    }
+}

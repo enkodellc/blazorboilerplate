@@ -37,10 +37,9 @@ namespace BlazorBoilerplate.Storage
                     }
                 }
 
-                //Add TenantId to Claims so we can store it in the future
                 if (entry.Entity is ITenant)
                 {
-                    entry.Property("TenantId").CurrentValue = userSession.TenantId;
+                    entry.Property("TenantId").CurrentValue = dbContext.TenantId;
                 }
 
                 //Soft Delete Entity Model

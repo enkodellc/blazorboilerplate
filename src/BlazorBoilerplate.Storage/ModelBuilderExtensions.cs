@@ -64,7 +64,7 @@ namespace BlazorBoilerplate.Storage
         public static void SetTenantShadowProperty<T>(ModelBuilder builder) where T : class, ITenant
         {
             // define shadow property
-            builder.Entity<T>().Property<int>("TenantId");
+            builder.Entity<T>().Property<Guid>("TenantId");
             // define FK to Tenant
             builder.Entity<T>().HasOne<Tenant>().WithMany().HasForeignKey("TenantId").OnDelete(DeleteBehavior.Restrict);
         }

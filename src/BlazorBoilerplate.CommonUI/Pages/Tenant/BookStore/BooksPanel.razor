@@ -1,0 +1,90 @@
+﻿@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+@inject IMatToaster matToaster
+
+<h3>Books Panel</h3>
+@if (books == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>Loading Books</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Class="mat-elevation-z5" Items="@books" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true"
+              DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Operations</th>
+        </MatTableHeader>
+        <MatTableRow Context="BookRow">
+            <td><div style="width:130px;">@BookRow.Title</div></td>
+            <td><div style="width:130px;">@BookRow.Author</div></td>
+            <td><div style="width:130px;"><button @onclick=@(e=>DeleteBook(BookRow.Id))>Delete</button></div></td>
+        </MatTableRow>
+    </MatTable>
+    <EditForm Model="@book">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <fieldset>
+            <div class="form-group">
+                <input @bind="@book.Title" placeholder="Title" />
+            </div>
+            <div class="form-group">
+                <input @bind="@book.Author" placeholder="Author" />
+            </div>
+        </fieldset>
+        <button @onclick=@AddBook>Add Book</button>
+    </EditForm>
+}
+
+@code {
+    Book book = new Book();
+    List<Book> books = new List<Book>();
+    protected override async Task OnInitializedAsync()
+    {
+        await RetrieveBooksList();
+    }
+    public async Task RetrieveBooksList()
+    {
+        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("/api/Books");
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "Books Retrieved");
+            books = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Book>>(apiResponse.Result.ToString());
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Books Retrieval Failed");
+        }
+    }
+    public async Task AddBook()
+    {
+        ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("/api/Books", book);
+        if (apiResponse.StatusCode == 200)
+        {
+            matToaster.Add("Book added", MatToastType.Success);
+            await RetrieveBooksList();
+            book = new Book();
+        }
+        else
+        {
+            matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
+        }
+    }
+    public async Task DeleteBook(int Id)
+    {
+        var apiResponse = await Http.DeleteAsync($"api/Books/{Id}");
+        if (apiResponse.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            matToaster.Add("Book deleted", MatToastType.Success);
+            await RetrieveBooksList();
+        }
+        else
+        {
+            matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
+        }
+
+    }
+}

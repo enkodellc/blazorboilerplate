@@ -84,5 +84,60 @@ namespace BlazorBoilerplate.Server.Managers
         {
             throw new NotImplementedException();
         }
+
+        public async Task<ApiResponse> AddTenantUser(string UserName, Guid TenantId)
+        {
+            ApplicationUser user = await _userManager.FindByNameAsync(UserName);
+            if (await TryAddTenantClaim(user.Id, TenantId))
+            {
+                return new ApiResponse(200, "User added as tenant user");
+            }
+            else
+            {
+                return new ApiResponse(500, "Can not add user to tenant . Maybe they are in another tenant already.");
+            }
+        }
+
+        public async Task<ApiResponse> RemoveTenantUser(Guid UserId, Guid TenantId)
+        {
+            if (await TryRemoveTenantClaim(UserId, TenantId))
+            {
+                return new ApiResponse(200, "User removed as tenant user");
+            }
+            else
+            {
+                return new ApiResponse(200, "User is not in this tenant.");
+            }
+        }
+
+#endregion TenantManagement
+
+        private async Task<bool> TryAddTenantClaim(Guid UserId, Guid TenantId)
+        {
+            ApplicationUser appUser = await _userManager.FindByIdAsync(UserId.ToString());
+            IList<Claim> userClaims = await _userManager.GetClaimsAsync(appUser);
+            Claim claim = new Claim(ClaimConstants.TenantId, TenantId.ToString());
+            if (!userClaims.Any(c => c.Type == ClaimConstants.TenantId))//We currently accept only one tenant claim for each user (Single-level Multitenancy)
+            {
+                await _userManager.AddClaimAsync(appUser, claim);
+                return true;
+            }
+            return false;
+        }
+
+        private async Task<bool> TryRemoveTenantClaim(Guid UserId, Guid TenantId)
+        {
+            ApplicationUser appUser = await _userManager.FindByIdAsync(UserId.ToString());
+            IList<Claim> userClaims = await _userManager.GetClaimsAsync(appUser);
+            Claim claim = new Claim(ClaimConstants.TenantId, TenantId.ToString());
+            if (userClaims.Any(c => c.Type == ClaimConstants.TenantId))
+            {
+                await _userManager.RemoveClaimAsync(appUser, claim);
+                var userRoles = await _userManager.GetRolesAsync(appUser);
+                await _userManager.RemoveFromRolesAsync(appUser, userRoles);
+                return true;
+            }
+            return false;
+        }
     }
 }
