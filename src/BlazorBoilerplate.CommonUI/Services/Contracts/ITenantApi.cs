@@ -7,6 +7,6 @@ namespace BlazorBoilerplate.CommonUI.Services.Contracts
     {
         Tenant Tenant { get; }
 
-        Task<Tenant> GetUserTenant();
+        Task<Tenant> GetTenant();
     }
 }

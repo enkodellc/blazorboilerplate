@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Shared.Dto.Tenant;
+using BlazorBoilerplate.Shared.DataModels;
+using System;
 using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -8,13 +9,13 @@ namespace BlazorBoilerplate.Server.Managers
     {
         Task<ApiResponse> Get();
 
-        Task<ApiResponse> Get(int id);
+        Task<ApiResponse> Get(Guid id);
 
-        Task<ApiResponse> Create(TenantDto tenant);
+        Task<ApiResponse> Create(Tenant tenant);
 
-        Task<ApiResponse> Update(TenantDto tenant);
+        Task<ApiResponse> Update(Tenant tenant);
 
-        Task<ApiResponse> Delete(int id);
+        Task<ApiResponse> Delete(Guid id);
 
         Task<ApiResponse> AddTenantUser(string UserName, Guid TenantId);
 

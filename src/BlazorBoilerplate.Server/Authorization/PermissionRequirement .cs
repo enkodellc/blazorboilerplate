@@ -35,19 +35,14 @@ namespace BlazorBoilerplate.Server.Authorization
                 return;
             }
 
-            ApplicationUser user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == context.User.Identity.Name);
-            if (user == null)
-            {
-                return;
-            }
-
-            var roleClaims = from ur in _context.UserRoles
-                             where ur.UserId == user.Id
+            var roleClaims = from u in _context.Users
+                             where u.UserName == context.User.Identity.Name
+                             join ur in _context.UserRoles on u.Id equals ur.UserId
                              join r in _context.Roles on ur.RoleId equals r.Id
                              join rc in _context.RoleClaims on r.Id equals rc.RoleId
                              select rc;
 
-            if (await roleClaims.AnyAsync(c => c.ClaimValue == requirement.Permission))
+            if (roleClaims.Any(c => c.ClaimValue == requirement.Permission))
             {
                 context.Succeed(requirement);
             }

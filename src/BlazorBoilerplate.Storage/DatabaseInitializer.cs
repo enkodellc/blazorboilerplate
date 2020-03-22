@@ -15,9 +15,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
-using BlazorBoilerplate.Server.Data.Core;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -135,7 +133,7 @@ namespace BlazorBoilerplate.Storage
             {
                 const string adminRoleName = "Administrator";
 
-                ApplicationRole adminRole = await _roleManager.FindByNameAsync(adminRoleName);
+                ApplicationRole adminRole = _roleManager.Roles.Single(r => r.Name == adminRoleName);
                 var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
                 var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
                 var NewClaims = AllClaims.Except(RoleClaims);

@@ -12,6 +12,7 @@ using BlazorBoilerplate.Storage.Stores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using Microsoft.AspNetCore.Http;
 
 namespace BlazorBoilerplate.Server.Managers
 {

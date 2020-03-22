@@ -27,8 +27,14 @@
                             <h3>Hello form @Tenant.Title, @TenantContext.User.Identity.Name!</h3>
                             <AuthorizeView Context="ManagerContext" Policy="@Permissions.Tenant.Manager">
                                 <p>Only @Tenant.Title managers can see this.</p>
-                                <MatButton Icon="group" Label="Users" OnClick="@(e => navigationManager.NavigateTo("/admin/users"))"></MatButton>
-                                <MatButton Icon="security" Label="Roles" OnClick="@(e => navigationManager.NavigateTo("/admin/roles"))"></MatButton>
+                                <MatNavMenu>
+                                    <MatNavItem Href="@navigationManager.ToAbsoluteUri("/admin/users").AbsoluteUri">
+                                        <MatIcon>group</MatIcon> Users
+                                    </MatNavItem>
+                                    <MatNavItem Href="@navigationManager.ToAbsoluteUri("/admin/roles").AbsoluteUri">
+                                        <MatIcon>security</MatIcon> Roles
+                                    </MatNavItem>
+                                </MatNavMenu>
                             </AuthorizeView>
                         </Authorized>
                         <NotAuthorized>
@@ -52,7 +58,7 @@
 
         if (user.Identity.IsAuthenticated)
         {
-            Tenant = await tenantApi.GetUserTenant();
+            Tenant = await tenantApi.GetTenant();
         }
     }
 

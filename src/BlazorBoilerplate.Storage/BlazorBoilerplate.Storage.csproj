@@ -5,6 +5,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Migrations\20200322060547_Test.cs" />
+      <Compile Remove="Migrations\20200322060547_Test.Designer.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="AutoMapper" Version="9.0.0" />
       <PackageReference Include="IdentityServer4" Version="3.1.2" />
       <PackageReference Include="IdentityServer4.EntityFramework" Version="3.1.2" />

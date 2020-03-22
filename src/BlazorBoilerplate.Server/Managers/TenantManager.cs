@@ -1,27 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.DataInterfaces;
-using BlazorBoilerplate.Shared.Dto.Tenant;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Storage.Core;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using BlazorBoilerplate.Shared.Dto.Admin;
+using BlazorBoilerplate.Server.Data.Core;
 
 namespace BlazorBoilerplate.Server.Managers
 {
     public class TenantManager : ITenantManager
     {
         private readonly ITenantStore _tenantStore;
-
-        public TenantManager(ITenantStore tenantStore)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAdminManager _adminManager;
+        public TenantManager(ITenantStore tenantStore, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, IAdminManager adminManager)
         {
             _tenantStore = tenantStore;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
+            _adminManager = adminManager;
         }
 
         public async Task<ApiResponse> Get()
         {
             try
             {
-                var tenants = _tenantStore.GetAll();
+                List<Tenant> tenants = await _tenantStore.GetAll();
                 return new ApiResponse(Status200OK, "Retrieved Tenants", tenants);
             }
             catch (Exception ex)
@@ -30,11 +43,11 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public async Task<ApiResponse> Get(long id)
+        public async Task<ApiResponse> Get(Guid id)
         {
             try
             {
-                var tenant = _tenantStore.GetById(id);
+                Tenant tenant = await _tenantStore.GetById(id);
                 return new ApiResponse(Status200OK, "Retrieved Tenant", tenant);
             }
             catch (Exception e)
@@ -43,18 +56,51 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public async Task<ApiResponse> Create(TenantDto tenantDto)
+        public async Task<ApiResponse> Create(Tenant tenant)
         {
-            var tenant = await _tenantStore.Create(tenantDto);
-            return new ApiResponse(Status200OK, "Created Tenant", tenant);
+            Tenant newTenant = await _tenantStore.Create(tenant);            
+            
+            // Temporarily add tenantId claim in order to create TenantManager Role for the newly created tenant
+            List<Claim> claims = new List<Claim>
+                    {
+                        new Claim(ClaimConstants.TenantId, newTenant.Id.ToString())
+                    };
+            ClaimsIdentity appIdentity = new ClaimsIdentity(claims);
+
+            _httpContextAccessor.HttpContext.User.AddIdentity(appIdentity);
+
+            // Now, DbContext.TenantId will return the newly created tenant Id.
+            // Henceforth, anything created of ITenant type, will belong to this new tenant.
+
+            RoleDto ManagerRole = new RoleDto
+            {
+                Name = RoleConstants.TenantManagerRoleName,
+                Permissions = ApplicationPermissions.GetAllPermissionNames().ToList()
+            };
+            ApiResponse Result = await _adminManager.CreateRoleAsync(ManagerRole);
+            if (Result.StatusCode == 200)
+            {
+                ApplicationUser applicationUser = await _userManager.FindByNameAsync(_httpContextAccessor.HttpContext.User.Identity.Name);
+                if (await TryAddTenantClaim(applicationUser.Id, newTenant.Id))
+                {
+                    IdentityResult result = await _userManager.AddToRoleAsync(applicationUser, ManagerRole.Name);
+                    if (result.Succeeded)
+                        return new ApiResponse(Status200OK, "Created Tenant", newTenant);
+                }
+                // Operation Failed. Rollback the changes...
+                await TryRemoveTenantClaim(applicationUser.Id, newTenant.Id);
+            }
+            await _adminManager.DeleteRoleAsync(ManagerRole.Name);
+            await _tenantStore.DeleteById(newTenant.Id);
+            return new ApiResponse(500, "Tenant Creation Failed.");
         }
 
-        public async Task<ApiResponse> Update(TenantDto tenantDto)
+        public async Task<ApiResponse> Update(Tenant tenant)
         {
             try
             {
-                var tenant = await _tenantStore.Update(tenantDto);
-                return new ApiResponse(Status200OK, "Updated Tenant", tenant);
+                Tenant UpdatedTenant = await _tenantStore.Update(tenant);
+                return new ApiResponse(Status200OK, "Updated Tenant", UpdatedTenant);
             }
             catch (InvalidDataException dataException)
             {
@@ -62,7 +108,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public async Task<ApiResponse> Delete(long id)
+        public async Task<ApiResponse> Delete(Guid id)
         {
             try
             {
@@ -73,16 +119,6 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 return new ApiResponse(Status400BadRequest, "Failed to update Tenant");
             }
-        }
-
-        public Task<ApiResponse> Get(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ApiResponse> Delete(int id)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<ApiResponse> AddTenantUser(string UserName, Guid TenantId)
@@ -109,8 +145,6 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(200, "User is not in this tenant.");
             }
         }
-
-#endregion TenantManagement
 
         private async Task<bool> TryAddTenantClaim(Guid UserId, Guid TenantId)
         {

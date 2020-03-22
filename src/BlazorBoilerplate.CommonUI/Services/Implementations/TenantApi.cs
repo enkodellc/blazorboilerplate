@@ -18,9 +18,9 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
             _httpClient = httpClient;
         }
 
-        public async Task<Tenant> GetUserTenant()
+        public async Task<Tenant> GetTenant()
         {
-            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Tenants/GetUserTenant");
+            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Tenants/Current");
             if (apiResponse.Result != null)
             {
                 Tenant = JsonConvert.DeserializeObject<Tenant>(apiResponse.Result.ToString());

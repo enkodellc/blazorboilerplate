@@ -1,86 +1,57 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.DataInterfaces;
-using BlazorBoilerplate.Shared.Dto.Tenant;
+using BlazorBoilerplate.Shared.DataModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorBoilerplate.Storage.Stores
 {
     public class TenantStore : ITenantStore
     {
         private readonly IApplicationDbContext _db;
-        private readonly IMapper _autoMapper;
 
-        public TenantStore(IApplicationDbContext db, IMapper autoMapper)
+        public TenantStore(IApplicationDbContext db)
         {
             _db = db;
-            _autoMapper = autoMapper;
         }
 
-        public List<TenantDto> GetAll()
+        public async Task<List<Tenant>> GetAll() => await _db.Tenants.ToListAsync();
+
+        public async Task<Tenant> GetById(Guid id) => await _db.Tenants.FindAsync(id);
+
+        public async Task<Tenant> Create(Tenant tenant)
         {
-            throw new System.NotImplementedException();
-            //return _autoMapper.ProjectTo<TenantDto>(_db.Tenants).ToList();
+            Tenant t = new Tenant
+            {
+                Title = tenant.Title
+            };
+            await _db.Tenants.AddAsync(t);
+            await _db.SaveChangesAsync(CancellationToken.None);
+            return t;
         }
 
-        public TenantDto GetById(long id)
+        public async Task<Tenant> Update(Tenant tenant)
         {
-            throw new System.NotImplementedException();
-            //var tenant = _db.Tenants.FirstOrDefault(t => t.Id == id);
-
-            //if (tenant == null)
-            //    throw new InvalidDataException($"Unable to find Tenant with ID: {id}");
-
-            //return _autoMapper.Map<TenantDto>(tenant);
+            Tenant t = _db.Tenants.Find(tenant.Id);
+            t.Title = tenant.Title;
+            await _db.SaveChangesAsync(CancellationToken.None);
+            return t;
         }
 
-        public async Task<Tenant> Create(TenantDto tenantDto)
+        public async Task DeleteById(Guid id)
         {
-            throw new System.NotImplementedException();
-            //var tenant = _autoMapper.Map<TenantDto, Tenant>(tenantDto);
-            //await _db.Tenants.AddAsync(tenant);
-            //await _db.SaveChangesAsync(CancellationToken.None);
-            //return tenant;
-        }
+            var tenant = _db.Tenants.FirstOrDefault(t => t.Id == id);
 
-        public async Task<Tenant> Update(TenantDto tenantDto)
-        {
-            throw new System.NotImplementedException();
-            //var tenant = _db.Tenants.FirstOrDefault(t => t.Id == tenantDto.Id);
-            //if (tenant == null)
-            //    throw new InvalidDataException($"Unable to find Tenant with ID: {tenantDto.Id}");
+            if (tenant == null)
+                throw new InvalidDataException($"Unable to find Tenant with ID: {id}");
 
-            //tenant = _autoMapper.Map(tenantDto, tenant);
-            //_db.Tenants.Update(tenant);
-            //await _db.SaveChangesAsync(CancellationToken.None);
-
-            //return tenant;
-        }
-
-        public async Task DeleteById(long id)
-        {
-            throw new System.NotImplementedException();
-            //var tenant = _db.Tenants.FirstOrDefault(t => t.Id == id);
-
-            //if (tenant == null)
-            //    throw new InvalidDataException($"Unable to find Tenant with ID: {id}");
-
-            //_db.Tenants.Remove(tenant);
-            //await _db.SaveChangesAsync(CancellationToken.None);
-        }
-
-        Task<Tenant> ITenantStore.Create(TenantDto tenantDto)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        Task<Tenant> ITenantStore.Update(TenantDto tenantDto)
-        {
-            throw new System.NotImplementedException();
+            _db.Tenants.Remove(tenant);
+            await _db.SaveChangesAsync(CancellationToken.None);
         }
     }
 }

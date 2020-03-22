@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Server.Models;
+﻿
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Configurations;
@@ -118,7 +118,7 @@ namespace BlazorBoilerplate.Storage
             return base.SaveChanges();
         }
 
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             ChangeTracker.SetShadowProperties(_userSession);
             return await base.SaveChangesAsync(true, cancellationToken);

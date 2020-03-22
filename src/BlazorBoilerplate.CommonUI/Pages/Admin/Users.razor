@@ -19,8 +19,7 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
-              DebounceMilliseconds="150">
+    <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users" DebounceMilliseconds="150">
         <MatTableHeader>
             <th>
                 <AuthorizeView Context="TenantContext" Policy="@Policies.IsInTenant">
@@ -46,7 +45,7 @@ else
                         </NotAuthorized>
                     </AuthorizeView>
                     <AuthorizeView Policy="@Policies.IsInTenant">
-                            <MatIconButton Icon="cancel" OnClick="@(() => OpenRemoveDialog(UserRow.UserId))"></MatIconButton>
+                        <MatIconButton Icon="cancel" OnClick="@(() => OpenRemoveDialog(UserRow.UserId))"></MatIconButton>
                     </AuthorizeView>
                     <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))" Disabled="@(UserRow.UserId != userProfile.UserId)"></MatIconButton>
                     <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
@@ -419,7 +418,7 @@ else
     {
         try
         {
-            var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Tenants/Users/{user.UserName}", null);
+            var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Tenants/AddUser/{user.UserName}", null);
             if (apiResponse.StatusCode == 200)
             {
                 matToaster.Add("User added to tenant", MatToastType.Success);
@@ -439,7 +438,7 @@ else
     }
     public async Task RemoveTenantUserAsync()
     {
-        var apiResponse = await Http.DeleteAsync($"api/Tenants/Users/{user.UserId}");
+        var apiResponse = await Http.DeleteAsync($"api/Tenants/RemoveUser/{user.UserId}");
         if (apiResponse.StatusCode == System.Net.HttpStatusCode.OK)
         {
             matToaster.Add("User removed from tenant", MatToastType.Success);

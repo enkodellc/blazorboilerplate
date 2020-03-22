@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using Microsoft.EntityFrameworkCore;
@@ -25,13 +24,13 @@ namespace BlazorBoilerplate.Storage
                 }
 
                 // set tenant properties
-//                if (typeof(ITenant).IsAssignableFrom(t))
-//                {
-//                    var method = SetTenantShadowPropertyMethodInfo.MakeGenericMethod(t);
-//                    method.Invoke(modelBuilder, new object[] { modelBuilder });
-//
-//                    SetTenantIdClusteredIndexsMethodInfo.MakeGenericMethod(t).Invoke(modelBuilder, new object[] { modelBuilder });
-//                }
+                if (typeof(ITenant).IsAssignableFrom(t))
+                {
+                    var method = SetTenantShadowPropertyMethodInfo.MakeGenericMethod(t);
+                    method.Invoke(modelBuilder, new object[] { modelBuilder });
+
+                    SetTenantIdClusteredIndexsMethodInfo.MakeGenericMethod(t).Invoke(modelBuilder, new object[] { modelBuilder });
+                }
 
                 // set soft delete property
                 if (typeof(ISoftDelete).IsAssignableFrom(t))

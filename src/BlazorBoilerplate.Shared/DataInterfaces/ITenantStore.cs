@@ -1,5 +1,5 @@
-﻿using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared.Dto.Tenant;
+﻿using BlazorBoilerplate.Shared.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,14 +7,14 @@ namespace BlazorBoilerplate.Shared.DataInterfaces
 {
     public interface ITenantStore
     {
-        List<TenantDto> GetAll();
+        Task<List<Tenant>> GetAll();
 
-        TenantDto GetById(long id);
+        Task<Tenant> GetById(Guid id);
 
-        Task<Tenant> Create(TenantDto tenantDto);
+        Task<Tenant> Create(Tenant tenant);
 
-        Task<Tenant> Update(TenantDto tenantDto);
+        Task<Tenant> Update(Tenant tenant);
 
-        Task DeleteById(long id);
+        Task DeleteById(Guid id);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
@@ -22,7 +21,7 @@ namespace BlazorBoilerplate.Storage
             services.AddTransient<IMessageStore, MessageStore>();
             services.AddTransient<IUserProfileStore, UserProfileStore>();
             services.AddTransient<IToDoStore, ToDoStore>();
-            //services.AddTransient<ITenantStore, TenantStore>();
+            services.AddTransient<ITenantStore, TenantStore>();
             services.AddTransient<IApiLogStore, ApiLogStore>();
                        
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
