@@ -213,11 +213,11 @@ namespace BlazorBoilerplate.Server
                 // pass the resulting certificate to Identity Server
                 if (cert != null)
                 {
-                    identityServerBuilder.AddSigningCredential(cert);
+               //     identityServerBuilder.AddSigningCredential(cert);
                 }
                 else
                 {
-                    throw new FileNotFoundException("No certificate for Identity Server could be retrieved.");
+                 //   throw new FileNotFoundException("No certificate for Identity Server could be retrieved.");
                 }
             }
 
