@@ -113,7 +113,6 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> GetRoleAsync(string roleName)
         {
-            // get paginated list of users
             try
             {
                 var identityRole = await _roleManager.FindByNameAsync(roleName);
@@ -139,7 +138,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-                // Whenever a tenant specific role is being created, in order to avoid name conflict in AspNetRoles table, we add the tenant title to the role name.
+                // Whenever a tenant specific role is being created, in order to avoid name conflict in AspNetRoles table, we add the tenant title to the role name. TODO: This should be done by a custom RoleManager wrapper. As removing the tenant prefix should also be forbidden.
                 var authorizationResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, Policies.IsInTenant);
                 if(authorizationResult.Succeeded)
                 {

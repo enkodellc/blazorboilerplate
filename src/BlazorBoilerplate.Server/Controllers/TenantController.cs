@@ -25,26 +25,26 @@ namespace BlazorBoilerplate.Server.Controllers
             _tenantManager = tenantManager;
         }
 
-        // GET: api/Tenant
+        // GET: api/Tenants
         [HttpGet]
         public async Task<ApiResponse> Get()
             => await _tenantManager.Get();
 
-        // GET: api/Tenant/5
+        // GET: api/Tenants/5
         [HttpGet("{id}")]
         public async Task<ApiResponse> Get(Guid id)
             => ModelState.IsValid ?
                 await _tenantManager.Get(id) :
                 new ApiResponse(Status400BadRequest, "Tenant Model is Invalid");
 
-        // POST: api/Tenant
+        // POST: api/Tenants
         [HttpPost]
         public async Task<ApiResponse> Post([FromBody] Tenant tenant)
             => ModelState.IsValid ?
             await _tenantManager.Create(tenant) :
             new ApiResponse(Status400BadRequest, "Tenant Model is Invalid");
 
-        // PUT: api/Tenant/5
+        // PUT: api/Tenants/5
         [HttpPut("{id}")]
         public async Task<ApiResponse> Put([FromBody] Tenant tenant)
             => ModelState.IsValid ? await _tenantManager.Update(tenant)

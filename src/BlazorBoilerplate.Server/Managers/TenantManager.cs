@@ -112,12 +112,18 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
+                Claim tenantClaim = new Claim(ClaimConstants.TenantId, id.ToString());
+                var users = await _userManager.GetUsersForClaimAsync(tenantClaim);
+                foreach (var user in users)
+                {
+                    await TryRemoveTenantClaim(user.Id, id);
+                }
                 await _tenantStore.DeleteById(id);
-                return new ApiResponse(Status200OK, "Soft Delete Tenant");
+                return new ApiResponse(Status200OK, "Deleted the tenant and its related claims.");
             }
             catch (InvalidDataException dataException)
             {
-                return new ApiResponse(Status400BadRequest, "Failed to update Tenant");
+                return new ApiResponse(Status400BadRequest, "Failed to delete the tenant");
             }
         }
 
