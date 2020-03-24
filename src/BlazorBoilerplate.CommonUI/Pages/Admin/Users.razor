@@ -208,8 +208,8 @@ else
 
     public void OpenEditDialog(Guid userId)
     {
-        user = new UserInfoDto(); // reset user object
-        user = users.Where(x => x.UserId == userId).SingleOrDefault();  // load the user information into the temp user object for worry free editing
+        user = (UserInfoDto)users.Where(x => x.UserId == userId).SingleOrDefault().Clone();  // load the user information into the temp user object for worry free editing
+
         foreach (var role in roleSelections)
             role.IsSelected = user.Roles.Contains(role.Name);
 
@@ -273,7 +273,10 @@ else
             var apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Account", user);
 
             if (apiResponse.IsSuccessStatusCode)
+            {
                 matToaster.Add("User Updated", MatToastType.Success);
+                await RetrieveUserListAsync();
+            }
             else
                 matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
 
