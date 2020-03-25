@@ -14,7 +14,8 @@ namespace BlazorBoilerplate.Shared.Dto
 
         public void RestoreState()
         {
-            _mapper.Map(state, this);
+            if (state != null)
+                _mapper.Map(state, this);
         }
         public void ClearState()
         {
