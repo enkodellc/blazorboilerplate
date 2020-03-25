@@ -54,7 +54,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Reflection;
 using BlazorBoilerplate.Server.Data;
-
+using Westwind.AspNetCore.LiveReload;
 
 namespace BlazorBoilerplate.Server
 {
@@ -401,7 +401,12 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 
 #endif
-
+            // Only Enable Live Reload in Development
+            if (_environment.IsDevelopment())
+            {
+                // Configuration in appsettings.Development.json
+                services.AddLiveReload();
+            }
             Log.Logger.Debug($"Total Services Registered: {services.Count}");
             foreach (var service in services)
             {
@@ -421,8 +426,11 @@ namespace BlazorBoilerplate.Server
             {
                 var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
                 databaseInitializer.SeedAsync().Wait();
-            }            
-
+            }
+            if (env.IsDevelopment())
+            {
+                app.UseLiveReload();
+            }
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
             app.UseMiddleware<APIResponseRequestLoggingMiddleware>(Convert.ToBoolean(Configuration["BlazorBoilerplate:EnableAPILogging:Enabled"] ?? "true"));

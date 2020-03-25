@@ -88,6 +88,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00864" />
     <PackageReference Include="MailKit" Version="2.5.2" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.2.0-dev-00248" />
+    <PackageReference Include="Westwind.AspnetCore.LiveReload" Version="0.1.17" />
   </ItemGroup>
 
   <ItemGroup>
@@ -100,5 +101,7 @@
   <ItemGroup>
     <Folder Include="Logs\" />
   </ItemGroup>
-
+	<ItemGroup>
+		<Watch Include="..\**\*.razor" />
+	</ItemGroup>
 </Project>
