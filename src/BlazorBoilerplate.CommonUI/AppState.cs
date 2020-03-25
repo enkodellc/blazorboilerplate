@@ -79,11 +79,11 @@ namespace BlazorBoilerplate.CommonUI
 
         public async Task SaveLastVisitedUri(string uri)
         {
-            if (UserProfile ==  null)
+            if (UserProfile == null)
             {
                 UserProfile = await GetUserProfile();
             }
-            if (UserProfile != null)
+            else
             {
                 UserProfile.LastPageVisited = uri;
                 await UpdateUserProfile();
