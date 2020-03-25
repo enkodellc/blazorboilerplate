@@ -7,7 +7,7 @@
 @inject IMatToaster matToaster
 @inject AppState appState
 @using System.Net
- 
+
 <h1>Users</h1>
 <p>User Management.</p>
 
@@ -144,7 +144,7 @@ else
         </EditForm>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { editDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@CancelChanges">Cancel</MatButton>
         <MatButton OnClick="@UpdateUserAsync">Update User</MatButton>
     </MatDialogActions>
 </MatDialog>
@@ -257,6 +257,7 @@ else
         foreach (var role in roleSelections)
             role.IsSelected = user.Roles.Contains(role.Name);
 
+        user.SaveState();
         editDialogOpen = true;
     }
 
@@ -313,6 +314,12 @@ else
         }
     }
 
+    public void CancelChanges()
+    {
+        user.RestoreState();
+        editDialogOpen = false;
+    }
+
     public async Task UpdateUserAsync()
     {
         try
@@ -325,13 +332,20 @@ else
             if (apiResponse.IsSuccessStatusCode)
                 matToaster.Add("User Updated", MatToastType.Success);
             else
+            {
                 matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
+                user.RestoreState();
+            }
 
             editDialogOpen = false;
         }
         catch (Exception ex)
         {
             matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "User Update Error");
+        }
+        finally
+        {
+            user.ClearState();
         }
     }
 

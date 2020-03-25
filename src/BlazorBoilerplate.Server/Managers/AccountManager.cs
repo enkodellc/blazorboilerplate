@@ -278,7 +278,7 @@ namespace BlazorBoilerplate.Server.Managers
                 else
                 {
                     var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
-                        new Claim(Policies.IsUser,""),
+                        new Claim(Policies.IsUser, string.Empty),
                         new Claim(JwtClaimTypes.Name, parameters.UserName),
                         new Claim(JwtClaimTypes.Email, parameters.Email),
                         new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
