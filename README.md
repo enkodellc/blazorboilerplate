@@ -95,6 +95,9 @@ I have taken small solutions from other repositories and will do my best to reco
  - Docker Container Support
  - Dual Mode (CSB / SSB) - Client Side / Webassembly & Sever Side. Thanks [MarkStega](https://github.com/MarkStega)
  - Error Log to Database with Serilog & SQL. Thanks [np-at](https://github.com/np-at)
+ - [Live Reload](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload) - Thanks [Kronos11][GioviQ](https://github.com/Kronos11)
+    - Client Side - `dotnet run watch -c Debug_CSB` 
+    - Server Side - `dotnet run watch -c Debug_SSB` 
 
 ## Road map / Possible future features in no particular order
 - Multi-Tenant - This is most likely the next major revision. Looks like it might be in place by end of April.
@@ -143,6 +146,8 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Revised AuthorizationPolicyProvider. Thanks [mobinseven](https://github.com/mobinseven) 
 - Server-side Multi-Tenant V.1 (Not working / No UI) - Thanks [mobinseven](https://github.com/mobinseven) 
 - SQL Server Error Logging with Serilog Thanks [np-at](https://github.com/np-at)
+- Added Ultramapper for Dto restore / clone Thanks [GioviQ](https://github.com/GioviQ) 
+- [Live Reload](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload) - Thanks [Kronos11][GioviQ](https://github.com/Kronos11)
 - Known Issue with new project structure - Breaks CSB Debugging (shift + alt + d) - Expect fix in .Net Core 3.2 preview 2. Use SSB for debugging.
 
 ### 0.7.0 (Breaking Changes)
