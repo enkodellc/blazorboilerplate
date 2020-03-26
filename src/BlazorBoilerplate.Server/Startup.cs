@@ -347,7 +347,6 @@ namespace BlazorBoilerplate.Server
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
 
-            services.AddTransient<ITenantManager, TenantManager>();
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAdminManager, AdminManager>();
             services.AddTransient<IApiLogManager, ApiLogManager>();
