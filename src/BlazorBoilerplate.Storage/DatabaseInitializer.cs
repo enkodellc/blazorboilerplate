@@ -59,18 +59,6 @@ namespace BlazorBoilerplate.Storage
 
             //Seed blazorboilerplate data
             await SeedBlazorBoilerplateAsync();
-
-
-            // Create Log table so SQL logging works even when target db did not exist on startup
-            try
-            {
-                await EnsureLogTableCreationAsync().ConfigureAwait(false);
-
-            }
-            catch (SqlException sqlException)
-            {
-                _logger.LogError(sqlException, "error while creating sql log table");
-            }
         }
 
         private async Task EnsureLogTableCreationAsync()

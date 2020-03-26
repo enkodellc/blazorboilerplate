@@ -25,6 +25,7 @@ namespace BlazorBoilerplate.Storage
         public DbSet<Message> Messages { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
         private IUserSession _userSession { get; set; }
+        public DbSet<DbLog> Logs { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUserSession userSession) : base(options)
         {
