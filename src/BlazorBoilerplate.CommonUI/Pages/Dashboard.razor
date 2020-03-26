@@ -5,23 +5,29 @@
 <h1>Dashboard</h1>
 
 <p>
-    Expecting to see a bunch of flashy charts then you download the repo and delete them all because you don't need them? <br />
-    Check out <a href="https://github.com/Joelius300/ChartJSBlazor" target="_blank">https://github.com/Joelius300/ChartJSBlazor</a> and you will find a great resource for animated charts for a dashboard.<br />
+    Interested in studying? <br />
+    Check out <a href="https://uok.ac.ir" target="_blank">University of Kurdistan</a> for further info.<br />
 </p>
 <hr />
-<h2>Counter</h2>
+<h2>Like!</h2>
 
 <MatFAB icon="exposure_plus_1" @onclick="@IncrementCount"></MatFAB>
+
+<MatButton OnClick="@Click">Text @ButtonState</MatButton>
+<MatButton Raised="true">Raised</MatButton>
+<MatButton Unelevated="true">Unelevated</MatButton>
+<MatButton Outlined="true">Outlined</MatButton>
+<MatButton Dense="true">Dense</MatButton>
 
 <p>
     Current Page Count: <strong>@currentCount</strong>
     <br />
-    Current User Profile / Persistent Count: <strong>@if (@profileCurrentCount != -1)@profileCurrentCount</strong>
+    Your Likes Number: <strong>@if (@profileCurrentCount != -1)@profileCurrentCount</strong>
 </p>
 
 <p>
-    There is a "User Profile" for persistant user data built into Blazor Boilerplate. This is a bit of hack until Microsoft or others create that functionality.
-    Currently we store Sidebar Navigation settings, Count. In the future I would like to track the users last page but I don't see much for <br/>
+    This "User Profile" for persistant user data built into our database.
+    Currently we store this but in the future will track the users last page and more <br />
 </p>
 
 @code {
@@ -38,5 +44,90 @@
         currentCount++;
         profileCurrentCount++;
         await appState.UpdateUserProfileCount(profileCurrentCount);
+    }
+
+    string ButtonState = "";
+
+    void Click(MouseEventArgs e)
+    {
+        //ButtonState = "Clicked";
+        ButtonState = profileCurrentCount.ToString();
+
+    }
+}
+
+<MatFileUpload OnChange="@FilesReady"></MatFileUpload>
+
+@foreach (var f in list)
+{
+    <div>@f</div>
+}
+
+@code
+        {
+    List<string> list = new List<string>();
+
+    void FilesReady(IMatFileUploadEntry[] files)
+    {
+        foreach (var file in files)
+        {
+            list.Add($"Name: {file.Name} - Size: {file.Size}");
+        }
+    }
+}
+
+<MatFileUpload OnChange="@FilesReadyForContent"></MatFileUpload>
+<textarea style="width: 100%; max-height: 300px; height: 300px;">@fileContent</textarea>
+
+@code
+        {
+
+    string fileContent;
+
+    async Task FilesReadyForContent(IMatFileUploadEntry[] files)
+    {
+        try
+        {
+            var file = files.FirstOrDefault();
+            if (file == null)
+            {
+                return;
+            }
+
+            using (var stream = new System.IO.MemoryStream())
+
+            {
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                await file.WriteToStreamAsync(stream);
+                sw.Stop();
+                if (stream.Length > 1024 * 1024)
+                {
+                    fileContent = "";
+                    fileContent += $"Name:\t{file.Name}\r\n";
+                    fileContent += $"Type:\t{file.Type}\r\n";
+                    fileContent += $"LastModified:\t{file.LastModified}\r\n";
+                    fileContent += $"Size:\t{file.Size}\r\n";
+                    fileContent += $"Time:\t{sw.Elapsed}\r\n";
+                    fileContent += $"Speed:\t{(stream.Length / sw.Elapsed.TotalSeconds):N0}  b/s\r\n";
+                }
+                else
+                {
+                    stream.Seek(0, System.IO.SeekOrigin.Begin);
+                    using (var reader = new System.IO.StreamReader(stream))
+                    {
+                        fileContent = await reader.ReadToEndAsync();
+                    }
+                }
+            }
+        }
+
+        catch (Exception e)
+        {
+            fileContent = $"Error:\r\n{e.Message}\r\n{e.StackTrace}";
+        }
+        finally
+        {
+            await InvokeAsync(async () => { this.StateHasChanged(); });
+        }
     }
 }

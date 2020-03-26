@@ -1,0 +1,2 @@
+CREATE LOGIN asoui1 WITH PASSWORD = 'asopass1';
+GO

@@ -217,7 +217,7 @@ namespace BlazorBoilerplate.Server
                 }
                 else
                 {
-                    throw new FileNotFoundException("No certificate for Identity Server could be retrieved.");
+                 //aso   throw new FileNotFoundException("No certificate for Identity Server could be retrieved.");
                 }
             }
 

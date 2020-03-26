@@ -1,0 +1,2 @@
+CREATE LOGIN cogsci WITH PASSWORD = 'aso1199';
+GO
