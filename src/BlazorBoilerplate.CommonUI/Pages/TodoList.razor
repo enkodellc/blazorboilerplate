@@ -80,7 +80,7 @@
 
     async Task ReadTodos()
     {
-        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/todo");
+        ApiResponseDto apiResponse = await Http.GetFromJsonAsync<ApiResponseDto>("api/todo");
 
         if (apiResponse.StatusCode == Status200OK)
         {

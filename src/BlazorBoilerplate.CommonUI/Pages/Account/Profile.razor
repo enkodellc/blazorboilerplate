@@ -107,7 +107,7 @@ else
         }
         else
         {
-            apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/UserPasswordReset/" + userInfo.UserId.ToString(), registerParameters.Password);
+            apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/UserPasswordReset/{userInfo.UserId}", registerParameters.Password);
             if (apiResponse.StatusCode == Status204NoContent || apiResponse.StatusCode == Status200OK)
             {
                 matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);

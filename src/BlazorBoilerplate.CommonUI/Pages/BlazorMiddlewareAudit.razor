@@ -58,7 +58,7 @@ else
 
     protected async Task LoadData()
     {
-        ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/apilog");
+        ApiResponseDto apiResponse = await Http.GetFromJsonAsync<ApiResponseDto>("api/apilog");
 
         if (apiResponse.StatusCode == Status200OK)
         {
