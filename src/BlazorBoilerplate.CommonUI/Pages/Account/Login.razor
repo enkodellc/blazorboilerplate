@@ -1,6 +1,8 @@
 @page "/account/login"
 @page "/account/login/{returnurl}"
 
+@using BlazorBoilerplate.Shared.Dto.Account
+
 @layout LoginLayout
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authStateProvider
@@ -101,7 +103,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-          await js.InvokeVoidAsync("SetFocus", "userName");
+            await js.InvokeVoidAsync("SetFocus", "userName");
 
         await base.OnAfterRenderAsync(firstRender);
     }

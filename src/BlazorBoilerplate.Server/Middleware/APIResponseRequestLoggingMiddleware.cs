@@ -1,14 +1,12 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Extensions;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Services;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -17,11 +15,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 //using System.Text.Json; //Does not work for this middleware, at least as in preview
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Shared.DataModels;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
@@ -32,7 +32,7 @@ namespace BlazorBoilerplate.Server.Middleware
     {
         private readonly RequestDelegate _next;
         ILogger<APIResponseRequestLoggingMiddleware> _logger;
-        private IApiLogService _apiLogService;
+        private IApiLogManager _apiLogManager;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
         private readonly bool _enableAPILogging;
         private List<string> _ignorePaths = new List<string>();
@@ -45,10 +45,10 @@ namespace BlazorBoilerplate.Server.Middleware
             _ignorePaths = configuration.GetSection("BlazorBoilerplate:ApiLogging:IgnorePaths").Get<List<string>>();
         }
 
-        public async Task Invoke(HttpContext httpContext, IApiLogService apiLogService, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
+        public async Task Invoke(HttpContext httpContext, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
-            _apiLogService = apiLogService;
+            _apiLogManager = apiLogManager;
 
             try
             {
@@ -102,19 +102,20 @@ namespace BlazorBoilerplate.Server.Middleware
                                             ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value)
                                             : null;
 
-                                await SafeLog(requestTime,
-                                    stopWatch.ElapsedMilliseconds,
-                                    response.StatusCode,
-                                    request.Method,
-                                    request.Path,
-                                    request.QueryString.ToString(),
-                                    formattedRequest,
-                                    responseBodyContent,
-                                    httpContext.Connection.RemoteIpAddress.ToString(),
-                                    user
-                                    );
+                                    await SafeLog(requestTime,
+                                        stopWatch.ElapsedMilliseconds,
+                                        response.StatusCode,
+                                        request.Method,
+                                        request.Path,
+                                        request.QueryString.ToString(),
+                                        formattedRequest,
+                                        responseBodyContent,
+                                        httpContext.Connection.RemoteIpAddress.ToString(),
+                                        user
+                                        );
                                 }
-                                catch (Exception ex) {
+                                catch (Exception ex)
+                                {
                                     _logger.LogWarning("An Inner Middleware exception occurred on SafeLog: " + ex.Message);
                                 }
                             }
@@ -260,7 +261,7 @@ namespace BlazorBoilerplate.Server.Middleware
                     apiResponse.StatusCode = code;
                 }
 
-                if ( (apiResponse.Result != null) || (!string.IsNullOrEmpty(apiResponse.Message)) )
+                if ((apiResponse.Result != null) || (!string.IsNullOrEmpty(apiResponse.Message)))
                 {
                     jsonString = JsonConvert.SerializeObject(apiResponse);
                 }
@@ -314,7 +315,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
         private string ConvertToJSONString(int code, object content)
         {
-            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content,  null, "0.6.1"), JSONSettings());
+            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content, null, "0.6.1"), JSONSettings());
         }
         private string ConvertToJSONString(ApiResponse apiResponse)
         {
@@ -351,7 +352,7 @@ namespace BlazorBoilerplate.Server.Middleware
         {
             // Do not log these events login, logout, getuserinfo...
             if ((path.ToLower().StartsWith("/api/account/")) ||
-                (path.ToLower().StartsWith("/api/UserProfile/")) )
+                (path.ToLower().StartsWith("/api/UserProfile/")))
             {
                 return;
             }
@@ -382,7 +383,8 @@ namespace BlazorBoilerplate.Server.Middleware
                 queryString = $"(Truncated to 200 chars) {queryString.Substring(0, 200)}";
             }
 
-            await _apiLogService.Log(new ApiLogItem
+            // Pass in the context to resolve the instance, and save to a store?
+            await _apiLogManager.Log(new ApiLogItem
             {
                 RequestTime = requestTime,
                 ResponseMillis = responseMillis,

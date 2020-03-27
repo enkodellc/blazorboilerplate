@@ -1,4 +1,5 @@
 ﻿@page "/admin/users"
+@using BlazorBoilerplate.Shared.Dto.Account
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IAuthorizationService AuthorizationService
@@ -57,7 +58,6 @@ else
                         {
                         <MatChip Label="@role"></MatChip>
                         }
-                    /**/
                 </MatChipSet>
             </td>
         </MatTableRow>
@@ -100,7 +100,7 @@ else
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@user.UserName" Label="User Name" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@user.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
                     <MatTextField @bind-Value="@user.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
@@ -115,7 +115,7 @@ else
         </EditForm>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { editDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@CancelChanges">Cancel</MatButton>
         <MatButton OnClick="@UpdateUserAsync">Update User</MatButton>
     </MatDialogActions>
 </MatDialog>
@@ -155,7 +155,7 @@ else
 
 @code {
     //Auth documentation
-    //https://docs.microsoft.com/en-us/aspnet/core/security/blazor/?view=aspnetcore-3.0&tabs=visual-studio
+    //https://docs.microsoft.com/en-us/aspnet/core/security/blazor
 
     int pageSize { get; set; } = 15;
     int currentPage { get; set; } = 0;
@@ -163,10 +163,8 @@ else
     bool createUserDialogOpen = false;
     bool editDialogOpen = false;
     bool deleteUserDialogOpen = false;
-    bool createRoleDialogOpen = false;
     bool resetPasswordDialogOpen = false;
 
-    ApiResponseDto apiResponse;
     List<UserInfoDto> users;
     List<RoleSelection> roleSelections { get; set; } = new List<RoleSelection>();
 
@@ -190,35 +188,33 @@ else
 
     public async Task RetrieveUserListAsync()
     {
-        apiResponse = await Http.GetJsonAsync<ApiResponseDto>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
+        try
+        {
+            var apiResponse = await Http.GetJsonAsync<ApiResponseDto<List<UserInfoDto>>>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
 
-        if (apiResponse.StatusCode == Status200OK)
-        {
-            matToaster.Add(apiResponse.Message, MatToastType.Success, "Users Retrieved");
-            users = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserInfoDto>>(apiResponse.Result.ToString());
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Success, "Users Retrieved");
+                users = apiResponse.Result;
+            }
+            else
+                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "User Retrieval Failed");
         }
-        else
+        catch (Exception ex)
         {
-            matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "User Retrieval Failed");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "User Retrieval Error");
         }
     }
 
     public void OpenEditDialog(Guid userId)
     {
         user = new UserInfoDto(); // reset user object
-        user = users.Where(x => x.UserId == userId).FirstOrDefault();  // load the user information into the temp user object for worry free editing
+        user = users.Where(x => x.UserId == userId).SingleOrDefault();  // load the user information into the temp user object for worry free editing
         foreach (var role in roleSelections)
-        {
-            if (user.Roles.Contains(role.Name))
-            {
-                role.IsSelected = true;
-            }
-            else
-            {
-                role.IsSelected = false;
-            }
-        }
-        this.editDialogOpen = true;
+            role.IsSelected = user.Roles.Contains(role.Name);
+
+        user.SaveState();
+        editDialogOpen = true;
     }
 
     public void OpenResetPasswordDialog(string userName, Guid userId)
@@ -227,13 +223,13 @@ else
         registerParameters = new RegisterDto();  // reset object
         registerParameters.UserName = userName;
         user.UserId = userId;
-        this.resetPasswordDialogOpen = true;
+        resetPasswordDialogOpen = true;
     }
 
     public void OpenDeleteDialog(Guid userId)
     {
-        user = users.Where(x => x.UserId == userId).FirstOrDefault();
-        this.deleteUserDialogOpen = true;
+        user = users.Where(x => x.UserId == userId).SingleOrDefault();
+        deleteUserDialogOpen = true;
     }
 
     protected void UpdateUserRole(RoleSelection roleSelectionItem)
@@ -243,29 +239,35 @@ else
 
     public async Task PopulateRoleList()
     {
-        List<string> roleNames = new List<string>();
-        var response = await Http.GetJsonAsync<ApiResponseDto>("api/Account/ListRoles");
         try
         {
-            roleNames = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Result.ToString());
+            var roleNames = new List<string>();
+            var response = await Http.GetJsonAsync<ApiResponseDto<List<string>>>("api/Account/ListRoles");
+
+            roleNames = response.Result;
+
+            roleSelections = new List<RoleSelection>();// clear out list
+
+            // initialize selection list with all un-selected
+            foreach (string role in roleNames)
+            {
+                roleSelections.Add(new RoleSelection
+                {
+                    Name = role,
+                    IsSelected = false
+                });
+            }
         }
         catch (Exception ex)
         {
-            matToaster.Add("Error", MatToastType.Danger, ex.Message);
-            return;
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Role Retrieval Error");
         }
+    }
 
-        roleSelections = new List<RoleSelection>();// clear out list
-
-        // initialize selection list with all un-selected
-        foreach (string role in roleNames)
-        {
-            roleSelections.Add(new RoleSelection
-            {
-                Name = role,
-                IsSelected = false
-            });
-        }
+    public void CancelChanges()
+    {
+        user.RestoreState();
+        editDialogOpen = false;
     }
 
     public async Task UpdateUserAsync()
@@ -276,19 +278,24 @@ else
             user.Roles = roleSelections.Where(x => x.IsSelected == true).Select(x => x.Name).ToList();
 
             var apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Account", user);
-            if (apiResponse.StatusCode == Status200OK)
-            {
+
+            if (apiResponse.IsSuccessStatusCode)
                 matToaster.Add("User Updated", MatToastType.Success);
-            }
             else
             {
                 matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
+                user.RestoreState();
             }
+
             editDialogOpen = false;
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "User Update Failed");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "User Update Error");
+        }
+        finally
+        {
+            user.ClearState();
         }
     }
 
@@ -302,8 +309,8 @@ else
                 return;
             }
 
-            ApiResponseDto apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).Create(registerParameters);
-            if (apiResponse.StatusCode == Status200OK)
+            var apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).Create(registerParameters);
+            if (apiResponse.IsSuccessStatusCode)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);
                 user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
@@ -318,44 +325,55 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "User Creation Error");
         }
     }
 
     public async Task ResetUserPasswordAsync()
     {
-        if (registerParameters.Password != registerParameters.PasswordConfirm)
+        try
         {
-            matToaster.Add("Passwords Must Match", MatToastType.Warning);
-        }
-        else
-        {
-            apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Account/AdminUserPasswordReset/" + user.UserId.ToString(), registerParameters.Password);
-            if (apiResponse.StatusCode == Status204NoContent || apiResponse.StatusCode == Status200OK)
+            if (registerParameters.Password != registerParameters.PasswordConfirm)
             {
-                matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);
+                matToaster.Add("Passwords Must Match", MatToastType.Warning);
             }
             else
             {
-                matToaster.Add(apiResponse.Message, MatToastType.Danger);
+                var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/AdminUserPasswordReset/{user.UserId}", registerParameters.Password);
+
+                if (apiResponse.IsSuccessStatusCode)
+                    matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);
+                else
+                    matToaster.Add(apiResponse.Message, MatToastType.Danger);
+
+                resetPasswordDialogOpen = false;
             }
-            resetPasswordDialogOpen = false;
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Password Reset Error");
         }
     }
 
     public async Task DeleteUserAsync()
     {
-        var response = await Http.DeleteAsync("api/Account/" + user.UserId);
-        if (response.StatusCode == (HttpStatusCode)Status200OK)
+        try
         {
-            matToaster.Add("User Deleted", MatToastType.Success);
-            users.Remove(user);
-            deleteUserDialogOpen = false;
-            StateHasChanged();
+            var response = await Http.DeleteAsync($"api/Account/{user.UserId}");
+
+            if (response.StatusCode == (HttpStatusCode)Status200OK)
+            {
+                matToaster.Add("User Deleted", MatToastType.Success);
+                users.Remove(user);
+                deleteUserDialogOpen = false;
+                StateHasChanged();
+            }
+            else
+                matToaster.Add("User Delete Failed", MatToastType.Danger);
         }
-        else
+        catch (Exception ex)
         {
-            matToaster.Add("User Delete Failed", MatToastType.Danger);
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "User Delete Error");
         }
     }
 }

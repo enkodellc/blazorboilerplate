@@ -1,4 +1,5 @@
-﻿<div class="job-status">
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+<div class="job-status">
     <h3>@ListStatus (@Jobs.Count())</h3>
 
     <ul class="dropzone @dropClass" ondragover="event.preventDefault();"

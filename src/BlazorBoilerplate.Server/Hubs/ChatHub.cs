@@ -1,11 +1,12 @@
-﻿using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Shared.Dto;
+﻿using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.Sample;
 
 namespace BlazorBoilerplate.Server.Hubs
 {
@@ -14,13 +15,13 @@ namespace BlazorBoilerplate.Server.Hubs
     /// </summary>
     public class ChatHub : Hub
     {
-        private IMessageService MessageService { get; set; }
+        private IMessageManager MessageManager { get; set; }
 
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ChatHub(IMessageService messageService, UserManager<ApplicationUser> userManager)
+        public ChatHub(IMessageManager messageManager, UserManager<ApplicationUser> userManager)
         {
-            MessageService = messageService;
+            MessageManager = messageManager;
             _userManager = userManager;
         }
 
@@ -40,7 +41,7 @@ namespace BlazorBoilerplate.Server.Hubs
         /// <returns></returns>
         public async Task DeleteMessage(int id)
         {
-            await MessageService.Delete(id);
+            await MessageManager.Delete(id);
         }
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace BlazorBoilerplate.Server.Hubs
                 When = DateTime.UtcNow
             };
 
-            await MessageService.Create(newMessage);
+            await MessageManager.Create(newMessage);
             await Clients.All.SendAsync("ReceiveMessage", 0, user.UserName, message);
         }
 
@@ -89,7 +90,7 @@ namespace BlazorBoilerplate.Server.Hubs
         public override Task OnConnectedAsync()
         {
             Console.WriteLine("Connected");
-            List<MessageDto> messages = MessageService.GetList();
+            List<MessageDto> messages = MessageManager.GetList();
 
             foreach (var message in messages)
             {

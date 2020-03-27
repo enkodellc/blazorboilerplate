@@ -1,14 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using BlazorBoilerplate.Server.Services;
-using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using IdentityModel;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -17,37 +13,23 @@ namespace BlazorBoilerplate.Server.Controllers
     [Authorize]
     public class UserProfileController : ControllerBase
     {
-        private readonly ILogger<UserProfileController> _logger;
-        private readonly IUserProfileService _userProfileService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserProfileManager _userProfileManager;
 
-        public UserProfileController(IUserProfileService userProfileService, ILogger<UserProfileController> logger, IHttpContextAccessor httpContextAccessor)
+        public UserProfileController(IUserProfileManager userProfileManager)
         {
-            _logger = logger;
-            _userProfileService = userProfileService;
-            _httpContextAccessor = httpContextAccessor;
+            _userProfileManager = userProfileManager;
         }
 
         // GET: api/UserProfile
         [HttpGet("Get")]
         public async Task<ApiResponse> Get()
-        {
-            Guid userId = new Guid(_httpContextAccessor.HttpContext.User.FindFirst(JwtClaimTypes.Subject).Value);
-            return await _userProfileService.Get(userId);
-        }
+            => await _userProfileManager.Get();
 
         // POST: api/UserProfile
         [HttpPost("Upsert")]
         public async Task<ApiResponse> Upsert(UserProfileDto userProfile)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new ApiResponse(Status400BadRequest, "User Model is Invalid");
-            }
-
-            await _userProfileService.Upsert(userProfile);
-            return new ApiResponse(Status200OK, "Email Successfuly Sent");
-        }
-
+            => ModelState.IsValid ?
+                await _userProfileManager.Upsert(userProfile) :
+                new ApiResponse(Status400BadRequest, "User Model is Invalid");
     }
 }

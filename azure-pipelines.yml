@@ -9,7 +9,9 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release_CSB'
+  buildConfiguration_CSB: 'Release_CSB'
+  buildConfiguration_SSB: 'Release_SSB'
+
 
 steps:
 - task: UseDotNet@2
@@ -19,15 +21,20 @@ steps:
     version: '3.1.x'
     includePreviewVersions: true
 
-- script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration)
-  displayName: 'dotnet build blazorboilerplate'
+# - task: NuGetToolInstaller@0
+
+- script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration_CSB)
+  displayName: 'dotnet build blazorboilerplate ClientSide'
+
+- script: dotnet build ./src/BlazorBoilerplate.sln --configuration $(buildConfiguration_SSB)
+  displayName: 'dotnet build blazorBoilerplate ServerSide'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Publishing App...'
+  displayName: 'Publishing ClientSide App...'
   inputs:
     command: publish
     publishWebProjects: true
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--configuration $(buildConfiguration_CSB) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: false
 
 - task: PublishBuildArtifacts@1

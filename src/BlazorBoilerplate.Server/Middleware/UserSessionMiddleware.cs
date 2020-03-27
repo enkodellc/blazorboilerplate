@@ -1,20 +1,21 @@
-﻿using BlazorBoilerplate.Server.Data.Interfaces;
-using BlazorBoilerplate.Server.Middleware.Extensions;
+﻿using BlazorBoilerplate.Server.Middleware.Extensions;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Shared.DataInterfaces;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
     public class UserSessionMiddleware
     {
-        ILogger<UserSessionMiddleware> _logger;
+        private ILogger<UserSessionMiddleware> _logger;
 
         //https://trailheadtechnology.com/aspnetcore-multi-tenant-tips-and-tricks/
         private readonly RequestDelegate _next;
@@ -34,13 +35,19 @@ namespace BlazorBoilerplate.Server.Middleware
                 {
                     userSession.UserId = new Guid(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value);
                     userSession.UserName = httpContext.User.Identity.Name;
-                    userSession.TenantId = -1; // ClaimsHelper.GetClaim<int>(context.User, "tenantid");
+                    userSession.TenantId = -1;
                     userSession.Roles = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Role).Select(c => c.Value).ToList();
+
+                    // Uncommenting this breaks login
+                    //if (Int32.TryParse(httpContext.User.Claims.First(c => c.Type == "tenantid").Value, out int TenantId))
+                    //    userSession.TenantId = TenantId;
+
+                    if (userSession.Roles.Contains("Administrator"))
+                        userSession.DisableTenantFilter = true;
                 }
 
                 // Call the next delegate/middleware in the pipeline
                 await _next.Invoke(httpContext);
-
             }
             catch (Exception ex)
             {
@@ -75,7 +82,6 @@ namespace BlazorBoilerplate.Server.Middleware
                 };
                 code = ex.StatusCode;
                 httpContext.Response.StatusCode = code;
-
             }
             else if (exception is UnauthorizedAccessException)
             {

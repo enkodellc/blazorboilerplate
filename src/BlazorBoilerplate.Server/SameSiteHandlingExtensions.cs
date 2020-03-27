@@ -13,15 +13,15 @@ namespace BlazorBoilerplate.Server
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
-                options.OnAppendCookie = cookieContext => 
+                options.OnAppendCookie = cookieContext =>
                     CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
-                options.OnDeleteCookie = cookieContext => 
+                options.OnDeleteCookie = cookieContext =>
                     CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
             });
 
             return services;
         }
-        
+
         private static void CheckSameSite(HttpContext httpContext, CookieOptions options)
         {
             if (options.SameSite == SameSiteMode.None && !options.Secure)
@@ -52,12 +52,12 @@ namespace BlazorBoilerplate.Server
             // This does not include:
             // - Chrome on Mac OS X
             // Because they do not use the Mac OS networking stack.
-            if (userAgent.Contains("Macintosh; Intel Mac OS X 10_14") && 
+            if (userAgent.Contains("Macintosh; Intel Mac OS X 10_14") &&
                 userAgent.Contains("Version/") && userAgent.Contains("Safari"))
             {
                 return true;
             }
-           
+
             // From Chrome 80 cookies with SameSite=None must also specify Secure
             if (userAgent.Contains("Chrome"))
             {

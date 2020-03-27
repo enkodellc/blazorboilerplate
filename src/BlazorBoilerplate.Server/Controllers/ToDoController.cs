@@ -1,12 +1,11 @@
-﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Server.Services;
+﻿using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Sample;
 using Microsoft.AspNetCore.Authorization;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -14,65 +13,47 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class ToDoController : ControllerBase
     {
-        private readonly ILogger<ToDoController> _logger;
-        private readonly ITodoService _todoService;
+        private readonly ITodoManager _todoManager;
 
-        public ToDoController(ITodoService todoService, ILogger<ToDoController> logger)
+        public ToDoController(ITodoManager todoManager)
         {
-            _logger = logger;
-            _todoService = todoService;
+            _todoManager = todoManager;
         }
-                
+
         // GET: api/Todo
         [HttpGet]
         [AllowAnonymous]
         public async Task<ApiResponse> Get()
-        {
-            return await _todoService.Get();
-        }
-                
+            => await _todoManager.Get();
+
         // GET: api/Todo/5
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<ApiResponse> Get(int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new ApiResponse(Status400BadRequest, "Todo Model is Invalid");
-            }
-            return await _todoService.Get(id);
-        }
-                
+            => ModelState.IsValid ?
+                await _todoManager.Get(id) :
+                new ApiResponse(Status400BadRequest, "Todo Model is Invalid");
+
         // POST: api/Todo
         [HttpPost]
         [AllowAnonymous]
         public async Task<ApiResponse> Post([FromBody] TodoDto todo)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new ApiResponse(Status400BadRequest, "Todo Model is Invalid");
-            }
-            return await _todoService.Create(todo);
-        }
-                
+            => ModelState.IsValid ?
+                await _todoManager.Create(todo) :
+                new ApiResponse(Status400BadRequest, "Todo Model is Invalid");
+
         // Put: api/Todo
         [HttpPut]
         [AllowAnonymous]
         public async Task<ApiResponse> Put([FromBody] TodoDto todo)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new ApiResponse(Status400BadRequest, "Todo Model is Invalid");
-            }
-            return await _todoService.Update(todo);
-        }                
-        
+            => ModelState.IsValid ?
+                await _todoManager.Update(todo) :
+                new ApiResponse(Status400BadRequest, "Todo Model is Invalid");
+
         // DELETE: api/Todo/5
         [HttpDelete("{id}")]
         [Authorize(Permissions.Todo.Delete)]
         public async Task<ApiResponse> Delete(long id)
-        {
-            return await _todoService.Delete(id); // Delete from DB
-        }
+            => await _todoManager.Delete(id);
     }
 }

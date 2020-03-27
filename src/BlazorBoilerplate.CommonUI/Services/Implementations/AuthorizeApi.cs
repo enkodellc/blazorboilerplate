@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using BlazorBoilerplate.CommonUI.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
 using System.Collections.Generic;
+using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.JSInterop;
 using System.Linq;
 using System.Net;
+
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.CommonUI.Services.Implementations
 {
@@ -77,7 +79,7 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
             var resp = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
 
 #if ServerSideBlazor
-            if (resp.StatusCode == Status200OK && cookies != null && cookies.Any())
+            if (resp.StatusCode == Status200OK  && cookies != null && cookies.Any())
             {
                 _httpClient.DefaultRequestHeaders.Remove("Cookie");
 

@@ -1,12 +1,11 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 using AutoMapper;
-
 #if ServerSideBlazor
 
 using BlazorBoilerplate.CommonUI;
@@ -17,22 +16,22 @@ using BlazorBoilerplate.CommonUI.States;
 using MatBlazor;
 
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components;
 
-using System.Linq;
 using System.Net.Http;
 
 #endif
 
 using BlazorBoilerplate.Server.Authorization;
-using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Data.Interfaces;
-using BlazorBoilerplate.Server.Data.Mapping;
 using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
-using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Server.Services;
+using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-
+using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Storage;
+using BlazorBoilerplate.Storage.Mapping;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 
@@ -44,13 +43,18 @@ using Microsoft.AspNetCore.Http;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Serilog;
+using System.Reflection;
+using BlazorBoilerplate.Server.Data;
+
 
 namespace BlazorBoilerplate.Server
 {
@@ -70,14 +74,15 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName();
+            var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
+
+            services.RegisterStorage(Configuration);
+            var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName();
             var migrationsAssemblyName = migrationsAssembly.Name;
             var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
                 ? Configuration.GetConnectionString("DefaultConnection")
                 : $"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}";
-
-            var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
 
             void DbContextOptionsBuilder(DbContextOptionsBuilder builder)
             {
@@ -118,19 +123,20 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
-            .AddConfigurationStore(options =>
-            {
-                options.ConfigureDbContext = DbContextOptionsBuilder;
-            })
-            .AddOperationalStore(options =>
-            {
-                options.ConfigureDbContext = DbContextOptionsBuilder;
+              .AddIdentityServerStores(Configuration)
+              .AddConfigurationStore(options =>
+              {
+                  options.ConfigureDbContext = DbContextOptionsBuilder;
+              })
+              .AddOperationalStore(options =>
+              {
+                  options.ConfigureDbContext = DbContextOptionsBuilder;
 
-                // this enables automatic token cleanup. this is optional.
-                options.EnableTokenCleanup = true;
-                options.TokenCleanupInterval = 3600; //In Seconds 1 hour
-            })
-            .AddAspNetIdentity<ApplicationUser>();
+                  // this enables automatic token cleanup. this is optional.
+                  options.EnableTokenCleanup = true;
+                  options.TokenCleanupInterval = 3600; //In Seconds 1 hour
+              })
+              .AddAspNetIdentity<ApplicationUser>();
 
             X509Certificate2 cert = null;
 
@@ -253,6 +259,7 @@ namespace BlazorBoilerplate.Server
                 options.AddPolicy(Policies.IsReadOnly, Policies.IsReadOnlyPolicy());
                 options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations
             });
+
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
             services.AddTransient<IAuthorizationHandler, PermissionRequirementHandler>();
@@ -280,9 +287,23 @@ namespace BlazorBoilerplate.Server
                 }
             });
 
+            //            services.Configure<CookiePolicyOptions>(options =>
+            //            {
+            //                options.MinimumSameSitePolicy = SameSiteMode.None;
+            //            });
+
+            //services.ConfigureExternalCookie(options =>
+            // {
+            // macOS login fix
+            //options.Cookie.SameSite = SameSiteMode.None;
+            //});
 
             services.ConfigureApplicationCookie(options =>
             {
+                // macOS login fix
+                //options.Cookie.SameSite = SameSiteMode.None;
+                //options.Cookie.HttpOnly = false;
+
                 // Suppress redirect on API URLs in ASP.NET Core -> https://stackoverflow.com/a/56384729/54159
                 options.Events = new CookieAuthenticationEvents()
                 {
@@ -326,15 +347,14 @@ namespace BlazorBoilerplate.Server
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
 
-            services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<IUserProfileService, UserProfileService>();
-            services.AddTransient<IApiLogService, ApiLogService>();
-            services.AddTransient<ITodoService, ToDoService>();
-            services.AddTransient<IMessageService, MessageService>();
-
-            // DB Creation and Seeding
-            services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
+            services.AddTransient<IAccountManager, AccountManager>();
+            services.AddTransient<IAdminManager, AdminManager>();
+            services.AddTransient<IApiLogManager, ApiLogManager>();
+            services.AddTransient<IEmailManager, EmailManager>();
+            services.AddTransient<IExternalAuthManager, ExternalAuthManager>(); // Currently not being used.
+            services.AddTransient<IMessageManager, MessageManager>();
+            services.AddTransient<ITodoManager, ToDoManager>();
+            services.AddTransient<IUserProfileManager, UserProfileManager>();
 
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
             var automapperConfig = new MapperConfiguration(configuration =>
@@ -400,7 +420,7 @@ namespace BlazorBoilerplate.Server
             {
                 var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
                 databaseInitializer.SeedAsync().Wait();
-            }
+            }            
 
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits

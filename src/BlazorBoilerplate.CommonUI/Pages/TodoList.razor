@@ -1,7 +1,9 @@
 ﻿@page "/todo_list"
+@using BlazorBoilerplate.Shared.Dto.Sample
 @*@attribute [Authorize] Uncomment to Secure this page*@
 @inject HttpClient Http
 @inject IMatToaster matToaster
+
 @using System.Net
 
 <h1>Todo List - CRUD</h1>
@@ -122,7 +124,7 @@
         try
         {
             var response = await Http.DeleteAsync("api/todo/" + todo.Id);
-            if (response.StatusCode == (HttpStatusCode)Status200OK)
+            if (response.StatusCode ==  (HttpStatusCode)Status200OK)
             {
                 matToaster.Add("Todo Deleted", MatToastType.Success);
                 todos.Remove(todo);
@@ -147,7 +149,7 @@
 
     public void OpenDeleteDialog(long todoId)
     {
-        todo = todos.Where(x => x.Id == todoId).FirstOrDefault();
+        todo = todos.Where(x => x.Id == todoId).SingleOrDefault();
         this.deleteDialogOpen = true;
     }
 

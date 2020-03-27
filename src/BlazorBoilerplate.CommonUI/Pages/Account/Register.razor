@@ -1,11 +1,13 @@
 ﻿@page "/account/register"
 
-@using BlazorBoilerplate.Shared.Dto
-@using static Microsoft.AspNetCore.Http.StatusCodes
+@using  BlazorBoilerplate.Shared.Dto
+@using BlazorBoilerplate.Shared.Dto.Account
 @layout LoginLayout
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
+
+@using static Microsoft.AspNetCore.Http.StatusCodes
 
 <MatCard>
     <div class="logo">
@@ -49,11 +51,10 @@
         try
         {
             var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters);
-
             if (response.StatusCode == Status200OK)
             {
                 matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, "User Creation Sucessful");
-                navigationManager.NavigateTo("/account/profile");
+                navigationManager.NavigateTo("");
             }
             else
             {

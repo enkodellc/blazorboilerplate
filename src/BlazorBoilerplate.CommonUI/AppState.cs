@@ -5,8 +5,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 using BlazorBoilerplate.CommonUI.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
-
+using BlazorBoilerplate.Shared.Dto.Account;
 using Newtonsoft.Json;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.CommonUI
 {
@@ -80,11 +81,11 @@ namespace BlazorBoilerplate.CommonUI
 
         public async Task SaveLastVisitedUri(string uri)
         {
-            if (UserProfile ==  null)
+            if (UserProfile == null)
             {
                 UserProfile = await GetUserProfile();
             }
-            if (UserProfile != null)
+            else
             {
                 UserProfile.LastPageVisited = uri;
                 await UpdateUserProfile();

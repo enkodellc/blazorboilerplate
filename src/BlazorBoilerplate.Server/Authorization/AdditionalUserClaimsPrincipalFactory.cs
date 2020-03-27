@@ -1,9 +1,9 @@
-﻿using BlazorBoilerplate.Server.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Shared.DataModels;
 
 //# Links
 //## ASP.NET Core Roles/Policies/Claims

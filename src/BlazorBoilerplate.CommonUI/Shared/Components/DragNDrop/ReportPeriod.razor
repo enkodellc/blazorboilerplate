@@ -1,4 +1,5 @@
-﻿<li class="draggable" draggable="true" title="@ReportPeriodDto.Title" @ondragstart="@(() => HandleDragStart(ReportPeriodDto))">
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+<li class="draggable" draggable="true" title="@ReportPeriodDto.Title" @ondragstart="@(() => HandleDragStart(ReportPeriodDto))">
     @ReportPeriodDto.Title
 </li>
 
