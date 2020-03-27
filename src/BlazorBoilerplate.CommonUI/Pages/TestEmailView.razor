@@ -118,7 +118,7 @@ else
     {
         try
         {
-            apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Email/Receive");
+            apiResponse = await Http.GetFromJsonAsync<ApiResponseDto>("api/Email/Receive");
             emails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EmailMessageDto>>(apiResponse.Result.ToString());
 
         }
