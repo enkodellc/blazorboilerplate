@@ -107,7 +107,7 @@ else
     {
         try
         {
-            var apiResponse = await Http.GetJsonAsync<ApiResponseDto<List<RoleDto>>>($"api/Admin/Roles?pageSize={pageSize}&pageNumber={currentPage}");
+            var apiResponse = await Http.GetFromJsonAsync<ApiResponseDto<List<RoleDto>>>($"api/Admin/Roles?pageSize={pageSize}&pageNumber={currentPage}");
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -166,12 +166,12 @@ else
 
             if (isCurrentRoleReadOnly)
             {
-                var roleResponse = await Http.GetJsonAsync<ApiResponseDto<RoleDto>>($"api/Admin/Role/{roleName}");
+                var roleResponse = await Http.GetFromJsonAsync<ApiResponseDto<RoleDto>>($"api/Admin/Role/{roleName}");
                 role = roleResponse.Result;
             }
 
             // Setup the permissions
-            var response = await Http.GetJsonAsync<ApiResponseDto<List<string>>>("api/Admin/Permissions");
+            var response = await Http.GetFromJsonAsync<ApiResponseDto<List<string>>>("api/Admin/Permissions");
             permissionsSelections.Clear();
 
 
