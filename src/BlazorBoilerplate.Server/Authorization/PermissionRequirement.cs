@@ -1,12 +1,9 @@
-﻿using BlazorBoilerplate.Server.Data;
-using BlazorBoilerplate.Server.Models;
+﻿using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Storage;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Authorization
@@ -20,6 +17,7 @@ namespace BlazorBoilerplate.Server.Authorization
 
         public string Permission { get; set; }
     }
+
     public class PermissionRequirementHandler : AuthorizationHandler<PermissionRequirement>,
         IAuthorizationRequirement
 
