@@ -17,7 +17,7 @@ Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Versi
 [![Gitter](https://badges.gitter.im/BlazorBoilerplate/community.svg)](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Goals
-- This repository is community driven. It is not and never will be controlled by a corporation. It's success is dependent on people using it, reviewing it and offering suggestions. Please join the [gitter)](https://gitter.im/blazorboilerplate/community) 
+- This repository is community driven. It is not and never will be controlled by a corporation. It's success is dependent on people using it, reviewing it, offering suggestions and most importantly contributing. Please join the [gitter discussion](https://gitter.im/blazorboilerplate/community) 
 - To create a boilerplate with Blazor / Razor components that includes the most common functionality to start a real world application quickly.
 - Avoid many external components & libraries which can make it difficult to maintain, update, track down code, learn code and issues.
 - Minimal Javascript. Currently only using them for SignalR for the Forum and MatBlazor / Material Design. We may use components with JS in them but so far no Javascript has been written specifically for anything in the repository.
@@ -60,17 +60,16 @@ certificate on your server, performs renewal and configure your IIS Website Bind
 
 ## Contributing
 
-Please star, watch and fork! We'd greatly appreciate any contribution you make. I am very open to updates and features, though most feature requests 
-will be depending on how much community support exists.
+Please star, watch and fork! We'd greatly appreciate any contribution you make. I am very open to updates and features, though most feature requests will be depending on how much community support exists. 
 
 ## Disclaimer / About the Author
 
 I (Enkodellc) started this repository as I was frustrated with the examples out there that people were charging money for and were in my opinion
-incomplete or closed source. I paid for 4-5 of these solutions with an Angular front-end and none of them were what I was looking for. This is my
+incomplete or closed source. I paid for 4-5 of these solutions with an Angular front-end / .Net Core back-end and none of them were what I was looking for. This is my
 attempt to create something that developers can start a Blazor project with several great features to build from. 
-I have a lot of experience with ASP.Net webforms an new to .NET Core and Blazor. This code is not meant to be perfect or follow every Best Practice. 
-It though is my ambition to learn and get feedback on what Best Practices can be implemented. I will be migrating a Webforms app to Blazor so this is my 
-opportunity to learn, share, grow and get feedback on what hopefully will be a great Blazor Starter Kit.
+I have a lot of experience with ASP.Net webforms an new to .NET Core and Blazor. This code is not meant to be perfect or follow every best practice. 
+It though is my ambition to learn and get feedback on what best practices can be implemented. I will be migrating a Webforms app to Blazor so this is my 
+opportunity to learn, share, grow, and get feedback on what hopefully will be a great Blazor Starter Kit.
   
 I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and 
  suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository. If you wish to hire me for 
@@ -97,11 +96,11 @@ I have taken small solutions from other repositories and will do my best to reco
  - Error Log to Database with Serilog & SQL. Thanks [np-at](https://github.com/np-at)
 
 ## Road map / Possible future features in no particular order
-- Multi-Tenant - This is most likely the next major revision. Looks like it might be in place by end of April.
-- Caching speed review possible optimizations for Blazor
-- Create a Nuget Package Template
+- Multi-Tenant - This is most likely the next major revision 0.9.0 - *restructure* branch. Looks like it might be in place by end of April.
+- Caching / speed improvement? Review possible optimizations for Blazor to make sure BB is running as efficient as can be.
+- Create a Nuget Packages Template. There has been several request for BB to be broken into packages. I unfortunately do not have the resources to this at this time. There is discussions with some of the contributors to do a professional version.
 - Possibly switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster just my opinion. I like SQL code, less automagic code with more control. Just my style.
-- Localization - Looking for any contributors who have some expertise in this
+- Localization - Looking for any contributors who have some expertise in this. Previw 4 is tentative for .resx support.
 - Branch for [PWA  (Progressive Web App)](https://devblogs.microsoft.com/aspnet/blazor-webassembly-3-2-0-preview-2-release-now-available/) for testing & possible implementation 
 
 ## License
@@ -144,8 +143,6 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Server-side Multi-Tenant V.1 (Not working / No UI) - Thanks [mobinseven](https://github.com/mobinseven) 
 - SQL Server Error Logging with Serilog Thanks [np-at](https://github.com/np-at)
 - Added Ultramapper for Dto restore / clone Thanks [GioviQ](https://github.com/GioviQ) 
-- [Live Reload](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload) - Thanks [Kronos11][GioviQ](https://github.com/Kronos11)
-- Known Issue with new project structure - Breaks CSB Debugging (shift + alt + d) - Expect fix in .Net Core 3.2 preview 2. Use SSB for debugging.
 
 ### 0.7.0 (Breaking Changes)
 - .NET Core 3.2 Preview 1- Microsoft & Other Nuget package updates - Program.cs refactored for CSB
