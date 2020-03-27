@@ -95,9 +95,6 @@ I have taken small solutions from other repositories and will do my best to reco
  - Docker Container Support
  - Dual Mode (CSB / SSB) - Client Side / Webassembly & Sever Side. Thanks [MarkStega](https://github.com/MarkStega)
  - Error Log to Database with Serilog & SQL. Thanks [np-at](https://github.com/np-at)
- - [Live Reload](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload) - Thanks [Kronos11][GioviQ](https://github.com/Kronos11)
-    - Client Side - `dotnet run watch -c Debug_CSB` 
-    - Server Side - `dotnet run watch -c Debug_SSB` 
 
 ## Road map / Possible future features in no particular order
 - Multi-Tenant - This is most likely the next major revision. Looks like it might be in place by end of April.
