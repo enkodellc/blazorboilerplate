@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using BlazorBoilerplate.Shared.DataModels;
+using System.Runtime.Serialization;
 
 namespace BlazorBoilerplate.Shared.Dto
 {
@@ -21,6 +22,9 @@ namespace BlazorBoilerplate.Shared.Dto
 
         [DataMember(EmitDefaultValue = false)]
         public string ResponseException { get; set; }
+
+        [DataMember(EmitDefaultValue =false)]
+        public PaginationDetails PaginationDetails { get;set;} = null;
 
         [DataMember(EmitDefaultValue = false)]
         public T Result { get; set; }

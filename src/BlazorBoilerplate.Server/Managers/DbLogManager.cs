@@ -13,6 +13,8 @@ using System.Linq.Expressions;
 using System.Xml;
 using System.Text;
 using BlazorBoilerplate.Server.Helpers;
+using Microsoft.AspNetCore.Http;
+using System.Threading;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -27,12 +29,12 @@ namespace BlazorBoilerplate.Server.Managers
             _logger = logger;
         }
 
-        public async Task<ApiResponse> Get(int pageSize = 25, int page = 0, Expression<Func<DbLog, bool>> predicate = null)
+        public async Task<ApiResponse> Get(int pageSize = 25, int page = 0, Expression<Func<DbLog, bool>> predicate = null, CancellationToken cancellationToken = default)
         {
-
             try
             {
-                var r = await _dbContext.Logs.Where(predicate).Skip(pageSize * page).Take(pageSize).ToArrayAsync().ConfigureAwait(false);
+                var r = await _dbContext.Logs.AsNoTracking().Where(predicate).OrderByDescending(x=>x.TimeStamp).Skip(pageSize * page).Take(pageSize).ToArrayAsync(cancellationToken).ConfigureAwait(true);
+                var count = await _dbContext.Logs.CountAsync(predicate, cancellationToken).ConfigureAwait(true);
                 if (r.Length == 0)
                 {
                     return new ApiResponse(Status204NoContent, $"No results for request; pageSize ={ pageSize}; page ={ page}");
@@ -46,7 +48,16 @@ namespace BlazorBoilerplate.Server.Managers
 
                     }
                     //return new ApiResponse(Status200OK, "", formattedMessageList);
-                    return new ApiResponse(Status200OK, $"Retrieved Type=DbLog;pageSize={pageSize};page={page}", r);
+                    return new ApiResponse(
+                        statusCode: Status200OK,
+                        message:$"Retrieved Type=DbLog;pageSize={pageSize};page={page}",
+                        result: r,
+                        paginationDetails: new PaginationDetails()
+                        {
+                            CollectionSize= count,
+                            PageIndex = page,
+                            PageSize = 25
+                        });
 
 
                 }

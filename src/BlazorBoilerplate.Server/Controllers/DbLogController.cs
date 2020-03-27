@@ -18,8 +18,7 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
-    // [Authorize(Policy=Policies.IsAdmin)]
+    [Authorize(Policy=Policies.IsAdmin)]
     public class DbLogController : ControllerBase
     {
         private readonly IDbLogManager _dbLogManager;
@@ -37,7 +36,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             // TODO: Implement an api-safe client selector // filtering
             Expression<Func<DbLog, bool>> predicate = _=>  true;
-                //placeholder
+                //placeholder for selector
 
 
             return await _dbLogManager.Get(pageSize, page, predicate).ConfigureAwait(false);

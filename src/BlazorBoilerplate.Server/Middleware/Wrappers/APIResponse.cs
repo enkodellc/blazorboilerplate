@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BlazorBoilerplate.Shared.DataModels;
+using Newtonsoft.Json;
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -27,8 +28,13 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         [DataMember(EmitDefaultValue = false)]
         public object Result { get; set; }
 
+        [DataMember(EmitDefaultValue = false)]
+        public PaginationDetails PaginationDetails { get; set; }
+
+
+
         [JsonConstructor]
-        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "")
+        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "", PaginationDetails paginationDetails = null)
         {
             StatusCode = statusCode;
             Message = message;
@@ -36,6 +42,7 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
             ResponseException = apiError;
             Version = string.IsNullOrWhiteSpace(apiVersion) ? Assembly.GetEntryAssembly().GetName().Version.ToString() : apiVersion;
             IsError = false;
+            PaginationDetails = paginationDetails;
         }
 
         public ApiResponse(int statusCode, ApiError apiError)

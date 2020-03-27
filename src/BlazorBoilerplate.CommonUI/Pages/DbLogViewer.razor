@@ -1,15 +1,15 @@
-﻿@page "/dBlog_viewer"
-@*@attribute [Authorize(Policy =Policies.IsAdmin)]*@
+﻿@page "/admin/dBlogViewer"
 
+@attribute [Authorize(Policy = Policies.IsAdmin)]
 @inject HttpClient Http
 @inject IMatToaster matToaster
 @using BlazorBoilerplate.Shared.DataModels
 @using static Microsoft.AspNetCore.Http.StatusCodes
-@using System.Xml;
 
 <h1>Serilog MSSqlDb Log Viewer</h1>
 <p>
-
+    Secured Page.<br />
+    Paginated viewing and fetching of system logs from the database.
 </p>
 
 @if (apiResponses == null)
@@ -20,18 +20,24 @@
 }
 else
 {
-    <MatTable Items="@dBLogItems" Class="mat-elevation-z5" Striped="true" PageSizeParamName="pageSize">
+    <div class="row">
+        <div class="font-weight-bold">Refresh Timer:</div>
+        <RefreshTimer ElapsedEvent="@(async (_, __) => await LoadData())" />
+    </div>
+    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@logCountTotal">
+
+    </MatPaginator>
+    <MatTable Items="@dBLogItems" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
         <MatTableHeader>
-            <th><div style="width:175px;"><MatFAB Icon="refresh" OnClick="@(async () => await LoadData())" Raised="true" Mini="true" Style="margin-right:16px;"></MatFAB> Timestamp</div></th>
-            <th>Loging Level</th>
+            <th><div style="max-width:165px;">@*<MatSlideToggle Value="@timer.Enabled" ValueChanged="@(a=>UpdateTimer(a))" TValue="bool" Style="margin-right:16px;"></MatSlideToggle>*@ Timestamp</div></th>
+            <th>Logging Level</th>
             <th>Log Message</th>
             <th>Exception (if any)</th>
-            <th>Properties recorded with log Entry</th>
-
+            <th>Recorded Properties</th>
         </MatTableHeader>
         <MatTableRow>
-            <td>@context.TimeStamp.ToString()</td>
-            <td>@context.Level</td>
+            <td><span style="font-size:small">@context.TimeStamp.ToString()</span></td>
+            <td><span style="font-size:small">@context.Level</span></td>
             <td><span style="font-size:small">@context.Message</span></td>
             <td><span style="font-size:small">@context.Exception?.ToString()</span></td>
             <td>
@@ -40,13 +46,16 @@ else
                     <ul>
                         @foreach (var propertyPair in context.LogProperties)
                             {
-                            <li style="font-size:small">@($"{propertyPair.Key}:  {propertyPair.Value}"))</li>
+                            <li style="font-size:small">@($"{propertyPair.Key}:  {propertyPair.Value}")</li>
                             }
+                    
                     </ul>
                     }
+              
             </td>
         </MatTableRow>
     </MatTable>
+
 }
 
 
@@ -55,22 +64,28 @@ else
     List<DbLog> dBLogItems = new List<DbLog>();
 
     private int pageSize { get; set; } = 10;
+    private int pageIndex { get; set; } = 0;
+    private int logCountTotal { get; set; } = 0;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
+   
     }
-
-    protected async Task PaginationWrapperAsync(int page)
+    async Task OnPage(MatPaginatorPageEvent e)
     {
+        pageSize = e.PageSize;
+        pageIndex = e.PageIndex;
+
+        await LoadData().ConfigureAwait(true);
 
     }
-    protected async Task LoadData(int page = 0)
+    protected async Task LoadData()
     {
         ApiResponseDto apiResponse = null;
         try
         {
-            apiResponse = await Http.GetJsonAsync<ApiResponseDto>($"api/DbLog?page={page}&pageSize={this.pageSize}");
+            apiResponse = await Http.GetJsonAsync<ApiResponseDto>($"api/DbLog?page={this.pageIndex}&pageSize={this.pageSize}");
 
         }
         catch (Exception ex)
@@ -82,9 +97,12 @@ else
         if (apiResponse.StatusCode == Status200OK)
         {
 
-            matToaster.Add(apiResponse.Message, MatToastType.Success, "Api Log Items Retrieved");
+            matToaster.Add(apiResponse.Message, MatToastType.Success, "DB Log Items Retrieved");
             var nextPage = Newtonsoft.Json.JsonConvert.DeserializeObject<DbLog[]>(apiResponse.Result.ToString()).ToList<DbLog>();
-            dBLogItems.AddRange(nextPage);
+            this.logCountTotal = apiResponse.PaginationDetails.CollectionSize;
+            this.dBLogItems = nextPage;
+
+            //dBLogItems.AddRange(nextPage);
         }
         else if (apiResponse.StatusCode == Status204NoContent)
         {
@@ -93,8 +111,10 @@ else
         }
         else
         {
-            matToaster.Add(apiResponse.Message, MatToastType.Danger, "Api Log Items Retrieval Failed");
+            matToaster.Add(apiResponse.Message, MatToastType.Danger, "DB Log Items Retrieval Failed");
         }
+        await InvokeAsync(StateHasChanged).ConfigureAwait(true);
+
     }
 
 
