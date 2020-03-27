@@ -17,6 +17,7 @@ namespace BlazorBoilerplate.Server.Authorization
 
         public string Permission { get; set; }
     }
+
     public class PermissionRequirementHandler : AuthorizationHandler<PermissionRequirement>,
         IAuthorizationRequirement
 
