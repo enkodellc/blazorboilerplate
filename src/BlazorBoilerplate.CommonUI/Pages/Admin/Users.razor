@@ -190,7 +190,7 @@ else
     {
         try
         {
-            var apiResponse = await Http.GetJsonAsync<ApiResponseDto<List<UserInfoDto>>>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
+            var apiResponse = await Http.GetFromJsonAsync<ApiResponseDto<List<UserInfoDto>>>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -242,7 +242,7 @@ else
         try
         {
             var roleNames = new List<string>();
-            var response = await Http.GetJsonAsync<ApiResponseDto<List<string>>>("api/Account/ListRoles");
+            var response = await Http.GetFromJsonAsync<ApiResponseDto<List<string>>>("api/Account/ListRoles");
 
             roleNames = response.Result;
 
