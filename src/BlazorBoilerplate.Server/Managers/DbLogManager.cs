@@ -28,7 +28,15 @@ namespace BlazorBoilerplate.Server.Managers
             _dbContext = context;
             _logger = logger;
         }
-
+        /// <summary>
+        /// Asynchronously fetches <see cref="DbLog">log</see> entries from the database in a paginated manner.
+        /// Supports filtering via the predicate parameter.
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="page"></param>
+        /// <param name="predicate"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<ApiResponse> Get(int pageSize = 25, int page = 0, Expression<Func<DbLog, bool>> predicate = null, CancellationToken cancellationToken = default)
         {
             try
@@ -43,8 +51,8 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     foreach (var item in r)
                     {
-                        var PropertyDict = RegexUtilities.DirtyXMLParser(item.Properties);
-                        item.LogProperties = PropertyDict;
+                        var propertyDict = RegexUtilities.DirtyXmlPropertyParser(item.Properties);
+                        item.LogProperties = propertyDict;
 
                     }
                     //return new ApiResponse(Status200OK, "", formattedMessageList);
@@ -75,27 +83,34 @@ namespace BlazorBoilerplate.Server.Managers
         }
         protected async Task<System.IO.Stream> GetStreamFromStringAsync(string inputString)
         {
-            using var stream = new System.IO.MemoryStream();
-            using var writer = new System.IO.StreamWriter(stream);
+            await using var stream = new System.IO.MemoryStream();
+            await using var writer = new System.IO.StreamWriter(stream);
             await writer.WriteAsync(inputString).ConfigureAwait(true);
             await writer.FlushAsync();
             stream.Position = 0;
             return stream;
         }
+
+        /// <summary>
+        /// Unused Currently.
+        /// Extracts xml formatted properties from serilog mssql logs
+        /// </summary>
+        /// <param name="log"></param>
+        /// <returns></returns>
         protected string ExtractPropertiesFromLog(DbLog log)
         {
 
-            XmlReaderSettings settings = new XmlReaderSettings
+            var settings = new XmlReaderSettings
             {
                 Async = true
             };
 
-            var PropertyDict = new Dictionary<string, string>();
+            var propertyDict = new Dictionary<string, string>();
             try
             {
 
-                PropertyDict = RegexUtilities.DirtyXMLParser(log.Properties);
-                if (PropertyDict.Count == 0)
+                propertyDict = RegexUtilities.DirtyXmlPropertyParser(log.Properties);
+                if (propertyDict.Count == 0)
                     return log.MessageTemplate;
 
 
@@ -109,8 +124,8 @@ namespace BlazorBoilerplate.Server.Managers
             var match = Helpers.RegexUtilities.StringInterpolationHelper.Match(log.MessageTemplate);
             while (match.Success)
             {
-                if (PropertyDict.ContainsKey(match.Value))
-                    s.Replace($"{{{match.Value}}}", PropertyDict[match.Value]);
+                if (propertyDict.ContainsKey(match.Value))
+                    s.Replace($"{{{match.Value}}}", propertyDict[match.Value]);
                 match = match.NextMatch();
 
             }
@@ -118,7 +133,7 @@ namespace BlazorBoilerplate.Server.Managers
         }
 
 
-        public Task Log(DbLog LogItem)
+        public Task Log(DbLog logItem)
         {
             throw new NotImplementedException();
         }
