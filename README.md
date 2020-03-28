@@ -94,7 +94,7 @@ I have taken small solutions from other repositories and will do my best to reco
  - Docker Container Support
  - Dual Mode (CSB / SSB) - Client Side / Webassembly & Sever Side. Thanks [MarkStega](https://github.com/MarkStega)
  - Error Log to Database with Serilog & SQL. Thanks [np-at](https://github.com/np-at)
-
+ 
 ## Road map / Possible future features in no particular order
 - Multi-Tenant - This is most likely the next major revision 0.9.0 - *restructure* branch. Looks like it might be in place by end of April.
 - Caching / speed improvement? Review possible optimizations for Blazor to make sure BB is running as efficient as can be.
