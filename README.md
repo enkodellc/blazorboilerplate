@@ -120,9 +120,9 @@ This project is licensed under the terms of the [MIT license](LICENSE).
  
 ### Postgres Support
 *Note this might be out of date.. Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and then create your own migrations:  
-  -`dotnet ef migrations add InitialApplicationDbMigration --context ApplicationDbContext -o Migrations\ApplicationDb`  
-  -`dotnet ef migrations add InitialConfigurationDbMigration --context DbContextOptionsBuilder -o Migrations\ConfigurationDb`  
-  -`dotnet ef migrations add PersistedGrantDbContext --context PersistedGrantDbContext -o Migrations\PersistedGrantDb`  
+  -`dotnet ef --startup-project ..\BlazerBoilerplate.Server migrations add InitialApplicationDbMigration --context ApplicationDbContext -o Migrations\ApplicationDb`  
+  -`dotnet ef --startup-project ..\BlazorBoilerplate.Server\ migrations add InitialConfigurationDbMigration --context ConfigurationDbContext  -o Migrations\ConfigurationDb`  
+  -`dotnet ef --startup-project ..\BlazorBoilerplate.Server\ migrations add PersistedGrantDbContext --context PersistedGrantDbContext -o Migrations\PersistedGrantDb`  
 
 ### Docker Support
 - Prerequisite: Install [Docker Desktop](https://go.microsoft.com/fwlink/?linkid=847268) 
