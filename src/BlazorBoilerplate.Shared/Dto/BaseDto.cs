@@ -2,7 +2,7 @@
 
 namespace BlazorBoilerplate.Shared.Dto
 {
-    public abstract class BaseDto
+    public abstract class BaseDto : IMementoDto
     {
         private static readonly Mapper _mapper = new Mapper();
         private object state;
