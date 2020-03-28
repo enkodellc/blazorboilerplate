@@ -754,6 +754,10 @@ ul.breadcrumb {
     color: white;
 }
 
+.mat-paginator {
+  background: none;
+}
+
 /*Refresh Timer*/
 div.refresh-timer.row {
     margin-left: 0;
