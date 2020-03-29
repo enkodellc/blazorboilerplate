@@ -41,10 +41,16 @@
     /// Timer Interval Value in Seconds. Defaults to 5
     /// </summary>
     [Parameter] public double Interval { get; set; } = 5;
+
+
+    /// <summary>
+    /// If the event timer starts off enabled and firing.  Defaults to false.
+    /// </summary>
+    [Parameter] public bool StartEnabled { get;set;} = false;
     protected override void OnInitialized()
     {
 
-        timer.Enabled = false;
+        timer.Enabled = StartEnabled;
         timer.Interval = Interval * 1000;
         timer.Elapsed += ElapsedEvent;
         base.OnInitialized();

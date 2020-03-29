@@ -17,7 +17,7 @@ namespace BlazorBoilerplate.Shared.DataModels
 
         public string Level { get; set; }
 
-        public DateTime TimeStamp { get; set; }
+        public DateTimeOffset TimeStamp { get; set; }
 
         public string Exception { get; set; }
 

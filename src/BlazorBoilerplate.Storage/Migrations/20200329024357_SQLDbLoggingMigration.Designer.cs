@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorBoilerplate.Storage.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200326012204_DbLogging")]
-    partial class DbLogging
+    [Migration("20200329024357_SQLDbLoggingMigration")]
+    partial class SQLDbLoggingMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -173,7 +173,7 @@ namespace BlazorBoilerplate.Storage.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.Logs", b =>
+            modelBuilder.Entity("BlazorBoilerplate.Shared.DataModels.DbLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -195,10 +195,14 @@ namespace BlazorBoilerplate.Storage.Migrations
                     b.Property<string>("Properties")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("TimeStamp")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("TimeStamp")
+                        .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("Logs");
                 });
