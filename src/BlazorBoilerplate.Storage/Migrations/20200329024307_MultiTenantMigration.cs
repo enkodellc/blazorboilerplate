@@ -3,28 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlazorBoilerplate.Storage.Migrations
 {
-    public partial class DbLogging : Migration
+    public partial class MultiTenantMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Logs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Message = table.Column<string>(nullable: true),
-                    MessageTemplate = table.Column<string>(nullable: true),
-                    Level = table.Column<string>(nullable: true),
-                    TimeStamp = table.Column<DateTime>(nullable: false),
-                    Exception = table.Column<string>(nullable: true),
-                    Properties = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Logs", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Tenants",
                 columns: table => new
@@ -54,9 +36,6 @@ namespace BlazorBoilerplate.Storage.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Logs");
-
             migrationBuilder.DropTable(
                 name: "Tenants");
         }

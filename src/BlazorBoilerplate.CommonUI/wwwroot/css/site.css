@@ -507,7 +507,6 @@ ul.breadcrumb {
 /* dialog */
 .mdc-dialog__content {
     min-width: 300px;
-
 }
 
 .mdc-dialog__title + .mdc-dialog__content {
@@ -522,6 +521,7 @@ ul.breadcrumb {
 .mdc-dialog__actions {
     border-top: 1px solid #e1e1e1 !important;
 }
+
 .no-drop {
     border: 2px dashed red;
 }
@@ -595,7 +595,7 @@ ul.breadcrumb {
     color: red;
 }
 
-#blazor-error-ui::before{
+#blazor-error-ui::before {
     margin: auto;
 }
 
@@ -607,7 +607,7 @@ ul.breadcrumb {
 }
 
 #blazor-error-ui {
-    z-index:9999;
+    z-index: 9999;
     display: none;
     background: #fff;
     margin: 0 auto;
@@ -755,8 +755,23 @@ ul.breadcrumb {
 }
 
 .mat-paginator {
-  background: none;
+    background: none;
 }
+
+
+
+.mat-fab-animate {
+    animation: mat_fab_spin 1s linear normal;
+}
+
+@keyframes mat_fab_spin {
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
 
 /*Refresh Timer*/
 div.refresh-timer.row {
@@ -769,15 +784,16 @@ div.refresh-timer.row {
     -o-justify-content: center;
     -webkit-justify-content: center;
     justify-content: center;
+}
 
-}
-div.refresh-timer.row div {
-    -webkit-align-self: center;
-    -o-align-self: center;
-    align-self: center;
-    margin-left: .2rem;
-    margin-right: .2rem;
-}
+    div.refresh-timer.row div {
+        -webkit-align-self: center;
+        -o-align-self: center;
+        align-self: center;
+        margin-left: .2rem;
+        margin-right: .2rem;
+    }
+
 div.refresh-timer-interval-wrapper {
     width: 100px;
 }

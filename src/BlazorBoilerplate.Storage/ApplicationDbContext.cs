@@ -50,6 +50,13 @@ namespace BlazorBoilerplate.Storage
 
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<DbLog>()
+                .HasKey(d => d.Id)
+                .IsClustered(false);
+            modelBuilder.Entity<DbLog>()
+                .HasIndex(d => d.TimeStamp)
+                .IsClustered(true);
+
             modelBuilder.Entity<Message>().ToTable("Messages");
 
             modelBuilder.ApplyConfiguration(new MessageConfiguration());

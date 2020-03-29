@@ -13,7 +13,6 @@ using System.Linq.Expressions;
 using System.Xml;
 using System.Text;
 using BlazorBoilerplate.Server.Helpers;
-using Microsoft.AspNetCore.Http;
 using System.Threading;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -36,13 +35,13 @@ namespace BlazorBoilerplate.Server.Managers
         /// <param name="page"></param>
         /// <param name="predicate"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<ApiResponse> Get(int pageSize = 25, int page = 0, Expression<Func<DbLog, bool>> predicate = null, CancellationToken cancellationToken = default)
+        public async Task<ApiResponse> GetAsync(int pageSize = 25, int page = 0, Expression<Func<DbLog, bool>> predicate = null, CancellationToken cancellationToken = default)
         {
             try
             {
-                var r = await _dbContext.Logs.AsNoTracking().Where(predicate).OrderByDescending(x=>x.TimeStamp).Skip(pageSize * page).Take(pageSize).ToArrayAsync(cancellationToken).ConfigureAwait(true);
-                var count = await _dbContext.Logs.CountAsync(predicate, cancellationToken).ConfigureAwait(true);
+                var r = await _dbContext.Logs.AsNoTracking().Where(predicate).OrderByDescending(x=>x.TimeStamp).Skip(pageSize * page).Take(pageSize).ToArrayAsync(cancellationToken).ConfigureAwait(false);
+                var count = await _dbContext.Logs.CountAsync(predicate, cancellationToken).ConfigureAwait(false);
+                var syncPoint = await _dbContext.Logs.AsNoTracking().Where(predicate).OrderBy(x=>x.TimeStamp).Select(x=>x.Id).LastAsync(cancellationToken).ConfigureAwait(false);
                 if (r.Length == 0)
                 {
                     return new ApiResponse(Status204NoContent, $"No results for request; pageSize ={ pageSize}; page ={ page}");
@@ -64,7 +63,9 @@ namespace BlazorBoilerplate.Server.Managers
                         {
                             CollectionSize= count,
                             PageIndex = page,
-                            PageSize = 25
+                            PageSize = 25,
+                            SyncPointReference = syncPoint,
+                          
                         });
 
 
@@ -75,6 +76,12 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 _logger.LogError(ex, "Error while retrieving Db Logs");
                 return new ApiResponse(Status500InternalServerError, "Error while retrieving Db Logs", null);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Operation Error while retrieving Db Logs");
+                return new ApiResponse(Status500InternalServerError, "Operation Error while retrieving Db Logs", null);
+
             }
         }
         protected static System.IO.MemoryStream GenerateStreamFromString(string value)
@@ -96,7 +103,6 @@ namespace BlazorBoilerplate.Server.Managers
         /// Extracts xml formatted properties from serilog mssql logs
         /// </summary>
         /// <param name="log"></param>
-        /// <returns></returns>
         protected string ExtractPropertiesFromLog(DbLog log)
         {
 
@@ -132,10 +138,35 @@ namespace BlazorBoilerplate.Server.Managers
             return s.ToString();
         }
 
-
-        public Task Log(DbLog logItem)
+        /// <summary>
+        /// Returns meta information (currently number of new entries) about the change in a collection as compared to a provided reference point
+        /// </summary>
+        /// <param name="deltaIndex"></param>
+        /// <param name="predicate"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task<ApiResponse> GetDeltaMetaAsync(int deltaIndex, Expression<Func<DbLog, bool>> predicate = null, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            int newEntryCount;
+            if (predicate != null)
+                newEntryCount = await _dbContext.Logs.AsNoTracking().CountAsync(x=>(x.Id > deltaIndex), cancellationToken).ConfigureAwait(false);
+            else
+                newEntryCount = await _dbContext.Logs.AsNoTracking().CountAsync(x => x.Id > deltaIndex, cancellationToken).ConfigureAwait(false);
+
+            var syncPoint = await _dbContext.Logs.AsNoTracking().OrderBy(x=>x.TimeStamp).Select(x=>x.Id).LastAsync(cancellationToken).ConfigureAwait(false);
+
+            _logger.LogDebug($"There are {newEntryCount} newer entries than reference of {deltaIndex}");
+            
+            return new ApiResponse(
+                        statusCode: Status204NoContent,
+                        message: $"There are {newEntryCount} newer entries than reference of {deltaIndex}",
+                        paginationDetails: new PaginationDetails()
+                        {
+                           DeltaRequestReference = deltaIndex,
+                           CollectionSizeDelta = newEntryCount,
+                           SyncPointReference = syncPoint,
+                           
+                        });
+
         }
     }
 }
