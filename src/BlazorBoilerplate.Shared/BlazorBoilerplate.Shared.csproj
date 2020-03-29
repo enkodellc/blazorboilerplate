@@ -46,7 +46,7 @@
 
   <ItemGroup>
     <Reference Include="UltraMapper">
-      <HintPath>..\..\libs\UltraMapper.dll</HintPath>
+      <HintPath>..\libs\UltraMapper.dll</HintPath>
     </Reference>
   </ItemGroup>
 

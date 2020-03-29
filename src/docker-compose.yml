@@ -5,6 +5,8 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
+      args:
+        BUILD_CONFIG: "Debug_CSB" #Determines dotnet build configuration, defaults to Release_CSB if not set
     ports:
       - 53415:80
     depends_on:

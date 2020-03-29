@@ -20,6 +20,7 @@
     <DockerfileFile>../Dockerfile</DockerfileFile>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <DockerfileBuildArguments>--build-arg BUILD_CONFIG='$(Configuration)'</DockerfileBuildArguments>
 
     <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
   </PropertyGroup>
@@ -55,6 +56,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.3.0" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="3.1.2" />
