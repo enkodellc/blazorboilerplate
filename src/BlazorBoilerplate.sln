@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\ctag.cmd = ..\ctag.cmd
 		Dockerfile = Dockerfile
 		..\README.md = ..\README.md
+		libs\UltraMapper.dll = libs\UltraMapper.dll
 	EndProjectSection
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{43D0A8C8-FC43-4DE5-BCDE-48EE46ED2511}"
