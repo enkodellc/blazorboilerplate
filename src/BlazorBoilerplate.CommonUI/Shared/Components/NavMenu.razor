@@ -2,7 +2,7 @@
 @inject NavigationManager navigationManager
 
     <MatNavMenu Multi="true" Class="app-sidebar">
-        <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri">
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
             <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
         </MatNavItem>
 

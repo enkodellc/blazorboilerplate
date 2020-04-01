@@ -1,12 +1,13 @@
-﻿using BlazorBoilerplate.Server.Middleware.Extensions;
+﻿using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Server.Middleware.Extensions;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Shared.DataModels;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -15,13 +16,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 //using System.Text.Json; //Does not work for this middleware, at least as in preview
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Shared.DataModels;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
@@ -301,21 +300,9 @@ namespace BlazorBoilerplate.Server.Middleware
             return plainBodyText;
         }
 
-        //TODO VS Studio Info / Warining message over the Disposable of the StreamReader
-        //private async Task<string> FormatResponse(HttpResponse response)
-        //{
-        //    using (StreamReader reader = new StreamReader(response.Body))
-        //    {
-        //        response.Body.Seek(0, SeekOrigin.Begin);
-        //        var plainBodyText = await reader.ReadToEndAsync();
-        //        response.Body.Seek(0, SeekOrigin.Begin);
-        //        return plainBodyText;
-        //    }
-        //}
-
         private string ConvertToJSONString(int code, object content)
         {
-            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content, null, "0.6.1"), JSONSettings());
+            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content, null, string.Empty), JSONSettings());
         }
         private string ConvertToJSONString(ApiResponse apiResponse)
         {

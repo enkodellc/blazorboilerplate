@@ -31,8 +31,6 @@ namespace BlazorBoilerplate.Server.Middleware.Wrappers
         [DataMember(EmitDefaultValue = false)]
         public PaginationDetails PaginationDetails { get; set; }
 
-
-
         [JsonConstructor]
         public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "", PaginationDetails paginationDetails = null)
         {
