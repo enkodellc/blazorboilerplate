@@ -96,7 +96,7 @@
 
         if (user.Identity.IsAuthenticated)
         {
-            navigationManager.NavigateTo(navigationManager.BaseUri + navigateTo);
+            navigationManager.NavigateTo(navigationManager.BaseUri + navigateTo, forceLoad: true);
         }
     }
 
