@@ -286,8 +286,8 @@ namespace BlazorBoilerplate.Server.Managers
                     }).Result;
                 }
 
-                //Role - Here we tie the new user to the "User" role
-                await _userManager.AddToRoleAsync(user, "User");
+                //Role - Here we tie the new user to the DefaultRoleNames.User role
+                await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
 
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
@@ -335,7 +335,7 @@ namespace BlazorBoilerplate.Server.Managers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     //ExposedClaims = user.Claims.ToDictionary(c => c.Type, c => c.Value),
-                    Roles = new List<string> { "User" }
+                    Roles = new List<string> { DefaultRoleNames.User }
                 };
 
                 return new ApiResponse(Status200OK, "Created New User", userInfo);
@@ -510,8 +510,8 @@ namespace BlazorBoilerplate.Server.Managers
                     new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
                 });
 
-            //Role - Here we tie the new user to the "User" role
-            await _userManager.AddToRoleAsync(user, "User");
+            //Role - Here we tie the new user to the DefaultRoleNames.User role
+            await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
 
             _logger.LogInformation("New user registered: {0}", user);
 

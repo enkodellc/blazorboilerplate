@@ -1,14 +1,13 @@
-﻿using BlazorBoilerplate.Server.Middleware.Extensions;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.DataInterfaces;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Shared.DataInterfaces;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Middleware
@@ -42,7 +41,7 @@ namespace BlazorBoilerplate.Server.Middleware
                     //if (Int32.TryParse(httpContext.User.Claims.First(c => c.Type == "tenantid").Value, out int TenantId))
                     //    userSession.TenantId = TenantId;
 
-                    if (userSession.Roles.Contains("Administrator"))
+                    if (userSession.Roles.Contains(DefaultRoleNames.Administrator))
                         userSession.DisableTenantFilter = true;
                 }
 
@@ -74,7 +73,7 @@ namespace BlazorBoilerplate.Server.Middleware
             if (exception is ApiException)
             {
                 var ex = exception as ApiException;
-                apiError = new ApiError(ResponseMessageEnum.ValidationError.GetDescription(), ex.Errors)
+                apiError = new ApiError(ResponseMessage.GetDescription(ex.StatusCode), ex.Errors)
                 {
                     ValidationErrors = ex.Errors,
                     ReferenceErrorCode = ex.ReferenceErrorCode,
@@ -109,7 +108,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
             httpContext.Response.ContentType = "application/json";
 
-            apiResponse = new ApiResponse(code, ResponseMessageEnum.Exception.GetDescription(), null, apiError);
+            apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(code), null, apiError);
 
             await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
         }

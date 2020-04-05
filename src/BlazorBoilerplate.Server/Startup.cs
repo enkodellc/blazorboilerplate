@@ -385,7 +385,13 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<HttpClient>();
 
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor().AddCircuitOptions(o =>
+            {
+                if (_environment.IsDevelopment())
+                {
+                    o.DetailedErrors = true;
+                }
+            });
 
             // Authentication providers
 

@@ -160,7 +160,7 @@ namespace BlazorBoilerplate.Server.Middleware
             if (exception is ApiException)
             {
                 var ex = exception as ApiException;
-                apiError = new ApiError(ResponseMessageEnum.ValidationError.GetDescription(), ex.Errors)
+                apiError = new ApiError(ResponseMessage.GetDescription(ex.StatusCode), ex.Errors)
                 {
                     ValidationErrors = ex.Errors,
                     ReferenceErrorCode = ex.ReferenceErrorCode,
@@ -196,36 +196,15 @@ namespace BlazorBoilerplate.Server.Middleware
 
             httpContext.Response.ContentType = "application/json";
 
-            apiResponse = new ApiResponse(code, ResponseMessageEnum.Exception.GetDescription(), null, apiError);
+            apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(Status500InternalServerError), null, apiError);
 
             await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
         }
 
         private Task HandleNotSuccessRequestAsync(HttpContext httpContext, int code)
         {
-            ApiError apiError;
-
-            if (code == Status404NotFound)
-            {
-                apiError = new ApiError(ResponseMessageEnum.NotFound.GetDescription());
-            }
-            else if (code == Status204NoContent)
-            {
-                apiError = new ApiError(ResponseMessageEnum.NotContent.GetDescription());
-            }
-            else if (code == Status405MethodNotAllowed)
-            {
-                apiError = new ApiError(ResponseMessageEnum.MethodNotAllowed.GetDescription());
-            }
-            else if (code == Status401Unauthorized)
-            {
-                apiError = new ApiError(ResponseMessageEnum.UnAuthorized.GetDescription());
-            }
-            else
-            {
-                apiError = new ApiError(ResponseMessageEnum.Unknown.GetDescription());
-            }
-
+            ApiError apiError = new ApiError(ResponseMessage.GetDescription(code));
+           
             ApiResponse apiResponse = new ApiResponse(code, apiError);
             httpContext.Response.StatusCode = code;
             httpContext.Response.ContentType = "application/json";
@@ -267,13 +246,13 @@ namespace BlazorBoilerplate.Server.Middleware
                 }
                 else
                 {
-                    apiResponse = new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), bodyContent, null);
+                    apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(code), bodyContent, null);
                     jsonString = JsonConvert.SerializeObject(apiResponse);
                 }
             }
             else
             {
-                apiResponse = new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), bodyContent, null);
+                apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(code), bodyContent, null);
                 jsonString = JsonConvert.SerializeObject(apiResponse);
             }
 
@@ -315,7 +294,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
         private string ConvertToJSONString(int code, object content)
         {
-            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessageEnum.Success.GetDescription(), content, null, "0.6.1"), JSONSettings());
+            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessage.GetDescription(code), content, null, "0.6.1"), JSONSettings());
         }
         private string ConvertToJSONString(ApiResponse apiResponse)
         {

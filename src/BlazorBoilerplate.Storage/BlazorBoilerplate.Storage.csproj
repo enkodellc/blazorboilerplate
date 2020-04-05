@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BlazorBoilerplate.Localization\BlazorBoilerplate.Localization.csproj" />
       <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
     </ItemGroup>
 

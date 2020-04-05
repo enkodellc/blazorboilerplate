@@ -1,0 +1,61 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+var permissionActions = new string[] { "Create", "Update", "Read", "Delete" };
+var entities = new string[] { "User", "Role", "Client", "ApiResource", "IdentityResource" };
+#>
+
+using System.ComponentModel;
+using BlazorBoilerplate.Localization;
+
+namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
+{
+    public static class Actions
+    {
+<#
+foreach(var permissionAction in permissionActions)
+{#>
+        public const string <#=permissionAction#> = nameof(<#=permissionAction#>);
+<#}#>
+    }
+
+    public static class Permissions
+    {
+        #region Admin
+<#
+foreach(var entity in entities)
+{#>
+        public static class <#=entity#>
+        {
+<#
+foreach(var permissionAction in permissionActions)
+{#>
+            [LocalizedDescription("<#=permissionAction#><#=entity#>Permission", typeof(Strings))]
+            public const string <#=permissionAction#> = nameof(<#=entity#>) + "." + nameof(Actions.<#=permissionAction#>);
+<#}#>
+        }
+<#}#>
+        #endregion
+
+        public static class WeatherForecasts
+        {
+            [Description("Read Weather Forecasts")]
+            public const string Read = nameof(WeatherForecasts) + "." + nameof(Actions.Read);
+        }
+        public static class Todo
+        {
+            [Description("Create a new ToDo")]
+            public const string Create = nameof(Todo) + "." + nameof(Actions.Create);
+            [Description("Read ToDos")]
+            public const string Read = nameof(Todo) + "." + nameof(Actions.Read);
+            [Description("Edit existing ToDos")]
+            public const string Update = nameof(Todo) + "." + nameof(Actions.Update);
+            [Description("Delete any ToDo")]
+            public const string Delete = nameof(Todo) + "." + nameof(Actions.Delete);
+        }
+    }
+}

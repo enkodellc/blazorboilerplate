@@ -111,20 +111,20 @@ namespace BlazorBoilerplate.Storage
             if (!await _context.Users.AnyAsync())
             {
                 //Generating inbuilt accounts
-                const string adminRoleName = "Administrator";
-                const string userRoleName = "User";
+                const string adminRoleName = DefaultRoleNames.Administrator;
+                const string userRoleName = DefaultRoleNames.User;
 
                 await EnsureRoleAsync(adminRoleName, "Default administrator", ApplicationPermissions.GetAllPermissionValues());
                 await EnsureRoleAsync(userRoleName, "Default user", new string[] { });
 
-                await CreateUserAsync("admin", "admin123", "Admin", "Blazor", "Administrator", "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { adminRoleName });
-                await CreateUserAsync("user", "user123", "User", "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890`", new string[] { userRoleName });
+                await CreateUserAsync("admin", "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { adminRoleName });
+                await CreateUserAsync("user", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
 
                 _logger.LogInformation("Inbuilt account generation completed");
             }
             else
             {
-                const string adminRoleName = "Administrator";
+                const string adminRoleName = DefaultRoleNames.Administrator;
 
                 IdentityRole<Guid> adminRole = await _roleManager.FindByNameAsync(adminRoleName);
                 var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
@@ -225,7 +225,7 @@ namespace BlazorBoilerplate.Storage
                 {
                     _configurationContext.Clients.Add(client.ToEntity());
                 }
-                _configurationContext.SaveChanges();
+                await _configurationContext.SaveChangesAsync();
             }
             if (!await _configurationContext.IdentityResources.AnyAsync())
             {
@@ -234,7 +234,7 @@ namespace BlazorBoilerplate.Storage
                 {
                     _configurationContext.IdentityResources.Add(resource.ToEntity());
                 }
-                _configurationContext.SaveChanges();
+                await _configurationContext.SaveChangesAsync();
             }
             if (!await _configurationContext.ApiResources.AnyAsync())
             {
@@ -243,7 +243,7 @@ namespace BlazorBoilerplate.Storage
                 {
                     _configurationContext.ApiResources.Add(resource.ToEntity());
                 }
-                _configurationContext.SaveChanges();
+                await _configurationContext.SaveChangesAsync();
             }
         }
 

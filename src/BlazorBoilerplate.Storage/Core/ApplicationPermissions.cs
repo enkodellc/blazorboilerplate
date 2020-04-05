@@ -1,3 +1,4 @@
+using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +12,7 @@ namespace BlazorBoilerplate.Server.Data.Core
     {
         public static ReadOnlyCollection<ApplicationPermission> AllPermissions;
         /// <summary>
-        /// Generates ApplicationPermissions based on Permissions Type by iterating over its nested classes and getting constant strings in each class as Value and Name, DescriptionAttribute of the constant string as Description, the nested class name as GroupName.
+        /// Generates ApplicationPermissions based on Permissions Type by iterating over its nested classes and getting constant strings in each class as Value and Name, LocalizedDescriptionAttribute of the constant string as Description, the nested class name as GroupName.
         /// </summary>
         static ApplicationPermissions()
         {
@@ -28,20 +29,10 @@ namespace BlazorBoilerplate.Server.Data.Core
                         Name = permission.GetValue(null).ToString().Replace('.', ' '),
                         GroupName = permissionClass.Name
                     };
-                    DescriptionAttribute[] attributes =
-        (DescriptionAttribute[])permission.GetCustomAttributes(
-        typeof(DescriptionAttribute),
-        false);
 
-                    if (attributes != null &&
-                        attributes.Length > 0)
-                    {
-                        applicationPermission.Description = attributes[0].Description;
-                    }
-                    else
-                    {
-                        applicationPermission.Description = applicationPermission.Name;
-                    }
+                    LocalizedDescriptionAttribute[] attributes = (LocalizedDescriptionAttribute[])permission.GetCustomAttributes(typeof(LocalizedDescriptionAttribute), false);
+
+                    applicationPermission.Description = attributes != null && attributes.Length > 0 ? attributes[0].Description : applicationPermission.Name;
 
                     allPermissions.Add(applicationPermission);
                 }

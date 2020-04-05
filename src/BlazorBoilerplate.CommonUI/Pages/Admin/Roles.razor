@@ -15,7 +15,7 @@
 @if (roles == null)
 {
     <LoadingBackground ShowLogoBox="true">
-        <label>Loading Roles</label>
+        <label>Loading Roles...</label>
     </LoadingBackground>
 }
 else
@@ -58,7 +58,7 @@ else
             </div>
         </fieldset>
 
-        <MatTable Items="@permissionsSelections" Class="mat-elevation-z5" ShowPaging="false">
+        <MatTable Items="@permissionsSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
             <MatTableHeader>
                 <th>Permissions</th>
                 <th>Allow</th>
@@ -205,12 +205,8 @@ else
             RoleDto request = new RoleDto
             {
                 Name = currentRoleName,
-                Permissions = new List<string>()
+                Permissions = permissionsSelections.Where(i => i.IsSelected).Select(i => i.Name).ToList()
             };
-
-            foreach (var status in permissionsSelections)
-                if (status.IsSelected)
-                    request.Permissions.Add(status.Name);
 
             ApiResponseDto apiResponse;
 
