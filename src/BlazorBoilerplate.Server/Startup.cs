@@ -16,7 +16,6 @@ using BlazorBoilerplate.CommonUI.States;
 using MatBlazor;
 
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components;
 
 using System.Net.Http;
 
@@ -43,17 +42,14 @@ using Microsoft.AspNetCore.Http;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
 using System.Reflection;
-using BlazorBoilerplate.Server.Data;
 
 
 namespace BlazorBoilerplate.Server
@@ -77,31 +73,8 @@ namespace BlazorBoilerplate.Server
             var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
 
             services.RegisterStorage(Configuration);
-            var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName();
-            var migrationsAssemblyName = migrationsAssembly.Name;
-            var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
-            var dbConnString = useSqlServer
-                ? Configuration.GetConnectionString("DefaultConnection")
-                : $"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}";
-
-            void DbContextOptionsBuilder(DbContextOptionsBuilder builder)
-            {
-                if (useSqlServer)
-                {
-                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
-                }
-                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
-                {
-                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssemblyName));
-                }
-                else
-                {
-                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
-                }
-            }
 
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-            services.AddDbContext<ApplicationDbContext>(DbContextOptionsBuilder);
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
@@ -124,18 +97,6 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseSuccessEvents = true;
             })
               .AddIdentityServerStores(Configuration)
-              .AddConfigurationStore(options =>
-              {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
-              })
-              .AddOperationalStore(options =>
-              {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
-
-                  // this enables automatic token cleanup. this is optional.
-                  options.EnableTokenCleanup = true;
-                  options.TokenCleanupInterval = 3600; //In Seconds 1 hour
-              })
               .AddAspNetIdentity<ApplicationUser>();
 
             X509Certificate2 cert = null;
@@ -331,7 +292,7 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version = migrationsAssembly.Version.ToString();
+                    document.Info.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
                     document.Info.Title = "Blazor Boilerplate";
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";

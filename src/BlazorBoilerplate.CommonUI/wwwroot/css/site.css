@@ -761,3 +761,9 @@ ul.breadcrumb {
 .mdc-table th {
     white-space: nowrap;
 }
+
+/*TODO https://github.com/SamProf/MatBlazor/issues/467*/
+.mdc-tab-scroller div {
+    flex-wrap: wrap;
+    max-width: 100%;
+}

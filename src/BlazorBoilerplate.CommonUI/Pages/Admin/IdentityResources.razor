@@ -195,7 +195,6 @@ else
     {
         try
         {
-
             isInsertOperation = identiyResource == null;
 
             currentIdentityResource = identiyResource ?? new IdentityResourceDto();
@@ -220,7 +219,7 @@ else
             {
                 jwtClaimSelections.Add(new Selection
                 {
-                    Name = info.Name,
+                    Name = $"{info.Name.Humanize(LetterCasing.Title)} ({info.GetValue(info)})",
                     Value = info.GetValue(info).ToString(),
                     IsSelected = currentIdentityResource.UserClaims.Contains(info.GetValue(info))
                 });

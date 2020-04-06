@@ -181,7 +181,7 @@ else
                         <div class="form-group">
                             <MatTextField @bind-Value="@currentClient.IdentityProviderRestrictionsText" Label="Identity Provider Restrictions" Icon="link" IconTrailing="true" TextArea="true" FullWidth="true" Required="false"></MatTextField>
                         </div>
-                        @*<div class="form-group">
+                        @*TODO <div class="form-group">
                                 <MatTextField @bind-Value="@currentClient.UserSsoLifetime" Label="User Sso Lifetime  in seconds" Icon="timer" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                             </div>*@
                     </fieldset>
@@ -231,6 +231,17 @@ else
                             <MatTextField @bind-Value="@currentClient.RedirectUrisText" Label="Redirect Uris" Icon="link" IconTrailing="true" TextArea="true" FullWidth="true" Required="false"></MatTextField>
                         </div>
                     </fieldset>
+                    <h3 class="mat-subtitle1">Allowed Identity Token Signing Algorithms</h3>
+                    <MatTable Items="@tokenSigningAlgorithmsSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
+                        <MatTableHeader>
+                            <th>Name</th>
+                            <th>Allow</th>
+                        </MatTableHeader>
+                        <MatTableRow Context="TokenSigningAlgorithmsRow">
+                            <td>@TokenSigningAlgorithmsRow.Name</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@TokenSigningAlgorithmsRow.IsSelected"></MatCheckbox></td>
+                        </MatTableRow>
+                    </MatTable>
                 </MatTab>
                 <MatTab Label="Consent Screen">
                     <fieldset>
@@ -240,7 +251,7 @@ else
                         <div class="form-group">
                             <MatSlideToggle @bind-Value="@currentClient.AllowRememberConsent" Label="Allow Remember Consent"></MatSlideToggle>
                         </div>
-                        @*Waiting for https://github.com/SamProf/MatBlazor/pull/449
+                        @*TODO Waiting for https://github.com/SamProf/MatBlazor/pull/449
                             <div class="form-group">
                                 <MatTextField @bind-Value="@currentClient.ConsentLifetime" Label="Consent Lifetime in seconds" Icon="timer" IconTrailing="true" FullWidth="true"></MatTextField>
                             </div>*@
@@ -371,9 +382,14 @@ else
 
     string labelUpsertDialogTitle;
     string labelUpsertDialogOkButton;
+
     List<Selection> grantTypeSelections = new List<Selection>();
     List<Selection> standardScopeSelections = new List<Selection>();
     List<Selection> apiScopeSelections = new List<Selection>();
+    List<Selection> tokenSigningAlgorithmsSelections = new List<Selection>();
+
+    //See https://identityserver4.readthedocs.io/en/latest/topics/crypto.html
+    string[] signingAlgorithms = new string[] { "RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" };
 
 
     async Task OpenUpsertClientDialog(ClientDto client = null)
@@ -388,7 +404,7 @@ else
                 {
                     standardScopeSelections.Add(new Selection
                     {
-                        Name = item.DisplayName,
+                        Name = $"{item.DisplayName} ({item.Name})",
                         Value = item.Name,
                         IsSelected = currentClient.AllowedScopes.Contains(item.Name)
                     });
@@ -402,7 +418,7 @@ else
                 {
                     apiScopeSelections.Add(new Selection
                     {
-                        Name = item.DisplayName,
+                        Name = $"{item.DisplayName} ({item.Name})",
                         Value = item.Name,
                         IsSelected = currentClient.AllowedScopes.Contains(item.Name)
                     });
@@ -433,9 +449,21 @@ else
             {
                 grantTypeSelections.Add(new Selection
                 {
-                    Name = info.Name,
+                    Name = $"{info.Name.Humanize(LetterCasing.Title)} ({info.GetValue(info)})",
                     Value = info.GetValue(info).ToString(),
                     IsSelected = currentClient.AllowedGrantTypes.Contains(info.GetValue(info))
+                });
+            }
+
+            tokenSigningAlgorithmsSelections.Clear();
+
+            foreach (var sa in signingAlgorithms)
+            {
+                tokenSigningAlgorithmsSelections.Add(new Selection
+                {
+                    Name = sa,
+                    Value = sa,
+                    IsSelected = currentClient.AllowedIdentityTokenSigningAlgorithms.Contains(sa)
                 });
             }
 
@@ -477,7 +505,12 @@ else
             }
 
             if (isUpsertClientDialogOpen)
+            {
                 currentClient.AllowedGrantTypes = grantTypeSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
+                currentClient.AllowedIdentityTokenSigningAlgorithms = tokenSigningAlgorithmsSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
+                currentClient.AllowedScopes = standardScopeSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
+                ((List<string>)currentClient.AllowedScopes).AddRange(apiScopeSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList());
+            }
 
             ApiResponseDto apiResponse;
 

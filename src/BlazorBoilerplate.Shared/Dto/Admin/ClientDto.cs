@@ -57,6 +57,13 @@ namespace BlazorBoilerplate.Shared.Dto.Admin
         }
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        public string AllowedIdentityTokenSigningAlgorithmsText
+        {
+            get => JoinLines(AllowedIdentityTokenSigningAlgorithms);
+            set => AllowedIdentityTokenSigningAlgorithms = SplitLines(value);
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public string IdentityProviderRestrictionsText
         {
             get => JoinLines(IdentityProviderRestrictions);

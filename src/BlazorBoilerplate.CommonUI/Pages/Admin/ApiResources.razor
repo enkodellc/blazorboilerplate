@@ -47,7 +47,7 @@ else
                 <MatChipSet>
                     @foreach (var scope in ApiResourceRow.Scopes)
                         {
-                        <MatChip Label="@scope.Name"></MatChip>
+                        <MatChip Label="@scope"></MatChip>
                         }
                 </MatChipSet>
             </td>
@@ -86,7 +86,23 @@ else
                         <div class="form-group">
                             <MatTextField @bind-Value="@currentApiResource.Description" Label="Description" Icon="description" IconTrailing="true" FullWidth="true"></MatTextField>
                         </div>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <MatTextField @bind-Value="@currentApiResource.ScopesText" Label="API Scopes" TextArea="true" FullWidth="true" Required="false"></MatTextField>
+                            </div>
+                        </div>
                     </fieldset>
+                    <h3 class="mat-subtitle1">Allowed Access Token Signing Algorithms</h3>
+                    <MatTable Items="@tokenSigningAlgorithmsSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
+                        <MatTableHeader>
+                            <th>Name</th>
+                            <th>Allow</th>
+                        </MatTableHeader>
+                        <MatTableRow Context="TokenSigningAlgorithmsRow">
+                            <td>@TokenSigningAlgorithmsRow.Name</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@TokenSigningAlgorithmsRow.IsSelected"></MatCheckbox></td>
+                        </MatTableRow>
+                    </MatTable>
                 </MatTab>
                 <MatTab Label="Secrets">
                     <MatTable Items="@currentApiResource.ApiSecrets" Class="mat-elevation-z5" ShowPaging="false" PageSize="@int.MaxValue">
@@ -186,14 +202,14 @@ else
 </MatDialog>
 
 @code {
-        int pageSize { get; set; } = 15;
-        int currentPage { get; set; } = 0;
+    int pageSize { get; set; } = 15;
+    int currentPage { get; set; } = 0;
 
-        bool isCurrentApiResourceKeyReadOnly = false;
+    bool isCurrentApiResourceKeyReadOnly = false;
 
-        List<ApiResourceDto> apiResources;
-        ApiResourceDto currentApiResource { get; set; } = new ApiResourceDto();
-        Secret currentSecret { get; set; } = new Secret();
+    List<ApiResourceDto> apiResources;
+    ApiResourceDto currentApiResource { get; set; } = new ApiResourceDto();
+    Secret currentSecret { get; set; } = new Secret();
 
     #region OnInitializedAsync
 
@@ -239,13 +255,16 @@ else
     string labelUpsertDialogTitle;
     string labelUpsertDialogOkButton;
     List<Selection> jwtClaimSelections = new List<Selection>();
+    List<Selection> tokenSigningAlgorithmsSelections = new List<Selection>();
+
+    //See https://identityserver4.readthedocs.io/en/latest/topics/crypto.html
+    string[] signingAlgorithms = new string[] { "RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" };
 
 
     void OpenUpsertApiResourceDialog(ApiResourceDto apiResource = null)
     {
         try
         {
-
             isInsertOperation = apiResource == null;
 
             currentApiResource = apiResource ?? new ApiResourceDto();
@@ -270,9 +289,21 @@ else
             {
                 jwtClaimSelections.Add(new Selection
                 {
-                    Name = info.Name,
+                    Name = $"{info.Name.Humanize(LetterCasing.Title)} ({info.GetValue(info)})",
                     Value = info.GetValue(info).ToString(),
                     IsSelected = currentApiResource.UserClaims.Contains(info.GetValue(info))
+                });
+            }
+
+            tokenSigningAlgorithmsSelections.Clear();
+
+            foreach (var sa in signingAlgorithms)
+            {
+                tokenSigningAlgorithmsSelections.Add(new Selection
+                {
+                    Name = sa,
+                    Value = sa,
+                    IsSelected = currentApiResource.AllowedAccessTokenSigningAlgorithms.Contains(sa)
                 });
             }
 
@@ -316,6 +347,7 @@ else
             if (isUpsertApiResourceDialogOpen)
             {
                 currentApiResource.UserClaims = jwtClaimSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
+                currentApiResource.AllowedAccessTokenSigningAlgorithms = tokenSigningAlgorithmsSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
                 ((List<string>)currentApiResource.UserClaims).AddRange(currentApiResource.CustomUserClaims);
             }
 

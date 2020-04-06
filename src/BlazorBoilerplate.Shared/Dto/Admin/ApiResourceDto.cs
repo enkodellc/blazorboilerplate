@@ -29,6 +29,20 @@ namespace BlazorBoilerplate.Shared.Dto.Admin
         }
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        public string ScopesText
+        {
+            get => JoinLines(Scopes);
+            set => Scopes = SplitLines(value);
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string AllowedAccessTokenSigningAlgorithmsText
+        {
+            get => JoinLines(AllowedAccessTokenSigningAlgorithms);
+            set => AllowedAccessTokenSigningAlgorithms = SplitLines(value);
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public string UserClaimsText
         {
             get => JoinLines(UserClaims);
