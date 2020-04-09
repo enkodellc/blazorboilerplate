@@ -20,7 +20,6 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IApiLogStore _apiLogStore;
         private readonly IApplicationDbContext _db;
         private readonly DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
-        private readonly IMapper _autoMapper;
         private readonly IUserSession _userSession;
 
         public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IApplicationDbContext db, IUserSession userSession)

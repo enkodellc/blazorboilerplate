@@ -1,19 +1,8 @@
-﻿using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.Dto.ExternalAuth;
-using IdentityModel;
-using IdentityServer4;
-using Microsoft.AspNetCore.Authentication;
+﻿using BlazorBoilerplate.Server.Managers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Shared.DataModels;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

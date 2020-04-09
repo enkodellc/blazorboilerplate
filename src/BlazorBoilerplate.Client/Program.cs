@@ -6,6 +6,7 @@ using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
@@ -19,6 +20,9 @@ namespace BlazorBoilerplate.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
+            builder.Services.AddLocalization();
+            builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
+            builder.Services.AddProtectedBrowserStorage();
             builder.Services.AddBaseAddressHttpClient();
             builder.Services.AddAuthorizationCore(config =>
             {

@@ -6,16 +6,17 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
+@inject IStringLocalizer<Strings> L
 
 @using System.Net
 
-<h1>Roles</h1>
+<h1>@L["Roles"]</h1>
 <p>Roles Management.</p>
 
 @if (roles == null)
 {
     <LoadingBackground ShowLogoBox="true">
-        <label>Loading Roles...</label>
+        <label>@L["Loading"]</label>
     </LoadingBackground>
 }
 else
@@ -23,7 +24,7 @@ else
     <MatTable Class="mat-elevation-z5" Items="@roles" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/roles"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th><MatButton Icon="add" Label="New Role" OnClick="@(() => OpenUpsertRoleDialog())"></MatButton></th>
+            <th><MatButton Icon="add" Label=@L["New Role"] OnClick="@(() => OpenUpsertRoleDialog())"></MatButton></th>
             <th>Name</th>
             <th>Permissions</th>
         </MatTableHeader>
@@ -57,7 +58,6 @@ else
                 <MatTextField @bind-Value="@currentRoleName" Disabled="@isCurrentRoleReadOnly" Label="Role Name" Icon="add" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
         </fieldset>
-
         <MatTable Items="@permissionsSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
             <MatTableHeader>
                 <th>Permissions</th>
@@ -68,22 +68,21 @@ else
                 <td><MatCheckbox TValue="bool" @bind-Value="@context.IsSelected"></MatCheckbox></td>
             </MatTableRow>
         </MatTable>
-
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { isUpsertRoleDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@(e => { isUpsertRoleDialogOpen = false; })">@L["Cancel"]</MatButton>
         <MatButton OnClick="@UpsertRole">@labelUpsertDialogOkButton</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@isDeleteRoleDialogOpen" Style="z-index:100">
-    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
         Are you sure you want to delete the role "@currentRoleName" ?
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { isDeleteRoleDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@DeleteRoleAsync">Delete</MatButton>
+        <MatButton OnClick="@(e => { isDeleteRoleDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteRoleAsync">@L["Delete"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
@@ -111,15 +110,15 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(apiResponse.Message, MatToastType.Success, "Roles Retrieved");
+                matToaster.Add(apiResponse.Message, MatToastType.Success, L["Operation Successful"]);
                 roles = apiResponse.Result;
             }
             else
-                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Roles Retrieval Failed");
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Roles Retrieval Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 
@@ -151,13 +150,13 @@ else
             // Update the UI
             if (isInsertOperation)
             {
-                labelUpsertDialogTitle = "Create Role";
-                labelUpsertDialogOkButton = "Create Role";
+                labelUpsertDialogTitle = L["New Role"];
+                labelUpsertDialogOkButton = L["Create"];
             }
             else
             {
-                labelUpsertDialogTitle = "Edit Role";
-                labelUpsertDialogOkButton = "Update Role";
+                labelUpsertDialogTitle = L["Edit {0}", roleName];
+                labelUpsertDialogOkButton = L["Update"];
             }
 
             // Retrieve the role
@@ -188,7 +187,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, $"{labelUpsertDialogTitle} Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 
@@ -217,7 +216,7 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(isInsertOperation ? "Role Created" : "Role Updated", MatToastType.Success);
+                matToaster.Add(apiResponse.Message, MatToastType.Success);
 
                 //await PopulateRoleList();
                 StateHasChanged();
@@ -233,7 +232,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Role Operation Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 
@@ -267,7 +266,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Role Delete Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 

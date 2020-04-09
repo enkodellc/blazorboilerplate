@@ -1,13 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlazorBoilerplate.Localization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Shared.Dto.Account
 {
     public class RegisterDto
     {
         [Required]
-        [StringLength(64, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
-        [RegularExpression(@"[^\s]+", ErrorMessage = "Spaces are not permitted.")]
-        [Display(Name = "UserName")]
+        [StringLength(64, ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "ErrorInvalidLength", MinimumLength = 2)]
+        [RegularExpression(@"[^\s]+", ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "SpacesNotPermitted")]
+        [Display(Name = "UserName", ResourceType = typeof(Strings))]
         public string UserName { get; set; }
 
         [Required]
@@ -17,14 +18,14 @@ namespace BlazorBoilerplate.Shared.Dto.Account
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "ErrorInvalidLength", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
 
         [Required]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "ConfirmPassword", ResourceType = typeof(Strings))]
+        [Compare("Password", ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "PasswordConfirmationFailed")]
         public string PasswordConfirm { get; set; }
     }
 }

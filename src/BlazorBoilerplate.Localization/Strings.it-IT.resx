@@ -177,4 +177,238 @@
   <data name="UpdateUserPermission" xml:space="preserve">
     <value>Modifica un utente</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Utenti</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Ruoli</value>
+  </data>
+  <data name="ApiResources" xml:space="preserve">
+    <value>Risorse API OpenID</value>
+  </data>
+  <data name="IdentityResources" xml:space="preserve">
+    <value>Risorse Identità OpenID</value>
+  </data>
+  <data name="OpenIdClients" xml:space="preserve">
+    <value>Client OpenID</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Cruscotto</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Caricamento in corso...</value>
+  </data>
+  <data name="New Client" xml:space="preserve">
+    <value>Nuovo Client</value>
+  </data>
+  <data name="New User" xml:space="preserve">
+    <value>Nuovo Utente</value>
+  </data>
+  <data name="New Role" xml:space="preserve">
+    <value>Nuovo Ruolo</value>
+  </data>
+  <data name="New API Resource" xml:space="preserve">
+    <value>Nuova Risorsa API</value>
+  </data>
+  <data name="New Identity Resource" xml:space="preserve">
+    <value>Nuova Risorsa Identità</value>
+  </data>
+  <data name="{0} users fetched" xml:space="preserve">
+    <value>Recuperati {0} utenti</value>
+  </data>
+  <data name="Operation Successful" xml:space="preserve">
+    <value>Operazione riuscita</value>
+  </data>
+  <data name="Operation Failed" xml:space="preserve">
+    <value>Operazione fallita</value>
+  </data>
+  <data name="{0} roles fetched" xml:space="preserve">
+    <value>Recuperati {0} ruoli</value>
+  </data>
+  <data name="{0} clients fetched" xml:space="preserve">
+    <value>Recuperati {0} client</value>
+  </data>
+  <data name="{0} identity resources fetched" xml:space="preserve">
+    <value>Recuperate {0} risorse identità</value>
+  </data>
+  <data name="{0} API resources fetched" xml:space="preserve">
+    <value>Recuperate {0} risorse API</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Crea</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Aggiorna</value>
+  </data>
+  <data name="Edit {0}" xml:space="preserve">
+    <value>Aggiorna {0}</value>
+  </data>
+  <data name="Permissions list fetched" xml:space="preserve">
+    <value>Recuperato elenco permessi</value>
+  </data>
+  <data name="Role {0} created" xml:space="preserve">
+    <value>Creato ruolo {0}</value>
+  </data>
+  <data name="Role {0} already exists" xml:space="preserve">
+    <value>Il ruolo {0} esiste già</value>
+  </data>
+  <data name="The role {0} doesn't exist" xml:space="preserve">
+    <value>Il ruolo {0} non esiste</value>
+  </data>
+  <data name="Role {0} deleted" xml:space="preserve">
+    <value>Ruolo {0} eliminato</value>
+  </data>
+  <data name="RoleInUseWarning" xml:space="preserve">
+    <value>Il ruolo {0} è in uso da un utente e non può essere eliminato</value>
+  </data>
+  <data name="Client {0} created" xml:space="preserve">
+    <value>Creato client {0}</value>
+  </data>
+  <data name="The client {0} doesn't exist" xml:space="preserve">
+    <value>Il client {0} non esiste</value>
+  </data>
+  <data name="Client {0} updated" xml:space="preserve">
+    <value>Client {0} aggiornato</value>
+  </data>
+  <data name="Client {0} deleted" xml:space="preserve">
+    <value>Client {0} eliminato</value>
+  </data>
+  <data name="Role {0} updated" xml:space="preserve">
+    <value>Ruolo {0} aggiornato</value>
+  </data>
+  <data name="Identity Resource {0} created" xml:space="preserve">
+    <value>Creata risorsa identità {0}</value>
+  </data>
+  <data name="Identity Resource {0} updated" xml:space="preserve">
+    <value>Risorsa identità {0} aggiornata</value>
+  </data>
+  <data name="Identity Resource {0} deleted" xml:space="preserve">
+    <value>Risorsa identità {0} eliminata</value>
+  </data>
+  <data name="API Resource {0} created" xml:space="preserve">
+    <value>Creata risorsa API  {0}</value>
+  </data>
+  <data name="API Resource {0} updated" xml:space="preserve">
+    <value>Risorsa API {0} aggiornata</value>
+  </data>
+  <data name="API Resource {0} deleted" xml:space="preserve">
+    <value>Risorsa API {0} eliminata</value>
+  </data>
+  <data name="The API resource {0} doesn't exist" xml:space="preserve">
+    <value>La risorsa API {0} non esiste</value>
+  </data>
+  <data name="The Identity resource {0} doesn't exist" xml:space="preserve">
+    <value>La risorsa identità {0} non esiste</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Nome utente</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Accedi</value>
+  </data>
+  <data name="Sign in with" xml:space="preserve">
+    <value>Accedi con</value>
+  </data>
+  <data name="Sign up" xml:space="preserve">
+    <value>Registrati</value>
+  </data>
+  <data name="Keep me logged in" xml:space="preserve">
+    <value>Resta connesso</value>
+  </data>
+  <data name="Log in" xml:space="preserve">
+    <value>Accesso</value>
+  </data>
+  <data name="Forgot your password?" xml:space="preserve">
+    <value>Password dimenticata?</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Invia</value>
+  </data>
+  <data name="LoginFailed" xml:space="preserve">
+    <value>Accesso fallito</value>
+  </data>
+  <data name="ResetPasswordFailed" xml:space="preserve">
+    <value>Reimpostazione password fallita</value>
+  </data>
+  <data name="ForgotPasswordEmailSent" xml:space="preserve">
+    <value>Email reimpostazione password inviata</value>
+  </data>
+  <data name="Confirm Email" xml:space="preserve">
+    <value>Conferma Email</value>
+  </data>
+  <data name="Send Confirmation" xml:space="preserve">
+    <value>Invia conferma</value>
+  </data>
+  <data name="EmailVerificationFailed" xml:space="preserve">
+    <value>Verifica email fallita</value>
+  </data>
+  <data name="EmailVerificationSuccessful" xml:space="preserve">
+    <value>Verifica email riuscita</value>
+  </data>
+  <data name="ResetPasswordSuccessful" xml:space="preserve">
+    <value>Reimpostazione password riuscita</value>
+  </data>
+  <data name="Password Reset" xml:space="preserve">
+    <value>Reimpostazione password</value>
+  </data>
+  <data name="Password Confirmation" xml:space="preserve">
+    <value>Conferma password</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>Reimposta password</value>
+  </data>
+  <data name="UserCreationFailed" xml:space="preserve">
+    <value>Creazione utente fallita</value>
+  </data>
+  <data name="UserCreationSuccessful" xml:space="preserve">
+    <value>Creazione utente riuscita</value>
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value>Registrazione</value>
+  </data>
+  <data name="PasswordConfirmationFailed" xml:space="preserve">
+    <value>La password e la password di conferma non corrispondono.</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Conferma password</value>
+  </data>
+  <data name="ErrorInvalidLength" xml:space="preserve">
+    <value>Il campo {0} deve avere almeno {2} caratteri ed al massimo {1}.</value>
+  </data>
+  <data name="SpacesNotPermitted" xml:space="preserve">
+    <value>Gli spazi non sono consentiti.</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Ruolo</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="AlreadyRegistered" xml:space="preserve">
+    <value>Già registrato?</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registrati</value>
+  </data>
+  <data name="InvalidData" xml:space="preserve">
+    <value>I dati inseriti non sono validi.</value>
+  </data>
+  <data name="The user {0} doesn't exist" xml:space="preserve">
+    <value>L'utente {0} non esiste</value>
+  </data>
+  <data name="The user doesn't exist" xml:space="preserve">
+    <value>L'utente non esiste</value>
+  </data>
+  <data name="User {0} created" xml:space="preserve">
+    <value>Creato utente {0}</value>
+  </data>
+  <data name="Confirm Delete" xml:space="preserve">
+    <value>Conferma eliminazione</value>
+  </data>
 </root>

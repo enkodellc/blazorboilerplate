@@ -56,7 +56,7 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
 
                     foreach (var cookie in cookies)
                     {
-                       await _jsRuntime.InvokeVoidAsync("jsInterops.setCookie", cookie.ToString());
+                       await _jsRuntime.InvokeVoidAsync("cookieStorage.set", cookie.ToString());
                     }
                 }
 #endif
@@ -86,7 +86,7 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
                 foreach (var cookie in cookies[0].Split(';'))
                 {
                     var cookieParts = cookie.Split('=');
-                    await _jsRuntime.InvokeVoidAsync("jsInterops.removeCookie", cookieParts[0]);
+                    await _jsRuntime.InvokeVoidAsync("cookieStorage.delete", cookieParts[0]);
                 }
             }
 #endif

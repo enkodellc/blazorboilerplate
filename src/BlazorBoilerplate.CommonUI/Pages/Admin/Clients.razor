@@ -6,68 +6,69 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
+@inject IStringLocalizer<Strings> L
 
 @using IdentityServer4.Models
 @using IdentityModel
 @using System.Net
 
-<h1>Clients</h1>
+<h1>@L["OpenIdClients"]</h1>
 <p>Clients Management.</p>
 
 @if (clients == null)
 {
-    <LoadingBackground ShowLogoBox="true">
-        <label>Loading Clients...</label>
-    </LoadingBackground>
+<LoadingBackground ShowLogoBox="true">
+    <label>@L["Loading"]</label>
+</LoadingBackground>
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@clients" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/clients"
-              DebounceMilliseconds="150">
-        <MatTableHeader>
-            <th><MatButton Icon="add" Label="New Client" OnClick="@(() => OpenUpsertClientDialog())"></MatButton></th>
-            <th>Id</th>
-            <th>Enabled</th>
-            <th>Access Token Lifetime</th>
-            <th>Require Client Secret</th>
-            <th>Require Consent</th>
-            <th>Local Login</th>
-            <th>Grant Types</th>
-            <th>PKCE</th>
-            <th>Scopes</th>
-        </MatTableHeader>
-        <MatTableRow Context="ClientRow">
-            <td>
-                <div style="width:155px;">
-                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertClientDialog(ClientRow))"></MatIconButton>
-                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteClientDialog(ClientRow))"></MatIconButton>
-                </div>
-            </td>
-            <td><div style="min-width:130px;">@ClientRow.ClientId</div></td>
-            <td><MatSlideToggle TValue="bool" Value="@ClientRow.Enabled" ValueChanged="@((item) => UpdateEnabled(ClientRow))"></MatSlideToggle></td>
-            <td><div style="min-width:130px;">@ClientRow.AccessTokenLifetime</div></td>
-            <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequireClientSecret" Disabled="true"></MatSlideToggle></td>
-            <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequireConsent" Disabled="true"></MatSlideToggle></td>
-            <td><MatSlideToggle TValue="bool" Value="@ClientRow.EnableLocalLogin" Disabled="true"></MatSlideToggle></td>
-            <td>
-                <MatChipSet>
-                    @foreach (var grantType in ClientRow.AllowedGrantTypes)
+<MatTable Class="mat-elevation-z5" Items="@clients" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/clients"
+          DebounceMilliseconds="150">
+    <MatTableHeader>
+        <th><MatButton Icon="add" Label=@L["New Client"] OnClick="@(() => OpenUpsertClientDialog())"></MatButton></th>
+        <th>Id</th>
+        <th>Enabled</th>
+        <th>Access Token Lifetime</th>
+        <th>Require Client Secret</th>
+        <th>Require Consent</th>
+        <th>Local Login</th>
+        <th>Grant Types</th>
+        <th>PKCE</th>
+        <th>Scopes</th>
+    </MatTableHeader>
+    <MatTableRow Context="ClientRow">
+        <td>
+            <div style="width:155px;">
+                <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertClientDialog(ClientRow))"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteClientDialog(ClientRow))"></MatIconButton>
+            </div>
+        </td>
+        <td><div style="min-width:130px;">@ClientRow.ClientId</div></td>
+        <td><MatSlideToggle TValue="bool" Value="@ClientRow.Enabled" ValueChanged="@((item) => UpdateEnabled(ClientRow))"></MatSlideToggle></td>
+        <td><div style="min-width:130px;">@ClientRow.AccessTokenLifetime</div></td>
+        <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequireClientSecret" Disabled="true"></MatSlideToggle></td>
+        <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequireConsent" Disabled="true"></MatSlideToggle></td>
+        <td><MatSlideToggle TValue="bool" Value="@ClientRow.EnableLocalLogin" Disabled="true"></MatSlideToggle></td>
+        <td>
+            <MatChipSet>
+                @foreach (var grantType in ClientRow.AllowedGrantTypes)
                         {
-                        <MatChip Label="@grantType"></MatChip>
+                <MatChip Label="@grantType"></MatChip>
                         }
-                </MatChipSet>
-            </td>
-            <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequirePkce" Disabled="true"></MatSlideToggle></td>
-            <td>
-                <MatChipSet>
-                    @foreach (var scope in ClientRow.AllowedScopes)
+            </MatChipSet>
+        </td>
+        <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequirePkce" Disabled="true"></MatSlideToggle></td>
+        <td>
+            <MatChipSet>
+                @foreach (var scope in ClientRow.AllowedScopes)
                         {
-                        <MatChip Label="@scope"></MatChip>
+                <MatChip Label="@scope"></MatChip>
                         }
-                </MatChipSet>
-            </td>
-        </MatTableRow>
-    </MatTable>
+            </MatChipSet>
+        </td>
+    </MatTableRow>
+</MatTable>
 }
 
 <MatDialog @bind-IsOpen="@isUpsertClientDialogOpen">
@@ -270,19 +271,19 @@ else
         </EditForm>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@CancelChanges">Cancel</MatButton>
+        <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
         <MatButton OnClick="@UpsertClient">@labelUpsertDialogOkButton</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@isDeleteClientDialogOpen" Style="z-index:100">
-    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Client Delete</MatDialogTitle>
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
         Are you sure you want to delete the client "@currentClient.ClientId" ?
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { isDeleteClientDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@DeleteClientAsync">Delete</MatButton>
+        <MatButton OnClick="@(e => { isDeleteClientDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteClientAsync">@L["Delete"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
@@ -292,8 +293,8 @@ else
         Are you sure you want to delete the secret "@currentSecret.GetDisplayValue()" ?
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { isDeleteClientSecretDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@DeleteClientSecret">Delete</MatButton>
+        <MatButton OnClick="@(e => { isDeleteClientSecretDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteClientSecret">@L["Delete"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
@@ -321,7 +322,7 @@ else
         </EditForm>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { isCreateClientSecretDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@(e => { isCreateClientSecretDialogOpen = false; })">@L["Cancel"]</MatButton>
         <MatButton OnClick="@CreateSecret">Create Client Secret</MatButton>
     </MatDialogActions>
 </MatDialog>
@@ -354,15 +355,15 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(apiResponse.Message, MatToastType.Success, "Clients Retrieved");
+                matToaster.Add(apiResponse.Message, MatToastType.Success, L["Operation Successful"]);
                 clients = apiResponse.Result;
             }
             else
-                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Clients Retrieval Failed");
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Clients Retrieval Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 
@@ -432,13 +433,13 @@ else
             // Update the UI
             if (isInsertOperation)
             {
-                labelUpsertDialogTitle = "Create Client";
-                labelUpsertDialogOkButton = "Create Client";
+                labelUpsertDialogTitle = L["New Client"];
+                labelUpsertDialogOkButton = L["Create"];
             }
             else
             {
-                labelUpsertDialogTitle = $"Edit Client {currentClient.ClientId}";
-                labelUpsertDialogOkButton = "Update Client";
+                labelUpsertDialogTitle = L["Edit {0}", currentClient.ClientId];
+                labelUpsertDialogOkButton = L["Update"];
             }
 
             isCurrentClientKeyReadOnly = !isInsertOperation;
@@ -476,7 +477,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, $"{labelUpsertDialogTitle} Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 
@@ -521,7 +522,7 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(isInsertOperation ? "Client Created" : "Client Updated", MatToastType.Success);
+                matToaster.Add(apiResponse.Message, MatToastType.Success);
 
                 StateHasChanged();
             }
@@ -535,7 +536,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Client Operation Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
         finally
         {
@@ -573,7 +574,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Client Delete Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 

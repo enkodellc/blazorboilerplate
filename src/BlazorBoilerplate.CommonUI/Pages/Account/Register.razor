@@ -5,6 +5,7 @@
 @layout LoginLayout
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Strings> L
 @inject IMatToaster matToaster
 
 @using static Microsoft.AspNetCore.Http.StatusCodes
@@ -13,31 +14,30 @@
     <div class="logo">
         <img src="_content/BlazorBoilerplate.CommonUI/images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
         <br />
-        <h4>Create Account</h4>
+        <h4>@L["Registration"]</h4>
     </div>
-
     <EditForm Model="@registerParameters" OnValidSubmit="@RegisterUser">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-Value="@registerParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@registerParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
             <div class="form-group d-flex justify-content-end">
-                <MatButton Type="submit" Raised="true">Create account</MatButton>
+                <MatButton Type="submit" Raised="true">@L["Register"]</MatButton>
             </div>
             <hr />
             <NavLink href="account/login">
-                <h6 class="font-weight-normal text-center">Already have an account? Click here to login</h6>
+                <h6 class="font-weight-normal text-center">@L["AlreadyRegistered"]</h6>
             </NavLink>
         </fieldset>
     </EditForm>
@@ -53,17 +53,17 @@
             var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters);
             if (response.StatusCode == Status200OK)
             {
-                matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, "User Creation Sucessful");
+                matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, L["UserCreationSuccessful"]);
                 navigationManager.NavigateTo("");
             }
             else
             {
-                matToaster.Add(response.Message, MatToastType.Danger, "User Creation Failed");
+                matToaster.Add(response.Message, MatToastType.Danger, L["UserCreationFailed"]);
             }
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
+            matToaster.Add(ex.Message, MatToastType.Danger, L["UserCreationFailed"]);
         }
     }
 }

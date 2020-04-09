@@ -2,6 +2,7 @@
 @page "/account/login/{returnurl}"
 
 @using BlazorBoilerplate.Shared.Dto.Account
+@using static Microsoft.AspNetCore.Http.StatusCodes
 
 @layout LoginLayout
 @inject NavigationManager navigationManager
@@ -10,20 +11,18 @@
 @inject AppState appState
 @inject NavigationManager NavigationManager
 @inject IJSRuntime js
-
-@using static Microsoft.AspNetCore.Http.StatusCodes
+@inject IStringLocalizer<Strings> L
 
 <MatCard>
     <div class="hidden-mdc-down">
         <MatIconButton Icon="exit_to_app" Class="float-left" @onclick="GoBack" />
         <MatIconButton Icon="home" Class="float-left" Link="/" />
     </div>
-
     <div class="logo">
         <a href="/" title="Blazor Boilerplate Home"><img src="_content/BlazorBoilerplate.CommonUI/images/blazorboilerplate.svg" style="width:100px;" title="Blazor Boilerplate Home" alt="Blazor Boilerplate" /><br />Blazor Boilerplate</a>
         <br />
-        <h4>Log In</h4>
-        User -> Username: <b>user</b> Password: <b>user123</b><br />
+        <h4>@L["Log in"]</h4>
+        User  -> Username: <b>user</b>  Password: <b>user123</b><br />
         Admin -> Username: <b>admin</b> Password: <b>admin123</b><br />
     </div>
     <EditForm Model="@loginParameters" OnValidSubmit="@SubmitLogin">
@@ -31,19 +30,19 @@
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField id="userName" @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MatTextField>
+                <MatTextField id="userName" @bind-Value="@loginParameters.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="2"></MatTextField>
+                <MatTextField @bind-Value="@loginParameters.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="2"></MatTextField>
             </div>
             <div class="form-group">
-                <MatButton class="float-right" Type="submit" Raised="true" tabindex="3">Login</MatButton>
-                <MatCheckbox @bind-Value="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
+                <MatButton class="float-right" Type="submit" Raised="true" tabindex="3">@L["Login"]</MatButton>
+                <MatCheckbox @bind-Value="@loginParameters.RememberMe" class="filled-in chk-col-blue">@L["Keep me logged in"]</MatCheckbox>
             </div>
             <hr />
             <div>
-                <MatButton class="float-left" OnClick="@Register" Raised="true">Create account</MatButton>
-                <MatButton class="float-right" OnClick="@GoogleSignIn" Raised="true">Sign in with <img height="18" style="margin-left: 5px" src="https://www.google.pl/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" /></MatButton><br />
+                <MatButton class="float-left" OnClick="@Register" Raised="true">@L["Sign up"]</MatButton>
+                <MatButton class="float-right" OnClick="@GoogleSignIn" Raised="true">@L["Sign in with"] <img height="18" style="margin-left: 5px" src="https://www.google.pl/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" /></MatButton><br />
             </div>
         </fieldset>
     </EditForm>
@@ -51,19 +50,18 @@
 <MatAccordion>
     <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
         <MatExpansionPanelSummary>
-            <MatExpansionPanelHeader>Forgot Password?</MatExpansionPanelHeader>
+            <MatExpansionPanelHeader>@L["Forgot your password?"]</MatExpansionPanelHeader>
             <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
         </MatExpansionPanelSummary>
         <MatExpansionPanelDetails>
             <EditForm Model="@forgotPasswordParameters" OnValidSubmit="@ForgotPassword">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-
                 <div class="form-group">
-                    <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatButton class="float-right" Type="submit" Raised="true">Submit</MatButton>
+                    <MatButton class="float-right" Type="submit" Raised="true">@L["Submit"]</MatButton>
                 </div>
             </EditForm>
         </MatExpansionPanelDetails>
@@ -138,12 +136,12 @@
             }
             else
             {
-                matToaster.Add(response.Message, MatToastType.Danger, "Login Attempt Failed");
+                matToaster.Add(response.Message, MatToastType.Danger, L["LoginFailed"]);
             }
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "Login Attempt Failed");
+            matToaster.Add(ex.Message, MatToastType.Danger, L["LoginFailed"]);
         }
     }
 
@@ -152,13 +150,13 @@
         try
         {
             await ((IdentityAuthenticationStateProvider)authStateProvider).ForgotPassword(forgotPasswordParameters);
-            matToaster.Add("Forgot Password Email Sent", MatToastType.Success);
-            forgotPasswordParameters.Email = "";
+            matToaster.Add(L["ForgotPasswordEmailSent"], MatToastType.Success);
+            forgotPasswordParameters.Email = string.Empty;
             forgotPasswordToggle = false;
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
+            matToaster.Add(ex.Message, MatToastType.Danger, L["ResetPasswordFailed"]);
         }
     }
 }

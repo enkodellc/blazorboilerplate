@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorBoilerplate.Localization;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,9 +11,9 @@ namespace BlazorBoilerplate.Shared.Dto.Account
         public Guid UserId { get; set; }
 
         [Required]
-        [StringLength(64, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
-        [RegularExpression(@"[^\s]+", ErrorMessage = "Spaces are not permitted.")]
-        [Display(Name = "UserName")]
+        [StringLength(64, ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "ErrorInvalidLength", MinimumLength = 2)]
+        [RegularExpression(@"[^\s]+", ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "SpacesNotPermitted")]
+        [Display(Name = "UserName", ResourceType = typeof(Strings))]
         public string UserName { get; set; }
         public int TenantId { get; set; }
 

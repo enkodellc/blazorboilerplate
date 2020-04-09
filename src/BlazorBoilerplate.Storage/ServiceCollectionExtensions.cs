@@ -12,6 +12,8 @@ namespace BlazorBoilerplate.Storage
 {
     public static class ServiceCollectionExtensions
     {
+        private static readonly string projectName = nameof(BlazorBoilerplate);
+
         public static IServiceCollection RegisterStorage(this IServiceCollection services, IConfiguration Configuration)
         {
             services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions(builder, Configuration)); // Look into the way we initialise the PB ways. Look at the old way they did this, with side effects on the builder. 
@@ -31,7 +33,7 @@ namespace BlazorBoilerplate.Storage
         public static void GetDbContextOptions(DbContextOptionsBuilder builder, IConfiguration configuration)
         {
             var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name;
-            var useSqlServer = Convert.ToBoolean(configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
+            var useSqlServer = Convert.ToBoolean(configuration[$"{projectName}:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
                 ? configuration.GetConnectionString("DefaultConnection")
                 : $"Filename={configuration.GetConnectionString("SqlLiteConnectionFileName")}";
@@ -40,7 +42,7 @@ namespace BlazorBoilerplate.Storage
             {
                 builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
             }
-            else if (Convert.ToBoolean(configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
+            else if (Convert.ToBoolean(configuration[$"{projectName}:UsePostgresServer"] ?? "false"))
             {
                 builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
             }

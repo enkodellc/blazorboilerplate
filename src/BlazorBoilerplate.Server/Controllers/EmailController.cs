@@ -1,12 +1,12 @@
-﻿using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.Dto.Email;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Localization;
+using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -16,10 +16,12 @@ namespace BlazorBoilerplate.Server.Controllers
     public class EmailController : ControllerBase
     {
         private readonly IEmailManager _emailManager;
+        private readonly IStringLocalizer<Strings> L;
 
-        public EmailController(IEmailManager emailManager)
+        public EmailController(IEmailManager emailManager, IStringLocalizer<Strings> l)
         {
             _emailManager = emailManager;
+            L = l;
         }
 
         [HttpPost("Send")]
@@ -28,7 +30,7 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> Send(EmailDto parameters)
             => ModelState.IsValid ?
                 await _emailManager.Send(parameters) :
-                new ApiResponse(Status400BadRequest, "User Model is Invalid");
+                new ApiResponse(Status400BadRequest, L["InvalidData"]);
 
         [HttpGet("Receive")]
         [Authorize]
