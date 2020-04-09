@@ -16,7 +16,6 @@ using BlazorBoilerplate.CommonUI.States;
 using MatBlazor;
 
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components;
 
 using System.Net.Http;
 
@@ -43,18 +42,17 @@ using Microsoft.AspNetCore.Http;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
 using System.Reflection;
-using BlazorBoilerplate.Server.Data;
-
+using Microsoft.AspNetCore.Localization;
+using BlazorBoilerplate.Localization;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace BlazorBoilerplate.Server
 {
@@ -63,6 +61,8 @@ namespace BlazorBoilerplate.Server
         public IConfiguration Configuration { get; }
 
         private readonly IWebHostEnvironment _environment;
+
+        private readonly string projectName = nameof(BlazorBoilerplate);
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
@@ -74,34 +74,21 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var authAuthority = Configuration["BlazorBoilerplate:IS4ApplicationUrl"].TrimEnd('/');
+            services.AddLocalization()
+                .Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture(Settings.SupportedCultures[0]);
+                options.AddSupportedCultures(Settings.SupportedCultures);
+                options.AddSupportedUICultures(Settings.SupportedCultures);
+            });
+
+            var dataProtectionBuilder = services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate)); 
+
+            var authAuthority = Configuration[$"{projectName}:IS4ApplicationUrl"].TrimEnd('/');
 
             services.RegisterStorage(Configuration);
-            var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName();
-            var migrationsAssemblyName = migrationsAssembly.Name;
-            var useSqlServer = Convert.ToBoolean(Configuration["BlazorBoilerplate:UseSqlServer"] ?? "false");
-            var dbConnString = useSqlServer
-                ? Configuration.GetConnectionString("DefaultConnection")
-                : $"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}";
-
-            void DbContextOptionsBuilder(DbContextOptionsBuilder builder)
-            {
-                if (useSqlServer)
-                {
-                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
-                }
-                else if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
-                {
-                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssemblyName));
-                }
-                else
-                {
-                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssemblyName));
-                }
-            }
 
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-            services.AddDbContext<ApplicationDbContext>(DbContextOptionsBuilder);
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
@@ -124,22 +111,11 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseSuccessEvents = true;
             })
               .AddIdentityServerStores(Configuration)
-              .AddConfigurationStore(options =>
-              {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
-              })
-              .AddOperationalStore(options =>
-              {
-                  options.ConfigureDbContext = DbContextOptionsBuilder;
-
-                  // this enables automatic token cleanup. this is optional.
-                  options.EnableTokenCleanup = true;
-                  options.TokenCleanupInterval = 3600; //In Seconds 1 hour
-              })
               .AddAspNetIdentity<ApplicationUser>();
 
             X509Certificate2 cert = null;
 
+            var keysFolder = Path.Combine(_environment.ContentRootPath, "Keys");
 
             if (_environment.IsDevelopment())
             {
@@ -149,6 +125,8 @@ namespace BlazorBoilerplate.Server
                 // https://stackoverflow.com/questions/42351274/identityserver4-hosting-in-iis
                 //.AddDeveloperSigningCredential(true, @"C:\tempkey.rsa")
                 identityServerBuilder.AddDeveloperSigningCredential();
+
+                dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
             }
             else
             {
@@ -159,6 +137,9 @@ namespace BlazorBoilerplate.Server
                     // if we use a key vault
                     if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UsingKeyVault"]) == true)
                     {
+                        //https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview
+                        dataProtectionBuilder.PersistKeysToAzureBlobStorage(new Uri("<blobUriWithSasToken>"))
+                            .ProtectKeysWithAzureKeyVault("<keyIdentifier>", "<clientId>", "<clientSecret>");
 
                         // if managed app identity is used
                         if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UseManagedAppIdentity"]) == true)
@@ -175,23 +156,21 @@ namespace BlazorBoilerplate.Server
                             }
                             catch (Exception ex)
                             {
-                                throw (ex);
+                                throw ex;
                             }
                         }
 
-                        // if app id and app secret are used
-                        if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UsingKeyVault"]) == false)
-                        {
-                            throw new NotImplementedException();
-                        }
-
                     }
+                    else // if app id and app secret are used
+                        throw new NotImplementedException();
                 }
+                else
+                    dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
 
                 // using local cert store
-                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:UseLocalCertStore"]) == true)
+                if (Convert.ToBoolean(Configuration[$"{projectName}:UseLocalCertStore"]) == true)
                 {
-                    var certificateThumbprint = Configuration["BlazorBoilerplate:CertificateThumbprint"];
+                    var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
                     using (X509Store store = new X509Store("WebHosting", StoreLocation.LocalMachine))
                     {
                         store.Open(OpenFlags.ReadOnly);
@@ -227,6 +206,8 @@ namespace BlazorBoilerplate.Server
                 }
             }
 
+            services.AddProtectedBrowserStorage();
+
             var authBuilder = services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
@@ -239,7 +220,7 @@ namespace BlazorBoilerplate.Server
                 options.ApiName = IdentityServerConfig.ApiName;
             });
 
-            //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/google-logins?view=aspnetcore-3.1
+            //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/google-logins
             if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Google:Enabled"] ?? "false"))
             {
                 authBuilder.AddGoogle(options =>
@@ -280,7 +261,7 @@ namespace BlazorBoilerplate.Server
                 options.Lockout.AllowedForNewUsers = true;
 
                 // Require Confirmed Email User settings
-                if (Convert.ToBoolean(Configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
+                if (Convert.ToBoolean(Configuration[$"{projectName}:RequireConfirmedEmail"] ?? "false"))
                 {
                     options.User.RequireUniqueEmail = false;
                     options.SignIn.RequireConfirmedEmail = true;
@@ -331,7 +312,7 @@ namespace BlazorBoilerplate.Server
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version = migrationsAssembly.Version.ToString();
+                    document.Info.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
                     document.Info.Title = "Blazor Boilerplate";
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
@@ -388,7 +369,13 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<HttpClient>();
 
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor().AddCircuitOptions(o =>
+            {
+                if (_environment.IsDevelopment())
+                {
+                    o.DetailedErrors = true;
+                }
+            });
 
             // Authentication providers
 
@@ -414,6 +401,8 @@ namespace BlazorBoilerplate.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseRequestLocalization();
+
             // cookie policy to deal with temporary browser incompatibilities
             app.UseCookiePolicy();
 

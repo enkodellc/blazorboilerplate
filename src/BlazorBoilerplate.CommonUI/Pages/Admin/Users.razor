@@ -6,15 +6,17 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
 @inject AppState appState
+@inject IStringLocalizer<Strings> L
+
 @using System.Net
 
-<h1>Users</h1>
+<h1>@L["Users"]</h1>
 <p>User Management.</p>
 
 @if (users == null)
 {
     <LoadingBackground ShowLogoBox="true">
-        <label>Loading Users</label>
+        <label>@L["Loading"]</label>
     </LoadingBackground>
 }
 else
@@ -22,8 +24,8 @@ else
     <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th><MatButton Icon="person_add" Label="New User" OnClick="@(e => { createUserDialogOpen = true; })"></MatButton></th>
-            <th>User Name</th>
+            <th><MatButton Icon="person_add" Label=@L["New User"] OnClick="@(e => { createUserDialogOpen = true; })"></MatButton></th>
+            <th>@L["UserName"]</th>
             <th>Email</th>
             <th>Roles</th>
         </MatTableHeader>
@@ -49,7 +51,6 @@ else
                     </AuthorizeView>
                 </div>
             </td>
-
             <td><div style="width:130px;">@UserRow.UserName</div></td>
             <td>@UserRow.Email</td>
             <td>
@@ -65,42 +66,42 @@ else
 }
 
 <MatDialog @bind-IsOpen="@createUserDialogOpen">
-    <MatDialogTitle>Create User</MatDialogTitle>
+    <MatDialogTitle>@L["New User"]</MatDialogTitle>
     <MatDialogContent>
         <EditForm Model="@registerParameters" OnValidSubmit="@CreateUserAsync">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@registerParameters.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@registerParameters.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@registerParameters.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
             </fieldset>
         </EditForm>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { createUserDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@CreateUserAsync">Create User</MatButton>
-    </MatDialogActions>
+        <MatButton OnClick="@(e => { createUserDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@CreateUserAsync">@L["Create"]</MatButton>
+</MatDialogActions>
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@editDialogOpen">
-    <MatDialogTitle>Edit User</MatDialogTitle>
+    <MatDialogTitle>@L["Edit {0}", user.UserName]</MatDialogTitle>
     <MatDialogContent>
         <EditForm Model="@user" OnValidSubmit="@UpdateUserAsync">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@user.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@user.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
                     <MatTextField @bind-Value="@user.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
@@ -115,19 +116,19 @@ else
         </EditForm>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@CancelChanges">Cancel</MatButton>
-        <MatButton OnClick="@UpdateUserAsync">Update User</MatButton>
+        <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@UpdateUserAsync">@L["Update"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@deleteUserDialogOpen" Style="z-index:100">
-    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
         Are you sure you want to delete user "@user.UserName" ?
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { deleteUserDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@DeleteUserAsync">Delete</MatButton>
+        <MatButton OnClick="@(e => { deleteUserDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteUserAsync">@L["Delete"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
@@ -139,17 +140,17 @@ else
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@registerParameters.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label="Password Confirmation" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
             </fieldset>
         </EditForm>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { resetPasswordDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@ResetUserPasswordAsync">Reset User Password</MatButton>
+        <MatButton OnClick="@(e => { resetPasswordDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@ResetUserPasswordAsync">@L["Reset Password"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
@@ -194,15 +195,15 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(apiResponse.Message, MatToastType.Success, "Users Retrieved");
+                matToaster.Add(apiResponse.Message, MatToastType.Success, L["Operation Successful"]);
                 users = apiResponse.Result;
             }
             else
-                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "User Retrieval Failed");
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "User Retrieval Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 
@@ -260,7 +261,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Role Retrieval Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 
@@ -280,10 +281,10 @@ else
             var apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Account", user);
 
             if (apiResponse.IsSuccessStatusCode)
-                matToaster.Add("User Updated", MatToastType.Success);
+                matToaster.Add(apiResponse.Message, MatToastType.Success);
             else
             {
-                matToaster.Add("Error", MatToastType.Danger, apiResponse.StatusCode.ToString());
+                matToaster.Add(apiResponse.Message, MatToastType.Danger);
                 user.RestoreState();
             }
 
@@ -291,7 +292,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "User Update Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
         finally
         {
@@ -305,7 +306,7 @@ else
         {
             if (registerParameters.Password != registerParameters.PasswordConfirm)
             {
-                matToaster.Add("Password Confirmation Failed", MatToastType.Danger, "");
+                matToaster.Add(L["PasswordConfirmationFailed"], MatToastType.Danger, "");
                 return;
             }
 
@@ -320,12 +321,12 @@ else
             }
             else
             {
-                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "User Creation Failed");
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["UserCreationFailed"]);
             }
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "User Creation Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["UserCreationFailed"]);
         }
     }
 
@@ -351,7 +352,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Password Reset Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["ResetPasswordFailed"]);
         }
     }
 
@@ -373,7 +374,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "User Delete Error");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 }

@@ -32,6 +32,14 @@
 </head>
 <body>
     <!-- SSB -->
+    @{
+        this.HttpContext.Response.Cookies.Append(
+          Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.DefaultCookieName,
+          Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.MakeCookieValue(
+            new Microsoft.AspNetCore.Localization.RequestCulture(
+                System.Globalization.CultureInfo.CurrentCulture,
+                System.Globalization.CultureInfo.CurrentUICulture)));
+    }
     <app>
         <component type="typeof(App)" render-mode="ServerPrerendered" />
     </app>
@@ -54,5 +62,6 @@
     <script src="_content/BlazorBoilerplate.CommonUI/javascript/signalr.min.js"></script>
     <script src="_content/BlazorBoilerplate.CommonUI/javascript/chatClient.js"></script>
     <script src="_content/BlazorBoilerplate.CommonUI/javascript/jsInterops.js"></script>
+    <script src="_content/Microsoft.AspNetCore.ProtectedBrowserStorage/protectedBrowserStorage.js"></script>
 </body>
 </html>

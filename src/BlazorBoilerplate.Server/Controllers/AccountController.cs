@@ -1,9 +1,11 @@
-﻿using BlazorBoilerplate.Server.Managers;
+﻿using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
@@ -18,10 +20,13 @@ namespace BlazorBoilerplate.Server.Controllers
 
         private readonly ApiResponse _invalidUserModel;
 
-        public AccountController(IAccountManager accountManager)
+        private readonly IStringLocalizer<Strings> L;
+
+        public AccountController(IAccountManager accountManager, IStringLocalizer<Strings> l)
         {
             _accountManager = accountManager;
-            _invalidUserModel = new ApiResponse(Status400BadRequest, "User Model is Invalid"); // Could we inject this? As some form of 'Errors which has constant values'?
+            L = l;
+            _invalidUserModel = new ApiResponse(Status400BadRequest, L["InvalidData"]); // Could we inject this? As some form of 'Errors which has constant values'?
         }
 
         // POST: api/Account/Login

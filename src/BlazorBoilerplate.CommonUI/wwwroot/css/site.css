@@ -781,3 +781,17 @@ div.refresh-timer.row div {
 div.refresh-timer-interval-wrapper {
     width: 100px;
 }
+
+.mdc-table-allow td:first-child {
+    width: 100%;
+}
+
+.mdc-table th {
+    white-space: nowrap;
+}
+
+/*TODO https://github.com/SamProf/MatBlazor/issues/467*/
+.mdc-tab-scroller div {
+    flex-wrap: wrap;
+    max-width: 100%;
+}

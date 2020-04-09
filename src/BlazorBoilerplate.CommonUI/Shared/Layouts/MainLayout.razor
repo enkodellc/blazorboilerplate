@@ -55,7 +55,8 @@
                         <MatTooltip Tooltip="Github Repository">
                             <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
                         </MatTooltip>
-                        <Login></Login>
+                        <SelectCulture />
+                        <Login />
                     </MatAppBarSection>
                 </MatAppBarRow>
             </MatAppBar>
@@ -77,8 +78,7 @@
 @code {
     bool _navMenuOpened = true;
     bool _navMinified = false;
-    public string bbDrawerClass = "";
-
+    public string bbDrawerClass = "";   
 
     private void CallLogin()
     {
@@ -86,8 +86,9 @@
               navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.NavigateTo($"/account/Login/{returnUrl}", forceLoad: false);
     }
+
     [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask { get; set; }
+    Task<AuthenticationState> authenticationStateTask { get; set; }    
 
     protected override async Task OnInitializedAsync()
     {

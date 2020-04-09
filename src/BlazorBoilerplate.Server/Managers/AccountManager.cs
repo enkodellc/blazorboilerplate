@@ -16,6 +16,8 @@ using BlazorBoilerplate.Shared.Dto.Account;
 using BlazorBoilerplate.Shared.Dto.Email;
 using IdentityModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using BlazorBoilerplate.Localization;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -28,6 +30,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IUserProfileStore _userProfileStore;
         private readonly IConfiguration _configuration;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IStringLocalizer<Strings> L;
 
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
 
@@ -37,7 +40,8 @@ namespace BlazorBoilerplate.Server.Managers
             RoleManager<IdentityRole<Guid>> roleManager,
             IEmailManager emailManager,
             IUserProfileStore userProfileStore,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IStringLocalizer<Strings> l)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -46,20 +50,21 @@ namespace BlazorBoilerplate.Server.Managers
             _emailManager = emailManager;
             _userProfileStore = userProfileStore;
             _configuration = configuration;
+            L = l;
         }
 
         public async Task<ApiResponse> ConfirmEmail(ConfirmEmailDto parameters)
         {
             if (parameters.UserId == null || parameters.Token == null)
             {
-                return new ApiResponse(Status404NotFound, "User does not exist");
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
             var user = await _userManager.FindByIdAsync(parameters.UserId);
             if (user == null)
             {
-                _logger.LogInformation("User does not exist: {0}", parameters.UserId);
-                return new ApiResponse(Status404NotFound, "User does not exist");
+                _logger.LogInformation(L["The user {0} doesn't exist", parameters.UserId]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
             var token = parameters.Token;
@@ -67,12 +72,12 @@ namespace BlazorBoilerplate.Server.Managers
             if (!result.Succeeded)
             {
                 _logger.LogInformation("User Email Confirmation Failed: {0}", string.Join(",", result.Errors.Select(i => i.Description)));
-                return new ApiResponse(Status400BadRequest, "User Email Confirmation Failed");
+                return new ApiResponse(Status400BadRequest, L["EmailVerificationFailed"]);
             }
 
             await _signInManager.SignInAsync(user, true);
 
-            return new ApiResponse(Status200OK, "Success");
+            return new ApiResponse(Status200OK, L["EmailVerificationSuccessful"]);
         }
 
         public async Task<ApiResponse> ForgotPassword(ForgotPasswordDto parameters)
@@ -82,7 +87,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 _logger.LogInformation("Forgot Password with non-existent email / user: {0}", parameters.Email);
                 // Don't reveal that the user does not exist or is not confirmed
-                return new ApiResponse(Status200OK, "Success");
+                return new ApiResponse(Status200OK, L["Operation Successful"]);
             }
 
             // TODO: Break out the email sending here, to a separate class/service etc..
@@ -109,7 +114,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             #endregion Forgot Password Email
 
-            return new ApiResponse(Status200OK, "Success");
+            return new ApiResponse(Status200OK, L["Operation Successful"]);
         }
 
         public async Task<ApiResponse> Login(LoginDto parameters)
@@ -140,7 +145,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("Login Failed: " + ex.Message);
+                _logger.LogInformation("Login Failed: " + ex.GetBaseException().Message);
             }
 
             _logger.LogInformation("Invalid Password for user {0}}", parameters.UserName);
@@ -191,8 +196,8 @@ namespace BlazorBoilerplate.Server.Managers
             var user = await _userManager.FindByIdAsync(parameters.UserId);
             if (user == null)
             {
-                _logger.LogInformation("User does not exist: {0}", parameters.UserId);
-                return new ApiResponse(Status404NotFound, "User does not exist");
+                _logger.LogInformation(L["The user {0} doesn't exist", parameters.UserId]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
             // TODO: Break this out into it's own self-contained Email Helper service.
@@ -240,8 +245,8 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (user == null)
             {
-                _logger.LogInformation("User does not exist: {0}", userInfo.Email);
-                return new ApiResponse(Status404NotFound, "User does not exist");
+                _logger.LogInformation(L["The user {0} doesn't exist", userInfo.Email]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
             user.FirstName = userInfo.FirstName;
@@ -263,7 +268,6 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-
                 var user = new ApplicationUser
                 {
                     UserName = parameters.UserName,
@@ -286,8 +290,8 @@ namespace BlazorBoilerplate.Server.Managers
                     }).Result;
                 }
 
-                //Role - Here we tie the new user to the "User" role
-                await _userManager.AddToRoleAsync(user, "User");
+                //Role - Here we tie the new user to the DefaultRoleNames.User role
+                await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
 
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
@@ -335,10 +339,10 @@ namespace BlazorBoilerplate.Server.Managers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     //ExposedClaims = user.Claims.ToDictionary(c => c.Type, c => c.Value),
-                    Roles = new List<string> { "User" }
+                    Roles = new List<string> { DefaultRoleNames.User }
                 };
 
-                return new ApiResponse(Status200OK, "Created New User", userInfo);
+                return new ApiResponse(Status200OK, L["User {0} created", userInfo.UserName], userInfo);
             }
             catch (Exception ex)
             {
@@ -352,7 +356,8 @@ namespace BlazorBoilerplate.Server.Managers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return new ApiResponse(Status404NotFound, "User does not exist");
+                _logger.LogInformation(L["The user {0} doesn't exist", id]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
             try
             {
@@ -510,8 +515,8 @@ namespace BlazorBoilerplate.Server.Managers
                     new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
                 });
 
-            //Role - Here we tie the new user to the "User" role
-            await _userManager.AddToRoleAsync(user, "User");
+            //Role - Here we tie the new user to the DefaultRoleNames.User role
+            await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
 
             _logger.LogInformation("New user registered: {0}", user);
 

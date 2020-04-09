@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CreateApiResourcePermission" xml:space="preserve">
+    <value>Create a new API resource</value>
+  </data>
+  <data name="CreateClientPermission" xml:space="preserve">
+    <value>Create a new client</value>
+  </data>
+  <data name="CreateRolePermission" xml:space="preserve">
+    <value>Create a new role</value>
+  </data>
+  <data name="CreateUserPermission" xml:space="preserve">
+    <value>Create a new user</value>
+  </data>
+  <data name="DeleteApiResourcePermission" xml:space="preserve">
+    <value>Delete any API resource</value>
+  </data>
+  <data name="DeleteClientPermission" xml:space="preserve">
+    <value>Delete any client</value>
+  </data>
+  <data name="DeleteRolePermission" xml:space="preserve">
+    <value>Delete any role</value>
+  </data>
+  <data name="DeleteUserPermission" xml:space="preserve">
+    <value>Delete any user</value>
+  </data>
+  <data name="ReadApiResourcePermission" xml:space="preserve">
+    <value>Read API resources data</value>
+  </data>
+  <data name="ReadClientPermission" xml:space="preserve">
+    <value>Read clients data</value>
+  </data>
+  <data name="ReadRolePermission" xml:space="preserve">
+    <value>Read roles data (permissions, etc.")</value>
+  </data>
+  <data name="ReadUserPermission" xml:space="preserve">
+    <value>Read users data (Names, Emails, Phone Numbers, etc.)</value>
+  </data>
+  <data name="UpdateApiResourcePermission" xml:space="preserve">
+    <value>Edit existing API resources</value>
+  </data>
+  <data name="UpdateClientPermission" xml:space="preserve">
+    <value>Edit existing clients</value>
+  </data>
+  <data name="UpdateRolePermission" xml:space="preserve">
+    <value>Edit existing roles</value>
+  </data>
+  <data name="UpdateUserPermission" xml:space="preserve">
+    <value>Edit existing users</value>
+  </data>
+  <data name="CreateIdentityResourcePermission" xml:space="preserve">
+    <value>Create a new identity resource</value>
+  </data>
+  <data name="ReadIdentityResourcePermission" xml:space="preserve">
+    <value>Read identity resources data</value>
+  </data>
+  <data name="UpdateIdentityResourcePermission" xml:space="preserve">
+    <value>Edit existing identity resource</value>
+  </data>
+  <data name="DeleteIdentityResourcePermission" xml:space="preserve">
+    <value>Delete any identity resource</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="ApiResources" xml:space="preserve">
+    <value>OpenID API resources</value>
+  </data>
+  <data name="IdentityResources" xml:space="preserve">
+    <value>OpenID Identity Resources</value>
+  </data>
+  <data name="OpenIdClients" xml:space="preserve">
+    <value>OpenID Clients</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading in progress...</value>
+  </data>
+  <data name="New Client" xml:space="preserve">
+    <value>New Client</value>
+  </data>
+  <data name="New User" xml:space="preserve">
+    <value>New User</value>
+  </data>
+  <data name="New Role" xml:space="preserve">
+    <value>New Role</value>
+  </data>
+  <data name="New API Resource" xml:space="preserve">
+    <value>New API Resource</value>
+  </data>
+  <data name="New Identity Resource" xml:space="preserve">
+    <value>New Identity Resource</value>
+  </data>
+  <data name="{0} users fetched" xml:space="preserve">
+    <value>{0} users fetched</value>
+  </data>
+  <data name="Operation Successful" xml:space="preserve">
+    <value>Operation Successful</value>
+  </data>
+  <data name="Operation Failed" xml:space="preserve">
+    <value>Operation Failed</value>
+  </data>
+  <data name="{0} roles fetched" xml:space="preserve">
+    <value>{0} roles fetched</value>
+  </data>
+  <data name="{0} clients fetched" xml:space="preserve">
+    <value>{0} clients fetched</value>
+  </data>
+  <data name="{0} identity resources fetched" xml:space="preserve">
+    <value>{0} identity resources fetched</value>
+  </data>
+  <data name="{0} API resources fetched" xml:space="preserve">
+    <value>{0} API resources fetched</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Edit {0}" xml:space="preserve">
+    <value>Edit {0}</value>
+  </data>
+  <data name="Permissions list fetched" xml:space="preserve">
+    <value>Permissions list fetched</value>
+  </data>
+  <data name="Role {0} created" xml:space="preserve">
+    <value>Role {0} created</value>
+  </data>
+  <data name="Role {0} already exists" xml:space="preserve">
+    <value>Role {0} already exists</value>
+  </data>
+  <data name="The role {0} doesn't exist" xml:space="preserve">
+    <value>The role {0} doesn't exist</value>
+  </data>
+  <data name="Role {0} deleted" xml:space="preserve">
+    <value>Role {0} deleted</value>
+  </data>
+  <data name="RoleInUseWarning" xml:space="preserve">
+    <value>This role {0} is still used by a user, you cannot delete it</value>
+  </data>
+  <data name="Client {0} created" xml:space="preserve">
+    <value>Client {0} created</value>
+  </data>
+  <data name="The client {0} doesn't exist" xml:space="preserve">
+    <value>The client {0} doesn't exist</value>
+  </data>
+  <data name="Client {0} updated" xml:space="preserve">
+    <value>Client {0} updated</value>
+  </data>
+  <data name="Client {0} deleted" xml:space="preserve">
+    <value>Client {0} deleted</value>
+  </data>
+  <data name="Role {0} updated" xml:space="preserve">
+    <value>Role {0} updated</value>
+  </data>
+  <data name="Identity Resource {0} created" xml:space="preserve">
+    <value>Identity Resource {0} created</value>
+  </data>
+  <data name="Identity Resource {0} updated" xml:space="preserve">
+    <value>Identity Resource {0} updated</value>
+  </data>
+  <data name="Identity Resource {0} deleted" xml:space="preserve">
+    <value>Identity Resource {0} deleted</value>
+  </data>
+  <data name="API Resource {0} created" xml:space="preserve">
+    <value>API Resource {0} created</value>
+  </data>
+  <data name="API Resource {0} updated" xml:space="preserve">
+    <value>API Resource {0} updated</value>
+  </data>
+  <data name="API Resource {0} deleted" xml:space="preserve">
+    <value>API Resource {0} deleted</value>
+  </data>
+  <data name="The API resource {0} doesn't exist" xml:space="preserve">
+    <value>The API resource {0} doesn't exist</value>
+  </data>
+  <data name="The Identity resource {0} doesn't exist" xml:space="preserve">
+    <value>The Identity resource {0} doesn't exist</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>User Name</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Sign in with" xml:space="preserve">
+    <value>Sign in with</value>
+  </data>
+  <data name="Sign up" xml:space="preserve">
+    <value>Sign up</value>
+  </data>
+  <data name="Keep me logged in" xml:space="preserve">
+    <value>Keep me logged in</value>
+  </data>
+  <data name="Log in" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="Forgot your password?" xml:space="preserve">
+    <value>Forgot your password?</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="LoginFailed" xml:space="preserve">
+    <value>Login Attempt Failed</value>
+  </data>
+  <data name="ResetPasswordFailed" xml:space="preserve">
+    <value>Reset Password Attempt Failed</value>
+  </data>
+  <data name="ForgotPasswordEmailSent" xml:space="preserve">
+    <value>Forgot Password Email Sent</value>
+  </data>
+  <data name="Confirm Email" xml:space="preserve">
+    <value>Confirm Email</value>
+  </data>
+  <data name="Send Confirmation" xml:space="preserve">
+    <value>Send Confirmation</value>
+  </data>
+  <data name="EmailVerificationFailed" xml:space="preserve">
+    <value>Email Verification Failed</value>
+  </data>
+  <data name="EmailVerificationSuccessful" xml:space="preserve">
+    <value>Email Verification Successful</value>
+  </data>
+  <data name="ResetPasswordSuccessful" xml:space="preserve">
+    <value>Reset Password Successful</value>
+  </data>
+  <data name="Password Reset" xml:space="preserve">
+    <value>Password Reset</value>
+  </data>
+  <data name="Password Confirmation" xml:space="preserve">
+    <value>Password Confirmation</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
+  <data name="UserCreationFailed" xml:space="preserve">
+    <value>User Creation Failed</value>
+  </data>
+  <data name="UserCreationSuccessful" xml:space="preserve">
+    <value>User Creation Successful</value>
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value>Registration</value>
+  </data>
+  <data name="PasswordConfirmationFailed" xml:space="preserve">
+    <value>The password and confirmation password do not match.</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="ErrorInvalidLength" xml:space="preserve">
+    <value>The {0} must be at least {2} and at max {1} characters long.</value>
+  </data>
+  <data name="SpacesNotPermitted" xml:space="preserve">
+    <value>Spaces are not permitted.</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="AlreadyRegistered" xml:space="preserve">
+    <value>Already registered?</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="InvalidData" xml:space="preserve">
+    <value>Inserted data are not valid.</value>
+  </data>
+  <data name="The user {0} doesn't exist" xml:space="preserve">
+    <value>The user {0} doesn't exist</value>
+  </data>
+  <data name="The user doesn't exist" xml:space="preserve">
+    <value>The user doesn't exist</value>
+  </data>
+  <data name="User {0} created" xml:space="preserve">
+    <value>User {0} created</value>
+  </data>
+  <data name="Confirm Delete" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+</root>

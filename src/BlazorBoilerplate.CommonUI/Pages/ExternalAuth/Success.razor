@@ -5,6 +5,7 @@
 @inject NavigationManager navigationManager
 @inject HttpClient Http
 @inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Strings> L
 @inject IMatToaster matToaster
 <MatCard>
     <div class="logo">
@@ -12,9 +13,7 @@
         <br />
         <h4>External authentication success</h4>
         <MatButton Link="/" Raised="true">Home</MatButton>
-
     </div>
-
 </MatCard>
 
 @code {

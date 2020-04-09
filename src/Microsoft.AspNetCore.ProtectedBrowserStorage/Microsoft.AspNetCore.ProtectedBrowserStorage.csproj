@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <LangVersion>8.0</LangVersion>
+    <PackageDescription>Provides services for storing data in the browser's localStorage and sessionStorage collections via JS interop. The stored data is protected using ASP.NET Core's Data Protection capabilities.</PackageDescription>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.JSInterop" Version="3.1.3" />
+  </ItemGroup>
+
+</Project>

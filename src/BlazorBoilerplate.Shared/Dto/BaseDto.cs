@@ -1,21 +1,23 @@
-﻿using UltraMapper;
+﻿using ObjectCloner.Extensions;
+using System.Linq;
+using System.Reflection;
 
 namespace BlazorBoilerplate.Shared.Dto
 {
     public abstract class BaseDto : IMementoDto
     {
-        private static readonly Mapper _mapper = new Mapper();
         private object state;
 
         public void SaveState()
         {
-            state = _mapper.Map((object)this);
+            state = this.DeepClone();
         }
 
         public void RestoreState()
         {
             if (state != null)
-                _mapper.Map(state, this);
+                foreach (PropertyInfo property in GetType().GetProperties().Where(p => p.CanWrite))
+                    property.SetValue(this, property.GetValue(state, null), null);
         }
         public void ClearState()
         {

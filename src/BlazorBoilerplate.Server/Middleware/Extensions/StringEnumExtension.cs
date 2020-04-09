@@ -1,5 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using BlazorBoilerplate.Localization;
+using System;
 using System.Globalization;
 
 namespace BlazorBoilerplate.Server.Middleware.Extensions
@@ -20,11 +20,9 @@ namespace BlazorBoilerplate.Server.Middleware.Extensions
                     if (val == e.ToInt32(CultureInfo.InvariantCulture))
                     {
                         var memInfo = type.GetMember(type.GetEnumName(val));
-                        var descriptionAttributes = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+                        var descriptionAttributes = memInfo[0].GetCustomAttributes(typeof(LocalizedDescriptionAttribute), false);
                         if (descriptionAttributes.Length > 0)
-                        {
-                            description = ((DescriptionAttribute)descriptionAttributes[0]).Description;
-                        }
+                            description = ((LocalizedDescriptionAttribute)descriptionAttributes[0]).Description;
 
                         break;
                     }

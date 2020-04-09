@@ -1,8 +1,10 @@
-﻿using BlazorBoilerplate.Server.Managers;
+﻿using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -14,10 +16,12 @@ namespace BlazorBoilerplate.Server.Controllers
     public class UserProfileController : ControllerBase
     {
         private readonly IUserProfileManager _userProfileManager;
+        private readonly IStringLocalizer<Strings> L;
 
-        public UserProfileController(IUserProfileManager userProfileManager)
+        public UserProfileController(IUserProfileManager userProfileManager, IStringLocalizer<Strings> l)
         {
             _userProfileManager = userProfileManager;
+            L = l;
         }
 
         // GET: api/UserProfile
@@ -30,6 +34,6 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> Upsert(UserProfileDto userProfile)
             => ModelState.IsValid ?
                 await _userProfileManager.Upsert(userProfile) :
-                new ApiResponse(Status400BadRequest, "User Model is Invalid");
+                new ApiResponse(Status400BadRequest, L["InvalidData"]);
     }
 }
