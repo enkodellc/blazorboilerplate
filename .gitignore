@@ -342,3 +342,4 @@ healthchecksdb
 /src/BlazorBoilerplate.Server/*.db
 *.rsa
 /src/BlazorBoilerplate.Server/appsettings.Local.json
+/src/BlazorBoilerplate.Server/Keys
