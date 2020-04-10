@@ -476,7 +476,7 @@ ul.breadcrumb {
             text-decoration: underline;
         }
 
-.mdc-checkbox label {
+.mdc-checkbox + label {
     margin-bottom: 0px !important;
 }
 
