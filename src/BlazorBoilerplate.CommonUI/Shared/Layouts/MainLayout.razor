@@ -19,7 +19,7 @@
         </footer>
     </MatDrawer>
     <MatDrawerContent>
-        <MatAppBarContainer>
+        <MatAppBarContainer Style="display: flex; flex-direction: column; min-height: 100vh;">
             <MatAppBar Fixed="true">
                 <MatAppBarRow>
                     <MatAppBarSection>
@@ -60,15 +60,13 @@
                     </MatAppBarSection>
                 </MatAppBarRow>
             </MatAppBar>
-            <MatAppBarContent>
+            <MatAppBarContent Style="flex: 1; display: flex; flex-direction: column;">
                 <Breadcrumbs RootLinkTitle="Home"></Breadcrumbs>
-                <section class="container-fluid">
+                <section class="container-fluid" style="flex: 1;">
                     @Body
                 </section>
                 <footer class="page-footer">
-                    <div class="flex-1">
-                        © 2020 <a href="//blazorboilerplate.com">Blazor Boilerplate</a> Version 0.8.0 - Developed by <a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
-                    </div>
+                    ©&nbsp;@DateTime.Now.Year&nbsp;<a href="//blazorboilerplate.com">Blazor Boilerplate</a>&nbsp;Version 0.8.0 - Developed by&nbsp;<a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
                 </footer>
             </MatAppBarContent>
         </MatAppBarContainer>
@@ -78,7 +76,7 @@
 @code {
     bool _navMenuOpened = true;
     bool _navMinified = false;
-    public string bbDrawerClass = "";   
+    public string bbDrawerClass = "";
 
     private void CallLogin()
     {
@@ -88,7 +86,7 @@
     }
 
     [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask { get; set; }    
+    Task<AuthenticationState> authenticationStateTask { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
