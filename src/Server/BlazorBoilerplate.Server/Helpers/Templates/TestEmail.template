@@ -1,0 +1,19 @@
+﻿<div>
+  <h1>
+    <img style="width:100px; vertical-align: middle;" src="https://blazorboilerplate.com/images/logo.png" alt="Blazor Boilerplate"/> Blazor Boilerplate
+  </h1>
+  <p>Hello {user},</p>
+  <p>
+    This is a <strong>TEST</strong> email. If you are using BlazorBoilerplate please <a href="https://github.com/enkodellc/blazorboilerplate">star the repo on Github</a>.
+    We are looking for more contributors to grow the project. There are several areas of improvement needed and if you are using the repo in your project please submit your PR's or suggestions.
+  </p>
+  <p>
+    Join our <a href="https://gitter.im/blazorboilerplate/community">chat on Gitter</a> to disucss future project features, timelines and to get involved.
+  </p>
+  <p>The email was on {testDate}.</p>
+  <p>
+    <br />
+  </p>
+  <p>Regards,</p>
+  <p>BlazorBoilerplate Email Template</p>
+</div>

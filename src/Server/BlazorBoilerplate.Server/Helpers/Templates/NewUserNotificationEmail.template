@@ -1,0 +1,22 @@
+﻿<div>
+  <h1>
+    <img style="width:100px; vertical-align: middle;" src="https://blazorboilerplate.com/images/logo.png" alt="Blazor Boilerplate"/> BlazorBoilerplate
+  </h1>
+  <p>Hello {name},</p>
+  <p>
+    A new user has been added as a new user to <a href="https://blazorboilerplate.com" target="_blank">blazorboilerplate.com</a>
+  </p>
+  <p>
+    Created by {creator}<br/>
+    Company: {company}<br/>
+    Roles: {roles}<br/>
+    Name: {name}<br/>
+    User Name: {userName}<br/>>
+    Email: {email}<br/>
+  </p>
+  <p>
+    <br />
+  </p>
+  <p>Regards,</p>
+  <p>BlazorBoilerplate Team</p>
+</div>

@@ -1,0 +1,26 @@
+﻿<div>
+  <h1>
+    <img style="width:100px; vertical-align: middle;" src="https://blazorboilerplate.com/images/logo.png" alt="Blazor Boilerplate"/> BlazorBoilerplate
+  </h1>
+  <p>Hello {fullName},</p>
+  <p>
+    You have been added as a new user to <a href="https://blazorboilerplate.com" target="_blank">https://blazorboilerplate.com</a> Below are your new credentials.
+  </p>
+  <p>
+    User Name: {userName}<br />
+    Email: {email}<br />
+    Password: {password}
+  </p>
+  <ul>
+    <li>
+      Please save this email to refer to your login credentials.
+    </li>
+    <li>
+      You can log in using the <a href="https://blazorboilerplate.com/account/login">link provided here.</a>
+    </li>
+  </ul>
+  <p>
+    <br />
+  </p>
+  <p>Thank you, and welcome aboard the BlazorBoilerplate</p>
+</div>

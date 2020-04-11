@@ -1,0 +1,91 @@
+﻿@inject NavigationManager navigationManager
+@inject IJSRuntime js
+
+@using System.Text.RegularExpressions
+
+<MatSelectValue Value="CurrentCulture" Items="@Settings.SupportedCulturesWithName"
+                ValueSelector=@(i=>i.Item2)
+                ValueChanged="(string i)=>OnCultureChanged(i)">
+    <ItemTemplate Context="CultureItem">
+        <span>@CultureItem.Item1</span>
+    </ItemTemplate>
+</MatSelectValue>
+
+@code {
+    string CurrentCulture { get; set; }
+
+//-:cnd:noEmit
+#if ClientSideBlazor
+    private static Regex regExAspNetCoreCulture = new Regex(@"c=(?<culture>[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8}))\|uic=(?<uiculture>[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8}))");
+
+    private async Task<string> getAspNetCoreCulture()
+    {
+
+        var culture = await js.InvokeAsync<string>("cookieStorage.get", ".AspNetCore.Culture");
+
+        if (culture != null)
+        {
+            if (regExAspNetCoreCulture.IsMatch(culture))
+                culture = regExAspNetCoreCulture.Match(culture).Groups["uiculture"].Value;
+            else
+                culture = null;
+        }
+
+        return culture;
+    }
+
+    private async Task setAspNetCoreCulture(string culture)
+    {
+        var escapedCulture = Uri.EscapeDataString($"c={culture}|uic={culture}");
+        await js.InvokeVoidAsync("cookieStorage.set", $".AspNetCore.Culture={escapedCulture}");
+    }
+#endif
+//-:cnd:noEmit
+
+    protected override async Task OnInitializedAsync()
+    {
+//-:cnd:noEmit
+#if ClientSideBlazor
+        string savedCulture = null;
+
+        savedCulture = await getAspNetCoreCulture();
+        //Console.WriteLine(savedCulture);
+
+        if (!string.IsNullOrWhiteSpace(savedCulture))
+            OnCultureChanged(savedCulture);
+        else
+        {
+            var
+            CurrentCulture = CultureInfo.CurrentCulture.Name;
+        }
+#endif
+//-:cnd:noEmit
+//-:cnd:noEmit
+#if ServerSideBlazor
+CurrentCulture = CultureInfo.CurrentCulture.Name;
+#endif
+//-:cnd:noEmit
+
+        await base.OnInitializedAsync();
+    }
+
+    public void OnCultureChanged(string culture)
+    {
+        CurrentCulture = culture;
+//-:cnd:noEmit
+#if ClientSideBlazor
+        CultureInfo.CurrentCulture = new System.Globalization.CultureInfo(culture);
+        CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
+        _ = setAspNetCoreCulture(culture);
+        StateHasChanged(); //Not working
+#endif
+//-:cnd:noEmit
+
+//-:cnd:noEmit
+#if ServerSideBlazor
+var uri = new Uri(navigationManager.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+navigationManager.NavigateTo($"/Culture/SetCulture?culture={Uri.EscapeDataString(culture)}&redirectUri={Uri.EscapeDataString(uri)}", forceLoad: true);
+#endif
+//-:cnd:noEmit
+    }
+}
