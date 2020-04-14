@@ -17,22 +17,22 @@
     <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CSB|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug_CSB'">
     <DefineConstants>ClientSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSB|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug_SSB'">
     <DefineConstants>ServerSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_CSB|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release_CSB'">
     <DefineConstants>ClientSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_SSB|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release_SSB'">
     <DefineConstants>ServerSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>

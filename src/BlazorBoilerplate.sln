@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1921F468
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "T4", "T4", "{2F470CBA-AD03-4D84-91EA-15B379194155}"
 	ProjectSection(SolutionItems) = preProject
-		T4\TemplateFilemanager.CS.ttinclude = T4\TemplateFilemanager.CS.ttinclude
+		Utils\T4\TemplateFilemanager.CS.ttinclude = Utils\T4\TemplateFilemanager.CS.ttinclude
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{5AA35D14-28CB-4A3E-AAAF-167F02D662F9}"

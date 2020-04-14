@@ -17,29 +17,29 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
-    <DockerfileFile>../Dockerfile</DockerfileFile>
+    <DockerfileFile>$(SolutionDir)/Utils/Docker/Dockerfile</DockerfileFile>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <DockerComposeProjectPath>$(SolutionDir)/Utils/Docker/docker-compose.dcproj</DockerComposeProjectPath>
 
     <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CSB|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug_CSB'">
     <DefineConstants>ClientSideBlazor;TRACE;DEBUG;NETCOREAPP3_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSB|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug_SSB'">
     <DefineConstants>ServerSideBlazor;TRACE;DEBUG;NETCOREAPP3_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_CSB|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release_CSB'">
     <DefineConstants>ClientSideBlazor;RELEASE;NETCOREAPP3_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_SSB|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release_SSB'">
     <DefineConstants>ServerSideBlazor;RELEASE;NETCOREAPP3_1;</DefineConstants>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
