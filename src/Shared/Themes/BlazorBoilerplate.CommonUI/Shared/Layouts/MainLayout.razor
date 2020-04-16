@@ -6,8 +6,8 @@
     <MatDrawer @bind-Opened="@_navMenuOpened">
         <header class="drawer-header">
             <div class="drawer-logo">
-                <img alt="BlazorBoilerplate" class="logo-img" src="_content/BlazorBoilerplate.CommonUI/images/logo-dark.svg" title="BlazorBoilerplate">
-                <a class="miniHover" href="/">BlazorBoilerplate</a>
+                <img alt="@appState.AppName" class="logo-img" src="_content/BlazorBoilerplate.CommonUI/images/logo-dark.svg" title="@appState.AppName">
+                <a class="miniHover" href="/">@appState.AppName</a>
             </div>
             <UserProfile />
         </header>
@@ -66,7 +66,7 @@
                     @Body
                 </section>
                 <footer class="page-footer">
-                    ©&nbsp;@DateTime.Now.Year&nbsp;<a href="//blazorboilerplate.com">BlazorBoilerplate</a>&nbsp;Version 0.8.0 - Developed by&nbsp;<a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
+                    ©&nbsp;@DateTime.Now.Year&nbsp;<a href="//blazorboilerplate.com">@appState.AppName</a>&nbsp;Version 0.8.0 - Developed by&nbsp;<a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
                 </footer>
             </MatAppBarContent>
         </MatAppBarContainer>

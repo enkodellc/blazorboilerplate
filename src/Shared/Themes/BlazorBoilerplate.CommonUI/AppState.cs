@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BlazorBoilerplate.CommonUI.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Account;
+using Humanizer;
 using Newtonsoft.Json;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -15,6 +16,8 @@ namespace BlazorBoilerplate.CommonUI
         private readonly IUserProfileApi _userProfileApi;
 
         public UserProfileDto UserProfile { get; set; }
+
+        public readonly string AppName = "BlazorBoilerplate".Humanize(LetterCasing.Title);
 
         public AppState(IUserProfileApi userProfileApi)
         {
