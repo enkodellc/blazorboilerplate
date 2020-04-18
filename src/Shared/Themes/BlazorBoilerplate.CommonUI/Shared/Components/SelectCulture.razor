@@ -36,7 +36,7 @@
     private async Task setAspNetCoreCulture(string culture)
     {
         var escapedCulture = Uri.EscapeDataString($"c={culture}|uic={culture}");
-        await js.InvokeVoidAsync("cookieStorage.set", $".AspNetCore.Culture={escapedCulture}; max-age=2592000");
+        await js.InvokeVoidAsync("cookieStorage.set", $".AspNetCore.Culture={escapedCulture}; max-age=2592000;path=/");
     }
 #endif
 //-:cnd:noEmit
