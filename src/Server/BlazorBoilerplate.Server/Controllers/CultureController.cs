@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Localization;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-
+using System;
+using System.Globalization;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -11,10 +13,10 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             if (culture != null)
             {
-                HttpContext.Response.Cookies.Append(
-                    CookieRequestCultureProvider.DefaultCookieName,
+                HttpContext.Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
                     CookieRequestCultureProvider.MakeCookieValue(
-                        new RequestCulture(culture)));
+                        new RequestCulture(CultureInfo.CurrentCulture, CultureInfo.CurrentUICulture)),
+                        new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             }
 
             return LocalRedirect(redirectUri);

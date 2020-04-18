@@ -13,7 +13,6 @@
 
 @code {
     string CurrentCulture { get; set; }
-
 //-:cnd:noEmit
 #if ClientSideBlazor
     private static Regex regExAspNetCoreCulture = new Regex(@"c=(?<culture>[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8}))\|uic=(?<uiculture>[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8}))");
@@ -37,7 +36,7 @@
     private async Task setAspNetCoreCulture(string culture)
     {
         var escapedCulture = Uri.EscapeDataString($"c={culture}|uic={culture}");
-        await js.InvokeVoidAsync("cookieStorage.set", $".AspNetCore.Culture={escapedCulture}");
+        await js.InvokeVoidAsync("cookieStorage.set", $".AspNetCore.Culture={escapedCulture}; max-age=2592000");
     }
 #endif
 //-:cnd:noEmit
@@ -80,7 +79,6 @@ CurrentCulture = CultureInfo.CurrentCulture.Name;
         StateHasChanged(); //Not working
 #endif
 //-:cnd:noEmit
-
 //-:cnd:noEmit
 #if ServerSideBlazor
 var uri = new Uri(navigationManager.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);

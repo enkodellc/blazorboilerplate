@@ -33,12 +33,13 @@
 <body>
     <!-- SSB -->
     @{
-        this.HttpContext.Response.Cookies.Append(
-          Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.DefaultCookieName,
-          Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.MakeCookieValue(
-            new Microsoft.AspNetCore.Localization.RequestCulture(
-                System.Globalization.CultureInfo.CurrentCulture,
-                System.Globalization.CultureInfo.CurrentUICulture)));
+            this.HttpContext.Response.Cookies.Append(
+              Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.DefaultCookieName,
+              Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.MakeCookieValue(
+                new Microsoft.AspNetCore.Localization.RequestCulture(
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    System.Globalization.CultureInfo.CurrentUICulture)),
+                new Microsoft.AspNetCore.Http.CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
     }
     <app>
         <component type="typeof(App)" render-mode="ServerPrerendered" />
