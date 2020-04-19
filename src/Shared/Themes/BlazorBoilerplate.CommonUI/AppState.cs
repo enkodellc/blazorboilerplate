@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using BlazorBoilerplate.CommonUI.Services.Contracts;
+using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Account;
 using Humanizer;

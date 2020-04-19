@@ -5,10 +5,10 @@ using BlazorBoilerplate.CommonUI.Hubs;
 using System.Collections.Generic;
 using System;
 using Microsoft.JSInterop;
-using BlazorBoilerplate.CommonUI.States;
 using BlazorBoilerplate.Shared.Dto.Account;
 using BlazorBoilerplate.Shared.Dto.Sample;
 using Microsoft.AspNetCore.Components.Authorization;
+using BlazorBoilerplate.Shared.Providers;
 
 namespace BlazorBoilerplate.CommonUI.Pages
 {

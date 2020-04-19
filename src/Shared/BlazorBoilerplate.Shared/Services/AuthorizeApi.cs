@@ -3,8 +3,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
-using BlazorBoilerplate.CommonUI.Services.Contracts;
+using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Extensions;
 using System.Collections.Generic;
 using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.JSInterop;
@@ -13,7 +14,7 @@ using System.Net;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace BlazorBoilerplate.CommonUI.Services.Implementations
+namespace BlazorBoilerplate.Shared.Services
 {
     public class AuthorizeApi : IAuthorizeApi
     {

@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.CommonUI.Services.Contracts;
+﻿using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Dto;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
@@ -9,17 +9,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Shared.Dto.Account;
 
-namespace BlazorBoilerplate.CommonUI.States
+namespace BlazorBoilerplate.Shared.Providers
 {
     public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly IAuthorizeApi _authorizeApi;
-        private readonly AppState _appState;
 
-        public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi, AppState appState)
+        public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi)
         {
             _authorizeApi = authorizeApi;
-            _appState = appState;
         }
 
         public async Task<ApiResponseDto> Login(LoginDto loginParameters)
@@ -43,8 +41,7 @@ namespace BlazorBoilerplate.CommonUI.States
         }
 
         public async Task<ApiResponseDto> Logout()
-        {
-            _appState.UserProfile = null;
+        {            
             ApiResponseDto apiResponse = await _authorizeApi.Logout();
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;

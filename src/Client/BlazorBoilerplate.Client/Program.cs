@@ -1,7 +1,5 @@
 ﻿using BlazorBoilerplate.CommonUI;
-using BlazorBoilerplate.CommonUI.Services.Contracts;
-using BlazorBoilerplate.CommonUI.Services.Implementations;
-using BlazorBoilerplate.CommonUI.States;
+using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -10,6 +8,8 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using BlazorBoilerplate.Shared.Providers;
+using BlazorBoilerplate.Shared.Services;
 
 namespace BlazorBoilerplate.Client
 {

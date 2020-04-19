@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
         private Mock<IEmailManager> _emailManager;
         private Mock<IUserProfileStore> _userProfileStore;
         private Mock<IConfiguration> _configuration;
+        private Mock<IEventService> _events;
         private Mock<IStringLocalizer<Strings>> _l;
 
 
@@ -50,6 +52,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
             _emailManager = new Mock<IEmailManager>();
             _userProfileStore = new Mock<IUserProfileStore>();
             _configuration = new Mock<IConfiguration>();
+            _events = new Mock<IEventService>();
             _l = new Mock<IStringLocalizer<Strings>>();
 
             _accountManager = new AccountManager(_userManager.Object, 
@@ -59,6 +62,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
                 _emailManager.Object, 
                 _userProfileStore.Object, 
                 _configuration.Object,
+                _events.Object,
                 _l.Object);
         }
 

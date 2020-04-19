@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.CommonUI
+namespace BlazorBoilerplate.Shared.Extensions
 {
     public static class HttpClientJsonExtensions
     {
@@ -15,3 +15,4 @@ namespace BlazorBoilerplate.CommonUI
         }
     }
 }
+

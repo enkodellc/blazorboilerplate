@@ -2,7 +2,7 @@
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Account;
 
-namespace BlazorBoilerplate.CommonUI.Services.Contracts
+namespace BlazorBoilerplate.Shared.Interfaces
 {
     /// <summary>
     /// Access to User Profile information

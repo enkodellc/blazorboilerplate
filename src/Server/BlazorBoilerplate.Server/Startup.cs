@@ -10,9 +10,8 @@ using AutoMapper;
 #if ServerSideBlazor
 
 using BlazorBoilerplate.CommonUI;
-using BlazorBoilerplate.CommonUI.Services.Contracts;
-using BlazorBoilerplate.CommonUI.Services.Implementations;
-using BlazorBoilerplate.CommonUI.States;
+using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Services;
 
 using MatBlazor;
 
@@ -55,6 +54,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Localization;
 using BlazorBoilerplate.Localization;
 using Microsoft.AspNetCore.DataProtection;
+using BlazorBoilerplate.Shared.Providers;
 
 namespace BlazorBoilerplate.Server
 {
