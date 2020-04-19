@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Server.Managers
 
         Task<ApiResponse> ResetPassword(ResetPasswordDto parameters);
 
-        Task<ApiResponse> Logout();
+        Task<ApiResponse> Logout(ClaimsPrincipal userClaimsPrincipal);
 
         Task<ApiResponse> UserInfo(ClaimsPrincipal userClaimsPrincipal);
 

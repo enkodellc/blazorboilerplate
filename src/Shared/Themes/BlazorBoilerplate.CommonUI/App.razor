@@ -33,7 +33,6 @@
 {
     [Inject] HttpClient _httpClient { get; set; }
     [Inject] NavigationManager _navigationManager { get; set; }
-
 //-:cnd:noEmit
 #if ServerSideBlazor
     [Inject] IHttpContextAccessor _http { get; set; }
@@ -45,11 +44,10 @@
         await base.OnInitializedAsync();
 
         _httpClient.BaseAddress = new Uri(_navigationManager.BaseUri);
-
 //-:cnd:noEmit
 #if ServerSideBlazor
         // likely user refreshed page, we need to grab the cookies if they exist and pass it to the HttpClient for this request
-        if (_http != null && _http.HttpContext != null && _http.HttpContext.Request.Cookies.Any())
+        if (_http?.HttpContext?.Request.Cookies.Any() == true)
         {
             var cks = new List<string>();
 

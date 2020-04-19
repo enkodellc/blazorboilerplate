@@ -32,8 +32,8 @@ namespace BlazorBoilerplate.Server.Controllers
         // POST: api/Account/Login
         [HttpPost("Login")]
         [AllowAnonymous]
-        [ProducesResponseType((int)Status204NoContent)]
-        [ProducesResponseType((int)Status401Unauthorized)]
+        [ProducesResponseType(Status204NoContent)]
+        [ProducesResponseType(Status401Unauthorized)]
         public async Task<ApiResponse> Login(LoginDto parameters)
             => ModelState.IsValid ? await _accountManager.Login(parameters) : _invalidUserModel;
 
@@ -59,19 +59,19 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpPost("ResetPassword")]
         [AllowAnonymous]
         public async Task<ApiResponse> ResetPassword(ResetPasswordDto parameters)
-        =>  ModelState.IsValid ? await _accountManager.ResetPassword(parameters) : _invalidUserModel;
+        => ModelState.IsValid ? await _accountManager.ResetPassword(parameters) : _invalidUserModel;
 
         // POST: api/Account/Logout
         [HttpPost("Logout")]
         [Authorize]
         public async Task<ApiResponse> Logout()
-            => await _accountManager.Logout();
+            => await _accountManager.Logout(User);
 
         [HttpGet("UserInfo")]
-        [ProducesResponseType((int)Status200OK)]
-        [ProducesResponseType((int)Status401Unauthorized)]
+        [ProducesResponseType(Status200OK)]
+        [ProducesResponseType(Status401Unauthorized)]
         public async Task<ApiResponse> UserInfo()
-        =>  await _accountManager.UserInfo(User);
+        => await _accountManager.UserInfo(User);
 
         // DELETE: api/Account/5
         [HttpPost("UpdateUser")]
@@ -84,7 +84,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpPost("Create")]
         [Authorize(Permissions.User.Create)]
         public async Task<ApiResponse> Create(RegisterDto parameters)
-        =>  ModelState.IsValid ? await _accountManager.Create(parameters) : _invalidUserModel;
+        => ModelState.IsValid ? await _accountManager.Create(parameters) : _invalidUserModel;
 
         // DELETE: api/Account/5
         [HttpDelete("{id}")]
@@ -99,17 +99,17 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpGet("ListRoles")]
         [Authorize(Permissions.Role.Read)]
         public async Task<ApiResponse> ListRoles()
-        =>  await _accountManager.ListRoles();
+        => await _accountManager.ListRoles();
 
         [HttpPut]
         [Authorize(Permissions.User.Update)]
         // PUT: api/Account/5
         public async Task<ApiResponse> Update([FromBody] UserInfoDto userInfo)
-        =>  ModelState.IsValid ? await _accountManager.Update(userInfo) : _invalidUserModel;
+        => ModelState.IsValid ? await _accountManager.Update(userInfo) : _invalidUserModel;
 
         [HttpPost("AdminUserPasswordReset/{id}")]
         [Authorize(Permissions.User.Update)]
-        [ProducesResponseType((int)Status204NoContent)]
+        [ProducesResponseType(Status204NoContent)]
         public async Task<ApiResponse> AdminResetUserPasswordAsync(Guid id, [FromBody] string newPassword)
         => ModelState.IsValid
                 ? await _accountManager.AdminResetUserPasswordAsync(id, newPassword, User)

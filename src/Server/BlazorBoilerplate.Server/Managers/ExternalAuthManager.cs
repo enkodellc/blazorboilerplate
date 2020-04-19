@@ -65,38 +65,33 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 // read external identity from the temporary cookie
                 var result = await httpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+
                 if (result?.Succeeded != true)
-                {
                     return $"~/externalauth/error/{ErrorEnum.ExternalAuthError}";
-                }
 
-                // retrieve claims of the external user
                 var externalUser = result.Principal;
-                if (externalUser == null)
-                {
-                    return $"~/externalauth/error/{ErrorEnum.ExternalAuthError}";
-                }
 
-                // retrieve claims of the external user
+                if (externalUser == null)
+                    return $"~/externalauth/error/{ErrorEnum.ExternalAuthError}";
+
                 var claims = externalUser.Claims.ToList();
 
                 // try to determine the unique id of the external user - the most common claim type for that are the sub claim and the NameIdentifier
                 // depending on the external provider, some other claim type might be used
                 var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject);
+
                 if (userIdClaim == null)
-                {
                     userIdClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-                }
+                
                 if (userIdClaim == null)
-                {
                     return $"~/externalauth/error/{ErrorEnum.ExternalUnknownUserId}";
-                }
 
                 var externalUserId = userIdClaim.Value;
                 var externalProvider = userIdClaim.Issuer;
 
                 //Quick check to sign in
                 var externalSignInResult = await _signInManager.ExternalLoginSignInAsync(externalProvider, externalUserId, true);
+
                 if (externalSignInResult.Succeeded)
                 {
                     //// delete temporary cookie used during external authentication
@@ -110,10 +105,12 @@ namespace BlazorBoilerplate.Server.Managers
 
                 //get the user by Email (we are forcing it to be unique)
                 var user = await _userManager.FindByEmailAsync(userEmailClaim.Value);
+
                 if (user != null)
                 {
                     //check if the login for this provider exists
                     var userLogins = await _userManager.GetLoginsAsync(user);
+
                     if (userLogins.Any(ul => ul.LoginProvider == externalProvider && ul.ProviderKey == externalUserId))
                     {
                         //something went wrong, it should get logged in
@@ -139,9 +136,10 @@ namespace BlazorBoilerplate.Server.Managers
                 else // create new user first
                 {
                     var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
+
                     try
                     {
-                        user = await _accountManager.RegisterNewUserAsync(userNameClaim.Value, userEmailClaim.Value, null, requireConfirmEmail);
+                        user = await _accountManager.RegisterNewUserAsync(userNameClaim.Value.Replace(" ", string.Empty), userEmailClaim.Value, null, requireConfirmEmail);
                     }
                     catch (DomainException ex)
                     {
@@ -150,7 +148,7 @@ namespace BlazorBoilerplate.Server.Managers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogInformation("External login Failed: " + ex.Message);
+                        _logger.LogInformation("External login Failed: " + ex.GetBaseException().Message);
                         return $"~/externalauth/error/{ErrorEnum.UserCreationFailed}";
                     }
 

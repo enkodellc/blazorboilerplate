@@ -103,7 +103,7 @@ namespace BlazorBoilerplate.Server
             // cookie policy to deal with temporary browser incompatibilities
             services.AddSameSiteCookiePolicy();
 
-            // Adds IdentityServer
+            // Adds IdentityServer https://identityserver4.readthedocs.io/en/latest/reference/options.html
             var identityServerBuilder = services.AddIdentityServer(options =>
             {
                 options.IssuerUri = authAuthority;
@@ -113,7 +113,7 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseSuccessEvents = true;
             })
               .AddIdentityServerStores(Configuration)
-              .AddAspNetIdentity<ApplicationUser>();
+              .AddAspNetIdentity<ApplicationUser>(); //https://identityserver4.readthedocs.io/en/latest/reference/aspnet_identity.html
 
             X509Certificate2 cert = null;
 
@@ -234,7 +234,7 @@ namespace BlazorBoilerplate.Server
                 });
             }
 
-            //Add Policies / Claims / Authorization - https://stormpath.com/blog/tutorial-policy-based-authorization-asp-net-core
+            //Add Policies / Claims / Authorization - https://identityserver4.readthedocs.io/en/latest/topics/add_apis.html#advanced
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
@@ -270,10 +270,15 @@ namespace BlazorBoilerplate.Server
                 }
             });
 
-            //            services.Configure<CookiePolicyOptions>(options =>
-            //            {
-            //                options.MinimumSameSitePolicy = SameSiteMode.None;
-            //            });
+            //https://docs.microsoft.com/en-us/aspnet/core/security/gdpr
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential 
+                // cookies is needed for a given request.
+                options.CheckConsentNeeded = context => false; //consent not required
+                // requires using Microsoft.AspNetCore.Http;
+                //options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
             //services.ConfigureExternalCookie(options =>
             // {
@@ -283,9 +288,16 @@ namespace BlazorBoilerplate.Server
 
             services.ConfigureApplicationCookie(options =>
             {
-                // macOS login fix
-                //options.Cookie.SameSite = SameSiteMode.None;
-                //options.Cookie.HttpOnly = false;
+                options.Cookie.IsEssential = true;
+                options.Cookie.HttpOnly = false; //TODO should be true for security
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.LoginPath = "/Account/Login";
+                //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                // ReturnUrlParameter requires 
+                //using Microsoft.AspNetCore.Authentication.Cookies;
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = true;
 
                 // Suppress redirect on API URLs in ASP.NET Core -> https://stackoverflow.com/a/56384729/54159
                 options.Events = new CookieAuthenticationEvents()
@@ -355,7 +367,6 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
-
 //-:cnd:noEmit
 #if ServerSideBlazor
 
@@ -443,7 +454,6 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
 //-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();
@@ -468,7 +478,6 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
-
 //-:cnd:noEmit
 #if ClientSideBlazor
                 endpoints.MapFallbackToFile("index_csb.html");
@@ -478,7 +487,6 @@ namespace BlazorBoilerplate.Server
 #endif
 //-:cnd:noEmit
             });
-
         }
     }
 }

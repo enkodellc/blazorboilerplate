@@ -39,27 +39,12 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
             using (var response = await _httpClient.SendAsync(httpRequestMessage))
             {
                 response.EnsureSuccessStatusCode();
-
 //-:cnd:noEmit
 #if ServerSideBlazor
 
                 if (response.Headers.TryGetValues("Set-Cookie", out var cookieEntries))
-                {
-                    var uri = response.RequestMessage.RequestUri;
-                    var cookieContainer = new CookieContainer();
-
                     foreach (var cookieEntry in cookieEntries)
-                    {
-                        cookieContainer.SetCookies(uri, cookieEntry);
-                    }
-
-                    var cookies = cookieContainer.GetCookies(uri).Cast<Cookie>();
-
-                    foreach (var cookie in cookies)
-                    {
-                       await _jsRuntime.InvokeVoidAsync("cookieStorage.set", cookie.ToString());
-                    }
-                }
+                        await _jsRuntime.InvokeVoidAsync("cookieStorage.set", cookieEntry); //for security reasons this does not work with httponly cookie
 #endif
 //-:cnd:noEmit
 
@@ -81,7 +66,6 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
 //-:cnd:noEmit
 
             var resp = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
-
 //-:cnd:noEmit
 #if ServerSideBlazor
             if (resp.StatusCode == Status200OK  && cookies != null && cookies.Any())
@@ -128,21 +112,19 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
         public async Task<UserInfoDto> GetUserInfo()
         {
             UserInfoDto userInfo = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
-            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Account/UserInfo");
+
+            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserInfoDto>>("api/Account/UserInfo");
 
             if (apiResponse.StatusCode == Status200OK)
-            {
-                userInfo = JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
-                return userInfo;
-            }
+                userInfo = apiResponse.Result;
+
             return userInfo;
         }
 
         public async Task<UserInfoDto> GetUser()
         {
-            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Account/GetUser");
-            UserInfoDto user = JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
-            return user;
+            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserInfoDto>>("api/Account/GetUser");
+            return apiResponse.Result;
         }
 
         public async Task<ApiResponseDto> UpdateUser(UserInfoDto userInfo)

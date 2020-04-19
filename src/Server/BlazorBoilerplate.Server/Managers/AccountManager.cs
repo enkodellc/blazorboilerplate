@@ -18,6 +18,9 @@ using IdentityModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using BlazorBoilerplate.Localization;
+using IdentityServer4.Services;
+using IdentityServer4.Events;
+using IdentityServer4.Extensions;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -30,6 +33,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IUserProfileStore _userProfileStore;
         private readonly IConfiguration _configuration;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEventService _events;
         private readonly IStringLocalizer<Strings> L;
 
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
@@ -41,6 +45,7 @@ namespace BlazorBoilerplate.Server.Managers
             IEmailManager emailManager,
             IUserProfileStore userProfileStore,
             IConfiguration configuration,
+            IEventService events,
             IStringLocalizer<Strings> l)
         {
             _userManager = userManager;
@@ -50,6 +55,7 @@ namespace BlazorBoilerplate.Server.Managers
             _emailManager = emailManager;
             _userProfileStore = userProfileStore;
             _configuration = configuration;
+            _events = events;
             L = l;
         }
 
@@ -152,9 +158,14 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status401Unauthorized, "Login Failed");
         }
 
-        public async Task<ApiResponse> Logout()
+        public async Task<ApiResponse> Logout(ClaimsPrincipal userClaimsPrincipal)
         {
-            await _signInManager.SignOutAsync();
+            if (userClaimsPrincipal.Identity.IsAuthenticated)
+            {
+                await _signInManager.SignOutAsync();
+                await _events.RaiseAsync(new UserLogoutSuccessEvent(userClaimsPrincipal.GetSubjectId(), userClaimsPrincipal.GetDisplayName()));
+            }
+
             return new ApiResponse(Status200OK, "Logout Successful");
         }
 
@@ -164,7 +175,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
 
-                await this.RegisterNewUserAsync(parameters.UserName, parameters.Email, parameters.Password, requireConfirmEmail);
+                await RegisterNewUserAsync(parameters.UserName, parameters.Email, parameters.Password, requireConfirmEmail);
 
                 if (requireConfirmEmail)
                 {
