@@ -51,7 +51,7 @@
         try
         {
             var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters);
-            if (response.StatusCode == Status200OK)
+            if (response.IsSuccessStatusCode)
             {
                 matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, L["UserCreationSuccessful"]);
                 navigationManager.NavigateTo("");

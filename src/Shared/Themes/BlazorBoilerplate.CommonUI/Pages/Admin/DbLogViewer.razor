@@ -90,7 +90,7 @@ else
             throw;
         }
 
-        if (apiResponse.StatusCode == Status200OK)
+        if (apiResponse.IsSuccessStatusCode)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "DB Log Items Retrieved");
             var nextPage = Newtonsoft.Json.JsonConvert.DeserializeObject<DbLog[]>(apiResponse.Result.ToString()).ToList<DbLog>();

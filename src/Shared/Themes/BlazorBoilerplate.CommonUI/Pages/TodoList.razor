@@ -82,7 +82,7 @@
     {
         ApiResponseDto apiResponse = await Http.GetFromJsonAsync<ApiResponseDto>("api/todo");
 
-        if (apiResponse.StatusCode == Status200OK)
+        if (apiResponse.IsSuccessStatusCode)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "Todo List Retrieved");
             todos = Newtonsoft.Json.JsonConvert.DeserializeObject<TodoDto[]>(apiResponse.Result.ToString()).ToList<TodoDto>();
@@ -159,7 +159,7 @@
         try
         {
             ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/todo", todo);
-            if (apiResponse.StatusCode == Status200OK)
+            if (apiResponse.IsSuccessStatusCode)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);
                 todo = Newtonsoft.Json.JsonConvert.DeserializeObject<TodoDto>(apiResponse.Result.ToString());

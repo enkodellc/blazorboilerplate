@@ -36,7 +36,7 @@
         {
             ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Email/Send", emailParameters);
 
-            if (apiResponse.StatusCode == Status200OK)
+            if (apiResponse.IsSuccessStatusCode)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);
             }

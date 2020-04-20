@@ -411,4 +411,7 @@
   <data name="Confirm Delete" xml:space="preserve">
     <value>Confirm Delete</value>
   </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
 </root>

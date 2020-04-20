@@ -79,9 +79,9 @@ namespace BlazorBoilerplate.Server
             services.AddLocalization()
                 .Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture(Settings.SupportedCultures[0]);
-                options.AddSupportedCultures(Settings.SupportedCultures);
-                options.AddSupportedUICultures(Settings.SupportedCultures);
+                options.DefaultRequestCulture = new RequestCulture(Localization.Settings.SupportedCultures[0]);
+                options.AddSupportedCultures(Localization.Settings.SupportedCultures);
+                options.AddSupportedUICultures(Localization.Settings.SupportedCultures);
             });
 
             var dataProtectionBuilder = services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate)); 
@@ -289,10 +289,10 @@ namespace BlazorBoilerplate.Server
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.IsEssential = true;
-                options.Cookie.HttpOnly = false; //TODO should be true for security
+                options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                options.LoginPath = "/Account/Login";
+                options.LoginPath = Shared.Settings.LoginPath;
                 //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 // ReturnUrlParameter requires 
                 //using Microsoft.AspNetCore.Authentication.Cookies;

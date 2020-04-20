@@ -475,6 +475,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Logout.
+        /// </summary>
+        public static string Logout {
+            get {
+                return ResourceManager.GetString("Logout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Name.
         /// </summary>
         public static string Name {

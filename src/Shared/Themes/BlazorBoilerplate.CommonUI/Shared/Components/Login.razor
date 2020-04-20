@@ -2,16 +2,17 @@
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authStateProvider
 @inject AppState appState
+@inject IStringLocalizer<Strings> L
 
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
-        <MatTooltip Tooltip="Logout">
+        <MatTooltip Tooltip="@L["Logout"]">
             <MatIconButton Icon="exit_to_app" RefBack="@context" OnClick="LogoutClick"></MatIconButton>
         </MatTooltip>
     </Authorized>
     <NotAuthorized>
-        <MatTooltip Tooltip="Login">
-            <MatIconButton Icon="account_box" RefBack="@context" Link="/account/login"></MatIconButton>
+        <MatTooltip Tooltip="@L["Login"]">
+            <MatIconButton Icon="account_box" RefBack="@context" Link="@BlazorBoilerplate.Shared.Settings.LoginPath"></MatIconButton>
         </MatTooltip>
     </NotAuthorized>
 </AuthorizeView>
@@ -21,6 +22,10 @@
     {
         appState.UserProfile = null;
         await ((IdentityAuthenticationStateProvider)authStateProvider).Logout();
-        navigationManager.NavigateTo("/account/login");
+        //-:cnd:noEmit
+#if ClientSideBlazor
+        navigationManager.NavigateTo(BlazorBoilerplate.Shared.Settings.LoginPath);
+#endif
+        //-:cnd:noEmit
     }
 }
