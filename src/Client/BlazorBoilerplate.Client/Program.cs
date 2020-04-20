@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
+using System.Net.Http;
+using System;
 
 namespace BlazorBoilerplate.Client
 {
@@ -23,7 +25,7 @@ namespace BlazorBoilerplate.Client
             builder.Services.AddLocalization();
             builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
             builder.Services.AddProtectedBrowserStorage();
-            builder.Services.AddBaseAddressHttpClient();
+            builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddAuthorizationCore(config =>
             {
                 config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
