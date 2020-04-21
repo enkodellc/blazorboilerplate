@@ -85,15 +85,13 @@ namespace BlazorBoilerplate.Storage
                 await CreateUserAsync("admin", "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { adminRoleName });
 
                 ApplicationUser user1 = await CreateUserAsync("user", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
-
                 ApplicationUser user2 = await CreateUserAsync("user2", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
 
                 _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("id-Microsoft", "Microsoft", "Microsoft Inc.", null, null));
-
                 _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("id-Contoso", "Contoso", "Contoso Corp.", null, null));
+                _tenantStoreDbContext.SaveChanges();
 
                 await _userManager.AddClaimAsync(user1, new Claim("TenantId", "Microsoft"));
-
                 await _userManager.AddClaimAsync(user2, new Claim("TenantId", "Contoso"));
 
                 _logger.LogInformation("Inbuilt account generation completed");

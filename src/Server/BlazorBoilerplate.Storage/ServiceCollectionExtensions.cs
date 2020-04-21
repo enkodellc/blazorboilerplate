@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Stores;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -47,16 +48,16 @@ namespace BlazorBoilerplate.Storage
             services.AddMultiTenant()
                 .WithDelegateStrategy(context =>
                 {
-                    Claim c = ((HttpContext)context).User.Claims.FirstOrDefault(c => c.Type == "TenantId");
-                    if (c != null)
+                    if (((HttpContext)context).User.IsAuthenticated())
                     {
-                        string tenantId = c.Value;
-                        return Task.FromResult(tenantId);
+                        Claim c = ((HttpContext)context).User.Claims.FirstOrDefault(c => c.Type == "TenantId");
+                        if (c != null)
+                        {
+                            string tenantId = c.Value;
+                            return Task.FromResult(tenantId);
+                        }
                     }
-                    else
-                    {
-                        return Task.FromResult(projectName);
-                    }
+                    return Task.FromResult(projectName);
                 })
                 .WithEFCoreStore<TenantStoreDbContext>()
                 .WithFallbackStrategy(projectName);

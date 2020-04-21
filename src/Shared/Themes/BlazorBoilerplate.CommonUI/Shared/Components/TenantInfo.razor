@@ -1,7 +1,7 @@
 ﻿@using BlazorBoilerplate.Shared.Dto.Tenant
 @inject HttpClient Http
 <AuthorizeView>
-    <h3>@tenant.Name</h3>
+    <span>&nbsp;-&nbsp;@tenant.Name</span>
 </AuthorizeView>
 @code {
     TenantDto tenant = new TenantDto();

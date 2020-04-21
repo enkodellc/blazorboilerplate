@@ -421,8 +421,6 @@ namespace BlazorBoilerplate.Server
         {
             app.UseRequestLocalization();
 
-            app.UseMultiTenant();
-
             // cookie policy to deal with temporary browser incompatibilities
             app.UseCookiePolicy();
 
@@ -467,6 +465,7 @@ namespace BlazorBoilerplate.Server
             app.UseAuthorization();
 
             //Must be AFTER the Auth middleware to get the User/Identity info
+            app.UseMultiTenant();
             app.UseMiddleware<UserSessionMiddleware>();
 
             // NSwag
