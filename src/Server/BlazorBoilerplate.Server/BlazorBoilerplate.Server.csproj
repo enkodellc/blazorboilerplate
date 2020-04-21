@@ -46,6 +46,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="Finbuckle.MultiTenant" Version="5.0.4" />
     <PackageReference Include="IdentityServer4" Version="4.0.0-preview.3" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.0.0-preview.3" />

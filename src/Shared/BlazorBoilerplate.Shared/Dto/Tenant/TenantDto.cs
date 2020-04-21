@@ -5,10 +5,10 @@ namespace BlazorBoilerplate.Shared.Dto.Tenant
 {
     public class TenantDto
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public Guid OwnerUserId { get; set; }
-        public string OwnerName { get; set; }
-        public List<Guid> Users { get; set; }
+        public string Id { get; set; }
+        public string Identifier { get; set; }
+        public string Name { get; set; }
+        public IDictionary<string, object> Items { get; }
+        public string ConnectionString { get; set; }
     }
 }

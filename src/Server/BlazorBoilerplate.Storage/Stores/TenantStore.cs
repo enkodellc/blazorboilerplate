@@ -4,83 +4,66 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BlazorBoilerplate.Server.Models;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.Dto.Tenant;
+using Finbuckle.MultiTenant;
 
 namespace BlazorBoilerplate.Storage.Stores
 {
     public class TenantStore : ITenantStore
     {
-        private readonly IApplicationDbContext _db;
-        private readonly IMapper _autoMapper;
+        private readonly TenantStoreDbContext _db;
 
-        public TenantStore(IApplicationDbContext db, IMapper autoMapper)
+        public TenantStore(TenantStoreDbContext db)
         {
             _db = db;
-            _autoMapper = autoMapper;
         }
 
-        public List<TenantDto> GetAll()
+        public List<TenantInfo> GetAll()
         {
-            throw new System.NotImplementedException();
-            //return _autoMapper.ProjectTo<TenantDto>(_db.Tenants).ToList();
+            return _db.TenantInfo.ToList();
         }
 
-        public TenantDto GetById(long id)
+        public TenantInfo GetById(string id)
         {
-            throw new System.NotImplementedException();
-            //var tenant = _db.Tenants.FirstOrDefault(t => t.Id == id);
+            var tenant = _db.TenantInfo.FirstOrDefault(t => t.Id == id);
 
-            //if (tenant == null)
-            //    throw new InvalidDataException($"Unable to find Tenant with ID: {id}");
+            if (tenant == null)
+                throw new InvalidDataException($"Unable to find Tenant with ID: {id}");
 
-            //return _autoMapper.Map<TenantDto>(tenant);
+            return tenant;
         }
 
-        public async Task<Tenant> Create(TenantDto tenantDto)
+        public async Task<TenantInfo> Create(TenantDto tenantDto)
         {
-            throw new System.NotImplementedException();
-            //var tenant = _autoMapper.Map<TenantDto, Tenant>(tenantDto);
-            //await _db.Tenants.AddAsync(tenant);
-            //await _db.SaveChangesAsync(CancellationToken.None);
-            //return tenant;
+            var tenant = new TenantInfo(tenantDto.Id, tenantDto.Identifier, tenantDto.Name, tenantDto.ConnectionString, tenantDto.Items);
+            await _db.TenantInfo.AddAsync(tenant);
+            await _db.SaveChangesAsync(CancellationToken.None);
+            return tenant;
         }
 
-        public async Task<Tenant> Update(TenantDto tenantDto)
+        public async Task<TenantInfo> Update(TenantDto tenantDto)
         {
-            throw new System.NotImplementedException();
-            //var tenant = _db.Tenants.FirstOrDefault(t => t.Id == tenantDto.Id);
-            //if (tenant == null)
-            //    throw new InvalidDataException($"Unable to find Tenant with ID: {tenantDto.Id}");
+            var tenant = _db.TenantInfo.FirstOrDefault(t => t.Id == tenantDto.Id);
+            if (tenant == null)
+                throw new InvalidDataException($"Unable to find Tenant with ID: {tenantDto.Id}");
 
-            //tenant = _autoMapper.Map(tenantDto, tenant);
-            //_db.Tenants.Update(tenant);
-            //await _db.SaveChangesAsync(CancellationToken.None);
+            tenant = new TenantInfo(tenantDto.Id, tenantDto.Identifier, tenantDto.Name, tenantDto.ConnectionString, tenantDto.Items);
+            _db.TenantInfo.Update(tenant);
+            await _db.SaveChangesAsync(CancellationToken.None);
 
-            //return tenant;
+            return tenant;
         }
 
-        public async Task DeleteById(long id)
+        public async Task DeleteById(string id)
         {
-            throw new System.NotImplementedException();
-            //var tenant = _db.Tenants.FirstOrDefault(t => t.Id == id);
+            var tenant = _db.TenantInfo.FirstOrDefault(t => t.Id == id);
 
-            //if (tenant == null)
-            //    throw new InvalidDataException($"Unable to find Tenant with ID: {id}");
+            if (tenant == null)
+                throw new InvalidDataException($"Unable to find Tenant with ID: {id}");
 
-            //_db.Tenants.Remove(tenant);
-            //await _db.SaveChangesAsync(CancellationToken.None);
-        }
-
-        Task<Tenant> ITenantStore.Create(TenantDto tenantDto)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        Task<Tenant> ITenantStore.Update(TenantDto tenantDto)
-        {
-            throw new System.NotImplementedException();
+            _db.TenantInfo.Remove(tenant);
+            await _db.SaveChangesAsync(CancellationToken.None);
         }
     }
 }

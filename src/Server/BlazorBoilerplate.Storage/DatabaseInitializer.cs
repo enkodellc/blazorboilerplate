@@ -2,9 +2,11 @@
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Core;
+using Finbuckle.MultiTenant;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,7 @@ namespace BlazorBoilerplate.Storage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly ILogger _logger;
+        private readonly TenantStoreDbContext _tenantStoreDbContext;
 
         public DatabaseInitializer(
             ApplicationDbContext context,
@@ -33,7 +36,8 @@ namespace BlazorBoilerplate.Storage
             ConfigurationDbContext configurationContext,
             ILogger<DatabaseInitializer> logger,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager)
+            RoleManager<IdentityRole<Guid>> roleManager,
+            TenantStoreDbContext tenantStoreDbContext)
         {
             _persistedGrantContext = persistedGrantContext;
             _configurationContext = configurationContext;
@@ -41,6 +45,7 @@ namespace BlazorBoilerplate.Storage
             _userManager = userManager;
             _roleManager = roleManager;
             _logger = logger;
+            _tenantStoreDbContext = tenantStoreDbContext;
         }
 
         public virtual async Task SeedAsync()
@@ -60,6 +65,7 @@ namespace BlazorBoilerplate.Storage
 
         private async Task MigrateAsync()
         {
+            await _tenantStoreDbContext.Database.MigrateAsync().ConfigureAwait(false);
             await _context.Database.MigrateAsync().ConfigureAwait(false);
             await _persistedGrantContext.Database.MigrateAsync().ConfigureAwait(false);
             await _configurationContext.Database.MigrateAsync().ConfigureAwait(false);
@@ -77,7 +83,18 @@ namespace BlazorBoilerplate.Storage
                 await EnsureRoleAsync(userRoleName, "Default user", new string[] { });
 
                 await CreateUserAsync("admin", "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { adminRoleName });
-                await CreateUserAsync("user", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
+
+                ApplicationUser user1 = await CreateUserAsync("user", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
+
+                ApplicationUser user2 = await CreateUserAsync("user2", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
+
+                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("id-Microsoft", "Microsoft", "Microsoft Inc.", null, null));
+
+                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("id-Contoso", "Contoso", "Contoso Corp.", null, null));
+
+                await _userManager.AddClaimAsync(user1, new Claim("TenantId", "Microsoft"));
+
+                await _userManager.AddClaimAsync(user2, new Claim("TenantId", "Contoso"));
 
                 _logger.LogInformation("Inbuilt account generation completed");
             }
@@ -265,8 +282,6 @@ namespace BlazorBoilerplate.Storage
                         new Claim(JwtClaimTypes.Email, email),
                         new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber)
-
-
                     }).Result;
 
                 //add claims version of roles
@@ -281,7 +296,6 @@ namespace BlazorBoilerplate.Storage
                 {
                     result = await _userManager.AddToRolesAsync(user, roles.Distinct());
                 }
-
                 catch
                 {
                     await _userManager.DeleteAsync(user);

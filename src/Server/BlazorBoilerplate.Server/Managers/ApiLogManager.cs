@@ -63,12 +63,8 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 apiLogItem.ApplicationUserId = null;
             }
-
-            using (var dbContext = new ApplicationDbContext(_optionsBuilder.Options, _userSession))
-            {
-                dbContext.ApiLogs.Add(apiLogItem);
-                await dbContext.SaveChangesAsync(CancellationToken.None);
-            }
+            _db.ApiLogs.Add(apiLogItem);
+            await _db.SaveChangesAsync(CancellationToken.None);
         }
 
         public async Task<ApiResponse> Get()

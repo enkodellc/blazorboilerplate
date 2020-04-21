@@ -10,7 +10,6 @@ namespace BlazorBoilerplate.Storage
         public static void SetShadowProperties(this ChangeTracker changeTracker, IUserSession userSession)
         {
             changeTracker.DetectChanges();
-            ApplicationDbContext dbContext = (ApplicationDbContext)changeTracker.Context;
             Guid userId = Guid.Empty;
             DateTime timestamp = DateTime.UtcNow;
 
@@ -35,12 +34,6 @@ namespace BlazorBoilerplate.Storage
                         entry.Property("ModifiedOn").CurrentValue = timestamp;
                         entry.Property("ModifiedBy").CurrentValue = userId;
                     }
-                }
-
-                //Add TenantId to Claims so we can store it in the future
-                if (entry.Entity is ITenant)
-                {
-                    entry.Property("TenantId").CurrentValue = userSession.TenantId;
                 }
 
                 //Soft Delete Entity Model

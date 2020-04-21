@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 using AutoMapper;
+
 //-:cnd:noEmit
 #if ServerSideBlazor
 
@@ -84,7 +85,7 @@ namespace BlazorBoilerplate.Server
                 options.AddSupportedUICultures(Settings.SupportedCultures);
             });
 
-            var dataProtectionBuilder = services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate)); 
+            var dataProtectionBuilder = services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
 
             var authAuthority = Configuration[$"{projectName}:IS4ApplicationUrl"].TrimEnd('/');
 
@@ -161,7 +162,6 @@ namespace BlazorBoilerplate.Server
                                 throw ex;
                             }
                         }
-
                     }
                     else // if app id and app secret are used
                         throw new NotImplementedException();
@@ -273,7 +273,7 @@ namespace BlazorBoilerplate.Server
             //https://docs.microsoft.com/en-us/aspnet/core/security/gdpr
             services.Configure<CookiePolicyOptions>(options =>
             {
-                // This lambda determines whether user consent for non-essential 
+                // This lambda determines whether user consent for non-essential
                 // cookies is needed for a given request.
                 options.CheckConsentNeeded = context => false; //consent not required
                 // requires using Microsoft.AspNetCore.Http;
@@ -294,7 +294,7 @@ namespace BlazorBoilerplate.Server
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
                 options.LoginPath = "/Account/Login";
                 //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                // ReturnUrlParameter requires 
+                // ReturnUrlParameter requires
                 //using Microsoft.AspNetCore.Authentication.Cookies;
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
@@ -328,16 +328,16 @@ namespace BlazorBoilerplate.Server
                 {
                     document.Info.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
                     document.Info.Title = "BlazorBoilerplate";
-//-:cnd:noEmit
+                    //-:cnd:noEmit
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
 #endif
-//-:cnd:noEmit
-//-:cnd:noEmit
+                    //-:cnd:noEmit
+                    //-:cnd:noEmit
 #if ClientSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the Client Side / Webassembly Version.";
 #endif
-//-:cnd:noEmit
+                    //-:cnd:noEmit
                 };
             });
 
@@ -355,8 +355,7 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IMessageManager, MessageManager>();
             services.AddTransient<ITodoManager, ToDoManager>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();
-
-
+            services.AddTransient<ITenantManager, TenantManager>();
 
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
             var automapperConfig = new MapperConfiguration(configuration =>
@@ -367,7 +366,7 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ServerSideBlazor
 
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
@@ -408,7 +407,7 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
             Log.Logger.Debug($"Total Services Registered: {services.Count}");
             foreach (var service in services)
@@ -421,6 +420,8 @@ namespace BlazorBoilerplate.Server
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRequestLocalization();
+
+            app.UseMultiTenant();
 
             // cookie policy to deal with temporary browser incompatibilities
             app.UseCookiePolicy();
@@ -440,11 +441,11 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-//-:cnd:noEmit
+                //-:cnd:noEmit
 #if ClientSideBlazor
                 app.UseWebAssemblyDebugging();
 #endif
-//-:cnd:noEmit
+                //-:cnd:noEmit
             }
             else
             {
@@ -454,11 +455,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
@@ -478,14 +479,14 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
-//-:cnd:noEmit
+                //-:cnd:noEmit
 #if ClientSideBlazor
                 endpoints.MapFallbackToFile("index_csb.html");
 #else
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/index_ssb");
 #endif
-//-:cnd:noEmit
+                //-:cnd:noEmit
             });
         }
     }

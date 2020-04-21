@@ -1,0 +1,24 @@
+﻿@using BlazorBoilerplate.Shared.Dto.Tenant
+@inject HttpClient Http
+<AuthorizeView>
+    <h3>@tenant.Name</h3>
+</AuthorizeView>
+@code {
+    TenantDto tenant = new TenantDto();
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Tenant");
+            if (apiResponse.StatusCode == Status200OK)
+            {
+                tenant = Newtonsoft.Json.JsonConvert.DeserializeObject<TenantDto>(apiResponse.Result.ToString());
+            }
+        }
+    }
+}

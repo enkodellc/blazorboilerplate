@@ -24,7 +24,6 @@
                 <MatAppBarRow>
                     <MatAppBarSection>
                         <MatAppBarTitle>
-
                         </MatAppBarTitle>
                         <div class="hidden-mdc-down">
                             @*<nav>
@@ -40,7 +39,7 @@
                             </MatTooltip>
                             @*</li>
                                 <li>
-                                    <MatTooltip Tooltip="Lock Navigation" >
+                                    <MatTooltip Tooltip="Lock Navigation">
                                         <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
                                     </MatTooltip>
                                     </li>*@
@@ -66,7 +65,7 @@
                     @Body
                 </section>
                 <footer class="page-footer">
-                    ©&nbsp;@DateTime.Now.Year&nbsp;<a href="//blazorboilerplate.com">@appState.AppName</a>&nbsp;Version 0.8.0 - Developed by&nbsp;<a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
+                    ©&nbsp;@DateTime.Now.Year&nbsp;<a href="//blazorboilerplate.com">@appState.AppName</a>&nbsp;Version 0.8.0 - Developed by&nbsp;<a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>&nbsp;<TenantInfo />
                 </footer>
             </MatAppBarContent>
         </MatAppBarContainer>

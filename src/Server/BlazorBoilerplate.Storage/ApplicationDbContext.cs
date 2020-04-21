@@ -1,9 +1,9 @@
-﻿using BlazorBoilerplate.Server.Models;
-using BlazorBoilerplate.Shared.DataInterfaces;
+﻿using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Configurations;
+using Finbuckle.MultiTenant;
+using Finbuckle.MultiTenant.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -17,17 +17,24 @@ using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
 namespace BlazorBoilerplate.Storage
 {
     //https://trailheadtechnology.com/entity-framework-core-2-1-automate-all-that-boring-boiler-plate/
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
+    public class ApplicationDbContext : MultiTenantIdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext, IMultiTenantDbContext
     {
+        /* We define a default value for TenantInfo. This is a hack. FinBuckle does not provide any method to init TenantInfo or define a default value when seeding the database (in DatabaseInitializer, HttpContext is not yet initialized). */
+        public new TenantInfo TenantInfo { get; } = new TenantInfo(nameof(BlazorBoilerplate), nameof(BlazorBoilerplate), nameof(BlazorBoilerplate), null, null);
+
         public DbSet<ApiLogItem> ApiLogs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Todo> Todos { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DbSet<Tenant> Tenants { get; set; }
         private IUserSession _userSession { get; set; }
         public DbSet<DbLog> Logs { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUserSession userSession) : base(options)
+        public ApplicationDbContext(TenantInfo tenantInfo) : base(tenantInfo)
+        {
+        }
+
+        public ApplicationDbContext(TenantInfo tenantInfo, DbContextOptions<ApplicationDbContext> options, IUserSession userSession)
+            : base(tenantInfo, options)
         {
             _userSession = userSession;
         }
@@ -40,15 +47,11 @@ namespace BlazorBoilerplate.Storage
                 .WithOne(b => b.ApplicationUser)
                 .HasForeignKey<UserProfile>(b => b.UserId);
 
-            modelBuilder.Entity<Tenant>()
-                .HasOne(t => t.Owner)
-                .WithOne(a => a.Tenant)
-                .HasForeignKey<Tenant>(t => t.OwnerUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.ShadowProperties();
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityRole<Guid>>().IsMultiTenant();
 
             modelBuilder.Entity<Message>().ToTable("Messages");
 
@@ -63,13 +66,6 @@ namespace BlazorBoilerplate.Storage
             {
                 Type t = tp.ClrType;
 
-                // set Tenant Properties
-                if (typeof(ITenant).IsAssignableFrom(t))
-                {
-                    MethodInfo method = SetGlobalQueryForTenantMethodInfo.MakeGenericMethod(t);
-                    method.Invoke(this, new object[] { modelBuilder });
-                }
-
                 // set Soft Delete Property
                 if (typeof(ISoftDelete).IsAssignableFrom(t))
                 {
@@ -82,27 +78,9 @@ namespace BlazorBoilerplate.Storage
         private static readonly MethodInfo SetGlobalQueryForSoftDeleteMethodInfo = typeof(ApplicationDbContext).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQueryForSoftDelete");
 
-        private static readonly MethodInfo SetGlobalQueryForTenantMethodInfo = typeof(ApplicationDbContext).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQueryForTenant");
-
-        private static readonly MethodInfo SetGlobalQueryForSoftDeleteAndTenantMethodInfo = typeof(ApplicationDbContext).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Single(t => t.IsGenericMethod && t.Name == "SetGlobalQueryForSoftDeleteAndTenant");
-
         public void SetGlobalQueryForSoftDelete<T>(ModelBuilder builder) where T : class, ISoftDelete
         {
             builder.Entity<T>().HasQueryFilter(item => !EF.Property<bool>(item, "IsDeleted"));
-        }
-
-        public void SetGlobalQueryForTenant<T>(ModelBuilder builder) where T : class, ISoftDelete
-        {
-            builder.Entity<T>().HasQueryFilter(item => (_userSession.DisableTenantFilter || EF.Property<int>(item, "TenantId") == _userSession.TenantId));
-        }
-
-        public void SetGlobalQueryForSoftDeleteAndTenant<T>(ModelBuilder builder) where T : class, ISoftDelete, ITenant
-        {
-            builder.Entity<T>().HasQueryFilter(
-                item => !EF.Property<bool>(item, "IsDeleted") &&
-                        (_userSession.DisableTenantFilter || EF.Property<int>(item, "TenantId") == _userSession.TenantId));
         }
 
         public override int SaveChanges()
