@@ -87,12 +87,14 @@ namespace BlazorBoilerplate.Storage
                 ApplicationUser user1 = await CreateUserAsync("user", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
                 ApplicationUser user2 = await CreateUserAsync("user2", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
 
-                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("id-Microsoft", "Microsoft", "Microsoft Inc.", null, null));
-                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("id-Contoso", "Contoso", "Contoso Corp.", null, null));
+                var MicrosoftTenant = new TenantInfo("id-Microsoft", "Microsoft", "Microsoft Inc.", null, null);
+                var ContosoTenant = new TenantInfo("id-Contoso", "Contoso", "Contoso Corp.", null, null);
+                _tenantStoreDbContext.TenantInfo.Add(MicrosoftTenant);
+                _tenantStoreDbContext.TenantInfo.Add(ContosoTenant);
                 _tenantStoreDbContext.SaveChanges();
 
-                await _userManager.AddClaimAsync(user1, new Claim("TenantId", "Microsoft"));
-                await _userManager.AddClaimAsync(user2, new Claim("TenantId", "Contoso"));
+                await _userManager.AddClaimAsync(user1, new Claim("TenantId", MicrosoftTenant.Identifier));
+                await _userManager.AddClaimAsync(user2, new Claim("TenantId", ContosoTenant.Identifier));
 
                 _logger.LogInformation("Inbuilt account generation completed");
             }

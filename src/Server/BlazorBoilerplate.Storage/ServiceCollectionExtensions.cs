@@ -50,7 +50,7 @@ namespace BlazorBoilerplate.Storage
                 {
                     if (((HttpContext)context).User.IsAuthenticated())
                     {
-                        Claim c = ((HttpContext)context).User.Claims.FirstOrDefault(c => c.Type == "TenantId");
+                        Claim c = ((HttpContext)context).User.Claims.SingleOrDefault(c => c.Type == "TenantId");
                         if (c != null)
                         {
                             string tenantId = c.Value;

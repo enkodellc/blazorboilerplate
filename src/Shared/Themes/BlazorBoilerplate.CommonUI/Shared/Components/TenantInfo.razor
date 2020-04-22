@@ -1,10 +1,11 @@
 ﻿@using BlazorBoilerplate.Shared.Dto.Tenant
 @inject HttpClient Http
 <AuthorizeView>
-    <span>&nbsp;-&nbsp;@tenant.Name</span>
+    <span>Curret tenant : @tenant.Name</span>
 </AuthorizeView>
 @code {
     TenantDto tenant = new TenantDto();
+
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 

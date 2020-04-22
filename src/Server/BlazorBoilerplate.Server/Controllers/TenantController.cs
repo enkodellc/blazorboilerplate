@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Server.Controllers
             _tenantManager = tenantManager;
         }
 
-        // GET: api/Tenant
+        // GET: api/Tenant/All
         [HttpGet("All")]
         public async Task<ApiResponse> GetAll()
             => await _tenantManager.Get();
