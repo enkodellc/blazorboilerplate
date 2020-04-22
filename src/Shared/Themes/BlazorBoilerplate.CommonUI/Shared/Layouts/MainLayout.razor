@@ -81,7 +81,7 @@
     {
         var returnUrl =
               navigationManager.ToBaseRelativePath(navigationManager.Uri);
-        navigationManager.NavigateTo($"/account/Login/{returnUrl}", forceLoad: false);
+        navigationManager.NavigateTo($"{BlazorBoilerplate.Shared.Settings.LoginPath}/{returnUrl}", forceLoad: false);
     }
 
     [CascadingParameter]
@@ -90,7 +90,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Uncomment to secure entire app  with no anonymous user access
-        //navigationManager.NavigateTo("/account/login");
+        //navigationManager.NavigateTo(Shared.Settings.LoginPath);
 
         // Set Default landing page if you want for anonymous user.
         // Authenticated users are redirected after successful login.

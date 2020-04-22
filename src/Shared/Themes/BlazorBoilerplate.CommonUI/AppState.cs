@@ -1,12 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-
-using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Dto;
+﻿using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Interfaces;
 using Humanizer;
 using Newtonsoft.Json;
-using static Microsoft.AspNetCore.Http.StatusCodes;
+using System;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.CommonUI
 {
@@ -29,9 +27,8 @@ namespace BlazorBoilerplate.CommonUI
             get
             {
                 if (UserProfile == null)
-                {
                     return true;
-                }
+                
                 return UserProfile.IsNavOpen;
             }
             set
@@ -49,16 +46,13 @@ namespace BlazorBoilerplate.CommonUI
         public async Task<UserProfileDto> GetUserProfile()
         {
             if (UserProfile != null && UserProfile.UserId != Guid.Empty)
-            {
                 return UserProfile;
-            }
 
             ApiResponseDto apiResponse = await _userProfileApi.Get();
 
-            if (apiResponse.StatusCode == Status200OK)
-            {
+            if (apiResponse.IsSuccessStatusCode)
                 return JsonConvert.DeserializeObject<UserProfileDto>(apiResponse.Result.ToString());
-            }
+            
             return new UserProfileDto();
         }
 

@@ -60,7 +60,7 @@ else
     {
         ApiResponseDto apiResponse = await Http.GetFromJsonAsync<ApiResponseDto>("api/apilog");
 
-        if (apiResponse.StatusCode == Status200OK)
+        if (apiResponse.IsSuccessStatusCode)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "Api Log Items Retrieved");
             apiLogItems = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiLogItemDto[]>(apiResponse.Result.ToString()).ToList<ApiLogItemDto>();

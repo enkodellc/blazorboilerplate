@@ -1,18 +1,12 @@
-﻿using System;
+﻿using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Extensions;
+using BlazorBoilerplate.Shared.Interfaces;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json;
-using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Shared.Extensions;
-using System.Collections.Generic;
-using BlazorBoilerplate.Shared.Dto.Account;
-using Microsoft.JSInterop;
-using System.Linq;
-using System.Net;
-
-using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Shared.Services
 {
@@ -31,58 +25,36 @@ namespace BlazorBoilerplate.Shared.Services
 
         public async Task<ApiResponseDto> Login(LoginDto loginParameters)
         {
-            ApiResponseDto resp;
+            var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Login", loginParameters);
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, "api/Account/Login");
-            httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(loginParameters));
-            httpRequestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-
-            using (var response = await _httpClient.SendAsync(httpRequestMessage))
-            {
-                response.EnsureSuccessStatusCode();
 //-:cnd:noEmit
 #if ServerSideBlazor
+            if (response.IsSuccessStatusCode)
+            {
+                loginParameters.__RequestVerificationToken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
 
-                if (response.Headers.TryGetValues("Set-Cookie", out var cookieEntries))
-                    foreach (var cookieEntry in cookieEntries)
-                        await _jsRuntime.InvokeVoidAsync("cookieStorage.set", cookieEntry); //for security reasons this does not work with httponly cookie
+                await _jsRuntime.InvokeAsync<string>("interop.submitForm", "/server/login/", loginParameters);
+            }
 #endif
 //-:cnd:noEmit
 
-                var content = await response.Content.ReadAsStringAsync();
-                resp = JsonConvert.DeserializeObject<ApiResponseDto>(content);
-            }
-
-            return resp;
+            return response;
         }
 
         public async Task<ApiResponseDto> Logout()
         {
+            var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
 //-:cnd:noEmit
 #if ServerSideBlazor
-            List<string> cookies = null;
-            if (_httpClient.DefaultRequestHeaders.TryGetValues("Cookie", out IEnumerable<string> cookieEntries))
-                cookies = cookieEntries.ToList();
-#endif
-//-:cnd:noEmit
-
-            var resp = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
-//-:cnd:noEmit
-#if ServerSideBlazor
-            if (resp.StatusCode == Status200OK  && cookies != null && cookies.Any())
+            if (response.IsSuccessStatusCode)
             {
-                _httpClient.DefaultRequestHeaders.Remove("Cookie");
-
-                foreach (var cookie in cookies[0].Split(';'))
-                {
-                    var cookieParts = cookie.Split('=');
-                    await _jsRuntime.InvokeVoidAsync("cookieStorage.delete", cookieParts[0]);
-                }
+                var antiforgerytoken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
+                await _jsRuntime.InvokeAsync<string>("interop.submitForm", "/server/logout/", new { __RequestVerificationToken = antiforgerytoken, returnurl = "" });
             }
 #endif
 //-:cnd:noEmit
 
-            return resp;
+            return response;
         }
 
         public async Task<ApiResponseDto> Create(RegisterDto registerParameters)
@@ -116,7 +88,7 @@ namespace BlazorBoilerplate.Shared.Services
 
             var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserInfoDto>>("api/Account/UserInfo");
 
-            if (apiResponse.StatusCode == Status200OK)
+            if (apiResponse.IsSuccessStatusCode)
                 userInfo = apiResponse.Result;
 
             return userInfo;

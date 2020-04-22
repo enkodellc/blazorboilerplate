@@ -70,7 +70,7 @@
 
 @code {
 
-    string navigateTo = "";
+    string navigateTo = null;
     bool forgotPasswordToggle = false;
     LoginDto loginParameters { get; set; } = new LoginDto();
     ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
@@ -89,15 +89,19 @@
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
+//-:cnd:noEmit
+#if ClientSideBlazor
     protected override async Task OnParametersSetAsync()
     {
         var user = (await authenticationStateTask).User;
 
-        if (user.Identity.IsAuthenticated)
+        if (user.Identity.IsAuthenticated && navigateTo != null)
         {
             navigationManager.NavigateTo(navigationManager.BaseUri + navigateTo);
         }
     }
+#endif
+//-:cnd:noEmit
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -121,8 +125,9 @@
     {
         try
         {
+            loginParameters.ReturnUrl = ReturnUrl;
             var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Login(loginParameters);
-            if (response.StatusCode == Status200OK)
+            if (response.IsSuccessStatusCode)
             {
                 // On successful Login the response.Message is the Last Page Visited from User Profile
                 // We can't navigate yet as the setup is proceeding asynchronously
