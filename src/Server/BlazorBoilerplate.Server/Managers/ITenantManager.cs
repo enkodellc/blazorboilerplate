@@ -17,8 +17,8 @@ namespace BlazorBoilerplate.Server.Managers
 
         Task<ApiResponse> Delete(string id);
 
-        Task<ApiResponse> AddTenantClaim(Guid UserId, string TenantId);
+        Task<ApiResponse> AddToTenant(Guid UserId, string TenantId);
 
-        Task<ApiResponse> RemoveTenantClaim(Guid UserId, string TenantId);
+        Task<ApiResponse> RemoveFromTenant(Guid UserId, string TenantId);
     }
 }

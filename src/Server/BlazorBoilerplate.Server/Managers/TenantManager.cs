@@ -77,7 +77,7 @@ namespace BlazorBoilerplate.Server.Managers
                 var users = await _userManager.GetUsersForClaimAsync(tenantClaim);
                 foreach (var user in users)
                 {
-                    await RemoveTenantClaim(user.Id, id);
+                    await RemoveFromTenant(user.Id, id);
                 }
                 await _tenantStore.DeleteById(id);
                 return new ApiResponse(Status200OK, "Soft Delete Tenant");
@@ -88,7 +88,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public async Task<ApiResponse> AddTenantClaim(Guid UserId, string TenantId)
+        public async Task<ApiResponse> AddToTenant(Guid UserId, string TenantId)
         {
             var tenant = _tenantStore.GetById(TenantId);
             ApplicationUser appUser = await _userManager.FindByIdAsync(UserId.ToString());
@@ -102,7 +102,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status400BadRequest, "Failed to add user");
         }
 
-        public async Task<ApiResponse> RemoveTenantClaim(Guid UserId, string TenantId)
+        public async Task<ApiResponse> RemoveFromTenant(Guid UserId, string TenantId)
         {
             var tenant = _tenantStore.GetById(TenantId);
             ApplicationUser appUser = await _userManager.FindByIdAsync(UserId.ToString());
