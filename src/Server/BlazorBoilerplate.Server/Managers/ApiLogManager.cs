@@ -1,16 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Shared.Dto;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage;
-using BlazorBoilerplate.Storage.Stores;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -18,35 +13,15 @@ namespace BlazorBoilerplate.Server.Managers
     public class ApiLogManager : IApiLogManager
     {
         private readonly IApiLogStore _apiLogStore;
-        private readonly IApplicationDbContext _db;
-        private readonly DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
         private readonly IUserSession _userSession;
 
-        public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IApplicationDbContext db, IUserSession userSession)
+        public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IUserSession userSession)
         {
             _apiLogStore = apiLogStore;
-            _db = db;
             _userSession = userSession;
-
-            // Calling Log from the API Middlware results in a disposed ApplicationDBContext. This is here to build a DB Context for logging API Calls
-            // If you have a better solution please let me know.
-            _optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-
-            if (Convert.ToBoolean(configuration["BlazorBoilerplate:UsePostgresServer"] ?? "false"))
-            {
-                _optionsBuilder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"));
-            }
-            else if (Convert.ToBoolean(configuration["BlazorBoilerplate:UseSqlServer"] ?? "false"))
-            {
-                _optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection")); //SQL Server Database
-            }
-            else
-            {
-                _optionsBuilder.UseSqlite($"Filename={configuration.GetConnectionString("SqlLiteConnectionFileName")}");  // Sql Lite / file database
-            }
         }
 
-        public async Task Log(ApiLogItem apiLogItem)
+        public async Task Log(ApiLogItem apiLogItem, IApplicationDbContext db)
         {
             if (apiLogItem.ApplicationUserId != Guid.Empty)
             {
@@ -60,11 +35,10 @@ namespace BlazorBoilerplate.Server.Managers
                 //}
             }
             else
-            {
                 apiLogItem.ApplicationUserId = null;
-            }
-            _db.ApiLogs.Add(apiLogItem);
-            await _db.SaveChangesAsync(CancellationToken.None);
+
+            db.ApiLogs.Add(apiLogItem);
+            await db.SaveChangesAsync(CancellationToken.None);
         }
 
         public async Task<ApiResponse> Get()
@@ -80,7 +54,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
             catch (Exception ex)
             {
-                return new ApiResponse(Status400BadRequest, ex.Message);
+                return new ApiResponse(Status400BadRequest, ex.GetBaseException().Message);
             }
         }
     }

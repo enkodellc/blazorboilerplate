@@ -1,12 +1,14 @@
-﻿using BlazorBoilerplate.Server.Middleware.Extensions;
+﻿using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Server.Middleware.Extensions;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Storage;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -15,13 +17,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-//using System.Text.Json; //Does not work for this middleware, at least as in preview
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Shared.DataModels;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
@@ -45,7 +44,7 @@ namespace BlazorBoilerplate.Server.Middleware
             _ignorePaths = configuration.GetSection("BlazorBoilerplate:ApiLogging:IgnorePaths").Get<List<string>>();
         }
 
-        public async Task Invoke(HttpContext httpContext, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
+        public async Task Invoke(HttpContext httpContext, IApplicationDbContext db, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _apiLogManager = apiLogManager;
@@ -73,6 +72,7 @@ namespace BlazorBoilerplate.Server.Middleware
                         {
                             var response = httpContext.Response;
                             response.Body = responseBody;
+
                             await _next.Invoke(httpContext);
 
                             string responseBodyContent = null;
@@ -91,7 +91,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
                             #region Log Request / Response
                             //Search the Ignore paths from appsettings to ignore the loggin of certian api paths
-                            if (_enableAPILogging && (_ignorePaths.Any(e => !request.Path.StartsWithSegments(new PathString(e.ToLower())))))
+                            if (_enableAPILogging && _ignorePaths.Any(e => !request.Path.StartsWithSegments(new PathString(e.ToLower()))))
                             {
                                 try
                                 {
@@ -111,7 +111,8 @@ namespace BlazorBoilerplate.Server.Middleware
                                         formattedRequest,
                                         responseBodyContent,
                                         httpContext.Connection.RemoteIpAddress.ToString(),
-                                        user
+                                        user,
+                                        db
                                         );
                                 }
                                 catch (Exception ex)
@@ -121,9 +122,8 @@ namespace BlazorBoilerplate.Server.Middleware
                             }
                             #endregion
                         }
-                        catch (System.Exception ex)
+                        catch (Exception ex)
                         {
-
                             _logger.LogWarning("An Inner Middleware exception occurred: " + ex.Message);
                             await HandleExceptionAsync(httpContext, ex);
                         }
@@ -149,7 +149,7 @@ namespace BlazorBoilerplate.Server.Middleware
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext httpContext, System.Exception exception)
+        private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
         {
             _logger.LogError("Api Exception:", exception);
 
@@ -328,11 +328,13 @@ namespace BlazorBoilerplate.Server.Middleware
                             string requestBody,
                             string responseBody,
                             string ipAddress,
-                            ApplicationUser user)
+                            ApplicationUser user,
+                            IApplicationDbContext db)
         {
             // Do not log these events login, logout, getuserinfo...
-            if ((path.ToLower().StartsWith("/api/account/")) ||
-                (path.ToLower().StartsWith("/api/UserProfile/")))
+            if (path.ToLower().StartsWith("/api/account") ||
+                path.ToLower().StartsWith("/api/userprofile") ||
+                path.ToLower().StartsWith("/api/tenant"))
             {
                 return;
             }
@@ -376,7 +378,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 ResponseBody = responseBody ?? String.Empty,
                 IPAddress = ipAddress,
                 ApplicationUserId = user == null ? Guid.Empty : user.Id
-            });
+            }, db);
         }
 
         private Task ClearCacheHeaders(object state)

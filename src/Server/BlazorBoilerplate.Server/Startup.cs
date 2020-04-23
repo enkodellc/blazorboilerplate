@@ -53,7 +53,6 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Reflection;
 using Microsoft.AspNetCore.Localization;
-using BlazorBoilerplate.Localization;
 using Microsoft.AspNetCore.DataProtection;
 using BlazorBoilerplate.Shared.Providers;
 
