@@ -29,10 +29,6 @@ namespace BlazorBoilerplate.Storage
         private IUserSession _userSession { get; set; }
         public DbSet<DbLog> Logs { get; set; }
 
-        public ApplicationDbContext(TenantInfo tenantInfo) : base(tenantInfo)
-        {
-        }
-
         public ApplicationDbContext(TenantInfo tenantInfo, DbContextOptions<ApplicationDbContext> options, IUserSession userSession)
             : base(tenantInfo, options)
         {

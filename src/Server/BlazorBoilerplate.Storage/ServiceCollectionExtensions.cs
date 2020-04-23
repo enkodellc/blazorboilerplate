@@ -23,27 +23,7 @@ namespace BlazorBoilerplate.Storage
         {
             #region Multitenancy
 
-            services.AddDbContext<TenantStoreDbContext>(builder =>
-            {
-                var migrationsAssembly = typeof(TenantStoreDbContext).GetTypeInfo().Assembly.GetName().Name;
-                var useSqlServer = Convert.ToBoolean(Configuration[$"{projectName}:UseSqlServer"] ?? "false");
-                var dbConnString = useSqlServer
-                    ? Configuration.GetConnectionString("DefaultConnection")
-                    : $"Filename={Configuration.GetConnectionString("SqlLiteConnectionFileName")}";
-
-                if (useSqlServer)
-                {
-                    builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
-                }
-                else if (Convert.ToBoolean(Configuration[$"{projectName}:UsePostgresServer"] ?? "false"))
-                {
-                    builder.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
-                }
-                else
-                {
-                    builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
-                }
-            });
+            services.AddDbContext<TenantStoreDbContext>(builder => GetDbContextOptions<TenantStoreDbContext>(builder, Configuration));
 
             services.AddMultiTenant()
                 .WithDelegateStrategy(context =>
@@ -66,7 +46,7 @@ namespace BlazorBoilerplate.Storage
 
             #endregion Multitenancy
 
-            services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions(builder, Configuration)); // Look into the way we initialise the PB ways. Look at the old way they did this, with side effects on the builder.
+            services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions<ApplicationDbContext>(builder, Configuration)); // Look into the way we initialise the PB ways. Look at the old way they did this, with side effects on the builder.
             services.AddScoped(s => s.GetRequiredService<ApplicationDbContext>() as IApplicationDbContext);
 
             services.AddTransient<IMessageStore, MessageStore>();
@@ -79,9 +59,9 @@ namespace BlazorBoilerplate.Storage
             return services;
         }
 
-        public static void GetDbContextOptions(DbContextOptionsBuilder builder, IConfiguration configuration)
+        public static void GetDbContextOptions<T>(DbContextOptionsBuilder builder, IConfiguration configuration) where T : DbContext
         {
-            var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(T).GetTypeInfo().Assembly.GetName().Name;
             var useSqlServer = Convert.ToBoolean(configuration[$"{projectName}:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
                 ? configuration.GetConnectionString("DefaultConnection")
@@ -104,11 +84,11 @@ namespace BlazorBoilerplate.Storage
         public static IIdentityServerBuilder AddIdentityServerStores(this IIdentityServerBuilder builder, IConfiguration configuration)
         => builder.AddConfigurationStore(options =>
             {
-                options.ConfigureDbContext = x => GetDbContextOptions(x, configuration);
+                options.ConfigureDbContext = x => GetDbContextOptions<ApplicationDbContext>(x, configuration);
             })
             .AddOperationalStore(options =>
             {
-                options.ConfigureDbContext = x => GetDbContextOptions(x, configuration);
+                options.ConfigureDbContext = x => GetDbContextOptions<ApplicationDbContext>(x, configuration);
 
                 // this enables automatic token cleanup. this is optional.
                 options.EnableTokenCleanup = true;
