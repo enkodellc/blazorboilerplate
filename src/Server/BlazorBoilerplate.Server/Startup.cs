@@ -121,11 +121,11 @@ namespace BlazorBoilerplate.Server
 
             if (_environment.IsDevelopment())
             {
-                // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
+                // The AddDeveloperSigningCredential extension creates temporary key material tempkey.jwk for signing tokens.
                 // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
                 // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
                 // https://stackoverflow.com/questions/42351274/identityserver4-hosting-in-iis
-                //.AddDeveloperSigningCredential(true, @"C:\tempkey.rsa")
+
                 identityServerBuilder.AddDeveloperSigningCredential();
 
                 dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
@@ -168,7 +168,7 @@ namespace BlazorBoilerplate.Server
                 else
                     dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
 
-                // using local cert store
+                //TODO this implementation does not consider certificate expiration 
                 if (Convert.ToBoolean(Configuration[$"{projectName}:UseLocalCertStore"]) == true)
                 {
                     var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
@@ -182,16 +182,21 @@ namespace BlazorBoilerplate.Server
                         }
                         else
                         {
-                            // import PFX
-                            cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123",
-                                                X509KeyStorageFlags.MachineKeySet |
-                                                X509KeyStorageFlags.PersistKeySet |
-                                                X509KeyStorageFlags.Exportable);
-                            // save certificate and private key
-                            X509Store storeMy = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine);
-                            storeMy.Open(OpenFlags.ReadWrite);
-                            storeMy.Add(cert);
+                            //tested with Let's Encrypt Certificate
+                            certs = store.Certificates.Find(X509FindType.FindBySubjectName, new Uri(Configuration[$"{projectName}:ApplicationUrl"]).Host, false);
+
+                            if (certs.Count > 0)
+                            {
+                                cert = certs[0];
+                            }
+                            else
+                                //usually application pool identity has limited permission on Windows registry. So we do not store there.
+                                cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123",
+                                                    X509KeyStorageFlags.MachineKeySet |
+                                                    X509KeyStorageFlags.PersistKeySet |
+                                                    X509KeyStorageFlags.Exportable);
                         }
+
                         store.Close();
                     }
                 }
@@ -200,6 +205,7 @@ namespace BlazorBoilerplate.Server
                 if (cert != null)
                 {
                     identityServerBuilder.AddSigningCredential(cert);
+                    Log.Logger.Information($"Added certificate {cert.Subject} to Identity Server");
                 }
                 else
                 {
@@ -327,16 +333,16 @@ namespace BlazorBoilerplate.Server
                 {
                     document.Info.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
                     document.Info.Title = "BlazorBoilerplate";
-//-:cnd:noEmit
+                    //-:cnd:noEmit
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
 #endif
-//-:cnd:noEmit
-//-:cnd:noEmit
+                    //-:cnd:noEmit
+                    //-:cnd:noEmit
 #if ClientSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the Client Side / Webassembly Version.";
 #endif
-//-:cnd:noEmit
+                    //-:cnd:noEmit
                 };
             });
 
@@ -365,7 +371,7 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ServerSideBlazor
 
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
@@ -406,7 +412,7 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
             Log.Logger.Debug($"Total Services Registered: {services.Count}");
             foreach (var service in services)
@@ -438,11 +444,11 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-//-:cnd:noEmit
+                //-:cnd:noEmit
 #if ClientSideBlazor
                 app.UseWebAssemblyDebugging();
 #endif
-//-:cnd:noEmit
+                //-:cnd:noEmit
             }
             else
             {
@@ -452,11 +458,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
@@ -477,14 +483,14 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
-//-:cnd:noEmit
+                //-:cnd:noEmit
 #if ClientSideBlazor
                 endpoints.MapFallbackToFile("index_csb.html");
 #else
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/index_ssb");
 #endif
-//-:cnd:noEmit
+                //-:cnd:noEmit
             });
         }
     }
