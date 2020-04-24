@@ -21,9 +21,9 @@ namespace BlazorBoilerplate.Storage.Stores
         }
 
         public async Task<List<ApiLogItemDto>> Get()
-            => await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs).ToListAsync();
+            => await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.OrderByDescending(i => i.RequestTime)).ToListAsync();
 
         public async Task<List<ApiLogItemDto>> GetByUserId(Guid userId)
-        => await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == userId)).ToListAsync();
+        => await _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == userId).OrderByDescending(i => i.RequestTime)).ToListAsync();
     }
 }

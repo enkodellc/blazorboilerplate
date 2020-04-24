@@ -91,7 +91,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
                             #region Log Request / Response
                             //Search the Ignore paths from appsettings to ignore the loggin of certian api paths
-                            if (_enableAPILogging && _ignorePaths.Any(e => !request.Path.StartsWithSegments(new PathString(e.ToLower()))))
+                            if (_enableAPILogging && _ignorePaths.All(e => !request.Path.StartsWithSegments(new PathString(e.ToLower()))))
                             {
                                 try
                                 {
@@ -331,14 +331,6 @@ namespace BlazorBoilerplate.Server.Middleware
                             ApplicationUser user,
                             IApplicationDbContext db)
         {
-            // Do not log these events login, logout, getuserinfo...
-            if (path.ToLower().StartsWith("/api/account") ||
-                path.ToLower().StartsWith("/api/userprofile") ||
-                path.ToLower().StartsWith("/api/tenant"))
-            {
-                return;
-            }
-
             if (requestBody.Length > 256)
             {
                 requestBody = $"(Truncated to 200 chars) {requestBody.Substring(0, 200)}";

@@ -153,7 +153,7 @@ namespace BlazorBoilerplate.Server
                                 var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
 
                                 var certificateBundle = keyVaultClient.GetSecretAsync(Configuration["HostingOnAzure:AzureKeyVault:VaultURI"], Configuration["HostingOnAzure:AzurekeyVault:CertificateName"]).GetAwaiter().GetResult();
-                                var certificate = System.Convert.FromBase64String(certificateBundle.Value);
+                                var certificate = Convert.FromBase64String(certificateBundle.Value);
                                 cert = new X509Certificate2(certificate, (string)null, X509KeyStorageFlags.MachineKeySet);
                             }
                             catch (Exception ex)
