@@ -333,16 +333,16 @@ namespace BlazorBoilerplate.Server
                 {
                     document.Info.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
                     document.Info.Title = "BlazorBoilerplate";
-                    //-:cnd:noEmit
+//-:cnd:noEmit
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
 #endif
-                    //-:cnd:noEmit
-                    //-:cnd:noEmit
+//-:cnd:noEmit
+//-:cnd:noEmit
 #if ClientSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the Client Side / Webassembly Version.";
 #endif
-                    //-:cnd:noEmit
+//-:cnd:noEmit
                 };
             });
 
@@ -371,7 +371,7 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
-            //-:cnd:noEmit
+//-:cnd:noEmit
 #if ServerSideBlazor
 
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
@@ -412,7 +412,7 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 
 #endif
-            //-:cnd:noEmit
+//-:cnd:noEmit
 
             Log.Logger.Debug($"Total Services Registered: {services.Count}");
             foreach (var service in services)
@@ -444,11 +444,11 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //-:cnd:noEmit
+//-:cnd:noEmit
 #if ClientSideBlazor
                 app.UseWebAssemblyDebugging();
 #endif
-                //-:cnd:noEmit
+//-:cnd:noEmit
             }
             else
             {
@@ -458,11 +458,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //-:cnd:noEmit
+//-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();
 #endif
-            //-:cnd:noEmit
+//-:cnd:noEmit
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
@@ -483,14 +483,14 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
-                //-:cnd:noEmit
+//-:cnd:noEmit
 #if ClientSideBlazor
                 endpoints.MapFallbackToFile("index_csb.html");
 #else
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/index_ssb");
 #endif
-                //-:cnd:noEmit
+//-:cnd:noEmit
             });
         }
     }
