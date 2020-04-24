@@ -343,3 +343,4 @@ healthchecksdb
 *.rsa
 /src/BlazorBoilerplate.Server/appsettings.Local.json
 /src/BlazorBoilerplate.Server/Keys
+/src/Server/BlazorBoilerplate.Server/tempkey.jwk

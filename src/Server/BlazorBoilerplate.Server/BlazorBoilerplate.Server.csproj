@@ -47,9 +47,9 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Finbuckle.MultiTenant" Version="5.0.4" />
-    <PackageReference Include="IdentityServer4" Version="4.0.0-preview.3" />
+    <PackageReference Include="IdentityServer4" Version="4.0.0-preview.3.23" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
-    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.0.0-preview.3" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.0.0-preview.3.23" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureKeyVault" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.3" />
@@ -60,12 +60,12 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.4.2" />
-    <PackageReference Include="Serilog" Version="2.9.1-dev-01154" />
+    <PackageReference Include="Serilog" Version="2.9.1-dev-01165" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.3.0-dev-00152" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.1-dev-00224" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00873" />
     <PackageReference Include="MailKit" Version="2.6.0" />
-    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.4.0-dev-00306" />
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.4.0-dev-00308" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -84,7 +84,7 @@
     </When>
     <When Condition=" '$(Configuration)'=='Debug_CSB' Or '$(Configuration)'=='Release_CSB' ">
       <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0-preview3.20168.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0-preview5.20216.8" />
         <ProjectReference Include="..\..\Client\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
       </ItemGroup>
     </When>
