@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Tenant;
 using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -28,7 +27,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-                var tenants = _tenantStore.GetAll();
+                var tenants = await _tenantStore.GetAll();
                 return new ApiResponse(Status200OK, "Retrieved Tenants", tenants);
             }
             catch (Exception ex)
@@ -41,12 +40,12 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-                var tenant = _tenantStore.GetById(id);
+                var tenant = await _tenantStore.GetById(id);
                 return new ApiResponse(Status200OK, "Retrieved Tenant", tenant);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return new ApiResponse(Status400BadRequest, "Failed to Retrieve Tenant");
+                return new ApiResponse(Status400BadRequest, ex.GetBaseException().Message);
             }
         }
 
@@ -63,9 +62,9 @@ namespace BlazorBoilerplate.Server.Managers
                 var tenant = await _tenantStore.Update(tenantDto);
                 return new ApiResponse(Status200OK, "Updated Tenant", tenant);
             }
-            catch (InvalidDataException dataException)
+            catch (Exception ex)
             {
-                return new ApiResponse(Status400BadRequest, "Failed to update Tenant");
+                return new ApiResponse(Status400BadRequest, ex.GetBaseException().Message);
             }
         }
 
@@ -82,15 +81,15 @@ namespace BlazorBoilerplate.Server.Managers
                 await _tenantStore.DeleteById(id);
                 return new ApiResponse(Status200OK, "Soft Delete Tenant");
             }
-            catch (InvalidDataException dataException)
+            catch (Exception ex)
             {
-                return new ApiResponse(Status400BadRequest, "Failed to update Tenant");
+                return new ApiResponse(Status400BadRequest, ex.GetBaseException().Message);
             }
         }
 
         public async Task<ApiResponse> AddToTenant(Guid UserId, string TenantId)
         {
-            var tenant = _tenantStore.GetById(TenantId);
+            var tenant = await _tenantStore.GetById(TenantId);
             ApplicationUser appUser = await _userManager.FindByIdAsync(UserId.ToString());
             IList<Claim> userClaims = await _userManager.GetClaimsAsync(appUser);
             Claim claim = new Claim("TenantId", tenant.Identifier);
@@ -104,7 +103,7 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> RemoveFromTenant(Guid UserId, string TenantId)
         {
-            var tenant = _tenantStore.GetById(TenantId);
+            var tenant = await _tenantStore.GetById(TenantId);
             ApplicationUser appUser = await _userManager.FindByIdAsync(UserId.ToString());
             IList<Claim> userClaims = await _userManager.GetClaimsAsync(appUser);
             Claim claim = new Claim("TenantId", tenant.Identifier);

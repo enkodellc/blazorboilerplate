@@ -154,7 +154,7 @@ namespace BlazorBoilerplate.Server.Managers
                 _logger.LogInformation("Login Failed: " + ex.GetBaseException().Message);
             }
 
-            _logger.LogInformation("Invalid Password for user {0}}", parameters.UserName);
+            _logger.LogInformation("Invalid Password for user {0}", parameters.UserName);
             return new ApiResponse(Status401Unauthorized, "Login Failed");
         }
 

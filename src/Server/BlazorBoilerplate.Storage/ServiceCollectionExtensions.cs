@@ -19,11 +19,11 @@ namespace BlazorBoilerplate.Storage
     {
         private static readonly string projectName = nameof(BlazorBoilerplate);
 
-        public static IServiceCollection RegisterStorage(this IServiceCollection services, IConfiguration Configuration)
+        public static IServiceCollection RegisterStorage(this IServiceCollection services, IConfiguration configuration)
         {
             #region Multitenancy
 
-            services.AddDbContext<TenantStoreDbContext>(builder => GetDbContextOptions<TenantStoreDbContext>(builder, Configuration));
+            services.AddDbContext<TenantStoreDbContext>(builder => GetDbContextOptions<TenantStoreDbContext>(builder, configuration));
 
             services.AddMultiTenant()
                 .WithDelegateStrategy(context =>
@@ -40,13 +40,13 @@ namespace BlazorBoilerplate.Storage
                     return Task.FromResult(projectName);
                 })
                 .WithEFCoreStore<TenantStoreDbContext>()
-                .WithFallbackStrategy(projectName);
+                .WithFallbackStrategy(configuration[$"{projectName}:DefaultTenantId"] ?? projectName);
 
             services.AddTransient<ITenantStore, TenantStore>();
 
             #endregion Multitenancy
 
-            services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions<ApplicationDbContext>(builder, Configuration)); // Look into the way we initialise the PB ways. Look at the old way they did this, with side effects on the builder.
+            services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions<ApplicationDbContext>(builder, configuration)); // Look into the way we initialise the PB ways. Look at the old way they did this, with side effects on the builder.
             services.AddScoped(s => s.GetRequiredService<ApplicationDbContext>() as IApplicationDbContext);
 
             services.AddTransient<IMessageStore, MessageStore>();

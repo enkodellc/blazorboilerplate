@@ -73,12 +73,12 @@ namespace BlazorBoilerplate.Storage
 
         private async Task SeedASPIdentityCoreAsync()
         {
+            const string adminRoleName = DefaultRoleNames.Administrator;
+            const string userRoleName = DefaultRoleNames.User;
+
             if (!await _context.Users.AnyAsync())
             {
                 //Generating inbuilt accounts
-                const string adminRoleName = DefaultRoleNames.Administrator;
-                const string userRoleName = DefaultRoleNames.User;
-
                 await EnsureRoleAsync(adminRoleName, "Default administrator", ApplicationPermissions.GetAllPermissionValues());
                 await EnsureRoleAsync(userRoleName, "Default user", new string[] { });
 
@@ -100,8 +100,6 @@ namespace BlazorBoilerplate.Storage
             }
             else
             {
-                const string adminRoleName = DefaultRoleNames.Administrator;
-
                 IdentityRole<Guid> adminRole = await _roleManager.FindByNameAsync(adminRoleName);
                 var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
                 var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();

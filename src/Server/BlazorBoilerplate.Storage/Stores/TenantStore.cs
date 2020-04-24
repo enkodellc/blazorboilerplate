@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using BlazorBoilerplate.Shared.DataInterfaces;
+﻿using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.Dto.Tenant;
 using Finbuckle.MultiTenant;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Storage.Stores
 {
@@ -19,14 +18,14 @@ namespace BlazorBoilerplate.Storage.Stores
             _db = db;
         }
 
-        public List<TenantInfo> GetAll()
+        public async Task<List<TenantInfo>> GetAll()
         {
-            return _db.TenantInfo.ToList();
+            return await _db.TenantInfo.ToListAsync();
         }
 
-        public TenantInfo GetById(string id)
+        public async Task<TenantInfo> GetById(string id)
         {
-            var tenant = _db.TenantInfo.FirstOrDefault(t => t.Id == id);
+            var tenant = await _db.TenantInfo.FirstOrDefaultAsync(t => t.Id == id);
 
             if (tenant == null)
                 throw new InvalidDataException($"Unable to find Tenant with ID: {id}");
@@ -44,7 +43,7 @@ namespace BlazorBoilerplate.Storage.Stores
 
         public async Task<TenantInfo> Update(TenantDto tenantDto)
         {
-            var tenant = _db.TenantInfo.FirstOrDefault(t => t.Id == tenantDto.Id);
+            var tenant = await _db.TenantInfo.FirstOrDefaultAsync(t => t.Id == tenantDto.Id);
             if (tenant == null)
                 throw new InvalidDataException($"Unable to find Tenant with ID: {tenantDto.Id}");
 
@@ -57,7 +56,7 @@ namespace BlazorBoilerplate.Storage.Stores
 
         public async Task DeleteById(string id)
         {
-            var tenant = _db.TenantInfo.FirstOrDefault(t => t.Id == id);
+            var tenant = await _db.TenantInfo.FirstOrDefaultAsync(t => t.Id == id);
 
             if (tenant == null)
                 throw new InvalidDataException($"Unable to find Tenant with ID: {id}");

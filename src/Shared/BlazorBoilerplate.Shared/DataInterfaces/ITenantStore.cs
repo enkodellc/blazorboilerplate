@@ -7,9 +7,9 @@ namespace BlazorBoilerplate.Shared.DataInterfaces
 {
     public interface ITenantStore
     {
-        List<TenantInfo> GetAll();
+        Task<List<TenantInfo>> GetAll();
 
-        TenantInfo GetById(string id);
+        Task<TenantInfo> GetById(string id);
 
         Task<TenantInfo> Create(TenantDto tenantDto);
 

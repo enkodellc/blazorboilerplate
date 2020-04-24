@@ -19,14 +19,14 @@ namespace BlazorBoilerplate.Storage.Migrations
                 table: "AspNetUserTokens",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: TenantStoreDbContext.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "TenantId",
                 table: "AspNetUserRoles",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: TenantStoreDbContext.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "Id",
@@ -34,33 +34,35 @@ namespace BlazorBoilerplate.Storage.Migrations
                 nullable: false,
                 defaultValue: "");
 
+            migrationBuilder.Sql("UPDATE AspNetUserLogins SET Id=NEWID() WHERE Id=''");
+
             migrationBuilder.AddColumn<string>(
                 name: "TenantId",
                 table: "AspNetUserLogins",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: TenantStoreDbContext.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "TenantId",
                 table: "AspNetUserClaims",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: TenantStoreDbContext.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "TenantId",
                 table: "AspNetRoles",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: TenantStoreDbContext.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "TenantId",
                 table: "AspNetRoleClaims",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: TenantStoreDbContext.DefaultTenantId);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_AspNetUserLogins",
