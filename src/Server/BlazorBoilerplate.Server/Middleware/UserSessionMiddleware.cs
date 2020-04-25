@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.DataInterfaces;
+using Finbuckle.MultiTenant;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -18,10 +19,12 @@ namespace BlazorBoilerplate.Server.Middleware
 
         //https://trailheadtechnology.com/aspnetcore-multi-tenant-tips-and-tricks/
         private readonly RequestDelegate _next;
+
         public UserSessionMiddleware(RequestDelegate next)
         {
             _next = next;
         }
+
         public async Task InvokeAsync(HttpContext httpContext, ILogger<UserSessionMiddleware> logger, IUserSession userSession)
         {
             _logger = logger;
@@ -34,12 +37,8 @@ namespace BlazorBoilerplate.Server.Middleware
                 {
                     userSession.UserId = new Guid(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value);
                     userSession.UserName = httpContext.User.Identity.Name;
-                    userSession.TenantId = -1;
+                    userSession.TenantId = httpContext.GetMultiTenantContext().TenantInfo.Identifier;
                     userSession.Roles = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Role).Select(c => c.Value).ToList();
-
-                    // Uncommenting this breaks login
-                    //if (Int32.TryParse(httpContext.User.Claims.First(c => c.Type == "tenantid").Value, out int TenantId))
-                    //    userSession.TenantId = TenantId;
 
                     if (userSession.Roles.Contains(DefaultRoleNames.Administrator))
                         userSession.DisableTenantFilter = true;
@@ -90,7 +89,7 @@ namespace BlazorBoilerplate.Server.Middleware
             }
             else
             {
-//-:cnd:noEmit
+                //-:cnd:noEmit
 #if !DEBUG
                 var msg = "An unhandled error occurred.";
                 string stack = null;
@@ -98,7 +97,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 var msg = exception.GetBaseException().Message;
                 string stack = exception.StackTrace;
 #endif
-//-:cnd:noEmit
+                //-:cnd:noEmit
                 apiError = new ApiError(msg)
                 {
                     Details = stack
