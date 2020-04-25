@@ -89,7 +89,7 @@ namespace BlazorBoilerplate.Server.Middleware
             }
             else
             {
-                //-:cnd:noEmit
+//-:cnd:noEmit
 #if !DEBUG
                 var msg = "An unhandled error occurred.";
                 string stack = null;
@@ -97,7 +97,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 var msg = exception.GetBaseException().Message;
                 string stack = exception.StackTrace;
 #endif
-                //-:cnd:noEmit
+//-:cnd:noEmit
                 apiError = new ApiError(msg)
                 {
                     Details = stack
