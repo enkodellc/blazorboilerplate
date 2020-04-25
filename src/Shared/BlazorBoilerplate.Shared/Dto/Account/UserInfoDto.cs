@@ -15,13 +15,15 @@ namespace BlazorBoilerplate.Shared.Dto.Account
         [RegularExpression(@"[^\s]+", ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "SpacesNotPermitted")]
         [Display(Name = "UserName", ResourceType = typeof(Strings))]
         public string UserName { get; set; }
-        public int TenantId { get; set; }
+
+        public string TenantId { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress)]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public List<string> Roles { get; set; }
