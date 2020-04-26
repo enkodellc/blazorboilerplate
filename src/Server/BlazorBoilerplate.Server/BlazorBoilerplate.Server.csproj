@@ -45,12 +45,50 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Helpers\Templates\ForgotPassword.template" />
+    <None Remove="Helpers\Templates\NewUserConfirmationEmail.template" />
+    <None Remove="Helpers\Templates\NewUserEmail.template" />
+    <None Remove="Helpers\Templates\NewUserNotificationEmail.template" />
+    <None Remove="Helpers\Templates\PasswordReset.template" />
+    <None Remove="Helpers\Templates\PlainTextTestEmail.template" />
+    <None Remove="Helpers\Templates\TestEmail.template" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Helpers\Templates\ForgotPassword.template">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Helpers\Templates\NewUserConfirmationEmail.template">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Helpers\Templates\NewUserEmail.template">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Helpers\Templates\NewUserNotificationEmail.template">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Helpers\Templates\PasswordReset.template">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Helpers\Templates\PlainTextTestEmail.template">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Helpers\Templates\TestEmail.template">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="3.1.0" />
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Finbuckle.MultiTenant" Version="5.0.4" />
     <PackageReference Include="IdentityServer4" Version="4.0.0-preview.3.23" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.0.0-preview.3.23" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="3.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureKeyVault" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="3.1.3" />

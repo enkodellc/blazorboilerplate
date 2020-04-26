@@ -20,9 +20,21 @@ namespace BlazorBoilerplate.Shared.Providers
             _authorizeApi = authorizeApi;
         }
 
-        public async Task<ApiResponseDto> Login(LoginDto loginParameters)
+        public async Task<ApiResponseDto<LoginViewModel>> BuildLoginViewModel(string returnUrl)
+        {
+            return await _authorizeApi.BuildLoginViewModel(returnUrl);
+        }
+
+        public async Task<ApiResponseDto> Login(LoginInputModel loginParameters)
         {
             ApiResponseDto apiResponse = await _authorizeApi.Login(loginParameters);
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            return apiResponse;
+        }
+
+        public async Task<ApiResponseDto> Logout()
+        {
+            ApiResponseDto apiResponse = await _authorizeApi.Logout();
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
@@ -37,13 +49,6 @@ namespace BlazorBoilerplate.Shared.Providers
         public async Task<ApiResponseDto> Create(RegisterDto registerParameters)
         {
             ApiResponseDto apiResponse = await _authorizeApi.Create(registerParameters);
-            return apiResponse;
-        }
-
-        public async Task<ApiResponseDto> Logout()
-        {            
-            ApiResponseDto apiResponse = await _authorizeApi.Logout();
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 

@@ -7,12 +7,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
+using Microsoft.AspNetCore.Http;
 
 namespace BlazorBoilerplate.Server.Managers
 {
     public interface IAccountManager
     {
-        Task<ApiResponse> Login(LoginDto parameters);
+        Task<ApiResponse> BuildLoginViewModel(string returnUrl);
+        Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal userClaimsPrincipal, HttpContext httpContext, string logoutId);
+        Task<ApiResponse> Login(LoginInputModel parameters);
 
         Task<ApiResponse> Register(RegisterDto parameters);
 

@@ -2,7 +2,7 @@
 
 namespace BlazorBoilerplate.Shared.Dto.Account
 {
-    public class LoginDto
+    public class LoginInputModel
     {
         [Required]
         public string UserName { get; set; }
@@ -14,5 +14,7 @@ namespace BlazorBoilerplate.Shared.Dto.Account
 
         public string __RequestVerificationToken { get; set; }
         public string ReturnUrl { get; set; }
+
+        public bool IsValidReturnUrl { get; set; }
     }
 }

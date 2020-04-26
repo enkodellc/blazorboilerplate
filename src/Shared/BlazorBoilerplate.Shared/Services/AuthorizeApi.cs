@@ -23,7 +23,12 @@ namespace BlazorBoilerplate.Shared.Services
             _jsRuntime = jsRuntime;
         }
 
-        public async Task<ApiResponseDto> Login(LoginDto loginParameters)
+        public async Task<ApiResponseDto<LoginViewModel>> BuildLoginViewModel(string returnUrl)
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto<LoginViewModel>>("api/Account/BuildLoginViewModel", returnUrl);
+        }
+
+        public async Task<ApiResponseDto> Login(LoginInputModel loginParameters)
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Login", loginParameters);
 
@@ -44,6 +49,7 @@ namespace BlazorBoilerplate.Shared.Services
         public async Task<ApiResponseDto> Logout()
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
+
 //-:cnd:noEmit
 #if ServerSideBlazor
             if (response.IsSuccessStatusCode)

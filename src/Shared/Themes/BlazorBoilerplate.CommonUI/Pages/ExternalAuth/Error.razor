@@ -7,7 +7,7 @@
 @inject IStringLocalizer<Strings> L
 @inject IMatToaster matToaster
 <MatCard>
-    <div class="logo">
+    <div class="logo" style="padding: 50px;">
         <img src="_content/BlazorBoilerplate.CommonUI/images/logo.svg" style="width:100px;" /><br />BlazorBoilerplate
         <br />
         <h4>External authentication error</h4>
@@ -41,7 +41,7 @@
             case ErrorEnum.UserIsNotAllowed: errorText = "Login not allowed, check email inbox for account confirmation"; break;
             case ErrorEnum.UserLockedOut: errorText = "User is locked out"; break;
             case ErrorEnum.CannotAddExternalLogin: errorText = "Cannot create binding for this external login provider to the account"; break;
-            case ErrorEnum.ExternalAuthError: errorText = "External auhentication error"; break;
+            case ErrorEnum.ExternalAuthError: errorText = "External provider cannot authenticate.\nCheck configuration."; break;
             case ErrorEnum.ExternalUnknownUserId: errorText = "External authentication provider did not pass user identifier"; break;
             case ErrorEnum.ProviderNotFound: errorText = "Choosen provider has not been found/configured"; break;
             case ErrorEnum.Domain: errorText = string.Empty; break;

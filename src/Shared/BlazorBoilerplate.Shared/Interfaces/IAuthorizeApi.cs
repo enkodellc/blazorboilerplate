@@ -6,7 +6,8 @@ namespace BlazorBoilerplate.Shared.Interfaces
 {
     public interface IAuthorizeApi
     {
-        Task<ApiResponseDto> Login(LoginDto loginParameters);
+        Task<ApiResponseDto<LoginViewModel>> BuildLoginViewModel(string returnUrl);
+        Task<ApiResponseDto> Login(LoginInputModel loginParameters);
         Task<ApiResponseDto> Create(RegisterDto registerParameters);
         Task<ApiResponseDto> Register(RegisterDto registerParameters);
         Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordParameters);

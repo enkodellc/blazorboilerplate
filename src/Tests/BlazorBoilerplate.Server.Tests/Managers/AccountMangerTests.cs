@@ -3,6 +3,8 @@ using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
 using IdentityServer4.Services;
+using IdentityServer4.Stores;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -27,7 +29,10 @@ namespace BlazorBoilerplate.Server.Tests.Managers
         private Mock<RoleManager<IdentityRole<Guid>>> _roleManager;
         private Mock<IEmailManager> _emailManager;
         private Mock<IUserProfileStore> _userProfileStore;
+        private Mock<IClientStore> _clientStore;
         private Mock<IConfiguration> _configuration;
+        private Mock<IIdentityServerInteractionService> _interaction;
+        private Mock<IAuthenticationSchemeProvider> _schemeProvider;
         private Mock<IEventService> _events;
         private Mock<IStringLocalizer<Strings>> _l;
 
@@ -60,8 +65,11 @@ namespace BlazorBoilerplate.Server.Tests.Managers
                 _logger.Object, 
                 _roleManager.Object, 
                 _emailManager.Object, 
-                _userProfileStore.Object, 
+                _userProfileStore.Object,
+                _clientStore.Object,
                 _configuration.Object,
+                _interaction.Object,
+                _schemeProvider.Object,
                 _events.Object,
                 _l.Object);
         }

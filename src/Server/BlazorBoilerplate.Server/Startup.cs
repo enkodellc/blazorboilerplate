@@ -55,6 +55,12 @@ using System.Reflection;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.DataProtection;
 using BlazorBoilerplate.Shared.Providers;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Twitter;
+using System.Security.Claims;
+using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 
 namespace BlazorBoilerplate.Server
 {
@@ -227,6 +233,8 @@ namespace BlazorBoilerplate.Server
                 options.ApiName = IdentityServerConfig.ApiName;
             });
 
+            #region ExternalAuthProviders
+            //https://github.com/dotnet/aspnetcore/blob/master/src/Security/Authentication/samples/SocialSample/Startup.cs
             //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/google-logins
             if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Google:Enabled"] ?? "false"))
             {
@@ -236,8 +244,103 @@ namespace BlazorBoilerplate.Server
 
                     options.ClientId = Configuration["ExternalAuthProviders:Google:ClientId"];
                     options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
+
+                    options.AuthorizationEndpoint += "?prompt=consent"; // Hack so we always get a refresh token, it only comes on the first authorization response
+                    options.AccessType = "offline";
+                    options.SaveTokens = true;
+                    options.Events = new OAuthEvents()
+                    {
+                        OnRemoteFailure = HandleOnRemoteFailure
+                    };
+                    options.ClaimActions.MapJsonSubKey("urn:google:image", "image", "url");
+                    options.ClaimActions.Remove(ClaimTypes.GivenName);
                 });
             }
+
+            if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Facebook:Enabled"] ?? "false"))
+            {
+                // You must first create an app with Facebook and add its ID and Secret to your user-secrets.
+                // https://developers.facebook.com/apps/
+                // https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#login
+                authBuilder.AddFacebook(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.AppId = Configuration["ExternalAuthProviders:Facebook:AppId"];
+                    options.AppSecret = Configuration["ExternalAuthProviders:Facebook:AppSecret"];
+
+                    options.Scope.Add("email");
+                    options.Fields.Add("name");
+                    options.Fields.Add("email");
+                    options.SaveTokens = true;
+                    options.Events = new OAuthEvents()
+                    {
+                        OnRemoteFailure = HandleOnRemoteFailure
+                    };
+                });
+            }
+
+            if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Twitter:Enabled"] ?? "false"))
+            {
+                // You must first create an app with Twitter and add its key and Secret to your user-secrets.
+                // https://apps.twitter.com/
+                // https://developer.twitter.com/en/docs/basics/authentication/api-reference/access_token
+                authBuilder.AddTwitter(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ConsumerKey = Configuration["ExternalAuthProviders:Twitter:ConsumerKey"];
+                    options.ConsumerSecret = Configuration["ExternalAuthProviders:Twitter:ConsumerSecret"];
+
+                    // http://stackoverflow.com/questions/22627083/can-we-get-email-id-from-twitter-oauth-api/32852370#32852370
+                    // http://stackoverflow.com/questions/36330675/get-users-email-from-twitter-api-for-external-login-authentication-asp-net-mvc?lq=1
+                    options.RetrieveUserDetails = true;
+                    options.SaveTokens = true;
+                    options.ClaimActions.MapJsonKey("urn:twitter:profilepicture", "profile_image_url", ClaimTypes.Uri);
+                    options.Events = new TwitterEvents()
+                    {
+                        OnRemoteFailure = HandleOnRemoteFailure
+                    };
+                });
+            }
+
+            //https://github.com/xamarin/Essentials/blob/master/Samples/Sample.Server.WebAuthenticator/Startup.cs
+            if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Apple:Enabled"] ?? "false"))
+            {
+                authBuilder.AddApple(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = Configuration["ExternalAuthProviders:Apple:ClientId"];
+                    options.KeyId = Configuration["ExternalAuthProviders:Apple:KeyId"];
+                    options.TeamId = Configuration["ExternalAuthProviders:Apple:TeamId"];
+
+                    options.UsePrivateKey(keyId
+                       => _environment.ContentRootFileProvider.GetFileInfo($"AuthKey_{keyId}.p8"));
+                    options.SaveTokens = true;
+                });
+            }
+
+            // You must first create an app with Microsoft Account and add its ID and Secret to your user-secrets.
+            // https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app
+            if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Microsoft:Enabled"] ?? "false"))
+            {
+                authBuilder.AddMicrosoftAccount(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = Configuration["ExternalAuthProviders:Microsoft:ClientId"];
+                    options.ClientSecret = Configuration["ExternalAuthProviders:Microsoft:ClientSecret"];
+
+                    options.SaveTokens = true;
+                    options.Scope.Add("offline_access");
+                    options.Events = new OAuthEvents()
+                    {
+                        OnRemoteFailure = HandleOnRemoteFailure
+                    };
+                });
+            }
+            #endregion
 
             //Add Policies / Claims / Authorization - https://identityserver4.readthedocs.io/en/latest/topics/add_apis.html#advanced
             services.AddAuthorization(options =>
@@ -333,16 +436,16 @@ namespace BlazorBoilerplate.Server
                 {
                     document.Info.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
                     document.Info.Title = "BlazorBoilerplate";
-//-:cnd:noEmit
+                    //-:cnd:noEmit
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
 #endif
-//-:cnd:noEmit
-//-:cnd:noEmit
+                    //-:cnd:noEmit
+                    //-:cnd:noEmit
 #if ClientSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the Client Side / Webassembly Version.";
 #endif
-//-:cnd:noEmit
+                    //-:cnd:noEmit
                 };
             });
 
@@ -371,7 +474,7 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ServerSideBlazor
 
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
@@ -412,7 +515,7 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
             Log.Logger.Debug($"Total Services Registered: {services.Count}");
             foreach (var service in services)
@@ -444,11 +547,11 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-//-:cnd:noEmit
+                //-:cnd:noEmit
 #if ClientSideBlazor
                 app.UseWebAssemblyDebugging();
 #endif
-//-:cnd:noEmit
+                //-:cnd:noEmit
             }
             else
             {
@@ -458,11 +561,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
@@ -483,15 +586,31 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapControllers();
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
-//-:cnd:noEmit
+                //-:cnd:noEmit
 #if ClientSideBlazor
                 endpoints.MapFallbackToFile("index_csb.html");
 #else
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/index_ssb");
 #endif
-//-:cnd:noEmit
+                //-:cnd:noEmit
             });
+        }
+
+#pragma warning disable CS1998 
+        private async Task HandleOnRemoteFailure(RemoteFailureContext context)
+        {
+            var msg = context.Failure.Message.Split(Environment.NewLine).Select(s => s + Environment.NewLine).Aggregate((s1, s2) => s1 + s2);
+
+            if (context.Properties != null)
+                foreach (var pair in context.Properties.Items)
+                    msg = $"{msg}{Environment.NewLine}-{pair.Key}={pair.Value}";
+
+            Log.Logger.Error($"External authentication error: {msg}");
+
+            context.Response.Redirect($"/externalauth/error/{ErrorEnum.ExternalAuthError}");
+
+            context.HandleResponse();
         }
     }
 }

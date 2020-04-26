@@ -17,7 +17,7 @@ namespace BlazorBoilerplate.Server.Pages
         {
             _accountManager = accountManager;
         }
-        public async Task<IActionResult> OnPostAsync(LoginDto loginParameters)
+        public async Task<IActionResult> OnPostAsync(LoginInputModel loginParameters)
         {
             if (ModelState.IsValid)
             {

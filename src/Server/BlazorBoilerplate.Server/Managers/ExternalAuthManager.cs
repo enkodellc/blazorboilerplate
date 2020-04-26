@@ -24,9 +24,9 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly ILogger<ExternalAuthManager> _logger;
         private readonly IConfiguration _configuration;
 
-        public ExternalAuthManager(IAccountManager accountManager, 
-            UserManager<ApplicationUser> userManager, 
-            SignInManager<ApplicationUser> signInManager, 
+        public ExternalAuthManager(IAccountManager accountManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<ExternalAuthManager> logger,
             IConfiguration configuration)
         {
@@ -35,28 +35,6 @@ namespace BlazorBoilerplate.Server.Managers
             _signInManager = signInManager;
             _logger = logger;
             _configuration = configuration;
-        }
-        
-        public async Task<(AuthenticationProperties authProps, string schemaName)> Challenge(string uri, string provider)
-        {
-            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
-            var schema = schemes.SingleOrDefault(s => string.Compare(s.Name, provider, StringComparison.OrdinalIgnoreCase) == 0);
-
-            if (schema == null)
-            
-                throw new ArgumentNullException($"~/externalauth/error/{ErrorEnum.ProviderNotFound}");
-
-            var props = new AuthenticationProperties
-            {
-                RedirectUri = uri,
-                Items =
-                {
-                    { "scheme", schema.Name },
-                    { "returnUrl", uri }
-                }
-            };
-
-            return (props, schema.Name); ;
         }
 
         public async Task<string> ExternalSignIn(HttpContext httpContext)
@@ -76,13 +54,17 @@ namespace BlazorBoilerplate.Server.Managers
 
                 var claims = externalUser.Claims.ToList();
 
-                // try to determine the unique id of the external user - the most common claim type for that are the sub claim and the NameIdentifier
-                // depending on the external provider, some other claim type might be used
-                var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject);
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    var externalClaims = claims.Select(c => $"{c.Type}: {c.Value}");
+                    _logger.LogDebug("External claims: {@claims}", externalClaims);
+                }
 
-                if (userIdClaim == null)
-                    userIdClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-                
+                // try to determine the unique id of the external user - the most common claim type for that are the sub claim and the NameIdentifier
+                // depending on the external provider, some other claim type might be used                
+                var userIdClaim = externalUser.FindFirst(JwtClaimTypes.Subject) ??
+                    externalUser.FindFirst(ClaimTypes.NameIdentifier);
+
                 if (userIdClaim == null)
                     return $"~/externalauth/error/{ErrorEnum.ExternalUnknownUserId}";
 
@@ -94,7 +76,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                 if (externalSignInResult.Succeeded)
                 {
-                    //// delete temporary cookie used during external authentication
+                    // delete temporary cookie used during external authentication
                     await httpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
                     return "~/externalauth/success";
                 }
@@ -102,6 +84,10 @@ namespace BlazorBoilerplate.Server.Managers
                 //If external login/signin failed
                 var userNameClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
                 var userEmailClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
+
+                //For Apple provider
+                if (userNameClaim == null)
+                    userNameClaim = userEmailClaim;
 
                 //get the user by Email (we are forcing it to be unique)
                 var user = await _userManager.FindByEmailAsync(userEmailClaim.Value);
@@ -135,11 +121,17 @@ namespace BlazorBoilerplate.Server.Managers
                 }
                 else // create new user first
                 {
-                    var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
+                    //requireConfirmEmail = false because the external provider has just confirmed the user email.
+                    //Some provider does not provide true email for privacy
+
+                    var userName = userNameClaim.Value.Replace(" ", string.Empty);
+
+                    if ((await _userManager.FindByNameAsync(userName)) != null)
+                        userName = userEmailClaim.Value;
 
                     try
                     {
-                        user = await _accountManager.RegisterNewUserAsync(userNameClaim.Value.Replace(" ", string.Empty), userEmailClaim.Value, null, requireConfirmEmail);
+                        user = await _accountManager.RegisterNewUserAsync(userName, userEmailClaim.Value, null, false);
                     }
                     catch (DomainException ex)
                     {
@@ -148,19 +140,12 @@ namespace BlazorBoilerplate.Server.Managers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogInformation("External login Failed: " + ex.GetBaseException().Message);
+                        _logger.LogError("External login Failed: " + ex.GetBaseException().Message);
                         return $"~/externalauth/error/{ErrorEnum.UserCreationFailed}";
-                    }
-
-                    if (requireConfirmEmail)
-                    {
-                        //ToDo: suggestion - after confirm, the sign in might fail, user needs to relogin using the external provider
-                        //Consider removing this constrain and auto-confirm the email - it has been confirmed by the 3rd party auth provider already
-                        return $"~/externalauth/confirm";
                     }
                 }
 
-                
+
                 //All if fine, this user (email) did not try to log in before using this external provider
                 //Add external login info
                 var addExternalLoginResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(externalProvider, externalUserId, userNameClaim.Value));
@@ -201,7 +186,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("External login Failed: " + ex.Message);
+                _logger.LogError($"External login Failed: {ex.GetBaseException().Message}. {ex.StackTrace}");
                 return $"~/externalauth/error/{ErrorEnum.Unknown}";
             }
         }
