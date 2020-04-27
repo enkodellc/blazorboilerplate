@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 
-namespace BlazorBoilerplate.Server.Middleware.Extensions
+namespace BlazorBoilerplate.Infrastrcture.Extensions
 {
     public static class ModelStateExtension
     {

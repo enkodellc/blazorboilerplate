@@ -1,7 +1,7 @@
 ﻿using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Helpers;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.DataModels;
@@ -26,6 +26,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Infrastructure.Storage;
 
 namespace BlazorBoilerplate.Server.Managers
 {

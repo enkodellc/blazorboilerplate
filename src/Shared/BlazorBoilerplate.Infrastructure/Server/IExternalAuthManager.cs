@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Server.Managers
+namespace BlazorBoilerplate.Infrastructure.Server
 {
     public interface IExternalAuthManager
     {

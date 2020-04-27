@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace BlazorBoilerplate.Server.Middleware.Wrappers
+namespace BlazorBoilerplate.Infrastructure.Server.Models
 {
-    public class ApiException : System.Exception
+    public class ApiException : Exception
     {
         public int StatusCode { get; set; }
         public bool IsModelValidatonError { get; set; }

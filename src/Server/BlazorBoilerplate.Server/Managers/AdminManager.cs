@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Data.Core;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
 using BlazorBoilerplate.Shared.Dto.Admin;
@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.Extensions.Localization;
 using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Infrastructure.Server;
 
 namespace BlazorBoilerplate.Server.Managers
 {

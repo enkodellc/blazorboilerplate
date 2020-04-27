@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Storage
+namespace BlazorBoilerplate.Infrastructure.Storage
 {
     public interface IApplicationDbContext
     {

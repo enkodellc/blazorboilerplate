@@ -1,11 +1,12 @@
 ﻿
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Shared.Dto.Admin;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Infrastructure.Server;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

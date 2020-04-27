@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Infrastructure.Storage
 {
     public interface IDatabaseInitializer
     {

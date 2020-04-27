@@ -1,11 +1,11 @@
-﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Shared.DataInterfaces;
+﻿using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Shared.Dto.Sample;
-using static Microsoft.AspNetCore.Http.StatusCodes;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
 {

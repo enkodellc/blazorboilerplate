@@ -1,5 +1,5 @@
-﻿using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Shared.DataInterfaces;
+﻿using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Server.Managers;
 using Moq;
 using NUnit.Framework;
 

@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Shared.DataModels
+namespace BlazorBoilerplate.Infrastructure.Storage
 {
     public interface IUserProfileStore
     {

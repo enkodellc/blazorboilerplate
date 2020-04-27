@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Sample;
 
-namespace BlazorBoilerplate.Server.Managers
+namespace BlazorBoilerplate.Infrastructure.Server
 {
     public interface IMessageManager
     {

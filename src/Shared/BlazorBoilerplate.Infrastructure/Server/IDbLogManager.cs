@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Infrastructure.Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using BlazorBoilerplate.Shared.DataModels;
 using System.Linq.Expressions;
 using System.Threading;
 
-namespace BlazorBoilerplate.Server.Managers
+namespace BlazorBoilerplate.Infrastructure.Server
 {
     public interface IDbLogManager
     {

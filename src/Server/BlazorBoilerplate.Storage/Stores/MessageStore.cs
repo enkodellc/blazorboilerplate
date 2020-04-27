@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using AutoMapper;
+using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.Sample;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using BlazorBoilerplate.Shared.DataInterfaces;
-using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Shared.Dto.Sample;
 
 namespace BlazorBoilerplate.Storage.Stores
 {

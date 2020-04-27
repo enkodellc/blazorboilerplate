@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Sample;
 
-namespace BlazorBoilerplate.Shared.DataInterfaces
+namespace BlazorBoilerplate.Infrastructure.Storage
 {
     public interface IMessageStore
     {

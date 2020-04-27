@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace BlazorBoilerplate.Shared
+namespace BlazorBoilerplate.Infrastructure.Server.Models
 {
     public class DomainException : Exception
     {
@@ -9,16 +9,16 @@ namespace BlazorBoilerplate.Shared
 
         public DomainException(string description): base()
         {
-            this.Description = description;
+            Description = description;
         }
 
         public DomainException(string description, string message) : base(message) {
-            this.Description = description;
+            Description = description;
 
         }
 
         public DomainException(string description, string message, Exception innerException) : base(message, innerException) {
-            this.Description = description;
+            Description = description;
 
         }
     }

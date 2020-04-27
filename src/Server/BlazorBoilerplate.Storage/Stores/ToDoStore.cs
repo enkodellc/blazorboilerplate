@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Sample;
 using Microsoft.EntityFrameworkCore;

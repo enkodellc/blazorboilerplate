@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Sample;
+using BlazorBoilerplate.Infrastructure.Server;
 
 namespace BlazorBoilerplate.Server.Hubs
 {

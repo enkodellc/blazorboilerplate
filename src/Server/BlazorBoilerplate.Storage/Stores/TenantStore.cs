@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.DataInterfaces;
+﻿using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Shared.Dto.Tenant;
 using Finbuckle.MultiTenant;
 using Microsoft.EntityFrameworkCore;

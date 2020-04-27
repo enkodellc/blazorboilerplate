@@ -1,4 +1,6 @@
-﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage;
 using Microsoft.Data.SqlClient;
@@ -7,14 +9,12 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Microsoft.AspNetCore.Http.StatusCodes;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
-using System.Xml;
 using System.Text;
-using BlazorBoilerplate.Server.Helpers;
-using Microsoft.AspNetCore.Http;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
 {

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Storage;
+using System;
+using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Server.Managers
+namespace BlazorBoilerplate.Infrastructure.Server
 {
     public interface IApiLogManager
     {

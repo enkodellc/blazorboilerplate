@@ -11,7 +11,7 @@ var actions = new [] { ("Create", "HttpPost"), ("Update", "HttpPut"), ("Delete",
 
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Shared.Dto.Admin;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

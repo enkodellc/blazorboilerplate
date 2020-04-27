@@ -5,6 +5,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Infrastructure.Server;
 
 namespace BlazorBoilerplate.Server.Pages
 {

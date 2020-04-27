@@ -1,5 +1,5 @@
-﻿using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Shared.DataModels;
+﻿using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Server.Managers;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;

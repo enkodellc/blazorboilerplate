@@ -11,8 +11,9 @@ using BlazorBoilerplate.Server.Managers;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using System.Linq.Expressions;
+using BlazorBoilerplate.Infrastructure.Server;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

@@ -1,10 +1,7 @@
-﻿using AutoMapper;
+﻿using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Storage.Stores;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorBoilerplate.Storage.Tests.Stores
 {

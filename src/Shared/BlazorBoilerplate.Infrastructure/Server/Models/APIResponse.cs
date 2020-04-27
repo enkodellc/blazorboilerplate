@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace BlazorBoilerplate.Server.Middleware.Wrappers
+namespace BlazorBoilerplate.Infrastructure.Server.Models
 {
     [Serializable]
     [DataContract]

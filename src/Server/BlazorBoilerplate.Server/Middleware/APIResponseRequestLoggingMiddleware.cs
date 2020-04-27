@@ -1,6 +1,7 @@
-﻿using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Server.Middleware.Extensions;
-using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Infrastrcture.Extensions;
+using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage;
 using IdentityModel;

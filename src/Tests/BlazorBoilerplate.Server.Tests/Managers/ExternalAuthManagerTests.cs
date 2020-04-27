@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Server.Managers;
+﻿using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Shared.DataModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -6,9 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorBoilerplate.Server.Tests.Managers
 {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Shared.DataInterfaces
+namespace BlazorBoilerplate.Infrastructure.Storage
 {
     public interface IApiLogStore
     {

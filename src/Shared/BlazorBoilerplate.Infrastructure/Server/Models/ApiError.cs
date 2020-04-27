@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace BlazorBoilerplate.Server.Middleware.Wrappers
+namespace BlazorBoilerplate.Infrastructure.Server.Models
 {
     public class ApiError
     {

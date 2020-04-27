@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Storage.Stores;
 using Moq;
 using NUnit.Framework;

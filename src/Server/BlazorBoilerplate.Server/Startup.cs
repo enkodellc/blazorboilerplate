@@ -27,7 +27,6 @@ using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
-using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
@@ -56,11 +55,12 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.DataProtection;
 using BlazorBoilerplate.Shared.Providers;
 using Microsoft.AspNetCore.Authentication.OAuth;
-using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Twitter;
 using System.Security.Claims;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
+using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Infrastructure.Storage;
 
 namespace BlazorBoilerplate.Server
 {

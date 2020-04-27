@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace BlazorBoilerplate.Server.Middleware.Wrappers
+namespace BlazorBoilerplate.Infrastructure.Server.Models
 {
     public class ValidationError
     {

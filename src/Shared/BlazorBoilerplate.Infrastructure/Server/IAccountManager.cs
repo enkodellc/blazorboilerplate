@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.Dto;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.AspNetCore.Http;
 
-namespace BlazorBoilerplate.Server.Managers
+namespace BlazorBoilerplate.Infrastructure.Server
 {
     public interface IAccountManager
     {

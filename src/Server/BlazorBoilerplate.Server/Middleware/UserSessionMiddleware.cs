@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Server.Middleware.Wrappers;
+﻿using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using Finbuckle.MultiTenant;

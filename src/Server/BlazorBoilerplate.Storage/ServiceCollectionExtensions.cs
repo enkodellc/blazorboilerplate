@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Shared;
+﻿using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Stores;

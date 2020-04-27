@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 
-namespace BlazorBoilerplate.Server.Middleware.Wrappers
+namespace BlazorBoilerplate.Infrastructure.Server.Models
 {
     public static class ResponseMessage
     {

@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Server.Authorization;
+﻿using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Managers;
 using IdentityModel;
 using IdentityServer4.Services;
