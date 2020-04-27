@@ -25,7 +25,7 @@ namespace BlazorBoilerplate.Client
             builder.Services.AddLocalization();
             builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
             builder.Services.AddProtectedBrowserStorage();
-            builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) }.EnableIntercept(sp));
             builder.Services.AddAuthorizationCore(config =>
             {
                 config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
