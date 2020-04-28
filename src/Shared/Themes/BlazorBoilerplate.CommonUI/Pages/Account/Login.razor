@@ -189,7 +189,7 @@ protected override async Task OnParametersSetAsync()
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !RedirectInProgress)
-            await js.InvokeVoidAsync("SetFocus", "userName");
+            await js.InvokeVoidAsync("interop.SetFocus", "userName");
 
         await base.OnAfterRenderAsync(firstRender);
     }

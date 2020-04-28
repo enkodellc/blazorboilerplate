@@ -1,15 +1,48 @@
+using AutoMapper;
+using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Server.Authorization;
+using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Server.Middleware;
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.ExternalAuth;
+using BlazorBoilerplate.Storage;
+using BlazorBoilerplate.Storage.Mapping;
+using IdentityServer4;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authentication.Twitter;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
 using System;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Reflection;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-
-using AutoMapper;
+using static Microsoft.AspNetCore.Http.StatusCodes;
+using BlazorBoilerplate.Shared.Providers;
 
 //-:cnd:noEmit
 #if ServerSideBlazor
-
 using BlazorBoilerplate.CommonUI;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Services;
@@ -19,48 +52,9 @@ using MatBlazor;
 using Microsoft.AspNetCore.Components.Authorization;
 
 using System.Net.Http;
-
 #endif
 //-:cnd:noEmit
 
-using BlazorBoilerplate.Server.Authorization;
-using BlazorBoilerplate.Server.Helpers;
-using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Server.Middleware;
-using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.DataInterfaces;
-using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Storage;
-using BlazorBoilerplate.Storage.Mapping;
-using IdentityServer4;
-using IdentityServer4.AccessTokenValidation;
-
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using static Microsoft.AspNetCore.Http.StatusCodes;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using Serilog;
-using System.Reflection;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.DataProtection;
-using BlazorBoilerplate.Shared.Providers;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Twitter;
-using System.Security.Claims;
-using BlazorBoilerplate.Shared.Dto.ExternalAuth;
-using BlazorBoilerplate.Infrastructure.Server;
-using BlazorBoilerplate.Infrastructure.Storage;
 
 namespace BlazorBoilerplate.Server
 {
@@ -90,9 +84,7 @@ namespace BlazorBoilerplate.Server
                 options.AddSupportedUICultures(Localization.Settings.SupportedCultures);
             });
 
-            var dataProtectionBuilder = services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
-
-            var authAuthority = Configuration[$"{projectName}:IS4ApplicationUrl"].TrimEnd('/');
+            var dataProtectionBuilder = services.AddDataProtection().SetApplicationName(projectName);
 
             services.RegisterStorage(Configuration);
 
@@ -106,8 +98,7 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
 
-            // cookie policy to deal with temporary browser incompatibilities
-            services.AddSameSiteCookiePolicy();
+            var authAuthority = Configuration[$"{projectName}:IS4ApplicationUrl"].TrimEnd('/');
 
             // Adds IdentityServer https://identityserver4.readthedocs.io/en/latest/reference/options.html
             var identityServerBuilder = services.AddIdentityServer(options =>
@@ -342,6 +333,7 @@ namespace BlazorBoilerplate.Server
             }
             #endregion
 
+            #region Authorization
             //Add Policies / Claims / Authorization - https://identityserver4.readthedocs.io/en/latest/topics/add_apis.html#advanced
             services.AddAuthorization(options =>
             {
@@ -354,6 +346,7 @@ namespace BlazorBoilerplate.Server
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
             services.AddTransient<IAuthorizationHandler, PermissionRequirementHandler>();
+            #endregion
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -377,6 +370,10 @@ namespace BlazorBoilerplate.Server
                     options.SignIn.RequireConfirmedEmail = true;
                 }
             });
+
+            #region Cookies
+            // cookie policy to deal with temporary browser incompatibilities
+            services.AddSameSiteCookiePolicy();
 
             //https://docs.microsoft.com/en-us/aspnet/core/security/gdpr
             services.Configure<CookiePolicyOptions>(options =>
@@ -426,8 +423,17 @@ namespace BlazorBoilerplate.Server
                     }
                 };
             });
+            #endregion
 
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddMvc().AddNewtonsoftJson();
+            services.AddServerSideBlazor().AddCircuitOptions(o =>
+            {
+                if (_environment.IsDevelopment())
+                {
+                    o.DetailedErrors = true;
+                }
+            });
+
             services.AddSignalR();
 
             services.AddSwaggerDocument(config =>
@@ -465,6 +471,7 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IUserProfileManager, UserProfileManager>();
             services.AddTransient<ITenantManager, TenantManager>();
 
+            #region Automapper
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
             var automapperConfig = new MapperConfiguration(configuration =>
             {
@@ -474,9 +481,9 @@ namespace BlazorBoilerplate.Server
             var autoMapper = automapperConfig.CreateMapper();
 
             services.AddSingleton(autoMapper);
+            #endregion
 //-:cnd:noEmit
 #if ServerSideBlazor
-
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             services.AddScoped<IUserProfileApi, UserProfileApi>();
             services.AddScoped<AppState>();
@@ -493,17 +500,7 @@ namespace BlazorBoilerplate.Server
             // Setup HttpClient for server side
             services.AddScoped<HttpClient>();
 
-            services.AddRazorPages();
-            services.AddServerSideBlazor().AddCircuitOptions(o =>
-            {
-                if (_environment.IsDevelopment())
-                {
-                    o.DetailedErrors = true;
-                }
-            });
-
             // Authentication providers
-
             Log.Logger.Debug("Removing AuthenticationStateProvider...");
             var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(AuthenticationStateProvider));
             if (serviceDescriptor != null)
@@ -513,14 +510,14 @@ namespace BlazorBoilerplate.Server
 
             Log.Logger.Debug("Adding AuthenticationStateProvider...");
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
-
 #endif
 //-:cnd:noEmit
 
-            Log.Logger.Debug($"Total Services Registered: {services.Count}");
-            foreach (var service in services)
+            if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
             {
-                Log.Logger.Debug($"\n      Service: {service.ServiceType.FullName}\n      Lifetime: {service.Lifetime}\n      Instance: {service.ImplementationType?.FullName}");
+                Log.Logger.Debug($"Total Services Registered: {services.Count}");
+                foreach (var service in services)
+                    Log.Logger.Debug($"\n\tService: {service.ServiceType.FullName}\n\tLifetime: {service.Lifetime}\n\tInstance: {service.ImplementationType?.FullName}");
             }
         }
 
@@ -542,7 +539,7 @@ namespace BlazorBoilerplate.Server
 
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
-            app.UseMiddleware<APIResponseRequestLoggingMiddleware>(Convert.ToBoolean(Configuration["BlazorBoilerplate:EnableAPILogging:Enabled"] ?? "true"));
+            app.UseMiddleware<APIResponseRequestLoggingMiddleware>(Convert.ToBoolean(Configuration[$"{projectName}:EnableAPILogging:Enabled"] ?? "true"));
 
             if (env.IsDevelopment())
             {
@@ -584,16 +581,12 @@ namespace BlazorBoilerplate.Server
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
+
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Index");
+
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
-//-:cnd:noEmit
-#if ClientSideBlazor
-                endpoints.MapFallbackToFile("index_csb.html");
-#else
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToPage("/index_ssb");
-#endif
-//-:cnd:noEmit
             });
         }
 

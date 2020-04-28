@@ -31,6 +31,7 @@ window.interop = {
             return "";
         }
     },
+    SetFocus: (id) => { document.getElementById(id).focus(); },
     submitForm: (path, fields) => {
         const form = document.createElement('form');
         form.method = 'post';

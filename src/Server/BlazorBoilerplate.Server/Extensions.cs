@@ -1,4 +1,5 @@
 using IdentityServer4.Models;
+using Microsoft.AspNetCore.Hosting;
 using System;
 
 namespace BlazorBoilerplate.Server
@@ -13,6 +14,17 @@ namespace BlazorBoilerplate.Server
         {
             return !context.RedirectUri.StartsWith("https", StringComparison.Ordinal)
                && !context.RedirectUri.StartsWith("http", StringComparison.Ordinal);
+        }
+
+        public static bool IsBlazorServer(this IWebHostEnvironment env)
+        {
+//-:cnd:noEmit
+#if ServerSideBlazor
+            return true;
+#else
+            return false;
+#endif
+//-:cnd:noEmit
         }
     }
 }
