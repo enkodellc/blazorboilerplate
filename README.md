@@ -135,14 +135,23 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.8.0 Under Development (Major Project Refactor - Thanks DanielBunting)
+### 0.9.0 Under Development (Development branch Major Project Refactor - Thanks GioviQ)
+- Localization Support. Thanks [GioviQ](https://github.com/GioviQ) 
+- DotNet Template Solution. Thanks [GioviQ](https://github.com/GioviQ) 
+- Update to Identity Server. Thanks [GioviQ](https://github.com/GioviQ) 
+
+### 0.8.1 Stable - Master branch
+- Blazor WebAssembly 3.2.0 Preview 5
+- Nuget Package updates 
+
+### 0.8.0 (Major Project Refactor - Thanks DanielBunting)
 - Refactor Project Architecture. Thanks [DanielBunting](https://github.com/DanielBunting) 
 - Add Initial Tests. Thanks [DanielBunting](https://github.com/DanielBunting) 
 - Project Code Review. Thanks [GioviQ](https://github.com/GioviQ) 
 - Revised AuthorizationPolicyProvider. Thanks [mobinseven](https://github.com/mobinseven) 
 - Server-side Multi-Tenant V.1 (Not working / No UI) - Thanks [mobinseven](https://github.com/mobinseven) 
 - SQL Server Error Logging with Serilog Thanks [np-at](https://github.com/np-at)
-- Added Ultramapper for Dto restore / clone Thanks [GioviQ](https://github.com/GioviQ) 
+- Added Ultramapper for Dto restore / clone. Thanks [GioviQ](https://github.com/GioviQ) 
 
 ### 0.7.0 (Breaking Changes)
 - .NET Core 3.2 Preview 1- Microsoft & Other Nuget package updates - Program.cs refactored for CSB
