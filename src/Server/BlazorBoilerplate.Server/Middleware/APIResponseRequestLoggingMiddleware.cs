@@ -3,7 +3,6 @@ using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Storage;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -88,6 +87,7 @@ namespace BlazorBoilerplate.Server.Middleware
                                 await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
                             }
 
+                            httpContext.Response.ContentLength = responseBody.Length;
                             stopWatch.Stop();
 
                             #region Log Request / Response
@@ -130,7 +130,6 @@ namespace BlazorBoilerplate.Server.Middleware
                         }
                         finally
                         {
-                            httpContext.Response.ContentLength = responseBody.Length;
                             responseBody.Seek(0, SeekOrigin.Begin);
                             await responseBody.CopyToAsync(originalBodyStream);
                         }
