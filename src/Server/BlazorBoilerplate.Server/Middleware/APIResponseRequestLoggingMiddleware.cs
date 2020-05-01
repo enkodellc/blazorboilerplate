@@ -130,6 +130,7 @@ namespace BlazorBoilerplate.Server.Middleware
                         }
                         finally
                         {
+                            httpContext.Response.ContentLength = responseBody.Length;
                             responseBody.Seek(0, SeekOrigin.Begin);
                             await responseBody.CopyToAsync(originalBodyStream);
                         }
