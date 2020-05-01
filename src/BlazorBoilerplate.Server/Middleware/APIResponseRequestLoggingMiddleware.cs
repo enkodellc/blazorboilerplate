@@ -86,6 +86,8 @@ namespace BlazorBoilerplate.Server.Middleware
                                 await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
                             }
 
+                            httpContext.Response.ContentLength = responseBody.Length;
+
                             stopWatch.Stop();
 
                             #region Log Request / Response
