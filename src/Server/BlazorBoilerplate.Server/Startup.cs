@@ -40,6 +40,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using BlazorBoilerplate.Shared.Providers;
+using BlazorBoilerplate.Server.Extensions;
 
 //-:cnd:noEmit
 #if ServerSideBlazor

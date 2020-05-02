@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BlazorBoilerplate.Server
+namespace BlazorBoilerplate.Server.Extensions
 {
     // copied from https://devblogs.microsoft.com/aspnet/upcoming-samesite-cookie-changes-in-asp-net-and-asp-net-core/
     // also read https://web.dev/samesite-cookies-explained/

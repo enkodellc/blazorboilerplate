@@ -2,7 +2,7 @@ using IdentityServer4.Models;
 using Microsoft.AspNetCore.Hosting;
 using System;
 
-namespace BlazorBoilerplate.Server
+namespace BlazorBoilerplate.Server.Extensions
 {
     public static class Extensions
     {
