@@ -140,7 +140,8 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Localization Support. Thanks [GioviQ](https://github.com/GioviQ) 
 - DotNet Template Solution. Thanks [GioviQ](https://github.com/GioviQ) 
 - Update to Identity Server. Thanks [GioviQ](https://github.com/GioviQ) 
-- [Demo for Development Branch - SSB](https://openid.quarella.net)
+- [Demo for Development Branch - SSB](https://blazor-server.quarella.net/)
+- [Demo for Development Branch - CSB](https://blazor-wasm.quarella.net/)
 
 ### 0.8.1 Stable - Master branch
 - Blazor WebAssembly 3.2.0 Preview 5
