@@ -39,16 +39,13 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Server.Extensions;
 
 //-:cnd:noEmit
 #if ServerSideBlazor
-using BlazorBoilerplate.CommonUI;
 using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
-
-using MatBlazor;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -487,16 +484,7 @@ namespace BlazorBoilerplate.Server
 #if ServerSideBlazor
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             services.AddScoped<IUserProfileApi, UserProfileApi>();
-            services.AddScoped<AppState>();
-            services.AddMatToaster(config =>
-            {
-                config.Position = MatToastPosition.BottomRight;
-                config.PreventDuplicates = true;
-                config.NewestOnTop = true;
-                config.ShowCloseButton = true;
-                config.MaximumOpacity = 95;
-                config.VisibleStateDuration = 3000;
-            });
+            services.AddScoped<AppState>();            
 
             // Setup HttpClient for server side
             services.AddScoped<HttpClient>();
@@ -513,6 +501,8 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 #endif
 //-:cnd:noEmit
+
+            services.AddModules();
 
             if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
             {

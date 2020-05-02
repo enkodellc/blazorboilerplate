@@ -111,15 +111,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Infrastructure\BlazorBoilerplate.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Shared\Microsoft.AspNetCore.ProtectedBrowserStorage\Microsoft.AspNetCore.ProtectedBrowserStorage.csproj" />
+    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
+    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material\BlazorBoilerplate.Theme.Material.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Storage\BlazorBoilerplate.Storage.csproj" />
   </ItemGroup>
 
   <Choose>
-    <When Condition=" '$(Configuration)'=='Debug_SSB' Or '$(Configuration)'=='Release_SSB'">
-      <ItemGroup>
-        <ProjectReference Include="..\..\Shared\Themes\BlazorBoilerplate.CommonUI\BlazorBoilerplate.CommonUI.csproj" />
-      </ItemGroup>
-    </When>
+    <When Condition=" '$(Configuration)'=='Debug_SSB' Or '$(Configuration)'=='Release_SSB'" />
     <When Condition=" '$(Configuration)'=='Debug_CSB' Or '$(Configuration)'=='Release_CSB' ">
       <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0-rc1.20223.4" />
@@ -130,12 +129,16 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="Modules\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Controllers\AdminController.tt">
       <LastGenOutput>AdminController.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Modules\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

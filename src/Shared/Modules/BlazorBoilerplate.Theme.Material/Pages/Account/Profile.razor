@@ -1,0 +1,139 @@
+﻿@page "/account/profile"
+@page "/account/profile/{UserId}"
+@attribute [Authorize]
+
+@inject HttpClient Http
+@inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Strings> L
+@inject IMatToaster matToaster
+
+<h1>User Profile</h1>
+<p>User profile management.</p>
+@if (userInfo == null)
+{
+    <LoadingBackground ShowLogoBox="true"></LoadingBackground>
+}
+else
+{
+    <MatButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog())" Label="Change Password" Raised="true" class="form-group d-flex justify-content-end"></MatButton>
+    <EditForm Model="@userInfo" OnValidSubmit="@UpdateUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userInfo.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userInfo.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userInfo.FirstName" Label="First Name" FullWidth="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userInfo.LastName" Label="Last Name" FullWidth="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <strong>Roles</strong><br />
+                <MatChipSet>
+                    @foreach (var role in userInfo.Roles)
+                    {
+                        <MatChip Label="@role"></MatChip>
+                    }
+                </MatChipSet>
+            </div>
+            <div class="form-group d-flex justify-content-end">
+                <MatButton Type="submit" Raised="true">Update Profile</MatButton>
+            </div>
+        </fieldset>
+    </EditForm>
+
+    <MatDialog @bind-IsOpen="@resetPasswordDialogOpen">
+        <MatDialogTitle>Manual Password Reset for @registerParameters.UserName</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm Model="@registerParameters" OnValidSubmit="@ResetUserPasswordAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <fieldset>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@registerParameters.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    </div>
+                </fieldset>
+            </EditForm>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { resetPasswordDialogOpen = false; })">@L["Cancel"]</MatButton>
+            <MatButton OnClick="@ResetUserPasswordAsync">@L["Reset Password"]</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+}
+@code {
+    ApiResponseDto apiResponse;
+    UserInfoDto userInfo;
+    bool resetPasswordDialogOpen = false;
+    RegisterDto registerParameters { get; set; } = new RegisterDto();
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserInfo();
+    }
+
+    public void OpenResetPasswordDialog()
+    {
+        //Todo finish this reset password functionality - needs new API call "UserPasswordReset"
+        matToaster.Add("Not Yet Implemented", MatToastType.Warning);
+
+        // reusing the registerParameters and User objects
+        //registerParameters = new RegisterDto();  // reset object
+        //registerParameters.UserName = userInfo.UserName;
+        //this.resetPasswordDialogOpen = true;
+    }
+
+    public async Task ResetUserPasswordAsync()
+    {
+        if (registerParameters.Password != registerParameters.PasswordConfirm)
+        {
+            matToaster.Add("Passwords Must Match", MatToastType.Warning);
+        }
+        else
+        {
+            apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/UserPasswordReset/{userInfo.UserId}", registerParameters.Password);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                matToaster.Add(L["ResetPasswordSuccessful"], MatToastType.Success);
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["ResetPasswordFailed"]);
+            }
+            resetPasswordDialogOpen = false;
+        }
+    }
+
+    async Task UpdateUser()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).UpdateUser(userInfo);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                matToaster.Add("Profile update was Successful", MatToastType.Success);
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, "Profile Update Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Profile Update Failed");
+        }
+    }
+}
