@@ -40,7 +40,7 @@ else
                             <MatIconButton Icon="edit" Disabled="true"></MatIconButton>
                         </NotAuthorized>
                     </AuthorizeView>
-                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))" Disabled="@(UserRow.UserId != userProfile.UserId)"></MatIconButton>
+                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))"></MatIconButton>
                     <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
                         <Authorized>
                             <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))"></MatIconButton>
