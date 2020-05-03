@@ -177,16 +177,10 @@ namespace BlazorBoilerplate.Server
                         }
                         else
                         {
-                            //tested with Let's Encrypt Certificate
-                            certs = store.Certificates.Find(X509FindType.FindBySubjectName, new Uri(Configuration[$"{projectName}:ApplicationUrl"]).Host, false);
+                            var certPath = Path.Combine(_environment.ContentRootPath, "AuthSample.pfx");
 
-                            if (certs.Count > 0)
-                            {
-                                cert = certs[0];
-                            }
-                            else
-                                //usually application pool identity has limited permission on Windows registry. So we do not store there.
-                                cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "AuthSample.pfx"), "Admin123",
+                            if (File.Exists(certPath))
+                                cert = new X509Certificate2(certPath, "Admin123",
                                                     X509KeyStorageFlags.MachineKeySet |
                                                     X509KeyStorageFlags.PersistKeySet |
                                                     X509KeyStorageFlags.Exportable);
@@ -204,7 +198,8 @@ namespace BlazorBoilerplate.Server
                 }
                 else
                 {
-                    throw new FileNotFoundException("No certificate for Identity Server could be retrieved.");
+                    Log.Logger.Debug("Trying to use WebHosting Certificate for Identity Server");
+                    identityServerBuilder.AddWebHostingCertificate();
                 }
             }
 
@@ -440,16 +435,16 @@ namespace BlazorBoilerplate.Server
                 {
                     document.Info.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
                     document.Info.Title = "BlazorBoilerplate";
-//-:cnd:noEmit
+                    //-:cnd:noEmit
 #if ServerSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
 #endif
-//-:cnd:noEmit
-//-:cnd:noEmit
+                    //-:cnd:noEmit
+                    //-:cnd:noEmit
 #if ClientSideBlazor
                     document.Info.Description = "Blazor Boilerplate / Starter Template using the Client Side / Webassembly Version.";
 #endif
-//-:cnd:noEmit
+                    //-:cnd:noEmit
                 };
             });
 
@@ -480,11 +475,11 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton(autoMapper);
             #endregion
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ServerSideBlazor
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             services.AddScoped<IUserProfileApi, UserProfileApi>();
-            services.AddScoped<AppState>();            
+            services.AddScoped<AppState>();
 
             // Setup HttpClient for server side
             services.AddScoped<HttpClient>();
@@ -500,7 +495,7 @@ namespace BlazorBoilerplate.Server
             Log.Logger.Debug("Adding AuthenticationStateProvider...");
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
             services.AddModules();
 
@@ -535,11 +530,11 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-//-:cnd:noEmit
+                //-:cnd:noEmit
 #if ClientSideBlazor
                 app.UseWebAssemblyDebugging();
 #endif
-//-:cnd:noEmit
+                //-:cnd:noEmit
             }
             else
             {
@@ -549,11 +544,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
