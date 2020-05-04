@@ -1,6 +1,7 @@
 ﻿@page "/admin/dBlogViewer"
 
 @attribute [Authorize(Policy = Policies.IsAdmin)]
+@layout AdminLayout
 @inject HttpClient Http
 @inject IMatToaster matToaster
 @using BlazorBoilerplate.Shared.DataModels
@@ -45,9 +46,9 @@ else
                             {
                             <li style="font-size:small">@($"{propertyPair.Key}:  {propertyPair.Value}")</li>
                             }
+
                     </ul>
                     }
-
             </td>
         </MatTableRow>
     </MatTable>

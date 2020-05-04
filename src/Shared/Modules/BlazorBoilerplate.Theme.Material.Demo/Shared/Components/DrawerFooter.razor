@@ -1,0 +1,10 @@
+﻿@implements IDynamicComponent
+
+<MatTooltip Tooltip="Help">
+    <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">Help & Support</span></MatButton>
+</MatTooltip>
+
+@code {
+    public int Order { get => 1; }
+    public string IntoComponent { get => "DrawerFooter"; }
+}

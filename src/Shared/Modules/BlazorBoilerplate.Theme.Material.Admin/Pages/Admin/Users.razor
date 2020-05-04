@@ -1,6 +1,7 @@
 ﻿@page "/admin/users"
 @using BlazorBoilerplate.Shared.Dto.Account
-@attribute [Authorize]
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@layout AdminLayout
 @inject HttpClient Http
 @inject IAuthorizationService AuthorizationService
 @inject AuthenticationStateProvider authStateProvider
@@ -90,7 +91,7 @@ else
     <MatDialogActions>
         <MatButton OnClick="@(e => { createUserDialogOpen = false; })">@L["Cancel"]</MatButton>
         <MatButton OnClick="@CreateUserAsync">@L["Create"]</MatButton>
-</MatDialogActions>
+    </MatDialogActions>
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@editDialogOpen">

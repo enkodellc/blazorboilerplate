@@ -1,0 +1,18 @@
+﻿@implements IDynamicComponent
+
+<MatTooltip Tooltip="Donate to Support">
+    <MatIconButton Link="https://www.paypal.me/enkodellc" RefBack="@context"><i class="fa fa-cc-paypal"></i></MatIconButton>
+</MatTooltip>
+<MatTooltip Tooltip="Github Repository">
+    <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
+</MatTooltip>
+<MatTooltip Tooltip="Admin">
+    <MatIconButton Link="/admin" RefBack="@context"><i class="fa fa-gear" aria-hidden="true"></i></MatIconButton>
+</MatTooltip>
+<SelectCulture />
+<Login />
+
+@code {
+    public int Order { get => 1; }
+    public string IntoComponent { get => "TopRightBarSection"; }
+}

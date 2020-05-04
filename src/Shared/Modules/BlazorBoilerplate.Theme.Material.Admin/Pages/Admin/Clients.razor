@@ -1,6 +1,7 @@
 @page "/admin/clients"
 @using BlazorBoilerplate.Shared.Dto.Admin
-@attribute [Authorize]
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@layout AdminLayout
 @inject HttpClient Http
 @inject IAuthorizationService AuthorizationService
 @inject AuthenticationStateProvider authStateProvider
@@ -17,58 +18,58 @@
 
 @if (clients == null)
 {
-<LoadingBackground ShowLogoBox="true">
-    <label>@L["Loading"]</label>
-</LoadingBackground>
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
 }
 else
 {
-<MatTable Class="mat-elevation-z5" Items="@clients" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/clients"
-          DebounceMilliseconds="150">
-    <MatTableHeader>
-        <th><MatButton Icon="add" Label=@L["New Client"] OnClick="@(() => OpenUpsertClientDialog())"></MatButton></th>
-        <th>Id</th>
-        <th>Enabled</th>
-        <th>Access Token Lifetime</th>
-        <th>Require Client Secret</th>
-        <th>Require Consent</th>
-        <th>Local Login</th>
-        <th>Grant Types</th>
-        <th>PKCE</th>
-        <th>Scopes</th>
-    </MatTableHeader>
-    <MatTableRow Context="ClientRow">
-        <td>
-            <div style="width:155px;">
-                <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertClientDialog(ClientRow))"></MatIconButton>
-                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteClientDialog(ClientRow))"></MatIconButton>
-            </div>
-        </td>
-        <td><div style="min-width:130px;">@ClientRow.ClientId</div></td>
-        <td><MatSlideToggle TValue="bool" Value="@ClientRow.Enabled" ValueChanged="@((item) => UpdateEnabled(ClientRow))"></MatSlideToggle></td>
-        <td><div style="min-width:130px;">@ClientRow.AccessTokenLifetime</div></td>
-        <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequireClientSecret" Disabled="true"></MatSlideToggle></td>
-        <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequireConsent" Disabled="true"></MatSlideToggle></td>
-        <td><MatSlideToggle TValue="bool" Value="@ClientRow.EnableLocalLogin" Disabled="true"></MatSlideToggle></td>
-        <td>
-            <MatChipSet>
-                @foreach (var grantType in ClientRow.AllowedGrantTypes)
+    <MatTable Class="mat-elevation-z5" Items="@clients" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/clients"
+              DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th><MatButton Icon="add" Label=@L["New Client"] OnClick="@(() => OpenUpsertClientDialog())"></MatButton></th>
+            <th>Id</th>
+            <th>Enabled</th>
+            <th>Access Token Lifetime</th>
+            <th>Require Client Secret</th>
+            <th>Require Consent</th>
+            <th>Local Login</th>
+            <th>Grant Types</th>
+            <th>PKCE</th>
+            <th>Scopes</th>
+        </MatTableHeader>
+        <MatTableRow Context="ClientRow">
+            <td>
+                <div style="width:155px;">
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertClientDialog(ClientRow))"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteClientDialog(ClientRow))"></MatIconButton>
+                </div>
+            </td>
+            <td><div style="min-width:130px;">@ClientRow.ClientId</div></td>
+            <td><MatSlideToggle TValue="bool" Value="@ClientRow.Enabled" ValueChanged="@((item) => UpdateEnabled(ClientRow))"></MatSlideToggle></td>
+            <td><div style="min-width:130px;">@ClientRow.AccessTokenLifetime</div></td>
+            <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequireClientSecret" Disabled="true"></MatSlideToggle></td>
+            <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequireConsent" Disabled="true"></MatSlideToggle></td>
+            <td><MatSlideToggle TValue="bool" Value="@ClientRow.EnableLocalLogin" Disabled="true"></MatSlideToggle></td>
+            <td>
+                <MatChipSet>
+                    @foreach (var grantType in ClientRow.AllowedGrantTypes)
                         {
-                <MatChip Label="@grantType"></MatChip>
+                        <MatChip Label="@grantType"></MatChip>
                         }
-            </MatChipSet>
-        </td>
-        <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequirePkce" Disabled="true"></MatSlideToggle></td>
-        <td>
-            <MatChipSet>
-                @foreach (var scope in ClientRow.AllowedScopes)
+                </MatChipSet>
+            </td>
+            <td><MatSlideToggle TValue="bool" Value="@ClientRow.RequirePkce" Disabled="true"></MatSlideToggle></td>
+            <td>
+                <MatChipSet>
+                    @foreach (var scope in ClientRow.AllowedScopes)
                         {
-                <MatChip Label="@scope"></MatChip>
+                        <MatChip Label="@scope"></MatChip>
                         }
-            </MatChipSet>
-        </td>
-    </MatTableRow>
-</MatTable>
+                </MatChipSet>
+            </td>
+        </MatTableRow>
+    </MatTable>
 }
 
 <MatDialog @bind-IsOpen="@isUpsertClientDialogOpen">

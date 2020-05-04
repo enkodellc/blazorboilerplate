@@ -1,5 +1,6 @@
 ﻿@page "/admin/blazor_middlware_audit"
-
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@layout AdminLayout
 @inject HttpClient Http
 @inject IMatToaster matToaster
 

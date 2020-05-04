@@ -11,8 +11,7 @@
             </div>
             <UserProfile />
         </header>
-        <NavMenu />            
-        <DrawerFooter></DrawerFooter>
+        <AdminNavMenu />
     </MatDrawer>
     <MatDrawerContent>
         <MatAppBarContainer Style="display: flex; flex-direction: column; min-height: 100vh;">
@@ -28,16 +27,11 @@
                             <MatTooltip Tooltip="Minify Navigation">
                                 <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
                             </MatTooltip>
-                            @*</li>
-                                <li>
-                                    <MatTooltip Tooltip="Lock Navigation">
-                                        <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
-                                    </MatTooltip>
-                                    </li>*@
                         </div>
                     </MatAppBarSection>
-                    <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                        <TopRightBarSection></TopRightBarSection>
+                    <MatAppBarSection Align="@MatAppBarSectionAlign.End">                        
+                        <SelectCulture />
+                        <Login />
                     </MatAppBarSection>
                 </MatAppBarRow>
             </MatAppBar>
@@ -46,7 +40,9 @@
                 <section class="container-fluid" style="flex: 1;">
                     @Body
                 </section>
-                <Footer></Footer>
+                <footer class="page-footer">
+                    <TenantInfo />
+                </footer>
             </MatAppBarContent>
         </MatAppBarContainer>
     </MatDrawerContent>

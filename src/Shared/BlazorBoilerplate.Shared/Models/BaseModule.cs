@@ -18,7 +18,7 @@ namespace BlazorBoilerplate.Shared.Models
         public virtual void ConfigureWebAssemblyHost(WebAssemblyHost webAssemblyHost)
         { }
 
-        public void ConfigureWebAssemblyServices(IServiceCollection services)
+        public virtual void ConfigureWebAssemblyServices(IServiceCollection services)
         { }
     }
 }

@@ -130,7 +130,6 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
-    <Folder Include="Modules\" />
   </ItemGroup>
 
   <ItemGroup>

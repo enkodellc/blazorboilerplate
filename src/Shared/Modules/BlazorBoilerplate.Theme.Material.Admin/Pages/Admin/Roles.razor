@@ -1,6 +1,7 @@
 @page "/admin/roles"
 @using BlazorBoilerplate.Shared.Dto.Admin
-@attribute [Authorize]
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@layout AdminLayout
 @inject HttpClient Http
 @inject IAuthorizationService AuthorizationService
 @inject AuthenticationStateProvider authStateProvider
