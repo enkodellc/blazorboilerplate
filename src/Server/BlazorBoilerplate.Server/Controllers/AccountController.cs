@@ -46,8 +46,6 @@ namespace BlazorBoilerplate.Server.Controllers
         [ProducesResponseType(Status401Unauthorized)]
         public async Task<ApiResponse> Login(LoginInputModel parameters)
         {
-            parameters.IsValidReturnUrl =  string.IsNullOrEmpty(parameters.ReturnUrl) || Url.IsLocalUrl(parameters.ReturnUrl);
-
             return ModelState.IsValid ? await _accountManager.Login(parameters) : _invalidUserModel;
         }
 

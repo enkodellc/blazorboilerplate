@@ -2,14 +2,7 @@
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <NotAuthorized>
-                <div class="login-container">
-                    <LoadingBackground ShowLogoBox="true">
-                        <div class="login-body">
-                            <label>Sorry, You're not authorized to reach this page. You may need to log in as a different user.</label><br />
-                            <MatButton Link="/" Raised="true">Home</MatButton>
-                        </div>
-                    </LoadingBackground>
-                </div>
+                <RedirectToLogin />
             </NotAuthorized>
         </AuthorizeRouteView>
     </Found>
@@ -18,8 +11,8 @@
             <LayoutView Layout="typeof(MainLayout)">
                 <LoadingBackground ShowLogoBox="true">
                     <div class="login-body">
-                        <h1>We lost this page</h1>
-                        <label>We searched high and low but couldn't find what you're looking for.<br />Don't worry our junior developer is working on it between his naps and <a href="https://www.youtube.com/watch?v=y7LAbdoNBJA" target="_blank">youtube videos</a> on Blazor!</label><br />
+                        <h1>Page not found</h1>
+                        <label>Please check the URL or</label><br />
                         <MatButton Link="/" Raised="true">Return Home</MatButton>
                     </div>
                 </LoadingBackground>

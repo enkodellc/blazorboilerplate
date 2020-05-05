@@ -249,6 +249,11 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
+                if (!string.IsNullOrEmpty(parameters.ReturnUrl))
+                    parameters.ReturnUrl = new Uri(parameters.ReturnUrl).LocalPath;
+
+                parameters.IsValidReturnUrl = true; //string.IsNullOrEmpty(parameters.ReturnUrl) || Url.IsLocalUrl(parameters.ReturnUrl);
+
                 var context = await _interaction.GetAuthorizationContextAsync(parameters.ReturnUrl);
 
                 var result = await _signInManager.PasswordSignInAsync(parameters.UserName, parameters.Password, parameters.RememberMe, true);
