@@ -183,9 +183,9 @@ else
                         <div class="form-group">
                             <MatTextField @bind-Value="@currentClient.IdentityProviderRestrictionsText" Label="Identity Provider Restrictions" Icon="link" IconTrailing="true" TextArea="true" FullWidth="true" Required="false"></MatTextField>
                         </div>
-                        @*TODO <div class="form-group">
-                                <MatTextField @bind-Value="@currentClient.UserSsoLifetime" Label="User Sso Lifetime  in seconds" Icon="timer" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-                            </div>*@
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@currentClient.UserSsoLifetime" Label="User Sso Lifetime  in seconds" Icon="timer" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                        </div>
                     </fieldset>
                 </MatTab>
                 <MatTab Label="Token">
@@ -253,10 +253,9 @@ else
                         <div class="form-group">
                             <MatSlideToggle @bind-Value="@currentClient.AllowRememberConsent" Label="Allow Remember Consent"></MatSlideToggle>
                         </div>
-                        @*TODO Waiting for https://github.com/SamProf/MatBlazor/pull/449
-                            <div class="form-group">
-                                <MatTextField @bind-Value="@currentClient.ConsentLifetime" Label="Consent Lifetime in seconds" Icon="timer" IconTrailing="true" FullWidth="true"></MatTextField>
-                            </div>*@
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@currentClient.ConsentLifetime" Label="Consent Lifetime in seconds" Icon="timer" IconTrailing="true" FullWidth="true"></MatTextField>
+                        </div>
                         <div class="form-group">
                             <MatTextField @bind-Value="@currentClient.ClientName" Label="Client display name" Icon="description" IconTrailing="true" FullWidth="true"></MatTextField>
                         </div>
