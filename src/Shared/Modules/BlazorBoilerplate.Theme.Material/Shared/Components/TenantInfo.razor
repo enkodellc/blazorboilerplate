@@ -15,10 +15,10 @@
 
         if (user.Identity.IsAuthenticated)
         {
-            ApiResponseDto apiResponse = await Http.GetJsonAsync<ApiResponseDto>("api/Tenant");
+            var apiResponse = await Http.GetJsonAsync<ApiResponseDto<TenantDto>>("api/Tenant");
             if (apiResponse.StatusCode == Status200OK)
             {
-                tenant = Newtonsoft.Json.JsonConvert.DeserializeObject<TenantDto>(apiResponse.Result.ToString());
+                tenant = apiResponse.Result;
             }
         }
     }
