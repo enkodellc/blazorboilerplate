@@ -2,6 +2,6 @@
 @code {
     protected override void OnInitialized()
     {
-        Navigation.NavigateTo($"{BlazorBoilerplate.Shared.Settings.LoginPath}/{System.Net.WebUtility.UrlEncode(Navigation.Uri)}", true);
+        Navigation.NavigateTo($"{BlazorBoilerplate.Shared.Settings.LoginPath}?returnurl={System.Net.WebUtility.UrlEncode(Navigation.Uri)}", true);
     }
 }
