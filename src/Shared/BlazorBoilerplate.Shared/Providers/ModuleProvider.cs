@@ -16,7 +16,7 @@ namespace BlazorBoilerplate.Shared.Providers
 
         public static void Init(IEnumerable<Assembly> assemblies)
         {
-            AssembliesWithPages = assemblies.Where(w => w.ExportedTypes.Any(t => t.GetCustomAttribute<RouteAttribute>(inherit: false) != null)).ToList();
+            AssembliesWithPages = assemblies.Where(w => w.ExportedTypes.Any(t => t.GetCustomAttributes<RouteAttribute>(inherit: false).Any())).ToList();
 
             //TODO a table should define the mapping between tenant and module
             //only one ITheme module per tenant. Now I simply take the first one.
