@@ -1,14 +1,15 @@
-﻿using BlazorBoilerplate.Infrastructure.Server.Models;
+﻿using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 using System;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Infrastructure.Server;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
+    [OpenApiIgnore]
     [Route("api/[controller]")]
     [ApiController]
     public class ApiLogController : ControllerBase

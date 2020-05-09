@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 using System;
 using System.Globalization;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
+    [OpenApiIgnore]
     [Route("[controller]/[action]")]
     public class CultureController : Controller
     {

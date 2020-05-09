@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Storage;
-using BlazorBoilerplate.Server.Managers;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization;
-using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using BlazorBoilerplate.Shared.DataModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NSwag.Annotations;
+using System;
 using System.Linq.Expressions;
-using BlazorBoilerplate.Infrastructure.Server;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
+    [OpenApiIgnore]
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Policy=Policies.IsAdmin)]

@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Server.Managers;
+﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Sample;
@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using BlazorBoilerplate.Infrastructure.Server;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

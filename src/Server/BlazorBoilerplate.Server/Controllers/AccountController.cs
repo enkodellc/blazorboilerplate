@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using NSwag.Annotations;
 using System;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
+    [OpenApiIgnore]
     [SecurityHeaders]
     [Route("api/[controller]")]
     [ApiController]

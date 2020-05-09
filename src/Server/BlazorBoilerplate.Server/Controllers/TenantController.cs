@@ -1,16 +1,17 @@
-﻿using BlazorBoilerplate.Server.Managers;
+﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.Dto.Tenant;
 using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using BlazorBoilerplate.Infrastructure.Server;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
+    [OpenApiIgnore]
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]

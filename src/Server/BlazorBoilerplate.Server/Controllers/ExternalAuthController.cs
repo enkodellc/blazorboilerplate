@@ -5,6 +5,7 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
+    [OpenApiIgnore]
     [Route("api/[controller]")]
     [ApiController]
     public class ExternalAuthController : ControllerBase

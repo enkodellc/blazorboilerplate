@@ -1,9 +1,11 @@
-﻿using BlazorBoilerplate.Infrastructure.Server;
+﻿
+using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Controllers
@@ -11,6 +13,7 @@ namespace BlazorBoilerplate.Server.Controllers
     /// <summary>
     /// This controller is the entry API for the platform administration.
     /// </summary>
+    [OpenApiIgnore]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
