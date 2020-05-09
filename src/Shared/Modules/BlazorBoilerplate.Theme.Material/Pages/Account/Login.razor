@@ -1,5 +1,4 @@
 @page "/account/login"
-@page "/account/login/{returnurl}"
 
 @layout LoginLayout
 @inject NavigationManager navigationManager
@@ -132,11 +131,13 @@
     LoginViewModel loginViewModel { get; set; } = new LoginViewModel();
     ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
 
-    [Parameter]
-    public string ReturnUrl { get; set; }
+    string ReturnUrl;
 
     protected override async Task OnInitializedAsync()
     {
+        if (navigationManager.TryGetQueryString<string>("ReturnUrl", out string url))
+            ReturnUrl = url;
+
         var user = (await authenticationStateTask).User;
 
         if (user.Identity.IsAuthenticated)
@@ -153,7 +154,7 @@
                 if (loginViewModel.IsExternalLoginOnly)
                 {
                     // we only have one option for logging in and it's an external provider
-                    navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);                    
+                    navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
                 }
             }
             else
@@ -172,7 +173,7 @@
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
-//-:cnd:noEmit
+    //-:cnd:noEmit
 #if ClientSideBlazor
 protected override async Task OnParametersSetAsync()
 {
@@ -182,7 +183,7 @@ protected override async Task OnParametersSetAsync()
         navigationManager.NavigateTo(navigationManager.BaseUri + navigateTo);
 }
 #endif
-//-:cnd:noEmit
+    //-:cnd:noEmit
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !RedirectInProgress)
@@ -212,7 +213,10 @@ protected override async Task OnParametersSetAsync()
             {
                 // On successful Login the response.Message is the Last Page Visited from User Profile
                 // We can't navigate yet as the setup is proceeding asynchronously
-                navigateTo = !string.IsNullOrEmpty(response.Message) ? response.Message : "/dashboard";
+                if (string.IsNullOrEmpty(ReturnUrl))
+                    navigateTo = !string.IsNullOrEmpty(response.Message) ? response.Message : "/dashboard";
+                else
+                    navigateTo = ReturnUrl;
 
             }
             else
