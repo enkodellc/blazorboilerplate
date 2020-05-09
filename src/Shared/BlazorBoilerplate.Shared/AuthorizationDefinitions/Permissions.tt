@@ -40,12 +40,7 @@ foreach(var permissionAction in permissionActions)
         }
 <#}#>
         #endregion
-
-        public static class WeatherForecasts
-        {
-            [Description("Read Weather Forecasts")]
-            public const string Read = nameof(WeatherForecasts) + "." + nameof(Actions.Read);
-        }
+        
         public static class Todo
         {
             [Description("Create a new ToDo")]

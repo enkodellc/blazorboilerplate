@@ -71,12 +71,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
             public const string Delete = nameof(IdentityResource) + "." + nameof(Actions.Delete);
         }
         #endregion
-
-        public static class WeatherForecasts
-        {
-            [Description("Read Weather Forecasts")]
-            public const string Read = nameof(WeatherForecasts) + "." + nameof(Actions.Read);
-        }
+        
         public static class Todo
         {
             [Description("Create a new ToDo")]
