@@ -8,7 +8,6 @@ using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
 using IdentityServer4;
@@ -40,6 +39,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using BlazorBoilerplate.Server.Extensions;
+using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 
 //-:cnd:noEmit
 #if ServerSideBlazor
@@ -106,6 +107,7 @@ namespace BlazorBoilerplate.Server
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
+                options.UserInteraction.ErrorUrl = "/identityserver/error";
             })
               .AddIdentityServerStores(Configuration)
               .AddAspNetIdentity<ApplicationUser>(); //https://identityserver4.readthedocs.io/en/latest/reference/aspnet_identity.html
