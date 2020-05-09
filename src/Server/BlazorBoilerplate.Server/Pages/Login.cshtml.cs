@@ -1,11 +1,10 @@
-using BlazorBoilerplate.Server.Managers;
+using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.AspNetCore.Authorization;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Infrastructure.Server;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Pages
 {
