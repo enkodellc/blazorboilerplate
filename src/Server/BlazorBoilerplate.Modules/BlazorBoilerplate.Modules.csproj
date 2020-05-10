@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BlazorLazyLoading.Module" Version="1.3.0-blazorboilerplate.6" PrivateAssets="all" />
+        <PackageReference Include="BlazorLazyLoading.Module" Version="1.3.0-blazorboilerplate.7" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
