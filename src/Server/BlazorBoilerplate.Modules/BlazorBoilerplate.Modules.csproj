@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <RazorLangVersion>3.0</RazorLangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BlazorLazyLoading.Module" Version="1.3.0-blazorboilerplate.6" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.GoogleAnalytics\BlazorBoilerplate.GoogleAnalytics.csproj" />
+        <BLLManifestAssemblies Include="BlazorBoilerplate.GoogleAnalytics" />
+        
+        <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material\BlazorBoilerplate.Theme.Material.csproj" />
+        <BLLManifestAssemblies Include="BlazorBoilerplate.Theme.Material" />
+
+        <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Admin\BlazorBoilerplate.Theme.Material.Admin.csproj" />
+        <BLLManifestAssemblies Include="BlazorBoilerplate.Theme.Material.Admin" />
+
+        <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
+        <BLLManifestAssemblies Include="BlazorBoilerplate.Theme.Material.Demo" />
+    </ItemGroup>
+
+</Project>

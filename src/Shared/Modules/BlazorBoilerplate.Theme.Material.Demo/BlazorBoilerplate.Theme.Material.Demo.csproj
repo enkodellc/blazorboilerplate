@@ -41,7 +41,4 @@
     <ProjectReference Include="..\BlazorBoilerplate.Theme.Material\BlazorBoilerplate.Theme.Material.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(TargetPath) $(SolutionDir)Server\BlazorBoilerplate.Server\Modules\" />
-  </Target>
 </Project>

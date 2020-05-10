@@ -1,10 +1,11 @@
-﻿using BlazorBoilerplate.Shared.Interfaces;
+﻿using System;
+using System.Net.Http;
+using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Theme.Material.TagHelpers;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Theme.Material
@@ -24,7 +25,7 @@ namespace BlazorBoilerplate.Theme.Material
 
         public int Order => 1;
 
-        public void ConfigureServices(IServiceCollection services)
+        public void Configure(IServiceCollection services)
         {
             services.AddTransient<ITagHelperComponent, ThemeTagHelperComponent>();
             services.AddTransient<ITagHelperComponent, AppTagHelperComponent>();
@@ -40,8 +41,10 @@ namespace BlazorBoilerplate.Theme.Material
             });
         }
 
-        public void ConfigureWebAssemblyServices(IServiceCollection services)
+        public void ConfigureWebAssembly(IServiceCollection services)
         {
+            services.AddHttpClientInterceptor();
+
             services.AddLoadingBar();
             services.AddMatToaster(config =>
             {
@@ -52,14 +55,12 @@ namespace BlazorBoilerplate.Theme.Material
                 config.MaximumOpacity = 95;
                 config.VisibleStateDuration = 3000;
             });
-
-            var sp = services.BuildServiceProvider();
-            
-            sp.GetRequiredService<HttpClient>().EnableIntercept(sp);
         }
 
-        public void ConfigureWebAssemblyHost(WebAssemblyHost webAssemblyHost)
+        public void InitializeWebAssemblyHost(WebAssemblyHost webAssemblyHost)
         {
+            webAssemblyHost.Services.GetRequiredService<HttpClient>().EnableIntercept(webAssemblyHost.Services);
+
             webAssemblyHost.UseLoadingBar();
         }
     }

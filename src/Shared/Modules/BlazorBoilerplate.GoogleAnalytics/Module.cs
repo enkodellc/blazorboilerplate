@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Shared.Models;
+﻿using System;
+using BlazorBoilerplate.Shared.Models;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,9 +13,9 @@ namespace BlazorBoilerplate.GoogleAnalytics
 
         public override int Order => 1000;
 
-        public override void ConfigureServices(IServiceCollection services)
+        public override void Configure(IServiceCollection services)
         {
             services.AddTransient<ITagHelperComponent, GoogleAnalyticsTagHelperComponent>();
-        }      
+        }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
-using Microsoft.AspNetCore;
+using BlazorBoilerplate.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Serilog;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace BlazorBoilerplate.Server
 {
@@ -37,13 +38,23 @@ namespace BlazorBoilerplate.Server
             }
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseConfiguration(new ConfigurationBuilder()
-                    .AddCommandLine(args)
-                    .Build())
-                .UseStartup<Startup>()
-                .UseSerilog()
+        public static IHost BuildWebHost(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new DryIocServiceProviderFactory())
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddOptions();
+                })
+                .ConfigureWebHostDefaults(webHostBuilder =>
+                {
+                    webHostBuilder
+                        .UseConfiguration(new ConfigurationBuilder()
+                            .AddCommandLine(args)
+                            .Build())
+
+                        .UseStartup<Startup>()
+                        .UseSerilog();
+                })
                 .Build();
     }
 }

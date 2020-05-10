@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Shared.Interfaces;
+﻿using System;
+using BlazorBoilerplate.Shared.Interfaces;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,13 +13,13 @@ namespace BlazorBoilerplate.Shared.Models
 
         public virtual int Order => 1;
 
-        public virtual void ConfigureServices(IServiceCollection services)
+        public virtual void Configure(IServiceCollection services)
         { }
 
-        public virtual void ConfigureWebAssemblyHost(WebAssemblyHost webAssemblyHost)
+        public virtual void InitializeWebAssemblyHost(WebAssemblyHost webAssemblyHost)
         { }
 
-        public virtual void ConfigureWebAssemblyServices(IServiceCollection services)
+        public virtual void ConfigureWebAssembly(IServiceCollection services)
         { }
     }
 }

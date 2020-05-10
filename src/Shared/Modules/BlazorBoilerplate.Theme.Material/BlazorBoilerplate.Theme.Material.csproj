@@ -33,11 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
+      <PackageReference Include="BlazorLazyLoading.Components" Version="1.2.0" />
     <ProjectReference Include="..\..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
     <ProjectReference Include="..\..\Microsoft.AspNetCore.ProtectedBrowserStorage\Microsoft.AspNetCore.ProtectedBrowserStorage.csproj" />
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(TargetPath) $(SolutionDir)Server\BlazorBoilerplate.Server\Modules\" />
-  </Target>
 </Project>

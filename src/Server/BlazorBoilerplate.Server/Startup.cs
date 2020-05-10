@@ -38,9 +38,12 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using BlazorBoilerplate.Extensions;
 using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
+using BlazorLazyLoading.Server;
+using BlazorBoilerplate.Client;
 
 //-:cnd:noEmit
 #if ServerSideBlazor
@@ -499,7 +502,10 @@ namespace BlazorBoilerplate.Server
 #endif
             //-:cnd:noEmit
 
-            services.AddModules();
+            services.AddLazyLoading(new LazyLoadingOptions
+            {
+                 ModuleHints = new[] { "BlazorBoilerplate.Modules" },
+            });
 
             if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
             {
@@ -546,6 +552,12 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseLazyLoading();
+
+            // enumerate and load all the modules (this shouldnt be the way of doing it... only startup modules should be loaded here)
+            app.ApplicationServices.LoadModules().GetAwaiter().GetResult();
+            app.ApplicationServices.InitializeModules(null);
+
             //-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();

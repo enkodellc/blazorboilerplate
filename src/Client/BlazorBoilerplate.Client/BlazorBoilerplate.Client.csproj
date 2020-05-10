@@ -46,9 +46,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0-rc1.20223.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0-rc1.20223.4" PrivateAssets="all" />
+      <PackageReference Include="BlazorLazyLoading.Wasm" Version="1.3.0-blazorboilerplate.6" PrivateAssets="all" />
+      <PackageReference Include="DryIoc.Microsoft.DependencyInjection" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Server\BlazorBoilerplate.Modules\BlazorBoilerplate.Modules.csproj" />
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
     <ProjectReference Include="..\..\Shared\Microsoft.AspNetCore.ProtectedBrowserStorage\Microsoft.AspNetCore.ProtectedBrowserStorage.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Admin\BlazorBoilerplate.Theme.Material.Admin.csproj" />

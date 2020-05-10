@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Shared.Interfaces
 {
@@ -11,10 +12,10 @@ namespace BlazorBoilerplate.Shared.Interfaces
 
         int Order { get; }
 
-        void ConfigureServices(IServiceCollection services);
+        void Configure(IServiceCollection services);
 
-        void ConfigureWebAssemblyServices(IServiceCollection services);
+        void ConfigureWebAssembly(IServiceCollection services);
 
-        void ConfigureWebAssemblyHost(WebAssemblyHost webAssemblyHost);
+        void InitializeWebAssemblyHost(WebAssemblyHost webAssemblyHost);
     }
 }

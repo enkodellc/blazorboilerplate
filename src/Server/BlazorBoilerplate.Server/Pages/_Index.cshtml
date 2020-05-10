@@ -44,7 +44,7 @@
     {
         @(Html.AntiForgeryToken())
         <app>
-            <component type="ModuleProvider.RootComponentMapping.ComponentType" render-mode="ServerPrerendered" />
+            <component type='BlazorBoilerplate.Extensions.ModuleLoader.RootComponents.First(m => m.Selector == "app").ComponentType' render-mode="ServerPrerendered" />
         </app>
     }
     else

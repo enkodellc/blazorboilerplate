@@ -1,26 +1,33 @@
-﻿<Router AppAssembly="typeof(App).Assembly" AdditionalAssemblies="ModuleProvider.AssembliesWithPages">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-            <NotAuthorized>
-                <RedirectToLogin />
-            </NotAuthorized>
-        </AuthorizeRouteView>
-    </Found>
-    <NotFound>
-        <CascadingAuthenticationState>
+﻿<CascadingAuthenticationState>
+    <LazyRouter AppAssembly="typeof(App).Assembly">
+        <Loading>
             <LayoutView Layout="typeof(MainLayout)">
-                <LoadingBackground ShowLogoBox="true">
-                    <div class="login-body">
-                        <h1>Page not found</h1>
-                        <label>Please check the URL or</label><br />
-                        <MatButton Link="/" Raised="true">Return Home</MatButton>
-                    </div>
-                </LoadingBackground>
+                <div>Loading...</div>
             </LayoutView>
-        </CascadingAuthenticationState>
-    </NotFound>
-</Router>
-<MatToastContainer />
+        </Loading>
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <RedirectToLogin />
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <CascadingAuthenticationState>
+                <LayoutView Layout="typeof(MainLayout)">
+                    <LoadingBackground ShowLogoBox="true">
+                        <div class="login-body">
+                            <h1>Page not found</h1>
+                            <label>Please check the URL or</label><br />
+                            <MatButton Link="/" Raised="true">Return Home</MatButton>
+                        </div>
+                    </LoadingBackground>
+                </LayoutView>
+            </CascadingAuthenticationState>
+        </NotFound>
+    </LazyRouter>
+    <MatToastContainer />
+</CascadingAuthenticationState>
 
 @code
 {
@@ -36,9 +43,11 @@
     {
         await base.OnInitializedAsync();
 
-        _httpClient.BaseAddress = new Uri(_navigationManager.BaseUri);
 //-:cnd:noEmit
 #if ServerSideBlazor
+
+        _httpClient.BaseAddress = new Uri(_navigationManager.BaseUri);
+
         // likely user refreshed page, we need to grab the cookies if they exist and pass it to the HttpClient for this request
         if (_http?.HttpContext?.Request.Cookies.Any() == true)
         {

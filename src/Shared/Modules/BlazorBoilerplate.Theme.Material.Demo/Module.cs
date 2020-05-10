@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Shared.Interfaces;
+﻿using System;
+using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Theme.Material.Demo.Shared.Components;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -20,13 +21,13 @@ namespace BlazorBoilerplate.Theme.Material.Demo
             services.AddSingleton<IDynamicComponent, TopRightBarSection>();
         }
 
-        public override void ConfigureServices(IServiceCollection services)
+        public override void Configure(IServiceCollection services)
         {
             services.AddTransient<ITagHelperComponent, ThemeTagHelperComponent>();
             Init(services);
         }
 
-        public override void ConfigureWebAssemblyServices(IServiceCollection services)
+        public override void ConfigureWebAssembly(IServiceCollection services)
         {
             Init(services);
         }
