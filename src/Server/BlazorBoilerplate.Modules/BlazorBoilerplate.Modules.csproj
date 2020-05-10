@@ -6,10 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BlazorLazyLoading.Module" Version="1.3.0-blazorboilerplate.7" PrivateAssets="all" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.GoogleAnalytics\BlazorBoilerplate.GoogleAnalytics.csproj" />
         <BLLManifestAssemblies Include="BlazorBoilerplate.GoogleAnalytics" />
         
@@ -21,6 +17,10 @@
 
         <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
         <BLLManifestAssemblies Include="BlazorBoilerplate.Theme.Material.Demo" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BlazorLazyLoading.Module" Version="1.3.0-blazorboilerplate.7" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>
