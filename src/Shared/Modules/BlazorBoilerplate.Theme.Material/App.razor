@@ -43,11 +43,9 @@
     {
         await base.OnInitializedAsync();
 
+        _httpClient.BaseAddress = new Uri(_navigationManager.BaseUri);
 //-:cnd:noEmit
 #if ServerSideBlazor
-
-        _httpClient.BaseAddress = new Uri(_navigationManager.BaseUri);
-
         // likely user refreshed page, we need to grab the cookies if they exist and pass it to the HttpClient for this request
         if (_http?.HttpContext?.Request.Cookies.Any() == true)
         {
