@@ -113,6 +113,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Client\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Infrastructure\BlazorBoilerplate.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Shared\Microsoft.AspNetCore.ProtectedBrowserStorage\Microsoft.AspNetCore.ProtectedBrowserStorage.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
@@ -121,11 +122,9 @@
   </ItemGroup>
 
   <Choose>
-    <When Condition=" '$(Configuration)'=='Debug_SSB' Or '$(Configuration)'=='Release_SSB'" />
     <When Condition=" '$(Configuration)'=='Debug_CSB' Or '$(Configuration)'=='Release_CSB' ">
       <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0-rc1.20223.4" />
-        <ProjectReference Include="..\..\Client\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
       </ItemGroup>
     </When>
   </Choose>
