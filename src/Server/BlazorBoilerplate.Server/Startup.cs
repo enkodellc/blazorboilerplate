@@ -41,6 +41,10 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
+using NSwag.AspNetCore;
+using NSwag.Generation.Processors.Security;
+using NSwag;
+using System.Collections.Generic;
 
 //-:cnd:noEmit
 #if ServerSideBlazor
@@ -216,7 +220,10 @@ namespace BlazorBoilerplate.Server
                 options.Authority = authAuthority;
                 options.SupportedTokens = SupportedTokens.Jwt;
                 options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
-                options.ApiName = IdentityServerConfig.ApiName;
+                options.ApiName = IdentityServerConfig.LocalApiName;
+            }).AddLocalApi(options =>
+            {
+                options.ExpectedScope = IdentityServerConfig.LocalApiName;
             });
 
             #region ExternalAuthProviders
@@ -431,23 +438,32 @@ namespace BlazorBoilerplate.Server
 
             services.AddSignalR();
 
-            services.AddSwaggerDocument(config =>
+            services.AddOpenApiDocument(document =>
             {
-                config.PostProcess = document =>
+                document.Title = "BlazorBoilerplate API";
+                document.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
+                document.AddSecurity("bearer", Enumerable.Empty<string>(), new OpenApiSecurityScheme
                 {
-                    document.Info.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
-                    document.Info.Title = "BlazorBoilerplate";
-                    //-:cnd:noEmit
-#if ServerSideBlazor
-                    document.Info.Description = "Blazor Boilerplate / Starter Template using the  Server Side Version";
-#endif
-                    //-:cnd:noEmit
-                    //-:cnd:noEmit
-#if ClientSideBlazor
-                    document.Info.Description = "Blazor Boilerplate / Starter Template using the Client Side / Webassembly Version.";
-#endif
-                    //-:cnd:noEmit
-                };
+                    Type = OpenApiSecuritySchemeType.OAuth2,
+                    Description = "Local Identity Server",
+                    OpenIdConnectUrl = $"{authAuthority}/.well-known/openid-configuration", //not working
+                    Flow = OpenApiOAuth2Flow.AccessCode,
+                    Flows = new OpenApiOAuthFlows()
+                    {
+                        AuthorizationCode = new OpenApiOAuthFlow()
+                        {
+                            Scopes = new Dictionary<string, string>
+                            {
+                                { IdentityServerConfig.LocalApiName, IdentityServerConfig.LocalApiName }
+                            },
+                            AuthorizationUrl = $"{authAuthority}/connect/authorize",
+                            TokenUrl = $"{authAuthority}/connect/token"
+                        },
+                    }
+                }); ;
+
+                document.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
+                //      new OperationSecurityScopeProcessor("bearer"));
             });
 
             services.AddScoped<IUserSession, UserSession>();
@@ -477,7 +493,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton(autoMapper);
             #endregion
-            //-:cnd:noEmit
+//-:cnd:noEmit
 #if ServerSideBlazor
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             services.AddScoped<IUserProfileApi, UserProfileApi>();
@@ -497,7 +513,7 @@ namespace BlazorBoilerplate.Server
             Log.Logger.Debug("Adding AuthenticationStateProvider...");
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 #endif
-            //-:cnd:noEmit
+//-:cnd:noEmit
 
             services.AddModules();
 
@@ -532,11 +548,11 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //-:cnd:noEmit
+//-:cnd:noEmit
 #if ClientSideBlazor
                 app.UseWebAssemblyDebugging();
 #endif
-                //-:cnd:noEmit
+//-:cnd:noEmit
             }
             else
             {
@@ -546,11 +562,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //-:cnd:noEmit
+//-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();
 #endif
-            //-:cnd:noEmit
+//-:cnd:noEmit
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
@@ -563,7 +579,15 @@ namespace BlazorBoilerplate.Server
 
             // NSwag
             app.UseOpenApi();
-            app.UseSwaggerUi3();
+            app.UseSwaggerUi3(settings =>
+            {
+                settings.OAuth2Client = new OAuth2ClientSettings()
+                {
+                    AppName = projectName,
+                    ClientId = IdentityServerConfig.SwaggerClientID,
+                    UsePkceWithAuthorizationCodeGrant = true
+                };
+            });
 
             app.UseEndpoints(endpoints =>
             {

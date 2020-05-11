@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Storage.Core;
+using Humanizer;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
@@ -9,8 +10,7 @@ namespace BlazorBoilerplate.Storage
 {
     public class IdentityServerConfig
     {
-        public const string ApiName = "blazorboilerplate_api";
-        public const string ApiFriendlyName = "BlazorBoilerplate API";
+        public const string LocalApiName = "blazorboilerplate_api";
         public const string AppClientID = "blazorboilerplate_spa";
         public const string SwaggerClientID = "swaggerui";
 
@@ -32,7 +32,9 @@ namespace BlazorBoilerplate.Storage
         {
             return new List<ApiResource>
             {
-                new ApiResource(ApiName) {
+                new ApiResource(LocalApiName) {
+                    DisplayName = LocalApiName.Humanize(LetterCasing.Title),
+                    Scopes = { LocalApiName },
                     UserClaims = {
                         JwtClaimTypes.Name,
                         JwtClaimTypes.Email,
@@ -53,47 +55,45 @@ namespace BlazorBoilerplate.Storage
             return new List<IdentityServer4.Models.Client>
             {
                 // http://docs.identityserver.io/en/release/reference/client.html.
-                new IdentityServer4.Models.Client
+                new Client
                 {
-                    //AbsoluteRefreshTokenLifetime = 7200,
-                    //AccessTokenLifetime = 900, // Lifetime of access token in seconds.
                     AccessTokenType = AccessTokenType.Jwt,
-                    //AllowedCorsOrigin = "https://localhost:5003",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Resource Owner Password Credential grant.
-                    AllowAccessTokensViaBrowser = true,                    
+                    AllowAccessTokensViaBrowser = true,
                     AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId, // For UserInfo endpoint.
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Phone,
                         IdentityServerConstants.StandardScopes.Email,
                         ScopeConstants.Roles,
-                        ApiName
+                        LocalApiName
                     },
                     AllowRememberConsent = true,
                     AllowOfflineAccess = true, // For refresh token.
-                    ClientId = IdentityServerConfig.AppClientID,
-                    ClientName = IdentityServerConfig.ApiName,
-                    //ClientUri = "https://localhost:5003",
+                    ClientId = AppClientID,
+                    ClientName = AppClientID.Humanize(LetterCasing.Title),
                     ClientSecrets = new List<Secret> { new Secret { Value = "BlazorBoilerplate".Sha512() }},
                     Enabled = true,
-                    //PostLogoutRedirectUris = new List<string> {"http://localhost:5436"},
                     RequireClientSecret = true, // This client does not need a secret to request tokens from the token endpoint.
-                    //RedirectUris = new List<string> {"http://localhost:5436/account/oAuth2"},
                     RefreshTokenExpiration = TokenExpiration.Sliding,
-                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
-                    //SlidingRefreshTokenLifetime = 900,
+                    RefreshTokenUsage = TokenUsage.OneTimeOnly
                 },
 
-                new IdentityServer4.Models.Client
+                new Client
                 {
                     ClientId = SwaggerClientID,
                     ClientName = "Swagger UI",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowedGrantTypes = GrantTypes.Code,
                     AllowAccessTokensViaBrowser = true,
                     RequireClientSecret = false,
+                    RequirePkce=true,
+
+                    RedirectUris = {
+                        "http://localhost:53414/swagger/oauth2-redirect.html",
+                        "https://blazor-server.quarella.net/swagger/oauth2-redirect.html" },
 
                     AllowedScopes = {
-                        ApiName
+                        LocalApiName
                     }
                 }
             };
