@@ -175,13 +175,13 @@
 
 //-:cnd:noEmit
 #if ClientSideBlazor
-protected override async Task OnParametersSetAsync()
-{
-    var user = (await authenticationStateTask).User;
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await authenticationStateTask).User;
 
-    if (user.Identity.IsAuthenticated && navigateTo != null)
-        navigationManager.NavigateTo(navigationManager.BaseUri + navigateTo);
-}
+        if (user.Identity.IsAuthenticated && navigateTo != null)
+            navigationManager.NavigateTo(navigateTo);
+    }
 #endif
 //-:cnd:noEmit
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -214,7 +214,7 @@ protected override async Task OnParametersSetAsync()
                 // On successful Login the response.Message is the Last Page Visited from User Profile
                 // We can't navigate yet as the setup is proceeding asynchronously
                 if (string.IsNullOrEmpty(ReturnUrl))
-                    navigateTo = !string.IsNullOrEmpty(response.Message) ? response.Message : "/dashboard";
+                    navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(response.Message) ? response.Message : "/dashboard");
                 else
                     navigateTo = ReturnUrl;
 
