@@ -39,6 +39,7 @@
   <ItemGroup>
     <PackageReference Include="Finbuckle.MultiTenant.Core" Version="5.0.4" />
     <PackageReference Include="Humanizer" Version="2.8.11" />
+    <PackageReference Include="IdentityServer4.Storage" Version="4.0.0-preview.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0-rc1.20223.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
@@ -49,7 +50,6 @@
     <PackageReference Include="System.Net.Http.Json" Version="3.2.0-rc1.20217.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\IdentityServer4\src\Storage\src\IdentityServer4.Storage.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Localization\BlazorBoilerplate.Localization.csproj" />
   </ItemGroup>
   <ItemGroup>
