@@ -541,6 +541,8 @@ namespace BlazorBoilerplate.Server
                 databaseInitializer.SeedAsync().Wait();
             }
 
+            app.UseForwardedHeaders();
+
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
             app.UseMiddleware<APIResponseRequestLoggingMiddleware>(Convert.ToBoolean(Configuration[$"{projectName}:EnableAPILogging:Enabled"] ?? "true"));
