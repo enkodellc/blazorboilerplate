@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace BlazorBoilerplate.Shared.Dto.Tenant
+namespace BlazorBoilerplate.Shared.Dto.Admin
 {
-    public class TenantDto
+    public class TenantDto : BaseDto
     {
         public string Id { get; set; }
         public string Identifier { get; set; }

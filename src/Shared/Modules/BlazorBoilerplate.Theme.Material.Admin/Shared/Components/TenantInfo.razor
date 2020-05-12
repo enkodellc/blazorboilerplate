@@ -1,5 +1,4 @@
-﻿@using BlazorBoilerplate.Shared.Dto.Tenant
-@inject HttpClient Http
+﻿@inject HttpClient Http
 <AuthorizeView>
     <span>Current Tenant: @tenant.Name</span>
 </AuthorizeView>
@@ -15,7 +14,7 @@
 
         if (user.Identity.IsAuthenticated)
         {
-            var apiResponse = await Http.GetJsonAsync<ApiResponseDto<TenantDto>>("api/Tenant");
+            var apiResponse = await Http.GetJsonAsync<ApiResponseDto<TenantDto>>("api/admin/tenant");
             if (apiResponse.StatusCode == Status200OK)
             {
                 tenant = apiResponse.Result;

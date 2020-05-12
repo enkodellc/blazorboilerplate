@@ -26,7 +26,7 @@ else
     <MatTable Class="mat-elevation-z5" Items="@identiyResources" LoadInitialData="true" Striped="true" DebounceMilliseconds="150">
         <MatTableHeader>
             <th><MatButton Icon="add" Label=@L["New Identity Resource"] OnClick="@(() => OpenUpsertIdentityResourceDialog())"></MatButton></th>
-            <th>Name</th>
+            <th>@L["Name"]</th>
             <th>Enabled</th>
             <th>Display Name</th>
             <th>Description</th>
@@ -107,7 +107,7 @@ else
                     <h3 class="mat-subtitle1">Jwt Claims</h3>
                     <MatTable Items="@jwtClaimSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
                         <MatTableHeader>
-                            <th>Name</th>
+                            <th>@L["Name"]</th>
                             <th>Required</th>
                         </MatTableHeader>
                         <MatTableRow Context="JwtClaimRow">

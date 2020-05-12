@@ -5,7 +5,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#
-var entities = new [] { ("Role", "name"), ("Client", "clientId"), ("ApiResource", "name"), ("IdentityResource", "name") };
+var entities = new [] { ("Role", "name"), ("Client", "clientId"), ("ApiResource", "name"), ("IdentityResource", "name"), ("Tenant", "id") };
 #>
 
 using System.Threading.Tasks;

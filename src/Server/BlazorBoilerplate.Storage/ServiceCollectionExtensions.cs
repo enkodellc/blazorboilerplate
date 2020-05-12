@@ -40,8 +40,6 @@ namespace BlazorBoilerplate.Storage
                 .WithEFCoreStore<TenantStoreDbContext>()
                 .WithFallbackStrategy(TenantStoreDbContext.DefaultTenantId);
 
-            services.AddTransient<ITenantStore, TenantStore>();
-
             #endregion Multitenancy
 
             services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions<ApplicationDbContext>(builder, configuration)); // Look into the way we initialise the PB ways. Look at the old way they did this, with side effects on the builder.

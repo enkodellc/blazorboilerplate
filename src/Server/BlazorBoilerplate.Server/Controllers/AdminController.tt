@@ -5,18 +5,21 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#
-var entities = new [] { ("Role", "name"), ("Client", "clientId"), ("ApiResource", "name"), ("IdentityResource", "name") };
+var entities = new [] { ("Role", "name"), ("Client", "clientId"), ("ApiResource", "name"), ("IdentityResource", "name"), ("Tenant", "id") };
 var actions = new [] { ("Create", "HttpPost"), ("Update", "HttpPut"), ("Delete", "HttpDelete") };
 #>
 
+using AutoMapper;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Admin;
+using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -28,12 +31,18 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
+        private readonly IMapper _autoMapper;
         private readonly IAdminManager _adminManager;
 
-        public AdminController(IAdminManager adminManager)
+        public AdminController(IMapper autoMapper, IAdminManager adminManager)
         {
+            _autoMapper = autoMapper;
             _adminManager = adminManager;
         }
+
+        [HttpGet("Tenant")]
+        public ApiResponse Get()
+            => new ApiResponse(Status200OK, string.Empty,  _autoMapper.Map<TenantDto>(HttpContext.GetMultiTenantContext().TenantInfo));
 
         [HttpGet("Users")]
         [Authorize]

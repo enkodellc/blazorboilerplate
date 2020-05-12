@@ -1,40 +1,49 @@
-﻿using System;
+﻿using AutoMapper;
+using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Server.Data.Core;
+using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Dto.Admin;
+using BlazorBoilerplate.Storage;
+using BlazorBoilerplate.Storage.Core;
+using Finbuckle.MultiTenant;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Server.Data.Core;
-using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Shared.Dto.Account;
-using BlazorBoilerplate.Shared.Dto.Admin;
-using BlazorBoilerplate.Storage.Core;
-using IdentityServer4.EntityFramework.DbContexts;
-using Microsoft.AspNetCore.Identity;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using Microsoft.EntityFrameworkCore;
-using IdentityServer4.EntityFramework.Mappers;
-using Microsoft.Extensions.Localization;
-using BlazorBoilerplate.Localization;
-using BlazorBoilerplate.Infrastructure.Server;
 
 namespace BlazorBoilerplate.Server.Managers
 {
     public class AdminManager : IAdminManager
     {
+        private readonly IMapper _autoMapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly ConfigurationDbContext _configurationDbContext;
+        private readonly TenantStoreDbContext _tenantStoreDbContext;
         private readonly IStringLocalizer<Strings> L;
 
-        public AdminManager(UserManager<ApplicationUser> userManager,
+        public AdminManager(IMapper autoMapper,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole<Guid>> roleManager,
             ConfigurationDbContext configurationDbContext,
+            TenantStoreDbContext tenantStoreDbContext,
             IStringLocalizer<Strings> l)
         {
+            _autoMapper = autoMapper;
             _userManager = userManager;
             _roleManager = roleManager;
             _configurationDbContext = configurationDbContext;
+            _tenantStoreDbContext = tenantStoreDbContext;
             L = l;
         }
 
@@ -375,7 +384,7 @@ namespace BlazorBoilerplate.Server.Managers
                 await _configurationDbContext.IdentityResources.AddAsync(identityResource);
                 await _configurationDbContext.SaveChangesAsync();
 
-                return new ApiResponse(Status200OK, L["Identity Resource {0} created",  identityResourceDto.Name], identityResourceDto);
+                return new ApiResponse(Status200OK, L["Identity Resource {0} created", identityResourceDto.Name], identityResourceDto);
             }
             catch (Exception ex)
             {
@@ -530,6 +539,140 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
+        #endregion
+
+        #region Tenants
+        public async Task<ApiResponse> GetTenantsAsync(int pageSize = 0, int pageNumber = 0)
+        {
+            try
+            {
+                var query = _tenantStoreDbContext.TenantInfo.OrderBy(i => i.Id).AsQueryable();
+
+                var count = query.Count();
+
+                if (pageSize > 0)
+                    query = query.Skip(pageNumber * pageSize).Take(pageSize);
+
+                return new ApiResponse(Status200OK, L["{0} tenants fetched", count], await _autoMapper.ProjectTo<TenantDto>(query).ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
+            }
+        }
+
+        public async Task<ApiResponse> GetTenantAsync(string id)
+        {
+            ApiResponse response;
+
+            try
+            {
+                var tenant = await _tenantStoreDbContext.TenantInfo.SingleOrDefaultAsync(i => i.Id == id);
+
+                response = tenant != null ? new ApiResponse(Status200OK, "Retrieved tenant", _autoMapper.Map<TenantDto>(tenant)) :
+                                            new ApiResponse(Status404NotFound, "Failed to Retrieve Tenant");
+            }
+            catch (Exception ex)
+            {
+                response = new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
+            }
+
+            return response;
+        }
+
+        public async Task<ApiResponse> CreateTenantAsync(TenantDto tenantDto)
+        {
+            try
+            {
+                var tenant = _autoMapper.Map<TenantDto, TenantInfo>(tenantDto);
+                await _tenantStoreDbContext.TenantInfo.AddAsync(tenant);
+                await _tenantStoreDbContext.SaveChangesAsync();
+
+                return new ApiResponse(Status200OK, L["Tenant {0} created", tenantDto.Name], tenantDto);
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
+            }
+        }
+
+        public async Task<ApiResponse> UpdateTenantAsync(TenantDto tenantDto)
+        {
+            try
+            {
+                var tenant = await _tenantStoreDbContext.TenantInfo.SingleOrDefaultAsync(i => i.Id == tenantDto.Id);
+
+                if (tenant == null)
+                    return new ApiResponse(Status400BadRequest, L["The tenant {0} doesn't exist", tenantDto.Name]);
+
+                tenant = _autoMapper.Map(tenantDto, tenant);
+
+                _tenantStoreDbContext.TenantInfo.Update(tenant);
+                await _tenantStoreDbContext.SaveChangesAsync();
+
+                return new ApiResponse(Status200OK, L["Tenant {0} updated", tenantDto.Name], tenantDto);
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
+            }
+        }
+
+        public async Task<ApiResponse> DeleteTenantAsync(string id)
+        {
+            try
+            {
+                var tenant = await _tenantStoreDbContext.TenantInfo.SingleOrDefaultAsync(i => i.Id == id);
+
+                if (tenant == null)
+                    return new ApiResponse(Status400BadRequest, L["The tenant {0} doesn't exist", id]);
+
+                Claim tenantClaim = new Claim("TenantId", id);
+                var users = await _userManager.GetUsersForClaimAsync(tenantClaim);
+                foreach (var user in users)
+                {
+                    await RemoveFromTenant(user.Id, id);
+                }
+
+                _tenantStoreDbContext.TenantInfo.Remove(tenant);
+                await _tenantStoreDbContext.SaveChangesAsync();
+
+                return new ApiResponse(Status200OK, L["Tenant {0} deleted", tenant.Name]);
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse(Status400BadRequest, ex.GetBaseException().Message);
+            }
+        }
+
+        public async Task<ApiResponse> AddToTenant(Guid userId, string tenantId)
+        {
+            var tenant = await _tenantStoreDbContext.TenantInfo.SingleAsync(t => t.Id == tenantId);
+            ApplicationUser appUser = await _userManager.FindByIdAsync(userId.ToString());
+            IList<Claim> userClaims = await _userManager.GetClaimsAsync(appUser);
+            Claim claim = new Claim("TenantId", tenant.Identifier);
+            if (!userClaims.Any(c => c.Type == claim.Type)) // We currently accept only one tenant claim for each user
+            {
+                await _userManager.AddClaimAsync(appUser, claim);
+                return new ApiResponse(Status200OK, "User added to tenant");
+            }
+            return new ApiResponse(Status400BadRequest, "Failed to add user");
+        }
+        public async Task<ApiResponse> RemoveFromTenant(Guid userId, string tenantId)
+        {
+            var tenant = await _tenantStoreDbContext.TenantInfo.SingleAsync(t => t.Id == tenantId);
+            ApplicationUser appUser = await _userManager.FindByIdAsync(userId.ToString());
+            IList<Claim> userClaims = await _userManager.GetClaimsAsync(appUser);
+            Claim claim = new Claim("TenantId", tenant.Identifier);
+            if (userClaims.Any(c => c.Type == claim.Type))
+            {
+                await _userManager.RemoveClaimAsync(appUser, claim);
+                var userRoles = await _userManager.GetRolesAsync(appUser);
+                await _userManager.RemoveFromRolesAsync(appUser, userRoles);
+                return new ApiResponse(Status200OK, "User removed from tenant");
+            }
+            return new ApiResponse(Status400BadRequest, "Failed to remove user");
+        } 
         #endregion
     }
 }

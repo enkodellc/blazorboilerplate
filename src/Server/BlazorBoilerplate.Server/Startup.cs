@@ -480,7 +480,6 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IMessageManager, MessageManager>();
             services.AddTransient<ITodoManager, ToDoManager>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();
-            services.AddTransient<ITenantManager, TenantManager>();
 
             #region Automapper
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/

@@ -6,7 +6,7 @@
 <#@ output extension=".cs" #>
 <#
 var permissionActions = new string[] { "Create", "Update", "Read", "Delete" };
-var entities = new string[] { "User", "Role", "Client", "ApiResource", "IdentityResource" };
+var entities = new string[] { "User", "Role", "Client", "ApiResource", "IdentityResource", "Tenant" };
 #>
 
 using System.ComponentModel;

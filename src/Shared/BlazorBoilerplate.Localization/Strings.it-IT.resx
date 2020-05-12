@@ -414,4 +414,28 @@
   <data name="Logout" xml:space="preserve">
     <value>Disconnetti</value>
   </data>
+  <data name="Tenants" xml:space="preserve">
+    <value>Siti in comproprietà</value>
+  </data>
+  <data name="Tenant" xml:space="preserve">
+    <value>Sito in comproprietà</value>
+  </data>
+  <data name="MultiTenancy" xml:space="preserve">
+    <value>Siti in comproprietà</value>
+  </data>
+  <data name="{0} tenants fetched" xml:space="preserve">
+    <value>Recuperati {0} siti in comproprietà</value>
+  </data>
+  <data name="Tenant {0} created" xml:space="preserve">
+    <value>Creato sito in comproprietà {0}</value>
+  </data>
+  <data name="The tenant {0} doesn't exist" xml:space="preserve">
+    <value>Il sito in comproprietà {0} non esiste</value>
+  </data>
+  <data name="Tenant {0} updated" xml:space="preserve">
+    <value>Sito in comproprietà {0} aggiornato</value>
+  </data>
+  <data name="Tenant {0} deleted" xml:space="preserve">
+    <value>Sito in comproprietà {0} eliminato</value>
+  </data>
 </root>

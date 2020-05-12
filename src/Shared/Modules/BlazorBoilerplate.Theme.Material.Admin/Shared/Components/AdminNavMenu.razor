@@ -3,58 +3,61 @@
 @inject NavigationManager navigationManager
 @inject IStringLocalizer<Strings> L
 
-<MatNavMenu Multi="true" Class="app-sidebar">
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
-        <MatIcon>home</MatIcon> <span class="miniHover">Frontend</span>
-    </MatNavItem>
+    <MatNavMenu Multi="true" Class="app-sidebar">
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
+            <MatIcon>home</MatIcon> <span class="miniHover">Frontend</span>
+        </MatNavItem>
 
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
-        <MatIcon>bar_chart</MatIcon> <span class="miniHover">@L["Dashboard"]</span>
-    </MatNavItem>
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri">
-        <MatIcon>supervisor_account</MatIcon> <span class="miniHover">@L["Users"]</span>
-    </MatNavItem>
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri">
-        <MatIcon>supervisor_account</MatIcon> <span class="miniHover">@L["Roles"]</span>
-    </MatNavItem>
-    <MatNavSubMenu>
-        <MatNavSubMenuHeader>
-            <MatNavItem AllowSelection="false">
-                <MatIcon>settings_applications</MatIcon> <span class="miniHover">Identity Server</span>
-            </MatNavItem>
-        </MatNavSubMenuHeader>
-        <MatNavSubMenuList>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/clients").AbsoluteUri">
-                <MatIcon>devices</MatIcon> <span class="miniHover">@L["OpenIdClients"]</span>
-            </MatNavItem>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/identityResources").AbsoluteUri">
-                <MatIcon>person_outline</MatIcon> <span class="miniHover">@L["IdentityResources"]</span>
-            </MatNavItem>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/apiResources").AbsoluteUri">
-                <MatIcon>cloud</MatIcon> <span class="miniHover">@L["ApiResources"]</span>
-            </MatNavItem>
-        </MatNavSubMenuList>
-    </MatNavSubMenu>
-    <MatNavSubMenu>
-        <MatNavSubMenuHeader>
-            <MatNavItem AllowSelection="false">
-                <MatIcon>settings_applications</MatIcon> <span class="miniHover">Monitoring</span>
-            </MatNavItem>
-        </MatNavSubMenuHeader>
-        <MatNavSubMenuList>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/blazor_middlware_audit").AbsoluteUri">
-                <MatIcon>change_history</MatIcon> <span class="miniHover">Api Audit Log</span>
-            </MatNavItem>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/dBlogViewer").AbsoluteUri">
-                <MatIcon>notes</MatIcon> <span class="miniHover">DB Logging View</span>
-            </MatNavItem>
-        </MatNavSubMenuList>
-    </MatNavSubMenu>
-    @foreach (var component in components)
-    {
-        @CreateDynamicComponent(component);
-    }
-</MatNavMenu>
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
+            <MatIcon>bar_chart</MatIcon> <span class="miniHover">@L["Dashboard"]</span>
+        </MatNavItem>
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri">
+            <MatIcon>supervisor_account</MatIcon> <span class="miniHover">@L["Users"]</span>
+        </MatNavItem>
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri">
+            <MatIcon>supervisor_account</MatIcon> <span class="miniHover">@L["Roles"]</span>
+        </MatNavItem>
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/multitenancy").AbsoluteUri">
+            <MatIcon>account_balance</MatIcon> <span class="miniHover">@L["MultiTenancy"]</span>
+        </MatNavItem>
+        <MatNavSubMenu>
+            <MatNavSubMenuHeader>
+                <MatNavItem AllowSelection="false">
+                    <MatIcon>settings_applications</MatIcon> <span class="miniHover">Identity Server</span>
+                </MatNavItem>
+            </MatNavSubMenuHeader>
+            <MatNavSubMenuList>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/clients").AbsoluteUri">
+                    <MatIcon>devices</MatIcon> <span class="miniHover">@L["OpenIdClients"]</span>
+                </MatNavItem>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/identityResources").AbsoluteUri">
+                    <MatIcon>person_outline</MatIcon> <span class="miniHover">@L["IdentityResources"]</span>
+                </MatNavItem>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/apiResources").AbsoluteUri">
+                    <MatIcon>cloud</MatIcon> <span class="miniHover">@L["ApiResources"]</span>
+                </MatNavItem>
+            </MatNavSubMenuList>
+        </MatNavSubMenu>
+        <MatNavSubMenu>
+            <MatNavSubMenuHeader>
+                <MatNavItem AllowSelection="false">
+                    <MatIcon>settings_applications</MatIcon> <span class="miniHover">Monitoring</span>
+                </MatNavItem>
+            </MatNavSubMenuHeader>
+            <MatNavSubMenuList>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/blazor_middlware_audit").AbsoluteUri">
+                    <MatIcon>change_history</MatIcon> <span class="miniHover">Api Audit Log</span>
+                </MatNavItem>
+                <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/dBlogViewer").AbsoluteUri">
+                    <MatIcon>notes</MatIcon> <span class="miniHover">DB Logging View</span>
+                </MatNavItem>
+            </MatNavSubMenuList>
+        </MatNavSubMenu>
+        @foreach (var component in components)
+        {
+            @CreateDynamicComponent(component);
+        }
+    </MatNavMenu>
 
 @code {
 

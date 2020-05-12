@@ -59,5 +59,17 @@ namespace BlazorBoilerplate.Infrastructure.Server
 
         Task<ApiResponse> DeleteIdentityResourceAsync(string name);
         #endregion
+
+        #region Tenants
+        Task<ApiResponse> GetTenantsAsync(int pageSize = 0, int pageNumber = 0);
+
+        Task<ApiResponse> GetTenantAsync(string id);
+
+        Task<ApiResponse> CreateTenantAsync(TenantDto tenantDto);
+
+        Task<ApiResponse> UpdateTenantAsync([FromBody] TenantDto tenantDto);
+
+        Task<ApiResponse> DeleteTenantAsync(string id);
+        #endregion
     }
 }

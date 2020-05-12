@@ -125,7 +125,7 @@ else
                 <MatTab Label="Grant Types">
                     <MatTable Items="@grantTypeSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
                         <MatTableHeader>
-                            <th>Name</th>
+                            <th>@L["Name"]</th>
                             <th>Allow</th>
                         </MatTableHeader>
                         <MatTableRow Context="GrantTypeRow">
@@ -138,7 +138,7 @@ else
                 <MatTab Label="Standard Scopes">
                     <MatTable Items="@standardScopeSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
                         <MatTableHeader>
-                            <th>Name</th>
+                            <th>@L["Name"]</th>
                             <th>Allow</th>
                         </MatTableHeader>
                         <MatTableRow Context="StandardScopeRow">
@@ -150,7 +150,7 @@ else
                 <MatTab Label="API Scopes">
                     <MatTable Items="@apiScopeSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
                         <MatTableHeader>
-                            <th>Name</th>
+                            <th>@L["Name"]</th>
                             <th>Allow</th>
                         </MatTableHeader>
                         <MatTableRow Context="ApiScopeRow">
@@ -235,7 +235,7 @@ else
                     <h3 class="mat-subtitle1">Allowed Identity Token Signing Algorithms</h3>
                     <MatTable Items="@tokenSigningAlgorithmsSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
                         <MatTableHeader>
-                            <th>Name</th>
+                            <th>@L["Name"]</th>
                             <th>Allow</th>
                         </MatTableHeader>
                         <MatTableRow Context="TokenSigningAlgorithmsRow">

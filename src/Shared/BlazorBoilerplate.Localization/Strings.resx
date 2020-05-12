@@ -414,4 +414,28 @@
   <data name="Logout" xml:space="preserve">
     <value>Logout</value>
   </data>
+  <data name="Tenants" xml:space="preserve">
+    <value>Tenants</value>
+  </data>
+  <data name="Tenant" xml:space="preserve">
+    <value>Tenant</value>
+  </data>
+  <data name="MultiTenancy" xml:space="preserve">
+    <value>MultiTenancy</value>
+  </data>
+  <data name="{0} tenants fetched" xml:space="preserve">
+    <value>{0} tenants fetched</value>
+  </data>
+  <data name="Tenant {0} created" xml:space="preserve">
+    <value>Tenant {0} created</value>
+  </data>
+  <data name="The tenant {0} doesn't exist" xml:space="preserve">
+    <value>The tenant {0} doesn't exist</value>
+  </data>
+  <data name="Tenant {0} updated" xml:space="preserve">
+    <value>Tenant {0} updated</value>
+  </data>
+  <data name="Tenant {0} deleted" xml:space="preserve">
+    <value>Tenant {0} deleted</value>
+  </data>
 </root>

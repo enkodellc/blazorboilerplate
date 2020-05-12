@@ -97,6 +97,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a {0} tenants fetched.
+        /// </summary>
+        public static string _0__tenants_fetched {
+            get {
+                return ResourceManager.GetString("{0} tenants fetched", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a {0} users fetched.
         /// </summary>
         public static string _0__users_fetched {
@@ -484,6 +493,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a MultiTenancy.
+        /// </summary>
+        public static string MultiTenancy {
+            get {
+                return ResourceManager.GetString("MultiTenancy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Name.
         /// </summary>
         public static string Name {
@@ -799,6 +817,51 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Tenant.
+        /// </summary>
+        public static string Tenant {
+            get {
+                return ResourceManager.GetString("Tenant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Tenant {0} created.
+        /// </summary>
+        public static string Tenant__0__created {
+            get {
+                return ResourceManager.GetString("Tenant {0} created", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Tenant {0} deleted.
+        /// </summary>
+        public static string Tenant__0__deleted {
+            get {
+                return ResourceManager.GetString("Tenant {0} deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Tenant {0} updated.
+        /// </summary>
+        public static string Tenant__0__updated {
+            get {
+                return ResourceManager.GetString("Tenant {0} updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Tenants.
+        /// </summary>
+        public static string Tenants {
+            get {
+                return ResourceManager.GetString("Tenants", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a The API resource {0} doesn&apos;t exist.
         /// </summary>
         public static string The_API_resource__0__doesn_t_exist {
@@ -831,6 +894,15 @@ namespace BlazorBoilerplate.Localization {
         public static string The_role__0__doesn_t_exist {
             get {
                 return ResourceManager.GetString("The role {0} doesn\'t exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a The tenant {0} doesn&apos;t exist.
+        /// </summary>
+        public static string The_tenant__0__doesn_t_exist {
+            get {
+                return ResourceManager.GetString("The tenant {0} doesn\'t exist", resourceCulture);
             }
         }
         

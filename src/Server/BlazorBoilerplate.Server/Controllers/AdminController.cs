@@ -1,12 +1,15 @@
 ﻿
+using AutoMapper;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Admin;
+using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -18,12 +21,18 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
+        private readonly IMapper _autoMapper;
         private readonly IAdminManager _adminManager;
 
-        public AdminController(IAdminManager adminManager)
+        public AdminController(IMapper autoMapper, IAdminManager adminManager)
         {
+            _autoMapper = autoMapper;
             _adminManager = adminManager;
         }
+
+        [HttpGet("Tenant")]
+        public ApiResponse Get()
+            => new ApiResponse(Status200OK, string.Empty,  _autoMapper.Map<TenantDto>(HttpContext.GetMultiTenantContext().TenantInfo));
 
         [HttpGet("Users")]
         [Authorize]
@@ -153,6 +162,36 @@ namespace BlazorBoilerplate.Server.Controllers
         [Authorize(Permissions.IdentityResource.Delete)]
         public async Task<ApiResponse> DeleteIdentityResourceAsync(string name)
             => await _adminManager.DeleteIdentityResourceAsync(name);
+        #endregion
+
+        #region Tenants
+        [HttpGet("Tenants")]
+        [Authorize(Permissions.Tenant.Read)]
+        public async Task<ApiResponse> GetTenants([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
+            => await _adminManager.GetTenantsAsync(pageSize, pageNumber);
+
+        [HttpGet("Tenant/{id}")]
+        [Authorize]
+        public async Task<ApiResponse> GetTenantAsync(string id)
+            => await _adminManager.GetTenantAsync(id);
+
+        
+        [HttpPost("Tenant")]
+        [Authorize(Permissions.Tenant.Create)]
+        public async Task<ApiResponse> CreateTenantAsync([FromBody] TenantDto tenantDto)
+            => await _adminManager.CreateTenantAsync(tenantDto);
+
+        
+        [HttpPut("Tenant")]
+        [Authorize(Permissions.Tenant.Update)]
+        public async Task<ApiResponse> UpdateTenantAsync([FromBody] TenantDto tenantDto)
+            => await _adminManager.UpdateTenantAsync(tenantDto);
+
+        
+        [HttpDelete("Tenant/{id}")]
+        [Authorize(Permissions.Tenant.Delete)]
+        public async Task<ApiResponse> DeleteTenantAsync(string id)
+            => await _adminManager.DeleteTenantAsync(id);
         #endregion
     }
 }

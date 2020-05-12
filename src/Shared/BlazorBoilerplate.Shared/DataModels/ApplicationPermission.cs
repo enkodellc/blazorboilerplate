@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BlazorBoilerplate.Shared.DataModels
+﻿namespace BlazorBoilerplate.Shared.DataModels
 {
     public class ApplicationPermission
     {

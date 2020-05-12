@@ -70,6 +70,17 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
             [LocalizedDescription("DeleteIdentityResourcePermission", typeof(Strings))]
             public const string Delete = nameof(IdentityResource) + "." + nameof(Actions.Delete);
         }
+        public static class Tenant
+        {
+            [LocalizedDescription("CreateTenantPermission", typeof(Strings))]
+            public const string Create = nameof(Tenant) + "." + nameof(Actions.Create);
+            [LocalizedDescription("UpdateTenantPermission", typeof(Strings))]
+            public const string Update = nameof(Tenant) + "." + nameof(Actions.Update);
+            [LocalizedDescription("ReadTenantPermission", typeof(Strings))]
+            public const string Read = nameof(Tenant) + "." + nameof(Actions.Read);
+            [LocalizedDescription("DeleteTenantPermission", typeof(Strings))]
+            public const string Delete = nameof(Tenant) + "." + nameof(Actions.Delete);
+        }
         #endregion
         
         public static class Todo
