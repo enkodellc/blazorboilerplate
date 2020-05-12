@@ -1,7 +1,4 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.DataInterfaces;
-using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage.Stores;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -38,10 +35,10 @@ namespace BlazorBoilerplate.Storage
                             return Task.FromResult(tenantId);
                         }
                     }
-                    return Task.FromResult(projectName);
+                    return Task.FromResult(TenantStoreDbContext.DefaultTenantId);
                 })
                 .WithEFCoreStore<TenantStoreDbContext>()
-                .WithFallbackStrategy(configuration[$"{projectName}:DefaultTenantId"] ?? projectName);
+                .WithFallbackStrategy(TenantStoreDbContext.DefaultTenantId);
 
             services.AddTransient<ITenantStore, TenantStore>();
 

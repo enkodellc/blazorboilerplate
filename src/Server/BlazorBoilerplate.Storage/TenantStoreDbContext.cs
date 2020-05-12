@@ -8,12 +8,12 @@ namespace BlazorBoilerplate.Storage
     public class TenantStoreDbContext : EFCoreStoreDbContext
     {
         public IConfiguration Configuration { get; }
-        public static string DefaultTenantId { get; private set; }
+        public const string DefaultTenantId = "Master";
+        public static readonly TenantInfo DefaultTenant = new TenantInfo(DefaultTenantId, DefaultTenantId, DefaultTenantId, null, null);
 
         public TenantStoreDbContext(DbContextOptions<TenantStoreDbContext> options, IConfiguration configuration) : base(options)
         {
             Configuration = configuration;
-            DefaultTenantId = configuration["BlazorBoilerplate:DefaultTenantId"];
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace BlazorBoilerplate.Storage
                 .Property(t => t.ConnectionString)
                 .IsRequired(false);
             modelBuilder.Entity<TenantInfo>()
-                .HasData(new TenantInfo(DefaultTenantId, DefaultTenantId, DefaultTenantId, null, null));
+                .HasData(DefaultTenant);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace BlazorBoilerplate.Storage
     public class ApplicationDbContext : MultiTenantIdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext, IMultiTenantDbContext
     {
         /* We define a default value for TenantInfo. This is a hack. FinBuckle does not provide any method to init TenantInfo or define a default value when seeding the database (in DatabaseInitializer, HttpContext is not yet initialized). */
-        public new TenantInfo TenantInfo { get; } = new TenantInfo(nameof(BlazorBoilerplate), nameof(BlazorBoilerplate), nameof(BlazorBoilerplate), null, null);
+        public new TenantInfo TenantInfo { get; } = TenantStoreDbContext.DefaultTenant;
 
         public DbSet<ApiLogItem> ApiLogs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
