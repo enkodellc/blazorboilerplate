@@ -86,7 +86,7 @@
     <PackageReference Include="NSwag.AspNetCore" Version="13.4.2" />
     <PackageReference Include="Serilog" Version="2.9.1-dev-01177" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.3.0-dev-00161" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.1-dev-00224" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.1-dev-00234" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00876" />
     <PackageReference Include="MailKit" Version="2.6.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.4.1-dev-00328" />
