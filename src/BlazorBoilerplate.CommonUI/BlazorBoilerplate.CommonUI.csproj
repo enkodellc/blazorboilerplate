@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
     <LangVersion>8.0</LangVersion>
-    <Version>0.8.1</Version>
+    <Version>0.8.2</Version>
     <Authors>Keith Fimreite</Authors>
     <Company>EnkodeLLC</Company>
     <Title>Blazor Boilerplate Server</Title>
@@ -39,9 +39,9 @@
 
   <ItemGroup>
     <PackageReference Include="MatBlazor" Version="2.5.0-preview-005" />
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     <PackageReference Include="System.Net.Http.Json" Version="3.2.0-preview3.20175.8" />
     <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="12.0.0" />
