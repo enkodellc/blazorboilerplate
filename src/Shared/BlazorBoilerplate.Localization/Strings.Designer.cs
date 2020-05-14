@@ -493,7 +493,7 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a MultiTenancy.
+        ///   Cerca una stringa localizzata simile a Multi-tenancy.
         /// </summary>
         public static string MultiTenancy {
             get {

@@ -421,7 +421,7 @@
     <value>Tenant</value>
   </data>
   <data name="MultiTenancy" xml:space="preserve">
-    <value>MultiTenancy</value>
+    <value>Multi-tenancy</value>
   </data>
   <data name="{0} tenants fetched" xml:space="preserve">
     <value>{0} tenants fetched</value>
