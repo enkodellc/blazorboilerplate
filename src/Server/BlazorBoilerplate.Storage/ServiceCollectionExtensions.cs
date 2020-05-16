@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Storage.Stores;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -35,10 +36,10 @@ namespace BlazorBoilerplate.Storage
                             return Task.FromResult(tenantId);
                         }
                     }
-                    return Task.FromResult(TenantStoreDbContext.DefaultTenantId);
+                    return Task.FromResult(Settings.DefaultTenantId);
                 })
                 .WithEFCoreStore<TenantStoreDbContext>()
-                .WithFallbackStrategy(TenantStoreDbContext.DefaultTenantId);
+                .WithFallbackStrategy(Settings.DefaultTenantId);
 
             #endregion Multitenancy
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using BlazorBoilerplate.Shared;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlazorBoilerplate.Storage.Migrations
 {
@@ -19,14 +20,14 @@ namespace BlazorBoilerplate.Storage.Migrations
                 table: "AspNetUserTokens",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: TenantStoreDbContext.DefaultTenantId);
+                defaultValue: Settings.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "TenantId",
                 table: "AspNetUserRoles",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: TenantStoreDbContext.DefaultTenantId);
+                defaultValue: Settings.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "Id",
@@ -41,28 +42,28 @@ namespace BlazorBoilerplate.Storage.Migrations
                 table: "AspNetUserLogins",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: TenantStoreDbContext.DefaultTenantId);
+                defaultValue: Settings.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "TenantId",
                 table: "AspNetUserClaims",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: TenantStoreDbContext.DefaultTenantId);
+                defaultValue: Settings.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "TenantId",
                 table: "AspNetRoles",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: TenantStoreDbContext.DefaultTenantId);
+                defaultValue: Settings.DefaultTenantId);
 
             migrationBuilder.AddColumn<string>(
                 name: "TenantId",
                 table: "AspNetRoleClaims",
                 maxLength: 64,
                 nullable: false,
-                defaultValue: TenantStoreDbContext.DefaultTenantId);
+                defaultValue: Settings.DefaultTenantId);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_AspNetUserLogins",

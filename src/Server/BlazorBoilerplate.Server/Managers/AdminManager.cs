@@ -605,12 +605,19 @@ namespace BlazorBoilerplate.Server.Managers
                 if (tenant == null)
                     return new ApiResponse(Status400BadRequest, L["The tenant {0} doesn't exist", tenantDto.Name]);
 
-                tenant = _autoMapper.Map(tenantDto, tenant);
+                var response = new ApiResponse(Status200OK, L["Tenant {0} updated", tenantDto.Name], tenantDto);
 
-                _tenantStoreDbContext.TenantInfo.Update(tenant);
-                await _tenantStoreDbContext.SaveChangesAsync();
+                if (tenantDto.Identifier != tenant.Identifier && (tenantDto.Identifier == Shared.Settings.DefaultTenantId || tenant.Identifier == Shared.Settings.DefaultTenantId))
+                    response = new ApiResponse(Status403Forbidden, L["Default Tenant identifier cannot be changed and must be unique"]);
+                else
+                {
+                    tenant = _autoMapper.Map(tenantDto, tenant);
 
-                return new ApiResponse(Status200OK, L["Tenant {0} updated", tenantDto.Name], tenantDto);
+                    _tenantStoreDbContext.TenantInfo.Update(tenant);
+                    await _tenantStoreDbContext.SaveChangesAsync();
+                }
+
+                return response;
             }
             catch (Exception ex)
             {
@@ -622,22 +629,29 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-                var tenant = await _tenantStoreDbContext.TenantInfo.SingleOrDefaultAsync(i => i.Id == id);
+                var response = new ApiResponse(Status200OK, L["Tenant {0} deleted", id]);
 
-                if (tenant == null)
-                    return new ApiResponse(Status400BadRequest, L["The tenant {0} doesn't exist", id]);
-
-                Claim tenantClaim = new Claim("TenantId", id);
-                var users = await _userManager.GetUsersForClaimAsync(tenantClaim);
-                foreach (var user in users)
+                if (id == Shared.Settings.DefaultTenantId)
+                    response = new ApiResponse(Status403Forbidden, L["Tenant {0} cannot be deleted", id]);
+                else
                 {
-                    await RemoveFromTenant(user.Id, id);
+                    var tenant = await _tenantStoreDbContext.TenantInfo.SingleOrDefaultAsync(i => i.Id == id);
+
+                    if (tenant == null)
+                        return new ApiResponse(Status400BadRequest, L["The tenant {0} doesn't exist", id]);
+
+                    Claim tenantClaim = new Claim("TenantId", id);
+                    var users = await _userManager.GetUsersForClaimAsync(tenantClaim);
+                    foreach (var user in users)
+                    {
+                        await RemoveFromTenant(user.Id, id);
+                    }
+
+                    _tenantStoreDbContext.TenantInfo.Remove(tenant);
+                    await _tenantStoreDbContext.SaveChangesAsync();
                 }
 
-                _tenantStoreDbContext.TenantInfo.Remove(tenant);
-                await _tenantStoreDbContext.SaveChangesAsync();
-
-                return new ApiResponse(Status200OK, L["Tenant {0} deleted", tenant.Name]);
+                return response;
             }
             catch (Exception ex)
             {
@@ -672,7 +686,7 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status200OK, "User removed from tenant");
             }
             return new ApiResponse(Status400BadRequest, "Failed to remove user");
-        } 
+        }
         #endregion
     }
 }
