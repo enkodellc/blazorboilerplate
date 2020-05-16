@@ -1,4 +1,4 @@
-﻿namespace BlazorBoilerplate.Shared.DataModels
+﻿namespace BlazorBoilerplate.Shared.Models
 {
     public class ApplicationPermission
     {

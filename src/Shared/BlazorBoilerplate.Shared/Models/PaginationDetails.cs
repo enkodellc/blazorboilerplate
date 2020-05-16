@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BlazorBoilerplate.Shared.DataModels
+﻿namespace BlazorBoilerplate.Shared.Models
 {
     /// <summary>
     /// Standardized details including in paginated responses

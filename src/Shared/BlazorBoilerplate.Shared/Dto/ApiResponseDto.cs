@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.DataModels;
+﻿using BlazorBoilerplate.Shared.Models;
 using System.Runtime.Serialization;
 
 namespace BlazorBoilerplate.Shared.Dto

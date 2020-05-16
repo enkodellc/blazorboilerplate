@@ -1,6 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.Interfaces;
 using Finbuckle.MultiTenant;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;

@@ -2,12 +2,15 @@ using AutoMapper;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Server.Authorization;
+using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Dto.ExternalAuth;
+using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
 using IdentityServer4;
@@ -29,6 +32,9 @@ using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NSwag.AspNetCore;
+using NSwag.Generation.Processors.Security;
+using NSwag;
 using Serilog;
 using System;
 using System.IO;
@@ -37,18 +43,11 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using static Microsoft.AspNetCore.Http.StatusCodes;
-using BlazorBoilerplate.Server.Extensions;
-using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Shared.Dto.ExternalAuth;
-using NSwag.AspNetCore;
-using NSwag.Generation.Processors.Security;
-using NSwag;
 using System.Collections.Generic;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 //-:cnd:noEmit
 #if ServerSideBlazor
-using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
 

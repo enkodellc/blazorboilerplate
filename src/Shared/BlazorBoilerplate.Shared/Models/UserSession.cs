@@ -1,8 +1,9 @@
-﻿using System;
+﻿using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Interfaces;
+using System;
 using System.Collections.Generic;
-using BlazorBoilerplate.Shared.DataInterfaces;
 
-namespace BlazorBoilerplate.Shared.DataModels
+namespace BlazorBoilerplate.Shared.Models
 {
     public class UserSession : IUserSession
     {

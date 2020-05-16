@@ -1,6 +1,6 @@
 using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

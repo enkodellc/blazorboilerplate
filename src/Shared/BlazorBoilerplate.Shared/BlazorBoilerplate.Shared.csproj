@@ -37,7 +37,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Finbuckle.MultiTenant.Core" Version="5.0.4" />
     <PackageReference Include="Humanizer" Version="2.8.11" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.0.0-preview.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.3" />

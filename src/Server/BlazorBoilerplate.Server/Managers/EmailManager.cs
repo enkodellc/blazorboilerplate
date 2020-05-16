@@ -1,8 +1,8 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Server.Helpers;
-using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Email;
+using BlazorBoilerplate.Shared.Interfaces;
 using MailKit.Net.Imap;
 using MailKit.Net.Pop3;
 using MailKit.Net.Smtp;

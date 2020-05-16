@@ -1,11 +1,8 @@
 ﻿using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorBoilerplate.Server.Tests.Managers
 {

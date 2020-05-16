@@ -43,7 +43,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
             catch (Exception ex)
             {
-                return new ApiResponse(Status400BadRequest, "Failed to Retrieve User Profile");
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
     }

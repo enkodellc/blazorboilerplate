@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Storage;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
