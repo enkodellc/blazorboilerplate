@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Dto.Sample;
 using System.Collections.Generic;
 using System.Linq;

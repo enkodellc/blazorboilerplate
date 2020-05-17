@@ -1,8 +1,8 @@
-﻿using BlazorBoilerplate.Infrastrcture.Extensions;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Infrastructure.Extensions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Shared.DataModels;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

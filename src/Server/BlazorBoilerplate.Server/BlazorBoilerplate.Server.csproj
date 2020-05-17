@@ -52,6 +52,7 @@
     <None Remove="Helpers\Templates\PasswordReset.template" />
     <None Remove="Helpers\Templates\PlainTextTestEmail.template" />
     <None Remove="Helpers\Templates\TestEmail.template" />
+    <None Remove="Managers\ve-10D7.tmp" />
   </ItemGroup>
 
   <ItemGroup>

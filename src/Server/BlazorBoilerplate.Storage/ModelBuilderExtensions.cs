@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorBoilerplate.Storage

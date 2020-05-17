@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.DataModels;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using NUnit.Framework;

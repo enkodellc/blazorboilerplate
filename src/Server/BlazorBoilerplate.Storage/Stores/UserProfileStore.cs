@@ -1,5 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.EntityFrameworkCore;
 using System;

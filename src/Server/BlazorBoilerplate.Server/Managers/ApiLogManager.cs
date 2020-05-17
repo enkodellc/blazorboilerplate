@@ -1,7 +1,7 @@
-﻿using BlazorBoilerplate.Infrastructure.Server;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;

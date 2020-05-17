@@ -1,11 +1,9 @@
-﻿using BlazorBoilerplate.Infrastructure.Server.Models;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Shared.DataModels;
 using System.Linq.Expressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Infrastructure.Server
 {

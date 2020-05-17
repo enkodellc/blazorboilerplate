@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.DataInterfaces;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
 using BlazorBoilerplate.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

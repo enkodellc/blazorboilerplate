@@ -1,10 +1,13 @@
-﻿using BlazorBoilerplate.Localization;
-using BlazorBoilerplate.Server.Authorization;
-using BlazorBoilerplate.Server.Helpers;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Server.Authorization;
+using BlazorBoilerplate.Server.Extensions;
+using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
 using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Providers;
@@ -26,9 +29,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using BlazorBoilerplate.Infrastructure.Server;
-using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Server.Extensions;
 
 namespace BlazorBoilerplate.Server.Managers
 {

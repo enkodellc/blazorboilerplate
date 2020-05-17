@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 
-namespace BlazorBoilerplate.Infrastrcture.Extensions
+namespace BlazorBoilerplate.Infrastructure.Extensions
 {
     public static class ModelStateExtension
     {

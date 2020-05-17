@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Shared.DataModels;
-using BlazorBoilerplate.Shared.Interfaces;
+﻿using BlazorBoilerplate.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -22,10 +21,10 @@ namespace BlazorBoilerplate.Shared.Models
         {
         }
 
-        public UserSession(ApplicationUser user)
+        public UserSession(Guid userId, string userName)
         {
-            UserId = user.Id;
-            UserName = user.UserName;
+            UserId = userId;
+            UserName = userName;
         }
     }
 }

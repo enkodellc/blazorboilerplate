@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.DataModels;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Dto.Sample;
 using System.Collections.Generic;
 using System.Threading.Tasks;

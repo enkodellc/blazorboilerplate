@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BlazorBoilerplate.Shared.DataModels
+namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     public class DbLog
     {
@@ -23,7 +23,6 @@ namespace BlazorBoilerplate.Shared.DataModels
         public string Properties { get; set; }
 
         [NotMapped]
-        public IDictionary<string, string> LogProperties { get;set;}
-
+        public IDictionary<string, string> LogProperties { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared.DataModels
+namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     public class ApplicationUser : IdentityUser<Guid>
     {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
 
-namespace BlazorBoilerplate.Shared.DataModels
+namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     public class Todo : IAuditable, ISoftDelete
     {

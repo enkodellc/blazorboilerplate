@@ -1,13 +1,10 @@
-﻿using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Shared.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Shared.DataModels;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.Dto.Account;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Infrastructure.Server
 {

@@ -1,6 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Shared.DataInterfaces;
-using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Storage.Configurations;
 using Finbuckle.MultiTenant;
@@ -12,9 +12,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
-using Message = BlazorBoilerplate.Shared.DataModels.Message;
-using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
+using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
+using Message = BlazorBoilerplate.Infrastructure.Storage.DataModels.Message;
+using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile;
 
 namespace BlazorBoilerplate.Storage
 {

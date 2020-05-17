@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Dto.Sample;
 
 namespace BlazorBoilerplate.Infrastructure.Storage

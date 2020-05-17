@@ -1,5 +1,5 @@
-﻿using BlazorBoilerplate.Shared.DataInterfaces;
-using BlazorBoilerplate.Shared.DataModels;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;

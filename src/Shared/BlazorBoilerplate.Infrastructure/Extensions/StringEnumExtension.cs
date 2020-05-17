@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace BlazorBoilerplate.Infrastrcture.Extensions
+namespace BlazorBoilerplate.Infrastructure.Extensions
 {
     public static class StringEnumExtension
     {

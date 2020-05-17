@@ -1,8 +1,8 @@
-﻿using BlazorBoilerplate.Infrastructure.Server;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;

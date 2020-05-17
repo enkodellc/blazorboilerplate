@@ -1,7 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Server.Data.Core;
 using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.DataModels;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Storage.Core;
 using Finbuckle.MultiTenant;
 using IdentityModel;
@@ -14,8 +14,8 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ApiLogItem = BlazorBoilerplate.Shared.DataModels.ApiLogItem;
-using UserProfile = BlazorBoilerplate.Shared.DataModels.UserProfile;
+using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
+using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile;
 
 namespace BlazorBoilerplate.Storage
 {

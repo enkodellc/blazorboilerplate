@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Server.Data.Core;
-using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Shared.Dto.Account;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Storage;

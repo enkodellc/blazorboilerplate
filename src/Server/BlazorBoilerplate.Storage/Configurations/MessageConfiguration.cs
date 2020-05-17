@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.DataModels;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

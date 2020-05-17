@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace BlazorBoilerplate.Infrastrcture.Extensions
+namespace BlazorBoilerplate.Infrastructure.Extensions
 {
     public static class StringExtension
     {

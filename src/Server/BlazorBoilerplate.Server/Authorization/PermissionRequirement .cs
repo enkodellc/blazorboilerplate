@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.DataModels;
+﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;

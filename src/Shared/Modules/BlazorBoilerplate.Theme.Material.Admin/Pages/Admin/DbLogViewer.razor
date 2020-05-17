@@ -4,7 +4,6 @@
 @layout AdminLayout
 @inject HttpClient Http
 @inject IMatToaster matToaster
-@using BlazorBoilerplate.Shared.DataModels
 @using static Microsoft.AspNetCore.Http.StatusCodes
 
 <h1>Serilog MSSqlDb Log Viewer</h1>
@@ -58,7 +57,7 @@ else
 
 @code {
     ApiResponseDto[] apiResponses = new ApiResponseDto[] { };
-    List<DbLog> dBLogItems = new List<DbLog>();
+    List<DbLogDto> dBLogItems = new List<DbLogDto>();
 
     private int pageSize { get; set; } = 10;
     private int pageIndex { get; set; } = 0;
@@ -94,7 +93,7 @@ else
         if (apiResponse.IsSuccessStatusCode)
         {
             matToaster.Add(apiResponse.Message, MatToastType.Success, "DB Log Items Retrieved");
-            var nextPage = Newtonsoft.Json.JsonConvert.DeserializeObject<DbLog[]>(apiResponse.Result.ToString()).ToList<DbLog>();
+            var nextPage = Newtonsoft.Json.JsonConvert.DeserializeObject<DbLogDto[]>(apiResponse.Result.ToString()).ToList<DbLogDto>();
             this.logCountTotal = apiResponse.PaginationDetails.CollectionSize;
             this.dBLogItems = nextPage;
 
@@ -112,7 +111,4 @@ else
         await InvokeAsync(StateHasChanged).ConfigureAwait(true);
 
     }
-
-
-
 }
