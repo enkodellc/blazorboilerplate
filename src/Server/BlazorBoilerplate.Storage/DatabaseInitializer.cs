@@ -49,7 +49,7 @@ namespace BlazorBoilerplate.Storage
 
         public virtual async Task SeedAsync()
         {
-            //Apply EF Core migration scripts
+            //Apply EF Core migration
             await MigrateAsync();
 
             //Seed users and roles

@@ -58,6 +58,7 @@ namespace BlazorBoilerplate.Storage
 
         public static void GetDbContextOptions<T>(DbContextOptionsBuilder builder, IConfiguration configuration) where T : DbContext
         {
+            //builder.EnableSensitiveDataLogging();
             var migrationsAssembly = typeof(T).GetTypeInfo().Assembly.GetName().Name;
             var useSqlServer = Convert.ToBoolean(configuration[$"{projectName}:UseSqlServer"] ?? "false");
             var dbConnString = useSqlServer
