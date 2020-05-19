@@ -468,14 +468,14 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserSession, UserSession>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+            services.Configure<EmailConfiguration>(Configuration.GetSection(nameof(EmailConfiguration)));
 
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAdminManager, AdminManager>();
             services.AddTransient<IApiLogManager, ApiLogManager>();
             services.AddTransient<IDbLogManager, DbLogManager>();
             services.AddTransient<IEmailManager, EmailManager>();
-            services.AddTransient<IExternalAuthManager, ExternalAuthManager>(); // Currently not being used.
+            services.AddTransient<IExternalAuthManager, ExternalAuthManager>();
             services.AddTransient<IMessageManager, MessageManager>();
             services.AddTransient<ITodoManager, ToDoManager>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();

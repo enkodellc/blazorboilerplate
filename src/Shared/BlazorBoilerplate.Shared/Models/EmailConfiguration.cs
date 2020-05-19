@@ -1,8 +1,6 @@
-﻿using BlazorBoilerplate.Shared.Interfaces;
-
-namespace BlazorBoilerplate.Shared.Models
+﻿namespace BlazorBoilerplate.Shared.Models
 {
-    public class EmailConfiguration : IEmailConfiguration
+    public class EmailConfiguration
     {
         public string SmtpServer { get; set; }
         public int SmtpPort { get; set; }
@@ -19,7 +17,7 @@ namespace BlazorBoilerplate.Shared.Models
         public string PopUsername { get; set; }
         public string PopPassword { get; set; }
         public bool PopUseSSL { get; set; }
-            
+
         public string ImapServer { get; set; }
         public int ImapPort { get; set; }
         public string ImapUsername { get; set; }

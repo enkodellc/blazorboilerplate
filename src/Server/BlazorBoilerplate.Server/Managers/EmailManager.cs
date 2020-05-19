@@ -2,12 +2,13 @@
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared.Dto.Email;
-using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Models;
 using MailKit.Net.Imap;
 using MailKit.Net.Pop3;
 using MailKit.Net.Smtp;
 using MailKit.Search;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -21,12 +22,12 @@ namespace BlazorBoilerplate.Server.Managers
 {
     public class EmailManager : IEmailManager
     {
-        private readonly IEmailConfiguration _emailConfiguration;
+        private readonly EmailConfiguration _emailConfiguration;
         private readonly ILogger<EmailManager> _logger;
 
-        public EmailManager(IEmailConfiguration emailConfiguration, ILogger<EmailManager> logger)
+        public EmailManager(IOptionsSnapshot<EmailConfiguration> emailConfiguration, ILogger<EmailManager> logger)
         {
-            _emailConfiguration = emailConfiguration;
+            _emailConfiguration = emailConfiguration.Value;
             _logger = logger;
         }
 
