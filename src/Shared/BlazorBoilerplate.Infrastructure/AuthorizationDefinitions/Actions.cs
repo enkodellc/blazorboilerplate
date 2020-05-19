@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
+namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
 {
     [Flags]
     public enum Actions

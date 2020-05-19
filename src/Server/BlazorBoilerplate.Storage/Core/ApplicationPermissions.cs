@@ -1,5 +1,5 @@
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Localization;
-using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

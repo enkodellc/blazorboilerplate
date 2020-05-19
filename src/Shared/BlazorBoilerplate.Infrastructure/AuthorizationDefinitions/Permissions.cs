@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using BlazorBoilerplate.Localization;
 
-namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
+namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
 {
     public static class Permissions
     {
