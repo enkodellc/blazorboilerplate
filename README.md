@@ -144,6 +144,9 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - [Demo for Development Branch - SSB](https://blazor-server.quarella.net/)
 - [Demo for Development Branch - CSB](https://blazor-wasm.quarella.net/)
 
+### 1.0.0 - Master branch
+- Nuget Package updates Blazor 3.2 - Production!
+
 ### 0.8.2 - Master branch
 - Nuget Package updates 
 
