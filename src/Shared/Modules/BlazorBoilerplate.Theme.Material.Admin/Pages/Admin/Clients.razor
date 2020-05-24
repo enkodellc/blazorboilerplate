@@ -396,7 +396,7 @@ else
     {
         try
         {
-            var getIdentityResourcesTask = Http.GetJsonAsync<ApiResponseDto<List<IdentityResource>>>("api/Admin/IdentityResources").ContinueWith((t) =>
+            var getIdentityResourcesTask = Http.GetNewtonsoftJsonAsync<ApiResponseDto<List<IdentityResource>>>("api/Admin/IdentityResources").ContinueWith((t) =>
             {
                 standardScopeSelections.Clear();
 
@@ -410,7 +410,7 @@ else
                     });
                 }
             });
-            var getApiResourcesTask = Http.GetJsonAsync<ApiResponseDto<List<ApiResource>>>("api/Admin/ApiResources").ContinueWith((t) =>
+            var getApiResourcesTask = Http.GetNewtonsoftJsonAsync<ApiResponseDto<List<ApiResource>>>("api/Admin/ApiResources").ContinueWith((t) =>
             {
                 apiScopeSelections.Clear();
 
