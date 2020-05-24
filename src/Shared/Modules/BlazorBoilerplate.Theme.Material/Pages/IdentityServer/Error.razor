@@ -29,7 +29,7 @@
         {
             if (!string.IsNullOrEmpty(errorId))
             {
-                var apiResponse = await Http.GetJsonAsync<ApiResponseDto<ErrorMessage>>($"api/IdentityServer/GetError?errorId={errorId}");
+                var apiResponse = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<ErrorMessage>>($"api/IdentityServer/GetError?errorId={errorId}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     errorText = apiResponse.Result.Error;

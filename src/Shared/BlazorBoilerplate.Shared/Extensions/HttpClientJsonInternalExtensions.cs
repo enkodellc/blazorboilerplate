@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Extensions
 {
-    internal static class HttpClientJsonInternalExtensions
+    public static class HttpClientJsonInternalExtensions
     {
         //copied from https://github.com/dotnet/aspnetcore/blob/8a7508d8183968d1b96d259cf8bcc5bbb85981b5/src/Components/Blazor/Http/src/HttpClientJsonExtensions.cs
         //TODO investigate why in Microsoft.AspNetCore.Components the extension is found only in projects of type Sdk="Microsoft.NET.Sdk.Razor"
@@ -19,7 +19,7 @@ namespace BlazorBoilerplate.Shared.Extensions
         /// <param name="httpClient">The <see cref="HttpClient"/>.</param>
         /// <param name="requestUri">The URI that the request will be sent to.</param>
         /// <returns>The response parsed as an object of the generic type.</returns>
-        public static async Task<T> GetJsonAsync<T>(this HttpClient httpClient, string requestUri)
+        internal static async Task<T> GetJsonAsync<T>(this HttpClient httpClient, string requestUri)
         {
             var stringContent = await httpClient.GetStringAsync(requestUri);
             return JsonSerializer.Deserialize<T>(stringContent, JsonSerializerOptionsProvider.Options);
