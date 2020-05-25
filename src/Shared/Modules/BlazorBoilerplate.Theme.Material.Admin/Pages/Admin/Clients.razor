@@ -23,8 +23,7 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@clients" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/clients"
-              DebounceMilliseconds="150">
+    <MatTable Class="mat-elevation-z5" Items="@clients" Striped="true">
         <MatTableHeader>
             <th><MatButton Icon="add" Label=@L["New Client"] OnClick="@(() => OpenUpsertClientDialog())"></MatButton></th>
             <th>Id</th>

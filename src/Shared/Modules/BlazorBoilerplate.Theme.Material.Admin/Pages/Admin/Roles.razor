@@ -21,8 +21,7 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@roles" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/roles"
-              DebounceMilliseconds="150">
+    <MatTable Class="mat-elevation-z5" Items="@roles" Striped="true">
         <MatTableHeader>
             <th><MatButton Icon="add" Label=@L["New Role"] OnClick="@(() => OpenUpsertRoleDialog())"></MatButton></th>
             <th>@L["Name"]</th>

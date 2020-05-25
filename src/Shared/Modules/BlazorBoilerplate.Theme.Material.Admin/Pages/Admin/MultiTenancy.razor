@@ -21,7 +21,7 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@tenants" LoadInitialData="true" Striped="true" DebounceMilliseconds="150">
+    <MatTable Class="mat-elevation-z5" Items="@tenants" Striped="true">
         <MatTableHeader>
             <th><MatButton Icon="add" Label=@L["New Tenant"] OnClick="@(() => OpenUpsertTenantDialog())"></MatButton></th>
             <th>Id</th>

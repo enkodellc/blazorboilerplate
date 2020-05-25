@@ -21,8 +21,7 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@users" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/users"
-              DebounceMilliseconds="150">
+    <MatTable Class="mat-elevation-z5" Items="@users" Striped="true">
         <MatTableHeader>
             <th><MatButton Icon="person_add" Label=@L["New User"] OnClick="@(e => { createUserDialogOpen = true; })"></MatButton></th>
             <th>@L["UserName"]</th>
