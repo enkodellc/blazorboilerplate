@@ -175,29 +175,38 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
+                var response = new ApiResponse(Status200OK, L["Role {0} updated", roleDto.Name], roleDto);
+
                 if (!_roleManager.Roles.Any(r => r.Name == roleDto.Name))
-                    return new ApiResponse(Status400BadRequest, L["The role {0} doesn't exist", roleDto.Name]);
-
-                // Create the permissions
-                var role = await _roleManager.FindByNameAsync(roleDto.Name);
-
-                var claims = await _roleManager.GetClaimsAsync(role);
-                var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => x.Value).ToList();
-
-                foreach (var permission in permissions)
+                    response = new ApiResponse(Status400BadRequest, L["The role {0} doesn't exist", roleDto.Name]);
+                else
                 {
-                    await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, permission));
+                    if (roleDto.Name == Shared.DefaultRoleNames.Administrator)
+                        response = new ApiResponse(Status403Forbidden, L["Role {0} cannot be edited", roleDto.Name]);
+                    else
+                    {
+                        // Create the permissions
+                        var role = await _roleManager.FindByNameAsync(roleDto.Name);
+
+                        var claims = await _roleManager.GetClaimsAsync(role);
+                        var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => x.Value).ToList();
+
+                        foreach (var permission in permissions)
+                        {
+                            await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, permission));
+                        }
+
+                        foreach (var claim in roleDto.Permissions)
+                        {
+                            var result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
+
+                            if (!result.Succeeded)
+                                await _roleManager.DeleteAsync(role);
+                        }
+                    }
                 }
 
-                foreach (var claim in roleDto.Permissions)
-                {
-                    var result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
-
-                    if (!result.Succeeded)
-                        await _roleManager.DeleteAsync(role);
-                }
-
-                return new ApiResponse(Status200OK, L["Role {0} updated", roleDto.Name], roleDto);
+                return response;
             }
             catch (Exception ex)
             {
@@ -209,16 +218,25 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
+                var response = new ApiResponse(Status200OK, L["Role {0} deleted", name]);
+
                 // Check if the role is used by a user
                 var users = await _userManager.GetUsersInRoleAsync(name);
                 if (users.Any())
-                    return new ApiResponse(Status404NotFound, L["RoleInUseWarning", name]);
+                    response = new ApiResponse(Status404NotFound, L["RoleInUseWarning", name]);
+                else
+                {
+                    if (name == Shared.DefaultRoleNames.Administrator)
+                        response = new ApiResponse(Status403Forbidden, L["Role {0} cannot be deleted", name]);
+                    else
+                    {
+                        // Delete the role
+                        var role = await _roleManager.FindByNameAsync(name);
+                        await _roleManager.DeleteAsync(role);
+                    }
+                }
 
-                // Delete the role
-                var role = await _roleManager.FindByNameAsync(name);
-                await _roleManager.DeleteAsync(role);
-
-                return new ApiResponse(Status200OK, L["Role {0} deleted", name]);
+                return response;
             }
             catch (Exception ex)
             {

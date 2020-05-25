@@ -21,8 +21,7 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@roles" LoadInitialData="true" Striped="true" RequestApiOnlyOnce="true" ApiUrl="api/roles"
-              DebounceMilliseconds="150">
+    <MatTable Class="mat-elevation-z5" Items="@roles" Striped="true">
         <MatTableHeader>
             <th><MatButton Icon="add" Label=@L["New Role"] OnClick="@(() => OpenUpsertRoleDialog())"></MatButton></th>
             <th>@L["Name"]</th>
@@ -31,8 +30,8 @@ else
         <MatTableRow Context="RoleRow">
             <td>
                 <div style="width:155px;">
-                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))"></MatIconButton>
-                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))"></MatIconButton>
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Shared.DefaultRoleNames.Administrator)"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Shared.DefaultRoleNames.Administrator)"></MatIconButton>
                 </div>
             </td>
             <td><div style="width:130px;">@RoleRow.Name</div></td>

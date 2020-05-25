@@ -23,7 +23,7 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@apiResources" LoadInitialData="true" Striped="true" DebounceMilliseconds="150">
+    <MatTable Class="mat-elevation-z5" Items="@apiResources" Striped="true">
         <MatTableHeader>
             <th><MatButton Icon="add" Label=@L["New API Resource"] OnClick="@(() => OpenUpsertApiResourceDialog())"></MatButton></th>
             <th>@L["Name"]</th>

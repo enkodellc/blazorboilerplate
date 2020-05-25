@@ -23,7 +23,7 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@identiyResources" LoadInitialData="true" Striped="true" DebounceMilliseconds="150">
+    <MatTable Class="mat-elevation-z5" Items="@identiyResources" Striped="true">
         <MatTableHeader>
             <th><MatButton Icon="add" Label=@L["New Identity Resource"] OnClick="@(() => OpenUpsertIdentityResourceDialog())"></MatButton></th>
             <th>@L["Name"]</th>

@@ -438,4 +438,13 @@
   <data name="Tenant {0} deleted" xml:space="preserve">
     <value>Sito in comproprietà {0} eliminato</value>
   </data>
+  <data name="Role {0} cannot be deleted" xml:space="preserve">
+    <value>Il ruolo {0} non può essere eliminato</value>
+  </data>
+  <data name="Tenant {0} cannot be deleted" xml:space="preserve">
+    <value>Il sito {0} non può essere eliminato</value>
+  </data>
+  <data name="Role {0} cannot be edited" xml:space="preserve">
+    <value>Il ruolo {0} non può essere modificato</value>
+  </data>
 </root>
