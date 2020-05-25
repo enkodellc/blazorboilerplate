@@ -525,12 +525,15 @@ namespace BlazorBoilerplate.Server.Managers
             }
             try
             {
+                if (user.UserName.ToLower() != DefaultUserNames.Administrator)
+                {
+                    //TODO it could generate time-out
+                    await _userProfileStore.DeleteAllApiLogsForUser(user.Id);
 
-                //EF: not a fan this will delete old ApiLogs
-                await _userProfileStore.DeleteAllApiLogsForUser(user.Id);
-
-                await _userManager.DeleteAsync(user);
-                return new ApiResponse(Status200OK, "User Deletion Successful");
+                    await _userManager.DeleteAsync(user);
+                    return new ApiResponse(Status200OK, "User Deletion Successful");
+                } else
+                    return new ApiResponse(Status403Forbidden, L["User {0} cannot be edited", user.UserName]);
             }
             catch
             {
@@ -553,11 +556,11 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> Update(UserInfoDto userInfo)
         {
-            // retrieve full user object for updating
             var appUser = await _userManager.FindByIdAsync(userInfo.UserId.ToString()).ConfigureAwait(true);
 
-            //update values
-            appUser.UserName = userInfo.UserName;
+            if (appUser.UserName.ToLower() != DefaultUserNames.Administrator && userInfo.UserName.ToLower() != DefaultUserNames.Administrator)
+                appUser.UserName = userInfo.UserName;
+
             appUser.FirstName = userInfo.FirstName;
             appUser.LastName = userInfo.LastName;
             appUser.Email = userInfo.Email;
@@ -594,6 +597,9 @@ namespace BlazorBoilerplate.Server.Managers
                     var rolesToRemove = currentUserRoles
                         .Where(role => !userInfo.Roles.Contains(role)).ToList();
 
+                    if (appUser.UserName.ToLower() == DefaultUserNames.Administrator)
+                        rolesToRemove.Remove(DefaultUserNames.Administrator);
+
                     await _userManager.RemoveFromRolesAsync(appUser, rolesToRemove).ConfigureAwait(true);
 
                     //HACK to switch to claims auth
@@ -607,6 +613,7 @@ namespace BlazorBoilerplate.Server.Managers
                     return new ApiResponse(Status500InternalServerError, "Error Updating Roles");
                 }
             }
+
             return new ApiResponse(Status200OK, "User Updated");
         }
 

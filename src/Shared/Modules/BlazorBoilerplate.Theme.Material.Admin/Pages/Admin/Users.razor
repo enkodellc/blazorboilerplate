@@ -42,7 +42,7 @@ else
                     <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))"></MatIconButton>
                     <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
                         <Authorized>
-                            <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))"></MatIconButton>
+                            <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
                         </Authorized>
                         <NotAuthorized>
                             <MatIconButton Icon="delete" Disabled="true"></MatIconButton>
@@ -108,7 +108,7 @@ else
                 <MatChipSet>
                     @foreach (var role in roleSelections.OrderBy(x => x.Name))
                     {
-                        <MatChip Label="@role.Name" LeadingIcon="@( (role.IsSelected) ? "done" : "")" @onclick="@(()=>UpdateUserRole(role))" />
+                        <MatChip Label="@role.Name" LeadingIcon="@((role.IsSelected) ? "done" : "")" @onclick="@(()=>UpdateUserRole(role))" />
                     }
                 </MatChipSet>
             </fieldset>
@@ -234,7 +234,8 @@ else
 
     protected void UpdateUserRole(RoleSelection roleSelectionItem)
     {
-        roleSelectionItem.IsSelected = !roleSelectionItem.IsSelected;
+        if (user.UserName.ToLower() != DefaultUserNames.Administrator || roleSelectionItem.Name != DefaultRoleNames.Administrator)
+            roleSelectionItem.IsSelected = !roleSelectionItem.IsSelected;
     }
 
     public async Task PopulateRoleList()
