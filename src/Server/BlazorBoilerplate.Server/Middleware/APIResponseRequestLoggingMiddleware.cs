@@ -44,6 +44,15 @@ namespace BlazorBoilerplate.Server.Middleware
             _ignorePaths = configuration.GetSection("BlazorBoilerplate:ApiLogging:IgnorePaths").Get<List<string>>();
         }
 
+        private Task RewriteResponseAsApiResponse(HttpContext httpContext, ApiResponse apiResponse)
+        {
+            var jsonString = JsonConvert.SerializeObject(apiResponse);
+            httpContext.Response.Clear();
+            httpContext.Response.ContentType = "application/json";
+
+            return httpContext.Response.WriteAsync(jsonString);
+        }
+
         public async Task Invoke(HttpContext httpContext, IApplicationDbContext db, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
@@ -66,8 +75,6 @@ namespace BlazorBoilerplate.Server.Middleware
 
                     using (var responseBody = new MemoryStream())
                     {
-                        httpContext.Response.Body = responseBody;
-
                         try
                         {
                             var response = httpContext.Response;
@@ -87,7 +94,6 @@ namespace BlazorBoilerplate.Server.Middleware
                                 await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
                             }
 
-                            httpContext.Response.ContentLength = responseBody.Length;
                             stopWatch.Stop();
 
                             #region Log Request / Response
@@ -169,7 +175,6 @@ namespace BlazorBoilerplate.Server.Middleware
                 };
                 code = ex.StatusCode;
                 httpContext.Response.StatusCode = code;
-
             }
             else if (exception is UnauthorizedAccessException)
             {
@@ -188,29 +193,29 @@ namespace BlazorBoilerplate.Server.Middleware
                 string stack = exception.StackTrace;
 #endif
 //-:cnd:noEmit
+
                 apiError = new ApiError(msg)
                 {
                     Details = stack
                 };
+
                 code = Status500InternalServerError;
                 httpContext.Response.StatusCode = code;
             }
 
-            httpContext.Response.ContentType = "application/json";
-
             apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(Status500InternalServerError), null, apiError);
 
-            await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
+            await RewriteResponseAsApiResponse(httpContext, apiResponse);
         }
 
         private Task HandleNotSuccessRequestAsync(HttpContext httpContext, int code)
         {
             ApiError apiError = new ApiError(ResponseMessage.GetDescription(code));
-           
+
             ApiResponse apiResponse = new ApiResponse(code, apiError);
             httpContext.Response.StatusCode = code;
-            httpContext.Response.ContentType = "application/json";
-            return httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
+
+            return RewriteResponseAsApiResponse(httpContext, apiResponse);
         }
 
         private Task HandleSuccessRequestAsync(HttpContext httpContext, object body, int code)
@@ -221,13 +226,9 @@ namespace BlazorBoilerplate.Server.Middleware
             ApiResponse apiResponse = null;
 
             if (!body.ToString().IsValidJson())
-            {
-                return httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
-            }
+                return RewriteResponseAsApiResponse(httpContext, apiResponse);
             else
-            {
                 bodyText = body.ToString();
-            }
 
             //TODO Review the code below as it might not be necessary
             dynamic bodyContent = JsonConvert.DeserializeObject<dynamic>(bodyText);
@@ -237,29 +238,18 @@ namespace BlazorBoilerplate.Server.Middleware
             if (type.Equals(typeof(Newtonsoft.Json.Linq.JObject)))
             {
                 apiResponse = JsonConvert.DeserializeObject<ApiResponse>(bodyText);
-                if (apiResponse.StatusCode == 0)
-                {
-                    apiResponse.StatusCode = code;
-                }
 
-                if ((apiResponse.Result != null) || (!string.IsNullOrEmpty(apiResponse.Message)))
-                {
-                    jsonString = JsonConvert.SerializeObject(apiResponse);
-                }
-                else
-                {
+                if (apiResponse.StatusCode == 0)
+                    apiResponse.StatusCode = code;
+
+                if ((apiResponse.Result == null) && string.IsNullOrEmpty(apiResponse.Message))
                     apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(code), bodyContent, null);
-                    jsonString = JsonConvert.SerializeObject(apiResponse);
-                }
+
             }
             else
-            {
                 apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(code), bodyContent, null);
-                jsonString = JsonConvert.SerializeObject(apiResponse);
-            }
 
-            httpContext.Response.ContentType = "application/json";
-            return httpContext.Response.WriteAsync(jsonString);
+            return RewriteResponseAsApiResponse(httpContext, apiResponse);
         }
 
         private async Task<string> FormatRequest(HttpRequest request)
@@ -294,14 +284,6 @@ namespace BlazorBoilerplate.Server.Middleware
         //    }
         //}
 
-        private string ConvertToJSONString(int code, object content)
-        {
-            return JsonConvert.SerializeObject(new ApiResponse(code, ResponseMessage.GetDescription(code), content, null, "0.6.1"), JSONSettings());
-        }
-        private string ConvertToJSONString(ApiResponse apiResponse)
-        {
-            return JsonConvert.SerializeObject(apiResponse, JSONSettings());
-        }
         private string ConvertToJSONString(object rawJSON)
         {
             return JsonConvert.SerializeObject(rawJSON, JSONSettings());
@@ -333,9 +315,7 @@ namespace BlazorBoilerplate.Server.Middleware
                             IApplicationDbContext db)
         {
             if (requestBody.Length > 256)
-            {
                 requestBody = $"(Truncated to 200 chars) {requestBody.Substring(0, 200)}";
-            }
 
             // If the response body was an ApiResponse we should just save the Result object
             if (responseBody != null && responseBody.Contains("\"result\":"))
@@ -349,14 +329,10 @@ namespace BlazorBoilerplate.Server.Middleware
             }
 
             if (responseBody != null && responseBody.Length > 256)
-            {
                 responseBody = $"(Truncated to 200 chars) {responseBody.Substring(0, 200)}";
-            }
 
             if (queryString.Length > 256)
-            {
                 queryString = $"(Truncated to 200 chars) {queryString.Substring(0, 200)}";
-            }
 
             // Pass in the context to resolve the instance, and save to a store?
             await _apiLogManager.Log(new ApiLogItem
