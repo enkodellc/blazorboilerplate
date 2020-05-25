@@ -438,4 +438,13 @@
   <data name="Tenant {0} deleted" xml:space="preserve">
     <value>Tenant {0} deleted</value>
   </data>
+  <data name="Role {0} cannot be deleted" xml:space="preserve">
+    <value>Role {0} cannot be deleted</value>
+  </data>
+  <data name="Tenant {0} cannot be deleted" xml:space="preserve">
+    <value>Tenant {0} cannot be deleted</value>
+  </data>
+  <data name="Role {0} cannot be edited" xml:space="preserve">
+    <value>Role {0} cannot be edited</value>
+  </data>
 </root>

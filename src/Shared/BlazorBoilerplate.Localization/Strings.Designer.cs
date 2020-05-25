@@ -727,6 +727,24 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Role {0} cannot be deleted.
+        /// </summary>
+        public static string Role__0__cannot_be_deleted {
+            get {
+                return ResourceManager.GetString("Role {0} cannot be deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Role {0} cannot be edited.
+        /// </summary>
+        public static string Role__0__cannot_be_edited {
+            get {
+                return ResourceManager.GetString("Role {0} cannot be edited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Role {0} created.
         /// </summary>
         public static string Role__0__created {
@@ -822,6 +840,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Tenant {
             get {
                 return ResourceManager.GetString("Tenant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Tenant {0} cannot be deleted.
+        /// </summary>
+        public static string Tenant__0__cannot_be_deleted {
+            get {
+                return ResourceManager.GetString("Tenant {0} cannot be deleted", resourceCulture);
             }
         }
         
