@@ -45,7 +45,7 @@ namespace BlazorBoilerplate.Server.Controllers
             => new ApiResponse(Status200OK, string.Empty,  _autoMapper.Map<TenantDto>(HttpContext.GetMultiTenantContext().TenantInfo));
 
         [HttpGet("Users")]
-        [Authorize]
+        [Authorize(Permissions.User.Read)]
         public async Task<ApiResponse> GetUsers([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
             => await _adminManager.GetUsers(pageSize, pageNumber);
 
