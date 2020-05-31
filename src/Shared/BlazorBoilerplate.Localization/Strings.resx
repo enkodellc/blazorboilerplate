@@ -447,4 +447,16 @@
   <data name="Role {0} cannot be edited" xml:space="preserve">
     <value>Role {0} cannot be edited</value>
   </data>
+  <data name="AuthenticationRequired" xml:space="preserve">
+    <value>Authentication required</value>
+  </data>
+  <data name="LoginRequired" xml:space="preserve">
+    <value>Please login first</value>
+  </data>
+  <data name="Operation not allowed" xml:space="preserve">
+    <value>Operation not allowed</value>
+  </data>
+  <data name="NotAuthorizedTo" xml:space="preserve">
+    <value>You are not authorized to perform the operation</value>
+  </data>
 </root>

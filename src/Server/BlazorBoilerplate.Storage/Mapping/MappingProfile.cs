@@ -22,7 +22,6 @@ namespace BlazorBoilerplate.Storage.Mapping
             CreateMap<UserProfile, UserProfileDto>().ReverseMap();
             CreateMap<ApiLogItem, ApiLogItemDto>().ReverseMap();
             CreateMap<Message, MessageDto>().ReverseMap();
-            CreateMap<Todo, TodoDto>().ReverseMap();
         }
     }
 }

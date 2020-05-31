@@ -46,6 +46,7 @@ namespace BlazorBoilerplate.Client
             builder.Services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             builder.Services.Add(new ServiceDescriptor(typeof(IUserProfileApi), typeof(UserProfileApi), ServiceLifetime.Scoped));
             builder.Services.AddScoped<AppState>();
+            builder.Services.AddTransient<IApiClient, ApiClient>();
 
             foreach (var module in ModuleProvider.Modules)
                 module.ConfigureWebAssemblyServices(builder.Services);

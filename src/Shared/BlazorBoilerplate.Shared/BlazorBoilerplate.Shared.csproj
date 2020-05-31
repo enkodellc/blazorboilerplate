@@ -30,13 +30,7 @@
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="AuthorizationDefinitions\Permissions.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Permissions.tt</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="Breeze.Sharp" Version="0.9.0" />
     <PackageReference Include="Humanizer" Version="2.8.11" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.0.0-preview.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.4" />
@@ -52,10 +46,6 @@
     <ProjectReference Include="..\BlazorBoilerplate.Localization\BlazorBoilerplate.Localization.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="AuthorizationDefinitions\Permissions.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Permissions.cs</LastGenOutput>
-    </None>
     <None Update="Dto\Admin\ResourceDtoCustomUserClaims.tt">
       <LastGenOutput>ResourceDtoCustomUserClaims.txt</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -72,12 +62,5 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="AuthorizationDefinitions\Permissions.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Permissions.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
 </Project>

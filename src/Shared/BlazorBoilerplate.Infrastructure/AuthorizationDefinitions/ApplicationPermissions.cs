@@ -1,12 +1,12 @@
-using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
-namespace BlazorBoilerplate.Server.Data.Core
+namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
 {
     public static class ApplicationPermissions
     {
@@ -37,6 +37,23 @@ namespace BlazorBoilerplate.Server.Data.Core
                     allPermissions.Add(applicationPermission);
                 }
             }
+
+            var entitiesWithPermissionsAttribute = Assembly.GetExecutingAssembly().GetExportedTypes().Where(t => t.GetCustomAttributes<PermissionsAttribute>(inherit: false).Any());
+
+            foreach (Type entity in entitiesWithPermissionsAttribute)
+            {
+                var requiredPermissions = entity.GetCustomAttribute<PermissionsAttribute>(false);
+
+                foreach (Actions action in Enum.GetValues(typeof(Actions)))
+                    if ((requiredPermissions.Actions & action) == action && action != Actions.CRUD)
+                        allPermissions.Add(new ApplicationPermission
+                        {
+                            Value = $"{entity.Name}.{action}",
+                            Name = $"{entity.Name} {action}",
+                            GroupName = entity.Name
+                        });
+            }
+
             AllPermissions = allPermissions.AsReadOnly();
         }
 

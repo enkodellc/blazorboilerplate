@@ -45,10 +45,10 @@ namespace BlazorBoilerplate.Storage
 
             services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions<ApplicationDbContext>(builder, configuration)); // Look into the way we initialise the PB ways. Look at the old way they did this, with side effects on the builder.
             services.AddScoped(s => s.GetRequiredService<ApplicationDbContext>() as IApplicationDbContext);
+            services.AddScoped<ApplicationPersistenceManager>();
 
             services.AddTransient<IMessageStore, MessageStore>();
             services.AddTransient<IUserProfileStore, UserProfileStore>();
-            services.AddTransient<IToDoStore, ToDoStore>();
             services.AddTransient<IApiLogStore, ApiLogStore>();
 
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();

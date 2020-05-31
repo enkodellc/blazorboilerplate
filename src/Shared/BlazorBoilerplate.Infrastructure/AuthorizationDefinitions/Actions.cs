@@ -5,9 +5,10 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
     [Flags]
     public enum Actions
     {
-        Create = 0,
-        Update = 1,
-        Read = 2,
-        Delete = 3
+        Create = 1,
+        Update = 2,
+        Read = 4,
+        Delete = 8,
+        CRUD= Create | Update | Read | Delete
     }
 }

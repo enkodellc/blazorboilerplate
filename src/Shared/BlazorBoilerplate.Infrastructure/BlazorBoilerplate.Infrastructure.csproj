@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="AuthorizationDefinitions\Permissions.tt">
+      <LastGenOutput>Permissions.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="Server\IAdminManager.tt">
       <LastGenOutput>IAdminManager.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -25,6 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="AuthorizationDefinitions\Permissions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Permissions.tt</DependentUpon>
+    </Compile>
     <Compile Update="Server\IAdminManager.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

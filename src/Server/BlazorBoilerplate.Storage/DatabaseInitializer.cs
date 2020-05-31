@@ -1,7 +1,7 @@
-﻿using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Server.Data.Core;
-using BlazorBoilerplate.Shared;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Storage.Core;
 using Finbuckle.MultiTenant;
 using IdentityModel;

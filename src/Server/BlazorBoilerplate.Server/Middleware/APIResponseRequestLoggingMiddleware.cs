@@ -27,30 +27,18 @@ namespace BlazorBoilerplate.Server.Middleware
     //Logging  -> https://salslab.com/a/safely-logging-api-requests-and-responses-in-asp-net-core
     //Response -> https://www.c-sharpcorner.com/article/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consiste/
     //Latest: https://github.com/proudmonkey/AutoWrapper
-    public class APIResponseRequestLoggingMiddleware
+    public class APIResponseRequestLoggingMiddleware : BaseMiddleware
     {
-        private readonly RequestDelegate _next;
-        ILogger<APIResponseRequestLoggingMiddleware> _logger;
         private IApiLogManager _apiLogManager;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
         private readonly bool _enableAPILogging;
-        private List<string> _ignorePaths = new List<string>();
+        private List<string> _ignorePaths;
 
-        public APIResponseRequestLoggingMiddleware(RequestDelegate next, bool enableAPILogging, IConfiguration configuration)
+        public APIResponseRequestLoggingMiddleware(RequestDelegate next, bool enableAPILogging, IConfiguration configuration) : base(next)
         {
-            _next = next;
             _enableAPILogging = enableAPILogging;
             _clearCacheHeadersDelegate = ClearCacheHeaders;
-            _ignorePaths = configuration.GetSection("BlazorBoilerplate:ApiLogging:IgnorePaths").Get<List<string>>();
-        }
-
-        private Task RewriteResponseAsApiResponse(HttpContext httpContext, ApiResponse apiResponse)
-        {
-            var jsonString = JsonConvert.SerializeObject(apiResponse);
-            httpContext.Response.Clear();
-            httpContext.Response.ContentType = "application/json";
-
-            return httpContext.Response.WriteAsync(jsonString);
+            _ignorePaths = configuration.GetSection("BlazorBoilerplate:ApiLogging:IgnorePaths").Get<List<string>>() ?? new List<string>();
         }
 
         public async Task Invoke(HttpContext httpContext, IApplicationDbContext db, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
@@ -77,22 +65,28 @@ namespace BlazorBoilerplate.Server.Middleware
                     {
                         try
                         {
-                            var response = httpContext.Response;
-                            response.Body = responseBody;
-
-                            await _next.Invoke(httpContext);
-
                             string responseBodyContent = null;
 
-                            if (httpContext.Response.StatusCode == Status200OK)
-                            {
-                                responseBodyContent = await FormatResponse(response);
-                                await HandleSuccessRequestAsync(httpContext, responseBodyContent, Status200OK);
-                            }
+                            var response = httpContext.Response;
+
+                            if (request.Path.StartsWithSegments(new PathString("/api/data")))
+                                await _next.Invoke(httpContext);
                             else
                             {
-                                await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
+                                response.Body = responseBody;
+
+                                await _next.Invoke(httpContext);
+
+                                //wrap response in ApiResponse
+                                if (httpContext.Response.StatusCode == Status200OK)
+                                {
+                                    responseBodyContent = await FormatResponse(response);
+                                    await HandleSuccessRequestAsync(httpContext, responseBodyContent, Status200OK);
+                                }
+                                else
+                                    await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
                             }
+
 
                             stopWatch.Stop();
 
@@ -156,63 +150,9 @@ namespace BlazorBoilerplate.Server.Middleware
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
-        {
-            _logger.LogError("Api Exception:", exception);
-
-            ApiError apiError = null;
-            ApiResponse apiResponse = null;
-            int code = 0;
-
-            if (exception is ApiException)
-            {
-                var ex = exception as ApiException;
-                apiError = new ApiError(ResponseMessage.GetDescription(ex.StatusCode), ex.Errors)
-                {
-                    ValidationErrors = ex.Errors,
-                    ReferenceErrorCode = ex.ReferenceErrorCode,
-                    ReferenceDocumentLink = ex.ReferenceDocumentLink
-                };
-                code = ex.StatusCode;
-                httpContext.Response.StatusCode = code;
-            }
-            else if (exception is UnauthorizedAccessException)
-            {
-                apiError = new ApiError("Unauthorized Access");
-                code = Status401Unauthorized;
-                httpContext.Response.StatusCode = code;
-            }
-            else
-            {
-//-:cnd:noEmit
-#if !DEBUG
-                var msg = "An unhandled error occurred.";
-                string stack = null;
-#else
-                var msg = exception.GetBaseException().Message;
-                string stack = exception.StackTrace;
-#endif
-//-:cnd:noEmit
-
-                apiError = new ApiError(msg)
-                {
-                    Details = stack
-                };
-
-                code = Status500InternalServerError;
-                httpContext.Response.StatusCode = code;
-            }
-
-            apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(Status500InternalServerError), null, apiError);
-
-            await RewriteResponseAsApiResponse(httpContext, apiResponse);
-        }
-
         private Task HandleNotSuccessRequestAsync(HttpContext httpContext, int code)
         {
-            ApiError apiError = new ApiError(ResponseMessage.GetDescription(code));
-
-            ApiResponse apiResponse = new ApiResponse(code, apiError);
+            ApiResponse apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(code));
             httpContext.Response.StatusCode = code;
 
             return RewriteResponseAsApiResponse(httpContext, apiResponse);

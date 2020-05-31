@@ -447,4 +447,16 @@
   <data name="Role {0} cannot be edited" xml:space="preserve">
     <value>Il ruolo {0} non può essere modificato</value>
   </data>
+  <data name="AuthenticationRequired" xml:space="preserve">
+    <value>Richiesta autenticazione</value>
+  </data>
+  <data name="LoginRequired" xml:space="preserve">
+    <value>Si prega di effettuare l'accesso</value>
+  </data>
+  <data name="Operation not allowed" xml:space="preserve">
+    <value>Operazione non consentita</value>
+  </data>
+  <data name="NotAuthorizedTo" xml:space="preserve">
+    <value>Non sei autorizzato ad effettuare l'operazione</value>
+  </data>
 </root>

@@ -160,6 +160,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Authentication required.
+        /// </summary>
+        public static string AuthenticationRequired {
+            get {
+                return ResourceManager.GetString("AuthenticationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Cancel.
         /// </summary>
         public static string Cancel {
@@ -484,6 +493,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Please login first.
+        /// </summary>
+        public static string LoginRequired {
+            get {
+                return ResourceManager.GetString("LoginRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Logout.
         /// </summary>
         public static string Logout {
@@ -556,6 +574,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a You are not authorized to perform the operation.
+        /// </summary>
+        public static string NotAuthorizedTo {
+            get {
+                return ResourceManager.GetString("NotAuthorizedTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a OpenID Clients.
         /// </summary>
         public static string OpenIdClients {
@@ -570,6 +597,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Operation_Failed {
             get {
                 return ResourceManager.GetString("Operation Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Operation not allowed.
+        /// </summary>
+        public static string Operation_not_allowed {
+            get {
+                return ResourceManager.GetString("Operation not allowed", resourceCulture);
             }
         }
         

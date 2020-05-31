@@ -11,8 +11,11 @@ using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.Shared.Services;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
+using Breeze.Core;
+using Breeze.AspNetCore;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
@@ -32,6 +35,7 @@ using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Serialization;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using NSwag;
@@ -44,12 +48,10 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 
 //-:cnd:noEmit
 #if ServerSideBlazor
 using BlazorBoilerplate.Shared.Providers;
-using BlazorBoilerplate.Shared.Services;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -57,6 +59,7 @@ using System.Net.Http;
 #endif
 //-:cnd:noEmit
 
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server
 {
@@ -426,7 +429,21 @@ namespace BlazorBoilerplate.Server
             });
             #endregion
 
-            services.AddMvc().AddNewtonsoftJson();
+            services.AddMvc().AddNewtonsoftJson(opt =>
+            {
+                // Set Breeze defaults for entity serialization
+                var ss = JsonSerializationFns.UpdateWithDefaults(opt.SerializerSettings);
+                if (ss.ContractResolver is DefaultContractResolver resolver)
+                {
+                    resolver.NamingStrategy = null;  // remove json camelCasing; names are converted on the client.
+                }
+                if (_environment.IsDevelopment())
+                {
+                    ss.Formatting = Newtonsoft.Json.Formatting.Indented; // format JSON for debugging
+                }
+            })   // Add Breeze exception filter to send errors back to the client
+            .AddMvcOptions(o => { o.Filters.Add(new GlobalExceptionFilter()); });
+
             services.AddServerSideBlazor().AddCircuitOptions(o =>
             {
                 if (_environment.IsDevelopment())
@@ -468,6 +485,7 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserSession, UserSession>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.Configure<EmailConfiguration>(Configuration.GetSection(nameof(EmailConfiguration)));
 
             services.AddTransient<IAccountManager, AccountManager>();
@@ -477,7 +495,6 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IEmailManager, EmailManager>();
             services.AddTransient<IExternalAuthManager, ExternalAuthManager>();
             services.AddTransient<IMessageManager, MessageManager>();
-            services.AddTransient<ITodoManager, ToDoManager>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();
 
             #region Automapper
@@ -491,7 +508,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton(autoMapper);
             #endregion
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ServerSideBlazor
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             services.AddScoped<IUserProfileApi, UserProfileApi>();
@@ -511,8 +528,9 @@ namespace BlazorBoilerplate.Server
             Log.Logger.Debug("Adding AuthenticationStateProvider...");
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
+            services.AddTransient<IApiClient, ApiClient>();
             services.AddModules();
 
             if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
@@ -548,11 +566,11 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-//-:cnd:noEmit
+                //-:cnd:noEmit
 #if ClientSideBlazor
                 app.UseWebAssemblyDebugging();
 #endif
-//-:cnd:noEmit
+                //-:cnd:noEmit
             }
             else
             {
@@ -562,11 +580,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-//-:cnd:noEmit
+            //-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();
 #endif
-//-:cnd:noEmit
+            //-:cnd:noEmit
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
@@ -577,7 +595,7 @@ namespace BlazorBoilerplate.Server
             app.UseMultiTenant();
             app.UseMiddleware<UserSessionMiddleware>();
 
-            // NSwag
+            //NSwag
             app.UseOpenApi();
             app.UseSwaggerUi3(settings =>
             {

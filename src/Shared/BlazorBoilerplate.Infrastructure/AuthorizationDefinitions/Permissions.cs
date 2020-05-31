@@ -74,17 +74,5 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
             public const string Delete = "Tenant.Delete";
         }
         #endregion
-        
-        public static class Todo
-        {
-            [Description("Create a new ToDo")]
-            public const string Create = nameof(Todo) + "." + nameof(Actions.Create);
-            [Description("Read ToDos")]
-            public const string Read = nameof(Todo) + "." + nameof(Actions.Read);
-            [Description("Edit existing ToDos")]
-            public const string Update = nameof(Todo) + "." + nameof(Actions.Update);
-            [Description("Delete any ToDo")]
-            public const string Delete = nameof(Todo) + "." + nameof(Actions.Delete);
-        }
     }
 }
