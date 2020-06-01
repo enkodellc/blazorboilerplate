@@ -508,7 +508,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton(autoMapper);
             #endregion
-            //-:cnd:noEmit
+//-:cnd:noEmit
 #if ServerSideBlazor
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             services.AddScoped<IUserProfileApi, UserProfileApi>();
@@ -528,7 +528,7 @@ namespace BlazorBoilerplate.Server
             Log.Logger.Debug("Adding AuthenticationStateProvider...");
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 #endif
-            //-:cnd:noEmit
+//-:cnd:noEmit
 
             services.AddTransient<IApiClient, ApiClient>();
             services.AddModules();
@@ -557,8 +557,6 @@ namespace BlazorBoilerplate.Server
                 databaseInitializer.SeedAsync().Wait();
             }
 
-            app.UseForwardedHeaders();
-
             // A REST API global exception handler and response wrapper for a consistent API
             // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
             app.UseMiddleware<APIResponseRequestLoggingMiddleware>(Convert.ToBoolean(Configuration[$"{projectName}:EnableAPILogging:Enabled"] ?? "true"));
@@ -566,11 +564,11 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //-:cnd:noEmit
+//-:cnd:noEmit
 #if ClientSideBlazor
                 app.UseWebAssemblyDebugging();
 #endif
-                //-:cnd:noEmit
+//-:cnd:noEmit
             }
             else
             {
@@ -580,11 +578,11 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //-:cnd:noEmit
+//-:cnd:noEmit
 #if ClientSideBlazor
             app.UseBlazorFrameworkFiles();
 #endif
-            //-:cnd:noEmit
+//-:cnd:noEmit
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
