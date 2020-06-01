@@ -459,4 +459,7 @@
   <data name="NotAuthorizedTo" xml:space="preserve">
     <value>You are not authorized to perform the operation</value>
   </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Please wait...</value>
+  </data>
 </root>
