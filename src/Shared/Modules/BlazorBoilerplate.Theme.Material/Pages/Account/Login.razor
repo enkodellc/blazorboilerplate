@@ -153,6 +153,8 @@
                 loginViewModel = apiResponse.Result;
                 if (loginViewModel.IsExternalLoginOnly)
                 {
+                    if (!string.IsNullOrEmpty(ReturnUrl))
+                        ReturnUrl = Uri.EscapeDataString(ReturnUrl);
                     // we only have one option for logging in and it's an external provider
                     navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
                 }
@@ -175,13 +177,13 @@
 
 //-:cnd:noEmit
 #if ClientSideBlazor
-    protected override async Task OnParametersSetAsync()
-    {
-        var user = (await authenticationStateTask).User;
+protected override async Task OnParametersSetAsync()
+{
+    var user = (await authenticationStateTask).User;
 
-        if (user.Identity.IsAuthenticated && navigateTo != null)
-            navigationManager.NavigateTo(navigateTo);
-    }
+    if (user.Identity.IsAuthenticated && navigateTo != null)
+        navigationManager.NavigateTo(navigateTo);
+}
 #endif
 //-:cnd:noEmit
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -194,6 +196,9 @@
 
     void SignInWith(ExternalProvider provider)
     {
+        if (!string.IsNullOrEmpty(ReturnUrl))
+            ReturnUrl = Uri.EscapeDataString(ReturnUrl);
+
         navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{provider.AuthenticationScheme}/{ReturnUrl}", true);
     }
 
