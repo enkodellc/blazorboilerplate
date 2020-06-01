@@ -35,7 +35,7 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='Release_CSB'">
     <DefineConstants>ClientSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
+    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release_SSB'">
