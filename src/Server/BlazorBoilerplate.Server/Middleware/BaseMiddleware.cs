@@ -3,7 +3,9 @@ using Breeze.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using ObjectCloner.Extensions;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -23,11 +25,15 @@ namespace BlazorBoilerplate.Server.Middleware
 
         protected Task RewriteResponseAsApiResponse(HttpContext httpContext, ApiResponse apiResponse)
         {
-            var jsonString = JsonConvert.SerializeObject(apiResponse);
+            var headers = httpContext.Response.Headers.DeepClone();
             httpContext.Response.Clear();
+
+            foreach (var h in headers.Where(i => !i.Key.StartsWith("Content")))
+                httpContext.Response.Headers.Add(h.Key, h.Value);
+
             httpContext.Response.ContentType = "application/json";
 
-            return httpContext.Response.WriteAsync(jsonString);
+            return httpContext.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
         }
 
         protected async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)

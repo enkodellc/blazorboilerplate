@@ -300,7 +300,7 @@ namespace BlazorBoilerplate.Server.Managers
                     return new ApiResponse(Status200OK, parameters.ReturnUrl);
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(parameters.UserName, "Invalid Password for user {0}}", clientId: context?.Client.ClientId));
+                await _events.RaiseAsync(new UserLoginFailureEvent(parameters.UserName, "Invalid Password for user {0}", clientId: context?.Client.ClientId));
                 _logger.LogInformation("Invalid Password for user {0}", parameters.UserName);
                 return new ApiResponse(Status401Unauthorized, "Login Failed");
             }

@@ -36,7 +36,7 @@ namespace BlazorBoilerplate.Server.Controllers
             if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
 
             // validate returnUrl - either it is a valid OIDC URL or back to a local page
-            if (Url.IsLocalUrl(returnUrl) == false && _interaction.IsValidReturnUrl(returnUrl) == false)
+            if (Url.IsLocalUrl(returnUrl) == false && _interaction.IsValidReturnUrl(returnUrl) == false && !returnUrl.Contains(Request.Host.Value))
             {
                 // user might have clicked on a malicious link - should be logged
                 throw new Exception("invalid return URL");

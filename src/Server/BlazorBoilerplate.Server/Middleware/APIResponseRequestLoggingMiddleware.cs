@@ -69,7 +69,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
                             var response = httpContext.Response;
 
-                            if (request.Path.StartsWithSegments(new PathString("/api/data")))
+                            if (new string[] { "/api/data", "/api/externalauth" }.Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
                                 await _next.Invoke(httpContext);
                             else
                             {
@@ -165,20 +165,18 @@ namespace BlazorBoilerplate.Server.Middleware
 
             ApiResponse apiResponse = null;
 
-            if (!body.ToString().IsValidJson())
-                return RewriteResponseAsApiResponse(httpContext, apiResponse);
-            else
-                bodyText = body.ToString();
-
-            //TODO Review the code below as it might not be necessary
-            dynamic bodyContent = JsonConvert.DeserializeObject<dynamic>(bodyText);
-            Type type = bodyContent?.GetType();
-
-            // Check to see if body is already an ApiResponse Class type
-            if (type.Equals(typeof(Newtonsoft.Json.Linq.JObject)))
+            try
             {
                 apiResponse = JsonConvert.DeserializeObject<ApiResponse>(bodyText);
+            }
+            catch (Exception)
+            {
+            }
 
+            var bodyContent = JsonConvert.DeserializeObject<dynamic>(bodyText);
+
+            if (apiResponse != null)
+            {
                 if (apiResponse.StatusCode == 0)
                     apiResponse.StatusCode = code;
 
