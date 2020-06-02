@@ -4,14 +4,16 @@ using BlazorBoilerplate.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlazorBoilerplate.Storage.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200602075604_AuditingShadowProperties")]
+    partial class AuditingShadowProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,23 +215,11 @@ namespace BlazorBoilerplate.Storage.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid?>("CreatedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2(7)");
-
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("datetime2(7)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -237,10 +227,6 @@ namespace BlazorBoilerplate.Storage.Migrations
                         .HasMaxLength(128);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
 
                     b.ToTable("Todos");
                 });
@@ -472,17 +458,6 @@ namespace BlazorBoilerplate.Storage.Migrations
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.Todo", b =>
-                {
-                    b.HasOne("BlazorBoilerplate.Infrastructure.Storage.DataModels.ApplicationUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("BlazorBoilerplate.Infrastructure.Storage.DataModels.ApplicationUser", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
                 });
 
             modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile", b =>

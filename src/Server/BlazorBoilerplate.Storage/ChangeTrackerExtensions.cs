@@ -11,13 +11,11 @@ namespace BlazorBoilerplate.Storage
         public static void SetShadowProperties(this ChangeTracker changeTracker, IUserSession userSession)
         {
             changeTracker.DetectChanges();
-            Guid userId = Guid.Empty;
+            Guid? userId = null;
             DateTime timestamp = DateTime.UtcNow;
 
             if (userSession.UserId != Guid.Empty)
-            {
                 userId = userSession.UserId;
-            }
 
             foreach (EntityEntry entry in changeTracker.Entries())
             {
@@ -27,13 +25,13 @@ namespace BlazorBoilerplate.Storage
                     if (entry.State == EntityState.Added)
                     {
                         entry.Property("CreatedOn").CurrentValue = timestamp;
-                        entry.Property("CreatedBy").CurrentValue = userId;
+                        entry.Property("CreatedById").CurrentValue = userId;
                     }
 
                     if (entry.State == EntityState.Deleted || entry.State == EntityState.Modified)
                     {
                         entry.Property("ModifiedOn").CurrentValue = timestamp;
-                        entry.Property("ModifiedBy").CurrentValue = userId;
+                        entry.Property("ModifiedById").CurrentValue = userId;
                     }
                 }
 

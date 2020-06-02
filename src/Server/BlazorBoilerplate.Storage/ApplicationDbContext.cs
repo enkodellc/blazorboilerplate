@@ -52,11 +52,11 @@ namespace BlazorBoilerplate.Storage
 
             modelBuilder.Entity<IdentityRole<Guid>>().IsMultiTenant();
 
-            modelBuilder.Entity<TenantSetting>().IsMultiTenant().ToTable("TenantSettings")
-                .Property(e => e.Value)
-                .HasConversion(
-                v => v.ToString(),
-                v => v);
+            //modelBuilder.Entity<TenantSetting>().IsMultiTenant().ToTable("TenantSettings")
+            //    .Property(e => e.Value)
+            //    .HasConversion(
+            //    v => v.ToString(),
+            //    v => v);
 
             modelBuilder.Entity<Message>().ToTable("Messages");
 

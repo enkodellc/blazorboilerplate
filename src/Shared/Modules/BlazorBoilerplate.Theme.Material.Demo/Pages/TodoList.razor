@@ -22,6 +22,8 @@
         <th>Id</th>
         <th>Completed</th>
         <th style="min-width:180px;">Todo</th>
+        <th>Created on</th>
+        <th>Created by</th>
     </MatTableHeader>
     <MatTableRow Context="TodoRow">
         <td>
@@ -30,6 +32,8 @@
         <td>@String.Format("{0:d}", TodoRow.Id)</td>
         <td><MatCheckbox class="filled-in chk-col-blue" TValue="bool" Value="@TodoRow.IsCompleted" ValueChanged="@((item) => Update(TodoRow))"></MatCheckbox></td>
         <td>@TodoRow.Title</td>
+        <td>@TodoRow.CreatedOn</td>
+        <td>@TodoRow.CreatedBy?.UserName</td>
     </MatTableRow>
 </MatTable>
 

@@ -3,6 +3,7 @@ using BlazorBoilerplate.Storage;
 using Breeze.AspNetCore;
 using Breeze.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 
@@ -33,7 +34,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpGet]
         public IQueryable<Todo> Todos()
         {
-            return persistenceManager.GetEntities<Todo>().OrderBy(i => i.Id);
+            return persistenceManager.GetEntities<Todo>().Include(i => i.CreatedBy).Include(i => i.ModifiedBy).OrderBy(i => i.Id);
         }
 
         [HttpPost]

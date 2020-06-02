@@ -13,9 +13,9 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             set { SetValue(value); }
         }
 
-        public Guid CreatedBy
+        public Guid? CreatedById
         {
-            get { return GetValue<Guid>(); }
+            get { return GetValue<Guid?>(); }
             set { SetValue(value); }
         }
 
@@ -37,9 +37,9 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             set { SetValue(value); }
         }
 
-        public Guid ModifiedBy
+        public Guid? ModifiedById
         {
-            get { return GetValue<Guid>(); }
+            get { return GetValue<Guid?>(); }
             set { SetValue(value); }
         }
 
@@ -55,5 +55,17 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             set { SetValue(value); }
         }
 
-   }
+        public ApplicationUser CreatedBy
+        {
+            get { return GetValue<ApplicationUser>(); }
+            set { SetValue(value); }
+        }
+
+        public ApplicationUser ModifiedBy
+        {
+            get { return GetValue<ApplicationUser>(); }
+            set { SetValue(value); }
+        }
+
+    }
 }
