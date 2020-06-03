@@ -68,6 +68,7 @@ namespace BlazorBoilerplate.Server
         public IConfiguration Configuration { get; }
 
         private readonly IWebHostEnvironment _environment;
+        private readonly bool _enableAPIDoc;
 
         private readonly string projectName = nameof(BlazorBoilerplate);
 
@@ -75,6 +76,7 @@ namespace BlazorBoilerplate.Server
         {
             Configuration = configuration;
             _environment = env;
+            _enableAPIDoc = configuration.GetSection("BlazorBoilerplate:Api:Doc:Enabled").Get<bool>();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -454,31 +456,32 @@ namespace BlazorBoilerplate.Server
 
             services.AddSignalR();
 
-            services.AddOpenApiDocument(document =>
-            {
-                document.Title = "BlazorBoilerplate API";
-                document.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
-                document.AddSecurity("bearer", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            if (_enableAPIDoc)
+                services.AddOpenApiDocument(document =>
                 {
-                    Type = OpenApiSecuritySchemeType.OAuth2,
-                    Description = "Local Identity Server",
-                    OpenIdConnectUrl = $"{authAuthority}/.well-known/openid-configuration", //not working
-                    Flow = OpenApiOAuth2Flow.AccessCode,
-                    Flows = new OpenApiOAuthFlows()
+                    document.Title = "BlazorBoilerplate API";
+                    document.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
+                    document.AddSecurity("bearer", Enumerable.Empty<string>(), new OpenApiSecurityScheme
                     {
-                        AuthorizationCode = new OpenApiOAuthFlow()
+                        Type = OpenApiSecuritySchemeType.OAuth2,
+                        Description = "Local Identity Server",
+                        OpenIdConnectUrl = $"{authAuthority}/.well-known/openid-configuration", //not working
+                    Flow = OpenApiOAuth2Flow.AccessCode,
+                        Flows = new OpenApiOAuthFlows()
                         {
-                            Scopes = new Dictionary<string, string>
+                            AuthorizationCode = new OpenApiOAuthFlow()
                             {
+                                Scopes = new Dictionary<string, string>
+                                {
                                 { IdentityServerConfig.LocalApiName, IdentityServerConfig.LocalApiName }
+                                },
+                                AuthorizationUrl = $"{authAuthority}/connect/authorize",
+                                TokenUrl = $"{authAuthority}/connect/token"
                             },
-                            AuthorizationUrl = $"{authAuthority}/connect/authorize",
-                            TokenUrl = $"{authAuthority}/connect/token"
-                        },
-                    }
-                }); ;
+                        }
+                    }); ;
 
-                document.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
+                    document.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
                 //      new OperationSecurityScopeProcessor("bearer"));
             });
 
@@ -593,17 +596,19 @@ namespace BlazorBoilerplate.Server
             app.UseMultiTenant();
             app.UseMiddleware<UserSessionMiddleware>();
 
-            //NSwag
-            app.UseOpenApi();
-            app.UseSwaggerUi3(settings =>
+            if (_enableAPIDoc)
             {
-                settings.OAuth2Client = new OAuth2ClientSettings()
+                app.UseOpenApi();
+                app.UseSwaggerUi3(settings =>
                 {
-                    AppName = projectName,
-                    ClientId = IdentityServerConfig.SwaggerClientID,
-                    UsePkceWithAuthorizationCodeGrant = true
-                };
-            });
+                    settings.OAuth2Client = new OAuth2ClientSettings()
+                    {
+                        AppName = projectName,
+                        ClientId = IdentityServerConfig.SwaggerClientID,
+                        UsePkceWithAuthorizationCodeGrant = true
+                    };
+                });
+            }
 
             app.UseEndpoints(endpoints =>
             {
