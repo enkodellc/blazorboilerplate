@@ -2,10 +2,7 @@
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @layout AdminLayout
 @inject HttpClient Http
-@inject IAuthorizationService AuthorizationService
-@inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
-@inject AppState appState
 @inject IStringLocalizer<Strings> L
 
 @using System.Net
