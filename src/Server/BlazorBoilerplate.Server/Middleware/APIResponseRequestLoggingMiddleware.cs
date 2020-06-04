@@ -34,11 +34,11 @@ namespace BlazorBoilerplate.Server.Middleware
         private readonly bool _enableAPILogging;
         private List<string> _ignorePaths;
 
-        public APIResponseRequestLoggingMiddleware(RequestDelegate next, bool enableAPILogging, IConfiguration configuration) : base(next)
+        public APIResponseRequestLoggingMiddleware(RequestDelegate next, IConfiguration configuration) : base(next)
         {
-            _enableAPILogging = enableAPILogging;
+            _enableAPILogging = configuration.GetSection("BlazorBoilerplate:Api:Logging:Enabled").Get<bool>();
             _clearCacheHeadersDelegate = ClearCacheHeaders;
-            _ignorePaths = configuration.GetSection("BlazorBoilerplate:ApiLogging:IgnorePaths").Get<List<string>>() ?? new List<string>();
+            _ignorePaths = configuration.GetSection("BlazorBoilerplate:Api:Logging:IgnorePaths").Get<List<string>>() ?? new List<string>();
         }
 
         public async Task Invoke(HttpContext httpContext, IApplicationDbContext db, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
