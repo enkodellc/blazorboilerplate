@@ -25,6 +25,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
     {
         private AccountManager _accountManager;
 
+        private Mock<IDatabaseInitializer> _databaseInitializer;
         private Mock<UserManager<ApplicationUser>> _userManager;
         private Mock<SignInManager<ApplicationUser>> _signInManager;
         private Mock<ILogger<AccountManager>> _logger;
@@ -52,6 +53,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
             var contextAccessor = new Mock<IHttpContextAccessor>();
             var userPrincipalFactory = new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>();
 
+            _databaseInitializer = new Mock<IDatabaseInitializer>(null, null, null, null, null, null, null);
             _userManager = new Mock<UserManager<ApplicationUser>>(userStore.Object, null, null, null, null, null, null, null, null);
             _signInManager = new Mock<SignInManager<ApplicationUser>>(_userManager.Object, contextAccessor.Object, userPrincipalFactory.Object, null, null, null, null);
             _logger = new Mock<ILogger<AccountManager>>();
@@ -62,7 +64,8 @@ namespace BlazorBoilerplate.Server.Tests.Managers
             _events = new Mock<IEventService>();
             _l = new Mock<IStringLocalizer<Strings>>();
 
-            _accountManager = new AccountManager(_userManager.Object, 
+            _accountManager = new AccountManager(_databaseInitializer.Object,
+                _userManager.Object, 
                 _signInManager.Object, 
                 _logger.Object, 
                 _roleManager.Object, 

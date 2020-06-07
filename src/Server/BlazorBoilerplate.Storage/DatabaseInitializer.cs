@@ -21,6 +21,9 @@ namespace BlazorBoilerplate.Storage
 {
     public class DatabaseInitializer : IDatabaseInitializer
     {
+        private const string adminRoleName = DefaultRoleNames.Administrator;
+        private const string userRoleName = DefaultRoleNames.User;
+
         private readonly PersistedGrantDbContext _persistedGrantContext;
         private readonly ConfigurationDbContext _configurationContext;
         private readonly ApplicationDbContext _context;
@@ -72,17 +75,9 @@ namespace BlazorBoilerplate.Storage
 
         private async Task SeedASPIdentityCoreAsync()
         {
-            const string adminRoleName = DefaultRoleNames.Administrator;
-            const string userRoleName = DefaultRoleNames.User;
-
             if (!await _context.Users.AnyAsync())
             {
-                //Generating inbuilt accounts
-                await EnsureRoleAsync(adminRoleName, "Default administrator", ApplicationPermissions.GetAllPermissionValues());
-                await EnsureRoleAsync(userRoleName, "Default user", new string[] { });
-
-                await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { adminRoleName });
-
+                await EnsureRoleAsync(userRoleName, "Default user", new string[] { });               
                 ApplicationUser user1 = await CreateUserAsync(DefaultUserNames.User, "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
                 ApplicationUser user2 = await CreateUserAsync("user2", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
 
@@ -96,26 +91,6 @@ namespace BlazorBoilerplate.Storage
                 await _userManager.AddClaimAsync(user2, new Claim("TenantId", ContosoTenant.Identifier));
 
                 _logger.LogInformation("Inbuilt account generation completed");
-            }
-            else
-            {
-                IdentityRole<Guid> adminRole = await _roleManager.FindByNameAsync(adminRoleName);
-                var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
-                var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
-                var NewClaims = AllClaims.Except(RoleClaims);
-                foreach (string claim in NewClaims)
-                {
-                    await _roleManager.AddClaimAsync(adminRole, new Claim(ClaimConstants.Permission, claim));
-                }
-                var DeprecatedClaims = RoleClaims.Except(AllClaims);
-                var roles = await _roleManager.Roles.ToListAsync();
-                foreach (string claim in DeprecatedClaims)
-                {
-                    foreach (var role in roles)
-                    {
-                        await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, claim));
-                    }
-                }
             }
         }
 
@@ -218,6 +193,27 @@ namespace BlazorBoilerplate.Storage
                 }
                 await _configurationContext.SaveChangesAsync();
             }
+        }
+
+        public async Task EnsureAdminIdentitiesAsync()
+        {
+            await EnsureRoleAsync(DefaultRoleNames.Administrator, "Default administrator", ApplicationPermissions.GetAllPermissionValues());
+            await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
+
+            IdentityRole<Guid> adminRole = await _roleManager.FindByNameAsync(adminRoleName);
+            var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
+            var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
+            var NewClaims = AllClaims.Except(RoleClaims);
+
+            foreach (string claim in NewClaims)
+                await _roleManager.AddClaimAsync(adminRole, new Claim(ClaimConstants.Permission, claim));
+
+            var DeprecatedClaims = RoleClaims.Except(AllClaims);
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            foreach (string claim in DeprecatedClaims)
+                foreach (var role in roles)
+                    await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, claim));
         }
 
         private async Task EnsureRoleAsync(string roleName, string description, string[] claims)

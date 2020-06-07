@@ -34,6 +34,7 @@ namespace BlazorBoilerplate.Server.Managers
 {
     public class AccountManager : IAccountManager
     {
+        private readonly IDatabaseInitializer _databaseInitializer;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<AccountManager> _logger;
@@ -49,7 +50,8 @@ namespace BlazorBoilerplate.Server.Managers
 
         private static readonly UserInfoDto LoggedOutUser = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
 
-        public AccountManager(UserManager<ApplicationUser> userManager,
+        public AccountManager(IDatabaseInitializer databaseInitializer,
+            UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<AccountManager> logger,
             RoleManager<IdentityRole<Guid>> roleManager,
@@ -62,6 +64,7 @@ namespace BlazorBoilerplate.Server.Managers
             IEventService events,
             IStringLocalizer<Strings> l)
         {
+            _databaseInitializer = databaseInitializer;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
@@ -249,6 +252,8 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
+                await _databaseInitializer.EnsureAdminIdentitiesAsync();
+
                 if (!string.IsNullOrEmpty(parameters.ReturnUrl))
                     parameters.ReturnUrl = new Uri(parameters.ReturnUrl).LocalPath;
 
@@ -532,7 +537,8 @@ namespace BlazorBoilerplate.Server.Managers
 
                     await _userManager.DeleteAsync(user);
                     return new ApiResponse(Status200OK, "User Deletion Successful");
-                } else
+                }
+                else
                     return new ApiResponse(Status403Forbidden, L["User {0} cannot be edited", user.UserName]);
             }
             catch
