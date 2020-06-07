@@ -554,16 +554,6 @@ namespace BlazorBoilerplate.Server
 
             EmailTemplates.Initialize(env);
 
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
-                databaseInitializer.SeedAsync().Wait();
-            }
-
-            // A REST API global exception handler and response wrapper for a consistent API
-            // Configure API Loggin in appsettings.json - Logs most API calls. Great for debugging and user activity audits
-            app.UseMiddleware<APIResponseRequestLoggingMiddleware>();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -594,7 +584,17 @@ namespace BlazorBoilerplate.Server
 
             //Must be AFTER the Auth middleware to get the User/Identity info
             app.UseMultiTenant();
+
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
+                databaseInitializer.SeedAsync().Wait();
+            }
+
             app.UseMiddleware<UserSessionMiddleware>();
+
+            // before app.UseMultiTenant() make injected TenantInfo == null
+            app.UseMiddleware<APIResponseRequestLoggingMiddleware>();
 
             if (_enableAPIDoc)
             {
