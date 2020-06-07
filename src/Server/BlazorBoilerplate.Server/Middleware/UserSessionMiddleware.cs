@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.Interfaces;
+﻿using BlazorBoilerplate.Shared.Interfaces;
 using Finbuckle.MultiTenant;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
@@ -32,8 +31,8 @@ namespace BlazorBoilerplate.Server.Middleware
                     userSession.Roles = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Role).Select(c => c.Value).ToList();
                     userSession.ExposedClaims = httpContext.User.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList();
 
-                    if (userSession.Roles.Contains(DefaultRoleNames.Administrator))
-                        userSession.DisableTenantFilter = true;
+                    //if (userSession.Roles.Contains(DefaultRoleNames.Administrator))
+                    //    userSession.DisableTenantFilter = true;
                 }
 
                 // Call the next delegate/middleware in the pipeline
