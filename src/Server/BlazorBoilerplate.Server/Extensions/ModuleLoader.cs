@@ -8,7 +8,7 @@ using System.Runtime.Loader;
 namespace BlazorBoilerplate.Server.Extensions
 {
     public static class ModuleLoader
-    {      
+    {
         static ModuleLoader()
         {
             var assemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
@@ -17,18 +17,20 @@ namespace BlazorBoilerplate.Server.Extensions
 
             List<Assembly> allAssemblies = new List<Assembly>();
 
-            foreach (var dll in Directory.GetFiles(assemblyPath, "*.dll"))
-                allAssemblies.Add(AssemblyLoadContext.Default.LoadFromStream(new MemoryStream(File.ReadAllBytes(dll))));
+            if (Directory.Exists(assemblyPath))
+            {
+                foreach (var dll in Directory.GetFiles(assemblyPath, "*.dll"))
+                    allAssemblies.Add(AssemblyLoadContext.Default.LoadFromStream(new MemoryStream(File.ReadAllBytes(dll))));
 
-            ModuleProvider.Init(allAssemblies);          
+                ModuleProvider.Init(allAssemblies);
+            }
         }
 
         public static IServiceCollection AddModules(this IServiceCollection services)
         {
-            foreach (var moduleInstance in ModuleProvider.Modules)
-            {
-                moduleInstance.ConfigureServices(services);
-            }
+            if (ModuleProvider.Modules != null)
+                foreach (var moduleInstance in ModuleProvider.Modules)
+                    moduleInstance.ConfigureServices(services);
 
             return services;
         }
