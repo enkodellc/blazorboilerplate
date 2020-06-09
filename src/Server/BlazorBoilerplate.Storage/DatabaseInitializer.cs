@@ -27,27 +27,30 @@ namespace BlazorBoilerplate.Storage
         private readonly PersistedGrantDbContext _persistedGrantContext;
         private readonly ConfigurationDbContext _configurationContext;
         private readonly ApplicationDbContext _context;
+        private readonly TenantStoreDbContext _tenantStoreDbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly ApplicationPermissions _applicationPermissions;
         private readonly ILogger _logger;
-        private readonly TenantStoreDbContext _tenantStoreDbContext;
 
         public DatabaseInitializer(
             ApplicationDbContext context,
             PersistedGrantDbContext persistedGrantContext,
             ConfigurationDbContext configurationContext,
-            ILogger<DatabaseInitializer> logger,
+            TenantStoreDbContext tenantStoreDbContext,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole<Guid>> roleManager,
-            TenantStoreDbContext tenantStoreDbContext)
+            ApplicationPermissions applicationPermissions,
+            ILogger<DatabaseInitializer> logger)
         {
             _persistedGrantContext = persistedGrantContext;
             _configurationContext = configurationContext;
             _context = context;
+            _tenantStoreDbContext = tenantStoreDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
+            _applicationPermissions = applicationPermissions;
             _logger = logger;
-            _tenantStoreDbContext = tenantStoreDbContext;
         }
 
         public virtual async Task SeedAsync()
@@ -55,14 +58,11 @@ namespace BlazorBoilerplate.Storage
             //Apply EF Core migration
             await MigrateAsync();
 
-            //Seed users and roles
-            await SeedASPIdentityCoreAsync();
-
             //Seed clients and Api
             await SeedIdentityServerAsync();
 
             //Seed blazorboilerplate data
-            await SeedBlazorBoilerplateAsync();
+            await SeedDemoDataAsync();
         }
 
         private async Task MigrateAsync()
@@ -73,30 +73,23 @@ namespace BlazorBoilerplate.Storage
             await _configurationContext.Database.MigrateAsync().ConfigureAwait(false);
         }
 
-        private async Task SeedASPIdentityCoreAsync()
+        private async Task SeedDemoDataAsync()
         {
-            if (!await _context.Users.AnyAsync())
+            if ((await _userManager.FindByNameAsync(DefaultUserNames.User)) == null)
             {
-                await EnsureRoleAsync(userRoleName, "Default user", new string[] { });               
-                ApplicationUser user1 = await CreateUserAsync(DefaultUserNames.User, "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
-                ApplicationUser user2 = await CreateUserAsync("user2", "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
-
-                var MicrosoftTenant = new TenantInfo("id-Microsoft", "Microsoft", "Microsoft Inc.", null, null);
-                var ContosoTenant = new TenantInfo("id-Contoso", "Contoso", "Contoso Corp.", null, null);
-                _tenantStoreDbContext.TenantInfo.Add(MicrosoftTenant);
-                _tenantStoreDbContext.TenantInfo.Add(ContosoTenant);
-                _tenantStoreDbContext.SaveChanges();
-
-                await _userManager.AddClaimAsync(user1, new Claim("TenantId", MicrosoftTenant.Identifier));
-                await _userManager.AddClaimAsync(user2, new Claim("TenantId", ContosoTenant.Identifier));
-
-                _logger.LogInformation("Inbuilt account generation completed");
+                await EnsureRoleAsync(userRoleName, "Default user", new string[] { });
+                await CreateUserAsync(DefaultUserNames.User, "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
             }
-        }
 
-        private async Task SeedBlazorBoilerplateAsync()
-        {
-            ApplicationUser user = await _userManager.FindByNameAsync("user");
+            if (_tenantStoreDbContext.TenantInfo.Count() < 2)
+            {
+                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("tenant1", "tenant1.local", "Microsoft Inc.", null, null));
+                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("tenant2", "tenant2.local", "Contoso Corp.", null, null));
+
+                _tenantStoreDbContext.SaveChanges();
+            }
+
+            ApplicationUser user = await _userManager.FindByNameAsync(DefaultUserNames.User);
 
             if (!_context.UserProfiles.Any())
             {
@@ -197,11 +190,11 @@ namespace BlazorBoilerplate.Storage
 
         public async Task EnsureAdminIdentitiesAsync()
         {
-            await EnsureRoleAsync(DefaultRoleNames.Administrator, "Default administrator", ApplicationPermissions.GetAllPermissionValues());
+            await EnsureRoleAsync(DefaultRoleNames.Administrator, "Default administrator", _applicationPermissions.GetAllPermissionValues());
             await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
 
             IdentityRole<Guid> adminRole = await _roleManager.FindByNameAsync(adminRoleName);
-            var AllClaims = ApplicationPermissions.GetAllPermissionValues().Distinct();
+            var AllClaims = _applicationPermissions.GetAllPermissionValues().Distinct();
             var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
             var NewClaims = AllClaims.Except(RoleClaims);
 
@@ -214,6 +207,8 @@ namespace BlazorBoilerplate.Storage
             foreach (string claim in DeprecatedClaims)
                 foreach (var role in roles)
                     await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, claim));
+
+            _logger.LogInformation("Inbuilt account generation completed");
         }
 
         private async Task EnsureRoleAsync(string roleName, string description, string[] claims)
@@ -223,7 +218,7 @@ namespace BlazorBoilerplate.Storage
                 if (claims == null)
                     claims = new string[] { };
 
-                string[] invalidClaims = claims.Where(c => ApplicationPermissions.GetPermissionByValue(c) == null).ToArray();
+                string[] invalidClaims = claims.Where(c => _applicationPermissions.GetPermissionByValue(c) == null).ToArray();
                 if (invalidClaims.Any())
                     throw new Exception("The following claim types are invalid: " + string.Join(", ", invalidClaims));
 
@@ -235,7 +230,7 @@ namespace BlazorBoilerplate.Storage
 
                 foreach (string claim in claims.Distinct())
                 {
-                    result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByValue(claim)));
+                    result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _applicationPermissions.GetPermissionByValue(claim)));
 
                     if (!result.Succeeded)
                     {

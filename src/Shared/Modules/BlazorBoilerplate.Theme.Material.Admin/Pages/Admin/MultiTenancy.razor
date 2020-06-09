@@ -3,6 +3,7 @@
 @layout AdminLayout
 @inject HttpClient Http
 @inject IMatToaster matToaster
+@inject NavigationManager Navigation
 @inject IStringLocalizer<Strings> L
 
 @using System.Net
@@ -34,7 +35,17 @@ else
                 </div>
             </td>
             <td><div style="min-width:130px;">@TenantRow.Id</div></td>
-            <td><div style="min-width:130px;">@TenantRow.Identifier</div></td>
+            <td>
+                <div style="min-width:130px; white-space:nowrap;">
+                    @TenantRow.Identifier
+                    @if (TenantRow.Id != BlazorBoilerplate.Shared.Settings.DefaultTenantId)
+                        {
+                        <MatIconButton Link="@GetTenantUri(TenantRow)" Target="_blank">
+                            <MatIcon>@MatIconNames.Link</MatIcon>
+                        </MatIconButton>
+                        }
+                </div>
+            </td>
             <td><div style="min-width:130px;">@TenantRow.Name</div></td>
             <td><div style="min-width:130px;">@TenantRow.ConnectionString</div></td>
         </MatTableRow>
@@ -96,6 +107,13 @@ else
     protected override async Task OnInitializedAsync()
     {
         await InitializeTenantsListAsync();
+    }
+
+    private string GetTenantUri(TenantDto tenant)
+    {
+        var builder = new UriBuilder(Navigation.BaseUri);
+        builder.Host = tenant.Identifier;
+        return builder.Uri.ToString();
     }
 
     public async Task InitializeTenantsListAsync()
