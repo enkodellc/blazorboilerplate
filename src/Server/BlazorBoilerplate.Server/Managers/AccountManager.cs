@@ -459,8 +459,10 @@ namespace BlazorBoilerplate.Server.Managers
                     }).Result;
                 }
 
-                //Role - Here we tie the new user to the DefaultRoleNames.User role
-                await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
+                var defaultRoleExists = await _roleManager.RoleExistsAsync(DefaultRoleNames.User);
+
+                if (defaultRoleExists)
+                    await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
 
                 if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
                 {
@@ -507,16 +509,19 @@ namespace BlazorBoilerplate.Server.Managers
                     Email = user.Email,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    //ExposedClaims = user.Claims.ToDictionary(c => c.Type, c => c.Value),
-                    Roles = new List<string> { DefaultRoleNames.User }
+                    //ExposedClaims = user.Claims.ToDictionary(c => c.Type, c => c.Value)                   
                 };
+
+                if (defaultRoleExists)
+                    userInfo.Roles = new List<string> { DefaultRoleNames.User };
 
                 return new ApiResponse(Status200OK, L["User {0} created", userInfo.UserName], userInfo);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Create User Failed: {ex.Message}");
-                return new ApiResponse(Status400BadRequest, "Create User Failed");
+                var msg = $"Create User Failed: {ex.Message}";
+                _logger.LogError(msg);
+                return new ApiResponse(Status400BadRequest, msg);
             }
         }
 
@@ -692,8 +697,8 @@ namespace BlazorBoilerplate.Server.Managers
                     new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
                 });
 
-            //Role - Here we tie the new user to the DefaultRoleNames.User role
-            await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
+            if (await _roleManager.RoleExistsAsync(DefaultRoleNames.User))
+                await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
 
             _logger.LogInformation("New user registered: {0}", user);
 
