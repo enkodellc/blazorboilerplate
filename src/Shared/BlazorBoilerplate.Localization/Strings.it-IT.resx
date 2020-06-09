@@ -462,4 +462,37 @@
   <data name="PleaseWait" xml:space="preserve">
     <value>Attendere prego...</value>
   </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Impostazioni</value>
+  </data>
+  <data name="EmailSettings" xml:space="preserve">
+    <value>Impostazioni Email</value>
+  </data>
+  <data name="OutgoingEmail" xml:space="preserve">
+    <value>Posta in uscita</value>
+  </data>
+  <data name="IncomingEmail" xml:space="preserve">
+    <value>Posta in arrivo</value>
+  </data>
+  <data name="SmtpServer" xml:space="preserve">
+    <value>Server SMTP</value>
+  </data>
+  <data name="PopServer" xml:space="preserve">
+    <value>Server POP3</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salva</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Porta</value>
+  </data>
+  <data name="ImapServer" xml:space="preserve">
+    <value>Server IMAP</value>
+  </data>
+  <data name="SenderEmail" xml:space="preserve">
+    <value>Email mittente</value>
+  </data>
+  <data name="SenderName" xml:space="preserve">
+    <value>Nome mittente</value>
+  </data>
 </root>

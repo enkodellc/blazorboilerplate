@@ -25,11 +25,11 @@ namespace BlazorBoilerplate.Server.Controllers
             return persistenceManager.Metadata();
         }
 
-        //[HttpGet]
-        //public IQueryable<TenantSetting> TenantSettings()
-        //{
-        //    return persistenceManager.GetEntities<TenantSetting>();
-        //}
+        [HttpGet]
+        public IQueryable<TenantSetting> TenantSettings()
+        {
+            return persistenceManager.GetEntities<TenantSetting>();
+        }
 
         [HttpGet]
         public IQueryable<Todo> Todos()

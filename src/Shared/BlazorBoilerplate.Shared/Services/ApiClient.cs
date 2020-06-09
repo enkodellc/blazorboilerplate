@@ -108,9 +108,9 @@ namespace BlazorBoilerplate.Shared.Services
             return await GetItems<Todo>(from: "Todos", orderBy: i => i.Id);
         }
 
-        //public async Task<QueryResult<TenantSetting>> GetTenantSettings()
-        //{
-        //    return await GetItems<TenantSetting>(from: "TenantSettings", orderBy: i => i.Key);
-        //}
+        public async Task<QueryResult<TenantSetting>> GetTenantSettings()
+        {
+            return await GetItems<TenantSetting>(from: "TenantSettings", orderBy: i => i.Key);
+        }
     }
 }

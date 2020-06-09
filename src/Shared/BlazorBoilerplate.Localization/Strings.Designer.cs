@@ -358,6 +358,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Email settings.
+        /// </summary>
+        public static string EmailSettings {
+            get {
+                return ResourceManager.GetString("EmailSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Email Verification Failed.
         /// </summary>
         public static string EmailVerificationFailed {
@@ -435,6 +444,24 @@ namespace BlazorBoilerplate.Localization {
         public static string IdentityResources {
             get {
                 return ResourceManager.GetString("IdentityResources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a IMAP server.
+        /// </summary>
+        public static string ImapServer {
+            get {
+                return ResourceManager.GetString("ImapServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Incoming email.
+        /// </summary>
+        public static string IncomingEmail {
+            get {
+                return ResourceManager.GetString("IncomingEmail", resourceCulture);
             }
         }
         
@@ -619,6 +646,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Outgoing email.
+        /// </summary>
+        public static string OutgoingEmail {
+            get {
+                return ResourceManager.GetString("OutgoingEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Password Confirmation.
         /// </summary>
         public static string Password_Confirmation {
@@ -660,6 +696,24 @@ namespace BlazorBoilerplate.Localization {
         public static string PleaseWait {
             get {
                 return ResourceManager.GetString("PleaseWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a POP3 server.
+        /// </summary>
+        public static string PopServer {
+            get {
+                return ResourceManager.GetString("PopServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Port.
+        /// </summary>
+        public static string Port {
+            get {
+                return ResourceManager.GetString("Port", resourceCulture);
             }
         }
         
@@ -835,11 +889,47 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Send Confirmation.
         /// </summary>
         public static string Send_Confirmation {
             get {
                 return ResourceManager.GetString("Send Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Sender email.
+        /// </summary>
+        public static string SenderEmail {
+            get {
+                return ResourceManager.GetString("SenderEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Sender name.
+        /// </summary>
+        public static string SenderName {
+            get {
+                return ResourceManager.GetString("SenderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Settings.
+        /// </summary>
+        public static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
         
@@ -858,6 +948,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Sign_up {
             get {
                 return ResourceManager.GetString("Sign up", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a SMTP server.
+        /// </summary>
+        public static string SmtpServer {
+            get {
+                return ResourceManager.GetString("SmtpServer", resourceCulture);
             }
         }
         

@@ -1,0 +1,132 @@
+﻿@page "/admin/settings/email"
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@layout AdminLayout
+@inject IApiClient apiClient
+@inject IMatToaster matToaster
+@inject IStringLocalizer<Strings> L
+
+<MatH4>@L["EmailSettings"]</MatH4>
+
+@if (settings == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <EditForm Model="@settings">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <fieldset>
+            <MatH5>@L["OutgoingEmail"]</MatH5>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromAddress].Value" Label="@L["SenderEmail"]" Icon="alternate_email" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromName].Value" Label="@L["SenderName"]" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpServer].Value" Label="@L["SmtpServer"]" Icon="dns" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpUsername].Value" Label="@L["UserName"]" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPassword].Value" Label="@L["Password"]" Type="password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatSlideToggle @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool" Label="SSL"></MatSlideToggle>
+            </div>
+            <MatDivider></MatDivider>
+            <MatH5>@L["IncomingEmail"]</MatH5>
+            <MatH5>POP3</MatH5>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopServer].Value" Label="@L["PopServer"]" Icon="dns" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopUsername].Value" Label="@L["UserName"]" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPassword].Value" Label="@L["Password"]" Type="password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatSlideToggle @bind-Value="@settings[SettingKey.EmailConfiguration_PopUseSSL].ValueAsBool" Label="SSL"></MatSlideToggle>
+            </div>
+            <MatDivider></MatDivider>
+            <MatH5>IMAP</MatH5>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapServer].Value" Label="@L["ImapServer"]" Icon="dns" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapUsername].Value" Label="@L["UserName"]" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPassword].Value" Label="@L["Password"]" Type="password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatSlideToggle @bind-Value="@settings[SettingKey.EmailConfiguration_ImapUseSSL].ValueAsBool" Label="SSL"></MatSlideToggle>
+            </div>
+        </fieldset>
+    </EditForm>
+
+    <MatButton OnClick="@(()=>apiClient.CancelChanges())">@L["Cancel"]</MatButton>
+    <MatButton OnClick="@SaveChanges">@L["Save"]</MatButton>
+}
+
+@code {
+
+    Dictionary<SettingKey, TenantSetting> settings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSettings();
+    }
+
+    async Task LoadSettings()
+    {
+        try
+        {
+            var result = (await apiClient.GetTenantSettings()).Where(i => i.Key.ToString().StartsWith("EmailConfiguration_")).ToDictionary(i => i.Key, i => i);
+
+            foreach (var def in TenantSettingValues.Default.Where(i => i.Key.ToString().StartsWith("EmailConfiguration_")))
+            {
+                if (!result.ContainsKey(def.Key))
+                {
+                    var entity = new TenantSetting() { Key = def.Key, Type = def.Value.Item2, Value = def.Value.Item1 };
+                    result.Add(def.Key, entity);
+                    apiClient.AddEntity(entity);
+                }
+            }
+
+            settings = result;
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+    }
+
+    async Task SaveChanges()
+    {
+        try
+        {
+            await apiClient.SaveChanges();
+
+            matToaster.Add(L["Operation Successful"], MatToastType.Success);
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+    }
+}
