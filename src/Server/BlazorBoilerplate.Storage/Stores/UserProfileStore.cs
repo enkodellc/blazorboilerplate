@@ -11,6 +11,8 @@ namespace BlazorBoilerplate.Storage.Stores
 {
     public class UserProfileStore : IUserProfileStore
     {
+        //TODO semaphore is not the best solution
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1);
         private readonly IApplicationDbContext _applicationDbContext;
 
         public UserProfileStore(IApplicationDbContext applicationDbContext)
@@ -59,30 +61,39 @@ namespace BlazorBoilerplate.Storage.Stores
 
         public async Task Upsert(UserProfileDto userProfileDto)
         {
-            var profileQuery = from prof in _applicationDbContext.UserProfiles
-                               where prof.UserId == userProfileDto.UserId
-                               select prof;
+            await semaphore.WaitAsync();
 
-            var profile = await profileQuery.SingleOrDefaultAsync();
+            try
+            {
+                var profileQuery = from prof in _applicationDbContext.UserProfiles
+                                   where prof.UserId == userProfileDto.UserId
+                                   select prof;
 
-            bool toInsert;
+                var profile = await profileQuery.SingleOrDefaultAsync();
 
-            if (toInsert = profile == null)
-                profile = new UserProfile();
+                bool toInsert;
 
-            profile.UserId = userProfileDto.UserId;
-            profile.Count = userProfileDto.Count;
-            profile.IsNavOpen = userProfileDto.IsNavOpen;
-            profile.LastPageVisited = userProfileDto.LastPageVisited;
-            profile.IsNavMinified = userProfileDto.IsNavMinified;
-            profile.LastUpdatedDate = DateTime.Now;
+                if (toInsert = profile == null)
+                    profile = new UserProfile();
 
-            if (toInsert)
-                _applicationDbContext.UserProfiles.Add(profile);
-            else
-                _applicationDbContext.UserProfiles.Update(profile);
+                profile.UserId = userProfileDto.UserId;
+                profile.Count = userProfileDto.Count;
+                profile.IsNavOpen = userProfileDto.IsNavOpen;
+                profile.LastPageVisited = userProfileDto.LastPageVisited;
+                profile.IsNavMinified = userProfileDto.IsNavMinified;
+                profile.LastUpdatedDate = DateTime.Now;
 
-            await _applicationDbContext.SaveChangesAsync(CancellationToken.None);
+                if (toInsert)
+                    _applicationDbContext.UserProfiles.Add(profile);
+                else
+                    _applicationDbContext.UserProfiles.Update(profile);
+
+                await _applicationDbContext.SaveChangesAsync(CancellationToken.None);
+            }
+            finally
+            {
+                semaphore.Release();
+            }
         }
 
         public async Task DeleteAllApiLogsForUser(Guid userId)
