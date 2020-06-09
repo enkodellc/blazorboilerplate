@@ -5,20 +5,12 @@
 @code {
     TenantDto tenant = new TenantDto();
 
-    [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask { get; set; }
-
     protected override async Task OnParametersSetAsync()
     {
-        var user = (await authenticationStateTask).User;
-
-        if (user.Identity.IsAuthenticated)
+        var apiResponse = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<TenantDto>>("api/admin/tenant");
+        if (apiResponse.StatusCode == Status200OK)
         {
-            var apiResponse = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<TenantDto>>("api/admin/tenant");
-            if (apiResponse.StatusCode == Status200OK)
-            {
-                tenant = apiResponse.Result;
-            }
+            tenant = apiResponse.Result;
         }
     }
 }
