@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Finbuckle.MultiTenant;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
+    [MultiTenant]
     public class UserProfile
     {
         [Key]

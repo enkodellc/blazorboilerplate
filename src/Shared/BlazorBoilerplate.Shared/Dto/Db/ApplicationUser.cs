@@ -6,7 +6,11 @@ namespace BlazorBoilerplate.Shared.Dto.Db
 {
     public partial class ApplicationUser : BaseEntity
     {
-
+        public String TenantId
+        {
+            get { return GetValue<String>(); }
+            set { SetValue(value); }
+        }
         public Guid Id
         {
             get { return GetValue<Guid>(); }
