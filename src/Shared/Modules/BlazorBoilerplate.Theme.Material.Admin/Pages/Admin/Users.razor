@@ -38,7 +38,7 @@ else
                             <MatIconButton Icon="edit" Disabled="true"></MatIconButton>
                         </NotAuthorized>
                     </AuthorizeView>
-                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))"></MatIconButton>
+                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
                     <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
                         <Authorized>
                             <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
@@ -52,15 +52,16 @@ else
             <td><div style="width:130px;">@UserRow.UserName</div></td>
             <td>@UserRow.Email</td>
             <td>
-                <MatChipSet>
-                    @foreach (var role in @UserRow.Roles)
-                        {
-                        <MatChip Label="@role"></MatChip>
-                        }
-                </MatChipSet>
-            </td>
-        </MatTableRow>
-    </MatTable>
+                @if (@UserRow.Roles != null)
+                    {<MatChipSet>
+                        @foreach (var role in @UserRow.Roles)
+                            {
+                            <MatChip Label="@role"></MatChip>
+                            }
+                    </MatChipSet>}
+        </td>
+    </MatTableRow>
+</MatTable>
 }
 
 <MatDialog @bind-IsOpen="@createUserDialogOpen">
