@@ -48,6 +48,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 
 //-:cnd:noEmit
 #if ServerSideBlazor
@@ -349,6 +350,7 @@ namespace BlazorBoilerplate.Server
                 options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations
             });
 
+            
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
             services.AddTransient<IAuthorizationHandler, PermissionRequirementHandler>();
@@ -489,7 +491,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.Configure<EmailConfiguration>(Configuration.GetSection(nameof(EmailConfiguration)));
+            services.Add(ServiceDescriptor.Scoped(typeof(ITenantSettings<>), typeof(TenantSettingsManager<>)));
 
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAdminManager, AdminManager>();
