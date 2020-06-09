@@ -30,6 +30,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly ConfigurationDbContext _configurationDbContext;
         private readonly TenantStoreDbContext _tenantStoreDbContext;
+        private readonly ApplicationPermissions _applicationPermissions;
         private readonly IStringLocalizer<Strings> L;
 
         public AdminManager(IMapper autoMapper,
@@ -37,6 +38,7 @@ namespace BlazorBoilerplate.Server.Managers
             RoleManager<IdentityRole<Guid>> roleManager,
             ConfigurationDbContext configurationDbContext,
             TenantStoreDbContext tenantStoreDbContext,
+            ApplicationPermissions applicationPermissions,
             IStringLocalizer<Strings> l)
         {
             _autoMapper = autoMapper;
@@ -44,6 +46,7 @@ namespace BlazorBoilerplate.Server.Managers
             _roleManager = roleManager;
             _configurationDbContext = configurationDbContext;
             _tenantStoreDbContext = tenantStoreDbContext;
+            _applicationPermissions = applicationPermissions;
             L = l;
         }
 
@@ -79,7 +82,7 @@ namespace BlazorBoilerplate.Server.Managers
 
         public ApiResponse GetPermissions()
         {
-            var permissions = ApplicationPermissions.GetAllPermissionNames();
+            var permissions = _applicationPermissions.GetAllPermissionNames();
             return new ApiResponse(Status200OK, L["Permissions list fetched"], permissions);
         }
 
@@ -97,7 +100,7 @@ namespace BlazorBoilerplate.Server.Managers
                 foreach (var role in listResponse)
                 {
                     var claims = await _roleManager.GetClaimsAsync(role);
-                    var permissions = claims.Where(x => x.Type == "permission").Select(x => ApplicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
+                    var permissions = claims.Where(x => x.Type == "permission").Select(x => _applicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
                     roleDtoList.Add(new RoleDto
                     {
@@ -121,7 +124,7 @@ namespace BlazorBoilerplate.Server.Managers
                 var identityRole = await _roleManager.FindByNameAsync(roleName);
 
                 var claims = await _roleManager.GetClaimsAsync(identityRole);
-                var permissions = claims.Where(x => x.Type == "permission").Select(x => ApplicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
+                var permissions = claims.Where(x => x.Type == "permission").Select(x => _applicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
                 var roleDto = new RoleDto
                 {
@@ -157,7 +160,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                 foreach (var claim in roleDto.Permissions)
                 {
-                    var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
+                    var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _applicationPermissions.GetPermissionByName(claim)));
 
                     if (!resultAddClaim.Succeeded)
                         await _roleManager.DeleteAsync(role);
@@ -198,7 +201,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                         foreach (var claim in roleDto.Permissions)
                         {
-                            var result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, ApplicationPermissions.GetPermissionByName(claim)));
+                            var result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _applicationPermissions.GetPermissionByName(claim)));
 
                             if (!result.Succeeded)
                                 await _roleManager.DeleteAsync(role);
@@ -658,13 +661,6 @@ namespace BlazorBoilerplate.Server.Managers
                     if (tenant == null)
                         return new ApiResponse(Status400BadRequest, L["The tenant {0} doesn't exist", id]);
 
-                    Claim tenantClaim = new Claim("TenantId", id);
-                    var users = await _userManager.GetUsersForClaimAsync(tenantClaim);
-                    foreach (var user in users)
-                    {
-                        await RemoveFromTenant(user.Id, id);
-                    }
-
                     _tenantStoreDbContext.TenantInfo.Remove(tenant);
                     await _tenantStoreDbContext.SaveChangesAsync();
                 }
@@ -675,35 +671,6 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 return new ApiResponse(Status400BadRequest, ex.GetBaseException().Message);
             }
-        }
-
-        public async Task<ApiResponse> AddToTenant(Guid userId, string tenantId)
-        {
-            var tenant = await _tenantStoreDbContext.TenantInfo.SingleAsync(t => t.Id == tenantId);
-            ApplicationUser appUser = await _userManager.FindByIdAsync(userId.ToString());
-            IList<Claim> userClaims = await _userManager.GetClaimsAsync(appUser);
-            Claim claim = new Claim("TenantId", tenant.Identifier);
-            if (!userClaims.Any(c => c.Type == claim.Type)) // We currently accept only one tenant claim for each user
-            {
-                await _userManager.AddClaimAsync(appUser, claim);
-                return new ApiResponse(Status200OK, "User added to tenant");
-            }
-            return new ApiResponse(Status400BadRequest, "Failed to add user");
-        }
-        public async Task<ApiResponse> RemoveFromTenant(Guid userId, string tenantId)
-        {
-            var tenant = await _tenantStoreDbContext.TenantInfo.SingleAsync(t => t.Id == tenantId);
-            ApplicationUser appUser = await _userManager.FindByIdAsync(userId.ToString());
-            IList<Claim> userClaims = await _userManager.GetClaimsAsync(appUser);
-            Claim claim = new Claim("TenantId", tenant.Identifier);
-            if (userClaims.Any(c => c.Type == claim.Type))
-            {
-                await _userManager.RemoveClaimAsync(appUser, claim);
-                var userRoles = await _userManager.GetRolesAsync(appUser);
-                await _userManager.RemoveFromRolesAsync(appUser, userRoles);
-                return new ApiResponse(Status200OK, "User removed from tenant");
-            }
-            return new ApiResponse(Status400BadRequest, "Failed to remove user");
         }
         #endregion
     }

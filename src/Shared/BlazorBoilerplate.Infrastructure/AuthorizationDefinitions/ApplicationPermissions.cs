@@ -1,5 +1,6 @@
 using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Shared.Models;
+using Finbuckle.MultiTenant;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,9 +9,12 @@ using System.Reflection;
 
 namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
 {
-    public static class ApplicationPermissions
+    public class ApplicationPermissions
     {
-        public static ReadOnlyCollection<ApplicationPermission> AllPermissions;
+        private static readonly ReadOnlyCollection<ApplicationPermission> AllPermissions;
+        private static readonly ReadOnlyCollection<ApplicationPermission> AllPermissionsForTenants;
+
+        private bool IsMasterTenant;
         /// <summary>
         /// Generates ApplicationPermissions based on Permissions Type by iterating over its nested classes and getting constant strings in each class as Value and Name, LocalizedDescriptionAttribute of the constant string as Description, the nested class name as GroupName.
         /// </summary>
@@ -55,31 +59,37 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
             }
 
             AllPermissions = allPermissions.AsReadOnly();
+            AllPermissionsForTenants = allPermissions.Where(i => !i.Value.StartsWith("Tenant.")).ToList().AsReadOnly();
         }
 
-        public static ApplicationPermission GetPermissionByName(string permissionName)
+        public ApplicationPermissions(TenantInfo tenantInfo)
         {
-            return AllPermissions.Where(p => p.Name == permissionName).FirstOrDefault();
+            IsMasterTenant = tenantInfo == null || tenantInfo.Id == Shared.Settings.DefaultTenantId;
         }
 
-        public static ApplicationPermission GetPermissionByValue(string permissionValue)
+        private IEnumerable<ApplicationPermission> GetAllPermission()
         {
-            return AllPermissions.Where(p => p.Value == permissionValue).FirstOrDefault();
+            return IsMasterTenant ? AllPermissions : AllPermissionsForTenants;
         }
 
-        public static string[] GetAllPermissionValues()
+        public ApplicationPermission GetPermissionByName(string permissionName)
         {
-            return AllPermissions.Select(p => p.Value).ToArray();
+            return GetAllPermission().Where(p => p.Name == permissionName).FirstOrDefault();
         }
 
-        public static string[] GetAllPermissionNames()
+        public ApplicationPermission GetPermissionByValue(string permissionValue)
         {
-            return AllPermissions.Select(p => p.Name).ToArray();
+            return GetAllPermission().Where(p => p.Value == permissionValue).FirstOrDefault();
         }
 
-        public static string[] GetAdministrativePermissionValues()
+        public string[] GetAllPermissionValues()
         {
-            return GetAllPermissionNames();
+            return GetAllPermission().Select(p => p.Value).ToArray();
+        }
+
+        public string[] GetAllPermissionNames()
+        {
+            return GetAllPermission().Select(p => p.Name).ToArray();
         }
     }
 }

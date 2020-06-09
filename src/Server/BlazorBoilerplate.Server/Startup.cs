@@ -350,7 +350,7 @@ namespace BlazorBoilerplate.Server
                 options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations
             });
 
-            
+            services.AddScoped<ApplicationPermissions>();
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
             services.AddTransient<IAuthorizationHandler, PermissionRequirementHandler>();
