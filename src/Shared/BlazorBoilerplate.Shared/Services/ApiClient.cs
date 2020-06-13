@@ -25,15 +25,14 @@ namespace BlazorBoilerplate.Shared.Services
             Configuration.Instance.QueryUriStyle = QueryUriStyle.JSON;
             Configuration.Instance.ProbeAssemblies(typeof(ApplicationUser).Assembly);
 
-            var http = new HttpClient();
-            foreach (var h in httpClient.DefaultRequestHeaders)
-                http.DefaultRequestHeaders.Add(h.Key, h.Value);
-
-            dataService = new DataService(httpClient.BaseAddress + "api/data/", http);
+            dataService = new DataService(httpClient.BaseAddress + "api/data/", httpClient);
             EntityManager = new EntityManager(dataService);
+
+            var clientNameSpace = typeof(ApplicationUser).Namespace;
             var dic = new Dictionary<string, string>();
-            dic.Add("BlazorBoilerplate.Infrastructure.Storage.DataModels", "BlazorBoilerplate.Shared.Dto.Db");
-            dic.Add("Microsoft.AspNetCore.Identity", "BlazorBoilerplate.Shared.Dto.Db");
+            dic.Add("BlazorBoilerplate.Infrastructure.Storage.DataModels", clientNameSpace);
+            dic.Add("Microsoft.AspNetCore.Identity", clientNameSpace);
+
             EntityManager.MetadataStore.NamingConvention = new NamingConvention().WithServerClientNamespaceMapping(dic);
         }
 
@@ -103,9 +102,14 @@ namespace BlazorBoilerplate.Shared.Services
                 throw;
             }
         }
+
         public async Task<QueryResult<Todo>> GetToDos()
         {
             return await GetItems<Todo>(from: "Todos", orderBy: i => i.Id);
+        }
+        public async Task<UserProfile> GetUserProfile()
+        {
+            return (await EntityManager.ExecuteQuery(new EntityQuery<UserProfile>().From("UserProfile"), CancellationToken.None)).SingleOrDefault();
         }
 
         public async Task<QueryResult<TenantSetting>> GetTenantSettings()

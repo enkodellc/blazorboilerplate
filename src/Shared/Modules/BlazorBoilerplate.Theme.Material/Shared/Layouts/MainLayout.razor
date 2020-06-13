@@ -81,6 +81,7 @@
         if (user.Identity.IsAuthenticated)
         {
             var profile = await appState.GetUserProfile();
+
             _navMenuOpened = profile.IsNavOpen;
             _navMinified = profile.IsNavMinified;
         }

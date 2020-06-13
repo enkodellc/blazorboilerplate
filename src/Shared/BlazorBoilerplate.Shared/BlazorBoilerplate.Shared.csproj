@@ -30,7 +30,7 @@
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Breeze.Sharp" Version="0.9.1" />
+    <PackageReference Include="Breeze.Sharp" Version="0.9.2" />
     <PackageReference Include="Humanizer" Version="2.8.26" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.0.0-preview.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.5" />

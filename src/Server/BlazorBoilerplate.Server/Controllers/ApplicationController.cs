@@ -2,10 +2,12 @@
 using BlazorBoilerplate.Storage;
 using Breeze.AspNetCore;
 using Breeze.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
@@ -23,6 +25,13 @@ namespace BlazorBoilerplate.Server.Controllers
         public string Metadata()
         {
             return persistenceManager.Metadata();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public Task<UserProfile> UserProfile()
+        {
+            return persistenceManager.GetUserProfile();
         }
 
         [HttpGet]

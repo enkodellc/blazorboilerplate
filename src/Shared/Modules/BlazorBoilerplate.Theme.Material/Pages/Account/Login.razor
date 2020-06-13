@@ -175,17 +175,17 @@
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
-//-:cnd:noEmit
+    //-:cnd:noEmit
 #if ClientSideBlazor
-protected override async Task OnParametersSetAsync()
-{
-    var user = (await authenticationStateTask).User;
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await authenticationStateTask).User;
 
-    if (user.Identity.IsAuthenticated && navigateTo != null)
-        navigationManager.NavigateTo(navigateTo);
-}
+        if (user.Identity.IsAuthenticated && navigateTo != null)
+            navigationManager.NavigateTo(navigateTo);
+    }
 #endif
-//-:cnd:noEmit
+    //-:cnd:noEmit
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !RedirectInProgress)
@@ -216,12 +216,20 @@ protected override async Task OnParametersSetAsync()
 
             if (response.IsSuccessStatusCode)
             {
-                // On successful Login the response.Message is the Last Page Visited from User Profile
-                // We can't navigate yet as the setup is proceeding asynchronously
                 if (string.IsNullOrEmpty(ReturnUrl))
-                    navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(response.Message) ? response.Message : "/dashboard");
+                {
+                    var userProfile = await appState.GetUserProfile();
+                    //this is used in server side Blazor
+                    navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                }
                 else
                     navigateTo = ReturnUrl;
+
+//-:cnd:noEmit
+#if ClientSideBlazor
+                navigationManager.NavigateTo(navigateTo);
+#endif
+//-:cnd:noEmit
 
             }
             else

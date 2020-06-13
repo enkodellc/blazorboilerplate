@@ -171,8 +171,6 @@ else
     public UserInfoDto user { get; set; } = new UserInfoDto(); // Holds user being actively modified or created
     RegisterDto registerParameters { get; set; } = new RegisterDto();
 
-    UserProfileDto userProfile = new UserProfileDto();
-
     public class RoleSelection
     {
         public bool IsSelected { get; set; }
@@ -183,7 +181,6 @@ else
     {
         await RetrieveUserListAsync();
         await PopulateRoleList();
-        userProfile = await appState.GetUserProfile();
     }
 
     public async Task RetrieveUserListAsync()

@@ -31,7 +31,6 @@ namespace BlazorBoilerplate.Server.Tests.Managers
         private Mock<ILogger<AccountManager>> _logger;
         private Mock<RoleManager<IdentityRole<Guid>>> _roleManager;
         private Mock<IEmailManager> _emailManager;
-        private Mock<IUserProfileStore> _userProfileStore;
         private Mock<IClientStore> _clientStore;
         private Mock<IConfiguration> _configuration;
         private Mock<IIdentityServerInteractionService> _interaction;
@@ -59,7 +58,6 @@ namespace BlazorBoilerplate.Server.Tests.Managers
             _logger = new Mock<ILogger<AccountManager>>();
             _roleManager = new Mock<RoleManager<IdentityRole<Guid>>>(roleStore.Object, roles, new UpperInvariantLookupNormalizer(), new IdentityErrorDescriber(), null);
             _emailManager = new Mock<IEmailManager>();
-            _userProfileStore = new Mock<IUserProfileStore>();
             _configuration = new Mock<IConfiguration>();
             _events = new Mock<IEventService>();
             _l = new Mock<IStringLocalizer<Strings>>();
@@ -69,8 +67,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
                 _signInManager.Object, 
                 _logger.Object, 
                 _roleManager.Object, 
-                _emailManager.Object, 
-                _userProfileStore.Object,
+                _emailManager.Object,
                 _clientStore.Object,
                 _configuration.Object,
                 _interaction.Object,

@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject AppState appState
+@attribute [Authorize(Policy = Policies.IsAdmin)]
 
 <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
     <MatDrawer @bind-Opened="@_navMenuOpened">
@@ -29,7 +30,7 @@
                             </MatTooltip>
                         </div>
                     </MatAppBarSection>
-                    <MatAppBarSection Align="@MatAppBarSectionAlign.End">                        
+                    <MatAppBarSection Align="@MatAppBarSectionAlign.End">
                         <SelectCulture />
                         <Login />
                     </MatAppBarSection>
@@ -55,8 +56,8 @@
 
     private void CallLogin()
     {
-        var returnUrl =
-              navigationManager.ToBaseRelativePath(navigationManager.Uri);
+        var returnUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+
         navigationManager.NavigateTo($"{BlazorBoilerplate.Shared.Settings.LoginPath}/{returnUrl}", forceLoad: false);
     }
 
@@ -65,18 +66,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Uncomment to secure entire app  with no anonymous user access
-        //navigationManager.NavigateTo(Shared.Settings.LoginPath);
-
-        // Set Default landing page if you want for anonymous user.
-        // Authenticated users are redirected after successful login.
-        //navigationManager.NavigateTo("/");
-
         var user = (await authenticationStateTask).User;
 
         if (user.Identity.IsAuthenticated)
         {
             var profile = await appState.GetUserProfile();
+
+            if (profile == null)
+                profile = new BlazorBoilerplate.Shared.Dto.Db.UserProfile();
+
             _navMenuOpened = profile.IsNavOpen;
             _navMinified = profile.IsNavMinified;
         }

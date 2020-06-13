@@ -20,7 +20,7 @@
 @code {
     async Task LogoutClick()
     {
-        appState.UserProfile = null;
+        appState.ClearUserProfile();
         await ((IdentityAuthenticationStateProvider)authStateProvider).Logout();
 //-:cnd:noEmit
 #if ClientSideBlazor

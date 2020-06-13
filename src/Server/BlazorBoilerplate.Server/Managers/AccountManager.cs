@@ -40,7 +40,6 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly ILogger<AccountManager> _logger;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IEmailManager _emailManager;
-        private readonly IUserProfileStore _userProfileStore;
         private readonly IClientStore _clientStore;
         private readonly IConfiguration _configuration;
         private readonly IIdentityServerInteractionService _interaction;
@@ -56,7 +55,6 @@ namespace BlazorBoilerplate.Server.Managers
             ILogger<AccountManager> logger,
             RoleManager<IdentityRole<Guid>> roleManager,
             IEmailManager emailManager,
-            IUserProfileStore userProfileStore,
             IClientStore clientStore,
             IConfiguration configuration,
             IIdentityServerInteractionService interaction,
@@ -70,7 +68,6 @@ namespace BlazorBoilerplate.Server.Managers
             _logger = logger;
             _roleManager = roleManager;
             _emailManager = emailManager;
-            _userProfileStore = userProfileStore;
             _clientStore = clientStore;
             _configuration = configuration;
             _interaction = interaction;
@@ -296,23 +293,22 @@ namespace BlazorBoilerplate.Server.Managers
                         //return Redirect(model.ReturnUrl);
                     }
 
-                    if (string.IsNullOrEmpty(parameters.ReturnUrl))
-                        parameters.ReturnUrl = await _userProfileStore.GetLastPageVisited(parameters.UserName);
-                    else if (!parameters.IsValidReturnUrl)
+                    //TODO parameters.IsValidReturnUrl is set true above 
+                    if (!parameters.IsValidReturnUrl)
                         // user might have clicked on a malicious link - should be logged
                         throw new Exception("invalid return URL");
 
-                    return new ApiResponse(Status200OK, parameters.ReturnUrl);
+                    return new ApiResponse(Status200OK);
                 }
 
                 await _events.RaiseAsync(new UserLoginFailureEvent(parameters.UserName, "Invalid Password for user {0}", clientId: context?.Client.ClientId));
                 _logger.LogInformation("Invalid Password for user {0}", parameters.UserName);
-                return new ApiResponse(Status401Unauthorized, "Login Failed");
+                return new ApiResponse(Status401Unauthorized, L["LoginFailed"]);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Login Failed: " + ex.GetBaseException().Message);
-                return new ApiResponse(Status500InternalServerError, "Login Failed");
+                return new ApiResponse(Status500InternalServerError, L["LoginFailed"]);
             }
         }
 
@@ -538,7 +534,7 @@ namespace BlazorBoilerplate.Server.Managers
                 if (user.UserName.ToLower() != DefaultUserNames.Administrator)
                 {
                     //TODO it could generate time-out
-                    await _userProfileStore.DeleteAllApiLogsForUser(user.Id);
+                    //await _userProfileStore.DeleteAllApiLogsForUser(user.Id);
 
                     await _userManager.DeleteAsync(user);
                     return new ApiResponse(Status200OK, "User Deletion Successful");

@@ -1,14 +1,20 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Localization;
 using Breeze.Persistence;
 using Breeze.Persistence.EFCore;
+using Finbuckle.MultiTenant;
+using IdentityModel;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
+using EntityState = Breeze.Persistence.EntityState;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -23,7 +29,7 @@ namespace BlazorBoilerplate.Storage
             httpContextAccessor = accessor;
             L = l;
         }
-        public Microsoft.EntityFrameworkCore.DbSet<TEntity> GetEntities<TEntity>() where TEntity : class
+        public DbSet<TEntity> GetEntities<TEntity>() where TEntity : class
         {
             var requiredPermissions = typeof(TEntity).GetCustomAttribute<PermissionsAttribute>(false);
 
@@ -92,11 +98,30 @@ namespace BlazorBoilerplate.Storage
 
         protected override bool BeforeSaveEntity(EntityInfo entityInfo)
         {
-            //do something with entityInfo
-
-            //return false to avoid entityInfo saving
+            if (entityInfo.Entity is UserProfile userProfile)
+                userProfile.LastUpdatedDate = DateTime.Now;
 
             return true;
+        }
+
+        public async Task<UserProfile> GetUserProfile()
+        {
+            var user = httpContextAccessor.HttpContext.User;
+            var userProfile = await Context.UserProfiles.Include(i=>i.ApplicationUser).SingleOrDefaultAsync(i => i.ApplicationUser.NormalizedUserName == user.Identity.Name.ToUpper());
+
+            if (userProfile == null)
+            {
+                userProfile = new UserProfile
+                {
+                    TenantId = httpContextAccessor.HttpContext.GetMultiTenantContext().TenantInfo.Id,
+                    UserId = new Guid(user.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value),
+                    LastUpdatedDate = DateTime.Now
+                };
+
+                await Context.UserProfiles.Upsert(userProfile).On(u => new { u.TenantId, u.UserId }).RunAsync();
+            }
+
+            return userProfile;
         }
     }
 }

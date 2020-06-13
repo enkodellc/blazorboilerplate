@@ -500,7 +500,6 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IEmailManager, EmailManager>();
             services.AddTransient<IExternalAuthManager, ExternalAuthManager>();
             services.AddTransient<IMessageManager, MessageManager>();
-            services.AddTransient<IUserProfileManager, UserProfileManager>();
 
             #region Automapper
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
@@ -516,11 +515,12 @@ namespace BlazorBoilerplate.Server
 //-:cnd:noEmit
 #if ServerSideBlazor
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
-            services.AddScoped<IUserProfileApi, UserProfileApi>();
             services.AddScoped<AppState>();
 
             // Setup HttpClient for server side
             services.AddScoped<HttpClient>();
+
+            services.AddTransient<IApiClient, ApiClient>();
 
             // Authentication providers
             Log.Logger.Debug("Removing AuthenticationStateProvider...");
@@ -535,7 +535,6 @@ namespace BlazorBoilerplate.Server
 #endif
 //-:cnd:noEmit
 
-            services.AddTransient<IApiClient, ApiClient>();
             services.AddModules();
 
             if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))

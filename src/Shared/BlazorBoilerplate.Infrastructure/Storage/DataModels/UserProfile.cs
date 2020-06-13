@@ -1,6 +1,7 @@
 ﻿using Finbuckle.MultiTenant;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
@@ -18,5 +19,8 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         public bool IsNavMinified { get; set; } = false;
         public int Count { get; set; } = 0;
         public DateTime LastUpdatedDate { get; set; } = DateTime.MinValue;
+
+        [Column(TypeName = "nvarchar(64)")]
+        public string TenantId { get; set; }
     }
 }

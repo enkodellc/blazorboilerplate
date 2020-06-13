@@ -14,6 +14,8 @@ namespace BlazorBoilerplate.Shared.Interfaces
 
         Task SaveChanges();
 
+        Task<UserProfile> GetUserProfile();
+
         Task<QueryResult<TenantSetting>> GetTenantSettings();
 
         Task<QueryResult<Todo>> GetToDos();

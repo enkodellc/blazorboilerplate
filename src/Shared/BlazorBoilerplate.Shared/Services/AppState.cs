@@ -1,8 +1,6 @@
-﻿using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Shared.Dto.Account;
+﻿using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using Humanizer;
-using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -11,79 +9,79 @@ namespace BlazorBoilerplate.Shared.Services
     public class AppState
     {
         public event Action OnChange;
-        private readonly IUserProfileApi _userProfileApi;
-
-        public UserProfileDto UserProfile { get; set; }
+        private readonly IApiClient _apiClient;
+        private UserProfile _userProfile { get; set; }
 
         public readonly string AppName = "BlazorBoilerplate".Humanize(LetterCasing.Title);
 
-        public AppState(IUserProfileApi userProfileApi)
+        public AppState(IApiClient apiClient)
         {
-            _userProfileApi = userProfileApi;
+            _apiClient = apiClient;
         }
 
         public bool IsNavOpen
         {
             get
             {
-                if (UserProfile == null)
+                if (_userProfile == null)
                     return true;
-                
-                return UserProfile.IsNavOpen;
+
+                return _userProfile.IsNavOpen;
             }
             set
             {
-                UserProfile.IsNavOpen = value;
+                _userProfile.IsNavOpen = value;
             }
         }
         public bool IsNavMinified { get; set; }
 
         public async Task UpdateUserProfile()
         {
-            await _userProfileApi.Upsert(UserProfile);
+            await _apiClient.SaveChanges();
         }
 
-        public async Task<UserProfileDto> GetUserProfile()
+        public void ClearUserProfile()
         {
-            if (UserProfile != null && UserProfile.UserId != Guid.Empty)
-                return UserProfile;
+            _userProfile = null;
+        }
 
-            ApiResponseDto apiResponse = await _userProfileApi.Get();
+        public async Task<UserProfile> GetUserProfile()
+        {
+            if (_userProfile == null)
+                _userProfile = await _apiClient.GetUserProfile();
 
-            if (apiResponse.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<UserProfileDto>(apiResponse.Result.ToString());
-            
-            return new UserProfileDto();
+            return _userProfile;
         }
 
         public async Task UpdateUserProfileCount(int count)
         {
-            UserProfile.Count = count;
+            _userProfile.Count = count;
             await UpdateUserProfile();
             NotifyStateChanged();
         }
 
         public async Task<int> GetUserProfileCount()
         {
-            if (UserProfile == null)
+            if (_userProfile == null)
             {
-                UserProfile = await GetUserProfile();
-                return UserProfile.Count;
+                _userProfile = await GetUserProfile();
+                return _userProfile.Count;
             }
 
-            return UserProfile.Count;
+            return _userProfile.Count;
         }
 
         public async Task SaveLastVisitedUri(string uri)
         {
-            if (UserProfile == null)
+            if (_userProfile == null)
             {
-                UserProfile = await GetUserProfile();
+                _userProfile = await GetUserProfile();
             }
             else
             {
-                UserProfile.LastPageVisited = uri;
+                _userProfile.LastPageVisited = uri;
                 await UpdateUserProfile();
+
                 NotifyStateChanged();
             }
         }
