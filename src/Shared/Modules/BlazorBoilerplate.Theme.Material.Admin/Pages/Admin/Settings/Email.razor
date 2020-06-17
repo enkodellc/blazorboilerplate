@@ -1,9 +1,5 @@
 ﻿@page "/admin/settings/email"
-@attribute [Authorize(Policy = Policies.IsAdmin)]
-@layout AdminLayout
-@inject IApiClient apiClient
-@inject IMatToaster matToaster
-@inject IStringLocalizer<Strings> L
+@inherits SettingsBase
 
 <MatH4>@L["EmailSettings"]</MatH4>
 
@@ -85,48 +81,8 @@ else
 
 @code {
 
-    Dictionary<SettingKey, TenantSetting> settings;
-
     protected override async Task OnInitializedAsync()
     {
-        await LoadSettings();
-    }
-
-    async Task LoadSettings()
-    {
-        try
-        {
-            var result = (await apiClient.GetTenantSettings()).Where(i => i.Key.ToString().StartsWith("EmailConfiguration_")).ToDictionary(i => i.Key, i => i);
-
-            foreach (var def in TenantSettingValues.Default.Where(i => i.Key.ToString().StartsWith("EmailConfiguration_")))
-            {
-                if (!result.ContainsKey(def.Key))
-                {
-                    var entity = new TenantSetting() { Key = def.Key, Type = def.Value.Item2, Value = def.Value.Item1 };
-                    result.Add(def.Key, entity);
-                    apiClient.AddEntity(entity);
-                }
-            }
-
-            settings = result;
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
-        }
-    }
-
-    async Task SaveChanges()
-    {
-        try
-        {
-            await apiClient.SaveChanges();
-
-            matToaster.Add(L["Operation Successful"], MatToastType.Success);
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
-        }
+        await LoadSettings("EmailConfiguration_");
     }
 }
