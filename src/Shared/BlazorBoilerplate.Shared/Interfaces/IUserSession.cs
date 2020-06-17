@@ -9,7 +9,5 @@ namespace BlazorBoilerplate.Shared.Interfaces
         string UserName { get; set; }
         List<string> Roles { get; set; }
         List<KeyValuePair<string, string>> ExposedClaims { get; set; }
-        string TenantId { get; set; }
-        bool DisableTenantFilter { get; set; }
     }
 }
