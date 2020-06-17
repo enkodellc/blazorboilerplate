@@ -495,4 +495,7 @@
   <data name="SenderName" xml:space="preserve">
     <value>Sender name</value>
   </data>
+  <data name="MainSettings" xml:space="preserve">
+    <value>Main settings</value>
+  </data>
 </root>
