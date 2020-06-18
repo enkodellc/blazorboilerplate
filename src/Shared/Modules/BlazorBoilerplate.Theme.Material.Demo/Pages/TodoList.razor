@@ -118,12 +118,13 @@
             await apiClient.SaveChanges();
             todos.Remove(todo);
             matToaster.Add($"{todo.Title} deleted", MatToastType.Success, L["Operation Successful"]);
-            todo = new Todo();
         }
         catch (Exception ex)
         {
             matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
+
+        todo = new Todo();
 
         deleteDialogOpen = false;
     }
@@ -150,11 +151,12 @@
             await apiClient.SaveChanges();
 
             await LoadMainEntities();
-            todo = new Todo();
         }
         catch (Exception ex)
         {
             matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
+
+        todo = new Todo();
     }
 }
