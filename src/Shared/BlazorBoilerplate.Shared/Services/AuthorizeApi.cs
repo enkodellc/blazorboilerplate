@@ -32,16 +32,13 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Login", loginParameters);
 
-//-:cnd:noEmit
-#if ServerSideBlazor
-            if (response.IsSuccessStatusCode)
-            {
-                loginParameters.__RequestVerificationToken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
+            if (!_navigationManager.IsWebAssembly())
+                if (response.IsSuccessStatusCode)
+                {
+                    loginParameters.__RequestVerificationToken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
 
-                await _jsRuntime.InvokeAsync<string>("interop.submitForm", "/server/login/", loginParameters);
-            }
-#endif
-//-:cnd:noEmit
+                    await _jsRuntime.InvokeAsync<string>("interop.submitForm", "/server/login/", loginParameters);
+                }
 
             return response;
         }
@@ -50,15 +47,12 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
 
-//-:cnd:noEmit
-#if ServerSideBlazor
-            if (response.IsSuccessStatusCode)
-            {
-                var antiforgerytoken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
-                await _jsRuntime.InvokeAsync<string>("interop.submitForm", "/server/logout/", new { __RequestVerificationToken = antiforgerytoken, returnurl = "" });
-            }
-#endif
-//-:cnd:noEmit
+            if (!_navigationManager.IsWebAssembly())
+                if (response.IsSuccessStatusCode)
+                {
+                    var antiforgerytoken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
+                    await _jsRuntime.InvokeAsync<string>("interop.submitForm", "/server/logout/", new { __RequestVerificationToken = antiforgerytoken, returnurl = "" });
+                }
 
             return response;
         }

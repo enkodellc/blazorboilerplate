@@ -11,7 +11,7 @@
             </div>
             <UserProfile />
         </header>
-        <NavMenu />            
+        <NavMenu />
         <DrawerFooter></DrawerFooter>
     </MatDrawer>
     <MatDrawerContent>
@@ -55,14 +55,7 @@
 @code {
     bool _navMenuOpened = true;
     bool _navMinified = false;
-    public string bbDrawerClass = "";
-
-    private void CallLogin()
-    {
-        var returnUrl =
-              navigationManager.ToBaseRelativePath(navigationManager.Uri);
-        navigationManager.NavigateTo($"{BlazorBoilerplate.Shared.Settings.LoginPath}/{returnUrl}", forceLoad: false);
-    }
+    public string bbDrawerClass = string.Empty;
 
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -90,6 +83,7 @@
     void NavToggle()
     {
         _navMenuOpened = !_navMenuOpened;
+
         if (_navMenuOpened)
         {
             bbDrawerClass = "full";
@@ -99,7 +93,7 @@
             bbDrawerClass = "closed";
         }
 
-        this.StateHasChanged();
+        StateHasChanged();
     }
 
     void NavLock()
@@ -127,6 +121,7 @@
         }
 
         _navMenuOpened = true;
-        this.StateHasChanged();
+
+        StateHasChanged();
     }
 }

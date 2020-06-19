@@ -107,7 +107,7 @@ namespace BlazorBoilerplate.Storage
         public async Task<UserProfile> GetUserProfile()
         {
             var user = httpContextAccessor.HttpContext.User;
-            var userProfile = await Context.UserProfiles.Include(i=>i.ApplicationUser).SingleOrDefaultAsync(i => i.ApplicationUser.NormalizedUserName == user.Identity.Name.ToUpper());
+            var userProfile = await Context.UserProfiles.SingleOrDefaultAsync(i => i.ApplicationUser.NormalizedUserName == user.Identity.Name.ToUpper());
 
             if (userProfile == null)
             {

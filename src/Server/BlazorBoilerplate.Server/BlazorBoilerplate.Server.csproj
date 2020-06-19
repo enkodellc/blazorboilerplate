@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>8.0</LangVersion>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Authors>Keith Fimreite</Authors>
     <Company>EnkodeLLC</Company>
     <Title>BlazorBoilerplate Server</Title>
@@ -16,28 +16,6 @@
     <DockerfileFile>$(SolutionDir)/Utils/Docker/Dockerfile</DockerfileFile>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>$(SolutionDir)/Utils/Docker/docker-compose.dcproj</DockerComposeProjectPath>
-
-    <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug_CSB'">
-    <DefineConstants>ClientSideBlazor;TRACE;DEBUG;NETCOREAPP3_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug_SSB'">
-    <DefineConstants>ServerSideBlazor;TRACE;DEBUG;NETCOREAPP3_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release_CSB'">
-    <DefineConstants>ClientSideBlazor;RELEASE;NETCOREAPP3_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release_SSB'">
-    <DefineConstants>ServerSideBlazor;RELEASE;NETCOREAPP3_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
   <ItemGroup>
@@ -95,7 +73,7 @@
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.5.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.6.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.6.1" />
     <PackageReference Include="Serilog" Version="2.10.0-dev-01187" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0-dev-00171" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.2.0-dev-00244" />
@@ -106,6 +84,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+   <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -114,17 +93,8 @@
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material\BlazorBoilerplate.Theme.Material.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Storage\BlazorBoilerplate.Storage.csproj" />
+    <ProjectReference Include="..\..\Client\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
   </ItemGroup>
-
-  <Choose>
-    <When Condition=" '$(Configuration)'=='Debug_SSB' Or '$(Configuration)'=='Release_SSB'" />
-    <When Condition=" '$(Configuration)'=='Debug_CSB' Or '$(Configuration)'=='Release_CSB' ">
-      <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0" />
-        <ProjectReference Include="..\..\Client\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
-      </ItemGroup>
-    </When>
-  </Choose>
 
   <ItemGroup>
     <Folder Include="Logs\" />

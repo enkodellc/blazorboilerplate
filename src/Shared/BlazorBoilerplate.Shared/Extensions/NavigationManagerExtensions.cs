@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Runtime.InteropServices;
 
 namespace BlazorBoilerplate.Shared.Extensions
 {
@@ -33,6 +34,11 @@ namespace BlazorBoilerplate.Shared.Extensions
 
             value = default;
             return false;
+        }
+
+        public static bool IsWebAssembly(this NavigationManager navManager)
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER"));
         }
     }
 }

@@ -124,14 +124,14 @@
 </AuthorizeView>
 @code {
 
-    string navigateTo = null;
-    IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
-    bool forgotPasswordToggle = false;
-    bool RedirectInProgress = false;
-    LoginViewModel loginViewModel { get; set; } = new LoginViewModel();
-    ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
+        string navigateTo = null;
+        IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
+        bool forgotPasswordToggle = false;
+        bool RedirectInProgress = false;
+        LoginViewModel loginViewModel { get; set; } = new LoginViewModel();
+        ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
 
-    string ReturnUrl;
+        string ReturnUrl;
 
     protected override async Task OnInitializedAsync()
     {
@@ -175,17 +175,18 @@
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    //-:cnd:noEmit
-#if ClientSideBlazor
+
     protected override async Task OnParametersSetAsync()
     {
-        var user = (await authenticationStateTask).User;
+        if (navigationManager.IsWebAssembly())
+        {
+            var user = (await authenticationStateTask).User;
 
-        if (user.Identity.IsAuthenticated && navigateTo != null)
-            navigationManager.NavigateTo(navigateTo);
+            if (user.Identity.IsAuthenticated && navigateTo != null)
+                navigationManager.NavigateTo(navigateTo);
+        }
     }
-#endif
-    //-:cnd:noEmit
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !RedirectInProgress)
@@ -216,21 +217,19 @@
 
             if (response.IsSuccessStatusCode)
             {
-                if (string.IsNullOrEmpty(ReturnUrl))
+                if (navigationManager.IsWebAssembly())
                 {
-                    var userProfile = await appState.GetUserProfile();
-                    //this is used in server side Blazor
-                    navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                    if (string.IsNullOrEmpty(ReturnUrl))
+                    {
+                        var userProfile = await appState.GetUserProfile();
+
+                        navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                    }
+                    else
+                        navigateTo = ReturnUrl;
+
+                    navigationManager.NavigateTo(navigateTo);
                 }
-                else
-                    navigateTo = ReturnUrl;
-
-//-:cnd:noEmit
-#if ClientSideBlazor
-                navigationManager.NavigateTo(navigateTo);
-#endif
-//-:cnd:noEmit
-
             }
             else
                 matToaster.Add(response.Message, MatToastType.Danger, L["LoginFailed"]);

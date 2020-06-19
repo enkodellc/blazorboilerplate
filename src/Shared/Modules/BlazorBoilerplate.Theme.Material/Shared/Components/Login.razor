@@ -22,10 +22,9 @@
     {
         appState.ClearUserProfile();
         await ((IdentityAuthenticationStateProvider)authStateProvider).Logout();
-//-:cnd:noEmit
-#if ClientSideBlazor
-        navigationManager.NavigateTo(BlazorBoilerplate.Shared.Settings.LoginPath);
-#endif
-//-:cnd:noEmit
+
+        if (navigationManager.IsWebAssembly())
+            navigationManager.NavigateTo(BlazorBoilerplate.Shared.Settings.LoginPath);
+
     }
 }

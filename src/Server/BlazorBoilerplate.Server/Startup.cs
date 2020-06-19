@@ -1,4 +1,5 @@
 using AutoMapper;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
@@ -11,11 +12,12 @@ using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.Shared.Providers; //ServerSideBlazor
 using BlazorBoilerplate.Shared.Services;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
-using Breeze.Core;
 using Breeze.AspNetCore;
+using Breeze.Core;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
@@ -24,6 +26,8 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication.Twitter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization; //ServerSideBlazor
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -36,30 +40,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
+using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
-using NSwag;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http; //ServerSideBlazor
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-
-//-:cnd:noEmit
-#if ServerSideBlazor
-using BlazorBoilerplate.Shared.Providers;
-
-using Microsoft.AspNetCore.Components.Authorization;
-
-using System.Net.Http;
-#endif
-//-:cnd:noEmit
-
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server
@@ -468,7 +461,7 @@ namespace BlazorBoilerplate.Server
                         Type = OpenApiSecuritySchemeType.OAuth2,
                         Description = "Local Identity Server",
                         OpenIdConnectUrl = $"{authAuthority}/.well-known/openid-configuration", //not working
-                    Flow = OpenApiOAuth2Flow.AccessCode,
+                        Flow = OpenApiOAuth2Flow.AccessCode,
                         Flows = new OpenApiOAuthFlows()
                         {
                             AuthorizationCode = new OpenApiOAuthFlow()
@@ -484,8 +477,8 @@ namespace BlazorBoilerplate.Server
                     }); ;
 
                     document.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
-                //      new OperationSecurityScopeProcessor("bearer"));
-            });
+                    //      new OperationSecurityScopeProcessor("bearer"));
+                });
 
             services.AddScoped<IUserSession, UserSession>();
 
@@ -512,15 +505,40 @@ namespace BlazorBoilerplate.Server
 
             services.AddSingleton(autoMapper);
             #endregion
-//-:cnd:noEmit
-#if ServerSideBlazor
+
+            /* ServerSideBlazor */
             services.AddScoped<IAuthorizeApi, AuthorizeApi>();
             services.AddScoped<AppState>();
 
-            // Setup HttpClient for server side
-            services.AddScoped<HttpClient>();
+            // setup HttpClient for server side in a client side compatible fashion ( with auth cookie )
+            if (!services.Any(x => x.ServiceType == typeof(HttpClient)))
+            {
+                services.AddScoped(s =>
+                {
+                    // creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
+                    var navigationManager = s.GetRequiredService<NavigationManager>();
+                    var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
+                    var cookies = httpContextAccessor.HttpContext.Request.Cookies;
+                    var client = new HttpClient(new HttpClientHandler { UseCookies = false });
+                    if (cookies.Any())
+                    {
+                        var cks = new List<string>();
 
-            services.AddTransient<IApiClient, ApiClient>();
+                        foreach (var cookie in cookies)
+                        {
+                            cks.Add($"{cookie.Key}={cookie.Value}");
+                        }
+
+                        client.DefaultRequestHeaders.Add("Cookie", string.Join(';', cks));
+                    }
+
+                    client.BaseAddress = new Uri(navigationManager.BaseUri);
+
+                    return client;
+                });
+            }
+
+            services.AddScoped<IApiClient, ApiClient>();
 
             // Authentication providers
             Log.Logger.Debug("Removing AuthenticationStateProvider...");
@@ -532,8 +550,7 @@ namespace BlazorBoilerplate.Server
 
             Log.Logger.Debug("Adding AuthenticationStateProvider...");
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
-#endif
-//-:cnd:noEmit
+            /**********************/
 
             services.AddModules();
 
@@ -558,11 +575,7 @@ namespace BlazorBoilerplate.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-//-:cnd:noEmit
-#if ClientSideBlazor
-                app.UseWebAssemblyDebugging();
-#endif
-//-:cnd:noEmit
+                app.UseWebAssemblyDebugging(); //ClientSideBlazor
             }
             else
             {
@@ -572,18 +585,13 @@ namespace BlazorBoilerplate.Server
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-//-:cnd:noEmit
-#if ClientSideBlazor
-            app.UseBlazorFrameworkFiles();
-#endif
-//-:cnd:noEmit
+            app.UseBlazorFrameworkFiles(); //ClientSideBlazor
 
             app.UseRouting();
             //app.UseAuthentication(); //Removed for IS4
             app.UseIdentityServer();
             app.UseAuthorization();
 
-            //Must be AFTER the Auth middleware to get the User/Identity info
             app.UseMultiTenant();
 
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())

@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
@@ -6,7 +7,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -19,16 +22,16 @@ namespace BlazorBoilerplate.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-            //TODO find a solution to do dinamically, without this hack (download dll modules and load in memory?)
-            var baseModule = new BlazorBoilerplate.Theme.Material.Module();
-            var adminModule = new BlazorBoilerplate.Theme.Material.Admin.Module();
-            var demoModule = new BlazorBoilerplate.Theme.Material.Demo.Module();
+            //TODO see what oqtane does
+            var baseModule = new Theme.Material.Module();
+            var adminModule = new Theme.Material.Admin.Module();
+            var demoModule = new Theme.Material.Demo.Module();
 
             Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             ModuleProvider.Init(allAssemblies);
 
-            builder.RootComponents.AddRange(new [] { ModuleProvider.RootComponentMapping });
+            builder.RootComponents.AddRange(new[] { ModuleProvider.RootComponentMapping });
 
             builder.Services.AddLocalization();
             builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
@@ -54,6 +57,18 @@ namespace BlazorBoilerplate.Client
 
             foreach (var module in ModuleProvider.Modules)
                 module.ConfigureWebAssemblyHost(host);
+
+            using (var serviceScope = host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var js = serviceScope.ServiceProvider.GetService<IJSRuntime>();
+                var cookieCulture = await js.GetAspNetCoreCultureCookie();
+
+                if (!string.IsNullOrWhiteSpace(cookieCulture))
+                {
+                    CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(cookieCulture);
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
+                }
+            }            
 
             await host.RunAsync();
         }

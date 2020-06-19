@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>8.0</LangVersion>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Authors>Keith Fimreite</Authors>
     <Company>EnkodeLLC</Company>
     <Title>BlazorBoilerplate Shared</Title>
@@ -11,23 +11,6 @@
     <PackageProjectUrl>https://blazorboilerplate.com/</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
-    <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug_CSB'">
-    <DefineConstants>ClientSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug_SSB'">
-    <DefineConstants>ServerSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release_CSB'">
-    <DefineConstants>ClientSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release_SSB'">
-    <DefineConstants>ServerSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Breeze.Sharp" Version="0.9.2" />

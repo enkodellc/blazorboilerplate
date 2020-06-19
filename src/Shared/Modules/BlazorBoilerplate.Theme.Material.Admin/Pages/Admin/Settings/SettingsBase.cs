@@ -6,6 +6,7 @@ using BlazorBoilerplate.Theme.Material.Admin.Shared.Layouts;
 using MatBlazor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,9 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
     public abstract class SettingsBase : ComponentBase
     {
         protected Dictionary<SettingKey, TenantSetting> settings;
+
+        [Inject]
+        private NavigationManager navigationManager { get; set; }
 
         [Inject]
         protected IApiClient apiClient { get; set; }
@@ -57,9 +61,18 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
         {
             try
             {
+                var reload = false;
+
+                if (settings.ContainsKey(SettingKey.MainConfiguration_Runtime) && settings[SettingKey.MainConfiguration_Runtime].EntityAspect.HasChanges())
+                    reload = true;
+
                 await apiClient.SaveChanges();
 
                 matToaster.Add(L["Operation Successful"], MatToastType.Success);
+
+                if (reload)
+                    navigationManager.NavigateTo(navigationManager.Uri, true);
+
             }
             catch (Exception ex)
             {

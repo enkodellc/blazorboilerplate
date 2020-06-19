@@ -2,8 +2,8 @@
 {
     public enum SettingKey
     {
-        Runtime,
-        Theme,
+        MainConfiguration_Runtime,
+        MainConfiguration_Theme,
 
         EmailConfiguration_SmtpServer,
         EmailConfiguration_SmtpPort,

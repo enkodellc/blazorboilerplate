@@ -5,7 +5,7 @@
     <OutputType>Exe</OutputType>
     <LangVersion>8.0</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Authors>Keith Fimreite</Authors>
     <Company>EnkodeLLC</Company>
     <Title>BlazorBoilerplate Client</Title>
@@ -15,28 +15,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
-
-    <Configurations>Debug_CSB;Debug_SSB;Release_CSB;Release_SSB</Configurations>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug_CSB'">
-    <DefineConstants>ClientSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug_SSB'">
-    <DefineConstants>ServerSideBlazor;TRACE;DEBUG;NETSTANDARD2_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release_CSB'">
-    <DefineConstants>ClientSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release_SSB'">
-    <DefineConstants>ServerSideBlazor;RELEASE;NETSTANDARD2_1;</DefineConstants>
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
+    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking> <!-- because Mono.Cecil.AssemblyResolutionException: Failed to resolve assembly: Microsoft.Data.OData 5.8.4 -->
   </PropertyGroup>
 
   <ItemGroup>

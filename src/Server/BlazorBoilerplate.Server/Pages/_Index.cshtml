@@ -1,11 +1,15 @@
 ﻿@page "/"
 @namespace BlazorBoilerplate.Server.Pages
-@using BlazorBoilerplate.Server.Extensions
+@using BlazorBoilerplate.Infrastructure.Server
+@using BlazorBoilerplate.Shared.Models
 @using BlazorBoilerplate.Shared.Providers
 @using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Localization
+@using System.Globalization
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, BlazorBoilerplate.Shared
 @inject IWebHostEnvironment env
+@inject ITenantSettings<MainConfiguration> mainConfiguration
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +21,7 @@
     <meta name="description" content="Blazor Boilerplate & Starter Kit - A real world Example ">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
-    @if (env.IsBlazorServer())
+    @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
     {
         <title>BlazorBoilerplate &amp; Starter Kit (SSB)</title>
     }
@@ -29,22 +33,22 @@
     <link href="manifest.json" rel="manifest" />
 </head>
 <body>
-    <!-- SSB -->
     @{
-        this.HttpContext.Response.Cookies.Append(
-          Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.DefaultCookieName,
-          Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.MakeCookieValue(
-            new Microsoft.AspNetCore.Localization.RequestCulture(
-                System.Globalization.CultureInfo.CurrentCulture,
-                System.Globalization.CultureInfo.CurrentUICulture)),
-            new Microsoft.AspNetCore.Http.CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+        if (HttpContext.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName] == null)
+            HttpContext.Response.Cookies.Append(
+               CookieRequestCultureProvider.DefaultCookieName,
+               CookieRequestCultureProvider.MakeCookieValue(
+                 new RequestCulture(
+                     CultureInfo.CurrentCulture,
+                     CultureInfo.CurrentUICulture)),
+                 new Microsoft.AspNetCore.Http.CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
     }
 
-    @if (env.IsBlazorServer())
+    @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
     {
         @(Html.AntiForgeryToken())
         <app>
-            <component type="ModuleProvider.RootComponentMapping.ComponentType" render-mode="ServerPrerendered" />
+            <component type="ModuleProvider.RootComponentMapping.ComponentType" render-mode="Server" />
         </app>
     }
     else
@@ -65,7 +69,7 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    @if (env.IsBlazorServer())
+    @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
     {
         <script src="_framework/blazor.server.js"></script>
     }

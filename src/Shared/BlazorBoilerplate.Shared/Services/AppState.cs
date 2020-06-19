@@ -9,6 +9,7 @@ namespace BlazorBoilerplate.Shared.Services
     public class AppState
     {
         public event Action OnChange;
+
         private readonly IApiClient _apiClient;
         private UserProfile _userProfile { get; set; }
 
