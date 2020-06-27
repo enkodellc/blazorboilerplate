@@ -11,10 +11,10 @@ namespace BlazorBoilerplate.Storage.Stores
 {
     public class ApiLogStore : IApiLogStore
     {
-        private readonly IApplicationDbContext _db;
+        private readonly ApplicationDbContext _db;
         private readonly IMapper _autoMapper;
 
-        public ApiLogStore(IApplicationDbContext db, IMapper autoMapper)
+        public ApiLogStore(ApplicationDbContext db, IMapper autoMapper)
         {
             _db = db;
             _autoMapper = autoMapper;

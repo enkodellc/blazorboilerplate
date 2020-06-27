@@ -1,11 +1,11 @@
-﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Infrastructure.Server;
+﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Interfaces;
-using Microsoft.Extensions.Configuration;
+using BlazorBoilerplate.Storage;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -15,14 +15,16 @@ namespace BlazorBoilerplate.Server.Managers
     {
         private readonly IApiLogStore _apiLogStore;
         private readonly IUserSession _userSession;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IUserSession userSession)
+        public ApiLogManager(IApiLogStore apiLogStore, IUserSession userSession, IServiceScopeFactory scopeFactory)
         {
             _apiLogStore = apiLogStore;
             _userSession = userSession;
+            _scopeFactory = scopeFactory;
         }
 
-        public async Task Log(ApiLogItem apiLogItem, IApplicationDbContext db)
+        public async Task Log(ApiLogItem apiLogItem)
         {
             if (apiLogItem.ApplicationUserId != Guid.Empty)
             {
@@ -38,8 +40,15 @@ namespace BlazorBoilerplate.Server.Managers
             else
                 apiLogItem.ApplicationUserId = null;
 
-            db.ApiLogs.Add(apiLogItem);
-            await db.SaveChangesAsync(CancellationToken.None);
+
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                dbContext.ApiLogs.Add(apiLogItem);
+
+                await dbContext.SaveChangesAsync();
+            }            
         }
 
         public async Task<ApiResponse> Get()

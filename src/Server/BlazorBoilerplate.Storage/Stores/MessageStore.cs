@@ -11,10 +11,10 @@ namespace BlazorBoilerplate.Storage.Stores
 {
     public class MessageStore : IMessageStore
     {
-        private readonly IApplicationDbContext _applicationDbContext;
+        private readonly ApplicationDbContext _applicationDbContext;
         private readonly IMapper _autoMapper;
 
-        public MessageStore(IApplicationDbContext applicationDbContext,  IMapper autoMapper)
+        public MessageStore(ApplicationDbContext applicationDbContext,  IMapper autoMapper)
         {
             _applicationDbContext = applicationDbContext;
             _autoMapper = autoMapper;

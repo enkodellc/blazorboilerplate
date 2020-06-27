@@ -19,7 +19,7 @@ using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProf
 namespace BlazorBoilerplate.Storage
 {
     //https://trailheadtechnology.com/entity-framework-core-2-1-automate-all-that-boring-boiler-plate/
-    public class ApplicationDbContext : MultiTenantIdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext, IMultiTenantDbContext
+    public class ApplicationDbContext : MultiTenantIdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IMultiTenantDbContext
     {
         public DbSet<TenantSetting> TenantSettings { get; set; }
 

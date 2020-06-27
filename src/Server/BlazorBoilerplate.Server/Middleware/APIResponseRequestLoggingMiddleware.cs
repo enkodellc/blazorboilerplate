@@ -1,8 +1,8 @@
-﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Infrastructure.Extensions;
+﻿using BlazorBoilerplate.Infrastructure.Extensions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Storage;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -41,7 +41,7 @@ namespace BlazorBoilerplate.Server.Middleware
             _ignorePaths = configuration.GetSection("BlazorBoilerplate:Api:Logging:IgnorePaths").Get<List<string>>() ?? new List<string>();
         }
 
-        public async Task Invoke(HttpContext httpContext, IApplicationDbContext db, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
+        public async Task Invoke(HttpContext httpContext, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _apiLogManager = apiLogManager;
@@ -112,9 +112,7 @@ namespace BlazorBoilerplate.Server.Middleware
                                         formattedRequest,
                                         responseBodyContent,
                                         httpContext.Connection.RemoteIpAddress.ToString(),
-                                        user,
-                                        db
-                                        );
+                                        user);
                                 }
                                 catch (Exception ex)
                                 {
@@ -249,8 +247,7 @@ namespace BlazorBoilerplate.Server.Middleware
                             string requestBody,
                             string responseBody,
                             string ipAddress,
-                            ApplicationUser user,
-                            IApplicationDbContext db)
+                            ApplicationUser user)
         {
             if (requestBody.Length > 256)
                 requestBody = $"(Truncated to 200 chars) {requestBody.Substring(0, 200)}";
@@ -285,7 +282,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 ResponseBody = responseBody ?? String.Empty,
                 IPAddress = ipAddress,
                 ApplicationUserId = user == null ? Guid.Empty : user.Id
-            }, db);
+            });
         }
 
         private Task ClearCacheHeaders(object state)

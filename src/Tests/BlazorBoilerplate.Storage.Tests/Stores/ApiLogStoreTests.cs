@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Storage.Stores;
 using Moq;
 using NUnit.Framework;
@@ -11,13 +10,13 @@ namespace BlazorBoilerplate.Storage.Tests.Stores
     {
         private ApiLogStore _apiLogStore;
 
-        private Mock<IApplicationDbContext> _dbContext;
+        private Mock<ApplicationDbContext> _dbContext;
         private Mock<IMapper> _mapper;
 
         [SetUp]
         public void SetUp()
         {
-            _dbContext = new Mock<IApplicationDbContext>();
+            _dbContext = new Mock<ApplicationDbContext>();
             _mapper = new Mock<IMapper>();
 
             _apiLogStore = new ApiLogStore(_dbContext.Object, _mapper.Object);
