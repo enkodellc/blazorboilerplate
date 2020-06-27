@@ -9,8 +9,8 @@
     <PackageReference Include="Breeze.Persistence.EFCore" Version="3.0.1" />
     <PackageReference Include="Finbuckle.MultiTenant" Version="5.0.4" />
     <PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" Version="3.1.0" />
-    <PackageReference Include="IdentityServer4.EntityFramework" Version="4.0.0-preview.5" />
-    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="4.0.0-preview.5" />
+    <PackageReference Include="IdentityServer4.EntityFramework" Version="4.0.0" />
+    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.5" />
