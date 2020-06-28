@@ -29,7 +29,7 @@ With Blazor Boilerplate you can easily switch between the two modes of Blazor.
 
    intro/architecture
 
-   .. toctree::
+.. toctree::
    :maxdepth: 3
    :hidden:
    :caption: Features
