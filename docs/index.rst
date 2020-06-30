@@ -77,6 +77,7 @@ Cons
    :hidden:
    :caption: Quickstarts
 
+   quickstarts/breeze_sharp_with_blazor
    quickstarts/entity_framework_core
 
 .. toctree::
