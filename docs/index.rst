@@ -75,6 +75,13 @@ Cons
 .. toctree::
    :maxdepth: 3
    :hidden:
+   :caption: Quickstarts
+
+   quickstarts/entity_framework_core
+
+.. toctree::
+   :maxdepth: 3
+   :hidden:
    :caption: Features
 
    features/multitenancy

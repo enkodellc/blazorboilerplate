@@ -7,7 +7,7 @@ The host strategy is used:
 
 ::
 
-               services.AddMultiTenant()
+       services.AddMultiTenant()
                .WithHostStrategy("__tenant__")
                .WithEFCoreStore<TenantStoreDbContext>()
                .WithFallbackStrategy(Settings.DefaultTenantId);
@@ -21,14 +21,14 @@ add these bindings:
 ::
 
        <site name="BlazorBoilerplate.Server" id="...">
-       <application path="/" applicationPool="BlazorBoilerplate.Server AppPool">
-         <virtualDirectory path="/" physicalPath="...\src\Server\BlazorBoilerplate.Server" />
-       </application>
-       <bindings>
-          <binding protocol="http" bindingInformation="*:53414:localhost" />
-          <binding protocol="http" bindingInformation="*:53414:tenant1.local" />
-          <binding protocol="http" bindingInformation="*:53414:tenant2.local" />
-       </bindings>
+         <application path="/" applicationPool="BlazorBoilerplate.Server AppPool">
+           <virtualDirectory path="/" physicalPath="...\src\Server\BlazorBoilerplate.Server" />
+         </application>
+         <bindings>
+           <binding protocol="http" bindingInformation="*:53414:localhost" />
+           <binding protocol="http" bindingInformation="*:53414:tenant1.local" />
+           <binding protocol="http" bindingInformation="*:53414:tenant2.local" />
+         </bindings>
        </site>
 
 Run as administrator \\src\\Utils\\Scripts\\\ **addTenantBindings.cmd** to
