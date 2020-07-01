@@ -99,6 +99,7 @@ namespace BlazorBoilerplate.CommonUI.Hubs
         /// </summary>
         private readonly IJSRuntime _JSruntime;
 
+        private bool _disposed = false;
 
         /// <summary>
         /// Start the SignalR client on JS
@@ -197,6 +198,19 @@ namespace BlazorBoilerplate.CommonUI.Hubs
             // remove this key from the list of clients
             if (_clients.ContainsKey(_key))
                 _clients.Remove(_key);
+
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
         }
     }
 

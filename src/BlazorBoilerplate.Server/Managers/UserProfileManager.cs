@@ -40,7 +40,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                 return new ApiResponse(Status200OK, "Updated User Profile");
             }
-            catch (Exception ex)
+            catch 
             {
                 return new ApiResponse(Status400BadRequest, "Failed to Retrieve User Profile");
             }

@@ -37,7 +37,7 @@ namespace BlazorBoilerplate.Server.Managers
                 var tenant = _tenantStore.GetById(id);
                 return new ApiResponse(Status200OK, "Retrieved Tenant", tenant);
             }
-            catch (Exception e)
+            catch
             {
                 return new ApiResponse(Status400BadRequest, "Failed to Retrieve Tenant");
             }

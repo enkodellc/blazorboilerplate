@@ -36,7 +36,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 return new ApiResponse(Status200OK, "Retrieved Todo", await _toDoStore.GetById(id));
             }
-            catch (Exception e)
+            catch 
             {
                 return new ApiResponse(Status400BadRequest, "Failed to Retrieve Todo");
             }

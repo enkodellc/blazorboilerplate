@@ -7,7 +7,6 @@ using BlazorBoilerplate.CommonUI.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Account;
 using Newtonsoft.Json;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.CommonUI
 {
