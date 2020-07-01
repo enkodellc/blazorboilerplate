@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using BlazorBoilerplate.Server.Middleware.Wrappers;
-using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.DataInterfaces;
 using BlazorBoilerplate.Shared.DataModels;
 using BlazorBoilerplate.Storage;
-using BlazorBoilerplate.Storage.Stores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using static Microsoft.AspNetCore.Http.StatusCodes;
@@ -18,15 +14,12 @@ namespace BlazorBoilerplate.Server.Managers
     public class ApiLogManager : IApiLogManager
     {
         private readonly IApiLogStore _apiLogStore;
-        private readonly IApplicationDbContext _db;
         private readonly DbContextOptionsBuilder<ApplicationDbContext> _optionsBuilder;
-        private readonly IMapper _autoMapper;
         private readonly IUserSession _userSession;
 
         public ApiLogManager(IConfiguration configuration, IApiLogStore apiLogStore, IApplicationDbContext db, IUserSession userSession)
         {
             _apiLogStore = apiLogStore;
-            _db = db;
             _userSession = userSession;
 
             // Calling Log from the API Middlware results in a disposed ApplicationDBContext. This is here to build a DB Context for logging API Calls
