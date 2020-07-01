@@ -6,6 +6,7 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider authStateProvider
 @inject IMatToaster matToaster
+@using Newtonsoft.Json;
 
 @using static Microsoft.AspNetCore.Http.StatusCodes
 
@@ -107,7 +108,10 @@ else
         }
         else
         {
-            apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/UserPasswordReset/{userInfo.UserId}", registerParameters.Password);
+            HttpResponseMessage response = await Http.PostAsJsonAsync($"api/Account/UserPasswordReset/{userInfo.UserId}", registerParameters.Password);
+            apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
+
+            //apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/UserPasswordReset/{userInfo.UserId}", registerParameters.Password);
             if (apiResponse.StatusCode == Status204NoContent || apiResponse.StatusCode == Status200OK)
             {
                 matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);

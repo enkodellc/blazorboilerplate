@@ -5,6 +5,7 @@
 @inject IMatToaster matToaster
 
 @using System.Net
+@using Newtonsoft.Json;
 
 <h1>Todo List - CRUD</h1>
 <p>
@@ -98,9 +99,9 @@
         //this updates the IsCompleted flag only
         try
         {
-
             todo.IsCompleted = !todo.IsCompleted;
-            ApiResponseDto apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/todo", todo);
+            HttpResponseMessage response = await Http.PutAsJsonAsync("api/todo", todo);
+            ApiResponseDto apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
 
             if (!apiResponse.IsError)
             {
@@ -158,7 +159,9 @@
         dialogIsOpen = false;
         try
         {
-            ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/todo", todo);
+            HttpResponseMessage response = await Http.PostAsJsonAsync("api/todo", todo);
+            ApiResponseDto apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
+
             if (apiResponse.StatusCode == Status200OK)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);

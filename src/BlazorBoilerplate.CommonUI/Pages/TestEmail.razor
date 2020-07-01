@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
+@using Newtonsoft.Json;
 @using static Microsoft.AspNetCore.Http.StatusCodes
 
 <h1>Send Email</h1>
@@ -34,7 +35,8 @@
     {
         try
         {
-            ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Email/Send", emailParameters);
+            HttpResponseMessage response = await Http.PostAsJsonAsync("api/Email/Send", emailParameters);
+            var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
 
             if (apiResponse.StatusCode == Status200OK)
             {

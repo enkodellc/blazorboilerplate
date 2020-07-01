@@ -1,9 +1,10 @@
 ﻿using BlazorBoilerplate.CommonUI.Services.Contracts;
 using BlazorBoilerplate.Shared.Dto;
-using Microsoft.AspNetCore.Components;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Shared.Dto.Account;
+using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace BlazorBoilerplate.CommonUI.Services.Implementations
 {
@@ -18,12 +19,14 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
 
         public async Task<ApiResponseDto> Get()
         {
-            return await _httpClient.GetJsonAsync<ApiResponseDto>("api/UserProfile/Get");
+           HttpResponseMessage response = await _httpClient.GetAsync("api/UserProfile/Get");
+           return JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<ApiResponseDto> Upsert(UserProfileDto userProfile)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/UserProfile/Upsert", userProfile);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/UserProfile/Upsert", userProfile);
+            return JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
         }
     }
 }

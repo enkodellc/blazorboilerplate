@@ -7,6 +7,7 @@
 @inject IMatToaster matToaster
 @inject AppState appState
 
+@using Newtonsoft.Json;
 @using System.Net
 
 <h1>Roles</h1>
@@ -215,9 +216,15 @@ else
             ApiResponseDto apiResponse;
 
             if (isInsertOperation)
-                apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Admin/Role", request);
+            {
+                HttpResponseMessage response = await Http.PostAsJsonAsync("api/Admin/Role", request);
+                apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
+            }
             else
-                apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Admin/Role", request);
+            {
+                HttpResponseMessage response = await Http.PutAsJsonAsync("api/Admin/Role", request);
+                apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
+            }
 
             if (apiResponse.IsSuccessStatusCode)
             {

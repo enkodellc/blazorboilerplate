@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using System.Net.Http.Json;
 
 namespace BlazorBoilerplate.CommonUI.Services.Implementations
 {
@@ -32,11 +33,8 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
         {
             ApiResponseDto resp;
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, "api/Account/Login");
-            httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(loginParameters));
-            httpRequestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-
-            using (var response = await _httpClient.SendAsync(httpRequestMessage))
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Account/Login", loginParameters);
+            using (response)
             {
                 response.EnsureSuccessStatusCode();
 
@@ -76,10 +74,11 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
                 cookies = cookieEntries.ToList();
 #endif
 
-            var resp = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
+            HttpResponseMessage response = await _httpClient.GetAsync("api/Account/Logout");
+            ApiResponseDto apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
 
 #if ServerSideBlazor
-            if (resp.StatusCode == Status200OK  && cookies != null && cookies.Any())
+            if (apiResponse.StatusCode == Status200OK  && cookies != null && cookies.Any())
             {
                 _httpClient.DefaultRequestHeaders.Remove("Cookie");
 
@@ -91,38 +90,45 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
             }
 #endif
 
-            return resp;
+            return apiResponse;
         }
 
         public async Task<ApiResponseDto> Create(RegisterDto registerParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Create", registerParameters);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Account/Create", registerParameters);
+            return JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<ApiResponseDto> Register(RegisterDto registerParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Register", registerParameters);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Account/Register", registerParameters);
+            return JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto confirmEmailParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ConfirmEmail", confirmEmailParameters);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Account/ConfirmEmail", confirmEmailParameters);
+            return JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<ApiResponseDto> ResetPassword(ResetPasswordDto resetPasswordParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ResetPassword", resetPasswordParameters);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Account/ResetPassword", resetPasswordParameters);
+            return JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordParameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ForgotPassword", forgotPasswordParameters);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Account/ForgotPassword", forgotPasswordParameters);
+            return JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<UserInfoDto> GetUserInfo()
         {
             UserInfoDto userInfo = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
-            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Account/UserInfo");
+
+            HttpResponseMessage response = await _httpClient.GetAsync("api/Account/UserInfo");
+            ApiResponseDto apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
 
             if (apiResponse.StatusCode == Status200OK)
             {
@@ -134,14 +140,16 @@ namespace BlazorBoilerplate.CommonUI.Services.Implementations
 
         public async Task<UserInfoDto> GetUser()
         {
-            ApiResponseDto apiResponse = await _httpClient.GetJsonAsync<ApiResponseDto>("api/Account/GetUser");
+            HttpResponseMessage response = await _httpClient.GetAsync("api/Account/GetUser");
+            ApiResponseDto apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
             UserInfoDto user = JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
             return user;
         }
 
         public async Task<ApiResponseDto> UpdateUser(UserInfoDto userInfo)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdateUser", userInfo);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Account/UpdateUser", userInfo);
+            return JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
         }
     }
 }

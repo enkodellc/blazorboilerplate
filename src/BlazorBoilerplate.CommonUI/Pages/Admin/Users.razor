@@ -7,6 +7,7 @@
 @inject IMatToaster matToaster
 @inject AppState appState
 @using System.Net
+@using Newtonsoft.Json;
 
 <h1>Users</h1>
 <p>User Management.</p>
@@ -277,7 +278,8 @@ else
             //update the user object's role list with the new selection set
             user.Roles = roleSelections.Where(x => x.IsSelected == true).Select(x => x.Name).ToList();
 
-            var apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Account", user);
+            HttpResponseMessage response = await Http.PostAsJsonAsync("api/Account", user);
+            var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
 
             if (apiResponse.IsSuccessStatusCode)
                 matToaster.Add("User Updated", MatToastType.Success);
@@ -339,7 +341,8 @@ else
             }
             else
             {
-                var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/AdminUserPasswordReset/{user.UserId}", registerParameters.Password);
+                HttpResponseMessage response = await Http.PostAsJsonAsync($"api/Account/AdminUserPasswordReset/{user.UserId}", registerParameters.Password);
+                var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto>(await response.Content.ReadAsStringAsync());
 
                 if (apiResponse.IsSuccessStatusCode)
                     matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);

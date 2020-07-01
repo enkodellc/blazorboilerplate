@@ -57,7 +57,7 @@ namespace BlazorBoilerplate.Server.Controllers
         =>  ModelState.IsValid ? await _accountManager.ResetPassword(parameters) : _invalidUserModel;
 
         // POST: api/Account/Logout
-        [HttpPost("Logout")]
+        [HttpGet("Logout")]
         [Authorize]
         public async Task<ApiResponse> Logout()
             => await _accountManager.Logout();
