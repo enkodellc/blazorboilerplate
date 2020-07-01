@@ -85,5 +85,6 @@ Cons
    :hidden:
    :caption: Features
 
+   features/dual_mode_blazor
    features/multitenancy
    features/identityserver
