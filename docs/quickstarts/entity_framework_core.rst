@@ -72,3 +72,22 @@ modify **[datetime]_[migration-name].cs** for example to add some SQL to
 fix the errors. E.g. **migrationBuilder.Sql("UPDATE AspNetUserLogins SET
 Id=NEWID() WHERE Id=''");** to add unique values to a new field before
 setting as a new primary key.
+
+Shadow Properties vs Source Generator
+-------------------------------------
+
+Always keeping in mind the DRY principle, it is boring implementing audit information and adding the same properties
+**CreatedOn**, **ModifiedOn**, **CreatedBy** and **ModifiedBy** to all entities.
+
+Some articles teach you to use `Shadow Properties`_ to add audit information,
+but this is not the right solution, if you want expose these properties on the mapped entity types and use them e.g. in UI.
+
+A solution is using `Source Generator`_.
+`AuditableGenerator`_ generates for every class implementing **IAuditable** the above properties.
+Remember all classes implementing **IAuditable** have to be **partial**.
+
+
+
+.. _Shadow Properties: https://docs.microsoft.com/en-us/ef/core/modeling/shadow-properties
+.. _Source Generator: https://devblogs.microsoft.com/dotnet/introducing-c-source-generators
+.. _AuditableGenerator: https://github.com/enkodellc/blazorboilerplate/blob/development/src/Utils/BlazorBoilerplate.SourceGenerator/AuditableGenerator.cs
