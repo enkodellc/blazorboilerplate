@@ -4,17 +4,32 @@
 
 <p>Welcome to the Blazor Boilerplate app / starter template.</p>
 <p>
-    <strong>Blazor Boilerplate </strong> is now a fairly mature repository thanks to time and contributors. Our goal is to be an <strong>enterprise level solution</strong>, to jump start your new web project with Blazor.
-    It's based on Blazor &amp; Razor components for both Client-Side [WebAssembly] (CSB) or Server-Side (SSB) with the .Net Core Framework 3.1+.
-    Expect a lot of changes in the future as Blazor is growing and changing rapidly. <a href="/swagger/index.html" target="_blank"> View the live server-side API</a>
+    <strong>Blazor Boilerplate</strong> is now a fairly mature repository thanks to time and contributors.
+    Our goal is to be an <strong>enterprise level solution</strong>, to jump start your new web project with Blazor.
+    It's based on Blazor with the .Net Core Framework 3.1+.
+    Expect a lot of changes in the future as Blazor is growing and changing rapidly.
 </p>
 <p>
-    This project can now run Client Side / Webassembly Blazor OR Server Side Blazor. Just select which way you want to debug / release with Visual Studio.
-    The ASP.NET Core app serves the Blazor app to clients. The WebAssembly / client-side Blazor app can interact with the server over the network using web API calls or SignalR. I / Enkode is more interested in this hosted model the most to keep the load on the server low. The server-side hosted model is primarily for debugging the the UI.
+    <a href="https://blazor-boilerplate.readthedocs.io/" target="_blank"> Project Development branch Documentation</a>
 </p>
-<p>The repo is moving along... it takes time to build as I am often contributing to <a href="https://github.com/SamProf/MatBlazor" target="_blank">MatBlazor</a> as well to obtain UI changes that are needed for the theme. With more support each project can grow faster. Please contribute, or at minimum star the repositories on Github</p>
 <p>
-    <MatButton Link="https://www.paypal.me/enkodellc"><i class="fa fa-cc-paypal"></i>&nbsp; Donate</MatButton>- Help support this repo / code and hosting costs. Other devs are charging $30-$1500 to download their code with similar functionality.
+    <a href="/swagger/index.html" target="_blank"> Swagger API Documentation</a>
+</p>
+<p>
+    This project can run client side / Webassembly Blazor or Server Side Blazor. Just set the desidered runtime in admin section.
+    The ASP.NET Core app serves the Blazor app to clients.
+    The WebAssembly / client-side Blazor app can interact with the server over the network using web API calls.
+    I / Enkode is more interested in this hosted model the most to keep the load on the server low.
+    For more about pros and cons of Blazor Server vs Blazor WebAssembly read <a href="https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1" target="_blank">ASP.NET Core Blazor hosting models</a>
+    or watch Daniel Roth on <a href="https://www.youtube.com/watch?v=XoizucRjxgU" target="_blank">BlazorDay 2020</a>.
+</p>
+<p>
+    The repo is moving along... it takes time to build as I am often contributing to <a href="https://github.com/SamProf/MatBlazor" target="_blank">MatBlazor</a> as well to obtain UI changes that are needed for the theme.
+    With more support each project can grow faster. Please contribute, or at minimum star the repositories on Github
+</p>
+<p>
+    <MatButton Link="https://www.paypal.me/enkodellc"><i class="fa fa-cc-paypal"></i>&nbsp; Donate</MatButton>- Help support this repo / code and hosting costs.
+    Other devs are charging $30-$1500 to download their code with similar functionality.
 </p>
 <p>
     <MatButton Link="https://github.com/enkodellc/blazorboilerplate"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;  Github Repository / Contribute</MatButton>- Contribute to this repo to help it grow!
@@ -22,7 +37,8 @@
 <hr />
 <h2>Authorization / Identity</h2>
 <p>
-    Take notice of the disabled menu items. If you <a href="/account/login">Login</a> [Username: <strong>user</strong> | Password: <strong>user123</strong>] or  [Username: <strong>admin</strong> | Password: <strong>admin123</strong>] you can view those pages.
+    Take notice of the disabled menu items.
+    If you <a href="/account/login">Login</a> [Username: <strong>user</strong> | Password: <strong>user123</strong>] or [Username: <strong>admin</strong> | Password: <strong>admin123</strong>] you can view those pages.
     As Blazor grows the security features in this starter template will as well.
 </p>
 <hr />
@@ -112,12 +128,9 @@
     {
         await base.OnInitializedAsync();
 
-        await Task.Delay(TimeSpan.FromSeconds(3)).ContinueWith((_) => {
+        await Task.Delay(TimeSpan.FromSeconds(3)).ContinueWith((_) =>
+        {
             this.lazySnackbarIsOpen = true;
         });
-    }
-
-    public void Dispose()
-    {
     }
 }
