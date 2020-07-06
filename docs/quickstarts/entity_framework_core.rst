@@ -10,10 +10,12 @@ Here some tips to manage migrations in Blazor Boilerplate with command-line inte
 
 1. Make sure you have installed CLI; from the command line execute:
 ::
+
  dotnet tool install --global dotnet-ef
 
 or to update
 ::
+
  dotnet tool update --global dotnet-ef
 
 2. Keep in mind that every DbContext has its own migrations.
@@ -27,9 +29,11 @@ or to update
    ef** has to know how to find and instantiate them. In our case the so
    called startup project is **BlazorBoilerplate.Server**. So the
    commands are:
+
 ::
 
  dotnet ef --startup-project ../BlazorBoilerplate.Server/ migrations add 4Preview3 -c PersistedGrantDbContext --verbose --no-build --configuration Debug
+
 ::
 
  dotnet ef --startup-project ../BlazorBoilerplate.Server/ migrations add 4Preview3 -c ConfigurationDbContext --verbose --no-build --configuration Debug
@@ -53,11 +57,13 @@ keeps track of applied migrations without information about the related
 db context. To get this information use the following command; for
 example for ConfigurationDbContext:
 ::
+
  dotnet ef --startup-project ../BlazorBoilerplate.Server/ migrations list -c ConfigurationDbContext --verbose --no-build --configuration Debug
 
 You can also update the database, without running the project with the
 following command:
 ::
+
  dotnet ef --startup-project ../BlazorBoilerplate.Server/ database update 4Preview3 -c ConfigurationDbContext --verbose --no-build --configuration Debug
 
 If you specify a previous migration, you can revert the db changes to

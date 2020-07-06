@@ -1,0 +1,174 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Blazor Boilerplate Team
+# This file is distributed under the same license as the Blazor Boilerplate
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Blazor Boilerplate \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-06 17:43+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../index.rst:68
+msgid "Introduction"
+msgstr ""
+
+#: ../../index.rst:75
+msgid "Quickstarts"
+msgstr ""
+
+#: ../../index.rst:83
+msgid "Features"
+msgstr ""
+
+#: ../../index.rst:10 7fbac86f831b45c7a14bd49c6afb0f77
+msgid "Documentation"
+msgstr ""
+
+#: ../../index.rst:12 769b9d8487924add897915c125da404b
+msgid ""
+"Blazor Boilerplate is a starter template for `Blazor web apps "
+"<https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor>`_."
+msgstr ""
+
+#: ../../index.rst:14 6e32818672474f49b31cb42a295ccc97
+msgid "This docs cover the latest version on development branch."
+msgstr ""
+
+#: ../../index.rst:16 63d82d2285434f4bb7b29fec7c17d007
+msgid ""
+"With Blazor Boilerplate you can easily switch between the two modes of "
+"Blazor."
+msgstr ""
+
+#: ../../index.rst:19 0634307951cb454b9ea25326da3b0977
+msgid ""
+"From Microsoft documentation `ASP.NET Core Blazor hosting models "
+"<https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-"
+"models?view=aspnetcore-3.1>`_."
+msgstr ""
+
+#: ../../index.rst:22 60fad0b1b5ec49328db57b328d202473
+msgid "Blazor Server"
+msgstr ""
+
+#: ../../index.rst:25 ../../index.rst:49 af496b3e86aa466b90518b862b676f32
+#: d986215506004d6fa72578fd82a03d88
+msgid "Pros"
+msgstr ""
+
+#: ../../index.rst:27 2dbf4a8051f54bd2b8279cfa5470d055
+msgid ""
+"Download size is significantly smaller than a Blazor WebAssembly app, and"
+" the app loads much faster."
+msgstr ""
+
+#: ../../index.rst:28 959880d5f0584af99f42d00c88e853a1
+msgid ""
+"The app takes full advantage of server capabilities, including use of any"
+" .NET Core compatible APIs."
+msgstr ""
+
+#: ../../index.rst:29 afc394fe227b47df9a524d6a0e0f8e1b
+msgid ""
+".NET Core on the server is used to run the app, so existing .NET tooling,"
+" such as debugging, works as expected."
+msgstr ""
+
+#: ../../index.rst:30 ed61f4cc7b8c40b6a1f63452c338d308
+msgid ""
+"Thin clients are supported. For example, Blazor Server apps work with "
+"browsers that don't support WebAssembly and on resource-constrained "
+"devices."
+msgstr ""
+
+#: ../../index.rst:31 b153ddfd27db434b9fcfbf7ebbbd56aa
+msgid ""
+"The app's .NET/C# code base, including the app's component code, isn't "
+"served to clients."
+msgstr ""
+
+#: ../../index.rst:34 ../../index.rst:57 0a3211d22b184574a617f02f41823d51
+#: 69194d05cddc4afba146885729929c4e
+msgid "Cons"
+msgstr ""
+
+#: ../../index.rst:36 4e4b0890f3534637888a0f2ff2781571
+msgid ""
+"Higher latency usually exists. Every user interaction involves a network "
+"hop."
+msgstr ""
+
+#: ../../index.rst:37 b66805dc17254af587a16ddff2b80689
+msgid ""
+"There's no offline support. If the client connection fails, the app stops"
+" working."
+msgstr ""
+
+#: ../../index.rst:38 ec125998c0e841b58ed947e48580a5f0
+msgid ""
+"Scalability is challenging for apps with many users. The server must "
+"manage multiple client connections and handle client state."
+msgstr ""
+
+#: ../../index.rst:39 1e8699c7f48d47fbab1882642ca2adfa
+msgid ""
+"An ASP.NET Core server is required to serve the app. Serverless "
+"deployment scenarios aren't possible (for example, serving the app from a"
+" CDN)."
+msgstr ""
+
+#: ../../index.rst:46 0d8b7367142046258c3f10067dc4569a
+msgid "Blazor WebAssembly"
+msgstr ""
+
+#: ../../index.rst:51 a32c97ec65784fa29635f961f93abe69
+msgid ""
+"There's no .NET server-side dependency. The app is fully functioning "
+"after it's downloaded to the client."
+msgstr ""
+
+#: ../../index.rst:52 a34047c20bc145078e40a2b71d46921b
+msgid "Client resources and capabilities are fully leveraged."
+msgstr ""
+
+#: ../../index.rst:53 9fb95832f8304d35bfcb28e27f896f27
+msgid "Work is offloaded from the server to the client."
+msgstr ""
+
+#: ../../index.rst:54 1b3c99015e624bbdb39bcc27fc9c3822
+msgid ""
+"An ASP.NET Core web server isn't required to host the app. Serverless "
+"deployment scenarios are possible (for example, serving the app from a "
+"CDN)."
+msgstr ""
+
+#: ../../index.rst:59 772822522976457c957ca824020d4faa
+msgid "The app is restricted to the capabilities of the browser."
+msgstr ""
+
+#: ../../index.rst:60 7864099379d94de2b429c0f22bdf7ba2
+msgid ""
+"Capable client hardware and software (for example, WebAssembly support) "
+"is required."
+msgstr ""
+
+#: ../../index.rst:61 013bef2d183b4f9a9fc85261bd2af72f
+msgid "Download size is larger, and apps take longer to load."
+msgstr ""
+
+#: ../../index.rst:62 0f47d98e925b43c8aba1f1123a2fe229
+msgid ""
+".NET runtime and tooling support is less mature. For example, limitations"
+" exist in .NET Standard support and debugging."
+msgstr ""
+

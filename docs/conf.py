@@ -77,3 +77,6 @@ html_static_path = ['_static']
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'default'
 highlight_language = 'csharp'
+
+gettext_uuid = True
+gettext_compact = False

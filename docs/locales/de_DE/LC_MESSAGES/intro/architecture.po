@@ -1,0 +1,66 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Blazor Boilerplate Team
+# This file is distributed under the same license as the Blazor Boilerplate
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Blazor Boilerplate \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-06 17:43+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../intro/architecture.rst:2 9b0c7c3345e64906a999396971334e3e
+msgid "Architecture"
+msgstr ""
+
+#: ../../intro/architecture.rst:7 05d71610153e4d958a6cbcde8d3b2dbe
+msgid ""
+"The diagram shows the dependencies of the main projects. Every project "
+"with text to localize depends on **Localization** project."
+msgstr ""
+
+#: ../../intro/architecture.rst:10 c00a2a6277f1415cacb35e58a2f579fc
+msgid ""
+"**Client** project is used only with Blazor WebAssembly, so it runs on "
+"the browser. It initializes the WebAssembly startup."
+msgstr ""
+
+#: ../../intro/architecture.rst:12 efe4cf12ebc9461f87205a0b83749c74
+msgid ""
+"**Server** project manages the main services: authentication, "
+"authorization, API, etc."
+msgstr ""
+
+#: ../../intro/architecture.rst:14 cde5d065ef434f3fac019d107deab2d4
+msgid ""
+"**Storage** project manages the persistence of models in a database with "
+"`Entity Framework Core <https://docs.microsoft.com/en-us/ef/core/>`_."
+msgstr ""
+
+#: ../../intro/architecture.rst:16 dd0b5070723c4c57837be28a0022e6d6
+msgid ""
+"**Infrastructure** project contains interfaces and models in common among"
+" projects running on server."
+msgstr ""
+
+#: ../../intro/architecture.rst:18 78452d7745c94632b664595da5532505
+msgid ""
+"**Shared** project contains base interfaces and models in common among "
+"projects running on server or client."
+msgstr ""
+
+#: ../../intro/architecture.rst:20 eaebebd5889a4166b653216ed74c9151
+msgid ""
+"**Module** projects contains UI, services, etc. that define your web "
+"application."
+msgstr ""
+
