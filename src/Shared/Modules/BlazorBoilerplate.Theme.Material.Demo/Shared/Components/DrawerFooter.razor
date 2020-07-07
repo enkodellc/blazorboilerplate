@@ -1,7 +1,8 @@
 ﻿@implements IDynamicComponent
+@inject IStringLocalizer<Strings> L
 
 <MatTooltip Tooltip="Help">
-    <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">Help & Support</span></MatButton>
+    <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">@L["AppHelpAndSupport"]</span></MatButton>
 </MatTooltip>
 
 @code {

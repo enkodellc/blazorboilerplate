@@ -4,26 +4,26 @@
 @implements IDynamicComponent
 
 <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
-    <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
+    <MatIcon>home</MatIcon> <span class="miniHover">@L["AppNavHome"]</span>
 </MatNavItem>
 
 <MatNavItem Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri">
-    <MatIcon>list_alt</MatIcon> <span class="miniHover">Todo List</span>
+    <MatIcon>list_alt</MatIcon> <span class="miniHover">@L["TodoNav"]</span>
 </MatNavItem>
 
 <MatNavSubMenu>
     <MatNavSubMenuHeader>
         <MatNavItem AllowSelection="false">
-            <MatIcon>stars</MatIcon><span class="miniHover"> Features</span>
+            <MatIcon>stars</MatIcon><span class="miniHover"> @L["AppNavFeatures"]</span>
         </MatNavItem>
     </MatNavSubMenuHeader>
     <MatNavSubMenuList>
         <MatNavItem Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri">
-            <MatIcon>touch_app</MatIcon> <span class="miniHover">Drag and Drop</span>
-        </MatNavItem>
+            <MatIcon>touch_app</MatIcon> <span class="miniHover">@L["AppNavDragAndDrop"]</span>
+</MatNavItem>
         <MatNavItem Href="@navigationManager.ToAbsoluteUri("screenshots").AbsoluteUri">
-            <MatIcon>screen_share</MatIcon> <span class="miniHover">Screenshots</span>
-        </MatNavItem>
+            <MatIcon>screen_share</MatIcon> <span class="miniHover">@L["AppNavScreenshots"]</span>
+</MatNavItem>
     </MatNavSubMenuList>
 </MatNavSubMenu>
 
@@ -35,25 +35,25 @@
     <MatNavSubMenuHeader>
         <MatNavItem AllowSelection="false" Disabled="@(!IsLoggedIn)">
             <MatIcon>mail_outline</MatIcon>
-            <span class="miniHover"> Email</span>
+            <span class="miniHover"> @L["AppNavEmail"]</span>
         </MatNavItem>
     </MatNavSubMenuHeader>
     <MatNavSubMenuList>
         <MatNavItem Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>inbox</MatIcon> <span class="miniHover">Read Email</span>
+            <MatIcon>inbox</MatIcon> <span class="miniHover">@L["AppNavReadEmail"]</span>
         </MatNavItem>
         <MatNavItem Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>send</MatIcon> <span class="miniHover">Send Email</span>
+            <MatIcon>send</MatIcon> <span class="miniHover">@L["AppNavSendEmail"]</span>
         </MatNavItem>
     </MatNavSubMenuList>
 </MatNavSubMenu>
 
 <MatNavItem Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-    <MatIcon>forum</MatIcon> <span class="miniHover">Forum</span>
+    <MatIcon>forum</MatIcon> <span class="miniHover">@L["AppNavForum"]</span>
 </MatNavItem>
 
 <MatNavItem Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri">
-    <MatIcon>attach_money</MatIcon> <span class="miniHover">Sponsors</span>
+    <MatIcon>attach_money</MatIcon> <span class="miniHover">@L["AppNavSponsors"]</span>
 </MatNavItem>
 
 @code {

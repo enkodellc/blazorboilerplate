@@ -498,4 +498,168 @@
   <data name="MainSettings" xml:space="preserve">
     <value>Main settings</value>
   </data>
+  <data name="AppAdminNavApiAuditLog" xml:space="preserve">
+    <value>Api Audit Log</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="AppAdminNavDBLoggingView" xml:space="preserve">
+    <value>DB Logging Viewer</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="AppAdminNavFrontEnd" xml:space="preserve">
+    <value>FrontEnd</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="AppAdminNavMonitoring" xml:space="preserve">
+    <value>Monitoring</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="AppHelpAndSupport" xml:space="preserve">
+    <value>Help &amp; Support</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppHoverAdmin" xml:space="preserve">
+    <value>Administration</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppHoverNavMinimize" xml:space="preserve">
+    <value>Minimize Navigation Bar</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppHoverNavToggle" xml:space="preserve">
+    <value>Toggle Navigation Bar</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Blazer Boilerplate</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavDashboard" xml:space="preserve">
+    <value>Dashboard</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavDragAndDrop" xml:space="preserve">
+    <value>Drag and Drop</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavEmail" xml:space="preserve">
+    <value>Email</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavFeatures" xml:space="preserve">
+    <value>Features</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavForum" xml:space="preserve">
+    <value>Forum</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavHome" xml:space="preserve">
+    <value>Homepage</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavReadEmail" xml:space="preserve">
+    <value>Read Email</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavScreenshots" xml:space="preserve">
+    <value>Screenshots</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavSendEmail" xml:space="preserve">
+    <value>Send Email</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppNavSponsors" xml:space="preserve">
+    <value>Sponsors</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="AppShortName" xml:space="preserve">
+    <value>BlazorBP</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="BreadCrumbadmin" xml:space="preserve">
+    <value>Admin</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadminapiResources" xml:space="preserve">
+    <value>API Resources</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadminblazor_middlware_audit" xml:space="preserve">
+    <value>API Audit Log</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadminclients" xml:space="preserve">
+    <value>Clients</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadmindBlogViewer" xml:space="preserve">
+    <value>DB Loging Viewer</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadminidentityResources" xml:space="preserve">
+    <value>Identity Resources</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadminmultitenancy" xml:space="preserve">
+    <value>Tenant Manager</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadminroles" xml:space="preserve">
+    <value>Roles Manager</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadminsettings" xml:space="preserve">
+    <value>Settings</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadminsettingsemail" xml:space="preserve">
+    <value>Email Configurations</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbadminusers" xml:space="preserve">
+    <value>Users</value>
+    <comment>APPLICATION/ADMIN</comment>
+  </data>
+  <data name="BreadCrumbdashboard" xml:space="preserve">
+    <value>Dashboard</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="BreadCrumbdrag_and_drop" xml:space="preserve">
+    <value>Drag and Drop</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="BreadCrumbemail" xml:space="preserve">
+    <value>Send Email</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="BreadCrumbemail_view" xml:space="preserve">
+    <value>Read Email</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="BreadCrumbforum" xml:space="preserve">
+    <value>Forum</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="BreadCrumbHome" xml:space="preserve">
+    <value>Home</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="BreadCrumbscreenshots" xml:space="preserve">
+    <value>Screenshots</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="BreadCrumbsponsors" xml:space="preserve">
+    <value>Sponsors</value>
+    <comment>APPLICATION</comment>
+  </data>
+  <data name="BreadCrumbtodo_list" xml:space="preserve">
+    <value>ToDo</value>
+    <comment>TODO</comment>
+  </data>
+  <data name="TodoNav" xml:space="preserve">
+    <value>ToDo List</value>
+    <comment>TODO</comment>
+  </data>
 </root>
