@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject AppState appState
+@inject IStringLocalizer<Strings> L
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 
 <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
@@ -22,10 +23,10 @@
                         <MatAppBarTitle>
                         </MatAppBarTitle>
                         <div class="hidden-mdc-down">
-                            <MatTooltip Tooltip="Toggle Navigation">
+                            <MatTooltip Tooltip="@L["AppHoverNavToggle"]">
                                 <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
                             </MatTooltip>
-                            <MatTooltip Tooltip="Minify Navigation">
+                            <MatTooltip Tooltip="@L["AppHoverNavMinimize"]">
                                 <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
                             </MatTooltip>
                         </div>
@@ -37,7 +38,7 @@
                 </MatAppBarRow>
             </MatAppBar>
             <MatAppBarContent Style="flex: 1; display: flex; flex-direction: column;">
-                <Breadcrumbs RootLinkTitle="Home"></Breadcrumbs>
+                <Breadcrumbs RootLinkTitle="@appState.BreadCrumbHome"></Breadcrumbs>
                 <section class="container-fluid" style="flex: 1;">
                     @Body
                 </section>

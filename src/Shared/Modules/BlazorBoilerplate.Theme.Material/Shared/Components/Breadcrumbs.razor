@@ -4,23 +4,35 @@
 @inject NavigationManager navigationManager
 @implements IDisposable
 @inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Strings> L
 
-<ul class="breadcrumb">
-    <li>
-        <a href="/">@RootLinkTitle</a>
-    </li>
-    @foreach (var path in paths.Select((value, i) => (value, i)))
-    {
-        if (path.i == paths.Count())
+    <ul class="breadcrumb">
+        <li>
+            <a href="/">@RootLinkTitle</a>
+        </li>
+        @foreach (var path in paths.Select((value, i) => (value, i)))
         {
-            <li><a href="@(baseUrl + String.Join("/", paths))">@path.value.Replace("_", " ")</a></li>
+            if (paths.Count() > 1)
+            {
+                if (path.i == 0)
+                {
+                    <li><a href="@(baseUrl + path.value)">@L["BreadCrumb" + path.value].ToString().ToUpper()</a></li>
+                }
+                else if (path.i == paths.Count() - 1)
+                {
+                    <li>@L["BreadCrumb" + String.Join("", paths)].ToString().ToUpper()</li>
+                }
+                else
+                {
+                    <li><a href="@(baseUrl + String.Join("/",paths,0, path.i+1))">@L["BreadCrumb" + String.Join("", paths, 0, path.i+1)].ToString().ToUpper()</a></li>
+                }
+            }
+            else
+            {
+                <li>@L["BreadCrumb" + path.value].ToString().ToUpper()</li>
+            }
         }
-        else
-        {
-            <li>@path.value.Replace("_", " ")</li>
-        }
-    }
-</ul>
+    </ul>
 
 @code {
     // This is just for demo and is VERY Hackish  for several reasons

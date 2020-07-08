@@ -160,11 +160,371 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Api Audit Log.
+        /// </summary>
+        public static string AppAdminNavApiAuditLog {
+            get {
+                return ResourceManager.GetString("AppAdminNavApiAuditLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a DB Logging Viewer.
+        /// </summary>
+        public static string AppAdminNavDBLoggingView {
+            get {
+                return ResourceManager.GetString("AppAdminNavDBLoggingView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a FrontEnd.
+        /// </summary>
+        public static string AppAdminNavFrontEnd {
+            get {
+                return ResourceManager.GetString("AppAdminNavFrontEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Monitoring.
+        /// </summary>
+        public static string AppAdminNavMonitoring {
+            get {
+                return ResourceManager.GetString("AppAdminNavMonitoring", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Help &amp; Support.
+        /// </summary>
+        public static string AppHelpAndSupport {
+            get {
+                return ResourceManager.GetString("AppHelpAndSupport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Administration.
+        /// </summary>
+        public static string AppHoverAdmin {
+            get {
+                return ResourceManager.GetString("AppHoverAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Minimize Navigation Bar.
+        /// </summary>
+        public static string AppHoverNavMinimize {
+            get {
+                return ResourceManager.GetString("AppHoverNavMinimize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Toggle Navigation Bar.
+        /// </summary>
+        public static string AppHoverNavToggle {
+            get {
+                return ResourceManager.GetString("AppHoverNavToggle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Blazer Boilerplate.
+        /// </summary>
+        public static string AppName {
+            get {
+                return ResourceManager.GetString("AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Dashboard.
+        /// </summary>
+        public static string AppNavDashboard {
+            get {
+                return ResourceManager.GetString("AppNavDashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Drag and Drop.
+        /// </summary>
+        public static string AppNavDragAndDrop {
+            get {
+                return ResourceManager.GetString("AppNavDragAndDrop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Email.
+        /// </summary>
+        public static string AppNavEmail {
+            get {
+                return ResourceManager.GetString("AppNavEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Features.
+        /// </summary>
+        public static string AppNavFeatures {
+            get {
+                return ResourceManager.GetString("AppNavFeatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Forum.
+        /// </summary>
+        public static string AppNavForum {
+            get {
+                return ResourceManager.GetString("AppNavForum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Homepage.
+        /// </summary>
+        public static string AppNavHome {
+            get {
+                return ResourceManager.GetString("AppNavHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Read Email.
+        /// </summary>
+        public static string AppNavReadEmail {
+            get {
+                return ResourceManager.GetString("AppNavReadEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Screenshots.
+        /// </summary>
+        public static string AppNavScreenshots {
+            get {
+                return ResourceManager.GetString("AppNavScreenshots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Send Email.
+        /// </summary>
+        public static string AppNavSendEmail {
+            get {
+                return ResourceManager.GetString("AppNavSendEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Sponsors.
+        /// </summary>
+        public static string AppNavSponsors {
+            get {
+                return ResourceManager.GetString("AppNavSponsors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a BlazorBP.
+        /// </summary>
+        public static string AppShortName {
+            get {
+                return ResourceManager.GetString("AppShortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Authentication required.
         /// </summary>
         public static string AuthenticationRequired {
             get {
                 return ResourceManager.GetString("AuthenticationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Admin.
+        /// </summary>
+        public static string BreadCrumbadmin {
+            get {
+                return ResourceManager.GetString("BreadCrumbadmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a API Resources.
+        /// </summary>
+        public static string BreadCrumbadminapiResources {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminapiResources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a API Audit Log.
+        /// </summary>
+        public static string BreadCrumbadminblazor_middlware_audit {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminblazor_middlware_audit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Clients.
+        /// </summary>
+        public static string BreadCrumbadminclients {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminclients", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a DB Loging Viewer.
+        /// </summary>
+        public static string BreadCrumbadmindBlogViewer {
+            get {
+                return ResourceManager.GetString("BreadCrumbadmindBlogViewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Identity Resources.
+        /// </summary>
+        public static string BreadCrumbadminidentityResources {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminidentityResources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Tenant Manager.
+        /// </summary>
+        public static string BreadCrumbadminmultitenancy {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminmultitenancy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Roles Manager.
+        /// </summary>
+        public static string BreadCrumbadminroles {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminroles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Settings.
+        /// </summary>
+        public static string BreadCrumbadminsettings {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminsettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Email Configurations.
+        /// </summary>
+        public static string BreadCrumbadminsettingsemail {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminsettingsemail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Users.
+        /// </summary>
+        public static string BreadCrumbadminusers {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminusers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Dashboard.
+        /// </summary>
+        public static string BreadCrumbdashboard {
+            get {
+                return ResourceManager.GetString("BreadCrumbdashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Drag and Drop.
+        /// </summary>
+        public static string BreadCrumbdrag_and_drop {
+            get {
+                return ResourceManager.GetString("BreadCrumbdrag_and_drop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Send Email.
+        /// </summary>
+        public static string BreadCrumbemail {
+            get {
+                return ResourceManager.GetString("BreadCrumbemail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Read Email.
+        /// </summary>
+        public static string BreadCrumbemail_view {
+            get {
+                return ResourceManager.GetString("BreadCrumbemail_view", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Forum.
+        /// </summary>
+        public static string BreadCrumbforum {
+            get {
+                return ResourceManager.GetString("BreadCrumbforum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Home.
+        /// </summary>
+        public static string BreadCrumbHome {
+            get {
+                return ResourceManager.GetString("BreadCrumbHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Screenshots.
+        /// </summary>
+        public static string BreadCrumbscreenshots {
+            get {
+                return ResourceManager.GetString("BreadCrumbscreenshots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Sponsors.
+        /// </summary>
+        public static string BreadCrumbsponsors {
+            get {
+                return ResourceManager.GetString("BreadCrumbsponsors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a ToDo.
+        /// </summary>
+        public static string BreadCrumbtodo_list {
+            get {
+                return ResourceManager.GetString("BreadCrumbtodo_list", resourceCulture);
             }
         }
         
@@ -1101,6 +1461,15 @@ namespace BlazorBoilerplate.Localization {
         public static string The_user_doesn_t_exist {
             get {
                 return ResourceManager.GetString("The user doesn\'t exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a ToDo List.
+        /// </summary>
+        public static string TodoNav {
+            get {
+                return ResourceManager.GetString("TodoNav", resourceCulture);
             }
         }
         

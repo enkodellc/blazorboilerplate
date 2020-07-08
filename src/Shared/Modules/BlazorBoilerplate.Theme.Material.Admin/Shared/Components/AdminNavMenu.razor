@@ -39,7 +39,7 @@
         <MatNavSubMenu>
             <MatNavSubMenuHeader>
                 <MatNavItem AllowSelection="false">
-                    <MatIcon>settings_applications</MatIcon> <span class="miniHover">Identity Server</span>
+                    <MatIcon>settings_applications</MatIcon> <span class="miniHover">IdentityServer4</span>
                 </MatNavItem>
             </MatNavSubMenuHeader>
             <MatNavSubMenuList>
@@ -57,16 +57,16 @@
         <MatNavSubMenu>
             <MatNavSubMenuHeader>
                 <MatNavItem AllowSelection="false">
-                    <MatIcon>settings_applications</MatIcon> <span class="miniHover">Monitoring</span>
+                    <MatIcon>settings_applications</MatIcon> <span class="miniHover">@L["AppAdminNavMonitoring"]</span>
                 </MatNavItem>
             </MatNavSubMenuHeader>
             <MatNavSubMenuList>
                 <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/blazor_middlware_audit").AbsoluteUri">
-                    <MatIcon>change_history</MatIcon> <span class="miniHover">Api Audit Log</span>
+                    <MatIcon>change_history</MatIcon> <span class="miniHover">@L["AppAdminNavApiAuditLog"]</span>
                 </MatNavItem>
                 <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/dBlogViewer").AbsoluteUri">
-                    <MatIcon>notes</MatIcon> <span class="miniHover">DB Logging View</span>
-                </MatNavItem>
+                    <MatIcon>notes</MatIcon> <span class="miniHover">@L["AppAdminNavDBLoggingView"]</span>
+</MatNavItem>
             </MatNavSubMenuList>
         </MatNavSubMenu>
         @foreach (var component in components)
