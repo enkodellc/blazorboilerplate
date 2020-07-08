@@ -63,13 +63,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Uncomment to secure entire app  with no anonymous user access
-        //navigationManager.NavigateTo(Shared.Settings.LoginPath);
-
-        // Set Default landing page if you want for anonymous user.
-        // Authenticated users are redirected after successful login.
-        //navigationManager.NavigateTo("/");
-
         var user = (await authenticationStateTask).User;
 
         if (user.Identity.IsAuthenticated)
