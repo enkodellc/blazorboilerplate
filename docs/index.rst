@@ -79,6 +79,7 @@ Cons
 
    quickstarts/breeze_sharp_with_blazor
    quickstarts/entity_framework_core
+   quickstarts/localization
 
 .. toctree::
    :maxdepth: 3

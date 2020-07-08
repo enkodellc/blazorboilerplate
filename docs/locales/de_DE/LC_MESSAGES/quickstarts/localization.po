@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Blazor Boilerplate Team
+# This file is distributed under the same license as the Blazor Boilerplate
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Blazor Boilerplate \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-08 11:11+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../quickstarts/localization.rst:2 cbb4706d39af4d69a0e2412c0edc0550
+msgid "Localization"
+msgstr ""
+
+#: ../../quickstarts/localization.rst:3 2b7b0247105b4f559fcafee6f35ddb91
+msgid ""
+"**Localization project** contains main application **Strings.[language-"
+"country].resx** files with available languages."
+msgstr ""
+
+#: ../../quickstarts/localization.rst:5 7d16c3f468b84619acfe51ad2d4fe866
+msgid ""
+"If you add new keys, you have to provide always english (en-us) neutral "
+"language and only other languages you know."
+msgstr ""
+
+#: ../../quickstarts/localization.rst:7 093641f64a594f4d9a6ea1e0c14465ba
+msgid ""
+"Managing all these resx files can be tricky, so it is better to install a"
+" Visual Studio extension like `ResXManager`_."
+msgstr ""
+
+#: ../../quickstarts/localization.rst:12 643f0f3abd0a40c489b8e20b17b5dbe6
+msgid "With `ResXManager`_ is easy to add a new language from the user interface."
+msgstr ""
+
+#: ../../quickstarts/localization.rst:14 161caba766d44771aba9a54af6a8ca57
+msgid ""
+"Then you have to add the new supported culture in **Settings.cs** of "
+"**Localization project**."
+msgstr ""
+
+#: ../../quickstarts/localization.rst:16 b590ef4682a04624850006ed46047ecc
+msgid "For module specific localization, consider using a local resx file."
+msgstr ""
+
+#: ../../quickstarts/localization.rst:18 823a86e26cf6482da1eb15d5111f9aca
+msgid ""
+"Everywhere you need localized text, inject **IStringLocalizer<Strings>** "
+"and look how it is used throughout the code."
+msgstr ""
+
