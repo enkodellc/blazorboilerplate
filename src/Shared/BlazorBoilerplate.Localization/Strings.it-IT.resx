@@ -498,4 +498,85 @@
   <data name="MainSettings" xml:space="preserve">
     <value>Impostazioni principali</value>
   </data>
+  <data name="BreadCrumbadminsettings" xml:space="preserve">
+    <value>Impostazioni</value>
+  </data>
+  <data name="BreadCrumbadminsettingsemail" xml:space="preserve">
+    <value>Configurazione Email</value>
+  </data>
+  <data name="BreadCrumbadminusers" xml:space="preserve">
+    <value>Utenti</value>
+  </data>
+  <data name="BreadCrumbdashboard" xml:space="preserve">
+    <value>Cruscotto</value>
+  </data>
+  <data name="BreadCrumbemail" xml:space="preserve">
+    <value>Invia email</value>
+  </data>
+  <data name="BreadCrumbemail_view" xml:space="preserve">
+    <value>Leggi email</value>
+  </data>
+  <data name="BreadCrumbsponsors" xml:space="preserve">
+    <value>Sponsor</value>
+  </data>
+  <data name="BreadCrumbadmin" xml:space="preserve">
+    <value>Amministrazione</value>
+  </data>
+  <data name="TodoNav" xml:space="preserve">
+    <value>Lista ToDo</value>
+  </data>
+  <data name="AppNavDashboard" xml:space="preserve">
+    <value>Cruscotto</value>
+  </data>
+  <data name="AppNavReadEmail" xml:space="preserve">
+    <value>Leggi email</value>
+  </data>
+  <data name="AppNavSendEmail" xml:space="preserve">
+    <value>Invia email</value>
+  </data>
+  <data name="AppNavSponsors" xml:space="preserve">
+    <value>Sponsor</value>
+  </data>
+  <data name="AppHelpAndSupport" xml:space="preserve">
+    <value>Aiuto e supporto</value>
+  </data>
+  <data name="BreadCrumbadminroles" xml:space="preserve">
+    <value>Gestione ruoli</value>
+  </data>
+  <data name="BreadCrumbadminmultitenancy" xml:space="preserve">
+    <value>Gestione siti in comproprietà</value>
+  </data>
+  <data name="BreadCrumbadminidentityResources" xml:space="preserve">
+    <value>Risorse Identità OpenID</value>
+  </data>
+  <data name="BreadCrumbadminapiResources" xml:space="preserve">
+    <value>Risorse API OpenID</value>
+  </data>
+  <data name="AppAdminNavMonitoring" xml:space="preserve">
+    <value>Monitoraggio</value>
+  </data>
+  <data name="AppHoverAdmin" xml:space="preserve">
+    <value>Amministrazione</value>
+  </data>
+  <data name="AppHoverNavMinimize" xml:space="preserve">
+    <value>Minimizza barra di navigazione</value>
+  </data>
+  <data name="AppHoverNavToggle" xml:space="preserve">
+    <value>Commuta barra di navigazione</value>
+  </data>
+  <data name="AppNavFeatures" xml:space="preserve">
+    <value>Caratteristiche</value>
+  </data>
+  <data name="AppAdminNavApiAuditLog" xml:space="preserve">
+    <value>Log di controllo utilizzo API</value>
+  </data>
+  <data name="AppAdminNavDBLoggingView" xml:space="preserve">
+    <value>Log</value>
+  </data>
+  <data name="BreadCrumbadminblazor_middlware_audit" xml:space="preserve">
+    <value>Log di controllo utilizzo API</value>
+  </data>
+  <data name="BreadCrumbadminclients" xml:space="preserve">
+    <value>Client OpenID</value>
+  </data>
 </root>
