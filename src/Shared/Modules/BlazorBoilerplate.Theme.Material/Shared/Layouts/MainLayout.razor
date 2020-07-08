@@ -78,6 +78,19 @@
 
             _navMenuOpened = profile.IsNavOpen;
             _navMinified = profile.IsNavMinified;
+
+            navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            if (appState.ForceLogin)
+            {
+                navigationManager.NavigateTo(BlazorBoilerplate.Shared.Settings.LoginPath);
+            }
+            else
+            {
+                navigationManager.NavigateTo("/");
+            }
         }
     }
 

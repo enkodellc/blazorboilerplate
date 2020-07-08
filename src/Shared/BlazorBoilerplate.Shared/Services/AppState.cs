@@ -5,6 +5,7 @@ using Humanizer;
 using Microsoft.Extensions.Localization;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace BlazorBoilerplate.Shared.Services
 {
@@ -17,16 +18,21 @@ namespace BlazorBoilerplate.Shared.Services
 
         private readonly IStringLocalizer<Strings> L;
 
+        public IConfiguration _configuration { get; }
+
         public readonly string AppName = "";
         public readonly string AppShortName = "";
         public readonly string BreadCrumbHome = "";
+        public readonly bool ForceLogin = false;
 
-        public AppState(IApiClient apiClient, IStringLocalizer<Strings> l)
+        public AppState(IApiClient apiClient, IStringLocalizer<Strings> l, IConfiguration configuration)
         {
             L = l;
+            _configuration = configuration;
             AppName = L["AppName"].ToString().Humanize(LetterCasing.Title);
             AppShortName = L["AppShortName"].ToString().Humanize(LetterCasing.Title);
             BreadCrumbHome = L["BreadCrumbHome"].ToString().ToUpper();
+            ForceLogin = _configuration.GetSection("BlazorBoilerplate:ForceLogin").Get<bool>();
             _apiClient = apiClient;
         }
 
