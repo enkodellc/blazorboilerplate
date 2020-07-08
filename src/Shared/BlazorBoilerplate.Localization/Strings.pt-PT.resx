@@ -657,10 +657,6 @@
     <value>BlazorBP</value>
     <comment>APPLICATION</comment>
   </data>
-  <data name="IdentityServer" xml:space="preserve">
-    <value>Identity Server</value>
-    <comment>APPLICAITON/ADMIN</comment>
-  </data>
   <data name="AppAdminNavApiAuditLog" xml:space="preserve">
     <value>Registo de Auditoria do API</value>
     <comment>APPLICATION/ADMIN</comment>
