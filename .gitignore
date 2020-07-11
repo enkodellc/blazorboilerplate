@@ -353,3 +353,4 @@ healthchecksdb
 /src/BlazorBoilerplate.Server/Keys
 
 /src/Server/BlazorBoilerplate.Server/Modules
+/src/Server/BlazorBoilerplate.Server/Keys

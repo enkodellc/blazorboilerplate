@@ -251,7 +251,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 await _databaseInitializer.EnsureAdminIdentitiesAsync();
 
-                if (!string.IsNullOrEmpty(parameters.ReturnUrl))
+                if (!string.IsNullOrEmpty(parameters.ReturnUrl) && parameters.ReturnUrl.StartsWith("http"))
                     parameters.ReturnUrl = new Uri(parameters.ReturnUrl).LocalPath;
 
                 parameters.IsValidReturnUrl = true; //string.IsNullOrEmpty(parameters.ReturnUrl) || Url.IsLocalUrl(parameters.ReturnUrl);
