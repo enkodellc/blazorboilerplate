@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BlazorBoilerplate.Storage.Migrations
+namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 {
-    public partial class InitialCreate : Migration
+    public partial class CreateApplicationDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,8 @@ namespace BlazorBoilerplate.Storage.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true)
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    TenantId = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +43,8 @@ namespace BlazorBoilerplate.Storage.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(maxLength: 64, nullable: true),
                     LastName = table.Column<string>(maxLength: 64, nullable: true),
-                    FullName = table.Column<string>(maxLength: 64, nullable: true)
+                    FullName = table.Column<string>(maxLength: 64, nullable: true),
+                    TenantId = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,22 +52,35 @@ namespace BlazorBoilerplate.Storage.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Todos",
+                name: "Logs",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(maxLength: 128, nullable: false),
-                    IsCompleted = table.Column<bool>(nullable: false),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedOn = table.Column<DateTime>(nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    ModifiedBy = table.Column<Guid>(nullable: false),
-                    ModifiedOn = table.Column<DateTime>(nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+                    Message = table.Column<string>(nullable: true),
+                    MessageTemplate = table.Column<string>(nullable: true),
+                    Level = table.Column<string>(nullable: true),
+                    TimeStamp = table.Column<DateTime>(nullable: false),
+                    Exception = table.Column<string>(nullable: true),
+                    Properties = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Todos", x => x.Id);
+                    table.PrimaryKey("PK_Logs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TenantSettings",
+                columns: table => new
+                {
+                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(128)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TenantSettings", x => new { x.TenantId, x.Key });
                 });
 
             migrationBuilder.CreateTable(
@@ -76,7 +91,8 @@ namespace BlazorBoilerplate.Storage.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    ClaimValue = table.Column<string>(nullable: true),
+                    TenantId = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,7 +141,8 @@ namespace BlazorBoilerplate.Storage.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    ClaimValue = table.Column<string>(nullable: true),
+                    TenantId = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,14 +159,16 @@ namespace BlazorBoilerplate.Storage.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
+                    Id = table.Column<string>(nullable: false),
                     LoginProvider = table.Column<string>(nullable: false),
                     ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
-                    UserId = table.Column<Guid>(nullable: false)
+                    UserId = table.Column<Guid>(nullable: false),
+                    TenantId = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.PrimaryKey("PK_AspNetUserLogins", x => x.Id);
                     table.ForeignKey(
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -163,7 +182,8 @@ namespace BlazorBoilerplate.Storage.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(nullable: false),
-                    RoleId = table.Column<Guid>(nullable: false)
+                    RoleId = table.Column<Guid>(nullable: false),
+                    TenantId = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -189,7 +209,8 @@ namespace BlazorBoilerplate.Storage.Migrations
                     UserId = table.Column<Guid>(nullable: false),
                     LoginProvider = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
+                    Value = table.Column<string>(nullable: true),
+                    TenantId = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -225,6 +246,37 @@ namespace BlazorBoilerplate.Storage.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Todos",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(maxLength: 128, nullable: false),
+                    IsCompleted = table.Column<bool>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: false),
+                    CreatedById = table.Column<Guid>(nullable: true),
+                    ModifiedById = table.Column<Guid>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Todos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Todos_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Todos_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserProfiles",
                 columns: table => new
                 {
@@ -235,7 +287,8 @@ namespace BlazorBoilerplate.Storage.Migrations
                     IsNavOpen = table.Column<bool>(nullable: false),
                     IsNavMinified = table.Column<bool>(nullable: false),
                     Count = table.Column<int>(nullable: false),
-                    LastUpdatedDate = table.Column<DateTime>(nullable: false)
+                    LastUpdatedDate = table.Column<DateTime>(nullable: false),
+                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -261,7 +314,7 @@ namespace BlazorBoilerplate.Storage.Migrations
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
-                column: "NormalizedName",
+                columns: new[] { "NormalizedName", "TenantId" },
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
 
@@ -276,6 +329,12 @@ namespace BlazorBoilerplate.Storage.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_LoginProvider_ProviderKey_TenantId",
+                table: "AspNetUserLogins",
+                columns: new[] { "LoginProvider", "ProviderKey", "TenantId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_RoleId",
                 table: "AspNetUserRoles",
                 column: "RoleId");
@@ -288,7 +347,7 @@ namespace BlazorBoilerplate.Storage.Migrations
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
-                column: "NormalizedUserName",
+                columns: new[] { "NormalizedUserName", "TenantId" },
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
@@ -296,6 +355,16 @@ namespace BlazorBoilerplate.Storage.Migrations
                 name: "IX_Messages_UserID",
                 table: "Messages",
                 column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Todos_CreatedById",
+                table: "Todos",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Todos_ModifiedById",
+                table: "Todos",
+                column: "ModifiedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserProfiles_UserId",
@@ -325,7 +394,13 @@ namespace BlazorBoilerplate.Storage.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Logs");
+
+            migrationBuilder.DropTable(
                 name: "Messages");
+
+            migrationBuilder.DropTable(
+                name: "TenantSettings");
 
             migrationBuilder.DropTable(
                 name: "Todos");

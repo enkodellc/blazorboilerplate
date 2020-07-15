@@ -2,7 +2,7 @@
 
 namespace BlazorBoilerplate.Storage.Migrations.TenantStoreDb
 {
-    public partial class Initial : Migration
+    public partial class CreateTenantStoreDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,7 +23,7 @@ namespace BlazorBoilerplate.Storage.Migrations.TenantStoreDb
             migrationBuilder.InsertData(
                 table: "TenantInfo",
                 columns: new[] { "Id", "ConnectionString", "Identifier", "Name" },
-                values: new object[] { "BlazorBoilerplate", null, "BlazorBoilerplate", "BlazorBoilerplate" });
+                values: new object[] { "Master", null, "Master", "Master" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_TenantInfo_Identifier",

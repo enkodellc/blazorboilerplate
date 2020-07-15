@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorBoilerplate.Storage.Migrations.TenantStoreDb
 {
     [DbContext(typeof(TenantStoreDbContext))]
-    [Migration("20200421090046_Initial")]
-    partial class Initial
+    [Migration("20200711165406_CreateTenantStoreDb")]
+    partial class CreateTenantStoreDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3")
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -47,9 +47,9 @@ namespace BlazorBoilerplate.Storage.Migrations.TenantStoreDb
                     b.HasData(
                         new
                         {
-                            Id = "BlazorBoilerplate",
-                            Identifier = "BlazorBoilerplate",
-                            Name = "BlazorBoilerplate"
+                            Id = "Master",
+                            Identifier = "Master",
+                            Name = "Master"
                         });
                 });
 #pragma warning restore 612, 618

@@ -1,23 +1,21 @@
-﻿using System.Collections.Generic;
-using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+﻿using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Storage.Core;
 using Humanizer;
 using IdentityModel;
-using IdentityServer4;
 using IdentityServer4.Models;
+using System.Collections.Generic;
+using static IdentityServer4.IdentityServerConstants;
 
 namespace BlazorBoilerplate.Storage
 {
     public class IdentityServerConfig
     {
-        public const string LocalApiName = "blazorboilerplate_api";
-        public const string AppClientID = "blazorboilerplate_spa";
+        public const string LocalApiName = "LocalAPI";
         public const string SwaggerClientID = "swaggerui";
 
-        // Identity resources (used by UserInfo endpoint).
-        public static IEnumerable<IdentityResource> GetIdentityResources()
-        {
-            return new List<IdentityResource>
+        // https://identityserver4.readthedocs.io/en/latest/reference/identity_resource.html
+        public static readonly IEnumerable<IdentityResource> GetIdentityResources =
+            new[]
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
@@ -25,16 +23,21 @@ namespace BlazorBoilerplate.Storage
                 new IdentityResources.Email(),
                 new IdentityResource(ScopeConstants.Roles, new List<string> { JwtClaimTypes.Role })
             };
-        }
 
-        // Api resources.
-        public static IEnumerable<ApiResource> GetApiResources()
-        {
-            return new List<ApiResource>
+        // https://identityserver4.readthedocs.io/en/latest/reference/api_scope.html
+        public static readonly IEnumerable<ApiScope> GetApiScopes =
+            new[]
+            {
+                new ApiScope(LocalApi.ScopeName)
+            };
+
+        // https://identityserver4.readthedocs.io/en/latest/reference/api_resource.html
+        public static readonly IEnumerable<ApiResource> GetApiResources =
+            new[]
             {
                 new ApiResource(LocalApiName) {
                     DisplayName = LocalApiName.Humanize(LetterCasing.Title),
-                    Scopes = { LocalApiName },
+                    Scopes = { LocalApi.ScopeName },
                     UserClaims = {
                         JwtClaimTypes.Name,
                         JwtClaimTypes.Email,
@@ -46,39 +49,11 @@ namespace BlazorBoilerplate.Storage
                     }
                 }
             };
-        }
 
-        // Clients want to access resources.
-        public static IEnumerable<IdentityServer4.Models.Client> GetClients()
-        {
-            // Clients credentials.
-            return new List<IdentityServer4.Models.Client>
+        // https://identityserver4.readthedocs.io/en/latest/reference/client.html
+        public static readonly IEnumerable<Client> GetClients =
+            new[]
             {
-                // http://docs.identityserver.io/en/release/reference/client.html.
-                new Client
-                {
-                    AccessTokenType = AccessTokenType.Jwt,
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Resource Owner Password Credential grant.
-                    AllowAccessTokensViaBrowser = true,
-                    AllowedScopes = {
-                        IdentityServerConstants.StandardScopes.OpenId, // For UserInfo endpoint.
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.Phone,
-                        IdentityServerConstants.StandardScopes.Email,
-                        ScopeConstants.Roles,
-                        LocalApiName
-                    },
-                    AllowRememberConsent = true,
-                    AllowOfflineAccess = true, // For refresh token.
-                    ClientId = AppClientID,
-                    ClientName = AppClientID.Humanize(LetterCasing.Title),
-                    ClientSecrets = new List<Secret> { new Secret { Value = "BlazorBoilerplate".Sha512() }},
-                    Enabled = true,
-                    RequireClientSecret = true, // This client does not need a secret to request tokens from the token endpoint.
-                    RefreshTokenExpiration = TokenExpiration.Sliding,
-                    RefreshTokenUsage = TokenUsage.OneTimeOnly
-                },
-
                 new Client
                 {
                     ClientId = SwaggerClientID,
@@ -86,17 +61,23 @@ namespace BlazorBoilerplate.Storage
                     AllowedGrantTypes = GrantTypes.Code,
                     AllowAccessTokensViaBrowser = true,
                     RequireClientSecret = false,
-                    RequirePkce=true,
+                    RequirePkce = true,
 
                     RedirectUris = {
+                        "http://127.0.0.1:64879",
                         "http://localhost:53414/swagger/oauth2-redirect.html",
                         "https://blazor-server.quarella.net/swagger/oauth2-redirect.html" },
 
                     AllowedScopes = {
-                        LocalApiName
+                        StandardScopes.OpenId,
+                        StandardScopes.Profile,
+                        StandardScopes.Phone,
+                        StandardScopes.Email,
+                        ScopeConstants.Roles,
+                        LocalApi.ScopeName
                     }
                 }
             };
-        }
+
     }
 }

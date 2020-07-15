@@ -58,11 +58,12 @@ namespace BlazorBoilerplate.Storage
             //Apply EF Core migration
             await MigrateAsync();
 
-            //Seed clients and Api
-            await SeedIdentityServerAsync();
+            await EnsureAdminIdentitiesAsync().ConfigureAwait(false);
 
-            //Seed blazorboilerplate data
-            await SeedDemoDataAsync();
+            await SeedIdentityServerAsync().ConfigureAwait(false);
+
+            //Seed blazorboilerplate sample data
+            await SeedDemoDataAsync().ConfigureAwait(false);
         }
 
         private async Task MigrateAsync()
@@ -92,8 +93,7 @@ namespace BlazorBoilerplate.Storage
             ApplicationUser user = await _userManager.FindByNameAsync(DefaultUserNames.User);
 
             if (!_context.UserProfiles.Any())
-            {
-                UserProfile userProfile = new UserProfile
+                _context.UserProfiles.Add(new UserProfile
                 {
                     UserId = user.Id,
                     ApplicationUser = user,
@@ -102,12 +102,9 @@ namespace BlazorBoilerplate.Storage
                     LastPageVisited = "/dashboard",
                     IsNavMinified = false,
                     LastUpdatedDate = DateTime.Now
-                };
-                _context.UserProfiles.Add(userProfile);
-            }
+                });
 
             if (!_context.Todos.Any())
-            {
                 _context.Todos.AddRange(
                         new Todo
                         {
@@ -120,7 +117,6 @@ namespace BlazorBoilerplate.Storage
                             Title = "Test BlazorBoilerplate 1",
                         }
                 );
-            }
 
             if (!_context.ApiLogs.Any())
             {
@@ -159,31 +155,39 @@ namespace BlazorBoilerplate.Storage
 
         private async Task SeedIdentityServerAsync()
         {
+            if (!await _configurationContext.ApiScopes.AnyAsync())
+            {
+                _logger.LogInformation("Seeding IdentityServer API Scopes");
+                foreach (var scope in IdentityServerConfig.GetApiScopes)
+                    _configurationContext.ApiScopes.Add(scope.ToEntity());
+
+                await _configurationContext.SaveChangesAsync();
+            }
+
             if (!await _configurationContext.Clients.AnyAsync())
             {
                 _logger.LogInformation("Seeding IdentityServer Clients");
-                foreach (var client in IdentityServerConfig.GetClients())
-                {
+                foreach (var client in IdentityServerConfig.GetClients)
                     _configurationContext.Clients.Add(client.ToEntity());
-                }
+
                 await _configurationContext.SaveChangesAsync();
             }
+
             if (!await _configurationContext.IdentityResources.AnyAsync())
             {
                 _logger.LogInformation("Seeding IdentityServer Identity Resources");
-                foreach (var resource in IdentityServerConfig.GetIdentityResources())
-                {
+                foreach (var resource in IdentityServerConfig.GetIdentityResources)
                     _configurationContext.IdentityResources.Add(resource.ToEntity());
-                }
+
                 await _configurationContext.SaveChangesAsync();
             }
+
             if (!await _configurationContext.ApiResources.AnyAsync())
             {
                 _logger.LogInformation("Seeding IdentityServer API Resources");
-                foreach (var resource in IdentityServerConfig.GetApiResources())
-                {
+                foreach (var resource in IdentityServerConfig.GetApiResources)
                     _configurationContext.ApiResources.Add(resource.ToEntity());
-                }
+
                 await _configurationContext.SaveChangesAsync();
             }
         }
@@ -233,9 +237,7 @@ namespace BlazorBoilerplate.Storage
                     result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _applicationPermissions.GetPermissionByValue(claim)));
 
                     if (!result.Succeeded)
-                    {
                         await _roleManager.DeleteAsync(role);
-                    }
                 }
             }
         }
