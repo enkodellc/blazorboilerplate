@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Storage;
 using Breeze.AspNetCore;
 using Breeze.Persistence;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,15 +13,20 @@ using System.Threading.Tasks;
 namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/data/[action]")]
+    [Authorize(AuthenticationSchemes = AuthSchemes)]
     [BreezeQueryFilter]
     public class ApplicationController : Controller
     {
+        private const string AuthSchemes =
+            "Identity.Application" + "," + IdentityServerAuthenticationDefaults.AuthenticationScheme; //Cookie + Token authentication
+
         private ApplicationPersistenceManager persistenceManager;
         public ApplicationController(ApplicationPersistenceManager persistenceManager)
         {
             this.persistenceManager = persistenceManager;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public string Metadata()
         {
@@ -28,24 +34,26 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public Task<UserProfile> UserProfile()
         {
             return persistenceManager.GetUserProfile();
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IQueryable<TenantSetting> TenantSettings()
         {
             return persistenceManager.GetEntities<TenantSetting>();
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IQueryable<Todo> Todos()
         {
             return persistenceManager.GetEntities<Todo>().Include(i => i.CreatedBy).Include(i => i.ModifiedBy).OrderBy(i => i.Id);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public SaveResult SaveChanges([FromBody] JObject saveBundle)
         {
