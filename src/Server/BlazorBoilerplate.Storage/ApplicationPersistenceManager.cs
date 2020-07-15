@@ -120,7 +120,7 @@ namespace BlazorBoilerplate.Storage
 
                 await Context.UserProfiles.Upsert(userProfile).On(u => new { u.TenantId, u.UserId }).RunAsync();
                 //see https://github.com/artiomchi/FlexLabs.Upsert/issues/29
-                userProfile = await Context.UserProfiles.SingleOrDefaultAsync(i => i.UserId == userProfile.UserId);
+                userProfile = await Context.UserProfiles.SingleAsync(i => i.UserId == userProfile.UserId);
             }
 
             return userProfile;
