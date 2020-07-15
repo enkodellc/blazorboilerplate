@@ -53,6 +53,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using static IdentityServer4.IdentityServerConstants;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server
@@ -219,9 +220,6 @@ namespace BlazorBoilerplate.Server
                 options.SupportedTokens = SupportedTokens.Jwt;
                 options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
                 options.ApiName = IdentityServerConfig.LocalApiName;
-            }).AddLocalApi(options =>
-            {
-                options.ExpectedScope = IdentityServerConfig.LocalApiName;
             });
 
             #region ExternalAuthProviders
@@ -468,7 +466,7 @@ namespace BlazorBoilerplate.Server
                             {
                                 Scopes = new Dictionary<string, string>
                                 {
-                                { IdentityServerConfig.LocalApiName, IdentityServerConfig.LocalApiName }
+                                { LocalApi.ScopeName, IdentityServerConfig.LocalApiName }
                                 },
                                 AuthorizationUrl = $"{authAuthority}/connect/authorize",
                                 TokenUrl = $"{authAuthority}/connect/token"
