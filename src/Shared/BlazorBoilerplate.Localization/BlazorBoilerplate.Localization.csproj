@@ -6,7 +6,7 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Localization" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="3.1.6" />
   </ItemGroup>
 
   <ItemGroup>
