@@ -538,6 +538,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Change Password.
+        /// </summary>
+        public static string Change_Password {
+            get {
+                return ResourceManager.GetString("Change Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Client {0} created.
         /// </summary>
         public static string Client__0__created {
@@ -642,6 +651,15 @@ namespace BlazorBoilerplate.Localization {
         public static string CreateUserPermission {
             get {
                 return ResourceManager.GetString("CreateUserPermission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Current password.
+        /// </summary>
+        public static string CurrentPassword {
+            get {
+                return ResourceManager.GetString("CurrentPassword", resourceCulture);
             }
         }
         
@@ -754,6 +772,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a First name.
+        /// </summary>
+        public static string FirstName {
+            get {
+                return ResourceManager.GetString("FirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Forgot your password?.
         /// </summary>
         public static string Forgot_your_password_ {
@@ -840,6 +867,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Keep_me_logged_in {
             get {
                 return ResourceManager.GetString("Keep me logged in", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Last name.
+        /// </summary>
+        public static string LastName {
+            get {
+                return ResourceManager.GetString("LastName", resourceCulture);
             }
         }
         
@@ -966,6 +1002,15 @@ namespace BlazorBoilerplate.Localization {
         public static string New_User {
             get {
                 return ResourceManager.GetString("New User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a New password.
+        /// </summary>
+        public static string NewPassword {
+            get {
+                return ResourceManager.GetString("NewPassword", resourceCulture);
             }
         }
         
@@ -1483,6 +1528,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Update password.
+        /// </summary>
+        public static string Update_Password {
+            get {
+                return ResourceManager.GetString("Update Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Edit existing API resources.
         /// </summary>
         public static string UpdateApiResourcePermission {
@@ -1510,6 +1564,24 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Update Password Failed.
+        /// </summary>
+        public static string UpdatePasswordFailed {
+            get {
+                return ResourceManager.GetString("UpdatePasswordFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Update Password Successful.
+        /// </summary>
+        public static string UpdatePasswordSuccessful {
+            get {
+                return ResourceManager.GetString("UpdatePasswordSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Edit existing roles.
         /// </summary>
         public static string UpdateRolePermission {
@@ -1533,6 +1605,15 @@ namespace BlazorBoilerplate.Localization {
         public static string User__0__created {
             get {
                 return ResourceManager.GetString("User {0} created", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a User Profile.
+        /// </summary>
+        public static string User_Profile {
+            get {
+                return ResourceManager.GetString("User Profile", resourceCulture);
             }
         }
         

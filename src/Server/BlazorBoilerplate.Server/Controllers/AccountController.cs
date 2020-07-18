@@ -92,11 +92,16 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> ForgotPassword(ForgotPasswordDto parameters)
             => ModelState.IsValid ? await _accountManager.ForgotPassword(parameters) : _invalidUserModel;
 
-        // PUT: api/Account/ResetPassword
+        //api/Account/ResetPassword
         [HttpPost("ResetPassword")]
         [AllowAnonymous]
         public async Task<ApiResponse> ResetPassword(ResetPasswordDto parameters)
-        => ModelState.IsValid ? await _accountManager.ResetPassword(parameters) : _invalidUserModel;        
+        => ModelState.IsValid ? await _accountManager.ResetPassword(parameters) : _invalidUserModel;
+
+        //api/Account/UpdatePassword
+        [HttpPost("UpdatePassword")]
+        public async Task<ApiResponse> UpdatePassword(UpdatePasswordDto parameters)
+        => ModelState.IsValid ? await _accountManager.UpdatePassword(User, parameters) : _invalidUserModel;
 
         [HttpGet("UserInfo")]
         [ProducesResponseType(Status200OK)]

@@ -26,6 +26,7 @@ namespace BlazorBoilerplate.Shared.Dto.Account
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public bool HasPassword { get; set; }
         public List<string> Roles { get; set; }
         public List<KeyValuePair<string, string>> ExposedClaims { get; set; }
         public bool DisableTenantFilter { get; set; }

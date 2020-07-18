@@ -12,6 +12,7 @@ namespace BlazorBoilerplate.Infrastructure.Server
     {
         Task<ApiResponse> BuildLoginViewModel(string returnUrl);
         Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal userClaimsPrincipal, HttpContext httpContext, string logoutId);
+
         Task<ApiResponse> Login(LoginInputModel parameters);
 
         Task<ApiResponse> Register(RegisterDto parameters);
@@ -21,6 +22,8 @@ namespace BlazorBoilerplate.Infrastructure.Server
         Task<ApiResponse> ForgotPassword(ForgotPasswordDto parameters);
 
         Task<ApiResponse> ResetPassword(ResetPasswordDto parameters);
+
+        Task<ApiResponse> UpdatePassword(ClaimsPrincipal userClaimsPrincipal, UpdatePasswordDto parameters);
 
         Task<ApiResponse> Logout(ClaimsPrincipal userClaimsPrincipal);
 

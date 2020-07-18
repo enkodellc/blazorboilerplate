@@ -579,4 +579,31 @@
   <data name="BreadCrumbadminclients" xml:space="preserve">
     <value>Client OpenID</value>
   </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Password corrente</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Nuova password</value>
+  </data>
+  <data name="Update Password" xml:space="preserve">
+    <value>Aggiorna password</value>
+  </data>
+  <data name="UpdatePasswordSuccessful" xml:space="preserve">
+    <value>Aggiornamento password riuscito</value>
+  </data>
+  <data name="UpdatePasswordFailed" xml:space="preserve">
+    <value>Aggiornamento password fallito</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Cognome</value>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Cambia password</value>
+  </data>
+  <data name="User Profile" xml:space="preserve">
+    <value>Profilo utente</value>
+  </data>
 </root>

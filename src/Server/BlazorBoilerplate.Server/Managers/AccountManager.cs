@@ -398,6 +398,34 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
+        public async Task<ApiResponse> UpdatePassword(ClaimsPrincipal userClaimsPrincipal, UpdatePasswordDto parameters)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+                if (user == null)
+                {
+                    _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                    return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
+                }
+
+                var result = await _userManager.ChangePasswordAsync(user, parameters.CurrentPassword, parameters.NewPassword);
+
+                if (result.Succeeded)
+                    return new ApiResponse(Status200OK, $"Update Password Successful");
+                else
+                {
+                    _logger.LogWarning($"Error while updating the password of {user.UserName}");
+                    return new ApiResponse(Status400BadRequest, "Error while updating the password");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Update Password failed: {ex.Message}");
+                return new ApiResponse(Status400BadRequest, $"Error while updating the password: {ex.Message}");
+            }
+        }
+
         public async Task<ApiResponse> UserInfo(ClaimsPrincipal userClaimsPrincipal)
         {
             var userInfo = await BuildUserInfo(userClaimsPrincipal);
@@ -743,6 +771,8 @@ namespace BlazorBoilerplate.Server.Managers
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         UserId = user.Id,
+                        HasPassword = await _userManager.HasPasswordAsync(user),
+
                         //Optionally: filter the claims you want to expose to the client
                         ExposedClaims = userClaimsPrincipal.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
                         Roles = ((ClaimsIdentity)userClaimsPrincipal.Identity).Claims
@@ -752,7 +782,7 @@ namespace BlazorBoilerplate.Server.Managers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning("Could not build UserInfoDto: " + ex.Message);
+                    _logger.LogError("Could not build UserInfoDto: " + ex.Message);
                 }
             }
             else

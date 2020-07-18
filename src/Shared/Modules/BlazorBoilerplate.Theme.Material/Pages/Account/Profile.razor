@@ -1,5 +1,4 @@
 ﻿@page "/account/profile"
-@page "/account/profile/{UserId}"
 @attribute [Authorize]
 
 @inject HttpClient Http
@@ -7,7 +6,7 @@
 @inject IStringLocalizer<Strings> L
 @inject IMatToaster matToaster
 
-<h1>User Profile</h1>
+<h1>@L["User Profile"]</h1>
 <p>User profile management.</p>
 @if (userInfo == null)
 {
@@ -15,7 +14,10 @@
 }
 else
 {
-    <MatButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog())" Label="Change Password" Raised="true" class="form-group d-flex justify-content-end"></MatButton>
+    @if (userInfo.HasPassword)
+    {
+        <MatButton Icon="rotate_right" OnClick="@(() => OpenUpdatePasswordDialog())" Label=@L["Change Password"] Raised="true" class="form-group d-flex justify-content-end"></MatButton>
+    }
     <EditForm Model="@userInfo" OnValidSubmit="@UpdateUser">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -27,13 +29,13 @@ else
                 <MatTextField @bind-Value="@userInfo.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@userInfo.FirstName" Label="First Name" FullWidth="true"></MatTextField>
+                <MatTextField @bind-Value="@userInfo.FirstName" Label=@L["FirstName"] FullWidth="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@userInfo.LastName" Label="Last Name" FullWidth="true"></MatTextField>
+                <MatTextField @bind-Value="@userInfo.LastName" Label=@L["LastName"] FullWidth="true"></MatTextField>
             </div>
             <div class="form-group">
-                <strong>Roles</strong><br />
+                <strong>@L["Roles"]</strong><br />
                 <MatChipSet>
                     @foreach (var role in userInfo.Roles)
                     {
@@ -42,77 +44,69 @@ else
                 </MatChipSet>
             </div>
             <div class="form-group d-flex justify-content-end">
-                <MatButton Type="submit" Raised="true">Update Profile</MatButton>
+                <MatButton Type="submit" Raised="true">@L["Update"]</MatButton>
             </div>
         </fieldset>
     </EditForm>
 
-    <MatDialog @bind-IsOpen="@resetPasswordDialogOpen">
-        <MatDialogTitle>Manual Password Reset for @registerParameters.UserName</MatDialogTitle>
+    <MatDialog @bind-IsOpen="@updatePasswordDialogOpen">
+        <MatDialogTitle>Password Update for @userInfo.UserName</MatDialogTitle>
         <MatDialogContent>
-            <EditForm Model="@registerParameters" OnValidSubmit="@ResetUserPasswordAsync">
+            <EditForm Model="@passwordParameters" OnValidSubmit="@UpdatePasswordAsync">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <fieldset>
                     <div class="form-group">
-                        <MatTextField @bind-Value="@registerParameters.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                        <MatTextField @bind-Value="@passwordParameters.CurrentPassword" Label=@L["CurrentPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                     </div>
                     <div class="form-group">
-                        <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                        <MatTextField @bind-Value="@passwordParameters.NewPassword" Label=@L["NewPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@passwordParameters.NewPasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                     </div>
                 </fieldset>
             </EditForm>
         </MatDialogContent>
         <MatDialogActions>
-            <MatButton OnClick="@(e => { resetPasswordDialogOpen = false; })">@L["Cancel"]</MatButton>
-            <MatButton OnClick="@ResetUserPasswordAsync">@L["Reset Password"]</MatButton>
+            <MatButton OnClick="@(e => { updatePasswordDialogOpen = false; })">@L["Cancel"]</MatButton>
+            <MatButton OnClick="@UpdatePasswordAsync">@L["Update Password"]</MatButton>
         </MatDialogActions>
     </MatDialog>
 
 }
 @code {
-    ApiResponseDto apiResponse;
     UserInfoDto userInfo;
-    bool resetPasswordDialogOpen = false;
-    RegisterDto registerParameters { get; set; } = new RegisterDto();
-
-    [Parameter]
-    public string UserId { get; set; }
+    bool updatePasswordDialogOpen = false;
+    UpdatePasswordDto passwordParameters { get; set; } = new UpdatePasswordDto();
 
     protected override async Task OnInitializedAsync()
     {
         userInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserInfo();
     }
 
-    public void OpenResetPasswordDialog()
+    public void OpenUpdatePasswordDialog()
     {
-        //Todo finish this reset password functionality - needs new API call "UserPasswordReset"
-        matToaster.Add("Not Yet Implemented", MatToastType.Warning);
-
-        // reusing the registerParameters and User objects
-        //registerParameters = new RegisterDto();  // reset object
-        //registerParameters.UserName = userInfo.UserName;
-        //this.resetPasswordDialogOpen = true;
+        passwordParameters = new UpdatePasswordDto();
+        updatePasswordDialogOpen = true;
     }
 
-    public async Task ResetUserPasswordAsync()
+    public async Task UpdatePasswordAsync()
     {
-        if (registerParameters.Password != registerParameters.PasswordConfirm)
+        if (passwordParameters.NewPassword != passwordParameters.NewPasswordConfirm)
         {
-            matToaster.Add("Passwords Must Match", MatToastType.Warning);
+            matToaster.Add(L["PasswordConfirmationFailed"], MatToastType.Warning);
         }
         else
         {
-            apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/UserPasswordReset/{userInfo.UserId}", registerParameters.Password);
+            var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/UpdatePassword", passwordParameters);
+
             if (apiResponse.IsSuccessStatusCode)
-            {
-                matToaster.Add(L["ResetPasswordSuccessful"], MatToastType.Success);
-            }
+                matToaster.Add(L["UpdatePasswordSuccessful"], MatToastType.Success);
             else
-            {
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["ResetPasswordFailed"]);
-            }
-            resetPasswordDialogOpen = false;
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["UpdatePasswordFailed"]);
+
+            updatePasswordDialogOpen = false;
         }
     }
 
@@ -120,20 +114,16 @@ else
     {
         try
         {
-            ApiResponseDto apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).UpdateUser(userInfo);
+            var apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).UpdateUser(userInfo);
 
             if (apiResponse.IsSuccessStatusCode)
-            {
-                matToaster.Add("Profile update was Successful", MatToastType.Success);
-            }
+                matToaster.Add(L["Operation Successful"], MatToastType.Success);
             else
-            {
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, "Profile Update Failed");
-            }
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "Profile Update Failed");
+            matToaster.Add(ex.Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 }

@@ -532,7 +532,7 @@
   </data>
   <data name="AppName" xml:space="preserve">
     <value>Blazer Boilerplate</value>
-    <comment>APPLICATION</comment>
+    
   </data>
   <data name="AppNavDashboard" xml:space="preserve">
     <value>Dashboard</value>
@@ -576,7 +576,7 @@
   </data>
   <data name="AppShortName" xml:space="preserve">
     <value>BlazorBP</value>
-    <comment>APPLICATION</comment>
+    
   </data>
   <data name="BreadCrumbadmin" xml:space="preserve">
     <value>Admin</value>
@@ -661,5 +661,32 @@
   <data name="TodoNav" xml:space="preserve">
     <value>ToDo List</value>
     <comment>TODO</comment>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Current password</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="Update Password" xml:space="preserve">
+    <value>Update password</value>
+  </data>
+  <data name="UpdatePasswordSuccessful" xml:space="preserve">
+    <value>Update Password Successful</value>
+  </data>
+  <data name="UpdatePasswordFailed" xml:space="preserve">
+    <value>Update Password Failed</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="User Profile" xml:space="preserve">
+    <value>User Profile</value>
   </data>
 </root>
