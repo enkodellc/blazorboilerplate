@@ -339,6 +339,8 @@ namespace BlazorBoilerplate.Server
                 options.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
                 options.AddPolicy(Policies.IsReadOnly, Policies.IsReadOnlyPolicy());
                 options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations
+
+                options.AddPolicy(Policies.TwoFactorEnabled, Policies.IsTwoFactorEnabledPolicy());
             });
 
             services.AddScoped<ApplicationPermissions>();

@@ -30,23 +30,9 @@ else
         <MatTableRow Context="UserRow">
             <td>
                 <div style="width:155px;">
-                    <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
-                        <Authorized>
-                            <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
-                        </Authorized>
-                        <NotAuthorized>
-                            <MatIconButton Icon="edit" Disabled="true"></MatIconButton>
-                        </NotAuthorized>
-                    </AuthorizeView>
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
                     <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
-                    <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
-                        <Authorized>
-                            <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
-                        </Authorized>
-                        <NotAuthorized>
-                            <MatIconButton Icon="delete" Disabled="true"></MatIconButton>
-                        </NotAuthorized>
-                    </AuthorizeView>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
                 </div>
             </td>
             <td><div style="width:130px;">@UserRow.UserName</div></td>
@@ -154,9 +140,6 @@ else
 </MatDialog>
 
 @code {
-    //Auth documentation
-    //https://docs.microsoft.com/en-us/aspnet/core/security/blazor
-
     int pageSize { get; set; } = 15;
     int currentPage { get; set; } = 0;
 
@@ -165,10 +148,10 @@ else
     bool deleteUserDialogOpen = false;
     bool resetPasswordDialogOpen = false;
 
-    List<UserInfoDto> users;
+    List<UserInfo> users;
     List<RoleSelection> roleSelections { get; set; } = new List<RoleSelection>();
 
-    public UserInfoDto user { get; set; } = new UserInfoDto(); // Holds user being actively modified or created
+    public UserInfo user { get; set; } = new UserInfo();
     RegisterDto registerParameters { get; set; } = new RegisterDto();
 
     public class RoleSelection
@@ -187,7 +170,7 @@ else
     {
         try
         {
-            var apiResponse = await Http.GetFromJsonAsync<ApiResponseDto<List<UserInfoDto>>>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
+            var apiResponse = await Http.GetFromJsonAsync<ApiResponseDto<List<UserInfo>>>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -205,8 +188,8 @@ else
 
     public void OpenEditDialog(Guid userId)
     {
-        user = new UserInfoDto(); // reset user object
-        user = users.Where(x => x.UserId == userId).SingleOrDefault();  // load the user information into the temp user object for worry free editing
+        user = new UserInfo();
+        user = users.Where(x => x.UserId == userId).SingleOrDefault();
         foreach (var role in roleSelections)
             role.IsSelected = user.Roles.Contains(role.Name);
 
@@ -244,9 +227,8 @@ else
 
             roleNames = response.Result;
 
-            roleSelections = new List<RoleSelection>();// clear out list
+            roleSelections = new List<RoleSelection>();
 
-            // initialize selection list with all un-selected
             foreach (string role in roleNames)
             {
                 roleSelections.Add(new RoleSelection
@@ -272,7 +254,6 @@ else
     {
         try
         {
-            //update the user object's role list with the new selection set
             user.Roles = roleSelections.Where(x => x.IsSelected == true).Select(x => x.Name).ToList();
 
             var apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Account", user);
@@ -303,7 +284,7 @@ else
         {
             if (registerParameters.Password != registerParameters.PasswordConfirm)
             {
-                matToaster.Add(L["PasswordConfirmationFailed"], MatToastType.Danger, "");
+                matToaster.Add(L["PasswordConfirmationFailed"], MatToastType.Danger);
                 return;
             }
 
@@ -311,9 +292,9 @@ else
             if (apiResponse.IsSuccessStatusCode)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);
-                user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfoDto>(apiResponse.Result.ToString());
+                user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfo>(apiResponse.Result.ToString());
                 users.Add(user);
-                registerParameters = new RegisterDto(); //reset create user object after insert
+                registerParameters = new RegisterDto();
                 createUserDialogOpen = false;
             }
             else

@@ -1,14 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlazorBoilerplate.Localization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Shared.Dto.Account
 {
 
     public class ConfirmEmailDto
     {
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public string UserId { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public string Token { get; set; }
     }
 }

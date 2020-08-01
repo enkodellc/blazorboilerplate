@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
+using BlazorBoilerplate.Localization;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
@@ -10,7 +11,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         [Key]
         public long Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         [MaxLength(128)]
         public string Title { get; set; }
 

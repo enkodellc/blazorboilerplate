@@ -349,6 +349,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Authenticator code.
+        /// </summary>
+        public static string AuthenticatorCode {
+            get {
+                return ResourceManager.GetString("AuthenticatorCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Admin.
         /// </summary>
         public static string BreadCrumbadmin {
@@ -529,6 +538,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Browser remembered.
+        /// </summary>
+        public static string BrowserRemembered {
+            get {
+                return ResourceManager.GetString("BrowserRemembered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Cancel.
         /// </summary>
         public static string Cancel {
@@ -570,6 +588,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Client__0__updated {
             get {
                 return ResourceManager.GetString("Client {0} updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Code.
+        /// </summary>
+        public static string Code {
+            get {
+                return ResourceManager.GetString("Code", resourceCulture);
             }
         }
         
@@ -736,6 +763,24 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a The {0} field is not a valid e-mail address..
+        /// </summary>
+        public static string EmailInvalid {
+            get {
+                return ResourceManager.GetString("EmailInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Email not confirmed.
+        /// </summary>
+        public static string EmailNotConfirmed {
+            get {
+                return ResourceManager.GetString("EmailNotConfirmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Email settings.
         /// </summary>
         public static string EmailSettings {
@@ -772,6 +817,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a The {0} field is mandatory..
+        /// </summary>
+        public static string FieldRequired {
+            get {
+                return ResourceManager.GetString("FieldRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a First name.
         /// </summary>
         public static string FirstName {
@@ -786,6 +840,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Forgot_your_password_ {
             get {
                 return ResourceManager.GetString("Forgot your password?", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Forgot your authenticator?.
+        /// </summary>
+        public static string ForgotAuthenticator {
+            get {
+                return ResourceManager.GetString("ForgotAuthenticator", resourceCulture);
             }
         }
         
@@ -885,6 +948,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Loading {
             get {
                 return ResourceManager.GetString("Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a User is locked out.
+        /// </summary>
+        public static string LockedUser {
+            get {
+                return ResourceManager.GetString("LockedUser", resourceCulture);
             }
         }
         
@@ -1177,6 +1249,24 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Recovery code.
+        /// </summary>
+        public static string RecoveryCode {
+            get {
+                return ResourceManager.GetString("RecoveryCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Recovery codes left.
+        /// </summary>
+        public static string RecoveryCodesLeft {
+            get {
+                return ResourceManager.GetString("RecoveryCodesLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Register.
         /// </summary>
         public static string Register {
@@ -1195,11 +1285,29 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Remember browser.
+        /// </summary>
+        public static string RememberBrowser {
+            get {
+                return ResourceManager.GetString("RememberBrowser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Reset Password.
         /// </summary>
         public static string Reset_Password {
             get {
                 return ResourceManager.GetString("Reset Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Reset Authenticator.
+        /// </summary>
+        public static string ResetAuthenticator {
+            get {
+                return ResourceManager.GetString("ResetAuthenticator", resourceCulture);
             }
         }
         
@@ -1519,6 +1627,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Two Factor Authentication.
+        /// </summary>
+        public static string TwoFactorAuthentication {
+            get {
+                return ResourceManager.GetString("TwoFactorAuthentication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Update.
         /// </summary>
         public static string Update {
@@ -1650,6 +1767,24 @@ namespace BlazorBoilerplate.Localization {
         public static string Users {
             get {
                 return ResourceManager.GetString("Users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Verification Code.
+        /// </summary>
+        public static string VerificationCode {
+            get {
+                return ResourceManager.GetString("VerificationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Verification code is invalid.
+        /// </summary>
+        public static string VerificationCodeInvalid {
+            get {
+                return ResourceManager.GetString("VerificationCodeInvalid", resourceCulture);
             }
         }
     }

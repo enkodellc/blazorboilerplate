@@ -20,7 +20,7 @@
 
 @code {
     public bool IsLoggedIn = false;
-    UserInfoDto userInfo = null;
+    UserInfo userInfo = null;
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 

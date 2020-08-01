@@ -17,6 +17,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Text.Encodings.Web;
 
 namespace BlazorBoilerplate.Server.Tests.Managers
 {
@@ -35,6 +36,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
         private Mock<IConfiguration> _configuration;
         private Mock<IIdentityServerInteractionService> _interaction;
         private Mock<IAuthenticationSchemeProvider> _schemeProvider;
+        private Mock<UrlEncoder> _urlEncoder;
         private Mock<IEventService> _events;
         private Mock<IStringLocalizer<Strings>> _l;
 
@@ -59,6 +61,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
             _roleManager = new Mock<RoleManager<IdentityRole<Guid>>>(roleStore.Object, roles, new UpperInvariantLookupNormalizer(), new IdentityErrorDescriber(), null);
             _emailManager = new Mock<IEmailManager>();
             _configuration = new Mock<IConfiguration>();
+            _urlEncoder = new Mock<UrlEncoder>();
             _events = new Mock<IEventService>();
             _l = new Mock<IStringLocalizer<Strings>>();
 
@@ -72,6 +75,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
                 _configuration.Object,
                 _interaction.Object,
                 _schemeProvider.Object,
+                _urlEncoder.Object,
                 _events.Object,
                 _l.Object);
         }

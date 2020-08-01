@@ -28,17 +28,41 @@ namespace BlazorBoilerplate.Shared.Services
             return await _httpClient.PostJsonAsync<ApiResponseDto<LoginViewModel>>("api/Account/BuildLoginViewModel", returnUrl);
         }
 
-        public async Task<ApiResponseDto> Login(LoginInputModel loginParameters)
+        private async Task SubmitServerForm(string path, AccountFormModel model)
         {
-            var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Login", loginParameters);
+            model.__RequestVerificationToken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
+
+            await _jsRuntime.InvokeAsync<string>("interop.submitForm", path, model);
+        }
+
+        public async Task<ApiResponseDto<LoginResponseModel>> Login(LoginInputModel parameters)
+        {
+            var response = await _httpClient.PostJsonAsync<ApiResponseDto<LoginResponseModel>>("api/Account/Login", parameters);
 
             if (!_navigationManager.IsWebAssembly())
                 if (response.IsSuccessStatusCode)
-                {
-                    loginParameters.__RequestVerificationToken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
+                    await SubmitServerForm("/server/login/", parameters);
 
-                    await _jsRuntime.InvokeAsync<string>("interop.submitForm", "/server/login/", loginParameters);
-                }
+            return response;
+        }
+
+        public async Task<ApiResponseDto> LoginWith2fa(LoginWith2faInputModel parameters)
+        {
+            var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/LoginWith2fa", parameters);
+
+            if (!_navigationManager.IsWebAssembly())
+                if (response.IsSuccessStatusCode)
+                    await SubmitServerForm("/server/loginwith2fa/", parameters);
+
+            return response;
+        }
+        public async Task<ApiResponseDto> LoginWithRecoveryCode(LoginWithRecoveryCodeInputModel parameters)
+        {
+            var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/LoginWithRecoveryCode", parameters);
+
+            if (!_navigationManager.IsWebAssembly())
+                if (response.IsSuccessStatusCode)
+                    await SubmitServerForm("/server/loginwith2fa/", parameters);
 
             return response;
         }
@@ -49,44 +73,73 @@ namespace BlazorBoilerplate.Shared.Services
 
             if (!_navigationManager.IsWebAssembly())
                 if (response.IsSuccessStatusCode)
-                {
-                    var antiforgerytoken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
-                    await _jsRuntime.InvokeAsync<string>("interop.submitForm", "/server/logout/", new { __RequestVerificationToken = antiforgerytoken, returnurl = "" });
-                }
+                    await SubmitServerForm("/server/logout/", new AccountFormModel());
 
             return response;
         }
 
-        public async Task<ApiResponseDto> Create(RegisterDto registerParameters)
+        public async Task<ApiResponseDto> Create(RegisterDto parameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Create", registerParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Create", parameters);
         }
 
-        public async Task<ApiResponseDto> Register(RegisterDto registerParameters)
+        public async Task<ApiResponseDto<LoginResponseModel>> Register(RegisterDto parameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Register", registerParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto<LoginResponseModel>>("api/Account/Register", parameters);
         }
 
-        public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto confirmEmailParameters)
+        public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto parameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ConfirmEmail", confirmEmailParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ConfirmEmail", parameters);
         }
 
-        public async Task<ApiResponseDto> ResetPassword(ResetPasswordDto resetPasswordParameters)
+        public async Task<ApiResponseDto> ResetPassword(ResetPasswordDto parameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ResetPassword", resetPasswordParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ResetPassword", parameters);
         }
 
-        public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordParameters)
+        public async Task<ApiResponseDto> UpdatePassword(UpdatePasswordDto parameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ForgotPassword", forgotPasswordParameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdatePassword", parameters);
         }
 
-        public async Task<UserInfoDto> GetUserInfo()
+        public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto parameters)
         {
-            UserInfoDto userInfo = new UserInfoDto { IsAuthenticated = false, Roles = new List<string>() };
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ForgotPassword", parameters);
+        }
 
-            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserInfoDto>>("api/Account/UserInfo");
+        public async Task<ApiResponseDto<UserInfo>> EnableAuthenticator(AuthenticatorVerificationCodeDto parameters)
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/EnableAuthenticator", parameters);
+        }
+        public async Task<ApiResponseDto<UserInfo>> DisableAuthenticator()
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/DisableAuthenticator", null);
+        }
+        public async Task<ApiResponseDto<UserInfo>> ForgetTwoFactorClient()
+        {
+            var response = await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/ForgetTwoFactorClient", null);
+
+            if (!_navigationManager.IsWebAssembly())
+                if (response.IsSuccessStatusCode)
+                    await SubmitServerForm("/server/ForgetTwoFactorClient/", new AccountFormModel());
+
+            return response;
+        }
+        public async Task<ApiResponseDto<UserInfo>> Enable2fa()
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/Enable2fa", null);
+        }
+        public async Task<ApiResponseDto<UserInfo>> Disable2fa()
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/Disable2fa", null);
+        }
+
+        public async Task<UserInfo> GetUserInfo()
+        {
+            UserInfo userInfo = new UserInfo { IsAuthenticated = false, Roles = new List<string>() };
+
+            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserInfo>>("api/Account/UserInfo");
 
             if (apiResponse.IsSuccessStatusCode)
                 userInfo = apiResponse.Result;
@@ -94,13 +147,13 @@ namespace BlazorBoilerplate.Shared.Services
             return userInfo;
         }
 
-        public async Task<UserInfoDto> GetUser()
+        public async Task<UserInfo> GetUser()
         {
-            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserInfoDto>>("api/Account/GetUser");
+            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserInfo>>("api/Account/GetUser");
             return apiResponse.Result;
         }
 
-        public async Task<ApiResponseDto> UpdateUser(UserInfoDto userInfo)
+        public async Task<ApiResponseDto> UpdateUser(UserInfo userInfo)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdateUser", userInfo);
         }

@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 namespace BlazorBoilerplate.Server.Pages
 {
     [Authorize]
-    public class LogoutModel : PageModel
+    public class ForgetTwoFactorClientModel : PageModel
     {
         private readonly IAccountManager _accountManager;
 
-        public LogoutModel(IAccountManager accountManager)
+        public ForgetTwoFactorClientModel(IAccountManager accountManager)
         {
             _accountManager = accountManager;
         }
         public async Task<IActionResult> OnPostAsync(AccountFormModel model)
         {
-            await _accountManager.Logout(User);
+            await _accountManager.ForgetTwoFactorClient(User);
 
-            return LocalRedirect(Url.Content($"~{model.ReturnUrl}"));
+            return LocalRedirect(Url.Content($"~{Shared.Settings.ProfilePath}"));
         }
     }
 }

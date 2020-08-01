@@ -1,6 +1,6 @@
 ﻿namespace BlazorBoilerplate.Shared.Dto.Account
 {
-    public class LoggedOutViewModel
+    public class LoggedOutViewModel : AccountFormModel
     {
         public string PostLogoutRedirectUri { get; set; }
         public string ClientName { get; set; }

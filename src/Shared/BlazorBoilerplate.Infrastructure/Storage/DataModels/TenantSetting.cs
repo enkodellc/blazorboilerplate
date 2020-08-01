@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Shared.Dto.Db;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,7 +18,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         [Column(TypeName = "nvarchar(max)")]
         public string Value { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public SettingType Type { get; set; }
     }
 }

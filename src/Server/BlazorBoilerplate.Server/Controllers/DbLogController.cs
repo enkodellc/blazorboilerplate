@@ -36,7 +36,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 //placeholder for selector
 
 
-            return await _dbLogManager.Get(pageSize, page, predicate).ConfigureAwait(false);
+            return await _dbLogManager.Get(pageSize, page, predicate);
         }
 
     }

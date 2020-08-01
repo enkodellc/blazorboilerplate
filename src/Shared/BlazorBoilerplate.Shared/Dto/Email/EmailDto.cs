@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlazorBoilerplate.Localization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Shared.Dto.Email
 {
@@ -6,7 +7,7 @@ namespace BlazorBoilerplate.Shared.Dto.Email
     {
         private string _name;
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public string ToAddress { get; set; }
 
         public string ToName
@@ -35,7 +36,7 @@ namespace BlazorBoilerplate.Shared.Dto.Email
                 
         public string Body { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public string TemplateName { get; set; }
     }
 }

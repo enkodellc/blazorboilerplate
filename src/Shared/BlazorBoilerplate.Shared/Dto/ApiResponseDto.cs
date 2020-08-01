@@ -23,14 +23,14 @@ namespace BlazorBoilerplate.Shared.Dto
         [DataMember(EmitDefaultValue = false)]
         public string ResponseException { get; set; }
 
-        [DataMember(EmitDefaultValue =false)]
-        public PaginationDetails PaginationDetails { get;set;} = null;
-
         [DataMember(EmitDefaultValue = false)]
         public T Result { get; set; }
     }
 
     [DataContract]
     public class ApiResponseDto : ApiResponseDto<object>
-    { }
+    {
+        [DataMember(EmitDefaultValue = false)]
+        public PaginationDetails PaginationDetails { get; set; } = null; //TODO remove
+    }
 }

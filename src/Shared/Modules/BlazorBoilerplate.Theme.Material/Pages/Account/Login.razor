@@ -16,68 +16,71 @@
         </LoadingBackground>
     </Authorized>
     <NotAuthorized>
-        @if (loginViewModel.EnableLocalLogin)
-        {<MatCard>
-                <div class="hidden-mdc-down">
-                    <MatIconButton Icon="exit_to_app" Class="float-left" @onclick="GoBack" />
-                    <MatIconButton Icon="home" Class="float-left" Link="/" />
-                </div>
-                <div class="logo">
-                    <a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
-                    <br />
-                    <h4>@L["Log in"]</h4>
-                    User  -> Username: <b>user</b>  Password: <b>user123</b><br />
-                    Admin -> Username: <b>admin</b> Password: <b>admin123</b><br />
-                </div>
-                <EditForm Model="@loginViewModel" OnValidSubmit="@SubmitLogin">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary />
-                    <fieldset>
-                        <div class="form-group">
-                            <MatTextField id="userName" @bind-Value="@loginViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MatTextField>
-                        </div>
-                        <div class="form-group">
-                            <MatTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="2"></MatTextField>
-                        </div>
-                        <div class="form-group">
-                            <MatButton class="float-right" Type="submit" Raised="true" tabindex="3">@L["Login"]</MatButton>
-                            @if (loginViewModel.AllowRememberLogin)
-                            {<MatCheckbox @bind-Value="@loginViewModel.RememberMe" class="filled-in chk-col-blue">@L["Keep me logged in"]</MatCheckbox>}
-                        </div>
-                    </fieldset>
-                </EditForm>
-                <hr />
-                <div>
-                    <MatButton class="float-left" OnClick="@Register" Raised="true">@L["Sign up"]</MatButton>
-                </div>
-            </MatCard>
-            <MatAccordion>
-                <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
-                    <MatExpansionPanelSummary>
-                        <MatExpansionPanelHeader>@L["Forgot your password?"]</MatExpansionPanelHeader>
-                        <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
-                    </MatExpansionPanelSummary>
-                    <MatExpansionPanelDetails>
-                        <EditForm Model="@forgotPasswordParameters" OnValidSubmit="@ForgotPassword">
-                            <DataAnnotationsValidator />
-                            <ValidationSummary />
+        @if (RedirectInProgress)
+        {
+            <LoadingBackground ShowLogoBox="true">
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        }
+        else
+        {@if (loginViewModel.EnableLocalLogin)
+            {<MatCard>
+                    <div class="hidden-mdc-down">
+                        <MatIconButton Icon="home" Class="float-left" Link="/" />
+                    </div>
+                    <div class="logo">
+                        <a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
+                        <br />
+                        <h4>@L["Log in"]</h4>
+                    </div>
+                    <EditForm Model="@loginViewModel" OnValidSubmit="@SubmitLogin">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <fieldset>
                             <div class="form-group">
-                                <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                                <MatTextField id="userName" @bind-Value="@loginViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MatTextField>
                             </div>
                             <div class="form-group">
-                                <MatButton class="float-right" Type="submit" Raised="true">@L["Submit"]</MatButton>
+                                <MatTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="2"></MatTextField>
                             </div>
-                        </EditForm>
-                    </MatExpansionPanelDetails>
-                </MatExpansionPanel>
-            </MatAccordion>}
+                            <div class="form-group">
+                                <MatButton class="float-right" Type="submit" Raised="true" tabindex="3">@L["Login"]</MatButton>
+                                @if (loginViewModel.AllowRememberLogin)
+                                {<MatCheckbox @bind-Value="@loginViewModel.RememberMe" class="filled-in chk-col-blue">@L["Keep me logged in"]</MatCheckbox>}
+                            </div>
+                        </fieldset>
+                    </EditForm>
+                    <hr />
+                    <div>
+                        <MatButton class="float-left" OnClick="@Register" Raised="true">@L["Sign up"]</MatButton>
+                    </div>
+                </MatCard>
+                <MatAccordion>
+                    <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
+                        <MatExpansionPanelSummary>
+                            <MatExpansionPanelHeader>@L["Forgot your password?"]</MatExpansionPanelHeader>
+                            <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            <EditForm Model="@forgotPasswordParameters" OnValidSubmit="@ForgotPassword">
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
+                                <div class="form-group">
+                                    <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                                </div>
+                                <div class="form-group">
+                                    <MatButton class="float-right" Type="submit" Raised="true">@L["Submit"]</MatButton>
+                                </div>
+                            </EditForm>
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+                </MatAccordion>}
         @if (loginViewModel.VisibleExternalProviders.Any())
         {
             <br />
             <MatCard>
                 @if (!loginViewModel.EnableLocalLogin)
                 {<div class="hidden-mdc-down">
-                        <MatIconButton Icon="exit_to_app" Class="float-left" @onclick="GoBack" />
                         <MatIconButton Icon="home" Class="float-left" Link="/" />
                     </div>}
                 <div class="logo">
@@ -120,18 +123,20 @@
                 There are no login schemes configured for this client.
             </div>
         }
+    }
     </NotAuthorized>
 </AuthorizeView>
 @code {
 
-        string navigateTo = null;
-        IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
-        bool forgotPasswordToggle = false;
-        bool RedirectInProgress = false;
-        LoginViewModel loginViewModel { get; set; } = new LoginViewModel();
-        ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
+    string navigateTo = null;
+    IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
+    bool forgotPasswordToggle = false;
+    bool RedirectInProgress = false;
+    static bool LoginSuccess = false;
+    LoginViewModel loginViewModel { get; set; } = new LoginViewModel();
+    ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
 
-        string ReturnUrl;
+    string ReturnUrl;
 
     protected override async Task OnInitializedAsync()
     {
@@ -140,7 +145,7 @@
 
         var user = (await authenticationStateTask).User;
 
-        if (user.Identity.IsAuthenticated)
+        if (user.Identity.IsAuthenticated || LoginSuccess)
             RedirectInProgress = true;
         else
         {
@@ -151,6 +156,7 @@
             if (apiResponse.IsSuccessStatusCode)
             {
                 loginViewModel = apiResponse.Result;
+
                 if (loginViewModel.IsExternalLoginOnly)
                 {
                     if (!string.IsNullOrEmpty(ReturnUrl))
@@ -162,14 +168,8 @@
             else
                 matToaster.Add(apiResponse.Message, MatToastType.Danger, L["LoginFailed"]);
         }
-    }
 
-    private void GoBack()
-    {
-        if (string.IsNullOrEmpty(ReturnUrl))
-            ReturnUrl = string.Empty;
-
-        NavigationManager.NavigateTo(ReturnUrl, forceLoad: false);
+        LoginSuccess = false;
     }
 
     [CascadingParameter]
@@ -219,17 +219,30 @@
             {
                 if (navigationManager.IsWebAssembly())
                 {
-                    if (string.IsNullOrEmpty(ReturnUrl))
+                    if (response.Result?.RequiresTwoFactor == true)
                     {
-                        var userProfile = await appState.GetUserProfile();
-
-                        navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                        var par = string.IsNullOrEmpty(ReturnUrl) ? string.Empty : $"?returnurl={Uri.EscapeDataString(ReturnUrl)}";
+                        navigationManager.NavigateTo($"{BlazorBoilerplate.Shared.Settings.LoginWith2faPath}{par}", true);
                     }
                     else
-                        navigateTo = ReturnUrl;
+                    {
+                        if (string.IsNullOrEmpty(ReturnUrl))
+                        {
+                            var userProfile = await appState.GetUserProfile();
 
-                    navigationManager.NavigateTo(navigateTo);
+                            navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                        }
+                        else
+                            navigateTo = ReturnUrl;
+
+
+                        navigationManager.NavigateTo(navigateTo);
+                    }
                 }
+                else
+                    RedirectInProgress = true;
+
+                LoginSuccess = true;
             }
             else
                 matToaster.Add(response.Message, MatToastType.Danger, L["LoginFailed"]);

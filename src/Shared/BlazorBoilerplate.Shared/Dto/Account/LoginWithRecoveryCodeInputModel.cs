@@ -3,12 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Shared.Dto.Account
 {
-    public class LoginInputModel : AccountFormModel
+    public class LoginWithRecoveryCodeInputModel : LoginWith2faModel
     {
         [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
-        public string UserName { get; set; }
-
-        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
-        public string Password { get; set; }
+        [DataType(DataType.Text)]
+        [Display(Name = "RecoveryCode", ResourceType = typeof(Strings))]
+        public string RecoveryCode { get; set; }
     }
 }

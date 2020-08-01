@@ -88,16 +88,16 @@ namespace BlazorBoilerplate.Server.Managers
                 try
                 {
                     // use this if you need to specify using ssl; MailKit should usually be able to autodetect the appropriate settings
-                    // await emailClient.ConnectAsync(_emailConfiguration.ImapServer, _emailConfiguration.ImapPort, _emailConfiguration.ImapUseSSL).ConfigureAwait(false);
+                    // await emailClient.ConnectAsync(_emailConfiguration.ImapServer, _emailConfiguration.ImapPort, _emailConfiguration.ImapUseSSL);
 
-                    await emailClient.ConnectAsync(_emailConfiguration.ImapServer, _emailConfiguration.ImapPort).ConfigureAwait(false);
+                    await emailClient.ConnectAsync(_emailConfiguration.ImapServer, _emailConfiguration.ImapPort);
 
                     emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
 
                     if (!string.IsNullOrWhiteSpace(_emailConfiguration.ImapUsername))
                     {
-                        await emailClient.AuthenticateAsync(_emailConfiguration.ImapUsername, _emailConfiguration.ImapPassword).ConfigureAwait(false);
+                        await emailClient.AuthenticateAsync(_emailConfiguration.ImapUsername, _emailConfiguration.ImapPassword);
                     }
 
                     List<EmailMessageDto> emails = new List<EmailMessageDto>();
@@ -138,13 +138,13 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 try
                 {
-                    await emailClient.ConnectAsync(_emailConfiguration.PopServer, _emailConfiguration.PopPort).ConfigureAwait(false);     // omitting usessl to allow mailkit to autoconfigure
+                    await emailClient.ConnectAsync(_emailConfiguration.PopServer, _emailConfiguration.PopPort);     // omitting usessl to allow mailkit to autoconfigure
 
                     emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
                     if (!String.IsNullOrWhiteSpace(_emailConfiguration.PopUsername))
                     {
-                        await emailClient.AuthenticateAsync(_emailConfiguration.PopUsername, _emailConfiguration.PopPassword).ConfigureAwait(false);
+                        await emailClient.AuthenticateAsync(_emailConfiguration.PopUsername, _emailConfiguration.PopPassword);
                     }
 
                     List<EmailMessageDto> emails = new List<EmailMessageDto>();
@@ -221,19 +221,19 @@ namespace BlazorBoilerplate.Server.Managers
                         emailClient.ServerCertificateValidationCallback = (object sender2, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
                     }
 
-                    await emailClient.ConnectAsync(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL).ConfigureAwait(false);
+                    await emailClient.ConnectAsync(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL);
 
                     //Remove any OAuth functionality as we won't be using it.
                     emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
                     if (!string.IsNullOrWhiteSpace(_emailConfiguration.SmtpUsername))
                     {
-                        await emailClient.AuthenticateAsync(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword).ConfigureAwait(false);
+                        await emailClient.AuthenticateAsync(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
                     }
 
-                    await emailClient.SendAsync(message).ConfigureAwait(false);
+                    await emailClient.SendAsync(message);
 
-                    await emailClient.DisconnectAsync(true).ConfigureAwait(false);
+                    await emailClient.DisconnectAsync(true);
                     return new ApiResponse(203);
                 }
             }

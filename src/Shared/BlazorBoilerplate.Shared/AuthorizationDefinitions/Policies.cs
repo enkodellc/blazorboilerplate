@@ -11,6 +11,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
         public const string IsUser = "IsUser";
         public const string IsReadOnly = "IsReadOnly";
         public const string IsMyDomain = "IsMyDomain";
+        public const string TwoFactorEnabled = "TwoFactorEnabled";
 
         public static AuthorizationPolicy IsAdminPolicy()
         {
@@ -33,6 +34,15 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
             return new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .RequireClaim("ReadOnly", "true")
+                .Build();
+        }
+
+        //https://docs.microsoft.com/it-it/aspnet/core/security/authentication/mfa
+        public static AuthorizationPolicy IsTwoFactorEnabledPolicy()
+        {
+            return new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .RequireClaim("amr", "mfa")
                 .Build();
         }
 

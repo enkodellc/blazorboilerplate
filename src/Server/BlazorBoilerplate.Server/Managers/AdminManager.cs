@@ -58,10 +58,10 @@ namespace BlazorBoilerplate.Server.Managers
                 var count = userList.Count();
                 var listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
 
-                var userDtoList = new List<UserInfoDto>(); // This sucks, but Select isn't async happy, and the passing into a 'ProcessEventAsync' is another level of misdirection
+                var userDtoList = new List<UserInfo>(); // This sucks, but Select isn't async happy, and the passing into a 'ProcessEventAsync' is another level of misdirection
                 foreach (var applicationUser in listResponse)
                 {
-                    userDtoList.Add(new UserInfoDto
+                    userDtoList.Add(new UserInfo
                     {
                         FirstName = applicationUser.FirstName,
                         LastName = applicationUser.LastName,

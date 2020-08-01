@@ -606,4 +606,49 @@
   <data name="User Profile" xml:space="preserve">
     <value>Profilo utente</value>
   </data>
+  <data name="RememberBrowser" xml:space="preserve">
+    <value>Ricorda questo browser</value>
+  </data>
+  <data name="ForgotAuthenticator" xml:space="preserve">
+    <value>Hai dimenticato la tua app authenticator?</value>
+  </data>
+  <data name="RecoveryCode" xml:space="preserve">
+    <value>Codice di ripristino</value>
+  </data>
+  <data name="LockedUser" xml:space="preserve">
+    <value>L'utente è bloccato</value>
+  </data>
+  <data name="EmailNotConfirmed" xml:space="preserve">
+    <value>Email non verificata</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Codice</value>
+  </data>
+  <data name="TwoFactorAuthentication" xml:space="preserve">
+    <value>Autenticazione a due fattori</value>
+  </data>
+  <data name="BrowserRemembered" xml:space="preserve">
+    <value>Browser memorizzato</value>
+  </data>
+  <data name="RecoveryCodesLeft" xml:space="preserve">
+    <value>Codici di ripristino rimasti</value>
+  </data>
+  <data name="AuthenticatorCode" xml:space="preserve">
+    <value>Codice authenticator</value>
+  </data>
+  <data name="VerificationCode" xml:space="preserve">
+    <value>codice di verifica</value>
+  </data>
+  <data name="VerificationCodeInvalid" xml:space="preserve">
+    <value>Il codice di verifica non è valido</value>
+  </data>
+  <data name="ResetAuthenticator" xml:space="preserve">
+    <value>Resetta authenticator app</value>
+  </data>
+  <data name="EmailInvalid" xml:space="preserve">
+    <value>Il campo {0} non è un indirizzo email valido.</value>
+  </data>
+  <data name="FieldRequired" xml:space="preserve">
+    <value>Il campo {0} è obbligatorio.</value>
+  </data>
 </root>

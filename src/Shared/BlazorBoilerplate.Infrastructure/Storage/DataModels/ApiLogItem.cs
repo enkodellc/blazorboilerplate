@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorBoilerplate.Localization;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
@@ -8,19 +9,19 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         [Key]
         public long Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public DateTime RequestTime { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public long ResponseMillis { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public int StatusCode { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public string Method { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         [MaxLength(2048)]
         public string Path { get; set; }
 

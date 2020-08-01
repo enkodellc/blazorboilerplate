@@ -14,11 +14,18 @@
 }
 else
 {
-    @if (userInfo.HasPassword)
-    {
-        <MatButton Icon="rotate_right" OnClick="@(() => OpenUpdatePasswordDialog())" Label=@L["Change Password"] Raised="true" class="form-group d-flex justify-content-end"></MatButton>
-    }
-    <EditForm Model="@userInfo" OnValidSubmit="@UpdateUser">
+    <div class="form-group">
+        <MatButton Type="submit" form="mainForm" Raised="true">@L["Update"]</MatButton>
+        @if (userInfo.HasPassword)
+        {
+            <MatButton Icon="rotate_right" OnClick="@(() => OpenUpdatePasswordDialog())" Label=@L["Change Password"] Raised="true"></MatButton>
+        }
+        @if (userInfo.HasAuthenticator)
+        {
+            <MatButton Icon="rotate_right" OnClick="@(() => DisableAuthenticator())" Label=@L["ResetAuthenticator"] Raised="true"></MatButton>
+        }
+    </div>
+    <EditForm id="mainForm" Model="@userInfo" OnValidSubmit="@UpdateUser">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <fieldset>
@@ -43,16 +50,57 @@ else
                     }
                 </MatChipSet>
             </div>
-            <div class="form-group d-flex justify-content-end">
-                <MatButton Type="submit" Raised="true">@L["Update"]</MatButton>
-            </div>
         </fieldset>
     </EditForm>
+    @if (userInfo.TwoFactorEnabled)
+    {
+        <div class="form-group">
+            <MatSlideToggle @bind-Value="@TwoFactorEnabled" Label=@L["TwoFactorAuthentication"] />
+        </div>
+        @if (userInfo.BrowserRemembered)
+        {
+            <div class="form-group">
+                <MatSlideToggle @bind-Value="@BrowserRemembered" Label=@L["BrowserRemembered"] />
+            </div>
+        }
+        if (userInfo.RecoveryCodes != null)
+        {
+            <div class="form-group">
+                <MatChipSet>
+                    @foreach (var rcode in userInfo.RecoveryCodes)
+                    {
+                        <MatChip Label="@rcode"></MatChip>
+                    }
+                </MatChipSet>
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <span>@L["RecoveryCodesLeft"]</span> @userInfo.CountRecoveryCodes
+            </div>
+        }
+    }
+    else
+    {
+        <h3>@L["TwoFactorAuthentication"]</h3>
+        <p>
+            Download a two-factor authenticator app like Microsoft Authenticator or Google Authenticator.
+        </p>
+        <p>Scan the QR Code or enter this key <kbd>@userInfo.SharedKey</kbd> into your two factor authenticator app. Spaces and casing do not matter.</p>
+        <img src="@($"https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={userInfo.AuthenticatorUri}")" />
+        <p>
+            Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
+            with a unique code. Enter the code in the confirmation box below.
+        </p>
+        <MatTextField @bind-Value="@verificationCodeParameters.Code" Label=@L["Code"] FullWidth="true"></MatTextField>
+        <MatButton OnClick="@EnableAuthenticator">@L["Verify code"]</MatButton>
+    }
 
     <MatDialog @bind-IsOpen="@updatePasswordDialogOpen">
         <MatDialogTitle>Password Update for @userInfo.UserName</MatDialogTitle>
         <MatDialogContent>
-            <EditForm Model="@passwordParameters" OnValidSubmit="@UpdatePasswordAsync">
+            <EditForm Model="@passwordParameters" OnValidSubmit="@UpdatePassword">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <fieldset>
@@ -70,28 +118,61 @@ else
         </MatDialogContent>
         <MatDialogActions>
             <MatButton OnClick="@(e => { updatePasswordDialogOpen = false; })">@L["Cancel"]</MatButton>
-            <MatButton OnClick="@UpdatePasswordAsync">@L["Update Password"]</MatButton>
+            <MatButton OnClick="@UpdatePassword">@L["Update Password"]</MatButton>
         </MatDialogActions>
     </MatDialog>
 
 }
 @code {
-    UserInfoDto userInfo;
+    UserInfo userInfo;
     bool updatePasswordDialogOpen = false;
     UpdatePasswordDto passwordParameters { get; set; } = new UpdatePasswordDto();
+    AuthenticatorVerificationCodeDto verificationCodeParameters { get; set; } = new AuthenticatorVerificationCodeDto();
+    IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
+
+    public bool BrowserRemembered
+    {
+        get { return userInfo.BrowserRemembered; }
+        set
+        {
+            if (userInfo.BrowserRemembered != value)
+                ForgetTwoFactorClient().ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                        matToaster.Add(t.Exception.Message, MatToastType.Danger, L["Operation Failed"]);
+                });
+        }
+    }
+
+    public bool TwoFactorEnabled
+    {
+        get { return userInfo.TwoFactorEnabled; }
+        set
+        {
+            if (userInfo.TwoFactorEnabled != value)
+                EnableDisable2fa().ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                        matToaster.Add(t.Exception.Message, MatToastType.Danger, L["Operation Failed"]);
+                });
+        }
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
-        userInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserInfo();
+        identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
+
+        userInfo = await identityAuthenticationStateProvider.GetUserInfo();
     }
 
-    public void OpenUpdatePasswordDialog()
+    void OpenUpdatePasswordDialog()
     {
         passwordParameters = new UpdatePasswordDto();
         updatePasswordDialogOpen = true;
     }
 
-    public async Task UpdatePasswordAsync()
+    async Task UpdatePassword()
     {
         if (passwordParameters.NewPassword != passwordParameters.NewPasswordConfirm)
         {
@@ -99,12 +180,19 @@ else
         }
         else
         {
-            var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/UpdatePassword", passwordParameters);
+            try
+            {
+                var apiResponse = await identityAuthenticationStateProvider.UpdatePassword(passwordParameters);
 
-            if (apiResponse.IsSuccessStatusCode)
-                matToaster.Add(L["UpdatePasswordSuccessful"], MatToastType.Success);
-            else
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["UpdatePasswordFailed"]);
+                if (apiResponse.IsSuccessStatusCode)
+                    matToaster.Add(L["UpdatePasswordSuccessful"], MatToastType.Success);
+                else
+                    matToaster.Add(apiResponse.Message, MatToastType.Danger, L["UpdatePasswordFailed"]);
+            }
+            catch (Exception ex)
+            {
+                matToaster.Add(ex.Message, MatToastType.Danger, L["UpdatePasswordFailed"]);
+            }
 
             updatePasswordDialogOpen = false;
         }
@@ -114,7 +202,7 @@ else
     {
         try
         {
-            var apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).UpdateUser(userInfo);
+            var apiResponse = await identityAuthenticationStateProvider.UpdateUser(userInfo);
 
             if (apiResponse.IsSuccessStatusCode)
                 matToaster.Add(L["Operation Successful"], MatToastType.Success);
@@ -124,6 +212,79 @@ else
         catch (Exception ex)
         {
             matToaster.Add(ex.Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+    }
+
+    async Task EnableAuthenticator()
+    {
+        var apiResponse = await identityAuthenticationStateProvider.EnableAuthenticator(verificationCodeParameters);
+
+        if (apiResponse.IsSuccessStatusCode)
+        {
+            matToaster.Add(L["Operation Successful"], MatToastType.Success);
+            userInfo = apiResponse.Result;
+            StateHasChanged();
+        }
+        else
+            matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+
+    }
+
+    async Task DisableAuthenticator()
+    {
+        try
+        {
+            var apiResponse = await identityAuthenticationStateProvider.DisableAuthenticator();
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                userInfo = apiResponse.Result;
+                verificationCodeParameters = new AuthenticatorVerificationCodeDto();
+                StateHasChanged();
+            }
+            else
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+
+    }
+
+    async Task ForgetTwoFactorClient()
+    {
+        if (userInfo.BrowserRemembered)
+        {
+            var apiResponse = await identityAuthenticationStateProvider.ForgetTwoFactorClient();
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                userInfo = apiResponse.Result;
+                StateHasChanged();
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+            }
+        }
+    }
+
+    async Task EnableDisable2fa()
+    {
+        var apiResponse = userInfo.TwoFactorEnabled ? await identityAuthenticationStateProvider.Disable2fa() : await identityAuthenticationStateProvider.Enable2fa();
+
+        if (apiResponse.IsSuccessStatusCode)
+        {
+            matToaster.Add(L["Operation Successful"], MatToastType.Success);
+            userInfo = apiResponse.Result;
+            StateHasChanged();
+        }
+        else
+        {
+            matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
         }
     }
 }

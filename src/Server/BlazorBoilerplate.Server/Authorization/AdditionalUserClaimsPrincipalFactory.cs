@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 //# Links
 //## ASP.NET Core Roles/Policies/Claims
 //- https://www.red-gate.com/simple-talk/dotnet/c-programming/policy-based-authorization-in-asp-net-core-a-deep-dive/
-//- https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies?view=aspnetcore-2.2
-//- https://docs.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-2.2
+//- https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies
+//- https://docs.microsoft.com/en-us/aspnet/core/security/authorization/roles
 //- https://gooroo.io/GoorooTHINK/Article/17333/Custom-user-roles-and-rolebased-authorization-in-ASPNET-core/32835
 //- https://gist.github.com/SteveSandersonMS/175a08dcdccb384a52ba760122cd2eda
 
@@ -34,23 +34,29 @@ namespace BlazorBoilerplate.Server.Authorization
 
             if (!string.IsNullOrWhiteSpace(user.FirstName))
             {
-                ((ClaimsIdentity)principal.Identity).AddClaims(new[] { new Claim(ClaimTypes.GivenName, user.FirstName) });
+                identity.AddClaims(new[] { new Claim(ClaimTypes.GivenName, user.FirstName) });
             }
 
             if (!string.IsNullOrWhiteSpace(user.LastName))
             {
-                ((ClaimsIdentity)principal.Identity).AddClaims(new[] { new Claim(ClaimTypes.Surname, user.LastName) });
-            }
-            if (!string.IsNullOrWhiteSpace(user.Email))
-            {
-                ((ClaimsIdentity)principal.Identity).AddClaims(new[] { new Claim(ClaimTypes.Email, user.Email) });
+                identity.AddClaims(new[] { new Claim(ClaimTypes.Surname, user.LastName) });
             }
 
-            //Example of a trivial claim - https://www.c-sharpcorner.com/article/claim-based-and-policy-based-authorization-with-asp-net-core-2-1/
-            if (user.Email == "readonly@blazorboilerplate.com")
+            if (!string.IsNullOrWhiteSpace(user.Email))
             {
-                identity.AddClaim(new Claim("ReadOnly", "true"));
+                identity.AddClaims(new[] { new Claim(ClaimTypes.Email, user.Email) });
             }
+
+            //https://docs.microsoft.com/it-it/aspnet/core/security/authentication/mfa
+            if (user.TwoFactorEnabled)
+            {
+                identity.AddClaim(new Claim("amr", "mfa"));
+            }
+            else
+            {
+                identity.AddClaim(new Claim("amr", "pwd"));
+            }
+
             return principal;         
         }
     }

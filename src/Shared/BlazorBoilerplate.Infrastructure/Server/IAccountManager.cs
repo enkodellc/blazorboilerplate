@@ -11,25 +11,30 @@ namespace BlazorBoilerplate.Infrastructure.Server
     public interface IAccountManager
     {
         Task<ApiResponse> BuildLoginViewModel(string returnUrl);
-        Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal userClaimsPrincipal, HttpContext httpContext, string logoutId);
+        Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal user, HttpContext httpContext, string logoutId);
 
-        Task<ApiResponse> Login(LoginInputModel parameters);
+        Task<ApiResponse<LoginResponseModel>> Login(LoginInputModel parameters);
+        Task<ApiResponse> LoginWith2fa(LoginWith2faInputModel parameters);
+        Task<ApiResponse> LoginWithRecoveryCode(LoginWithRecoveryCodeInputModel parameters);
+        Task<ApiResponse> Logout(ClaimsPrincipal user);
 
-        Task<ApiResponse> Register(RegisterDto parameters);
+        Task<ApiResponse<LoginResponseModel>> Register(RegisterDto parameters);
 
         Task<ApiResponse> ConfirmEmail(ConfirmEmailDto parameters);
 
         Task<ApiResponse> ForgotPassword(ForgotPasswordDto parameters);
-
         Task<ApiResponse> ResetPassword(ResetPasswordDto parameters);
+        Task<ApiResponse> UpdatePassword(ClaimsPrincipal user, UpdatePasswordDto parameters);
 
-        Task<ApiResponse> UpdatePassword(ClaimsPrincipal userClaimsPrincipal, UpdatePasswordDto parameters);
+        Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal user, AuthenticatorVerificationCodeDto parameters);
+        Task<ApiResponse> DisableAuthenticator(ClaimsPrincipal user);
+        Task<ApiResponse> ForgetTwoFactorClient(ClaimsPrincipal user);
+        Task<ApiResponse> Enable2fa(ClaimsPrincipal user);
+        Task<ApiResponse> Disable2fa(ClaimsPrincipal user);
 
-        Task<ApiResponse> Logout(ClaimsPrincipal userClaimsPrincipal);
+        Task<ApiResponse> UserInfo(ClaimsPrincipal user);
 
-        Task<ApiResponse> UserInfo(ClaimsPrincipal userClaimsPrincipal);
-
-        Task<ApiResponse> UpdateUser(UserInfoDto userInfo);
+        Task<ApiResponse> UpdateUser(UserInfo userInfo);
         
         // Admin policies. 
 
@@ -37,13 +42,13 @@ namespace BlazorBoilerplate.Infrastructure.Server
 
         Task<ApiResponse> Delete(string id);
 
-        ApiResponse GetUser(ClaimsPrincipal userClaimsPrincipal);
+        ApiResponse GetUser(ClaimsPrincipal user);
 
         Task<ApiResponse> ListRoles();
 
-        Task<ApiResponse> Update(UserInfoDto userInfo);
+        Task<ApiResponse> Update(UserInfo userInfo);
 
-        Task<ApiResponse> AdminResetUserPasswordAsync(Guid id, string newPassword, ClaimsPrincipal userClaimsPrincipal);
+        Task<ApiResponse> AdminResetUserPasswordAsync(Guid id, string newPassword, ClaimsPrincipal user);
         
         Task<ApplicationUser> RegisterNewUserAsync(string userName, string email, string password, bool requireConfirmEmail);
     }

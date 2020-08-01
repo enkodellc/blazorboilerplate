@@ -5,12 +5,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Shared.Dto.Account
 {
-    public class UserInfoDto : BaseDto
+    public class UserInfo : BaseDto
     {
         public bool IsAuthenticated { get; set; }
         public Guid UserId { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         [StringLength(64, ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "ErrorInvalidLength", MinimumLength = 2)]
         [RegularExpression(@"[^\s]+", ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "SpacesNotPermitted")]
         [Display(Name = "UserName", ResourceType = typeof(Strings))]
@@ -18,17 +18,25 @@ namespace BlazorBoilerplate.Shared.Dto.Account
 
         public string TenantId { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         [DataType(DataType.EmailAddress)]
-        [EmailAddress]
+        [EmailAddress(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "EmailInvalid")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool HasPassword { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool TwoFactorEnabled { get; set; }
+        public bool HasAuthenticator { get; set; }
+        public List<KeyValuePair<string, string>> Logins { get; set; }
+        public bool BrowserRemembered { get; set; }
+        public string SharedKey { get; set; }
+        public string AuthenticatorUri { get; set; }
+        public string[] RecoveryCodes { get; set; }
+        public int CountRecoveryCodes { get; set; }
         public List<string> Roles { get; set; }
         public List<KeyValuePair<string, string>> ExposedClaims { get; set; }
-        public bool DisableTenantFilter { get; set; }
     }
 }

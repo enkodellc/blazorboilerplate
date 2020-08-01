@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Pages
         [CascadingParameter]
         private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-        UserInfoDto UserInfo { get; set; } = new UserInfoDto();
+        UserInfo UserInfo { get; set; } = new UserInfo();
 
         ChatClient Client { get; set; }
 

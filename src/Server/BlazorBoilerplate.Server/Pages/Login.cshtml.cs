@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -23,25 +24,26 @@ namespace BlazorBoilerplate.Server.Pages
         }
         public async Task<IActionResult> OnPostAsync(LoginInputModel loginParameters)
         {
+            var result = false;
+
             if (ModelState.IsValid)
             {
                 var response = await _accountManager.Login(loginParameters);
 
-                if (loginParameters.ReturnUrl == null)
+                if (response.StatusCode == Status200OK)
                 {
-                    if (response.StatusCode == Status200OK)
-                        loginParameters.ReturnUrl = (await _context.UserProfiles.SingleOrDefaultAsync(i => i.ApplicationUser.NormalizedUserName == loginParameters.UserName.ToUpper()))?.LastPageVisited ?? string.Empty;
-                    else
-                        loginParameters.ReturnUrl = Shared.Settings.LoginPath;
-                }
-                else if (response.StatusCode != Status200OK)
-                    loginParameters.ReturnUrl = $"{Shared.Settings.LoginPath}/{loginParameters.ReturnUrl}";
-            }
-            else
-                loginParameters.ReturnUrl = $"{Shared.Settings.LoginPath}/{loginParameters.ReturnUrl ?? string.Empty}";
+                    result = true;
 
-            if (!loginParameters.ReturnUrl.StartsWith("/"))
-                loginParameters.ReturnUrl = $"/{loginParameters.ReturnUrl}";
+                    if (string.IsNullOrEmpty(loginParameters.ReturnUrl) || loginParameters.ReturnUrl == "/")
+                        loginParameters.ReturnUrl = (await _context.UserProfiles.SingleOrDefaultAsync(i => i.ApplicationUser.NormalizedUserName == loginParameters.UserName.ToUpper()))?.LastPageVisited ?? string.Empty;
+
+                    if (response.Result?.RequiresTwoFactor == true)
+                        loginParameters.ReturnUrl = $"{Shared.Settings.LoginWith2faPath}?returnurl={Uri.EscapeDataString(loginParameters.ReturnUrl)}";
+                }
+            }
+
+            if (!result)
+                loginParameters.ReturnUrl = $"{Shared.Settings.LoginPath}/{loginParameters.ReturnUrl ?? string.Empty}";
 
             return LocalRedirect(Url.Content($"~{loginParameters.ReturnUrl}"));
         }

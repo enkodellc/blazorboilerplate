@@ -17,9 +17,9 @@ namespace BlazorBoilerplate.Shared.Services
 
         private readonly IStringLocalizer<Strings> L;
 
-        public readonly string AppName = "";
-        public readonly string AppShortName = "";
-        public readonly string BreadCrumbHome = "";
+        public readonly string AppName = string.Empty;
+        public readonly string AppShortName = string.Empty;
+        public readonly string BreadCrumbHome = string.Empty;
 
         public AppState(IApiClient apiClient, IStringLocalizer<Strings> l)
         {

@@ -58,20 +58,20 @@ namespace BlazorBoilerplate.Storage
             //Apply EF Core migration
             await MigrateAsync();
 
-            await EnsureAdminIdentitiesAsync().ConfigureAwait(false);
+            await EnsureAdminIdentitiesAsync();
 
-            await SeedIdentityServerAsync().ConfigureAwait(false);
+            await SeedIdentityServerAsync();
 
             //Seed blazorboilerplate sample data
-            await SeedDemoDataAsync().ConfigureAwait(false);
+            await SeedDemoDataAsync();
         }
 
         private async Task MigrateAsync()
         {
-            await _tenantStoreDbContext.Database.MigrateAsync().ConfigureAwait(false);
-            await _context.Database.MigrateAsync().ConfigureAwait(false);
-            await _persistedGrantContext.Database.MigrateAsync().ConfigureAwait(false);
-            await _configurationContext.Database.MigrateAsync().ConfigureAwait(false);
+            await _tenantStoreDbContext.Database.MigrateAsync();
+            await _context.Database.MigrateAsync();
+            await _persistedGrantContext.Database.MigrateAsync();
+            await _configurationContext.Database.MigrateAsync();
         }
 
         private async Task SeedDemoDataAsync()
