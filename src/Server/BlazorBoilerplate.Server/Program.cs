@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Serilog;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using System;
 
 namespace BlazorBoilerplate.Server
 {
@@ -24,10 +23,8 @@ namespace BlazorBoilerplate.Server
 
             try
             {
-                //IdentityServer4 seed should be happening here but because of this bug https://github.com/aspnet/AspNetCore/issues/12349
-                //the seeding is not implemented here.
                 Log.Information("Starting BlazorBoilerplate web server host");
-                BuildWebHost(args).Run();
+                CreateHostBuilder(args).Build().Run();
                 return 0;
             }
             catch (Exception ex)
@@ -37,13 +34,14 @@ namespace BlazorBoilerplate.Server
             }
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseConfiguration(new ConfigurationBuilder()
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseConfiguration(new ConfigurationBuilder()
                     .AddCommandLine(args)
-                    .Build())
-                .UseStartup<Startup>()
-                .UseSerilog()
-                .Build();
+                    .Build());
+                webBuilder.UseStartup<Startup>();
+                webBuilder.UseSerilog();
+            });
     }
 }
