@@ -48,15 +48,19 @@ namespace BlazorBoilerplate.Storage
 
             if (useSqlServer)
             {
-                builder.UseSqlServer(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                builder.UseSqlServer(dbConnString, options =>
+                {
+                    options.CommandTimeout(60);
+                    options.MigrationsAssembly(migrationsAssembly);
+                });
             }
             else if (Convert.ToBoolean(configuration[$"{projectName}:UsePostgresServer"] ?? "false"))
             {
-                builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), sql => sql.MigrationsAssembly(migrationsAssembly));
+                builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), options => options.MigrationsAssembly(migrationsAssembly));
             }
             else
             {
-                builder.UseSqlite(dbConnString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                builder.UseSqlite(dbConnString, options => options.MigrationsAssembly(migrationsAssembly));
             }
         }
 
