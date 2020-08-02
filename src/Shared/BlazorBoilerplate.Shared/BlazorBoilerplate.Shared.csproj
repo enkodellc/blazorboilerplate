@@ -13,7 +13,7 @@
     <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Breeze.Sharp" Version="0.9.2" />
+    <PackageReference Include="Breeze.Sharp" Version="0.9.3" />
     <PackageReference Include="Humanizer" Version="2.8.26" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.6" />
