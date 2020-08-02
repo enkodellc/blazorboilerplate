@@ -53,6 +53,12 @@ namespace BlazorBoilerplate.Server.Controllers
             return persistenceManager.GetEntities<Todo>().Include(i => i.CreatedBy).Include(i => i.ModifiedBy).OrderBy(i => i.Id);
         }
 
+        [HttpGet]
+        public IQueryable<DbLog> Logs()
+        {
+            return persistenceManager.GetEntities<DbLog>().OrderByDescending(i => i.TimeStamp);
+        }
+
         [AllowAnonymous]
         [HttpPost]
         public SaveResult SaveChanges([FromBody] JObject saveBundle)

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
@@ -21,8 +19,5 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         public string Exception { get; set; }
 
         public string Properties { get; set; }
-
-        [NotMapped]
-        public IDictionary<string, string> LogProperties { get; set; }
     }
 }

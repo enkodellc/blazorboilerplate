@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Server.Helpers
+namespace BlazorBoilerplate.Shared.Helpers
 {
     public static class RegexUtilities
     {
@@ -13,7 +11,7 @@ namespace BlazorBoilerplate.Server.Helpers
         //[a-zA-Z0-9.+= \\/-:]
         private static readonly Regex DirtyXmlPropertyParserRegex = new Regex("(?<=<property key=\')(?<key>[a-zA-Z0-9\\- :]+?)(?:'>)(?<value>[^><]+?)(?=<\\/property>)", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
 
-        
+
         public static Dictionary<string, string> DirtyXmlPropertyParser(string input)
         {
             var propertyList = new Dictionary<string, string>();

@@ -74,6 +74,7 @@ namespace BlazorBoilerplate.Shared.Services
         private async Task<QueryResult<T>> GetItems<T>(string from,
             Expression<Func<T, bool>> predicate = null,
             Expression<Func<T, object>> orderBy = null,
+            Expression<Func<T, object>> orderByDescending = null,
             int? take = null,
             int? skip = null)
         {
@@ -86,6 +87,9 @@ namespace BlazorBoilerplate.Shared.Services
 
                 if (orderBy != null)
                     query = query.OrderBy(orderBy);
+
+                if (orderByDescending != null)
+                    query = query.OrderByDescending(orderByDescending);
 
                 if (take != null)
                     query = query.Take(take.Value);
@@ -105,7 +109,12 @@ namespace BlazorBoilerplate.Shared.Services
 
         public async Task<QueryResult<Todo>> GetToDos()
         {
-            return await GetItems<Todo>(from: "Todos", orderBy: i => i.Id);
+            return await GetItems<Todo>(from: "Todos", orderByDescending: i => i.CreatedOn);
+        }
+
+        public async Task<QueryResult<DbLog>> GetLogs(Expression<Func<DbLog, bool>> predicate = null, int? take = null, int? skip = null)
+        {
+            return await GetItems("Logs", predicate, null, i => i.TimeStamp, take, skip);
         }
         public async Task<UserProfile> GetUserProfile()
         {

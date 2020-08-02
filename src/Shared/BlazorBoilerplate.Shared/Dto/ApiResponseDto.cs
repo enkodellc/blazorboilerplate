@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Shared.Models;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace BlazorBoilerplate.Shared.Dto
 {
@@ -30,7 +29,5 @@ namespace BlazorBoilerplate.Shared.Dto
     [DataContract]
     public class ApiResponseDto : ApiResponseDto<object>
     {
-        [DataMember(EmitDefaultValue = false)]
-        public PaginationDetails PaginationDetails { get; set; } = null; //TODO remove
     }
 }

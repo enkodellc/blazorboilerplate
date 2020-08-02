@@ -37,10 +37,6 @@ namespace BlazorBoilerplate.Infrastructure.Server.Models
     [DataContract]
     public class ApiResponse : ApiResponse<object>
     {
-
-        [DataMember(EmitDefaultValue = false)]
-        public PaginationDetails PaginationDetails { get; set; }
-
         [JsonConstructor]
         public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "", PaginationDetails paginationDetails = null) : base(statusCode, message)
         {
@@ -49,7 +45,6 @@ namespace BlazorBoilerplate.Infrastructure.Server.Models
             Result = result;
             ResponseException = apiError;
             Version = string.IsNullOrWhiteSpace(apiVersion) ? Assembly.GetEntryAssembly().GetName().Version.ToString() : apiVersion;
-            PaginationDetails = paginationDetails;
         }
 
         public ApiResponse(int statusCode, ApiError apiError) : base(statusCode, "")
