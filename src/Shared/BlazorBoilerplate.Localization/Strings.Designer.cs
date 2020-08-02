@@ -367,20 +367,20 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a API Audit Log.
+        /// </summary>
+        public static string BreadCrumbadminapilog {
+            get {
+                return ResourceManager.GetString("BreadCrumbadminapilog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a API Resources.
         /// </summary>
         public static string BreadCrumbadminapiResources {
             get {
                 return ResourceManager.GetString("BreadCrumbadminapiResources", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a API Audit Log.
-        /// </summary>
-        public static string BreadCrumbadminblazor_middlware_audit {
-            get {
-                return ResourceManager.GetString("BreadCrumbadminblazor_middlware_audit", resourceCulture);
             }
         }
         
@@ -394,11 +394,11 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a DB Loging Viewer.
+        ///   Cerca una stringa localizzata simile a Application Log.
         /// </summary>
-        public static string BreadCrumbadmindBlogViewer {
+        public static string BreadCrumbadmindblog {
             get {
-                return ResourceManager.GetString("BreadCrumbadmindBlogViewer", resourceCulture);
+                return ResourceManager.GetString("BreadCrumbadmindblog", resourceCulture);
             }
         }
         

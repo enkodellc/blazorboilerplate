@@ -1,5 +1,4 @@
 ﻿using BlazorBoilerplate.Infrastructure.Extensions;
-using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Storage;
@@ -7,6 +6,7 @@ using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
@@ -26,10 +26,9 @@ namespace BlazorBoilerplate.Server.Middleware
 {
     //Logging  -> https://salslab.com/a/safely-logging-api-requests-and-responses-in-asp-net-core
     //Response -> https://www.c-sharpcorner.com/article/asp-net-core-and-web-api-a-custom-wrapper-for-managing-exceptions-and-consiste/
-    //Latest: https://github.com/proudmonkey/AutoWrapper
     public class APIResponseRequestLoggingMiddleware : BaseMiddleware
     {
-        private IApiLogManager _apiLogManager;
+        private IServiceScopeFactory _scopeFactory;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
         private readonly bool _enableAPILogging;
         private List<string> _ignorePaths;
@@ -41,10 +40,10 @@ namespace BlazorBoilerplate.Server.Middleware
             _ignorePaths = configuration.GetSection("BlazorBoilerplate:Api:Logging:IgnorePaths").Get<List<string>>() ?? new List<string>();
         }
 
-        public async Task Invoke(HttpContext httpContext, IApiLogManager apiLogManager, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
+        public async Task Invoke(HttpContext httpContext, IServiceScopeFactory scopeFactory, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
-            _apiLogManager = apiLogManager;
+            _scopeFactory = scopeFactory;
 
             try
             {
@@ -269,20 +268,27 @@ namespace BlazorBoilerplate.Server.Middleware
             if (queryString.Length > 256)
                 queryString = $"(Truncated to 200 chars) {queryString.Substring(0, 200)}";
 
-            // Pass in the context to resolve the instance, and save to a store?
-            await _apiLogManager.Log(new ApiLogItem
+
+            using (var scope = _scopeFactory.CreateScope())
             {
-                RequestTime = requestTime,
-                ResponseMillis = responseMillis,
-                StatusCode = statusCode,
-                Method = method,
-                Path = path,
-                QueryString = queryString,
-                RequestBody = requestBody,
-                ResponseBody = responseBody ?? String.Empty,
-                IPAddress = ipAddress,
-                ApplicationUserId = user == null ? Guid.Empty : user.Id
-            });
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                dbContext.ApiLogs.Add(new ApiLogItem
+                {
+                    RequestTime = requestTime,
+                    ResponseMillis = responseMillis,
+                    StatusCode = statusCode,
+                    Method = method,
+                    Path = path,
+                    QueryString = queryString,
+                    RequestBody = requestBody,
+                    ResponseBody = responseBody ?? String.Empty,
+                    IPAddress = ipAddress,
+                    ApplicationUserId = user == null ? Guid.Empty : user.Id
+                });
+
+                await dbContext.SaveChangesAsync();
+            }
         }
 
         private Task ClearCacheHeaders(object state)

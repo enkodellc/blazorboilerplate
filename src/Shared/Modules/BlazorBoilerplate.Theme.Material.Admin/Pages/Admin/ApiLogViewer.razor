@@ -1,10 +1,10 @@
-﻿@page "/admin/blazor_middlware_audit"
+﻿@page "/admin/apilog"
+
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @layout AdminLayout
-@inject HttpClient Http
+@inject IApiClient apiClient
 @inject IMatToaster matToaster
-
-@using static Microsoft.AspNetCore.Http.StatusCodes
+@inject IStringLocalizer<Strings> L
 
 <h1>Blazor / .NET Core Middleware Audit Log</h1>
 <p>
@@ -17,15 +17,15 @@
     <MatButton Link="https://www.paypal.me/enkodellc"><i class="fa fa-cc-paypal"></i> Donate</MatButton>&nbsp;&nbsp; - If you use the repo please donate.  Other devs are charging $30+ to download their code with similar functionality.
 </p>
 
-@if (apiResponses == null)
+@if (apiLogItems == null)
 {
     <LoadingBackground ShowLogoBox="true">
-        <label>Loading ApI Log Data</label>
+        <label>@L["Loading"]</label>
     </LoadingBackground>
 }
 else
 {
-    <MatTable Items="@apiLogItems" Class="mat-elevation-z5" Striped="true" PageSize="10">
+    <MatTable Items="@apiLogItems" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
         <MatTableHeader>
             <th><div style="width:175px;"><MatFAB Icon="refresh" OnClick="@(() => LoadData())" Raised="true" Mini="true" Style="margin-right:16px;"></MatFAB> Date / Time</div></th>
             <th>Http Code</th>
@@ -45,30 +45,46 @@ else
             <td>@context.Path</td>
         </MatTableRow>
     </MatTable>
+    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@logCountTotal" Style="background: transparent"></MatPaginator>
 }
 
 
 @code {
-    ApiResponseDto[] apiResponses = new ApiResponseDto[] { };
-    List<ApiLogItemDto> apiLogItems = new List<ApiLogItemDto>();
+    List<ApiLogItem> apiLogItems;
+
+    private int pageSize { get; set; } = 10;
+    private int pageIndex { get; set; } = 0;
+    private int logCountTotal { get; set; } = 0;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
     }
 
+    async Task OnPage(MatPaginatorPageEvent e)
+    {
+        pageSize = e.PageSize;
+        pageIndex = e.PageIndex;
+
+        await LoadData();
+    }
+
     protected async Task LoadData()
     {
-        ApiResponseDto apiResponse = await Http.GetFromJsonAsync<ApiResponseDto>("api/apilog");
+        try
+        {
+            var result = await apiClient.GetApiLogs(null, pageSize, pageIndex * pageSize);
 
-        if (apiResponse.IsSuccessStatusCode)
-        {
-            matToaster.Add(apiResponse.Message, MatToastType.Success, "Api Log Items Retrieved");
-            apiLogItems = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiLogItemDto[]>(apiResponse.Result.ToString()).ToList<ApiLogItemDto>();
+            apiLogItems = new List<ApiLogItem>(result);
+            logCountTotal = (int)result.InlineCount.Value;
+            matToaster.Add($"Total Items: {logCountTotal}", MatToastType.Success, L["Operation Successful"]);
+
         }
-        else
+        catch (Exception ex)
         {
-            matToaster.Add(apiResponse.Message, MatToastType.Danger, "Api Log Items Retrieval Failed");
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
         }
+
+        await InvokeAsync(StateHasChanged);
     }
 }

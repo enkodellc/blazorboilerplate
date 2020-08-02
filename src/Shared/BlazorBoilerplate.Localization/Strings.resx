@@ -564,14 +564,14 @@
   <data name="BreadCrumbadminapiResources" xml:space="preserve">
     <value>API Resources</value>
   </data>
-  <data name="BreadCrumbadminblazor_middlware_audit" xml:space="preserve">
+  <data name="BreadCrumbadminapilog" xml:space="preserve">
     <value>API Audit Log</value>
   </data>
   <data name="BreadCrumbadminclients" xml:space="preserve">
     <value>Clients</value>
   </data>
-  <data name="BreadCrumbadmindBlogViewer" xml:space="preserve">
-    <value>DB Loging Viewer</value>
+  <data name="BreadCrumbadmindblog" xml:space="preserve">
+    <value>Application Log</value>
   </data>
   <data name="BreadCrumbadminidentityResources" xml:space="preserve">
     <value>Identity Resources</value>

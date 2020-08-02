@@ -11,7 +11,7 @@
     Paginated viewing and fetching of system logs from the database.
 </p>
 
-@if (dBLogItems == null)
+@if (dbLogItems == null)
 {
     <LoadingBackground ShowLogoBox="true">
         <label>@L["Loading"]</label>
@@ -23,7 +23,7 @@ else
         <RefreshTimer ElapsedEvent="@(async (_, __) => await LoadData())" />
     </div>
 
-    <MatTable Items="@dBLogItems" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
+    <MatTable Items="@dbLogItems" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
         <MatTableHeader>
             <th>Timestamp</th>
             <th>Logging Level</th>
@@ -49,12 +49,11 @@ else
             </td>
         </MatTableRow>
     </MatTable>
-    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@logCountTotal" Style="background: transparent">
-    </MatPaginator>
+    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@logCountTotal" Style="background: transparent"></MatPaginator>
 }
 
 @code {
-    List<DbLog> dBLogItems;
+    List<DbLog> dbLogItems;
 
     private int pageSize { get; set; } = 10;
     private int pageIndex { get; set; } = 0;
@@ -79,7 +78,7 @@ else
         {
             var result = await apiClient.GetLogs(null, pageSize, pageIndex * pageSize);
 
-            dBLogItems = new List<DbLog>(result);
+            dbLogItems = new List<DbLog>(result);
             logCountTotal = (int)result.InlineCount.Value;
             matToaster.Add($"Total Items: {logCountTotal}", MatToastType.Success, L["Operation Successful"]);
 

@@ -488,7 +488,6 @@ namespace BlazorBoilerplate.Server
 
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAdminManager, AdminManager>();
-            services.AddTransient<IApiLogManager, ApiLogManager>();
             services.AddTransient<IEmailManager, EmailManager>();
             services.AddTransient<IExternalAuthManager, ExternalAuthManager>();
             services.AddTransient<IMessageManager, MessageManager>();

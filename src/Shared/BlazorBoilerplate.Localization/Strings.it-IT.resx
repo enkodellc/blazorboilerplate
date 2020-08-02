@@ -573,7 +573,7 @@
   <data name="AppAdminNavDBLoggingView" xml:space="preserve">
     <value>Log</value>
   </data>
-  <data name="BreadCrumbadminblazor_middlware_audit" xml:space="preserve">
+  <data name="BreadCrumbadminapilog" xml:space="preserve">
     <value>Log di controllo utilizzo API</value>
   </data>
   <data name="BreadCrumbadminclients" xml:space="preserve">
@@ -650,5 +650,8 @@
   </data>
   <data name="FieldRequired" xml:space="preserve">
     <value>Il campo {0} è obbligatorio.</value>
+  </data>
+  <data name="BreadCrumbadmindblog" xml:space="preserve">
+    <value>Log applicativo</value>
   </data>
 </root>

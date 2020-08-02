@@ -56,7 +56,13 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpGet]
         public IQueryable<DbLog> Logs()
         {
-            return persistenceManager.GetEntities<DbLog>().OrderByDescending(i => i.TimeStamp);
+            return persistenceManager.GetEntities<DbLog>().AsNoTracking().OrderByDescending(i => i.TimeStamp);
+        }
+
+        [HttpGet]
+        public IQueryable<ApiLogItem> ApiLogs()
+        {
+            return persistenceManager.GetEntities<ApiLogItem>().AsNoTracking().OrderByDescending(i => i.RequestTime);
         }
 
         [AllowAnonymous]

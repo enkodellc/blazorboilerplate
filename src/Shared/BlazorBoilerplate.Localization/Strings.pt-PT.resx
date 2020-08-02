@@ -713,7 +713,7 @@
     <value>Recursos API</value>
     <comment>APPLICATION/ADMIN</comment>
   </data>
-  <data name="BreadCrumbadminblazor_middlware_audit" xml:space="preserve">
+  <data name="BreadCrumbadminapilog" xml:space="preserve">
     <value>Registo de Auditoria do API</value>
     <comment>APPLICATION/ADMIN</comment>
   </data>
@@ -721,7 +721,7 @@
     <value>Clientes</value>
     <comment>APPLICATION/ADMIN</comment>
   </data>
-  <data name="BreadCrumbadmindBlogViewer" xml:space="preserve">
+  <data name="BreadCrumbadmindblog" xml:space="preserve">
     <value>Visualizador de Log DB</value>
     <comment>APPLICATION/ADMIN</comment>
   </data>

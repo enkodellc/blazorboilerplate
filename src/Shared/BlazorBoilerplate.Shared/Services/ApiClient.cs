@@ -116,6 +116,11 @@ namespace BlazorBoilerplate.Shared.Services
         {
             return await GetItems("Logs", predicate, null, i => i.TimeStamp, take, skip);
         }
+
+        public async Task<QueryResult<ApiLogItem>> GetApiLogs(Expression<Func<ApiLogItem, bool>> predicate = null, int? take = null, int? skip = null)
+        {
+            return await GetItems("ApiLogs", predicate, null, i => i.RequestTime, take, skip);
+        }
         public async Task<UserProfile> GetUserProfile()
         {
             return (await EntityManager.ExecuteQuery(new EntityQuery<UserProfile>().From("UserProfile"), CancellationToken.None)).SingleOrDefault();

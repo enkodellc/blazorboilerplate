@@ -30,7 +30,6 @@ namespace BlazorBoilerplate.Storage
             services.AddScoped<ApplicationPersistenceManager>();
 
             services.AddTransient<IMessageStore, MessageStore>();
-            services.AddTransient<IApiLogStore, ApiLogStore>();
 
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
 

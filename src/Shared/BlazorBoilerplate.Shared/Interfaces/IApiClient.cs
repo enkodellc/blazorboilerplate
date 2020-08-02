@@ -22,6 +22,8 @@ namespace BlazorBoilerplate.Shared.Interfaces
 
         Task<QueryResult<DbLog>> GetLogs(Expression<Func<DbLog, bool>> predicate = null, int? take = null, int? skip = null);
 
+        Task<QueryResult<ApiLogItem>> GetApiLogs(Expression<Func<ApiLogItem, bool>> predicate = null, int? take = null, int? skip = null);
+
         Task<QueryResult<Todo>> GetToDos();
     }
 }
