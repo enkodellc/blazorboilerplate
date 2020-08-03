@@ -6,6 +6,8 @@
 @inject IMatToaster matToaster
 @inject IStringLocalizer<Strings> L
 
+@using System.Linq.Expressions;
+
 <h1>Db Log Viewer</h1>
 <p>
     Paginated viewing and fetching of system logs from the database.
@@ -20,9 +22,12 @@
 else
 {
     <div class="row" style="margin-left: 0;">
-        <RefreshTimer ElapsedEvent="@(async (_, __) => await LoadData())" />
+        <RefreshTimer ElapsedEvent="@(async (_, __) => await LoadData(DebugLevel))" />
     </div>
-
+    <MatSelectValue Value="DebugLevel" Items="@DebugLevels"
+                    ValueSelector=@(i => i)
+                    ValueChanged="(string i) => LoadData(i)">
+    </MatSelectValue>
     <MatTable Items="@dbLogItems" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
         <MatTableHeader>
             <th>Timestamp</th>
@@ -54,7 +59,8 @@ else
 
 @code {
     List<DbLog> dbLogItems;
-
+    string[] DebugLevels = { string.Empty, "Debug", "Information", "Warning", "Error" };
+    string DebugLevel = string.Empty;
     private int pageSize { get; set; } = 10;
     private int pageIndex { get; set; } = 0;
     private int logCountTotal { get; set; } = 0;
@@ -69,19 +75,24 @@ else
         pageSize = e.PageSize;
         pageIndex = e.PageIndex;
 
-        await LoadData();
+        await LoadData(DebugLevel);
     }
 
-    protected async Task LoadData()
+    protected async Task LoadData(string debugLevel = "")
     {
         try
         {
-            var result = await apiClient.GetLogs(null, pageSize, pageIndex * pageSize);
+            DebugLevel = debugLevel;
+            Expression<Func<DbLog, bool>> predicate = null;
+
+            if (debugLevel != string.Empty)
+                predicate = (i => i.Level == debugLevel);
+
+            var result = await apiClient.GetLogs(predicate, pageSize, pageIndex * pageSize);
 
             dbLogItems = new List<DbLog>(result);
             logCountTotal = (int)result.InlineCount.Value;
             matToaster.Add($"Total Items: {logCountTotal}", MatToastType.Success, L["Operation Successful"]);
-
         }
         catch (Exception ex)
         {
