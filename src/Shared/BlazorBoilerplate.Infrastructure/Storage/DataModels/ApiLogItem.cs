@@ -1,9 +1,11 @@
-﻿using BlazorBoilerplate.Localization;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Localization;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
+    [Permissions(Actions.CRUD)]
     public class ApiLogItem
     {
         [Key]

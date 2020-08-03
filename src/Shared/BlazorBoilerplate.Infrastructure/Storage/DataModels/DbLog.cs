@@ -1,8 +1,10 @@
-﻿using System;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
+    [Permissions(Actions.CRUD)]
     public class DbLog
     {
         [Key]
