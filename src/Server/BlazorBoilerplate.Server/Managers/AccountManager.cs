@@ -498,7 +498,7 @@ namespace BlazorBoilerplate.Server.Managers
                 else
                 {
                     _logger.LogWarning($"Error while resetting the password!: {user.UserName}");
-                    return new ApiResponse(Status400BadRequest, $"Error while resetting the password!: {user.UserName}");
+                    return new ApiResponse(Status400BadRequest, $"Error while resetting the password!: {user.UserName}", result.Errors);
                 }
             }
             catch (Exception ex)
@@ -529,7 +529,7 @@ namespace BlazorBoilerplate.Server.Managers
                 else
                 {
                     _logger.LogWarning($"Error while updating the password of {user.UserName}");
-                    return new ApiResponse(Status400BadRequest, "Error while updating the password");
+                    return new ApiResponse(Status400BadRequest, "Error while updating the password", result.Errors);
                 }
             }
             catch (Exception ex)
@@ -724,7 +724,7 @@ namespace BlazorBoilerplate.Server.Managers
             if (!result.Succeeded)
             {
                 _logger.LogWarning("User Update Failed: {0}", string.Join(",", result.Errors.Select(i => i.Description)));
-                return new ApiResponse(Status400BadRequest, "User Update Failed");
+                return new ApiResponse(Status400BadRequest, "User Update Failed", result.Errors);
             }
 
             return new ApiResponse(Status200OK, L["Operation Successful"]);
@@ -805,7 +805,7 @@ namespace BlazorBoilerplate.Server.Managers
                     UserName = user.UserName,
                     Email = user.Email,
                     FirstName = user.FirstName,
-                    LastName = user.LastName                   
+                    LastName = user.LastName
                 };
 
                 if (defaultRoleExists)
