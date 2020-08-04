@@ -261,9 +261,7 @@ namespace BlazorBoilerplate.Storage
 
                 var result = _userManager.CreateAsync(applicationUser, password).Result;
                 if (!result.Succeeded)
-                {
                     throw new Exception(result.Errors.First().Description);
-                }
 
                 result = _userManager.AddClaimsAsync(applicationUser, new Claim[]{
                         new Claim(JwtClaimTypes.Name, userName),
