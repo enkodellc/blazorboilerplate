@@ -38,7 +38,7 @@ namespace BlazorBoilerplate.Infrastructure.Server.Models
     public class ApiResponse : ApiResponse<object>
     {
         [JsonConstructor]
-        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "", PaginationDetails paginationDetails = null) : base(statusCode, message)
+        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "") : base(statusCode, message)
         {
             StatusCode = statusCode;
             Message = message;

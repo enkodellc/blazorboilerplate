@@ -20,6 +20,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using Microsoft.Extensions.Logging;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -31,6 +32,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly ConfigurationDbContext _configurationDbContext;
         private readonly TenantStoreDbContext _tenantStoreDbContext;
         private readonly ApplicationPermissions _applicationPermissions;
+        private readonly ILogger<AdminManager> _logger;
         private readonly IStringLocalizer<Strings> L;
 
         public AdminManager(IMapper autoMapper,
@@ -39,6 +41,7 @@ namespace BlazorBoilerplate.Server.Managers
             ConfigurationDbContext configurationDbContext,
             TenantStoreDbContext tenantStoreDbContext,
             ApplicationPermissions applicationPermissions,
+            ILogger<AdminManager> logger,
             IStringLocalizer<Strings> l)
         {
             _autoMapper = autoMapper;
@@ -47,6 +50,7 @@ namespace BlazorBoilerplate.Server.Managers
             _configurationDbContext = configurationDbContext;
             _tenantStoreDbContext = tenantStoreDbContext;
             _applicationPermissions = applicationPermissions;
+            _logger = logger;
             L = l;
         }
 
@@ -151,8 +155,9 @@ namespace BlazorBoilerplate.Server.Managers
 
                 if (!result.Succeeded)
                 {
-                    var errorMessage = result.Errors.Select(x => x.Description).Aggregate((i, j) => i + " - " + j);
-                    return new ApiResponse(Status500InternalServerError, errorMessage);
+                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                    _logger.LogWarning($"Error while creating role {roleDto.Name}: {msg}");
+                    return new ApiResponse(Status400BadRequest, msg);
                 }
 
                 // Re-create the permissions

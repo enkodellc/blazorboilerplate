@@ -99,8 +99,9 @@ namespace BlazorBoilerplate.Server.Managers
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (!result.Succeeded)
             {
-                _logger.LogInformation("User Email Confirmation Failed: {0}", string.Join(",", result.Errors.Select(i => i.Description)));
-                return new ApiResponse(Status400BadRequest, L["EmailVerificationFailed"]);
+                var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                _logger.LogWarning("User Email Confirmation Failed: {0}", msg);
+                return new ApiResponse(Status400BadRequest, msg);
             }
 
             await _signInManager.SignInAsync(user, true);
@@ -457,7 +458,7 @@ namespace BlazorBoilerplate.Server.Managers
             catch (DomainException ex)
             {
                 _logger.LogError("Register User Failed: {0}, {1}", ex.Description, ex.Message);
-                return new ApiResponse<LoginResponseModel>(Status500InternalServerError, L["Operation Failed"]);
+                return new ApiResponse<LoginResponseModel>(Status500InternalServerError, ex.Description);
             }
             catch (Exception ex)
             {
@@ -497,8 +498,9 @@ namespace BlazorBoilerplate.Server.Managers
                 }
                 else
                 {
-                    _logger.LogWarning($"Error while resetting the password!: {user.UserName}");
-                    return new ApiResponse(Status400BadRequest, $"Error while resetting the password!: {user.UserName}");
+                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                    _logger.LogWarning("Error while resetting the password: {0}", msg);
+                    return new ApiResponse(Status400BadRequest, msg);
                 }
             }
             catch (Exception ex)
@@ -524,12 +526,13 @@ namespace BlazorBoilerplate.Server.Managers
                 if (result.Succeeded)
                 {
                     await _signInManager.RefreshSignInAsync(user);
-                    return new ApiResponse(Status200OK, $"Update Password Successful");
+                    return new ApiResponse(Status200OK, L["Operation Successful"]);
                 }
                 else
                 {
-                    _logger.LogWarning($"Error while updating the password of {user.UserName}");
-                    return new ApiResponse(Status400BadRequest, "Error while updating the password");
+                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                    _logger.LogWarning($"Error while updating the password of {user.UserName}: {msg}");
+                    return new ApiResponse(Status400BadRequest, msg);
                 }
             }
             catch (Exception ex)
@@ -723,8 +726,9 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (!result.Succeeded)
             {
-                _logger.LogWarning("User Update Failed: {0}", string.Join(",", result.Errors.Select(i => i.Description)));
-                return new ApiResponse(Status400BadRequest, "User Update Failed");
+                var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                _logger.LogWarning("User Update Failed: {0}", msg);
+                return new ApiResponse(Status400BadRequest, msg);
             }
 
             return new ApiResponse(Status200OK, L["Operation Successful"]);
@@ -744,7 +748,9 @@ namespace BlazorBoilerplate.Server.Managers
                 var result = await _userManager.CreateAsync(user, parameters.Password);
                 if (!result.Succeeded)
                 {
-                    return new ApiResponse(Status400BadRequest, "Register User Failed: " + string.Join(",", result.Errors.Select(i => i.Description)));
+                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                    _logger.LogWarning($"Error while creating {user.UserName}: {msg}");
+                    return new ApiResponse(Status400BadRequest, msg);
                 }
                 else
                 {
@@ -805,7 +811,7 @@ namespace BlazorBoilerplate.Server.Managers
                     UserName = user.UserName,
                     Email = user.Email,
                     FirstName = user.FirstName,
-                    LastName = user.LastName                   
+                    LastName = user.LastName
                 };
 
                 if (defaultRoleExists)
@@ -949,7 +955,9 @@ namespace BlazorBoilerplate.Server.Managers
                     // this is going to an authenticated Admin so it should be safe/useful to send back raw error messages
                     if (result.Errors.Any())
                     {
-                        return new ApiResponse(Status400BadRequest, string.Join(',', result.Errors.Select(x => x.Description)));
+                        var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                        _logger.LogWarning($"Error while resetting password of {user.UserName}: {msg}");
+                        return new ApiResponse(Status400BadRequest, msg);
                     }
                     else
                     {
@@ -972,12 +980,12 @@ namespace BlazorBoilerplate.Server.Managers
                 Email = email
             };
 
-            var createUserResult = password == null ?
+            var result = password == null ?
                 await _userManager.CreateAsync(user) :
                 await _userManager.CreateAsync(user, password);
 
-            if (!createUserResult.Succeeded)
-                throw new DomainException(string.Join(",", createUserResult.Errors.Select(i => i.Description)));
+            if (!result.Succeeded)
+                throw new DomainException(string.Join(",", result.Errors.Select(i => i.Description)));
 
             await _userManager.AddClaimsAsync(user, new Claim[]{
                     new Claim(Policies.IsUser, string.Empty),

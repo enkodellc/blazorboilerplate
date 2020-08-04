@@ -601,6 +601,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Optimistic concurrency failure, object has been modified..
+        /// </summary>
+        public static string ConcurrencyFailure {
+            get {
+                return ResourceManager.GetString("ConcurrencyFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Confirm Delete.
         /// </summary>
         public static string Confirm_Delete {
@@ -700,6 +709,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a An unknown failure has occurred..
+        /// </summary>
+        public static string DefaultError {
+            get {
+                return ResourceManager.GetString("DefaultError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Delete.
         /// </summary>
         public static string Delete {
@@ -750,6 +768,33 @@ namespace BlazorBoilerplate.Localization {
         public static string DeleteUserPermission {
             get {
                 return ResourceManager.GetString("DeleteUserPermission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Email &apos;{0}&apos; is already taken..
+        /// </summary>
+        public static string DuplicateEmail {
+            get {
+                return ResourceManager.GetString("DuplicateEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Role name &apos;{0}&apos; is already taken..
+        /// </summary>
+        public static string DuplicateRoleName {
+            get {
+                return ResourceManager.GetString("DuplicateRoleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a User Name &apos;{0}&apos; is already taken..
+        /// </summary>
+        public static string DuplicateUserName {
+            get {
+                return ResourceManager.GetString("DuplicateUserName", resourceCulture);
             }
         }
         
@@ -925,6 +970,42 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Email &apos;{0}&apos; is invalid..
+        /// </summary>
+        public static string InvalidEmail {
+            get {
+                return ResourceManager.GetString("InvalidEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Role name &apos;{0}&apos; is invalid..
+        /// </summary>
+        public static string InvalidRoleName {
+            get {
+                return ResourceManager.GetString("InvalidRoleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Invalid token..
+        /// </summary>
+        public static string InvalidToken {
+            get {
+                return ResourceManager.GetString("InvalidToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a User name &apos;{0}&apos; is invalid, can only contain letters or digits..
+        /// </summary>
+        public static string InvalidUserName {
+            get {
+                return ResourceManager.GetString("InvalidUserName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Keep me logged in.
         /// </summary>
         public static string Keep_me_logged_in {
@@ -975,6 +1056,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Login {
             get {
                 return ResourceManager.GetString("Login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a A user with this login already exists..
+        /// </summary>
+        public static string LoginAlreadyAssociated {
+            get {
+                return ResourceManager.GetString("LoginAlreadyAssociated", resourceCulture);
             }
         }
         
@@ -1164,6 +1254,60 @@ namespace BlazorBoilerplate.Localization {
         public static string PasswordConfirmationFailed {
             get {
                 return ResourceManager.GetString("PasswordConfirmationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Incorrect password..
+        /// </summary>
+        public static string PasswordMismatch {
+            get {
+                return ResourceManager.GetString("PasswordMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Passwords must have at least one digit (&apos;0&apos;-&apos;9&apos;)..
+        /// </summary>
+        public static string PasswordRequiresDigit {
+            get {
+                return ResourceManager.GetString("PasswordRequiresDigit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Passwords must have at least one lowercase (&apos;a&apos;-&apos;z&apos;)..
+        /// </summary>
+        public static string PasswordRequiresLower {
+            get {
+                return ResourceManager.GetString("PasswordRequiresLower", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Passwords must have at least one non alphanumeric character..
+        /// </summary>
+        public static string PasswordRequiresNonAlphanumeric {
+            get {
+                return ResourceManager.GetString("PasswordRequiresNonAlphanumeric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Passwords must have at least one uppercase (&apos;A&apos;-&apos;Z&apos;)..
+        /// </summary>
+        public static string PasswordRequiresUpper {
+            get {
+                return ResourceManager.GetString("PasswordRequiresUpper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Passwords must be at least {0} characters..
+        /// </summary>
+        public static string PasswordTooShort {
+            get {
+                return ResourceManager.GetString("PasswordTooShort", resourceCulture);
             }
         }
         
@@ -1735,6 +1879,24 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a User already has a password set..
+        /// </summary>
+        public static string UserAlreadyHasPassword {
+            get {
+                return ResourceManager.GetString("UserAlreadyHasPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a User already in role &apos;{0}&apos;..
+        /// </summary>
+        public static string UserAlreadyInRole {
+            get {
+                return ResourceManager.GetString("UserAlreadyInRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a User Creation Failed.
         /// </summary>
         public static string UserCreationFailed {
@@ -1753,11 +1915,29 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Lockout is not enabled for this user..
+        /// </summary>
+        public static string UserLockoutNotEnabled {
+            get {
+                return ResourceManager.GetString("UserLockoutNotEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a User Name.
         /// </summary>
         public static string UserName {
             get {
                 return ResourceManager.GetString("UserName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a User is not in role &apos;{0}&apos;..
+        /// </summary>
+        public static string UserNotInRole {
+            get {
+                return ResourceManager.GetString("UserNotInRole", resourceCulture);
             }
         }
         

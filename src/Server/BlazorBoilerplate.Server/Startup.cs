@@ -3,6 +3,7 @@ using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Server.Helpers;
@@ -95,7 +96,8 @@ namespace BlazorBoilerplate.Server
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
