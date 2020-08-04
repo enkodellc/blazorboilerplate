@@ -654,4 +654,64 @@
   <data name="BreadCrumbadmindblog" xml:space="preserve">
     <value>Log applicativo</value>
   </data>
+  <data name="ConcurrencyFailure" xml:space="preserve">
+    <value>C'è già una modifica in corso.</value>
+  </data>
+  <data name="DefaultError" xml:space="preserve">
+    <value>Errore sconosciuto.</value>
+  </data>
+  <data name="DuplicateEmail" xml:space="preserve">
+    <value>L'email '{0}' è già in uso.</value>
+  </data>
+  <data name="DuplicateRoleName" xml:space="preserve">
+    <value>Il nome di ruolo '{0}' è già in uso.</value>
+  </data>
+  <data name="DuplicateUserName" xml:space="preserve">
+    <value>Il nome utente '{0}' è già in uso.</value>
+  </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>L'email '{0}' non è valido.</value>
+  </data>
+  <data name="InvalidRoleName" xml:space="preserve">
+    <value>Il nome di ruolo '{0}' non è valido.</value>
+  </data>
+  <data name="InvalidToken" xml:space="preserve">
+    <value>Token non valido.</value>
+  </data>
+  <data name="InvalidUserName" xml:space="preserve">
+    <value>Il nome utente '{0}' non è valido. Deve contenere solo lettere o numeri.</value>
+  </data>
+  <data name="LoginAlreadyAssociated" xml:space="preserve">
+    <value>Un utente con questo login esiste già.</value>
+  </data>
+  <data name="PasswordMismatch" xml:space="preserve">
+    <value>Password non corretta.</value>
+  </data>
+  <data name="PasswordRequiresDigit" xml:space="preserve">
+    <value>Le password devono contenere almeno una numero.</value>
+  </data>
+  <data name="PasswordRequiresLower" xml:space="preserve">
+    <value>Le password devono contenere almeno una lettera minuscola.</value>
+  </data>
+  <data name="PasswordRequiresUpper" xml:space="preserve">
+    <value>Le password devono contenere almeno una lettera maiuscola.</value>
+  </data>
+  <data name="PasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>Le password devono contenere almeno un carattere che non sia lettera o numero.</value>
+  </data>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>Le password devono avere almeno {0} caratteri.</value>
+  </data>
+  <data name="UserAlreadyHasPassword" xml:space="preserve">
+    <value>L'utente ha già la password impostata.</value>
+  </data>
+  <data name="UserAlreadyInRole" xml:space="preserve">
+    <value>L'utente è già nel ruolo '{0}'.</value>
+  </data>
+  <data name="UserLockoutNotEnabled" xml:space="preserve">
+    <value>Il blocco utente non è abilitato.</value>
+  </data>
+  <data name="UserNotInRole" xml:space="preserve">
+    <value>L'utente non è nel ruolo '{0}'.</value>
+  </data>
 </root>
