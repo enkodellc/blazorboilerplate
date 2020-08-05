@@ -369,7 +369,7 @@ namespace BlazorBoilerplate.Server
                 // Require Confirmed Email User settings
                 if (Convert.ToBoolean(Configuration[$"{projectName}:RequireConfirmedEmail"] ?? "false"))
                 {
-                    options.User.RequireUniqueEmail = false;
+                    options.User.RequireUniqueEmail = true;
                     options.SignIn.RequireConfirmedEmail = true;
                 }
             });
