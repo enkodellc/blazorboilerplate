@@ -13,12 +13,12 @@ namespace BlazorBoilerplate.Infrastructure.Server
         Task<ApiResponse> BuildLoginViewModel(string returnUrl);
         Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal user, HttpContext httpContext, string logoutId);
 
-        Task<ApiResponse<LoginResponseModel>> Login(LoginInputModel parameters);
+        Task<ApiResponse> Login(LoginInputModel parameters);
         Task<ApiResponse> LoginWith2fa(LoginWith2faInputModel parameters);
         Task<ApiResponse> LoginWithRecoveryCode(LoginWithRecoveryCodeInputModel parameters);
         Task<ApiResponse> Logout(ClaimsPrincipal user);
 
-        Task<ApiResponse<LoginResponseModel>> Register(RegisterDto parameters);
+        Task<ApiResponse> Register(RegisterDto parameters);
 
         Task<ApiResponse> ConfirmEmail(ConfirmEmailDto parameters);
 

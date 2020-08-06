@@ -37,7 +37,7 @@ namespace BlazorBoilerplate.Server.Pages
                     if (string.IsNullOrEmpty(loginParameters.ReturnUrl) || loginParameters.ReturnUrl == "/")
                         loginParameters.ReturnUrl = (await _context.UserProfiles.SingleOrDefaultAsync(i => i.ApplicationUser.NormalizedUserName == loginParameters.UserName.ToUpper()))?.LastPageVisited ?? string.Empty;
 
-                    if (response.Result?.RequiresTwoFactor == true)
+                    if ((response.Result as LoginResponseModel)?.RequiresTwoFactor == true)
                         loginParameters.ReturnUrl = $"{Shared.Settings.LoginWith2faPath}?returnurl={Uri.EscapeDataString(loginParameters.ReturnUrl)}";
                 }
             }

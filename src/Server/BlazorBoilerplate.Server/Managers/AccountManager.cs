@@ -3,6 +3,7 @@ using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Server.Helpers;
@@ -34,6 +35,7 @@ using System.Text.Encodings.Web;
 
 namespace BlazorBoilerplate.Server.Managers
 {
+    [ApiResponseException]
     public class AccountManager : IAccountManager
     {
         private readonly IDatabaseInitializer _databaseInitializer;
@@ -148,68 +150,60 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> BuildLoginViewModel(string returnUrl)
         {
-            try
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
             {
-                var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-                if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
+                var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
+
+                // this is meant to short circuit the UI and only trigger the one external IdP
+                var vm = new LoginViewModel
                 {
-                    var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
+                    EnableLocalLogin = local,
+                    ReturnUrl = returnUrl,
+                    UserName = context?.LoginHint
+                };
 
-                    // this is meant to short circuit the UI and only trigger the one external IdP
-                    var vm = new LoginViewModel
-                    {
-                        EnableLocalLogin = local,
-                        ReturnUrl = returnUrl,
-                        UserName = context?.LoginHint
-                    };
+                if (!local)
+                    vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
 
-                    if (!local)
-                        vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
+                return new ApiResponse(Status200OK, L["Operation Successful"], vm);
+            }
 
-                    return new ApiResponse(Status200OK, L["Operation Successful"], vm);
-                }
+            var schemes = await _schemeProvider.GetAllSchemesAsync();
 
-                var schemes = await _schemeProvider.GetAllSchemesAsync();
-
-                var providers = schemes
-                    .Where(x => x.DisplayName != null ||
-                                x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase)
-                    )
-                    .Select(x => new ExternalProvider
-                    {
-                        DisplayName = x.DisplayName ?? x.Name,
-                        AuthenticationScheme = x.Name
-                    }).ToList();
-
-                var allowLocal = true;
-                if (context?.Client.ClientId != null)
+            var providers = schemes
+                .Where(x => x.DisplayName != null ||
+                            x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase)
+                )
+                .Select(x => new ExternalProvider
                 {
-                    var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
-                    if (client != null)
-                    {
-                        allowLocal = client.EnableLocalLogin;
+                    DisplayName = x.DisplayName ?? x.Name,
+                    AuthenticationScheme = x.Name
+                }).ToList();
 
-                        if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
-                        {
-                            providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
-                        }
+            var allowLocal = true;
+            if (context?.Client.ClientId != null)
+            {
+                var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
+                if (client != null)
+                {
+                    allowLocal = client.EnableLocalLogin;
+
+                    if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
+                    {
+                        providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
                     }
                 }
+            }
 
-                return new ApiResponse(Status200OK, L["Operation Successful"], new LoginViewModel
-                {
-                    AllowRememberLogin = AccountOptions.AllowRememberLogin,
-                    EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
-                    ReturnUrl = returnUrl,
-                    UserName = context?.LoginHint,
-                    ExternalProviders = providers.ToArray()
-                });
-            }
-            catch (Exception ex)
+            return new ApiResponse(Status200OK, L["Operation Successful"], new LoginViewModel
             {
-                _logger.LogError($"BuildLoginViewModel Failed: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
-            }
+                AllowRememberLogin = AccountOptions.AllowRememberLogin,
+                EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
+                ReturnUrl = returnUrl,
+                UserName = context?.LoginHint,
+                ExternalProviders = providers.ToArray()
+            });
         }
 
         public async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal user, HttpContext httpContext, string logoutId)
@@ -249,7 +243,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             return vm;
         }
-        public async Task<ApiResponse<LoginResponseModel>> Login(LoginInputModel parameters)
+        public async Task<ApiResponse> Login(LoginInputModel parameters)
         {
             try
             {
@@ -263,7 +257,7 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     _logger.LogInformation("Two factor authentication required for user {0}", parameters.UserName);
 
-                    return new ApiResponse<LoginResponseModel>(Status200OK, "Two factor authentication required")
+                    return new ApiResponse(Status200OK, "Two factor authentication required")
                     {
                         Result = new LoginResponseModel()
                         {
@@ -276,14 +270,14 @@ namespace BlazorBoilerplate.Server.Managers
                 if (result.IsLockedOut)
                 {
                     _logger.LogInformation("User Locked out: {0}", parameters.UserName);
-                    return new ApiResponse<LoginResponseModel>(Status401Unauthorized, L["LockedUser"]);
+                    return new ApiResponse(Status401Unauthorized, L["LockedUser"]);
                 }
 
                 // If your email is not confirmed but you require it in the settings for login.
                 if (result.IsNotAllowed)
                 {
                     _logger.LogInformation("User {0} not allowed to log in, because email is not confirmed", parameters.UserName);
-                    return new ApiResponse<LoginResponseModel>(Status401Unauthorized, L["EmailNotConfirmed"]);
+                    return new ApiResponse(Status401Unauthorized, L["EmailNotConfirmed"]);
                 }
 
                 if (result.Succeeded)
@@ -310,17 +304,17 @@ namespace BlazorBoilerplate.Server.Managers
                     //    // user might have clicked on a malicious link - should be logged
                     //    throw new Exception("invalid return URL");
 
-                    return new ApiResponse<LoginResponseModel>(Status200OK);
+                    return new ApiResponse(Status200OK);
                 }
 
                 await _events.RaiseAsync(new UserLoginFailureEvent(parameters.UserName, "Invalid Password for user {0}", clientId: context?.Client.ClientId));
                 _logger.LogInformation("Invalid Password for user {0}", parameters.UserName);
-                return new ApiResponse<LoginResponseModel>(Status401Unauthorized, L["LoginFailed"]);
+                return new ApiResponse(Status401Unauthorized, L["LoginFailed"]);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Login Failed: {ex.GetBaseException().Message}");
-                return new ApiResponse<LoginResponseModel>(Status500InternalServerError, L["LoginFailed"]);
+                return new ApiResponse(Status500InternalServerError, L["LoginFailed"]);
             }
         }
         public async Task<ApiResponse> LoginWith2fa(LoginWith2faInputModel parameters)
@@ -434,36 +428,23 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, "Logout Successful");
         }
 
-        public async Task<ApiResponse<LoginResponseModel>> Register(RegisterDto parameters)
+        public async Task<ApiResponse> Register(RegisterDto parameters)
         {
-            try
-            {
-                var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
+            var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
 
-                await RegisterNewUserAsync(parameters.UserName, parameters.Email, parameters.Password, requireConfirmEmail);
+            await RegisterNewUserAsync(parameters.UserName, parameters.Email, parameters.Password, requireConfirmEmail);
 
-                if (requireConfirmEmail)
-                {
-                    return new ApiResponse<LoginResponseModel>(Status200OK, L["Operation Successful"]);
-                }
-                else
-                {
-                    return await Login(new LoginInputModel
-                    {
-                        UserName = parameters.UserName,
-                        Password = parameters.Password
-                    });
-                }
-            }
-            catch (DomainException ex)
+            if (requireConfirmEmail)
             {
-                _logger.LogError("Register User Failed: {0}, {1}", ex.Description, ex.Message);
-                return new ApiResponse<LoginResponseModel>(Status500InternalServerError, ex.Description);
+                return new ApiResponse(Status200OK, L["Operation Successful"]);
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"Register User Failed: {ex.GetBaseException().Message}");
-                return new ApiResponse<LoginResponseModel>(Status500InternalServerError, L["Operation Failed"]);
+                return await Login(new LoginInputModel
+                {
+                    UserName = parameters.UserName,
+                    Password = parameters.Password
+                });
             }
         }
 
@@ -478,229 +459,171 @@ namespace BlazorBoilerplate.Server.Managers
 
             // TODO: Break this out into it's own self-contained Email Helper service.
 
-            try
+            var result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
+            if (result.Succeeded)
             {
-                var result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
-                if (result.Succeeded)
-                {
-                    #region Email Successful Password change
+                #region Email Successful Password change
 
-                    var email = new EmailMessageDto();
-                    email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                    email.BuildPasswordResetEmail(user.UserName); //Replace First UserName with Name if you want to add name to Registration Form
+                var email = new EmailMessageDto();
+                email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
+                email.BuildPasswordResetEmail(user.UserName); //Replace First UserName with Name if you want to add name to Registration Form
 
-                    _logger.LogInformation($"Reset Password Successful Email Sent: {user.Email}");
-                    await _emailManager.SendEmailAsync(email);
+                _logger.LogInformation($"Reset Password Successful Email Sent: {user.Email}");
+                await _emailManager.SendEmailAsync(email);
 
-                    #endregion Email Successful Password change
+                #endregion Email Successful Password change
 
-                    return new ApiResponse(Status200OK, $"Reset Password Successful Email Sent: {user.Email}");
-                }
-                else
-                {
-                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
-                    _logger.LogWarning("Error while resetting the password: {0}", msg);
-                    return new ApiResponse(Status400BadRequest, msg);
-                }
+                return new ApiResponse(Status200OK, $"Reset Password Successful Email Sent: {user.Email}");
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"Reset Password failed: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
+                var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                _logger.LogWarning("Error while resetting the password: {0}", msg);
+                return new ApiResponse(Status400BadRequest, msg);
             }
         }
 
         public async Task<ApiResponse> UpdatePassword(ClaimsPrincipal userClaimsPrincipal, UpdatePasswordDto parameters)
         {
-            try
+            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            if (user == null)
             {
-                var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
-                if (user == null)
-                {
-                    _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
-                    return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
-                }
-
-                var result = await _userManager.ChangePasswordAsync(user, parameters.CurrentPassword, parameters.NewPassword);
-
-                if (result.Succeeded)
-                {
-                    await _signInManager.RefreshSignInAsync(user);
-                    return new ApiResponse(Status200OK, L["Operation Successful"]);
-                }
-                else
-                {
-                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
-                    _logger.LogWarning($"Error while updating the password of {user.UserName}: {msg}");
-                    return new ApiResponse(Status400BadRequest, msg);
-                }
+                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
-            catch (Exception ex)
+
+            var result = await _userManager.ChangePasswordAsync(user, parameters.CurrentPassword, parameters.NewPassword);
+
+            if (result.Succeeded)
             {
-                _logger.LogError($"Update Password failed: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
+                await _signInManager.RefreshSignInAsync(user);
+                return new ApiResponse(Status200OK, L["Operation Successful"]);
+            }
+            else
+            {
+                var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                _logger.LogWarning($"Error while updating the password of {user.UserName}: {msg}");
+                return new ApiResponse(Status400BadRequest, msg);
             }
         }
 
         public async Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal userClaimsPrincipal, AuthenticatorVerificationCodeDto parameters)
         {
-            try
+            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            if (user == null)
             {
-                var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
-                if (user == null)
-                {
-                    _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
-                    return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
-                }
-
-                var verificationCode = parameters.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
-
-                var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
-                    user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
-
-                if (is2faTokenValid)
-                {
-                    var result = await _userManager.SetTwoFactorEnabledAsync(user, true);
-
-                    if (result.Succeeded)
-                    {
-                        _logger.LogInformation("User '{0}' has enabled 2FA with an authenticator app.", user.UserName);
-
-                        var userInfo = await BuildUserInfo(userClaimsPrincipal);
-
-                        if (await _userManager.CountRecoveryCodesAsync(user) == 0)
-                        {
-                            userInfo.RecoveryCodes = (await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10)).ToArray();
-                        }
-
-                        return new ApiResponse(Status200OK, L["Operation Successful"], userInfo);
-                    }
-                    else
-                        return new ApiResponse(Status400BadRequest, "Error while enabling 2FA");
-                }
-                else
-                {
-                    _logger.LogWarning($"Verification code of {user.UserName} is invalid.");
-                    return new ApiResponse(Status400BadRequest, L["VerificationCodeInvalid"]);
-                }
+                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
-            catch (Exception ex)
+
+            var verificationCode = parameters.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
+                user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
+
+            if (is2faTokenValid)
             {
-                _logger.LogError($"EnableAuthenticator failed: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
-            }
-        }
-        public async Task<ApiResponse> DisableAuthenticator(ClaimsPrincipal userClaimsPrincipal)
-        {
-            try
-            {
-                var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
-                if (user == null)
-                {
-                    _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
-                    return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
-                }
-
-                var result = await _userManager.SetTwoFactorEnabledAsync(user, false);
-
-                if (result.Succeeded)
-                {
-                    result = await _userManager.ResetAuthenticatorKeyAsync(user);
-
-                    if (result.Succeeded)
-                    {
-                        _logger.LogInformation("User with ID '{UserId}' has reset their authentication app key.", user.Id);
-
-                        await _signInManager.RefreshSignInAsync(user);
-                    }
-                    else
-                        return new ApiResponse(Status400BadRequest, "Error while disabling authenticator");
-                }
-                else
-                    return new ApiResponse(Status400BadRequest, "Error while disabling 2fa");
-
-                return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserInfo(userClaimsPrincipal));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"DisableAuthenticator failed: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
-            }
-        }
-        public async Task<ApiResponse> ForgetTwoFactorClient(ClaimsPrincipal userClaimsPrincipal)
-        {
-            try
-            {
-                var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
-                if (user == null)
-                {
-                    _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
-                    return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
-                }
-
-                await _signInManager.ForgetTwoFactorClientAsync();
-
-                return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserInfo(userClaimsPrincipal));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"ForgetTwoFactorClient failed: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
-            }
-        }
-        public async Task<ApiResponse> Enable2fa(ClaimsPrincipal userClaimsPrincipal)
-        {
-            try
-            {
-                var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
-                if (user == null)
-                {
-                    _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
-                    return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
-                }
-
                 var result = await _userManager.SetTwoFactorEnabledAsync(user, true);
 
                 if (result.Succeeded)
                 {
-                    return new ApiResponse(Status200OK, "Enabling 2fa Successful", await BuildUserInfo(userClaimsPrincipal));
+                    _logger.LogInformation("User '{0}' has enabled 2FA with an authenticator app.", user.UserName);
+
+                    var userInfo = await BuildUserInfo(userClaimsPrincipal);
+
+                    if (await _userManager.CountRecoveryCodesAsync(user) == 0)
+                    {
+                        userInfo.RecoveryCodes = (await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10)).ToArray();
+                    }
+
+                    return new ApiResponse(Status200OK, L["Operation Successful"], userInfo);
                 }
                 else
-                    return new ApiResponse(Status400BadRequest, "Error while enabling 2fa");
-
+                    return new ApiResponse(Status400BadRequest, "Error while enabling 2FA");
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"Enable2fa failed: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
+                _logger.LogWarning($"Verification code of {user.UserName} is invalid.");
+                return new ApiResponse(Status400BadRequest, L["VerificationCodeInvalid"]);
             }
         }
-        public async Task<ApiResponse> Disable2fa(ClaimsPrincipal userClaimsPrincipal)
+        public async Task<ApiResponse> DisableAuthenticator(ClaimsPrincipal userClaimsPrincipal)
         {
-            try
+            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            if (user == null)
             {
-                var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
-                if (user == null)
-                {
-                    _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
-                    return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
-                }
+                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
+            }
 
-                var result = await _userManager.SetTwoFactorEnabledAsync(user, false);
+            var result = await _userManager.SetTwoFactorEnabledAsync(user, false);
+
+            if (result.Succeeded)
+            {
+                result = await _userManager.ResetAuthenticatorKeyAsync(user);
 
                 if (result.Succeeded)
                 {
-                    return new ApiResponse(Status200OK, "Disabling 2fa Successful", await BuildUserInfo(userClaimsPrincipal));
+                    _logger.LogInformation("User with ID '{UserId}' has reset their authentication app key.", user.Id);
+
+                    await _signInManager.RefreshSignInAsync(user);
                 }
                 else
-                    return new ApiResponse(Status400BadRequest, "Error while disabling 2fa");
+                    return new ApiResponse(Status400BadRequest, "Error while disabling authenticator");
+            }
+            else
+                return new ApiResponse(Status400BadRequest, "Error while disabling 2fa");
 
-            }
-            catch (Exception ex)
+            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserInfo(userClaimsPrincipal));
+        }
+        public async Task<ApiResponse> ForgetTwoFactorClient(ClaimsPrincipal userClaimsPrincipal)
+        {
+            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            if (user == null)
             {
-                _logger.LogError($"Disable2fa failed: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
+                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
+
+            await _signInManager.ForgetTwoFactorClientAsync();
+
+            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserInfo(userClaimsPrincipal));
+        }
+        public async Task<ApiResponse> Enable2fa(ClaimsPrincipal userClaimsPrincipal)
+        {
+            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            if (user == null)
+            {
+                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
+            }
+
+            var result = await _userManager.SetTwoFactorEnabledAsync(user, true);
+
+            if (result.Succeeded)
+            {
+                return new ApiResponse(Status200OK, "Enabling 2fa Successful", await BuildUserInfo(userClaimsPrincipal));
+            }
+            else
+                return new ApiResponse(Status400BadRequest, "Error while enabling 2fa");
+        }
+        public async Task<ApiResponse> Disable2fa(ClaimsPrincipal userClaimsPrincipal)
+        {
+            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            if (user == null)
+            {
+                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
+            }
+
+            var result = await _userManager.SetTwoFactorEnabledAsync(user, false);
+
+            if (result.Succeeded)
+            {
+                return new ApiResponse(Status200OK, "Disabling 2fa Successful", await BuildUserInfo(userClaimsPrincipal));
+            }
+            else
+                return new ApiResponse(Status400BadRequest, "Error while disabling 2fa");
         }
 
         public async Task<ApiResponse> UserInfo(ClaimsPrincipal user)
@@ -736,65 +659,46 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> Create(RegisterDto parameters)
         {
-            try
+            var user = new ApplicationUser
             {
-                var user = new ApplicationUser
-                {
-                    UserName = parameters.UserName,
-                    Email = parameters.Email
-                };
+                UserName = parameters.UserName,
+                Email = parameters.Email
+            };
 
-                user.UserName = parameters.UserName;
-                var result = await _userManager.CreateAsync(user, parameters.Password);
-                if (!result.Succeeded)
-                {
-                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
-                    _logger.LogWarning($"Error while creating {user.UserName}: {msg}");
-                    return new ApiResponse(Status400BadRequest, msg);
-                }
-                else
-                {
-                    var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
+            user.UserName = parameters.UserName;
+            var result = await _userManager.CreateAsync(user, parameters.Password);
+            if (!result.Succeeded)
+            {
+                var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                _logger.LogWarning($"Error while creating {user.UserName}: {msg}");
+                return new ApiResponse(Status400BadRequest, msg);
+            }
+            else
+            {
+                var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
                         new Claim(Policies.IsUser, string.Empty),
                         new Claim(JwtClaimTypes.Name, parameters.UserName),
                         new Claim(JwtClaimTypes.Email, parameters.Email),
                         new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
                     }).Result;
-                }
+            }
 
-                var defaultRoleExists = await _roleManager.RoleExistsAsync(DefaultRoleNames.User);
+            var defaultRoleExists = await _roleManager.RoleExistsAsync(DefaultRoleNames.User);
 
-                if (defaultRoleExists)
-                    await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
+            if (defaultRoleExists)
+                await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
 
-                if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
-                {
-                    try
-                    {
-                        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token);
-
-                        var email = new EmailMessageDto();
-                        email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                        email = EmailTemplates.BuildNewUserConfirmationEmail(email, user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
-
-                        _logger.LogInformation("New user created: {0}", user);
-                        await _emailManager.SendEmailAsync(email);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"New user email failed: {ex.GetBaseException().Message}");
-                    }
-
-                    return new ApiResponse(Status200OK, "Create User Success");
-                }
-
+            if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
+            {
                 try
                 {
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token);
+
                     var email = new EmailMessageDto();
                     email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                    email.BuildNewUserEmail(user.FullName, user.UserName, user.Email, parameters.Password);
+                    email = EmailTemplates.BuildNewUserConfirmationEmail(email, user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
 
                     _logger.LogInformation("New user created: {0}", user);
                     await _emailManager.SendEmailAsync(email);
@@ -804,26 +708,37 @@ namespace BlazorBoilerplate.Server.Managers
                     _logger.LogError($"New user email failed: {ex.GetBaseException().Message}");
                 }
 
-                var userInfo = new UserInfo
-                {
-                    UserId = user.Id,
-                    IsAuthenticated = false,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName
-                };
+                return new ApiResponse(Status200OK, "Create User Success");
+            }
 
-                if (defaultRoleExists)
-                    userInfo.Roles = new List<string> { DefaultRoleNames.User };
+            try
+            {
+                var email = new EmailMessageDto();
+                email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
+                email.BuildNewUserEmail(user.FullName, user.UserName, user.Email, parameters.Password);
 
-                return new ApiResponse(Status200OK, L["User {0} created", userInfo.UserName], userInfo);
+                _logger.LogInformation("New user created: {0}", user);
+                await _emailManager.SendEmailAsync(email);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Create User Failed: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
+                _logger.LogError($"New user email failed: {ex.GetBaseException().Message}");
             }
+
+            var userInfo = new UserInfo
+            {
+                UserId = user.Id,
+                IsAuthenticated = false,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+
+            if (defaultRoleExists)
+                userInfo.Roles = new List<string> { DefaultRoleNames.User };
+
+            return new ApiResponse(Status200OK, L["User {0} created", userInfo.UserName], userInfo);
         }
         public async Task<ApiResponse> Delete(string id)
         {
@@ -833,24 +748,16 @@ namespace BlazorBoilerplate.Server.Managers
                 _logger.LogWarning(L["The user {0} doesn't exist", id]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
-            try
+            if (user.UserName.ToLower() != DefaultUserNames.Administrator)
             {
-                if (user.UserName.ToLower() != DefaultUserNames.Administrator)
-                {
-                    //TODO it could generate time-out
-                    //await _userProfileStore.DeleteAllApiLogsForUser(user.Id);
+                //TODO it could generate time-out
+                //await _userProfileStore.DeleteAllApiLogsForUser(user.Id);
 
-                    await _userManager.DeleteAsync(user);
-                    return new ApiResponse(Status200OK, "User Deletion Successful");
-                }
-                else
-                    return new ApiResponse(Status403Forbidden, L["User {0} cannot be edited", user.UserName]);
+                await _userManager.DeleteAsync(user);
+                return new ApiResponse(Status200OK, "User Deletion Successful");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Delete User exception: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
-            }
+            else
+                return new ApiResponse(Status403Forbidden, L["User {0} cannot be edited", user.UserName]);
         }
         public ApiResponse GetUser(ClaimsPrincipal user)
         {
@@ -938,37 +845,28 @@ namespace BlazorBoilerplate.Server.Managers
                 _logger.LogWarning(L["The user {0} doesn't exist", id]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
-
-            try
+            var passToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, passToken, newPassword);
+            if (result.Succeeded)
             {
-                var passToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.ResetPasswordAsync(user, passToken, newPassword);
-                if (result.Succeeded)
+                _logger.LogInformation(user.UserName + "'s password reset; Requested from Admin interface by:" + userClaimsPrincipal.Identity.Name);
+                return new ApiResponse(Status204NoContent, user.UserName + " password reset");
+            }
+            else
+            {
+                _logger.LogWarning(user.UserName + "'s password reset failed; Requested from Admin interface by:" + userClaimsPrincipal.Identity.Name);
+
+                // this is going to an authenticated Admin so it should be safe/useful to send back raw error messages
+                if (result.Errors.Any())
                 {
-                    _logger.LogInformation(user.UserName + "'s password reset; Requested from Admin interface by:" + userClaimsPrincipal.Identity.Name);
-                    return new ApiResponse(Status204NoContent, user.UserName + " password reset");
+                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                    _logger.LogWarning($"Error while resetting password of {user.UserName}: {msg}");
+                    return new ApiResponse(Status400BadRequest, msg);
                 }
                 else
                 {
-                    _logger.LogWarning(user.UserName + "'s password reset failed; Requested from Admin interface by:" + userClaimsPrincipal.Identity.Name);
-
-                    // this is going to an authenticated Admin so it should be safe/useful to send back raw error messages
-                    if (result.Errors.Any())
-                    {
-                        var msg = string.Join(",", result.Errors.Select(i => i.Description));
-                        _logger.LogWarning($"Error while resetting password of {user.UserName}: {msg}");
-                        return new ApiResponse(Status400BadRequest, msg);
-                    }
-                    else
-                    {
-                        throw new Exception();
-                    }
+                    throw new Exception();
                 }
-            }
-            catch (Exception ex) // not sure if failed password reset result will throw an exception
-            {
-                _logger.LogError($"AdminResetUserPasswordAsync exception {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
             }
         }
 

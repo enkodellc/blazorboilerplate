@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
+using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Shared.Dto.Sample;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
 {
+    [ApiResponseException]
     public class MessageManager : IMessageManager
     {
         private readonly IMessageStore _messageStore;

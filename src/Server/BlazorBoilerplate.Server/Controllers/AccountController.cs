@@ -45,9 +45,9 @@ namespace BlazorBoilerplate.Server.Controllers
         [AllowAnonymous]
         [ProducesResponseType(Status204NoContent)]
         [ProducesResponseType(Status401Unauthorized)]
-        public async Task<ApiResponse<LoginResponseModel>> Login(LoginInputModel parameters)
+        public async Task<ApiResponse> Login(LoginInputModel parameters)
         {
-            return ModelState.IsValid ? await _accountManager.Login(parameters) : new ApiResponse<LoginResponseModel>(Status400BadRequest, L["InvalidData"]);
+            return ModelState.IsValid ? await _accountManager.Login(parameters) : new ApiResponse(Status400BadRequest, L["InvalidData"]);
         }
 
         // POST: api/Account/LoginWithRecoveryCode
@@ -97,8 +97,8 @@ namespace BlazorBoilerplate.Server.Controllers
         // POST: api/Account/Register
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<ApiResponse<LoginResponseModel>> Register(RegisterDto parameters)
-            => ModelState.IsValid ? await _accountManager.Register(parameters) : new ApiResponse<LoginResponseModel>(Status400BadRequest, L["InvalidData"]);
+        public async Task<ApiResponse> Register(RegisterDto parameters)
+            => ModelState.IsValid ? await _accountManager.Register(parameters) : new ApiResponse(Status400BadRequest, L["InvalidData"]);
 
         // POST: api/Account/ConfirmEmail
         [HttpPost("ConfirmEmail")]
