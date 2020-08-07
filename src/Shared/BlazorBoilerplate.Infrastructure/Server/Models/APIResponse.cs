@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Shared.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -16,11 +15,10 @@ namespace BlazorBoilerplate.Infrastructure.Server.Models
         [DataMember]
         public int StatusCode { get; set; }
 
+        public bool IsSuccessStatusCode => StatusCode / 200 == 1;
+
         [DataMember]
         public string Message { get; set; }
-
-        [DataMember(EmitDefaultValue = false)]
-        public ApiError ResponseException { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
         public T Result { get; set; }
@@ -38,20 +36,17 @@ namespace BlazorBoilerplate.Infrastructure.Server.Models
     public class ApiResponse : ApiResponse<object>
     {
         [JsonConstructor]
-        public ApiResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "") : base(statusCode, message)
+        public ApiResponse(int statusCode, string message = "", object result = null, string apiVersion = "") : base(statusCode, message)
         {
             StatusCode = statusCode;
             Message = message;
             Result = result;
-            ResponseException = apiError;
             Version = string.IsNullOrWhiteSpace(apiVersion) ? Assembly.GetEntryAssembly().GetName().Version.ToString() : apiVersion;
         }
 
-        public ApiResponse(int statusCode, ApiError apiError) : base(statusCode, "")
+        public ApiResponse(int statusCode) : base(statusCode, "")
         {
             StatusCode = statusCode;
-            Message = apiError.ExceptionMessage;
-            ResponseException = apiError;
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿using BlazorBoilerplate.Shared.Interfaces;
-using Finbuckle.MultiTenant;
+﻿using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.Interfaces;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,11 @@ namespace BlazorBoilerplate.Server.Middleware
 {
     public class UserSessionMiddleware : BaseMiddleware
     {
-        public UserSessionMiddleware(RequestDelegate next) : base(next)
+        public UserSessionMiddleware(RequestDelegate next, IStringLocalizer<Strings> l, ILogger<UserSessionMiddleware> logger) : base(next, l, logger)
         { }
 
-        public async Task InvokeAsync(HttpContext httpContext, ILogger<UserSessionMiddleware> logger, IUserSession userSession)
+        public async Task InvokeAsync(HttpContext httpContext, IUserSession userSession)
         {
-            _logger = logger;
             try
             {
                 var request = httpContext.Request;

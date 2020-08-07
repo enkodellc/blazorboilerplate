@@ -1,6 +1,8 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Localization;
 using Breeze.Persistence;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ObjectCloner.Extensions;
@@ -14,13 +16,16 @@ namespace BlazorBoilerplate.Server.Middleware
     public abstract class BaseMiddleware
     {
         protected ILogger<BaseMiddleware> _logger;
+        protected IStringLocalizer<Strings> L;
 
         //https://trailheadtechnology.com/aspnetcore-multi-tenant-tips-and-tricks/
         protected readonly RequestDelegate _next;
 
-        protected BaseMiddleware(RequestDelegate next)
+        protected BaseMiddleware(RequestDelegate next, IStringLocalizer<Strings> l, ILogger<BaseMiddleware> logger)
         {
             _next = next;
+            L = l;
+            _logger = logger;
         }
 
         protected Task RewriteResponseAsApiResponse(HttpContext httpContext, ApiResponse apiResponse)
@@ -38,10 +43,9 @@ namespace BlazorBoilerplate.Server.Middleware
 
         protected async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
         {
-            _logger.LogError("Api Exception:", exception.GetBaseException());
-
-            ApiError apiError;
-            int code;
+            string msg = exception.GetBaseException().StackTrace;
+            string userMsg = L["Operation Failed"];
+            int code = Status500InternalServerError;
 
             if (exception is EntityErrorsException)
             {
@@ -49,24 +53,19 @@ namespace BlazorBoilerplate.Server.Middleware
             }
             else if (exception is UnauthorizedAccessException)
             {
-                apiError = new ApiError("Unauthorized Access");
+                userMsg = msg = L["UnauthorizedAccess"];
                 code = Status401Unauthorized;
-                httpContext.Response.StatusCode = code;
             }
-            else
+            else if (exception is DomainException)
             {
-                apiError = new ApiError(exception.GetBaseException().Message)
-                {
-                    Details = exception.StackTrace
-                };
-
-                code = Status500InternalServerError;
-                httpContext.Response.StatusCode = code;
+                userMsg = msg = ((DomainException)exception).Description;
             }
 
-            ApiResponse apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(code), null, apiError);
+            _logger.LogError($"Api Exception: {msg}");
 
-            await RewriteResponseAsApiResponse(httpContext, apiResponse);
+            httpContext.Response.StatusCode = code;
+
+            await RewriteResponseAsApiResponse(httpContext, new ApiResponse(Status500InternalServerError, userMsg));
         }
 
     }

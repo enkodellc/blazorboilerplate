@@ -14,13 +14,7 @@ namespace BlazorBoilerplate.Shared.Dto
         public bool IsSuccessStatusCode => StatusCode / 200 == 1;
 
         [DataMember]
-        public bool IsError { get; set; }
-
-        [DataMember]
         public string Message { get; set; }
-
-        [DataMember(EmitDefaultValue = false)]
-        public string ResponseException { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
         public T Result { get; set; }

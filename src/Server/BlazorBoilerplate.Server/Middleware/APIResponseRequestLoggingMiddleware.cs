@@ -1,12 +1,14 @@
 ﻿using BlazorBoilerplate.Infrastructure.Extensions;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Storage;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
@@ -33,16 +35,18 @@ namespace BlazorBoilerplate.Server.Middleware
         private readonly bool _enableAPILogging;
         private List<string> _ignorePaths;
 
-        public APIResponseRequestLoggingMiddleware(RequestDelegate next, IConfiguration configuration) : base(next)
+        public APIResponseRequestLoggingMiddleware(RequestDelegate next,
+            IConfiguration configuration,
+            IStringLocalizer<Strings> l,
+            ILogger<APIResponseRequestLoggingMiddleware> logger) : base(next, l, logger)
         {
             _enableAPILogging = configuration.GetSection("BlazorBoilerplate:Api:Logging:Enabled").Get<bool>();
             _clearCacheHeadersDelegate = ClearCacheHeaders;
             _ignorePaths = configuration.GetSection("BlazorBoilerplate:Api:Logging:IgnorePaths").Get<List<string>>() ?? new List<string>();
         }
 
-        public async Task Invoke(HttpContext httpContext, IServiceScopeFactory scopeFactory, ILogger<APIResponseRequestLoggingMiddleware> logger, UserManager<ApplicationUser> userManager)
+        public async Task Invoke(HttpContext httpContext, IServiceScopeFactory scopeFactory, UserManager<ApplicationUser> userManager)
         {
-            _logger = logger;
             _scopeFactory = scopeFactory;
 
             try
@@ -284,7 +288,7 @@ namespace BlazorBoilerplate.Server.Middleware
                     RequestBody = requestBody,
                     ResponseBody = responseBody ?? String.Empty,
                     IPAddress = ipAddress,
-                    ApplicationUserId = user == null ? Guid.Empty : user.Id
+                    ApplicationUserId = user?.Id
                 });
 
                 await dbContext.SaveChangesAsync();

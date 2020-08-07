@@ -48,13 +48,11 @@ namespace BlazorBoilerplate.Server.Aop
 
         private ApiResponse GetApiResponseFor(string method, Exception ex)
         {
-            string msg;
+            string msg = ex.GetBaseException().StackTrace;
             var isDomainException = ex is DomainException;
 
             if (isDomainException)
                 msg = ((DomainException)ex).Description;
-            else
-                msg = ex.GetBaseException().Message;
 
             _logger.LogError($"{method}: {msg}");
 

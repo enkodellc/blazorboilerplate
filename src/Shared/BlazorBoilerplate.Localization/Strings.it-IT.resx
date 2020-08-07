@@ -714,4 +714,7 @@
   <data name="UserNotInRole" xml:space="preserve">
     <value>L'utente non è nel ruolo '{0}'.</value>
   </data>
+  <data name="UnauthorizedAccess" xml:space="preserve">
+    <value>Accesso non autorizzato</value>
+  </data>
 </root>

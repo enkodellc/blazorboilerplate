@@ -1780,6 +1780,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Unauthorized access.
+        /// </summary>
+        public static string UnauthorizedAccess {
+            get {
+                return ResourceManager.GetString("UnauthorizedAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Update.
         /// </summary>
         public static string Update {
