@@ -1,4 +1,4 @@
-﻿@using BlazorBoilerplate.Shared.Dto.Account
+﻿@using BlazorBoilerplate.Shared.Models.Account
 @using Microsoft.AspNetCore.Components
 @inject AuthenticationStateProvider authStateProvider
 
@@ -6,13 +6,13 @@
     <Authorized>
         <div class="drawer-profile">
             <MatIconButton Icon="account_circle" Link="/account/profile"></MatIconButton>
-            @if (userInfo == null)
+            @if (userViewModel == null)
             {
                 <div class="spinner-border spinner-border-sm" role="status"></div>
             }
             else
             {
-                <span class="miniHover"><b><a href="/account/profile">@userInfo.UserName</a></b></span>
+                <span class="miniHover"><b><a href="/account/profile">@userViewModel.UserName</a></b></span>
             }
         </div>
     </Authorized>
@@ -20,18 +20,18 @@
 
 @code {
     public bool IsLoggedIn = false;
-    UserInfo userInfo = null;
+    UserViewModel userViewModel = null;
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        userInfo = null;
+        userViewModel = null;
         var user = (await authenticationStateTask).User;
 
         if (user.Identity.IsAuthenticated)
         {
-            userInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserInfo();
+            userViewModel = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using BlazorBoilerplate.Localization;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared.Dto.Account
+namespace BlazorBoilerplate.Shared.Models.Account
 {
-    public class LoginInputModel : AccountFormModel
+    public class ConfirmEmailViewModel
     {
         [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
-        public string UserName { get; set; }
+        public string UserId { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
-        public string Password { get; set; }
+        public string Token { get; set; }
     }
 }

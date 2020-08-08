@@ -9,7 +9,7 @@ using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Providers;
 using IdentityModel;
@@ -52,7 +52,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IEventService _events;
         private readonly IStringLocalizer<Strings> L;
 
-        private static readonly UserInfo LoggedOutUser = new UserInfo { IsAuthenticated = false, Roles = new List<string>() };
+        private static readonly UserViewModel LoggedOutUser = new UserViewModel { IsAuthenticated = false, Roles = new List<string>() };
 
         public AccountManager(IDatabaseInitializer databaseInitializer,
             UserManager<ApplicationUser> userManager,
@@ -83,7 +83,7 @@ namespace BlazorBoilerplate.Server.Managers
             L = l;
         }
 
-        public async Task<ApiResponse> ConfirmEmail(ConfirmEmailDto parameters)
+        public async Task<ApiResponse> ConfirmEmail(ConfirmEmailViewModel parameters)
         {
             if (parameters.UserId == null || parameters.Token == null)
             {
@@ -111,7 +111,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["EmailVerificationSuccessful"]);
         }
 
-        public async Task<ApiResponse> ForgotPassword(ForgotPasswordDto parameters)
+        public async Task<ApiResponse> ForgotPassword(ForgotPasswordViewModel parameters)
         {
             var user = await _userManager.FindByEmailAsync(parameters.Email);
             if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
@@ -428,7 +428,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, "Logout Successful");
         }
 
-        public async Task<ApiResponse> Register(RegisterDto parameters)
+        public async Task<ApiResponse> Register(RegisterViewModel parameters)
         {
             var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
 
@@ -448,7 +448,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public async Task<ApiResponse> ResetPassword(ResetPasswordDto parameters)
+        public async Task<ApiResponse> ResetPassword(ResetPasswordViewModel parameters)
         {
             var user = await _userManager.FindByIdAsync(parameters.UserId);
             if (user == null)
@@ -483,7 +483,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public async Task<ApiResponse> UpdatePassword(ClaimsPrincipal userClaimsPrincipal, UpdatePasswordDto parameters)
+        public async Task<ApiResponse> UpdatePassword(ClaimsPrincipal userClaimsPrincipal, UpdatePasswordViewModel parameters)
         {
             var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
             if (user == null)
@@ -507,7 +507,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public async Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal userClaimsPrincipal, AuthenticatorVerificationCodeDto parameters)
+        public async Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal userClaimsPrincipal, AuthenticatorVerificationCodeViewModel parameters)
         {
             var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
             if (user == null)
@@ -529,14 +529,14 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     _logger.LogInformation("User '{0}' has enabled 2FA with an authenticator app.", user.UserName);
 
-                    var userInfo = await BuildUserInfo(userClaimsPrincipal);
+                    var userViewModel = await BuildUserViewModel(userClaimsPrincipal);
 
                     if (await _userManager.CountRecoveryCodesAsync(user) == 0)
                     {
-                        userInfo.RecoveryCodes = (await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10)).ToArray();
+                        userViewModel.RecoveryCodes = (await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10)).ToArray();
                     }
 
-                    return new ApiResponse(Status200OK, L["Operation Successful"], userInfo);
+                    return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
                 }
                 else
                     return new ApiResponse(Status400BadRequest, "Error while enabling 2FA");
@@ -574,7 +574,7 @@ namespace BlazorBoilerplate.Server.Managers
             else
                 return new ApiResponse(Status400BadRequest, "Error while disabling 2fa");
 
-            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserInfo(userClaimsPrincipal));
+            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserViewModel(userClaimsPrincipal));
         }
         public async Task<ApiResponse> ForgetTwoFactorClient(ClaimsPrincipal userClaimsPrincipal)
         {
@@ -587,7 +587,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             await _signInManager.ForgetTwoFactorClientAsync();
 
-            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserInfo(userClaimsPrincipal));
+            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserViewModel(userClaimsPrincipal));
         }
         public async Task<ApiResponse> Enable2fa(ClaimsPrincipal userClaimsPrincipal)
         {
@@ -602,7 +602,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (result.Succeeded)
             {
-                return new ApiResponse(Status200OK, "Enabling 2fa Successful", await BuildUserInfo(userClaimsPrincipal));
+                return new ApiResponse(Status200OK, "Enabling 2fa Successful", await BuildUserViewModel(userClaimsPrincipal));
             }
             else
                 return new ApiResponse(Status400BadRequest, "Error while enabling 2fa");
@@ -620,30 +620,30 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (result.Succeeded)
             {
-                return new ApiResponse(Status200OK, "Disabling 2fa Successful", await BuildUserInfo(userClaimsPrincipal));
+                return new ApiResponse(Status200OK, "Disabling 2fa Successful", await BuildUserViewModel(userClaimsPrincipal));
             }
             else
                 return new ApiResponse(Status400BadRequest, "Error while disabling 2fa");
         }
 
-        public async Task<ApiResponse> UserInfo(ClaimsPrincipal user)
+        public async Task<ApiResponse> UserViewModel(ClaimsPrincipal user)
         {
-            var userInfo = await BuildUserInfo(user);
-            return new ApiResponse(Status200OK, L["Operation Successful"], userInfo);
+            var userViewModel = await BuildUserViewModel(user);
+            return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
         }
-        public async Task<ApiResponse> UpdateUser(UserInfo userInfo)
+        public async Task<ApiResponse> UpdateUser(UserViewModel userViewModel)
         {
-            var user = await _userManager.FindByEmailAsync(userInfo.Email);
+            var user = await _userManager.FindByEmailAsync(userViewModel.Email);
 
             if (user == null)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", userInfo.Email]);
+                _logger.LogInformation(L["The user {0} doesn't exist", userViewModel.Email]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
-            user.FirstName = userInfo.FirstName;
-            user.LastName = userInfo.LastName;
-            user.Email = userInfo.Email;
+            user.FirstName = userViewModel.FirstName;
+            user.LastName = userViewModel.LastName;
+            user.Email = userViewModel.Email;
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -657,7 +657,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["Operation Successful"]);
         }
 
-        public async Task<ApiResponse> Create(RegisterDto parameters)
+        public async Task<ApiResponse> Create(RegisterViewModel parameters)
         {
             var user = new ApplicationUser
             {
@@ -725,7 +725,7 @@ namespace BlazorBoilerplate.Server.Managers
                 _logger.LogError($"New user email failed: {ex.GetBaseException().Message}");
             }
 
-            var userInfo = new UserInfo
+            var userViewModel = new UserViewModel
             {
                 UserId = user.Id,
                 IsAuthenticated = false,
@@ -736,9 +736,9 @@ namespace BlazorBoilerplate.Server.Managers
             };
 
             if (defaultRoleExists)
-                userInfo.Roles = new List<string> { DefaultRoleNames.User };
+                userViewModel.Roles = new List<string> { DefaultRoleNames.User };
 
-            return new ApiResponse(Status200OK, L["User {0} created", userInfo.UserName], userInfo);
+            return new ApiResponse(Status200OK, L["User {0} created", userViewModel.UserName], userViewModel);
         }
         public async Task<ApiResponse> Delete(string id)
         {
@@ -761,10 +761,10 @@ namespace BlazorBoilerplate.Server.Managers
         }
         public ApiResponse GetUser(ClaimsPrincipal user)
         {
-            UserInfo userInfo = user != null && user.Identity.IsAuthenticated
-                ? new UserInfo { UserName = user.Identity.Name, IsAuthenticated = true }
+            UserViewModel userViewModel = user != null && user.Identity.IsAuthenticated
+                ? new UserViewModel { UserName = user.Identity.Name, IsAuthenticated = true }
                 : LoggedOutUser;
-            return new ApiResponse(Status200OK, L["Operation Successful"], userInfo);
+            return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
         }
 
         public async Task<ApiResponse> ListRoles()
@@ -772,16 +772,16 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["Operation Successful"], await _roleManager.Roles.Select(x => x.Name).ToListAsync());
         }
 
-        public async Task<ApiResponse> Update(UserInfo userInfo)
+        public async Task<ApiResponse> Update(UserViewModel userViewModel)
         {
-            var appUser = await _userManager.FindByIdAsync(userInfo.UserId.ToString());
+            var appUser = await _userManager.FindByIdAsync(userViewModel.UserId.ToString());
 
-            if (appUser.UserName.ToLower() != DefaultUserNames.Administrator && userInfo.UserName.ToLower() != DefaultUserNames.Administrator)
-                appUser.UserName = userInfo.UserName;
+            if (appUser.UserName.ToLower() != DefaultUserNames.Administrator && userViewModel.UserName.ToLower() != DefaultUserNames.Administrator)
+                appUser.UserName = userViewModel.UserName;
 
-            appUser.FirstName = userInfo.FirstName;
-            appUser.LastName = userInfo.LastName;
-            appUser.Email = userInfo.Email;
+            appUser.FirstName = userViewModel.FirstName;
+            appUser.LastName = userViewModel.LastName;
+            appUser.Email = userViewModel.Email;
 
             try
             {
@@ -793,13 +793,13 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status500InternalServerError, "Error Updating User");
             }
 
-            if (userInfo.Roles != null)
+            if (userViewModel.Roles != null)
             {
                 try
                 {
                     var rolesToAdd = new List<string>();
                     var currentUserRoles = (List<string>)await _userManager.GetRolesAsync(appUser);
-                    foreach (var newUserRole in userInfo.Roles)
+                    foreach (var newUserRole in userViewModel.Roles)
                     {
                         if (!currentUserRoles.Contains(newUserRole))
                         {
@@ -814,7 +814,7 @@ namespace BlazorBoilerplate.Server.Managers
                     }
 
                     var rolesToRemove = currentUserRoles
-                        .Where(role => !userInfo.Roles.Contains(role)).ToList();
+                        .Where(role => !userViewModel.Roles.Contains(role)).ToList();
 
                     if (appUser.UserName.ToLower() == DefaultUserNames.Administrator)
                         rolesToRemove.Remove(DefaultUserNames.Administrator);
@@ -945,7 +945,7 @@ namespace BlazorBoilerplate.Server.Managers
             return result.ToString().ToUpperInvariant();
         }
 
-        private async Task<UserInfo> BuildUserInfo(ClaimsPrincipal userClaimsPrincipal)
+        private async Task<UserViewModel> BuildUserViewModel(ClaimsPrincipal userClaimsPrincipal)
         {
             var user = await _userManager.GetUserAsync(userClaimsPrincipal);
 
@@ -953,7 +953,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
 
-                var userInfo = new UserInfo
+                var userViewModel = new UserViewModel
                 {
                     IsAuthenticated = userClaimsPrincipal.Identity.IsAuthenticated,
                     UserName = user.UserName,
@@ -976,27 +976,27 @@ namespace BlazorBoilerplate.Server.Managers
                             .Select(c => c.Value).ToList()
                 };
 
-                if (!userInfo.TwoFactorEnabled)
+                if (!userViewModel.TwoFactorEnabled)
                 {
-                    if (!userInfo.HasAuthenticator)
+                    if (!userViewModel.HasAuthenticator)
                     {
                         await _userManager.ResetAuthenticatorKeyAsync(user);
                         unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
                     }
 
-                    userInfo.SharedKey = FormatKey(unformattedKey);
-                    userInfo.AuthenticatorUri = string.Format(
+                    userViewModel.SharedKey = FormatKey(unformattedKey);
+                    userViewModel.AuthenticatorUri = string.Format(
                         "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6",
                         _urlEncoder.Encode("BlazorBoilerplate"),
                         _urlEncoder.Encode(user.Email),
                         unformattedKey);
                 }
 
-                return userInfo;
+                return userViewModel;
             }
             else
             {
-                return new UserInfo();
+                return new UserViewModel();
             }
         }
     }

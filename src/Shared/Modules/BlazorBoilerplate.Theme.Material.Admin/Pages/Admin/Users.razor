@@ -53,21 +53,21 @@ else
 <MatDialog @bind-IsOpen="@createUserDialogOpen">
     <MatDialogTitle>@L["New User"]</MatDialogTitle>
     <MatDialogContent>
-        <EditForm Model="@registerParameters" OnValidSubmit="@CreateUserAsync">
+        <EditForm Model="@registerViewModel" OnValidSubmit="@CreateUserAsync">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@registerViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@registerViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@registerViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@registerViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
             </fieldset>
         </EditForm>
@@ -118,17 +118,17 @@ else
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@resetPasswordDialogOpen">
-    <MatDialogTitle>Manual Password Reset for @registerParameters.UserName</MatDialogTitle>
+    <MatDialogTitle>Manual Password Reset for @registerViewModel.UserName</MatDialogTitle>
     <MatDialogContent>
-        <EditForm Model="@registerParameters" OnValidSubmit="@ResetUserPasswordAsync">
+        <EditForm Model="@registerViewModel" OnValidSubmit="@ResetUserPasswordAsync">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@registerViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@registerViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
             </fieldset>
         </EditForm>
@@ -148,11 +148,11 @@ else
     bool deleteUserDialogOpen = false;
     bool resetPasswordDialogOpen = false;
 
-    List<UserInfo> users;
+    List<UserViewModel> users;
     List<RoleSelection> roleSelections { get; set; } = new List<RoleSelection>();
 
-    public UserInfo user { get; set; } = new UserInfo();
-    RegisterDto registerParameters { get; set; } = new RegisterDto();
+    public UserViewModel user { get; set; } = new UserViewModel();
+    RegisterViewModel registerViewModel { get; set; } = new RegisterViewModel();
 
     public class RoleSelection
     {
@@ -170,7 +170,7 @@ else
     {
         try
         {
-            var apiResponse = await Http.GetFromJsonAsync<ApiResponseDto<List<UserInfo>>>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
+            var apiResponse = await Http.GetFromJsonAsync<ApiResponseDto<List<UserViewModel>>>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -188,7 +188,7 @@ else
 
     public void OpenEditDialog(Guid userId)
     {
-        user = new UserInfo();
+        user = new UserViewModel();
         user = users.Where(x => x.UserId == userId).SingleOrDefault();
         foreach (var role in roleSelections)
             role.IsSelected = user.Roles.Contains(role.Name);
@@ -199,9 +199,9 @@ else
 
     public void OpenResetPasswordDialog(string userName, Guid userId)
     {
-        // reusing the registerParameters and User objects
-        registerParameters = new RegisterDto();  // reset object
-        registerParameters.UserName = userName;
+        // reusing the registerViewModel and User objects
+        registerViewModel = new RegisterViewModel();  // reset object
+        registerViewModel.UserName = userName;
         user.UserId = userId;
         resetPasswordDialogOpen = true;
     }
@@ -282,19 +282,19 @@ else
     {
         try
         {
-            if (registerParameters.Password != registerParameters.PasswordConfirm)
+            if (registerViewModel.Password != registerViewModel.PasswordConfirm)
             {
                 matToaster.Add(L["PasswordConfirmationFailed"], MatToastType.Danger);
                 return;
             }
 
-            var apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).Create(registerParameters);
+            var apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).Create(registerViewModel);
             if (apiResponse.IsSuccessStatusCode)
             {
                 matToaster.Add(apiResponse.Message, MatToastType.Success);
-                user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfo>(apiResponse.Result.ToString());
+                user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserViewModel>(apiResponse.Result.ToString());
                 users.Add(user);
-                registerParameters = new RegisterDto();
+                registerViewModel = new RegisterViewModel();
                 createUserDialogOpen = false;
             }
             else
@@ -312,13 +312,13 @@ else
     {
         try
         {
-            if (registerParameters.Password != registerParameters.PasswordConfirm)
+            if (registerViewModel.Password != registerViewModel.PasswordConfirm)
             {
                 matToaster.Add("Passwords Must Match", MatToastType.Warning);
             }
             else
             {
-                var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/AdminUserPasswordReset/{user.UserId}", registerParameters.Password);
+                var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/AdminUserPasswordReset/{user.UserId}", registerViewModel.Password);
 
                 if (apiResponse.IsSuccessStatusCode)
                     matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);

@@ -1,5 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using Microsoft.AspNetCore.Components;
@@ -78,47 +78,47 @@ namespace BlazorBoilerplate.Shared.Services
             return response;
         }
 
-        public async Task<ApiResponseDto> Create(RegisterDto parameters)
+        public async Task<ApiResponseDto> Create(RegisterViewModel parameters)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Create", parameters);
         }
 
-        public async Task<ApiResponseDto<LoginResponseModel>> Register(RegisterDto parameters)
+        public async Task<ApiResponseDto<LoginResponseModel>> Register(RegisterViewModel parameters)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto<LoginResponseModel>>("api/Account/Register", parameters);
         }
 
-        public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto parameters)
+        public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailViewModel parameters)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ConfirmEmail", parameters);
         }
 
-        public async Task<ApiResponseDto> ResetPassword(ResetPasswordDto parameters)
+        public async Task<ApiResponseDto> ResetPassword(ResetPasswordViewModel parameters)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ResetPassword", parameters);
         }
 
-        public async Task<ApiResponseDto> UpdatePassword(UpdatePasswordDto parameters)
+        public async Task<ApiResponseDto> UpdatePassword(UpdatePasswordViewModel parameters)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdatePassword", parameters);
         }
 
-        public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto parameters)
+        public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordViewModel parameters)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/ForgotPassword", parameters);
         }
 
-        public async Task<ApiResponseDto<UserInfo>> EnableAuthenticator(AuthenticatorVerificationCodeDto parameters)
+        public async Task<ApiResponseDto<UserViewModel>> EnableAuthenticator(AuthenticatorVerificationCodeViewModel parameters)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/EnableAuthenticator", parameters);
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/EnableAuthenticator", parameters);
         }
-        public async Task<ApiResponseDto<UserInfo>> DisableAuthenticator()
+        public async Task<ApiResponseDto<UserViewModel>> DisableAuthenticator()
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/DisableAuthenticator", null);
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/DisableAuthenticator", null);
         }
-        public async Task<ApiResponseDto<UserInfo>> ForgetTwoFactorClient()
+        public async Task<ApiResponseDto<UserViewModel>> ForgetTwoFactorClient()
         {
-            var response = await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/ForgetTwoFactorClient", null);
+            var response = await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/ForgetTwoFactorClient", null);
 
             if (!_navigationManager.IsWebAssembly())
                 if (response.IsSuccessStatusCode)
@@ -126,36 +126,36 @@ namespace BlazorBoilerplate.Shared.Services
 
             return response;
         }
-        public async Task<ApiResponseDto<UserInfo>> Enable2fa()
+        public async Task<ApiResponseDto<UserViewModel>> Enable2fa()
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/Enable2fa", null);
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Enable2fa", null);
         }
-        public async Task<ApiResponseDto<UserInfo>> Disable2fa()
+        public async Task<ApiResponseDto<UserViewModel>> Disable2fa()
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto<UserInfo>>("api/Account/Disable2fa", null);
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Disable2fa", null);
         }
 
-        public async Task<UserInfo> GetUserInfo()
+        public async Task<UserViewModel> GetUserViewModel()
         {
-            UserInfo userInfo = new UserInfo { IsAuthenticated = false, Roles = new List<string>() };
+            UserViewModel userViewModel = new UserViewModel { IsAuthenticated = false, Roles = new List<string>() };
 
-            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserInfo>>("api/Account/UserInfo");
+            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/UserViewModel");
 
             if (apiResponse.IsSuccessStatusCode)
-                userInfo = apiResponse.Result;
+                userViewModel = apiResponse.Result;
 
-            return userInfo;
+            return userViewModel;
         }
 
-        public async Task<UserInfo> GetUser()
+        public async Task<UserViewModel> GetUser()
         {
-            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserInfo>>("api/Account/GetUser");
+            var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/GetUser");
             return apiResponse.Result;
         }
 
-        public async Task<ApiResponseDto> UpdateUser(UserInfo userInfo)
+        public async Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdateUser", userInfo);
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdateUser", userViewModel);
         }
     }
 }

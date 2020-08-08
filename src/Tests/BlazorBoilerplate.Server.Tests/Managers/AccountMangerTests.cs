@@ -3,7 +3,7 @@ using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Server.Managers;
-using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Models.Account;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
@@ -91,15 +91,15 @@ namespace BlazorBoilerplate.Server.Tests.Managers
         {
             // Arange 
 
-            var confirmEmailDto = new ConfirmEmailDto();
-            confirmEmailDto.Token = null;
-            confirmEmailDto.UserId = null;
+            var confirmEmailViewModel = new ConfirmEmailViewModel();
+            confirmEmailViewModel.Token = null;
+            confirmEmailViewModel.UserId = null;
 
 
             // Act
 
             var response = await _accountManager
-                .ConfirmEmail(confirmEmailDto);
+                .ConfirmEmail(confirmEmailViewModel);
 
 
             // Assert

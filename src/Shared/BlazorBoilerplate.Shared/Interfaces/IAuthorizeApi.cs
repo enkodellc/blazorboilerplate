@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Models.Account;
 
 namespace BlazorBoilerplate.Shared.Interfaces
 {
@@ -10,21 +10,21 @@ namespace BlazorBoilerplate.Shared.Interfaces
         Task<ApiResponseDto<LoginResponseModel>> Login(LoginInputModel parameters);
         Task<ApiResponseDto> LoginWith2fa(LoginWith2faInputModel parameters);
         Task<ApiResponseDto> LoginWithRecoveryCode(LoginWithRecoveryCodeInputModel parameters);
-        Task<ApiResponseDto> Create(RegisterDto parameters);
-        Task<ApiResponseDto<LoginResponseModel>> Register(RegisterDto parameters);
-        Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto parameters);
-        Task<ApiResponseDto> ResetPassword(ResetPasswordDto parameters);
-        Task<ApiResponseDto> UpdatePassword(UpdatePasswordDto parameters);
+        Task<ApiResponseDto> Create(RegisterViewModel parameters);
+        Task<ApiResponseDto<LoginResponseModel>> Register(RegisterViewModel parameters);
+        Task<ApiResponseDto> ForgotPassword(ForgotPasswordViewModel parameters);
+        Task<ApiResponseDto> ResetPassword(ResetPasswordViewModel parameters);
+        Task<ApiResponseDto> UpdatePassword(UpdatePasswordViewModel parameters);
         Task<ApiResponseDto> Logout();
-        Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto parameters);
-        Task<UserInfo> GetUserInfo();
-        Task<ApiResponseDto> UpdateUser(UserInfo userInfo);
-        Task<UserInfo> GetUser();
+        Task<ApiResponseDto> ConfirmEmail(ConfirmEmailViewModel parameters);
+        Task<UserViewModel> GetUserViewModel();
+        Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel);
+        Task<UserViewModel> GetUser();
 
-        Task<ApiResponseDto<UserInfo>> EnableAuthenticator(AuthenticatorVerificationCodeDto parameters);
-        Task<ApiResponseDto<UserInfo>> DisableAuthenticator();
-        Task<ApiResponseDto<UserInfo>> ForgetTwoFactorClient();
-        Task<ApiResponseDto<UserInfo>> Enable2fa();
-        Task<ApiResponseDto<UserInfo>> Disable2fa();
+        Task<ApiResponseDto<UserViewModel>> EnableAuthenticator(AuthenticatorVerificationCodeViewModel parameters);
+        Task<ApiResponseDto<UserViewModel>> DisableAuthenticator();
+        Task<ApiResponseDto<UserViewModel>> ForgetTwoFactorClient();
+        Task<ApiResponseDto<UserViewModel>> Enable2fa();
+        Task<ApiResponseDto<UserViewModel>> Disable2fa();
     }
 }

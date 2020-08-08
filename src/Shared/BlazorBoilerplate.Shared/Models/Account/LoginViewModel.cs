@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BlazorBoilerplate.Shared.Dto.Account
+namespace BlazorBoilerplate.Shared.Models.Account
 {
     public class LoginViewModel : LoginInputModel
     {

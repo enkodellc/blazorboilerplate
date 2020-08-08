@@ -4,7 +4,7 @@ using BlazorBoilerplate.Theme.Material.Demo.Hubs;
 using System.Collections.Generic;
 using System;
 using Microsoft.JSInterop;
-using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Dto.Sample;
 using Microsoft.AspNetCore.Components.Authorization;
 using BlazorBoilerplate.Shared.Providers;
@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Pages
         [CascadingParameter]
         private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-        UserInfo UserInfo { get; set; } = new UserInfo();
+        UserViewModel userViewModel { get; set; } = new UserViewModel();
 
         ChatClient Client { get; set; }
 
@@ -35,7 +35,7 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Pages
         
         protected override async Task OnInitializedAsync()
         {
-            UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserInfo();
+            userViewModel = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
 
             await AuthenticationStateTask;
             await Chat();
@@ -82,7 +82,7 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Pages
             bool isMine = false;
             if (!string.IsNullOrWhiteSpace(e.Username))
             {
-                isMine = string.Equals(e.Username, UserInfo.UserName, StringComparison.CurrentCultureIgnoreCase);
+                isMine = string.Equals(e.Username, userViewModel.UserName, StringComparison.CurrentCultureIgnoreCase);
             }
 
             var newMessage = new MessageDto(e.Id, e.Username, e.Message, isMine);

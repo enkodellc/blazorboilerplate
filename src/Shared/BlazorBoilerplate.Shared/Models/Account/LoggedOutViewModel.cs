@@ -1,4 +1,4 @@
-﻿namespace BlazorBoilerplate.Shared.Dto.Account
+﻿namespace BlazorBoilerplate.Shared.Models.Account
 {
     public class LoggedOutViewModel : AccountFormModel
     {

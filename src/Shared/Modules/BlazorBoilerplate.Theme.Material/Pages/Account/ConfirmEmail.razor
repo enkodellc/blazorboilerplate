@@ -1,6 +1,6 @@
 ﻿@page "/account/confirmemail"
 @page "/account/confirmemail/{UserId}"
-@using BlazorBoilerplate.Shared.Dto.Account
+@using BlazorBoilerplate.Shared.Models.Account
 
 @layout LoginLayout
 @inject NavigationManager navigationManager
@@ -15,15 +15,15 @@
         <br />
         <h4>@L["Confirm Email"]</h4>
     </div>
-    <EditForm Model="@confirmEmailParameters" OnValidSubmit="@SendConfirmation">
+    <EditForm Model="@confirmEmailViewModel" OnValidSubmit="@SendConfirmation">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-Value="@confirmEmailParameters.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@confirmEmailViewModel.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@confirmEmailParameters.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@confirmEmailViewModel.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group d-flex justify-content-end">
                 <MatButton Type="submit" Raised="true" Disabled="@disableConfirmButton">@L["Send Confirmation"]</MatButton>
@@ -33,7 +33,7 @@
 </MatCard>
 
 @code {
-    ConfirmEmailDto confirmEmailParameters { get; set; } = new ConfirmEmailDto();
+    ConfirmEmailViewModel confirmEmailViewModel { get; set; } = new ConfirmEmailViewModel();
     bool disableConfirmButton = false;
 
     [Parameter]
@@ -48,7 +48,7 @@
         if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(token))
         {
             disableConfirmButton = true;
-            confirmEmailParameters = new ConfirmEmailDto
+            confirmEmailViewModel = new ConfirmEmailViewModel
             {
                 Token = token,
                 UserId = this.UserId
@@ -61,7 +61,7 @@
     {
         try
         {
-            var apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).ConfirmEmail(confirmEmailParameters);
+            var apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).ConfirmEmail(confirmEmailViewModel);
 
             if (apiResponse.IsSuccessStatusCode)
             {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Models.Account;
 
 namespace BlazorBoilerplate.Shared.Providers
 {
@@ -52,83 +52,83 @@ namespace BlazorBoilerplate.Shared.Providers
             return apiResponse;
         }
 
-        public async Task<ApiResponseDto<LoginResponseModel>> Register(RegisterDto parameters)
+        public async Task<ApiResponseDto<LoginResponseModel>> Register(RegisterViewModel parameters)
         {
             ApiResponseDto<LoginResponseModel> apiResponse = await _authorizeApi.Register(parameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
-        public async Task<ApiResponseDto> Create(RegisterDto parameters)
+        public async Task<ApiResponseDto> Create(RegisterViewModel parameters)
         {
             ApiResponseDto apiResponse = await _authorizeApi.Create(parameters);
             return apiResponse;
         }
 
-        public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailDto parameters)
+        public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailViewModel parameters)
         {
             ApiResponseDto apiResponse = await _authorizeApi.ConfirmEmail(parameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
-        public async Task<ApiResponseDto> ResetPassword(ResetPasswordDto parameters)
+        public async Task<ApiResponseDto> ResetPassword(ResetPasswordViewModel parameters)
         {
             ApiResponseDto apiResponse = await _authorizeApi.ResetPassword(parameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
-        public async Task<ApiResponseDto> UpdatePassword(UpdatePasswordDto parameters)
+        public async Task<ApiResponseDto> UpdatePassword(UpdatePasswordViewModel parameters)
         {
             ApiResponseDto apiResponse = await _authorizeApi.UpdatePassword(parameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
-        public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordDto parameters)
+        public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordViewModel parameters)
         {
             ApiResponseDto apiResponse = await _authorizeApi.ForgotPassword(parameters);
             return apiResponse;
         }
 
-        public async Task<ApiResponseDto<UserInfo>> EnableAuthenticator(AuthenticatorVerificationCodeDto parameters)
+        public async Task<ApiResponseDto<UserViewModel>> EnableAuthenticator(AuthenticatorVerificationCodeViewModel parameters)
         {
             return await _authorizeApi.EnableAuthenticator(parameters);
         }
 
-        public async Task<ApiResponseDto<UserInfo>> DisableAuthenticator()
+        public async Task<ApiResponseDto<UserViewModel>> DisableAuthenticator()
         {
             return await _authorizeApi.DisableAuthenticator();
         }
 
-        public async Task<ApiResponseDto<UserInfo>> ForgetTwoFactorClient()
+        public async Task<ApiResponseDto<UserViewModel>> ForgetTwoFactorClient()
         {
             return await _authorizeApi.ForgetTwoFactorClient();
         }
 
-        public async Task<ApiResponseDto<UserInfo>> Enable2fa()
+        public async Task<ApiResponseDto<UserViewModel>> Enable2fa()
         {
             return await _authorizeApi.Enable2fa();
         }
-        public async Task<ApiResponseDto<UserInfo>> Disable2fa()
+        public async Task<ApiResponseDto<UserViewModel>> Disable2fa()
         {
             return await _authorizeApi.Disable2fa();
         }
 
-        public async Task<UserInfo> GetUserInfo()
+        public async Task<UserViewModel> GetUserViewModel()
         {
-            UserInfo userInfo = await _authorizeApi.GetUser();
-            bool IsAuthenticated = userInfo.IsAuthenticated;
+            UserViewModel userViewModel = await _authorizeApi.GetUser();
+            bool IsAuthenticated = userViewModel.IsAuthenticated;
             if (IsAuthenticated)
             {
-                userInfo = await _authorizeApi.GetUserInfo();
+                userViewModel = await _authorizeApi.GetUserViewModel();
             }
             else
             {
-                userInfo = new UserInfo { IsAuthenticated = false, Roles = new List<string>() };
+                userViewModel = new UserViewModel { IsAuthenticated = false, Roles = new List<string>() };
             }
-            return userInfo;
+            return userViewModel;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -136,10 +136,10 @@ namespace BlazorBoilerplate.Shared.Providers
             var identity = new ClaimsIdentity();
             try
             {
-                var userInfo = await GetUserInfo();
-                if (userInfo.IsAuthenticated)
+                var userViewModel = await GetUserViewModel();
+                if (userViewModel.IsAuthenticated)
                 {
-                    var claims = new[] { new Claim(ClaimTypes.Name, userInfo.UserName) }.Concat(userInfo.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
+                    var claims = new[] { new Claim(ClaimTypes.Name, userViewModel.UserName) }.Concat(userViewModel.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
                     identity = new ClaimsIdentity(claims, "Server authentication", "name", "role");
                 }
             }
@@ -151,9 +151,9 @@ namespace BlazorBoilerplate.Shared.Providers
             return new AuthenticationState(new ClaimsPrincipal(identity));
         }
 
-        public async Task<ApiResponseDto> UpdateUser(UserInfo userInfo)
+        public async Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel)
         {
-            ApiResponseDto apiResponse = await _authorizeApi.UpdateUser(userInfo);
+            ApiResponseDto apiResponse = await _authorizeApi.UpdateUser(userViewModel);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }

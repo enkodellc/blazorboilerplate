@@ -8,7 +8,7 @@
 
 <h1>@L["User Profile"]</h1>
 <p>User profile management.</p>
-@if (userInfo == null)
+@if (userViewModel == null)
 {
     <LoadingBackground ShowLogoBox="true"></LoadingBackground>
 }
@@ -16,35 +16,35 @@ else
 {
     <div class="form-group">
         <MatButton Type="submit" form="mainForm" Raised="true">@L["Update"]</MatButton>
-        @if (userInfo.HasPassword)
+        @if (userViewModel.HasPassword)
         {
             <MatButton Icon="rotate_right" OnClick="@(() => OpenUpdatePasswordDialog())" Label=@L["Change Password"] Raised="true"></MatButton>
         }
-        @if (userInfo.HasAuthenticator)
+        @if (userViewModel.HasAuthenticator)
         {
             <MatButton Icon="rotate_right" OnClick="@(() => DisableAuthenticator())" Label=@L["ResetAuthenticator"] Raised="true"></MatButton>
         }
     </div>
-    <EditForm id="mainForm" Model="@userInfo" OnValidSubmit="@UpdateUser">
+    <EditForm id="mainForm" Model="@userViewModel" OnValidSubmit="@UpdateUser">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-Value="@userInfo.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
+                <MatTextField @bind-Value="@userViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@userInfo.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@userViewModel.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@userInfo.FirstName" Label=@L["FirstName"] FullWidth="true"></MatTextField>
+                <MatTextField @bind-Value="@userViewModel.FirstName" Label=@L["FirstName"] FullWidth="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@userInfo.LastName" Label=@L["LastName"] FullWidth="true"></MatTextField>
+                <MatTextField @bind-Value="@userViewModel.LastName" Label=@L["LastName"] FullWidth="true"></MatTextField>
             </div>
             <div class="form-group">
                 <strong>@L["Roles"]</strong><br />
                 <MatChipSet>
-                    @foreach (var role in userInfo.Roles)
+                    @foreach (var role in userViewModel.Roles)
                     {
                         <MatChip Label="@role"></MatChip>
                     }
@@ -52,22 +52,22 @@ else
             </div>
         </fieldset>
     </EditForm>
-    @if (userInfo.TwoFactorEnabled)
+    @if (userViewModel.TwoFactorEnabled)
     {
         <div class="form-group">
             <MatSlideToggle @bind-Value="@TwoFactorEnabled" Label=@L["TwoFactorAuthentication"] />
         </div>
-        @if (userInfo.BrowserRemembered)
+        @if (userViewModel.BrowserRemembered)
         {
             <div class="form-group">
                 <MatSlideToggle @bind-Value="@BrowserRemembered" Label=@L["BrowserRemembered"] />
             </div>
         }
-        if (userInfo.RecoveryCodes != null)
+        if (userViewModel.RecoveryCodes != null)
         {
             <div class="form-group">
                 <MatChipSet>
-                    @foreach (var rcode in userInfo.RecoveryCodes)
+                    @foreach (var rcode in userViewModel.RecoveryCodes)
                     {
                         <MatChip Label="@rcode"></MatChip>
                     }
@@ -77,7 +77,7 @@ else
         else
         {
             <div class="form-group">
-                <span>@L["RecoveryCodesLeft"]</span> @userInfo.CountRecoveryCodes
+                <span>@L["RecoveryCodesLeft"]</span> @userViewModel.CountRecoveryCodes
             </div>
         }
     }
@@ -87,31 +87,31 @@ else
         <p>
             Download a two-factor authenticator app like Microsoft Authenticator or Google Authenticator.
         </p>
-        <p>Scan the QR Code or enter this key <kbd>@userInfo.SharedKey</kbd> into your two factor authenticator app. Spaces and casing do not matter.</p>
-        <img src="@($"https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={userInfo.AuthenticatorUri}")" />
+        <p>Scan the QR Code or enter this key <kbd>@userViewModel.SharedKey</kbd> into your two factor authenticator app. Spaces and casing do not matter.</p>
+        <img src="@($"https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={userViewModel.AuthenticatorUri}")" />
         <p>
             Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
             with a unique code. Enter the code in the confirmation box below.
         </p>
-        <MatTextField @bind-Value="@verificationCodeParameters.Code" Label=@L["Code"] FullWidth="true"></MatTextField>
+        <MatTextField @bind-Value="@authenticatorVerificationCodeViewModel.Code" Label=@L["Code"] FullWidth="true"></MatTextField>
         <MatButton OnClick="@EnableAuthenticator">@L["Verify code"]</MatButton>
     }
 
     <MatDialog @bind-IsOpen="@updatePasswordDialogOpen">
-        <MatDialogTitle>Password Update for @userInfo.UserName</MatDialogTitle>
+        <MatDialogTitle>Password Update for @userViewModel.UserName</MatDialogTitle>
         <MatDialogContent>
-            <EditForm Model="@passwordParameters" OnValidSubmit="@UpdatePassword">
+            <EditForm Model="@updatePasswordViewModel" OnValidSubmit="@UpdatePassword">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <fieldset>
                     <div class="form-group">
-                        <MatTextField @bind-Value="@passwordParameters.CurrentPassword" Label=@L["CurrentPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                        <MatTextField @bind-Value="@updatePasswordViewModel.CurrentPassword" Label=@L["CurrentPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                     </div>
                     <div class="form-group">
-                        <MatTextField @bind-Value="@passwordParameters.NewPassword" Label=@L["NewPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                        <MatTextField @bind-Value="@updatePasswordViewModel.NewPassword" Label=@L["NewPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                     </div>
                     <div class="form-group">
-                        <MatTextField @bind-Value="@passwordParameters.NewPasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                        <MatTextField @bind-Value="@updatePasswordViewModel.NewPasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                     </div>
                 </fieldset>
             </EditForm>
@@ -124,18 +124,18 @@ else
 
 }
 @code {
-    UserInfo userInfo;
+    UserViewModel userViewModel;
     bool updatePasswordDialogOpen = false;
-    UpdatePasswordDto passwordParameters { get; set; } = new UpdatePasswordDto();
-    AuthenticatorVerificationCodeDto verificationCodeParameters { get; set; } = new AuthenticatorVerificationCodeDto();
+    UpdatePasswordViewModel updatePasswordViewModel { get; set; } = new UpdatePasswordViewModel();
+    AuthenticatorVerificationCodeViewModel authenticatorVerificationCodeViewModel { get; set; } = new AuthenticatorVerificationCodeViewModel();
     IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
 
     public bool BrowserRemembered
     {
-        get { return userInfo.BrowserRemembered; }
+        get { return userViewModel.BrowserRemembered; }
         set
         {
-            if (userInfo.BrowserRemembered != value)
+            if (userViewModel.BrowserRemembered != value)
                 ForgetTwoFactorClient().ContinueWith(t =>
                 {
                     if (t.IsFaulted)
@@ -146,10 +146,10 @@ else
 
     public bool TwoFactorEnabled
     {
-        get { return userInfo.TwoFactorEnabled; }
+        get { return userViewModel.TwoFactorEnabled; }
         set
         {
-            if (userInfo.TwoFactorEnabled != value)
+            if (userViewModel.TwoFactorEnabled != value)
                 EnableDisable2fa().ContinueWith(t =>
                 {
                     if (t.IsFaulted)
@@ -163,18 +163,18 @@ else
     {
         identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
 
-        userInfo = await identityAuthenticationStateProvider.GetUserInfo();
+        userViewModel = await identityAuthenticationStateProvider.GetUserViewModel();
     }
 
     void OpenUpdatePasswordDialog()
     {
-        passwordParameters = new UpdatePasswordDto();
+        updatePasswordViewModel = new UpdatePasswordViewModel();
         updatePasswordDialogOpen = true;
     }
 
     async Task UpdatePassword()
     {
-        if (passwordParameters.NewPassword != passwordParameters.NewPasswordConfirm)
+        if (updatePasswordViewModel.NewPassword != updatePasswordViewModel.NewPasswordConfirm)
         {
             matToaster.Add(L["PasswordConfirmationFailed"], MatToastType.Warning);
         }
@@ -182,7 +182,7 @@ else
         {
             try
             {
-                var apiResponse = await identityAuthenticationStateProvider.UpdatePassword(passwordParameters);
+                var apiResponse = await identityAuthenticationStateProvider.UpdatePassword(updatePasswordViewModel);
 
                 if (apiResponse.IsSuccessStatusCode)
                     matToaster.Add(L["UpdatePasswordSuccessful"], MatToastType.Success);
@@ -202,7 +202,7 @@ else
     {
         try
         {
-            var apiResponse = await identityAuthenticationStateProvider.UpdateUser(userInfo);
+            var apiResponse = await identityAuthenticationStateProvider.UpdateUser(userViewModel);
 
             if (apiResponse.IsSuccessStatusCode)
                 matToaster.Add(L["Operation Successful"], MatToastType.Success);
@@ -217,12 +217,12 @@ else
 
     async Task EnableAuthenticator()
     {
-        var apiResponse = await identityAuthenticationStateProvider.EnableAuthenticator(verificationCodeParameters);
+        var apiResponse = await identityAuthenticationStateProvider.EnableAuthenticator(authenticatorVerificationCodeViewModel);
 
         if (apiResponse.IsSuccessStatusCode)
         {
             matToaster.Add(L["Operation Successful"], MatToastType.Success);
-            userInfo = apiResponse.Result;
+            userViewModel = apiResponse.Result;
             StateHasChanged();
         }
         else
@@ -239,8 +239,8 @@ else
             if (apiResponse.IsSuccessStatusCode)
             {
                 matToaster.Add(L["Operation Successful"], MatToastType.Success);
-                userInfo = apiResponse.Result;
-                verificationCodeParameters = new AuthenticatorVerificationCodeDto();
+                userViewModel = apiResponse.Result;
+                authenticatorVerificationCodeViewModel = new AuthenticatorVerificationCodeViewModel();
                 StateHasChanged();
             }
             else
@@ -255,14 +255,14 @@ else
 
     async Task ForgetTwoFactorClient()
     {
-        if (userInfo.BrowserRemembered)
+        if (userViewModel.BrowserRemembered)
         {
             var apiResponse = await identityAuthenticationStateProvider.ForgetTwoFactorClient();
 
             if (apiResponse.IsSuccessStatusCode)
             {
                 matToaster.Add(L["Operation Successful"], MatToastType.Success);
-                userInfo = apiResponse.Result;
+                userViewModel = apiResponse.Result;
                 StateHasChanged();
             }
             else
@@ -274,12 +274,12 @@ else
 
     async Task EnableDisable2fa()
     {
-        var apiResponse = userInfo.TwoFactorEnabled ? await identityAuthenticationStateProvider.Disable2fa() : await identityAuthenticationStateProvider.Enable2fa();
+        var apiResponse = userViewModel.TwoFactorEnabled ? await identityAuthenticationStateProvider.Disable2fa() : await identityAuthenticationStateProvider.Enable2fa();
 
         if (apiResponse.IsSuccessStatusCode)
         {
             matToaster.Add(L["Operation Successful"], MatToastType.Success);
-            userInfo = apiResponse.Result;
+            userViewModel = apiResponse.Result;
             StateHasChanged();
         }
         else

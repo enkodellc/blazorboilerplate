@@ -1,5 +1,5 @@
 using BlazorBoilerplate.Infrastructure.Server;
-using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

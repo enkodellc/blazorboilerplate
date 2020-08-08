@@ -2,7 +2,7 @@
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Localization;
-using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Models.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -97,36 +97,36 @@ namespace BlazorBoilerplate.Server.Controllers
         // POST: api/Account/Register
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<ApiResponse> Register(RegisterDto parameters)
+        public async Task<ApiResponse> Register(RegisterViewModel parameters)
             => ModelState.IsValid ? await _accountManager.Register(parameters) : new ApiResponse(Status400BadRequest, L["InvalidData"]);
 
         // POST: api/Account/ConfirmEmail
         [HttpPost("ConfirmEmail")]
         [AllowAnonymous]
-        public async Task<ApiResponse> ConfirmEmail(ConfirmEmailDto parameters)
+        public async Task<ApiResponse> ConfirmEmail(ConfirmEmailViewModel parameters)
             => ModelState.IsValid ? await _accountManager.ConfirmEmail(parameters) : _invalidData;
 
         // POST: api/Account/ForgotPassword
         [HttpPost("ForgotPassword")]
         [AllowAnonymous]
-        public async Task<ApiResponse> ForgotPassword(ForgotPasswordDto parameters)
+        public async Task<ApiResponse> ForgotPassword(ForgotPasswordViewModel parameters)
             => ModelState.IsValid ? await _accountManager.ForgotPassword(parameters) : _invalidData;
 
         //api/Account/ResetPassword
         [HttpPost("ResetPassword")]
         [AllowAnonymous]
-        public async Task<ApiResponse> ResetPassword(ResetPasswordDto parameters)
+        public async Task<ApiResponse> ResetPassword(ResetPasswordViewModel parameters)
         => ModelState.IsValid ? await _accountManager.ResetPassword(parameters) : _invalidData;
 
         //api/Account/UpdatePassword
         [HttpPost("UpdatePassword")]
-        public async Task<ApiResponse> UpdatePassword(UpdatePasswordDto parameters)
+        public async Task<ApiResponse> UpdatePassword(UpdatePasswordViewModel parameters)
         => ModelState.IsValid ? await _accountManager.UpdatePassword(User, parameters) : _invalidData;
 
         [HttpPost("EnableAuthenticator")]
         [ProducesResponseType(Status200OK)]
         [ProducesResponseType(Status401Unauthorized)]
-        public async Task<ApiResponse> EnableAuthenticator(AuthenticatorVerificationCodeDto parameters)
+        public async Task<ApiResponse> EnableAuthenticator(AuthenticatorVerificationCodeViewModel parameters)
         => ModelState.IsValid ? await _accountManager.EnableAuthenticator(User, parameters) : _invalidData;
 
         [HttpPost("DisableAuthenticator")]
@@ -153,23 +153,23 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> Disable2fa()
         => await _accountManager.Disable2fa(User);
 
-        [HttpGet("UserInfo")]
+        [HttpGet("UserViewModel")]
         [ProducesResponseType(Status200OK)]
         [ProducesResponseType(Status401Unauthorized)]
-        public async Task<ApiResponse> UserInfo()
-        => await _accountManager.UserInfo(User);
+        public async Task<ApiResponse> UserViewModel()
+        => await _accountManager.UserViewModel(User);
 
         // DELETE: api/Account/5
         [HttpPost("UpdateUser")]
         [Authorize]
-        public async Task<ApiResponse> UpdateUser(UserInfo userInfo)
-        => ModelState.IsValid ? await _accountManager.UpdateUser(userInfo) : _invalidData;
+        public async Task<ApiResponse> UpdateUser(UserViewModel userViewModel)
+        => ModelState.IsValid ? await _accountManager.UpdateUser(userViewModel) : _invalidData;
 
         ///----------Admin User Management Interface Methods
         // POST: api/Account/Create
         [HttpPost("Create")]
         [Authorize(Permissions.User.Create)]
-        public async Task<ApiResponse> Create(RegisterDto parameters)
+        public async Task<ApiResponse> Create(RegisterViewModel parameters)
         => ModelState.IsValid ? await _accountManager.Create(parameters) : _invalidData;
 
         // DELETE: api/Account/5
@@ -190,8 +190,8 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpPut]
         [Authorize(Permissions.User.Update)]
         // PUT: api/Account/5
-        public async Task<ApiResponse> Update([FromBody] UserInfo userInfo)
-        => ModelState.IsValid ? await _accountManager.Update(userInfo) : _invalidData;
+        public async Task<ApiResponse> Update([FromBody] UserViewModel userViewModel)
+        => ModelState.IsValid ? await _accountManager.Update(userViewModel) : _invalidData;
 
         [HttpPost("AdminUserPasswordReset/{id}")]
         [Authorize(Permissions.User.Update)]

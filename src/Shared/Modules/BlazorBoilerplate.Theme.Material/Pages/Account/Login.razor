@@ -62,11 +62,11 @@
                             <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
                         </MatExpansionPanelSummary>
                         <MatExpansionPanelDetails>
-                            <EditForm Model="@forgotPasswordParameters" OnValidSubmit="@ForgotPassword">
+                            <EditForm Model="@forgotPasswordViewModel" OnValidSubmit="@ForgotPassword">
                                 <DataAnnotationsValidator />
                                 <ValidationSummary />
                                 <div class="form-group">
-                                    <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                                    <MatTextField @bind-Value="@forgotPasswordViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                                 </div>
                                 <div class="form-group">
                                     <MatButton class="float-right" Type="submit" Raised="true">@L["Submit"]</MatButton>
@@ -134,7 +134,7 @@
     bool RedirectInProgress = false;
     static bool LoginSuccess = false;
     LoginViewModel loginViewModel { get; set; } = new LoginViewModel();
-    ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
+    ForgotPasswordViewModel forgotPasswordViewModel { get; set; } = new ForgotPasswordViewModel();
 
     string ReturnUrl;
 
@@ -257,9 +257,9 @@
     {
         try
         {
-            await identityAuthenticationStateProvider.ForgotPassword(forgotPasswordParameters);
+            await identityAuthenticationStateProvider.ForgotPassword(forgotPasswordViewModel);
             matToaster.Add(L["ForgotPasswordEmailSent"], MatToastType.Success);
-            forgotPasswordParameters.Email = string.Empty;
+            forgotPasswordViewModel.Email = string.Empty;
             forgotPasswordToggle = false;
         }
         catch (Exception ex)

@@ -1,9 +1,9 @@
 ﻿using BlazorBoilerplate.Localization;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared.Dto.Account
+namespace BlazorBoilerplate.Shared.Models.Account
 {
-    public class UpdatePasswordDto
+    public class UpdatePasswordViewModel
     {
         [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "ErrorInvalidLength", MinimumLength = 6)]

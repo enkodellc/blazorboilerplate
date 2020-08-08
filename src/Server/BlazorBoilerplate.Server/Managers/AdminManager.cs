@@ -5,7 +5,7 @@ using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Server.Aop;
-using BlazorBoilerplate.Shared.Dto.Account;
+using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Core;
@@ -62,10 +62,10 @@ namespace BlazorBoilerplate.Server.Managers
             var count = userList.Count();
             var listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
 
-            var userDtoList = new List<UserInfo>(); // This sucks, but Select isn't async happy, and the passing into a 'ProcessEventAsync' is another level of misdirection
+            var userDtoList = new List<UserViewModel>(); // This sucks, but Select isn't async happy, and the passing into a 'ProcessEventAsync' is another level of misdirection
             foreach (var applicationUser in listResponse)
             {
-                userDtoList.Add(new UserInfo
+                userDtoList.Add(new UserViewModel
                 {
                     FirstName = applicationUser.FirstName,
                     LastName = applicationUser.LastName,

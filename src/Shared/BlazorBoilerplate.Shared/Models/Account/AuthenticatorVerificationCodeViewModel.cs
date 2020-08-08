@@ -1,9 +1,9 @@
 ﻿using BlazorBoilerplate.Localization;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared.Dto.Account
+namespace BlazorBoilerplate.Shared.Models.Account
 {
-    public class AuthenticatorVerificationCodeDto
+    public class AuthenticatorVerificationCodeViewModel
     {
         [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         [StringLength(7, ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "ErrorInvalidLength", MinimumLength = 6)]

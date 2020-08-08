@@ -1,9 +1,9 @@
 ﻿using BlazorBoilerplate.Localization;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared.Dto.Account
+namespace BlazorBoilerplate.Shared.Models.Account
 {
-    public class ForgotPasswordDto
+    public class ForgotPasswordViewModel
     {
         [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         [DataType(DataType.EmailAddress)]

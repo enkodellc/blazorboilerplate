@@ -12,21 +12,21 @@
         <br />
         <h4>@L["Registration"]</h4>
     </div>
-    <EditForm Model="@registerParameters" OnValidSubmit="@RegisterUser">
+    <EditForm Model="@registerViewModel" OnValidSubmit="@RegisterUser">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-Value="@registerParameters.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@registerViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@registerParameters.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="@registerViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@registerParameters.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
             <div class="form-group">
-                <MatTextField @bind-Value="@registerParameters.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                <MatTextField @bind-Value="@registerViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
             </div>
             <div class="form-group d-flex justify-content-end">
                 <MatButton Type="submit" Raised="true">@L["Register"]</MatButton>
@@ -40,16 +40,16 @@
 </MatCard>
 
 @code {
-    RegisterDto registerParameters { get; set; } = new RegisterDto();
+    RegisterViewModel registerViewModel { get; set; } = new RegisterViewModel();
 
     async Task RegisterUser()
     {
         try
         {
-            var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerParameters);
+            var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerViewModel);
             if (response.IsSuccessStatusCode)
             {
-                matToaster.Add("New User Email Verification was sent to: " + registerParameters.Email, MatToastType.Success, L["UserCreationSuccessful"]);
+                matToaster.Add("New User Email Verification was sent to: " + registerViewModel.Email, MatToastType.Success, L["UserCreationSuccessful"]);
                 navigationManager.NavigateTo("");
             }
             else

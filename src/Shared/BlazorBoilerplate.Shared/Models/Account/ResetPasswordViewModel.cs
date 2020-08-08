@@ -1,9 +1,9 @@
 ﻿using BlazorBoilerplate.Localization;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared.Dto.Account
+namespace BlazorBoilerplate.Shared.Models.Account
 {
-    public class ResetPasswordDto
+    public class ResetPasswordViewModel
     {
         [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
         public string UserId { get; set; }

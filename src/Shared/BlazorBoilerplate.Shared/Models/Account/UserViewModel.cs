@@ -1,11 +1,12 @@
 ﻿using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorBoilerplate.Shared.Dto.Account
+namespace BlazorBoilerplate.Shared.Models.Account
 {
-    public class UserInfo : BaseDto
+    public class UserViewModel : BaseDto
     {
         public bool IsAuthenticated { get; set; }
         public Guid UserId { get; set; }
