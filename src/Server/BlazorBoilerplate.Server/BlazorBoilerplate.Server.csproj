@@ -123,4 +123,8 @@
     </Compile>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="del $(ProjectDir)Logs\*.* /q" />
+  </Target>
+
 </Project>
