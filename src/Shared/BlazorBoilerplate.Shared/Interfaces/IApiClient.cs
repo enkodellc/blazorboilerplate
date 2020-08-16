@@ -19,6 +19,8 @@ namespace BlazorBoilerplate.Shared.Interfaces
         Task<UserProfile> GetUserProfile();
 
         Task<QueryResult<TenantSetting>> GetTenantSettings();
+        Task<QueryResult<ApplicationUser>> GetUsers(Expression<Func<ApplicationUser, bool>> predicate = null, int? take = null, int? skip = null);
+        Task<QueryResult<ApplicationRole>> GetRoles(Expression<Func<ApplicationRole, bool>> predicate = null, int? take = null, int? skip = null);
 
         Task<QueryResult<DbLog>> GetLogs(Expression<Func<DbLog, bool>> predicate = null, int? take = null, int? skip = null);
 

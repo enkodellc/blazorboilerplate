@@ -1,8 +1,7 @@
-﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Infrastructure.Server.Models;
+﻿using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Models.Account;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -11,12 +10,12 @@ namespace BlazorBoilerplate.Infrastructure.Server
     public interface IAccountManager
     {
         Task<ApiResponse> BuildLoginViewModel(string returnUrl);
-        Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal user, HttpContext httpContext, string logoutId);
+        Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal authenticatedUser, HttpContext httpContext, string logoutId);
 
         Task<ApiResponse> Login(LoginInputModel parameters);
         Task<ApiResponse> LoginWith2fa(LoginWith2faInputModel parameters);
         Task<ApiResponse> LoginWithRecoveryCode(LoginWithRecoveryCodeInputModel parameters);
-        Task<ApiResponse> Logout(ClaimsPrincipal user);
+        Task<ApiResponse> Logout(ClaimsPrincipal authenticatedUser);
 
         Task<ApiResponse> Register(RegisterViewModel parameters);
 
@@ -24,15 +23,15 @@ namespace BlazorBoilerplate.Infrastructure.Server
 
         Task<ApiResponse> ForgotPassword(ForgotPasswordViewModel parameters);
         Task<ApiResponse> ResetPassword(ResetPasswordViewModel parameters);
-        Task<ApiResponse> UpdatePassword(ClaimsPrincipal user, UpdatePasswordViewModel parameters);
+        Task<ApiResponse> UpdatePassword(ClaimsPrincipal authenticatedUser, UpdatePasswordViewModel parameters);
 
-        Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal user, AuthenticatorVerificationCodeViewModel parameters);
-        Task<ApiResponse> DisableAuthenticator(ClaimsPrincipal user);
-        Task<ApiResponse> ForgetTwoFactorClient(ClaimsPrincipal user);
-        Task<ApiResponse> Enable2fa(ClaimsPrincipal user);
-        Task<ApiResponse> Disable2fa(ClaimsPrincipal user);
+        Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal authenticatedUser, AuthenticatorVerificationCodeViewModel parameters);
+        Task<ApiResponse> DisableAuthenticator(ClaimsPrincipal authenticatedUser);
+        Task<ApiResponse> ForgetTwoFactorClient(ClaimsPrincipal authenticatedUser);
+        Task<ApiResponse> Enable2fa(ClaimsPrincipal authenticatedUser);
+        Task<ApiResponse> Disable2fa(ClaimsPrincipal authenticatedUser);
 
-        Task<ApiResponse> UserViewModel(ClaimsPrincipal user);
+        Task<ApiResponse> UserViewModel(ClaimsPrincipal authenticatedUser);
 
         Task<ApiResponse> UpdateUser(UserViewModel userViewModel);
         
@@ -42,13 +41,11 @@ namespace BlazorBoilerplate.Infrastructure.Server
 
         Task<ApiResponse> Delete(string id);
 
-        ApiResponse GetUser(ClaimsPrincipal user);
+        ApiResponse GetUser(ClaimsPrincipal authenticatedUser);
 
-        Task<ApiResponse> ListRoles();
+        Task<ApiResponse> AdminUpdateUser(UserViewModel userViewModel);
 
-        Task<ApiResponse> Update(UserViewModel userViewModel);
-
-        Task<ApiResponse> AdminResetUserPasswordAsync(Guid id, string newPassword, ClaimsPrincipal user);
+        Task<ApiResponse> AdminResetUserPasswordAsync(ChangePasswordViewModel changePasswordViewModel, ClaimsPrincipal authenticatedUser);
         
         Task<ApplicationUser> RegisterNewUserAsync(string userName, string email, string password, bool requireConfirmEmail);
     }

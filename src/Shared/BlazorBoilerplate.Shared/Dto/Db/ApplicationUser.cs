@@ -6,11 +6,7 @@ namespace BlazorBoilerplate.Shared.Dto.Db
 {
     public partial class ApplicationUser : BaseEntity
     {
-        public String TenantId
-        {
-            get { return GetValue<String>(); }
-            set { SetValue(value); }
-        }
+
         public Guid Id
         {
             get { return GetValue<Guid>(); }
@@ -107,6 +103,12 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             set { SetValue(value); }
         }
 
+        public String TenantId
+        {
+            get { return GetValue<String>(); }
+            set { SetValue(value); }
+        }
+
         public Boolean TwoFactorEnabled
         {
             get { return GetValue<Boolean>(); }
@@ -134,6 +136,12 @@ namespace BlazorBoilerplate.Shared.Dto.Db
         public UserProfile Profile
         {
             get { return GetValue<UserProfile>(); }
+            set { SetValue(value); }
+        }
+
+        public NavigationSet<ApplicationUserRole> UserRoles
+        {
+            get { return GetValue<NavigationSet<ApplicationUserRole>>(); }
             set { SetValue(value); }
         }
 

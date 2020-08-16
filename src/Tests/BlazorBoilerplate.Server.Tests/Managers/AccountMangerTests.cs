@@ -30,7 +30,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
         private Mock<UserManager<ApplicationUser>> _userManager;
         private Mock<SignInManager<ApplicationUser>> _signInManager;
         private Mock<ILogger<AccountManager>> _logger;
-        private Mock<RoleManager<IdentityRole<Guid>>> _roleManager;
+        private Mock<RoleManager<ApplicationRole>> _roleManager;
         private Mock<IEmailManager> _emailManager;
         private Mock<IClientStore> _clientStore;
         private Mock<IConfiguration> _configuration;
@@ -46,10 +46,10 @@ namespace BlazorBoilerplate.Server.Tests.Managers
         {
             // Break out some of this to a base class that can be shared by tests. This would suck to set up in all test blocks. 
             var userStore = new Mock<IUserStore<ApplicationUser>>();
-            var roleStore = new Mock<IRoleStore<IdentityRole<Guid>>>();
+            var roleStore = new Mock<IRoleStore<ApplicationRole>>();
 
-            var roles = new List<IRoleValidator<IdentityRole<Guid>>>();
-            roles.Add(new RoleValidator<IdentityRole<Guid>>());
+            var roles = new List<IRoleValidator<ApplicationRole>>();
+            roles.Add(new RoleValidator<ApplicationRole>());
 
             var contextAccessor = new Mock<IHttpContextAccessor>();
             var userPrincipalFactory = new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>();
@@ -58,7 +58,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
             _userManager = new Mock<UserManager<ApplicationUser>>(userStore.Object, null, null, null, null, null, null, null, null);
             _signInManager = new Mock<SignInManager<ApplicationUser>>(_userManager.Object, contextAccessor.Object, userPrincipalFactory.Object, null, null, null, null);
             _logger = new Mock<ILogger<AccountManager>>();
-            _roleManager = new Mock<RoleManager<IdentityRole<Guid>>>(roleStore.Object, roles, new UpperInvariantLookupNormalizer(), new IdentityErrorDescriber(), null);
+            _roleManager = new Mock<RoleManager<ApplicationRole>>(roleStore.Object, roles, new UpperInvariantLookupNormalizer(), new IdentityErrorDescriber(), null);
             _emailManager = new Mock<IEmailManager>();
             _configuration = new Mock<IConfiguration>();
             _urlEncoder = new Mock<UrlEncoder>();

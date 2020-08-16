@@ -46,6 +46,18 @@ namespace BlazorBoilerplate.Server.Controllers
             return persistenceManager.GetEntities<TenantSetting>();
         }
 
+        [HttpGet]
+        public IQueryable<ApplicationUser> Users()
+        {
+            return persistenceManager.GetEntities<ApplicationUser>().Include(i => i.UserRoles).ThenInclude(i => i.Role).OrderBy(i => i.UserName);
+        }
+
+        [HttpGet]
+        public IQueryable<ApplicationRole> Roles()
+        {
+            return persistenceManager.GetEntities<ApplicationRole>().OrderBy(i => i.Name);
+        }
+
         [AllowAnonymous]
         [HttpGet]
         public IQueryable<Todo> Todos()

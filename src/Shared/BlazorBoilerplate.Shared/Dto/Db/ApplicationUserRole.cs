@@ -4,9 +4,8 @@ using System;
 
 namespace BlazorBoilerplate.Shared.Dto.Db
 {
-    public partial class IdentityUserRole : BaseEntity
+    public partial class ApplicationUserRole : BaseEntity
     {
-
         public Guid UserId
         {
             get { return GetValue<Guid>(); }
@@ -19,15 +18,21 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             set { SetValue(value); }
         }
 
-        public String Discriminator
+        public String TenantId
         {
             get { return GetValue<String>(); }
             set { SetValue(value); }
         }
 
-        public String TenantId
+        public ApplicationRole Role
         {
-            get { return GetValue<String>(); }
+            get { return GetValue<ApplicationRole>(); }
+            set { SetValue(value); }
+        }
+
+        public ApplicationUser User
+        {
+            get { return GetValue<ApplicationUser>(); }
             set { SetValue(value); }
         }
 

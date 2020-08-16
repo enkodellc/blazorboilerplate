@@ -4,7 +4,7 @@ using BlazorBoilerplate.Shared.Models.Account;
 
 namespace BlazorBoilerplate.Shared.Interfaces
 {
-    public interface IAuthorizeApi
+    public interface IAccountApiClient
     {
         Task<ApiResponseDto<LoginViewModel>> BuildLoginViewModel(string returnUrl);
         Task<ApiResponseDto<LoginResponseModel>> Login(LoginInputModel parameters);
@@ -15,10 +15,12 @@ namespace BlazorBoilerplate.Shared.Interfaces
         Task<ApiResponseDto> ForgotPassword(ForgotPasswordViewModel parameters);
         Task<ApiResponseDto> ResetPassword(ResetPasswordViewModel parameters);
         Task<ApiResponseDto> UpdatePassword(UpdatePasswordViewModel parameters);
+        Task<ApiResponseDto> AdminChangePassword(ChangePasswordViewModel parameters);
         Task<ApiResponseDto> Logout();
         Task<ApiResponseDto> ConfirmEmail(ConfirmEmailViewModel parameters);
         Task<UserViewModel> GetUserViewModel();
         Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel);
+        Task<ApiResponseDto> AdminUpdateUser(UserViewModel userViewModel);
         Task<UserViewModel> GetUser();
 
         Task<ApiResponseDto<UserViewModel>> EnableAuthenticator(AuthenticatorVerificationCodeViewModel parameters);

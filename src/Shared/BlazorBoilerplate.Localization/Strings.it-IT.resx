@@ -717,4 +717,16 @@
   <data name="UnauthorizedAccess" xml:space="preserve">
     <value>Accesso non autorizzato</value>
   </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Permessi</value>
+  </data>
+  <data name="Allow" xml:space="preserve">
+    <value>Consenti</value>
+  </data>
+  <data name="Are you sure you want to delete {0}?" xml:space="preserve">
+    <value>Vuoi eliminare {0}?</value>
+  </data>
+  <data name="Change password for {0}" xml:space="preserve">
+    <value>Cambia password per {0}</value>
+  </data>
 </root>

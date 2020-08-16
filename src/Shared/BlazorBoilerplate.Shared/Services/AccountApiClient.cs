@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Services
 {
-    public class AuthorizeApi : IAuthorizeApi
+    public class AccountApiClient : IAccountApiClient
     {
         private readonly HttpClient _httpClient;
         private readonly NavigationManager _navigationManager;
         private readonly IJSRuntime _jsRuntime;
 
-        public AuthorizeApi(NavigationManager navigationManager, HttpClient httpClient, IJSRuntime jsRuntime)
+        public AccountApiClient(NavigationManager navigationManager, HttpClient httpClient, IJSRuntime jsRuntime)
         {
             _navigationManager = navigationManager;
             _httpClient = httpClient;
@@ -102,6 +102,10 @@ namespace BlazorBoilerplate.Shared.Services
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdatePassword", parameters);
         }
+        public async Task<ApiResponseDto> AdminChangePassword(ChangePasswordViewModel parameters)
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto>($"api/Account/AdminUserPasswordReset", parameters);
+        }
 
         public async Task<ApiResponseDto> ForgotPassword(ForgotPasswordViewModel parameters)
         {
@@ -156,6 +160,11 @@ namespace BlazorBoilerplate.Shared.Services
         public async Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdateUser", userViewModel);
+        }
+
+        public async Task<ApiResponseDto> AdminUpdateUser(UserViewModel userViewModel)
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/AdminUpdateUser", userViewModel);
         }
     }
 }

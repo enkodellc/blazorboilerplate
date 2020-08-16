@@ -1,4 +1,5 @@
-﻿using Finbuckle.MultiTenant;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     [MultiTenant]
+    [Permissions(Actions.CRUD)]
     public class ApplicationUser : IdentityUser<Guid>
     {
         [MaxLength(64)]
@@ -17,6 +19,8 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 
         [MaxLength(64)]
         public string FullName { get; set; }
+
+        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 
         public ICollection<ApiLogItem> ApiLogItems { get; set; }
 

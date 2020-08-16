@@ -42,7 +42,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<AccountManager> _logger;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IEmailManager _emailManager;
         private readonly IClientStore _clientStore;
         private readonly IConfiguration _configuration;
@@ -58,7 +58,7 @@ namespace BlazorBoilerplate.Server.Managers
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<AccountManager> logger,
-            RoleManager<IdentityRole<Guid>> roleManager,
+            RoleManager<ApplicationRole> roleManager,
             IEmailManager emailManager,
             IClientStore clientStore,
             IConfiguration configuration,
@@ -206,7 +206,7 @@ namespace BlazorBoilerplate.Server.Managers
             });
         }
 
-        public async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal user, HttpContext httpContext, string logoutId)
+        public async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal authenticatedUser, HttpContext httpContext, string logoutId)
         {
             // get context information (client name, post logout redirect URI and iframe for federated signout)
             var logout = await _interaction.GetLogoutContextAsync(logoutId);
@@ -220,9 +220,9 @@ namespace BlazorBoilerplate.Server.Managers
                 LogoutId = logoutId
             };
 
-            if (user?.Identity.IsAuthenticated == true)
+            if (authenticatedUser?.Identity.IsAuthenticated == true)
             {
-                var idp = user.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
+                var idp = authenticatedUser.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
                 if (idp != null && idp != IdentityServer4.IdentityServerConstants.LocalIdentityProvider)
                 {
                     var providerSupportsSignout = await httpContext.GetSchemeSupportsSignOutAsync(idp);
@@ -417,12 +417,12 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status500InternalServerError, L["LoginFailed"]);
             }
         }
-        public async Task<ApiResponse> Logout(ClaimsPrincipal user)
+        public async Task<ApiResponse> Logout(ClaimsPrincipal authenticatedUser)
         {
-            if (user?.Identity.IsAuthenticated == true)
+            if (authenticatedUser?.Identity.IsAuthenticated == true)
             {
                 await _signInManager.SignOutAsync();
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(user.GetSubjectId(), user.GetDisplayName()));
+                await _events.RaiseAsync(new UserLogoutSuccessEvent(authenticatedUser.GetSubjectId(), authenticatedUser.GetDisplayName()));
             }
 
             return new ApiResponse(Status200OK, "Logout Successful");
@@ -483,12 +483,12 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public async Task<ApiResponse> UpdatePassword(ClaimsPrincipal userClaimsPrincipal, UpdatePasswordViewModel parameters)
+        public async Task<ApiResponse> UpdatePassword(ClaimsPrincipal authenticatedUser, UpdatePasswordViewModel parameters)
         {
-            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
             if (user == null)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
@@ -507,12 +507,12 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public async Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal userClaimsPrincipal, AuthenticatorVerificationCodeViewModel parameters)
+        public async Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal authenticatedUser, AuthenticatorVerificationCodeViewModel parameters)
         {
-            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
             if (user == null)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
@@ -529,7 +529,7 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     _logger.LogInformation("User '{0}' has enabled 2FA with an authenticator app.", user.UserName);
 
-                    var userViewModel = await BuildUserViewModel(userClaimsPrincipal);
+                    var userViewModel = await BuildUserViewModel(authenticatedUser);
 
                     if (await _userManager.CountRecoveryCodesAsync(user) == 0)
                     {
@@ -547,12 +547,12 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status400BadRequest, L["VerificationCodeInvalid"]);
             }
         }
-        public async Task<ApiResponse> DisableAuthenticator(ClaimsPrincipal userClaimsPrincipal)
+        public async Task<ApiResponse> DisableAuthenticator(ClaimsPrincipal authenticatedUser)
         {
-            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
             if (user == null)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
@@ -574,27 +574,27 @@ namespace BlazorBoilerplate.Server.Managers
             else
                 return new ApiResponse(Status400BadRequest, "Error while disabling 2fa");
 
-            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserViewModel(userClaimsPrincipal));
+            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserViewModel(authenticatedUser));
         }
-        public async Task<ApiResponse> ForgetTwoFactorClient(ClaimsPrincipal userClaimsPrincipal)
+        public async Task<ApiResponse> ForgetTwoFactorClient(ClaimsPrincipal authenticatedUser)
         {
-            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
             if (user == null)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
             await _signInManager.ForgetTwoFactorClientAsync();
 
-            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserViewModel(userClaimsPrincipal));
+            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserViewModel(authenticatedUser));
         }
-        public async Task<ApiResponse> Enable2fa(ClaimsPrincipal userClaimsPrincipal)
+        public async Task<ApiResponse> Enable2fa(ClaimsPrincipal authenticatedUser)
         {
-            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
             if (user == null)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
@@ -602,17 +602,17 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (result.Succeeded)
             {
-                return new ApiResponse(Status200OK, "Enabling 2fa Successful", await BuildUserViewModel(userClaimsPrincipal));
+                return new ApiResponse(Status200OK, "Enabling 2fa Successful", await BuildUserViewModel(authenticatedUser));
             }
             else
                 return new ApiResponse(Status400BadRequest, "Error while enabling 2fa");
         }
-        public async Task<ApiResponse> Disable2fa(ClaimsPrincipal userClaimsPrincipal)
+        public async Task<ApiResponse> Disable2fa(ClaimsPrincipal authenticatedUser)
         {
-            var user = await _userManager.FindByIdAsync(userClaimsPrincipal.GetSubjectId());
+            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
             if (user == null)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", userClaimsPrincipal.GetDisplayName()]);
+                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
@@ -620,15 +620,15 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (result.Succeeded)
             {
-                return new ApiResponse(Status200OK, "Disabling 2fa Successful", await BuildUserViewModel(userClaimsPrincipal));
+                return new ApiResponse(Status200OK, "Disabling 2fa Successful", await BuildUserViewModel(authenticatedUser));
             }
             else
                 return new ApiResponse(Status400BadRequest, "Error while disabling 2fa");
         }
 
-        public async Task<ApiResponse> UserViewModel(ClaimsPrincipal user)
+        public async Task<ApiResponse> UserViewModel(ClaimsPrincipal authenticatedUser)
         {
-            var userViewModel = await BuildUserViewModel(user);
+            var userViewModel = await BuildUserViewModel(authenticatedUser);
             return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
         }
         public async Task<ApiResponse> UpdateUser(UserViewModel userViewModel)
@@ -759,38 +759,33 @@ namespace BlazorBoilerplate.Server.Managers
             else
                 return new ApiResponse(Status403Forbidden, L["User {0} cannot be edited", user.UserName]);
         }
-        public ApiResponse GetUser(ClaimsPrincipal user)
+        public ApiResponse GetUser(ClaimsPrincipal authenticatedUser)
         {
-            UserViewModel userViewModel = user != null && user.Identity.IsAuthenticated
-                ? new UserViewModel { UserName = user.Identity.Name, IsAuthenticated = true }
+            UserViewModel userViewModel = authenticatedUser != null && authenticatedUser.Identity.IsAuthenticated
+                ? new UserViewModel { UserName = authenticatedUser.Identity.Name, IsAuthenticated = true }
                 : LoggedOutUser;
             return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
         }
 
-        public async Task<ApiResponse> ListRoles()
+        public async Task<ApiResponse> AdminUpdateUser(UserViewModel userViewModel)
         {
-            return new ApiResponse(Status200OK, L["Operation Successful"], await _roleManager.Roles.Select(x => x.Name).ToListAsync());
-        }
+            var user = await _userManager.FindByIdAsync(userViewModel.UserId.ToString());
 
-        public async Task<ApiResponse> Update(UserViewModel userViewModel)
-        {
-            var appUser = await _userManager.FindByIdAsync(userViewModel.UserId.ToString());
+            if (user.UserName.ToLower() != DefaultUserNames.Administrator && userViewModel.UserName.ToLower() != DefaultUserNames.Administrator)
+                user.UserName = userViewModel.UserName;
 
-            if (appUser.UserName.ToLower() != DefaultUserNames.Administrator && userViewModel.UserName.ToLower() != DefaultUserNames.Administrator)
-                appUser.UserName = userViewModel.UserName;
-
-            appUser.FirstName = userViewModel.FirstName;
-            appUser.LastName = userViewModel.LastName;
-            appUser.Email = userViewModel.Email;
+            user.FirstName = userViewModel.FirstName;
+            user.LastName = userViewModel.LastName;
+            user.Email = userViewModel.Email;
 
             try
             {
-                await _userManager.UpdateAsync(appUser);
+                await _userManager.UpdateAsync(user);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Updating user exception: {ex.GetBaseException().Message}");
-                return new ApiResponse(Status500InternalServerError, "Error Updating User");
+                return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
             }
 
             if (userViewModel.Roles != null)
@@ -798,75 +793,69 @@ namespace BlazorBoilerplate.Server.Managers
                 try
                 {
                     var rolesToAdd = new List<string>();
-                    var currentUserRoles = (List<string>)await _userManager.GetRolesAsync(appUser);
+                    var currentUserRoles = (List<string>)await _userManager.GetRolesAsync(user);
+
                     foreach (var newUserRole in userViewModel.Roles)
                     {
                         if (!currentUserRoles.Contains(newUserRole))
-                        {
                             rolesToAdd.Add(newUserRole);
-                        }
-                    }
-                    await _userManager.AddToRolesAsync(appUser, rolesToAdd);
-                    //HACK to switch to claims auth
-                    foreach (var role in rolesToAdd)
-                    {
-                        await _userManager.AddClaimAsync(appUser, new Claim($"Is{role}", "true"));
                     }
 
-                    var rolesToRemove = currentUserRoles
-                        .Where(role => !userViewModel.Roles.Contains(role)).ToList();
-
-                    if (appUser.UserName.ToLower() == DefaultUserNames.Administrator)
-                        rolesToRemove.Remove(DefaultUserNames.Administrator);
-
-                    await _userManager.RemoveFromRolesAsync(appUser, rolesToRemove);
-
-                    //HACK to switch to claims auth
-                    foreach (var role in rolesToRemove)
+                    if (rolesToAdd.Count > 0)
                     {
-                        await _userManager.RemoveClaimAsync(appUser, new Claim($"Is{role}", "true"));
+                        await _userManager.AddToRolesAsync(user, rolesToAdd);
+
+                        //HACK to switch to claims auth
+                        foreach (var role in rolesToAdd)
+                            await _userManager.AddClaimAsync(user, new Claim($"Is{role}", "true"));
+                    }
+
+                    var rolesToRemove = currentUserRoles.Where(role => !userViewModel.Roles.Contains(role)).ToList();
+
+                    if (rolesToRemove.Count > 0)
+                    {
+                        if (user.UserName.ToLower() == DefaultUserNames.Administrator)
+                            rolesToRemove.Remove(DefaultUserNames.Administrator);
+
+                        await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+
+                        //HACK to switch to claims auth
+                        foreach (var role in rolesToRemove)
+                            await _userManager.RemoveClaimAsync(user, new Claim($"Is{role}", "true"));
                     }
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError($"Updating Roles exception: {ex.GetBaseException().Message}");
-                    return new ApiResponse(Status500InternalServerError, "Error Updating Roles");
+                    return new ApiResponse(Status500InternalServerError, L["Operation Failed"]);
                 }
             }
 
             return new ApiResponse(Status200OK, L["Operation Successful"]);
         }
 
-        public async Task<ApiResponse> AdminResetUserPasswordAsync(Guid id, string newPassword, ClaimsPrincipal userClaimsPrincipal)
+        public async Task<ApiResponse> AdminResetUserPasswordAsync(ChangePasswordViewModel changePasswordViewModel, ClaimsPrincipal authenticatedUser)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            var user = await _userManager.FindByIdAsync(changePasswordViewModel.UserId);
             if (user == null)
             {
-                _logger.LogWarning(L["The user {0} doesn't exist", id]);
+                _logger.LogWarning(L["The user {0} doesn't exist", changePasswordViewModel.UserId]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
             var passToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, passToken, newPassword);
+            var result = await _userManager.ResetPasswordAsync(user, passToken, changePasswordViewModel.Password);
             if (result.Succeeded)
             {
-                _logger.LogInformation(user.UserName + "'s password reset; Requested from Admin interface by:" + userClaimsPrincipal.Identity.Name);
+                _logger.LogInformation(user.UserName + "'s password reset; Requested from Admin interface by:" + authenticatedUser.Identity.Name);
                 return new ApiResponse(Status204NoContent, user.UserName + " password reset");
             }
             else
             {
-                _logger.LogWarning(user.UserName + "'s password reset failed; Requested from Admin interface by:" + userClaimsPrincipal.Identity.Name);
+                _logger.LogWarning(user.UserName + "'s password reset failed; Requested from Admin interface by:" + authenticatedUser.Identity.Name);
 
-                // this is going to an authenticated Admin so it should be safe/useful to send back raw error messages
-                if (result.Errors.Any())
-                {
-                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
-                    _logger.LogWarning($"Error while resetting password of {user.UserName}: {msg}");
-                    return new ApiResponse(Status400BadRequest, msg);
-                }
-                else
-                {
-                    throw new Exception();
-                }
+                var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                _logger.LogWarning($"Error while resetting password of {user.UserName}: {msg}");
+                return new ApiResponse(Status400BadRequest, msg);
             }
         }
 
@@ -945,9 +934,9 @@ namespace BlazorBoilerplate.Server.Managers
             return result.ToString().ToUpperInvariant();
         }
 
-        private async Task<UserViewModel> BuildUserViewModel(ClaimsPrincipal userClaimsPrincipal)
+        private async Task<UserViewModel> BuildUserViewModel(ClaimsPrincipal authenticatedUser)
         {
-            var user = await _userManager.GetUserAsync(userClaimsPrincipal);
+            var user = await _userManager.GetUserAsync(authenticatedUser);
 
             if (user != null)
             {
@@ -955,7 +944,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                 var userViewModel = new UserViewModel
                 {
-                    IsAuthenticated = userClaimsPrincipal.Identity.IsAuthenticated,
+                    IsAuthenticated = authenticatedUser.Identity.IsAuthenticated,
                     UserName = user.UserName,
                     Email = user.Email,
                     FirstName = user.FirstName,
@@ -970,8 +959,8 @@ namespace BlazorBoilerplate.Server.Managers
 
                     Logins = (await _userManager.GetLoginsAsync(user)).Select(i => new KeyValuePair<string, string>(i.LoginProvider, i.ProviderKey)).ToList(),
 
-                    ExposedClaims = userClaimsPrincipal.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
-                    Roles = ((ClaimsIdentity)userClaimsPrincipal.Identity).Claims
+                    ExposedClaims = authenticatedUser.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
+                    Roles = ((ClaimsIdentity)authenticatedUser.Identity).Claims
                             .Where(c => c.Type == "role")
                             .Select(c => c.Value).ToList()
                 };

@@ -29,7 +29,7 @@ namespace BlazorBoilerplate.Storage
         private readonly ApplicationDbContext _context;
         private readonly TenantStoreDbContext _tenantStoreDbContext;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ApplicationPermissions _applicationPermissions;
         private readonly ILogger _logger;
 
@@ -39,7 +39,7 @@ namespace BlazorBoilerplate.Storage
             ConfigurationDbContext configurationContext,
             TenantStoreDbContext tenantStoreDbContext,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager,
+            RoleManager<ApplicationRole> roleManager,
             ApplicationPermissions applicationPermissions,
             ILogger<DatabaseInitializer> logger)
         {
@@ -197,7 +197,7 @@ namespace BlazorBoilerplate.Storage
             await EnsureRoleAsync(DefaultRoleNames.Administrator, "Default administrator", _applicationPermissions.GetAllPermissionValues());
             await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
 
-            IdentityRole<Guid> adminRole = await _roleManager.FindByNameAsync(adminRoleName);
+            ApplicationRole adminRole = await _roleManager.FindByNameAsync(adminRoleName);
             var AllClaims = _applicationPermissions.GetAllPermissionValues().Distinct();
             var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
             var NewClaims = AllClaims.Except(RoleClaims);
@@ -226,11 +226,11 @@ namespace BlazorBoilerplate.Storage
                 if (invalidClaims.Any())
                     throw new Exception("The following claim types are invalid: " + string.Join(", ", invalidClaims));
 
-                IdentityRole<Guid> applicationRole = new IdentityRole<Guid>(roleName);
+                ApplicationRole applicationRole = new ApplicationRole(roleName);
 
                 var result = await _roleManager.CreateAsync(applicationRole);
 
-                IdentityRole<Guid> role = await _roleManager.FindByNameAsync(applicationRole.Name);
+                ApplicationRole role = await _roleManager.FindByNameAsync(applicationRole.Name);
 
                 foreach (string claim in claims.Distinct())
                 {

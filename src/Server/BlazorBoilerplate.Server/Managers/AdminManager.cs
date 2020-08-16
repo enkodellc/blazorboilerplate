@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Server.Aop;
-using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Dto.Admin;
+using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Storage;
-using BlazorBoilerplate.Storage.Core;
 using Finbuckle.MultiTenant;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
@@ -16,7 +15,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -30,7 +28,7 @@ namespace BlazorBoilerplate.Server.Managers
     {
         private readonly IMapper _autoMapper;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ConfigurationDbContext _configurationDbContext;
         private readonly TenantStoreDbContext _tenantStoreDbContext;
         private readonly ApplicationPermissions _applicationPermissions;
@@ -39,7 +37,7 @@ namespace BlazorBoilerplate.Server.Managers
 
         public AdminManager(IMapper autoMapper,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager,
+            RoleManager<ApplicationRole> roleManager,
             ConfigurationDbContext configurationDbContext,
             TenantStoreDbContext tenantStoreDbContext,
             ApplicationPermissions applicationPermissions,
@@ -97,13 +95,13 @@ namespace BlazorBoilerplate.Server.Managers
             foreach (var role in listResponse)
             {
                 var claims = await _roleManager.GetClaimsAsync(role);
-                var permissions = claims.Where(x => x.Type == "permission").Select(x => _applicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
+                var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => _applicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
                 roleDtoList.Add(new RoleDto
                 {
                     Name = role.Name,
                     Permissions = permissions
-                }); ;
+                });
             }
 
             return new ApiResponse(Status200OK, L["{0} roles fetched", count], roleDtoList);
@@ -114,7 +112,7 @@ namespace BlazorBoilerplate.Server.Managers
             var identityRole = await _roleManager.FindByNameAsync(roleName);
 
             var claims = await _roleManager.GetClaimsAsync(identityRole);
-            var permissions = claims.Where(x => x.Type == "permission").Select(x => _applicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
+            var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => _applicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
             var roleDto = new RoleDto
             {
@@ -130,7 +128,7 @@ namespace BlazorBoilerplate.Server.Managers
             if (_roleManager.Roles.Any(r => r.Name == roleDto.Name))
                 return new ApiResponse(Status400BadRequest, L["Role {0} already exists", roleDto.Name]);
 
-            var result = await _roleManager.CreateAsync(new IdentityRole<Guid>(roleDto.Name));
+            var result = await _roleManager.CreateAsync(new ApplicationRole(roleDto.Name));
 
             if (!result.Succeeded)
             {

@@ -19,7 +19,7 @@ using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProf
 namespace BlazorBoilerplate.Storage
 {
     //https://trailheadtechnology.com/entity-framework-core-2-1-automate-all-that-boring-boiler-plate/
-    public class ApplicationDbContext : MultiTenantIdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IMultiTenantDbContext
+    public class ApplicationDbContext : MultiTenantIdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, ApplicationUserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>, IMultiTenantDbContext
     {
         public DbSet<TenantSetting> TenantSettings { get; set; }
 
@@ -41,17 +41,29 @@ namespace BlazorBoilerplate.Storage
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //Fluent API Does not follow foreign key naming convention
-            modelBuilder.Entity<ApplicationUser>()
-                .HasOne(a => a.Profile)
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ApplicationUser>(b =>
+            {
+                b.HasOne(a => a.Profile)
                 .WithOne(b => b.ApplicationUser)
                 .HasForeignKey<UserProfile>(b => b.UserId);
 
+                b.HasMany(e => e.UserRoles)
+                .WithOne(e => e.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+            });
+
+            modelBuilder.Entity<ApplicationRole>(b =>
+            {
+                b.HasMany(e => e.UserRoles)
+                .WithOne(e => e.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+            });
+
             modelBuilder.ShadowProperties();
-
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<IdentityRole<Guid>>().IsMultiTenant();
 
             modelBuilder.Entity<TenantSetting>().IsMultiTenant().ToTable("TenantSettings").HasKey(i => new { i.TenantId, i.Key }); ;
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ namespace BlazorBoilerplate.Server.Authorization
             if (context.User == null)
                 return Task.CompletedTask;
 
-            if (context.User.Claims.Any(c => c.Type == "permission" && c.Value == requirement.Permission))
+            if (context.User.Claims.Any(c => c.Type == ClaimConstants.Permission && c.Value == requirement.Permission))
                 context.Succeed(requirement);
             else
                 context.Fail();

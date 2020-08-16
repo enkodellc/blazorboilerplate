@@ -756,4 +756,16 @@
   <data name="UnauthorizedAccess" xml:space="preserve">
     <value>Unauthorized access</value>
   </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="Allow" xml:space="preserve">
+    <value>Allow</value>
+  </data>
+  <data name="Are you sure you want to delete {0}?" xml:space="preserve">
+    <value>Are you sure you want to delete {0}?</value>
+  </data>
+  <data name="Change password for {0}" xml:space="preserve">
+    <value>Change password for {0}</value>
+  </data>
 </root>

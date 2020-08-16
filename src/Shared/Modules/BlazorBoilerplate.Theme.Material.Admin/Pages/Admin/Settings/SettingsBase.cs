@@ -6,7 +6,6 @@ using BlazorBoilerplate.Theme.Material.Admin.Shared.Layouts;
 using MatBlazor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
@@ -21,17 +20,13 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
     {
         protected Dictionary<SettingKey, TenantSetting> settings;
 
-        [Inject]
-        private NavigationManager navigationManager { get; set; }
+        [Inject] private NavigationManager navigationManager { get; set; }
 
-        [Inject]
-        protected IApiClient apiClient { get; set; }
+        [Inject] protected IApiClient apiClient { get; set; }
 
-        [Inject]
-        protected IMatToaster matToaster { get; set; }
+        [Inject] protected IMatToaster matToaster { get; set; }
 
-        [Inject]
-        protected IStringLocalizer<Strings> L { get; set; }
+        [Inject] protected IStringLocalizer<Strings> L { get; set; }
 
         protected async Task LoadSettings(string prefix)
         {

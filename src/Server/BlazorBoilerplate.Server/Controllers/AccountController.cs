@@ -159,7 +159,6 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> UserViewModel()
         => await _accountManager.UserViewModel(User);
 
-        // DELETE: api/Account/5
         [HttpPost("UpdateUser")]
         [Authorize]
         public async Task<ApiResponse> UpdateUser(UserViewModel userViewModel)
@@ -182,23 +181,15 @@ namespace BlazorBoilerplate.Server.Controllers
         public ApiResponse GetUser()
         => _accountManager.GetUser(User);
 
-        [HttpGet("ListRoles")]
-        [Authorize(Permissions.Role.Read)]
-        public async Task<ApiResponse> ListRoles()
-        => await _accountManager.ListRoles();
-
-        [HttpPut]
+        [HttpPost("AdminUpdateUser")]
         [Authorize(Permissions.User.Update)]
-        // PUT: api/Account/5
-        public async Task<ApiResponse> Update([FromBody] UserViewModel userViewModel)
-        => ModelState.IsValid ? await _accountManager.Update(userViewModel) : _invalidData;
+        public async Task<ApiResponse> AdminUpdateUser([FromBody] UserViewModel userViewModel)
+        => ModelState.IsValid ? await _accountManager.AdminUpdateUser(userViewModel) : _invalidData;
 
-        [HttpPost("AdminUserPasswordReset/{id}")]
+        [HttpPost("AdminUserPasswordReset")]
         [Authorize(Permissions.User.Update)]
         [ProducesResponseType(Status204NoContent)]
-        public async Task<ApiResponse> AdminResetUserPasswordAsync(Guid id, [FromBody] string newPassword)
-        => ModelState.IsValid
-                ? await _accountManager.AdminResetUserPasswordAsync(id, newPassword, User)
-                : _invalidData;
+        public async Task<ApiResponse> AdminResetUserPasswordAsync(ChangePasswordViewModel changePasswordViewModel)
+        => ModelState.IsValid ? await _accountManager.AdminResetUserPasswordAsync(changePasswordViewModel, User) : _invalidData;
     }
 }

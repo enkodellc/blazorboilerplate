@@ -1,16 +1,9 @@
-﻿@page "/admin/users"
+﻿@inherits UsersPage
+@page "/admin/users"
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @layout AdminLayout
-@inject HttpClient Http
-@inject IMatToaster matToaster
-@inject AppState appState
-@inject AuthenticationStateProvider authStateProvider
-@inject IStringLocalizer<Strings> L
-
-@using System.Net
 
 <h1>@L["Users"]</h1>
-<p>User Management.</p>
 
 @if (users == null)
 {
@@ -20,76 +13,77 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@users" Striped="true">
+    <MatTable Items="@users" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
         <MatTableHeader>
             <th><MatButton Icon="person_add" Label=@L["New User"] OnClick="@(e => { createUserDialogOpen = true; })"></MatButton></th>
             <th>@L["UserName"]</th>
-            <th>Email</th>
-            <th>Roles</th>
+            <th>@L["Email"]</th>
+            <th>@L["Roles"]</th>
         </MatTableHeader>
         <MatTableRow Context="UserRow">
             <td>
                 <div style="width:155px;">
-                    <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow.UserId))"></MatIconButton>
-                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow.UserName, UserRow.UserId))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
-                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.UserId))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow))"></MatIconButton>
+                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
                 </div>
             </td>
             <td><div style="width:130px;">@UserRow.UserName</div></td>
             <td>@UserRow.Email</td>
             <td>
-                @if (@UserRow.Roles != null)
+                @if (@UserRow.UserRoles != null)
                     {<MatChipSet>
-                        @foreach (var role in @UserRow.Roles)
+                        @foreach (var ur in @UserRow.UserRoles)
                             {
-                            <MatChip Label="@role"></MatChip>
+                            <MatChip Label="@ur.Role.Name"></MatChip>
                             }
                     </MatChipSet>}
-        </td>
-    </MatTableRow>
-</MatTable>
+            </td>
+        </MatTableRow>
+    </MatTable>
+    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@logCountTotal" Style="background: transparent"></MatPaginator>
 }
 
 <MatDialog @bind-IsOpen="@createUserDialogOpen">
     <MatDialogTitle>@L["New User"]</MatDialogTitle>
     <MatDialogContent>
-        <EditForm Model="@registerViewModel" OnValidSubmit="@CreateUserAsync">
+        <EditForm id="createUserForm" Model="@newUserViewModel" OnValidSubmit="@CreateUserAsync">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@newUserViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@newUserViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@newUserViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@newUserViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
             </fieldset>
         </EditForm>
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { createUserDialogOpen = false; })">@L["Cancel"]</MatButton>
-        <MatButton OnClick="@CreateUserAsync">@L["Create"]</MatButton>
+        <MatButton Type="submit" form="createUserForm" Disabled="@disableCreateUserButton">@L["Create"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@editDialogOpen">
-    <MatDialogTitle>@L["Edit {0}", user.UserName]</MatDialogTitle>
+    <MatDialogTitle>@L["Edit {0}", currentUser.UserName]</MatDialogTitle>
     <MatDialogContent>
-        <EditForm Model="@user" OnValidSubmit="@UpdateUserAsync">
+        <EditForm id="updateUserForm" Model="@currentUser" OnValidSubmit="@UpdateUserAsync">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@user.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@currentUser.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@user.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
+                    <MatTextField @bind-Value="@currentUser.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
                 </div>
                 <MatChipSet>
                     @foreach (var role in roleSelections.OrderBy(x => x.Name))
@@ -102,14 +96,14 @@ else
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
-        <MatButton OnClick="@UpdateUserAsync">@L["Update"]</MatButton>
+        <MatButton Type="submit" form="updateUserForm" Disabled="@disableUpdateUserButton">@L["Update"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@deleteUserDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        Are you sure you want to delete user "@user.UserName" ?
+        @string.Format(L["Are you sure you want to delete {0}?"], currentUser.UserName)
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { deleteUserDialogOpen = false; })">@L["Cancel"]</MatButton>
@@ -117,242 +111,28 @@ else
     </MatDialogActions>
 </MatDialog>
 
-<MatDialog @bind-IsOpen="@resetPasswordDialogOpen">
-    <MatDialogTitle>Manual Password Reset for @registerViewModel.UserName</MatDialogTitle>
+<MatDialog @bind-IsOpen="@changePasswordDialogOpen">
+    <MatDialogTitle>@string.Format(L["Change password for {0}"], currentUser.UserName)</MatDialogTitle>
     <MatDialogContent>
-        <EditForm Model="@registerViewModel" OnValidSubmit="@ResetUserPasswordAsync">
+        <EditForm id="changePasswordForm" Model="@changePasswordViewModel" OnValidSubmit="@ResetUserPasswordAsync">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@changePasswordViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@registerViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    <MatTextField @bind-Value="@changePasswordViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
                 </div>
             </fieldset>
         </EditForm>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { resetPasswordDialogOpen = false; })">@L["Cancel"]</MatButton>
-        <MatButton OnClick="@ResetUserPasswordAsync">@L["Reset Password"]</MatButton>
+        <MatButton OnClick="@(e => { changePasswordDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton Type="submit" form="changePasswordForm" Disabled="@disableChangePasswordButton">@L["Reset Password"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 @code {
-    int pageSize { get; set; } = 15;
-    int currentPage { get; set; } = 0;
-
-    bool createUserDialogOpen = false;
-    bool editDialogOpen = false;
-    bool deleteUserDialogOpen = false;
-    bool resetPasswordDialogOpen = false;
-
-    List<UserViewModel> users;
-    List<RoleSelection> roleSelections { get; set; } = new List<RoleSelection>();
-
-    public UserViewModel user { get; set; } = new UserViewModel();
-    RegisterViewModel registerViewModel { get; set; } = new RegisterViewModel();
-
-    public class RoleSelection
-    {
-        public bool IsSelected { get; set; }
-        public string Name { get; set; }
-    };
-
-    protected override async Task OnInitializedAsync()
-    {
-        await RetrieveUserListAsync();
-        await PopulateRoleList();
-    }
-
-    public async Task RetrieveUserListAsync()
-    {
-        try
-        {
-            var apiResponse = await Http.GetFromJsonAsync<ApiResponseDto<List<UserViewModel>>>($"api/Admin/Users?pageSize={pageSize}&pageNumber={currentPage}");
-
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                matToaster.Add(apiResponse.Message, MatToastType.Success, L["Operation Successful"]);
-                users = apiResponse.Result;
-            }
-            else
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
-        }
-    }
-
-    public void OpenEditDialog(Guid userId)
-    {
-        user = new UserViewModel();
-        user = users.Where(x => x.UserId == userId).SingleOrDefault();
-        foreach (var role in roleSelections)
-            role.IsSelected = user.Roles.Contains(role.Name);
-
-        user.SaveState();
-        editDialogOpen = true;
-    }
-
-    public void OpenResetPasswordDialog(string userName, Guid userId)
-    {
-        // reusing the registerViewModel and User objects
-        registerViewModel = new RegisterViewModel();  // reset object
-        registerViewModel.UserName = userName;
-        user.UserId = userId;
-        resetPasswordDialogOpen = true;
-    }
-
-    public void OpenDeleteDialog(Guid userId)
-    {
-        user = users.Where(x => x.UserId == userId).SingleOrDefault();
-        deleteUserDialogOpen = true;
-    }
-
-    protected void UpdateUserRole(RoleSelection roleSelectionItem)
-    {
-        if (user.UserName.ToLower() != DefaultUserNames.Administrator || roleSelectionItem.Name != DefaultRoleNames.Administrator)
-            roleSelectionItem.IsSelected = !roleSelectionItem.IsSelected;
-    }
-
-    public async Task PopulateRoleList()
-    {
-        try
-        {
-            var roleNames = new List<string>();
-            var response = await Http.GetFromJsonAsync<ApiResponseDto<List<string>>>("api/Account/ListRoles");
-
-            roleNames = response.Result;
-
-            roleSelections = new List<RoleSelection>();
-
-            foreach (string role in roleNames)
-            {
-                roleSelections.Add(new RoleSelection
-                {
-                    Name = role,
-                    IsSelected = false
-                });
-            }
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
-        }
-    }
-
-    public void CancelChanges()
-    {
-        user.RestoreState();
-        editDialogOpen = false;
-    }
-
-    public async Task UpdateUserAsync()
-    {
-        try
-        {
-            user.Roles = roleSelections.Where(x => x.IsSelected == true).Select(x => x.Name).ToList();
-
-            var apiResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Account", user);
-
-            if (apiResponse.IsSuccessStatusCode)
-                matToaster.Add(apiResponse.Message, MatToastType.Success);
-            else
-            {
-                matToaster.Add(apiResponse.Message, MatToastType.Danger);
-                user.RestoreState();
-            }
-
-            editDialogOpen = false;
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
-        }
-        finally
-        {
-            user.ClearState();
-        }
-    }
-
-    public async Task CreateUserAsync()
-    {
-        try
-        {
-            if (registerViewModel.Password != registerViewModel.PasswordConfirm)
-            {
-                matToaster.Add(L["PasswordConfirmationFailed"], MatToastType.Danger);
-                return;
-            }
-
-            var apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).Create(registerViewModel);
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                matToaster.Add(apiResponse.Message, MatToastType.Success);
-                user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserViewModel>(apiResponse.Result.ToString());
-                users.Add(user);
-                registerViewModel = new RegisterViewModel();
-                createUserDialogOpen = false;
-            }
-            else
-            {
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["UserCreationFailed"]);
-            }
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["UserCreationFailed"]);
-        }
-    }
-
-    public async Task ResetUserPasswordAsync()
-    {
-        try
-        {
-            if (registerViewModel.Password != registerViewModel.PasswordConfirm)
-            {
-                matToaster.Add("Passwords Must Match", MatToastType.Warning);
-            }
-            else
-            {
-                var apiResponse = await Http.PostJsonAsync<ApiResponseDto>($"api/Account/AdminUserPasswordReset/{user.UserId}", registerViewModel.Password);
-
-                if (apiResponse.IsSuccessStatusCode)
-                    matToaster.Add("Password Reset", MatToastType.Success, apiResponse.Message);
-                else
-                    matToaster.Add(apiResponse.Message, MatToastType.Danger);
-
-                resetPasswordDialogOpen = false;
-            }
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["ResetPasswordFailed"]);
-        }
-    }
-
-    public async Task DeleteUserAsync()
-    {
-        try
-        {
-            var response = await Http.DeleteAsync($"api/Account/{user.UserId}");
-
-            if (response.StatusCode == (HttpStatusCode)Status200OK)
-            {
-                matToaster.Add("User Deleted", MatToastType.Success);
-                users.Remove(user);
-                deleteUserDialogOpen = false;
-                StateHasChanged();
-            }
-            else
-                matToaster.Add("User Delete Failed", MatToastType.Danger);
-        }
-        catch (Exception ex)
-        {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
-        }
-    }
+   
 }

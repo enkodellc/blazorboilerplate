@@ -93,8 +93,8 @@ namespace BlazorBoilerplate.Server
 
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
-                .AddRoles<IdentityRole<Guid>>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
                 .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
@@ -507,7 +507,7 @@ namespace BlazorBoilerplate.Server
             #endregion
 
             /* ServerSideBlazor */
-            services.AddScoped<IAuthorizeApi, AuthorizeApi>();
+            services.AddScoped<IAccountApiClient, AccountApiClient>();
             services.AddScoped<AppState>();
 
             // setup HttpClient for server side in a client side compatible fashion ( with auth cookie )
@@ -538,7 +538,7 @@ namespace BlazorBoilerplate.Server
                 });
             }
 
-            services.AddScoped<IApiClient, ApiClient>();
+            services.AddTransient<IApiClient, ApiClient>();
 
             // Authentication providers
             Log.Logger.Debug("Removing AuthenticationStateProvider...");

@@ -1,5 +1,5 @@
-﻿using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Storage.Core;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using Humanizer;
 using IdentityModel;
 using IdentityServer4.Models;

@@ -34,6 +34,12 @@ namespace BlazorBoilerplate.Shared.Services
             dic.Add("Microsoft.AspNetCore.Identity", clientNameSpace);
 
             EntityManager.MetadataStore.NamingConvention = new NamingConvention().WithServerClientNamespaceMapping(dic);
+
+            EntityManager.FetchMetadata().ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                    logger.LogError("FetchMetadata: {0}", t.Exception.GetBaseException());
+            });
         }
 
         public EntityManager EntityManager { get; }
@@ -97,7 +103,19 @@ namespace BlazorBoilerplate.Shared.Services
                 if (skip != null)
                     query = query.Skip(skip.Value);
 
-                return (QueryResult<T>)await EntityManager.ExecuteQuery(query, CancellationToken.None);
+                var response = await EntityManager.ExecuteQuery(query, CancellationToken.None);
+
+                QueryResult<T> result;
+
+                if (response is QueryResult<T>)
+                    result = (QueryResult<T>)response;
+                else
+                {
+                    result = new QueryResult<T>();
+                    result.Results = response;
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -106,10 +124,22 @@ namespace BlazorBoilerplate.Shared.Services
                 throw;
             }
         }
-
-        public async Task<QueryResult<Todo>> GetToDos()
+        public async Task<UserProfile> GetUserProfile()
         {
-            return await GetItems<Todo>(from: "Todos", orderByDescending: i => i.CreatedOn);
+            return (await EntityManager.ExecuteQuery(new EntityQuery<UserProfile>().From("UserProfile"), CancellationToken.None)).SingleOrDefault();
+        }
+        public async Task<QueryResult<TenantSetting>> GetTenantSettings()
+        {
+            return await GetItems<TenantSetting>(from: "TenantSettings", orderBy: i => i.Key);
+        }
+
+        public async Task<QueryResult<ApplicationUser>> GetUsers(Expression<Func<ApplicationUser, bool>> predicate = null, int? take = null, int? skip = null)
+        {
+            return await GetItems("Users", predicate, i => i.UserName, null, take, skip);
+        }
+        public async Task<QueryResult<ApplicationRole>> GetRoles(Expression<Func<ApplicationRole, bool>> predicate = null, int? take = null, int? skip = null)
+        {
+            return await GetItems("Roles", predicate, i => i.Name, null, take, skip);
         }
 
         public async Task<QueryResult<DbLog>> GetLogs(Expression<Func<DbLog, bool>> predicate = null, int? take = null, int? skip = null)
@@ -121,14 +151,9 @@ namespace BlazorBoilerplate.Shared.Services
         {
             return await GetItems("ApiLogs", predicate, null, i => i.RequestTime, take, skip);
         }
-        public async Task<UserProfile> GetUserProfile()
+        public async Task<QueryResult<Todo>> GetToDos()
         {
-            return (await EntityManager.ExecuteQuery(new EntityQuery<UserProfile>().From("UserProfile"), CancellationToken.None)).SingleOrDefault();
-        }
-
-        public async Task<QueryResult<TenantSetting>> GetTenantSettings()
-        {
-            return await GetItems<TenantSetting>(from: "TenantSettings", orderBy: i => i.Key);
+            return await GetItems<Todo>(from: "Todos", orderByDescending: i => i.CreatedOn);
         }
     }
 }

@@ -115,6 +115,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Allow.
+        /// </summary>
+        public static string Allow {
+            get {
+                return ResourceManager.GetString("Allow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Already registered?.
         /// </summary>
         public static string AlreadyRegistered {
@@ -340,6 +349,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Are you sure you want to delete {0}?.
+        /// </summary>
+        public static string Are_you_sure_you_want_to_delete__0__ {
+            get {
+                return ResourceManager.GetString("Are you sure you want to delete {0}?", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Authentication required.
         /// </summary>
         public static string AuthenticationRequired {
@@ -561,6 +579,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Change_Password {
             get {
                 return ResourceManager.GetString("Change Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Change password for {0}.
+        /// </summary>
+        public static string Change_password_for__0_ {
+            get {
+                return ResourceManager.GetString("Change password for {0}", resourceCulture);
             }
         }
         
@@ -1308,6 +1335,15 @@ namespace BlazorBoilerplate.Localization {
         public static string PasswordTooShort {
             get {
                 return ResourceManager.GetString("PasswordTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Permissions.
+        /// </summary>
+        public static string Permissions {
+            get {
+                return ResourceManager.GetString("Permissions", resourceCulture);
             }
         }
         
