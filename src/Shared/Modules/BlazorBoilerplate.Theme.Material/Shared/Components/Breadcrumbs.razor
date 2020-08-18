@@ -73,7 +73,7 @@
 
     private async Task BuildBreadcrumbsAsync()
     {
-        string uri = navigationManager.Uri.Split('?')[0].Replace(baseUrl, string.Empty).Trim();
+        string uri = navigationManager.Uri.Split('?')[0].Replace(baseUrl, "/").Trim();
 
         if (IsLoggedIn)
         {
