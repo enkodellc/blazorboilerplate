@@ -35,7 +35,6 @@ namespace BlazorBoilerplate.Client
 
             builder.Services.AddLocalization();
             builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
-            builder.Services.AddProtectedBrowserStorage();
             builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddAuthorizationCore(config =>
             {

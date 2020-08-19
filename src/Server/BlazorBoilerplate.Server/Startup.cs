@@ -210,8 +210,6 @@ namespace BlazorBoilerplate.Server
                 }
             }
 
-            services.AddProtectedBrowserStorage();
-
             var authBuilder = services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;

@@ -97,7 +97,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Infrastructure\BlazorBoilerplate.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\Shared\Microsoft.AspNetCore.ProtectedBrowserStorage\Microsoft.AspNetCore.ProtectedBrowserStorage.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material\BlazorBoilerplate.Theme.Material.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Storage\BlazorBoilerplate.Storage.csproj" />

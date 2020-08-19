@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
-    <ProjectReference Include="..\..\Microsoft.AspNetCore.ProtectedBrowserStorage\Microsoft.AspNetCore.ProtectedBrowserStorage.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
