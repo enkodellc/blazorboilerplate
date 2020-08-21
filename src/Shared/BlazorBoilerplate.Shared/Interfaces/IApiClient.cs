@@ -8,9 +8,11 @@ namespace BlazorBoilerplate.Shared.Interfaces
 {
     public interface IApiClient
     {
-        EntityManager EntityManager { get; }
-
         void AddEntity(IEntity entity);
+
+        void RemoveEntity(IEntity entity);
+
+        void ClearEntitiesCache();
 
         void CancelChanges();
 

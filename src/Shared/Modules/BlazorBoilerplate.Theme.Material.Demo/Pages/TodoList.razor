@@ -114,7 +114,7 @@
     {
         try
         {
-            todo.EntityAspect.Delete();
+            apiClient.RemoveEntity(todo);
             await apiClient.SaveChanges();
             todos.Remove(todo);
             matToaster.Add($"{todo.Title} deleted", MatToastType.Success, L["Operation Successful"]);

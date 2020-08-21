@@ -71,7 +71,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
         {
             try
             {
-                apiClient.EntityManager.Clear();
+                apiClient.ClearEntitiesCache();
                 var result = await apiClient.GetUsers(null, pageSize, pageIndex * pageSize);
                 users = new List<ApplicationUser>(result);
                 logCountTotal = (int)result.InlineCount.Value;
@@ -231,7 +231,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
         {
             try
             {
-                currentUser.EntityAspect.Delete();
+                apiClient.RemoveEntity(currentUser);
                 await apiClient.SaveChanges();
                 matToaster.Add(L["Operation Successful"], MatToastType.Success);
                 deleteUserDialogOpen = false;

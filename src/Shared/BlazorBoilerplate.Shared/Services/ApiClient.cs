@@ -18,6 +18,8 @@ namespace BlazorBoilerplate.Shared.Services
 
         private readonly DataService dataService;
 
+        private readonly EntityManager entityManager;
+
         public ApiClient(HttpClient httpClient, ILogger<ApiClient> logger)
         {
             this.logger = logger;
@@ -26,34 +28,37 @@ namespace BlazorBoilerplate.Shared.Services
             Configuration.Instance.ProbeAssemblies(typeof(ApplicationUser).Assembly);
 
             dataService = new DataService(httpClient.BaseAddress + "api/data/", httpClient);
-            EntityManager = new EntityManager(dataService);
+            entityManager = new EntityManager(dataService);
 
             var clientNameSpace = typeof(ApplicationUser).Namespace;
             var dic = new Dictionary<string, string>();
             dic.Add("BlazorBoilerplate.Infrastructure.Storage.DataModels", clientNameSpace);
             dic.Add("Microsoft.AspNetCore.Identity", clientNameSpace);
 
-            EntityManager.MetadataStore.NamingConvention = new NamingConvention().WithServerClientNamespaceMapping(dic);
+            entityManager.MetadataStore.NamingConvention = new NamingConvention().WithServerClientNamespaceMapping(dic);
 
-            EntityManager.FetchMetadata().ContinueWith(t =>
+            entityManager.FetchMetadata().ContinueWith(t =>
             {
                 if (t.IsFaulted)
                     logger.LogError("FetchMetadata: {0}", t.Exception.GetBaseException());
             });
         }
 
-        public EntityManager EntityManager { get; }
+        public void ClearEntitiesCache()
+        {
+            entityManager.Clear();
+        }
 
         public void CancelChanges()
         {
-            EntityManager.RejectChanges();
+            entityManager.RejectChanges();
         }
 
         public async Task SaveChanges()
         {
             try
             {
-                await EntityManager.SaveChanges();
+                await entityManager.SaveChanges();
             }
             catch (SaveException ex)
             {
@@ -68,13 +73,18 @@ namespace BlazorBoilerplate.Shared.Services
             }
             finally
             {
-                EntityManager.RejectChanges();
+                entityManager.RejectChanges();
             }
         }
 
         public void AddEntity(IEntity entity)
         {
-            EntityManager.AddEntity(entity);
+            entityManager.AddEntity(entity);
+        }
+
+        public void RemoveEntity(IEntity entity)
+        {
+            entity.EntityAspect.Delete();
         }
 
         private async Task<QueryResult<T>> GetItems<T>(string from,
@@ -103,7 +113,7 @@ namespace BlazorBoilerplate.Shared.Services
                 if (skip != null)
                     query = query.Skip(skip.Value);
 
-                var response = await EntityManager.ExecuteQuery(query, CancellationToken.None);
+                var response = await entityManager.ExecuteQuery(query, CancellationToken.None);
 
                 QueryResult<T> result;
 
@@ -126,7 +136,7 @@ namespace BlazorBoilerplate.Shared.Services
         }
         public async Task<UserProfile> GetUserProfile()
         {
-            return (await EntityManager.ExecuteQuery(new EntityQuery<UserProfile>().From("UserProfile"), CancellationToken.None)).SingleOrDefault();
+            return (await entityManager.ExecuteQuery(new EntityQuery<UserProfile>().From("UserProfile"), CancellationToken.None)).SingleOrDefault();
         }
         public async Task<QueryResult<TenantSetting>> GetTenantSettings()
         {
