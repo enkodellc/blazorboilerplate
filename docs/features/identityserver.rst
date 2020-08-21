@@ -17,7 +17,7 @@ IdentityServer4 authentication is used with ApplicationController:
 
 ::
 
-In fact as you can see ApplicationController use both cookie and bearer token authentication scheme.
+In fact as you can see ApplicationController uses both cookie and bearer token authentication scheme.
 
 Currently ApiClient uses cookie authentication to access ApplicationController.
-To see an example of external access with ApiClient and bearer authentication you have to look at **BlazorBoilerplate.Server.Tests** project.
+To see an example of external access with ApiClient and bearer authentication, you have to look at **BlazorBoilerplate.Server.Tests** project.
