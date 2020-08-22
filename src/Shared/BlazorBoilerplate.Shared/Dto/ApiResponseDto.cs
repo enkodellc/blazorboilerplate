@@ -11,7 +11,7 @@ namespace BlazorBoilerplate.Shared.Dto
         [DataMember]
         public int StatusCode { get; set; }
 
-        public bool IsSuccessStatusCode => StatusCode / 200 == 1;
+        public bool IsSuccessStatusCode => StatusCode >= 200 && StatusCode < 300;
 
         [DataMember]
         public string Message { get; set; }
