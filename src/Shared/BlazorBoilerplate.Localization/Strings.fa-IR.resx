@@ -247,7 +247,7 @@
     <value>ویرایش</value>
   </data>
   <data name="Edit {0}" xml:space="preserve">
-    <value>ویرایش {0}</value>
+    <value>ویرایش '{0}'</value>
   </data>
   <data name="Permissions list fetched" xml:space="preserve">
     <value>فهرست دسترسی‌ها دریافت شد</value>

@@ -1,7 +1,7 @@
 ﻿@page "/todo_list"
 @inject IApiClient apiClient
 @inject IMatToaster matToaster
-@inject IStringLocalizer<Strings> L
+@inject IStringLocalizer<Global> L
 
 <h1>Todo List - CRUD</h1>
 <p>
@@ -40,7 +40,7 @@
     <MatDialogTitle>Create Todo</MatDialogTitle>
     <MatDialogContent>
         <EditForm Model="@todo" OnValidSubmit="@NewEntity">
-            <DataAnnotationsValidator />
+            <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
@@ -61,7 +61,7 @@
 <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        Are you sure you want to delete todo "@todo.Title" ?
+        @string.Format(L["Are you sure you want to delete {0}?"], todo.Title)
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { deleteDialogOpen = false; })">@L["Cancel"]</MatButton>

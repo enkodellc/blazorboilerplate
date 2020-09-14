@@ -3,7 +3,6 @@ using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Server.Helpers;
@@ -15,6 +14,7 @@ using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Shared.Providers; //ServerSideBlazor
 using BlazorBoilerplate.Shared.Services;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
 using Breeze.AspNetCore;
@@ -79,12 +79,12 @@ namespace BlazorBoilerplate.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLocalization()
+            services.AddSqlLocalization(options => options.ReturnOnlyKeyIfNotFound = !_environment.IsDevelopment())
                 .Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture(Localization.Settings.SupportedCultures[0]);
-                options.AddSupportedCultures(Localization.Settings.SupportedCultures);
-                options.AddSupportedUICultures(Localization.Settings.SupportedCultures);
+                options.DefaultRequestCulture = new RequestCulture(Settings.SupportedCultures[0]);
+                options.AddSupportedCultures(Settings.SupportedCultures);
+                options.AddSupportedUICultures(Settings.SupportedCultures);
             });
 
             var dataProtectionBuilder = services.AddDataProtection().SetApplicationName(projectName);
@@ -439,7 +439,14 @@ namespace BlazorBoilerplate.Server
                     ss.Formatting = Newtonsoft.Json.Formatting.Indented; // format JSON for debugging
                 }
             })   // Add Breeze exception filter to send errors back to the client
-            .AddMvcOptions(o => { o.Filters.Add(new GlobalExceptionFilter()); });
+            .AddMvcOptions(o => { o.Filters.Add(new GlobalExceptionFilter()); })
+            .AddViewLocalization().AddDataAnnotationsLocalization(options =>
+            {
+                options.DataAnnotationLocalizerProvider = (type, factory) =>
+                {
+                    return factory.Create(typeof(Global));
+                };
+            });
 
             services.AddServerSideBlazor().AddCircuitOptions(o =>
             {
@@ -536,6 +543,7 @@ namespace BlazorBoilerplate.Server
                 });
             }
 
+            services.AddTransient<ILocalizationApiClient, LocalizationApiClient>();
             services.AddTransient<IApiClient, ApiClient>();
 
             // Authentication providers
@@ -596,6 +604,10 @@ namespace BlazorBoilerplate.Server
             {
                 var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
                 databaseInitializer.SeedAsync().Wait();
+
+                var localizationDbContext = serviceScope.ServiceProvider.GetService<LocalizationDbContext>();
+
+                SqlStringLocalizerFactory.SetLocalizationRecords(localizationDbContext.LocalizationRecords);
             }
 
             app.UseMiddleware<UserSessionMiddleware>();

@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Localization;
+﻿using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
@@ -26,7 +26,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
 
         [Inject] protected IMatToaster matToaster { get; set; }
 
-        [Inject] protected IStringLocalizer<Strings> L { get; set; }
+        [Inject] protected IStringLocalizer<Global> L { get; set; }
 
         protected async Task LoadSettings(string prefix)
         {

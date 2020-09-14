@@ -1,5 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using Breeze.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
@@ -16,12 +16,12 @@ namespace BlazorBoilerplate.Server.Middleware
     public abstract class BaseMiddleware
     {
         protected ILogger<BaseMiddleware> _logger;
-        protected IStringLocalizer<Strings> L;
+        protected IStringLocalizer<Global> L;
 
         //https://trailheadtechnology.com/aspnetcore-multi-tenant-tips-and-tricks/
         protected readonly RequestDelegate _next;
 
-        protected BaseMiddleware(RequestDelegate next, IStringLocalizer<Strings> l, ILogger<BaseMiddleware> logger)
+        protected BaseMiddleware(RequestDelegate next, IStringLocalizer<Global> l, ILogger<BaseMiddleware> logger)
         {
             _next = next;
             L = l;

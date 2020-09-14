@@ -247,7 +247,7 @@
     <value>Update</value>
   </data>
   <data name="Edit {0}" xml:space="preserve">
-    <value>Edit {0}</value>
+    <value>Edit '{0}'</value>
   </data>
   <data name="Permissions list fetched" xml:space="preserve">
     <value>Permissions list fetched</value>
@@ -763,9 +763,36 @@
     <value>Allow</value>
   </data>
   <data name="Are you sure you want to delete {0}?" xml:space="preserve">
-    <value>Are you sure you want to delete {0}?</value>
+    <value>Are you sure you want to delete '{0}'?</value>
   </data>
   <data name="Change password for {0}" xml:space="preserve">
     <value>Change password for {0}</value>
+  </data>
+  <data name="ItemsDeleted" xml:space="preserve">
+    <value>{0} items deleted.</value>
+  </data>
+  <data name="Translations" xml:space="preserve">
+    <value>Translations</value>
+  </data>
+  <data name="Culture" xml:space="preserve">
+    <value>Culture</value>
+  </data>
+  <data name="NewTranslation" xml:space="preserve">
+    <value>New translation</value>
+  </data>
+  <data name="Translation" xml:space="preserve">
+    <value>Translation</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="VerifyCode" xml:space="preserve">
+    <value>Verify code</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="ReloadTranslations" xml:space="preserve">
+    <value>Reload translations</value>
   </data>
 </root>

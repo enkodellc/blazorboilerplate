@@ -4,6 +4,7 @@ dotnet tool update -g dotnet-ef
 rem Microsoft.EntityFrameworkCore.Design package must be preset in the following project
 cd ..\..\Server\BlazorBoilerplate.Storage
 
+dotnet ef --startup-project ../BlazorBoilerplate.Server/ migrations add CreateLocalizationDb -c LocalizationDbContext --verbose --no-build --configuration Debug -o "Migrations/LocalizationDb"
 dotnet ef --startup-project ../BlazorBoilerplate.Server/ migrations add CreateTenantStoreDb -c TenantStoreDbContext --verbose --no-build --configuration Debug -o "Migrations/TenantStoreDb"
 dotnet ef --startup-project ../BlazorBoilerplate.Server/ migrations add CreateApplicationDb -c ApplicationDbContext --verbose --no-build --configuration Debug -o "Migrations/ApplicationDb"
 dotnet ef --startup-project ../BlazorBoilerplate.Server/ migrations add CreatePersistedGrantDb -c PersistedGrantDbContext --verbose --no-build --configuration Debug -o "Migrations/PersistedGrantDb"

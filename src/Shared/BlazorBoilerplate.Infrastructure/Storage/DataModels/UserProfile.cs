@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     [MultiTenant]
-    public class UserProfile
+    public partial class UserProfile
     {
         [Key]
         public long Id { get; set; }

@@ -247,7 +247,7 @@
     <value>Aktualsieren</value>
   </data>
   <data name="Edit {0}" xml:space="preserve">
-    <value>Bearbeiten {0}</value>
+    <value>Bearbeiten '{0}'</value>
   </data>
   <data name="Permissions list fetched" xml:space="preserve">
     <value>Berechtigungsliste abgerufen</value>

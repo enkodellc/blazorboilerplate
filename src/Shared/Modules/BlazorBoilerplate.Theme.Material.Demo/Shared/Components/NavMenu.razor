@@ -1,6 +1,6 @@
 @using Microsoft.AspNetCore.Components;
 @inject NavigationManager navigationManager
-@inject IStringLocalizer<Strings> L
+@inject IStringLocalizer<Global> L
 @implements IDynamicComponent
 
 <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">

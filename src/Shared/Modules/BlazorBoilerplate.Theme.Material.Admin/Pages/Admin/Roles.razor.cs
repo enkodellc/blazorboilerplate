@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Localization;
+﻿using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;
@@ -18,7 +18,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
     {
         [Inject] HttpClient Http { get; set; }
         [Inject] IMatToaster matToaster { get; set; }
-        [Inject] protected IStringLocalizer<Strings> L { get; set; }
+        [Inject] protected IStringLocalizer<Global> L { get; set; }
         protected int pageSize { get; set; } = 15;
         protected int currentPage { get; set; } = 0;
 

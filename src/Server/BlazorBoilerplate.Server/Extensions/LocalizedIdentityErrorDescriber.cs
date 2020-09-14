@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BlazorBoilerplate.Shared.SqlLocalizer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 
-namespace BlazorBoilerplate.Localization
+namespace BlazorBoilerplate.Server.Extensions
 {
     public class LocalizedIdentityErrorDescriber : IdentityErrorDescriber
     {
-        private readonly IStringLocalizer<Strings> L;
-        public LocalizedIdentityErrorDescriber(IStringLocalizer<Strings> l)
+        private readonly IStringLocalizer<Global> L;
+        public LocalizedIdentityErrorDescriber(IStringLocalizer<Global> l)
         {
             L = l;
         }

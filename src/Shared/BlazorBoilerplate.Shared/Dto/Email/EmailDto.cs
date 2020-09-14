@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Localization;
+﻿using BlazorBoilerplate.Shared.SqlLocalizer;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Shared.Dto.Email
@@ -7,7 +7,7 @@ namespace BlazorBoilerplate.Shared.Dto.Email
     {
         private string _name;
 
-        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
+        [Required(ErrorMessage = "FieldRequired")]
         public string ToAddress { get; set; }
 
         public string ToName
@@ -36,7 +36,7 @@ namespace BlazorBoilerplate.Shared.Dto.Email
                 
         public string Body { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
+        [Required(ErrorMessage = "FieldRequired")]
         public string TemplateName { get; set; }
     }
 }

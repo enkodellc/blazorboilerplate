@@ -4,7 +4,7 @@
 @layout AdminLayout
 @inject IApiClient apiClient
 @inject IMatToaster matToaster
-@inject IStringLocalizer<Strings> L
+@inject IStringLocalizer<Global> L
 
 <h1>Blazor / .NET Core Middleware Audit Log</h1>
 <p>
@@ -45,7 +45,7 @@ else
             <td>@context.Path</td>
         </MatTableRow>
     </MatTable>
-    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@logCountTotal" Style="background: transparent"></MatPaginator>
+    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
 }
 
 
@@ -54,7 +54,7 @@ else
 
     private int pageSize { get; set; } = 10;
     private int pageIndex { get; set; } = 0;
-    private int logCountTotal { get; set; } = 0;
+    private int totalItemsCount { get; set; } = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,8 +76,8 @@ else
             var result = await apiClient.GetApiLogs(null, pageSize, pageIndex * pageSize);
 
             apiLogItems = new List<ApiLogItem>(result);
-            logCountTotal = (int)result.InlineCount.Value;
-            matToaster.Add($"Total Items: {logCountTotal}", MatToastType.Success, L["Operation Successful"]);
+            totalItemsCount = (int)result.InlineCount.Value;
+            matToaster.Add($"Total Items: {totalItemsCount}", MatToastType.Success, L["Operation Successful"]);
 
         }
         catch (Exception ex)

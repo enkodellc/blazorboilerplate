@@ -1,7 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Extensions;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Storage;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +37,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
         public APIResponseRequestLoggingMiddleware(RequestDelegate next,
             IConfiguration configuration,
-            IStringLocalizer<Strings> l,
+            IStringLocalizer<Global> l,
             ILogger<APIResponseRequestLoggingMiddleware> logger) : base(next, l, logger)
         {
             _enableAPILogging = configuration.GetSection("BlazorBoilerplate:Api:Logging:Enabled").Get<bool>();
@@ -72,7 +72,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
                             var response = httpContext.Response;
 
-                            if (new string[] { "/api/data", "/api/externalauth" }.Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
+                            if (new string[] { "/api/localization", "/api/data", "/api/externalauth" }.Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
                                 await _next.Invoke(httpContext);
                             else
                             {

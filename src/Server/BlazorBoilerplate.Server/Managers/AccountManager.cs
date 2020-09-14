@@ -1,17 +1,17 @@
-﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Infrastructure.Server;
+﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Dto.Email;
+using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using IdentityModel;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -20,7 +20,6 @@ using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -28,10 +27,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -50,7 +49,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly UrlEncoder _urlEncoder;
         private readonly IEventService _events;
-        private readonly IStringLocalizer<Strings> L;
+        private readonly IStringLocalizer<Global> L;
 
         private static readonly UserViewModel LoggedOutUser = new UserViewModel { IsAuthenticated = false, Roles = new List<string>() };
 
@@ -66,7 +65,7 @@ namespace BlazorBoilerplate.Server.Managers
             IAuthenticationSchemeProvider schemeProvider,
             UrlEncoder urlEncoder,
             IEventService events,
-            IStringLocalizer<Strings> l)
+            IStringLocalizer<Global> l)
         {
             _databaseInitializer = databaseInitializer;
             _userManager = userManager;

@@ -115,6 +115,15 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Add.
+        /// </summary>
+        public static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Allow.
         /// </summary>
         public static string Allow {
@@ -349,7 +358,7 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a Are you sure you want to delete {0}?.
+        ///   Cerca una stringa localizzata simile a Are you sure you want to delete &apos;{0}&apos;?.
         /// </summary>
         public static string Are_you_sure_you_want_to_delete__0__ {
             get {
@@ -826,7 +835,7 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a Edit {0}.
+        ///   Cerca una stringa localizzata simile a Edit &apos;{0}&apos;.
         /// </summary>
         public static string Edit__0_ {
             get {
@@ -1033,11 +1042,29 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a {0} items deleted..
+        /// </summary>
+        public static string ItemsDeleted {
+            get {
+                return ResourceManager.GetString("ItemsDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Keep me logged in.
         /// </summary>
         public static string Keep_me_logged_in {
             get {
                 return ResourceManager.GetString("Keep me logged in", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Key.
+        /// </summary>
+        public static string Key {
+            get {
+                return ResourceManager.GetString("Key", resourceCulture);
             }
         }
         
@@ -1200,6 +1227,15 @@ namespace BlazorBoilerplate.Localization {
         public static string NewPassword {
             get {
                 return ResourceManager.GetString("NewPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a New translation.
+        /// </summary>
+        public static string NewTranslation {
+            get {
+                return ResourceManager.GetString("NewTranslation", resourceCulture);
             }
         }
         
@@ -1461,6 +1497,15 @@ namespace BlazorBoilerplate.Localization {
         public static string Registration {
             get {
                 return ResourceManager.GetString("Registration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Reload translations.
+        /// </summary>
+        public static string ReloadTranslations {
+            get {
+                return ResourceManager.GetString("ReloadTranslations", resourceCulture);
             }
         }
         
@@ -1807,6 +1852,24 @@ namespace BlazorBoilerplate.Localization {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Translation.
+        /// </summary>
+        public static string Translation {
+            get {
+                return ResourceManager.GetString("Translation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Translations.
+        /// </summary>
+        public static string Translations {
+            get {
+                return ResourceManager.GetString("Translations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a Two Factor Authentication.
         /// </summary>
         public static string TwoFactorAuthentication {
@@ -2010,6 +2073,15 @@ namespace BlazorBoilerplate.Localization {
         public static string VerificationCodeInvalid {
             get {
                 return ResourceManager.GetString("VerificationCodeInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Verify code.
+        /// </summary>
+        public static string VerifyCode {
+            get {
+                return ResourceManager.GetString("VerifyCode", resourceCulture);
             }
         }
     }

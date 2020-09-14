@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazorBoilerplate.Storage
 {
-    public class TenantStoreDbContext : EFCoreStoreDbContext
+    public class TenantStoreDbContext : EFCoreStoreDbContext<TenantInfo>
     {
-        public static readonly TenantInfo DefaultTenant = new TenantInfo(Settings.DefaultTenantId, Settings.DefaultTenantId, Settings.DefaultTenantId, null, null);
+        public static readonly TenantInfo DefaultTenant = new TenantInfo() { Id = Settings.DefaultTenantId, Identifier = Settings.DefaultTenantId, Name = Settings.DefaultTenantId };
 
         public TenantStoreDbContext(DbContextOptions<TenantStoreDbContext> options) : base(options)
         {

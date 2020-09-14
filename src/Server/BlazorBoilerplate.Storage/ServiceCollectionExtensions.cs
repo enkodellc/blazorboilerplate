@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Storage.Stores;
+using Finbuckle.MultiTenant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,15 +20,18 @@ namespace BlazorBoilerplate.Storage
 
             services.AddDbContext<TenantStoreDbContext>(builder => GetDbContextOptions<TenantStoreDbContext>(builder, configuration));
 
-            services.AddMultiTenant()
+            services.AddMultiTenant<TenantInfo>()
                 .WithHostStrategy("__tenant__")
-                .WithEFCoreStore<TenantStoreDbContext>()
-                .WithFallbackStrategy(Settings.DefaultTenantId);
+                .WithEFCoreStore<TenantStoreDbContext, TenantInfo>()
+                .WithStaticStrategy(Settings.DefaultTenantId);
 
             #endregion Multitenancy
 
-            services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions<ApplicationDbContext>(builder, configuration)); // Look into the way we initialise the PB ways. Look at the old way they did this, with side effects on the builder.
+            services.AddDbContext<ApplicationDbContext>(builder => GetDbContextOptions<ApplicationDbContext>(builder, configuration));
             services.AddScoped<ApplicationPersistenceManager>();
+
+            services.AddDbContext<LocalizationDbContext>(builder => GetDbContextOptions<LocalizationDbContext>(builder, configuration));
+            services.AddScoped<LocalizationPersistenceManager>();
 
             services.AddTransient<IMessageStore, MessageStore>();
 

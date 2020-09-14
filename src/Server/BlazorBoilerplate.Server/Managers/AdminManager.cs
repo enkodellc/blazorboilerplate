@@ -3,7 +3,7 @@ using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Models.Account;
@@ -33,7 +33,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly TenantStoreDbContext _tenantStoreDbContext;
         private readonly ApplicationPermissions _applicationPermissions;
         private readonly ILogger<AdminManager> _logger;
-        private readonly IStringLocalizer<Strings> L;
+        private readonly IStringLocalizer<Global> L;
 
         public AdminManager(IMapper autoMapper,
             UserManager<ApplicationUser> userManager,
@@ -42,7 +42,7 @@ namespace BlazorBoilerplate.Server.Managers
             TenantStoreDbContext tenantStoreDbContext,
             ApplicationPermissions applicationPermissions,
             ILogger<AdminManager> logger,
-            IStringLocalizer<Strings> l)
+            IStringLocalizer<Global> l)
         {
             _autoMapper = autoMapper;
             _userManager = userManager;

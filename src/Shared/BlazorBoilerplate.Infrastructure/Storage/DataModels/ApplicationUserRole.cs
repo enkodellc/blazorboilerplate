@@ -7,7 +7,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     [MultiTenant]
     [Permissions(Actions.CRUD)]
-    public class ApplicationUserRole : IdentityUserRole<Guid>
+    public partial class ApplicationUserRole : IdentityUserRole<Guid>
     {
         public virtual ApplicationUser User { get; set; }
         public virtual ApplicationRole Role { get; set; }

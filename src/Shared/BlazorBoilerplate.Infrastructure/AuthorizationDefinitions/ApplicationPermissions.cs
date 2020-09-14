@@ -1,9 +1,9 @@
-using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Shared.Models;
 using Finbuckle.MultiTenant;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
@@ -34,7 +34,7 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                         GroupName = permissionClass.Name
                     };
 
-                    LocalizedDescriptionAttribute[] attributes = (LocalizedDescriptionAttribute[])permission.GetCustomAttributes(typeof(LocalizedDescriptionAttribute), false);
+                    DisplayAttribute[] attributes = (DisplayAttribute[])permission.GetCustomAttributes(typeof(DisplayAttribute), false);
 
                     applicationPermission.Description = attributes != null && attributes.Length > 0 ? attributes[0].Description : applicationPermission.Name;
 

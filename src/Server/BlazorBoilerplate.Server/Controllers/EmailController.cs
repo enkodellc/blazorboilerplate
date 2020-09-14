@@ -1,6 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Shared.Dto.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +16,9 @@ namespace BlazorBoilerplate.Server.Controllers
     public class EmailController : ControllerBase
     {
         private readonly IEmailManager _emailManager;
-        private readonly IStringLocalizer<Strings> L;
+        private readonly IStringLocalizer<Global> L;
 
-        public EmailController(IEmailManager emailManager, IStringLocalizer<Strings> l)
+        public EmailController(IEmailManager emailManager, IStringLocalizer<Global> l)
         {
             _emailManager = emailManager;
             L = l;

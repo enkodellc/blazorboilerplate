@@ -41,14 +41,14 @@ else
             </td>
         </MatTableRow>
     </MatTable>
-    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@logCountTotal" Style="background: transparent"></MatPaginator>
+    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
 }
 
 <MatDialog @bind-IsOpen="@createUserDialogOpen">
     <MatDialogTitle>@L["New User"]</MatDialogTitle>
     <MatDialogContent>
         <EditForm id="createUserForm" Model="@newUserViewModel" OnValidSubmit="@CreateUserAsync">
-            <DataAnnotationsValidator />
+            <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
@@ -76,7 +76,7 @@ else
     <MatDialogTitle>@L["Edit {0}", currentUser.UserName]</MatDialogTitle>
     <MatDialogContent>
         <EditForm id="updateUserForm" Model="@currentUser" OnValidSubmit="@UpdateUserAsync">
-            <DataAnnotationsValidator />
+            <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
@@ -115,7 +115,7 @@ else
     <MatDialogTitle>@string.Format(L["Change password for {0}"], currentUser.UserName)</MatDialogTitle>
     <MatDialogContent>
         <EditForm id="changePasswordForm" Model="@changePasswordViewModel" OnValidSubmit="@ResetUserPasswordAsync">
-            <DataAnnotationsValidator />
+            <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">

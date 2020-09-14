@@ -3,13 +3,16 @@ using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using Microsoft.JSInterop;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -33,7 +36,7 @@ namespace BlazorBoilerplate.Client
 
             builder.RootComponents.AddRange(new[] { ModuleProvider.RootComponentMapping });
 
-            builder.Services.AddLocalization();
+            builder.Services.AddSqlLocalization(options => options.ReturnOnlyKeyIfNotFound = !builder.HostEnvironment.IsDevelopment());
             builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
             builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddAuthorizationCore(config =>
@@ -44,6 +47,7 @@ namespace BlazorBoilerplate.Client
                 // config.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  Only works on the server end
             });
 
+            builder.Services.AddTransient<ILocalizationApiClient, LocalizationApiClient>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
             builder.Services.AddScoped<IAccountApiClient, AccountApiClient>();
             builder.Services.AddScoped<AppState>();
@@ -67,6 +71,12 @@ namespace BlazorBoilerplate.Client
                     CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(cookieCulture);
                     CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
                 }
+
+                var localizationApiClient = serviceScope.ServiceProvider.GetService<ILocalizationApiClient>();
+
+                var localizationRecords = (await localizationApiClient.GetLocalizationRecords()).ToList();
+
+                SqlStringLocalizerFactory.SetLocalizationRecords(localizationRecords);
             }            
 
             await host.RunAsync();

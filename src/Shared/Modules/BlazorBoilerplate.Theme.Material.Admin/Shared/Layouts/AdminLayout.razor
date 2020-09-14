@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject AppState appState
-@inject IStringLocalizer<Strings> L
+@inject IStringLocalizer<Global> L
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 
 <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">

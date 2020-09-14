@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Localization;
+﻿using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
@@ -21,13 +21,13 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
         [Inject] IMatToaster matToaster { get; set; }
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
         [Inject] IApiClient apiClient { get; set; }
-        [Inject] protected IStringLocalizer<Strings> L { get; set; }
+        [Inject] protected IStringLocalizer<Global> L { get; set; }
 
         protected IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
 
         protected int pageSize { get; set; } = 10;
         private int pageIndex { get; set; } = 0;
-        protected int logCountTotal { get; set; } = 0;
+        protected int totalItemsCount { get; set; } = 0;
 
         protected bool createUserDialogOpen = false;
         protected bool disableCreateUserButton = false;
@@ -74,9 +74,9 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                 apiClient.ClearEntitiesCache();
                 var result = await apiClient.GetUsers(null, pageSize, pageIndex * pageSize);
                 users = new List<ApplicationUser>(result);
-                logCountTotal = (int)result.InlineCount.Value;
+                totalItemsCount = (int)result.InlineCount.Value;
 
-                matToaster.Add($"Total Items: {logCountTotal}", MatToastType.Success, L["Operation Successful"]);
+                matToaster.Add($"Total Items: {totalItemsCount}", MatToastType.Success, L["Operation Successful"]);
             }
             catch (Exception ex)
             {

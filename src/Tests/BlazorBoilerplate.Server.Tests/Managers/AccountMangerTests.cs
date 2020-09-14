@@ -1,7 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Shared.Models.Account;
 using IdentityServer4.Services;
@@ -38,7 +38,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
         private Mock<IAuthenticationSchemeProvider> _schemeProvider;
         private Mock<UrlEncoder> _urlEncoder;
         private Mock<IEventService> _events;
-        private Mock<IStringLocalizer<Strings>> _l;
+        private Mock<IStringLocalizer<Global>> _l;
 
 
         [SetUp]
@@ -63,7 +63,7 @@ namespace BlazorBoilerplate.Server.Tests.Managers
             _configuration = new Mock<IConfiguration>();
             _urlEncoder = new Mock<UrlEncoder>();
             _events = new Mock<IEventService>();
-            _l = new Mock<IStringLocalizer<Strings>>();
+            _l = new Mock<IStringLocalizer<Global>>();
 
             _accountManager = new AccountManager(_databaseInitializer.Object,
                 _userManager.Object, 

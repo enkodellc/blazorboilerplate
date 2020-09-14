@@ -3,7 +3,7 @@
 @layout AdminLayout
 @inject HttpClient Http
 @inject IMatToaster matToaster
-@inject IStringLocalizer<Strings> L
+@inject IStringLocalizer<Global> L
 
 @using IdentityServer4.Models
 @using IdentityModel
@@ -67,7 +67,7 @@ else
     </MatDialogTitle>
     <MatDialogContent>
         <EditForm Model="@currentApiResource">
-            <DataAnnotationsValidator />
+            <FluentValidationValidator />
             <ValidationSummary />
             <MatTabGroup>
                 <MatTab Label="Main">
@@ -151,7 +151,7 @@ else
 <MatDialog @bind-IsOpen="@isDeleteApiResourceDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        Are you sure you want to delete the API Resource "@currentApiResource.Name" ?
+        @string.Format(L["Are you sure you want to delete {0}?"], currentApiResource.Name)
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteApiResourceDialogOpen = false; })">@L["Cancel"]</MatButton>
@@ -160,9 +160,9 @@ else
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@isDeleteApiResourceSecretDialogOpen" Style="z-index:100">
-    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm API Resource Secret Delete</MatDialogTitle>
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        Are you sure you want to delete the secret "@currentSecret.GetDisplayValue()" ?
+        @string.Format(L["Are you sure you want to delete {0}?"], currentSecret.GetDisplayValue())
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteApiResourceSecretDialogOpen = false; })">@L["Cancel"]</MatButton>
@@ -174,7 +174,7 @@ else
     <MatDialogTitle>New Secret for API Resource @currentApiResource.Name</MatDialogTitle>
     <MatDialogContent>
         <EditForm Model="@currentSecret">
-            <DataAnnotationsValidator />
+            <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">

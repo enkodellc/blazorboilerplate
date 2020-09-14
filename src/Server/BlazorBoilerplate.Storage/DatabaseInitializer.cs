@@ -2,7 +2,7 @@
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Storage.Core;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using Finbuckle.MultiTenant;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -11,9 +11,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile;
 
@@ -24,6 +28,7 @@ namespace BlazorBoilerplate.Storage
         private const string adminRoleName = DefaultRoleNames.Administrator;
         private const string userRoleName = DefaultRoleNames.User;
 
+        private readonly LocalizationDbContext _localizationDbContext;
         private readonly PersistedGrantDbContext _persistedGrantContext;
         private readonly ConfigurationDbContext _configurationContext;
         private readonly ApplicationDbContext _context;
@@ -34,19 +39,21 @@ namespace BlazorBoilerplate.Storage
         private readonly ILogger _logger;
 
         public DatabaseInitializer(
+            TenantStoreDbContext tenantStoreDbContext,
+            LocalizationDbContext localizationDbContext,
             ApplicationDbContext context,
             PersistedGrantDbContext persistedGrantContext,
             ConfigurationDbContext configurationContext,
-            TenantStoreDbContext tenantStoreDbContext,
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             ApplicationPermissions applicationPermissions,
             ILogger<DatabaseInitializer> logger)
         {
+            _tenantStoreDbContext = tenantStoreDbContext;
+            _localizationDbContext = localizationDbContext;
             _persistedGrantContext = persistedGrantContext;
             _configurationContext = configurationContext;
             _context = context;
-            _tenantStoreDbContext = tenantStoreDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _applicationPermissions = applicationPermissions;
@@ -57,6 +64,8 @@ namespace BlazorBoilerplate.Storage
         {
             //Apply EF Core migration
             await MigrateAsync();
+
+            await ImportResxLanguages();
 
             await EnsureAdminIdentitiesAsync();
 
@@ -69,9 +78,47 @@ namespace BlazorBoilerplate.Storage
         private async Task MigrateAsync()
         {
             await _tenantStoreDbContext.Database.MigrateAsync();
+            await _localizationDbContext.Database.MigrateAsync();
             await _context.Database.MigrateAsync();
             await _persistedGrantContext.Database.MigrateAsync();
             await _configurationContext.Database.MigrateAsync();
+        }
+
+        private async Task ImportResxLanguages()
+        {
+            if (!await _localizationDbContext.LocalizationRecords.AnyAsync())
+            {
+                _logger.LogInformation("Importing Resx files in db");
+
+                var regex = new Regex(@".(\w{2}-\w{2}).resx");
+
+                foreach (var resxFile in Directory.GetFiles(@"..\..\Shared\BlazorBoilerplate.Localization", "*.resx"))
+                {
+                    var m = regex.Match(resxFile);
+
+                    var culture = Shared.SqlLocalizer.Settings.NeutralCulture;
+
+                    if (m.Success)
+                        culture = m.Groups[1].Value;
+
+                    XDocument doc = XDocument.Load(new XmlTextReader(resxFile));
+
+                    foreach (var node in doc.Element("root").Elements("data"))
+                    {
+                        _localizationDbContext.Add(new LocalizationRecord()
+                        {
+                            LocalizationCulture = culture,
+                            Key = node.Attribute("name").Value,
+                            Text = node.Element("value").Value,
+                            ResourceKey = "Global"
+                        });
+                    }
+
+                    await _localizationDbContext.SaveChangesAsync();
+                }
+
+                SqlStringLocalizerFactory.SetLocalizationRecords(_localizationDbContext.LocalizationRecords);
+            }
         }
 
         private async Task SeedDemoDataAsync()
@@ -84,8 +131,8 @@ namespace BlazorBoilerplate.Storage
 
             if (_tenantStoreDbContext.TenantInfo.Count() < 2)
             {
-                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("tenant1", "tenant1.local", "Microsoft Inc.", null, null));
-                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo("tenant2", "tenant2.local", "Contoso Corp.", null, null));
+                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant1", Identifier = "tenant1.local", Name = "Microsoft Inc." });
+                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant2", Identifier = "tenant2.local", Name = "Contoso Corp." });
 
                 _tenantStoreDbContext.SaveChanges();
             }

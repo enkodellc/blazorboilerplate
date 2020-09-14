@@ -1,14 +1,13 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Localization;
 using BlazorBoilerplate.Shared.Models.Account;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using NSwag.Annotations;
-using System;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -24,9 +23,9 @@ namespace BlazorBoilerplate.Server.Controllers
 
         private readonly ApiResponse _invalidData;
 
-        private readonly IStringLocalizer<Strings> L;
+        private readonly IStringLocalizer<Global> L;
 
-        public AccountController(IAccountManager accountManager, IStringLocalizer<Strings> l)
+        public AccountController(IAccountManager accountManager, IStringLocalizer<Global> l)
         {
             _accountManager = accountManager;
             L = l;

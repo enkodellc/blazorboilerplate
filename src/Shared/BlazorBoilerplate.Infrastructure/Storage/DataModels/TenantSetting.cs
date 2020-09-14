@@ -1,5 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Shared.Dto.Db;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     [Permissions(Actions.CRUD)]
-    public class TenantSetting
+    public partial class TenantSetting
     {
         [Column(TypeName = "nvarchar(64)")]
         public string TenantId { get; set; }
@@ -18,7 +18,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         [Column(TypeName = "nvarchar(max)")]
         public string Value { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
+        [Required(ErrorMessage = "FieldRequired")]
         public SettingType Type { get; set; }
     }
 }

@@ -9,7 +9,7 @@
 <h1>Send Email</h1>
 <p>Test out SMTP email sending with MailKit. This will send out an email using a default "Test" template if you have setup your smtp server in <i>appsettings.json</i>.</p>
 <EditForm Model="@emailParameters" OnValidSubmit="@SendEmail">
-    <DataAnnotationsValidator />
+    <FluentValidationValidator />
     <ValidationSummary />
     <fieldset>
         <div class="form-group">

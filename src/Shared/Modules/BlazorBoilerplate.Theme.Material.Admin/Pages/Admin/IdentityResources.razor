@@ -3,7 +3,7 @@
 @layout AdminLayout
 @inject HttpClient Http
 @inject IMatToaster matToaster
-@inject IStringLocalizer<Strings> L
+@inject IStringLocalizer<Global> L
 
 @using IdentityServer4.Models
 @using IdentityModel
@@ -64,7 +64,7 @@ else
     </MatDialogTitle>
     <MatDialogContent>
         <EditForm Model="@currentIdentityResource">
-            <DataAnnotationsValidator />
+            <FluentValidationValidator />
             <ValidationSummary />
             <MatTabGroup>
                 <MatTab Label="Main">
@@ -125,7 +125,7 @@ else
 <MatDialog @bind-IsOpen="@isDeleteIdentityResourceDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        Are you sure you want to delete the Identity Resource "@currentIdentityResource.Name" ?
+        @string.Format(L["Are you sure you want to delete {0}?"], currentIdentityResource.Name)
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteIdentityResourceDialogOpen = false; })">@L["Cancel"]</MatButton>

@@ -1,11 +1,10 @@
-﻿using BlazorBoilerplate.Localization;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Shared.Models.Account
 {
     public class LoginWith2faModel : AccountFormModel
     {
-        [Display(Name = "RememberBrowser", ResourceType = typeof(Strings))]
+        [Display(Name = "RememberBrowser")]
         public bool RememberMachine { get; set; }
     }
 }

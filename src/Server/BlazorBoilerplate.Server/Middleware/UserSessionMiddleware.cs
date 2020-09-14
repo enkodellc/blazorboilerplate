@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Localization;
+﻿using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Shared.Interfaces;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +13,7 @@ namespace BlazorBoilerplate.Server.Middleware
 {
     public class UserSessionMiddleware : BaseMiddleware
     {
-        public UserSessionMiddleware(RequestDelegate next, IStringLocalizer<Strings> l, ILogger<UserSessionMiddleware> logger) : base(next, l, logger)
+        public UserSessionMiddleware(RequestDelegate next, IStringLocalizer<Global> l, ILogger<UserSessionMiddleware> logger) : base(next, l, logger)
         { }
 
         public async Task InvokeAsync(HttpContext httpContext, IUserSession userSession)

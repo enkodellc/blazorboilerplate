@@ -247,7 +247,7 @@
     <value>Aggiorna</value>
   </data>
   <data name="Edit {0}" xml:space="preserve">
-    <value>Aggiorna {0}</value>
+    <value>Aggiorna '{0}'</value>
   </data>
   <data name="Permissions list fetched" xml:space="preserve">
     <value>Recuperato elenco permessi</value>
@@ -724,9 +724,36 @@
     <value>Consenti</value>
   </data>
   <data name="Are you sure you want to delete {0}?" xml:space="preserve">
-    <value>Vuoi eliminare {0}?</value>
+    <value>Vuoi eliminare '{0}'?</value>
   </data>
   <data name="Change password for {0}" xml:space="preserve">
     <value>Cambia password per {0}</value>
+  </data>
+  <data name="ItemsDeleted" xml:space="preserve">
+    <value>{0} elementi sono stati eliminati.</value>
+  </data>
+  <data name="Translations" xml:space="preserve">
+    <value>Traduzioni</value>
+  </data>
+  <data name="Culture" xml:space="preserve">
+    <value>Cultura</value>
+  </data>
+  <data name="NewTranslation" xml:space="preserve">
+    <value>Nuova traduzione</value>
+  </data>
+  <data name="Translation" xml:space="preserve">
+    <value>Traduzione</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Chiave</value>
+  </data>
+  <data name="VerifyCode" xml:space="preserve">
+    <value>Verifica codice</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Aggiungi</value>
+  </data>
+  <data name="ReloadTranslations" xml:space="preserve">
+    <value>Ricarica traduzioni</value>
   </data>
 </root>

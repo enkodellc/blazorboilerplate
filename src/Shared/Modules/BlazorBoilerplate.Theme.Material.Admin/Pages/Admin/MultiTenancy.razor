@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @inject IMatToaster matToaster
 @inject NavigationManager Navigation
-@inject IStringLocalizer<Strings> L
+@inject IStringLocalizer<Global> L
 
 @using System.Net
 
@@ -58,7 +58,7 @@ else
     </MatDialogTitle>
     <MatDialogContent>
         <EditForm Model="@currentTenant">
-            <DataAnnotationsValidator />
+            <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">

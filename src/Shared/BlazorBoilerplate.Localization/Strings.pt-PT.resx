@@ -290,7 +290,7 @@
     <comment>APPLICATION</comment>
   </data>
   <data name="Edit {0}" xml:space="preserve">
-    <value>Editar {0}</value>
+    <value>Editar '{0}'</value>
     <comment>APPLICATION</comment>
   </data>
   <data name="Permissions list fetched" xml:space="preserve">

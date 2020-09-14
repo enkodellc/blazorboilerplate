@@ -1,6 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using Humanizer;
 using Microsoft.Extensions.Localization;
 using System;
@@ -15,13 +15,13 @@ namespace BlazorBoilerplate.Shared.Services
         private readonly IApiClient _apiClient;
         private UserProfile _userProfile { get; set; }
 
-        private readonly IStringLocalizer<Strings> L;
+        private readonly IStringLocalizer<Global> L;
 
         public readonly string AppName = string.Empty;
         public readonly string AppShortName = string.Empty;
         public readonly string BreadCrumbHome = string.Empty;
 
-        public AppState(IApiClient apiClient, IStringLocalizer<Strings> l)
+        public AppState(IApiClient apiClient, IStringLocalizer<Global> l)
         {
             L = l;
             AppName = L["AppName"].ToString().Humanize(LetterCasing.Title);

@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Server.Aop;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,9 +20,9 @@ namespace BlazorBoilerplate.Server
                 .AddLocalization()
                 .Configure<RequestLocalizationOptions>(options =>
                 {
-                    options.DefaultRequestCulture = new RequestCulture(Localization.Settings.SupportedCultures[0]);
-                    options.AddSupportedCultures(Localization.Settings.SupportedCultures);
-                    options.AddSupportedUICultures(Localization.Settings.SupportedCultures);
+                    options.DefaultRequestCulture = new RequestCulture(Settings.SupportedCultures[0]);
+                    options.AddSupportedCultures(Settings.SupportedCultures);
+                    options.AddSupportedUICultures(Settings.SupportedCultures);
                 })
                 .AddTransient<ApiResponseExceptionAspect>()
                 .AddSingleton<ILoggerFactory>(services => new SerilogLoggerFactory())

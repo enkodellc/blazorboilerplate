@@ -8,7 +8,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     [MultiTenant]
     [Permissions(Actions.CRUD)]
-    public class ApplicationRole : IdentityRole<Guid>
+    public partial class ApplicationRole : IdentityRole<Guid>
     {
         public ApplicationRole() : base() { }
         public ApplicationRole(string roleName) : base(roleName) { }

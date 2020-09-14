@@ -9,7 +9,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     [MultiTenant]
     [Permissions(Actions.CRUD)]
-    public class ApplicationUser : IdentityUser<Guid>
+    public partial class ApplicationUser : IdentityUser<Guid>
     {
         [MaxLength(64)]
         public string FirstName { get; set; }

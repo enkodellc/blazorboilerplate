@@ -7,7 +7,7 @@
 @inject AppState appState
 @inject NavigationManager NavigationManager
 @inject IJSRuntime js
-@inject IStringLocalizer<Strings> L
+@inject IStringLocalizer<Global> L
 
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
@@ -34,7 +34,7 @@
                         <h4>@L["Log in"]</h4>
                     </div>
                     <EditForm Model="@loginViewModel" OnValidSubmit="@SubmitLogin">
-                        <DataAnnotationsValidator />
+                        <FluentValidationValidator />
                         <ValidationSummary />
                         <fieldset>
                             <div class="form-group">
@@ -63,7 +63,7 @@
                         </MatExpansionPanelSummary>
                         <MatExpansionPanelDetails>
                             <EditForm Model="@forgotPasswordViewModel" OnValidSubmit="@ForgotPassword">
-                                <DataAnnotationsValidator />
+                                <FluentValidationValidator />
                                 <ValidationSummary />
                                 <div class="form-group">
                                     <MatTextField @bind-Value="@forgotPasswordViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>

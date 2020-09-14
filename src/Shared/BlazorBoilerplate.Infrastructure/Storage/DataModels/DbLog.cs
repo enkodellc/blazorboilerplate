@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     [Permissions(Actions.CRUD)]
-    public class DbLog
+    public partial class DbLog
     {
         [Key]
         public int Id { get; set; }

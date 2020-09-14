@@ -1,6 +1,6 @@
 ﻿using AspectInjector.Broker;
 using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,12 +14,12 @@ namespace BlazorBoilerplate.Server.Aop
     public class ApiResponseExceptionAspect
     {
         private readonly ILogger<ApiResponseExceptionAspect> _logger;
-        private readonly IStringLocalizer<Strings> L;
+        private readonly IStringLocalizer<Global> L;
 
         private readonly MethodInfo _asyncHandler = typeof(ApiResponseExceptionAspect).GetMethod(nameof(WrapAsync), BindingFlags.Instance | BindingFlags.NonPublic);
         private readonly MethodInfo _syncHandler = typeof(ApiResponseExceptionAspect).GetMethod(nameof(WrapSync), BindingFlags.Instance | BindingFlags.NonPublic);
 
-        public ApiResponseExceptionAspect(ILogger<ApiResponseExceptionAspect> logger, IStringLocalizer<Strings> l)
+        public ApiResponseExceptionAspect(ILogger<ApiResponseExceptionAspect> logger, IStringLocalizer<Global> l)
         {
             _logger = logger;
             L = l;

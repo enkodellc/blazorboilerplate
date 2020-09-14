@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Localization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,9 +6,9 @@ namespace BlazorBoilerplate.Shared.Dto.Admin
 {
     public class RoleDto
     {
-        [StringLength(64, ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "ErrorInvalidLength", MinimumLength = 2)]
-        [RegularExpression(@"[^\s]+", ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "SpacesNotPermitted")]
-        [Display(Name = "Name", ResourceType = typeof(Strings))]
+        [StringLength(64, ErrorMessage = "ErrorInvalidLength", MinimumLength = 2)]
+        [RegularExpression(@"[^\s]+", ErrorMessage = "SpacesNotPermitted")]
+        [Display(Name = "Name")]
         public string Name { get; set; }
 
         public List<string> Permissions { get; set; }

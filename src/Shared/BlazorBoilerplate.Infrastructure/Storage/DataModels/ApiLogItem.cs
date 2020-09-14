@@ -1,29 +1,29 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-using BlazorBoilerplate.Localization;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     [Permissions(Actions.CRUD)]
-    public class ApiLogItem
+    public partial class ApiLogItem
     {
         [Key]
         public long Id { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
+        [Required(ErrorMessage = "FieldRequired")]
         public DateTime RequestTime { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
+        [Required(ErrorMessage = "FieldRequired")]
         public long ResponseMillis { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
+        [Required(ErrorMessage = "FieldRequired")]
         public int StatusCode { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
+        [Required(ErrorMessage = "FieldRequired")]
         public string Method { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = "FieldRequired")]
+        [Required(ErrorMessage = "FieldRequired")]
         [MaxLength(2048)]
         public string Path { get; set; }
 
