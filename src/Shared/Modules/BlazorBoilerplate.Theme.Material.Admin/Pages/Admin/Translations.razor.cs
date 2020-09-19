@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Db;
+using BlazorBoilerplate.Shared.Interfaces.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.SqlLocalizer;
 using MatBlazor;

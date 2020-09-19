@@ -125,7 +125,7 @@ else
 <MatDialog @bind-IsOpen="@isDeleteIdentityResourceDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @string.Format(L["Are you sure you want to delete {0}?"], currentIdentityResource.Name)
+        @L["Are you sure you want to delete {0}?", currentIdentityResource.Name]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteIdentityResourceDialogOpen = false; })">@L["Cancel"]</MatButton>

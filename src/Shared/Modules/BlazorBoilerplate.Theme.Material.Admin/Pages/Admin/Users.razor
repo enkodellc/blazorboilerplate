@@ -103,7 +103,7 @@ else
 <MatDialog @bind-IsOpen="@deleteUserDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @string.Format(L["Are you sure you want to delete {0}?"], currentUser.UserName)
+        @L["Are you sure you want to delete {0}?", currentUser.UserName]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { deleteUserDialogOpen = false; })">@L["Cancel"]</MatButton>
@@ -112,7 +112,7 @@ else
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@changePasswordDialogOpen">
-    <MatDialogTitle>@string.Format(L["Change password for {0}"], currentUser.UserName)</MatDialogTitle>
+    <MatDialogTitle>@L["Change password for {0}", currentUser.UserName]</MatDialogTitle>
     <MatDialogContent>
         <EditForm id="changePasswordForm" Model="@changePasswordViewModel" OnValidSubmit="@ResetUserPasswordAsync">
             <FluentValidationValidator />

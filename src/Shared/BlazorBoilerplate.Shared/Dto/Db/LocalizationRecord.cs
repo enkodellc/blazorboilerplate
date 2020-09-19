@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
+﻿using BlazorBoilerplate.Shared.Interfaces.Db;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using Breeze.Sharp;
 using System;
 using System.Collections.Generic;

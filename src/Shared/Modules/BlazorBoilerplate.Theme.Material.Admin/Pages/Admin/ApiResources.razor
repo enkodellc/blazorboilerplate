@@ -151,7 +151,7 @@ else
 <MatDialog @bind-IsOpen="@isDeleteApiResourceDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @string.Format(L["Are you sure you want to delete {0}?"], currentApiResource.Name)
+        @L["Are you sure you want to delete {0}?", currentApiResource.Name]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteApiResourceDialogOpen = false; })">@L["Cancel"]</MatButton>
@@ -162,7 +162,7 @@ else
 <MatDialog @bind-IsOpen="@isDeleteApiResourceSecretDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @string.Format(L["Are you sure you want to delete {0}?"], currentSecret.GetDisplayValue())
+        @L["Are you sure you want to delete {0}?", currentSecret.GetDisplayValue()]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteApiResourceSecretDialogOpen = false; })">@L["Cancel"]</MatButton>

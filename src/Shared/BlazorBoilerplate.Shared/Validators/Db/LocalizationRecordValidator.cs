@@ -1,9 +1,9 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
-using BlazorBoilerplate.Shared.Validators;
+﻿using BlazorBoilerplate.Shared.Interfaces.Db;
+using BlazorBoilerplate.Shared.SqlLocalizer;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 
-namespace BlazorBoilerplate.Shared.Dto.Db.Validators
+namespace BlazorBoilerplate.Shared.Validators.Db
 {
     public class LocalizationRecordValidator : LocalizedAbstractValidator<ILocalizationRecord>
     {

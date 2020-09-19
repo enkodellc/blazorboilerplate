@@ -25,8 +25,12 @@ namespace BlazorBoilerplate.Shared.SqlLocalizer
         {
             get
             {
-                bool notSucceed;
-                var text = GetText(name, out notSucceed);
+                if (name == null)
+                {
+                    throw new ArgumentNullException(nameof(name));
+                }
+
+                var text = GetText(name, out bool notSucceed);
 
                 return new LocalizedString(name, text, notSucceed);
             }
@@ -36,7 +40,14 @@ namespace BlazorBoilerplate.Shared.SqlLocalizer
         {
             get
             {
-                return this[name];
+                if (name == null)
+                {
+                    throw new ArgumentNullException(nameof(name));
+                }
+
+                var text = GetText(name, out bool notSucceed);
+
+                return new LocalizedString(name, string.Format(text, arguments), notSucceed);
             }
         }
 
@@ -58,6 +69,7 @@ namespace BlazorBoilerplate.Shared.SqlLocalizer
             string computedKey = $"{key}.{culture}";
 
             string result;
+
             if (_localizations.TryGetValue(computedKey, out result))
             {
                 notSucceed = false;

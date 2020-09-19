@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Db;
+using BlazorBoilerplate.Shared.Interfaces.Db;
 using Breeze.Sharp;
 using System.Threading.Tasks;
 

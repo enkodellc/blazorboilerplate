@@ -15,10 +15,12 @@ using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Shared.Providers; //ServerSideBlazor
 using BlazorBoilerplate.Shared.Services;
 using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Shared.Validators.Db;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
 using Breeze.AspNetCore;
 using Breeze.Core;
+using FluentValidation.AspNetCore;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
@@ -446,7 +448,7 @@ namespace BlazorBoilerplate.Server
                 {
                     return factory.Create(typeof(Global));
                 };
-            });
+            }).AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LocalizationRecordValidator>());
 
             services.AddServerSideBlazor().AddCircuitOptions(o =>
             {

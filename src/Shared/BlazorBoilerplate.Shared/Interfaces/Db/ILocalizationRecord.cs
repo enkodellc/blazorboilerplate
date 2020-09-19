@@ -1,4 +1,4 @@
-﻿namespace BlazorBoilerplate.Shared.Dto.Db
+﻿namespace BlazorBoilerplate.Shared.Interfaces.Db
 {
     public interface ILocalizationRecord
     {

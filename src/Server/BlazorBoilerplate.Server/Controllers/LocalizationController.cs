@@ -65,7 +65,7 @@ namespace BlazorBoilerplate.Server.Controllers
             int deleted = await persistenceManager.DbContext.Database
                 .ExecuteSqlRawAsync("DELETE FROM LocalizationRecords WHERE ResourceKey = {0} AND [Key] = {1}", filter.ResourceKey, filter.Key);
 
-            return new ApiResponse(Status200OK, string.Format(L["ItemsDeleted"], deleted));
+            return new ApiResponse(Status200OK, L["ItemsDeleted", deleted]);
         }
 
         [HttpPost]

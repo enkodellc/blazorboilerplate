@@ -74,7 +74,7 @@ else
 </div>
 
 <MatDialog @bind-IsOpen="@isEditDialogOpen">
-    <MatDialogTitle>@string.Format(L["Edit {0}"], currentKey)</MatDialogTitle>
+    <MatDialogTitle>@L["Edit {0}", currentKey]</MatDialogTitle>
     <MatDialogContent>
         <div class="form-group">
             <MatTextField @bind-Value="@newKey" Label=@L["Key"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
@@ -89,7 +89,7 @@ else
 <MatDialog @bind-IsOpen="@isDeleteDialogOpen">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @string.Format(L["Are you sure you want to delete {0}?"], currentKey)
+        @L["Are you sure you want to delete {0}?", currentKey]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteDialogOpen = false; })">@L["Cancel"]</MatButton>

@@ -1,7 +1,9 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Shared.Interfaces.Db;
 using BlazorBoilerplate.Shared.SqlLocalizer;
 using Breeze.Persistence;
 using Breeze.Persistence.EFCore;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -17,12 +19,15 @@ namespace BlazorBoilerplate.Storage
     public abstract class BasePersistenceManager<T> : EFPersistenceManager<T> where T : DbContext
     {
         protected readonly IHttpContextAccessor httpContextAccessor;
+        protected readonly IValidatorFactory validatorFactory;
         protected readonly IStringLocalizer<Global> L;
         public BasePersistenceManager(T dbContext,
             IHttpContextAccessor accessor,
+            IValidatorFactory factory,
             IStringLocalizer<Global> l) : base(dbContext)
         {
             httpContextAccessor = accessor;
+            validatorFactory = factory;
             L = l;
         }
         public DbSet<TEntity> GetEntities<TEntity>() where TEntity : class
@@ -70,12 +75,37 @@ namespace BlazorBoilerplate.Storage
                                 break;
                         }
 
+                        var entityType = entityInfo.Entity.GetType();
+
                         if ((requiredPermissions.Actions & requiredAction) == requiredAction)
                         {
                             if (user == null || user.Identity.IsAuthenticated == false)
                                 errors.Add(new EFEntityError(entityInfo, L["AuthenticationRequired"], L["LoginRequired"], null));
-                            else if (!user.Claims.Any(c => c.Type == ClaimConstants.Permission && c.Value == $"{entityInfo.Entity.GetType().Name}.{requiredAction}"))
+                            else if (!user.Claims.Any(c => c.Type == ClaimConstants.Permission && c.Value == $"{entityType.Name}.{requiredAction}"))
                                 errors.Add(new EFEntityError(entityInfo, L["Operation not allowed"], L["NotAuthorizedTo"], null));
+                        }
+
+                        if (entityInfo.EntityState == EntityState.Added || entityInfo.EntityState == EntityState.Modified)
+                        {
+                            var validator = validatorFactory.GetValidator(entityType);
+
+                            if (validator == null)
+                            {
+                                var iface = entityType.GetInterfaces().SingleOrDefault(i => i.Namespace == typeof(ILocalizationRecord).Namespace);
+
+                                if (iface != null)
+                                {
+                                    validator = validatorFactory.GetValidator(iface);
+
+                                    if (validator != null)
+                                    {
+                                        var results = validator.Validate(new ValidationContext<object>(entityInfo.Entity));
+
+                                        if (!results.IsValid)
+                                            errors.AddRange(results.Errors.Select(i => new EFEntityError(entityInfo, i.ErrorCode, i.ErrorMessage, i.PropertyName)));
+                                    }
+                                }
+                            }
                         }
                     }
                 }

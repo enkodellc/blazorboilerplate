@@ -274,7 +274,7 @@ else
 <MatDialog @bind-IsOpen="@isDeleteClientDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @string.Format(L["Are you sure you want to delete {0}?"], currentClient.ClientId)
+        @L["Are you sure you want to delete {0}?", currentClient.ClientId]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteClientDialogOpen = false; })">@L["Cancel"]</MatButton>
@@ -285,7 +285,7 @@ else
 <MatDialog @bind-IsOpen="@isDeleteClientSecretDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @string.Format(L["Are you sure you want to delete {0}?"], currentSecret.GetDisplayValue())
+        @L["Are you sure you want to delete {0}?", currentSecret.GetDisplayValue()]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteClientSecretDialogOpen = false; })">@L["Cancel"]</MatButton>

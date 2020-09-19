@@ -61,7 +61,7 @@
 <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @string.Format(L["Are you sure you want to delete {0}?"], todo.Title)
+        @L["Are you sure you want to delete {0}?", todo.Title]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { deleteDialogOpen = false; })">@L["Cancel"]</MatButton>
