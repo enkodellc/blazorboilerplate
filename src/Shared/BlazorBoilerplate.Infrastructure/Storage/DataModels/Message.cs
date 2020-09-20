@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels

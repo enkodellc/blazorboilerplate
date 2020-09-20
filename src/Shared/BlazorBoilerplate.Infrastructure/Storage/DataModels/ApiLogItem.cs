@@ -1,5 +1,4 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.SqlLocalizer;
 using System;
 using System.ComponentModel.DataAnnotations;
 
