@@ -78,10 +78,10 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="3.1.8" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
-    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.5.0" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.7.4" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.8.1" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.2.0-dev-00244" />

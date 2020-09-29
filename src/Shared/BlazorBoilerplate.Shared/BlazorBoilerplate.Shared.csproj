@@ -13,7 +13,7 @@
     <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Blazored.FluentValidation" Version="1.3.1" />
+    <PackageReference Include="Blazored.FluentValidation" Version="1.3.2" />
     <PackageReference Include="Breeze.Sharp" Version="0.9.6" />
     <PackageReference Include="Humanizer" Version="2.8.26" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.1.0" />
