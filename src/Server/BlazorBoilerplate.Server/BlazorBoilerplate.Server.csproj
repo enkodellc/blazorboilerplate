@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>8.0</LangVersion>
     <Version>2.0.0</Version>
-    <Authors>Keith Fimreite</Authors>
+    <Authors>Keith Fimreite, Giovanni Quarella</Authors>
     <Company>EnkodeLLC</Company>
     <Title>BlazorBoilerplate Server</Title>
     <Description>Blazor Boilerplate is starter kit / SPA Admin Template for Blazor</Description>
@@ -128,7 +128,7 @@
   <ItemGroup>
     <Folder Include="Logs\" />
   </ItemGroup>
-   
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="del &quot;$(ProjectDir)Logs\*.*&quot; /q" />
   </Target>

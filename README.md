@@ -137,12 +137,13 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.9.0 Under Development (Development branch Major Project Refactor - Thanks GioviQ)
+### 2.0.0 Development is now Master  (Major Project Refactor - Thanks GioviQ)
 - Localization Support. Thanks [GioviQ](https://github.com/GioviQ) 
 - DotNet Template Solution. Thanks [GioviQ](https://github.com/GioviQ) 
-- Update to Identity Server. Thanks [GioviQ](https://github.com/GioviQ) 
+- Update to Identity Server 4.1.0,. Thanks [GioviQ](https://github.com/GioviQ) 
 - [Demo for Development Branch - SSB](https://blazor-server.quarella.net/)
 - [Demo for Development Branch - CSB](https://blazor-wasm.quarella.net/)
+- Nuget Package Updates / WebAssembly 3.2.1
 
 ### 1.0.0 - Master branch
 - Nuget Package updates Blazor 3.2 - Production!
