@@ -11,8 +11,6 @@ Documentation
 
 Blazor Boilerplate is a starter template for `Blazor web apps <https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor>`_.
 
-.. note:: This docs cover the latest version on development branch.
-
 With Blazor Boilerplate you can easily switch between the two modes of Blazor.
 
 
