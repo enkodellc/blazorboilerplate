@@ -66,7 +66,7 @@
     <PackageReference Include="AutoMapper" Version="10.0.0" />
     <PackageReference Include="Breeze.AspNetCore.NetCore" Version="3.0.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.2.0" />
-    <PackageReference Include="IdentityServer4" Version="4.1.0" />
+    <PackageReference Include="IdentityServer4" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.0" />
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.1.4" />
