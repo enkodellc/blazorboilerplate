@@ -1,4 +1,4 @@
-# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.CommonUI/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
+# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/docs/images/logo-title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
 Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to BOTH (WebAssembly / Core-Hosted) and Server-Side Blazor with a .NET Core 3.1 Server. The UI for this application is by Material Design provided mostly by MatBlazor.
 Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4. Version 0.6.0 and up are capable of both CSB and SSB!    
