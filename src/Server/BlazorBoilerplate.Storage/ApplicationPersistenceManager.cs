@@ -25,6 +25,12 @@ namespace BlazorBoilerplate.Storage
         {
             if (entityInfo.Entity is UserProfile userProfile)
                 userProfile.LastUpdatedDate = DateTime.Now;
+            else if (entityInfo.Entity is ApplicationUser applicationUser && entityInfo.EntityState == Breeze.Persistence.EntityState.Modified)
+            {
+                var props = DbContext.Entry(applicationUser).GetDatabaseValues();
+                applicationUser.PasswordHash = props.GetValue<string>("PasswordHash");
+                applicationUser.SecurityStamp = props.GetValue<string>("SecurityStamp");
+            }
 
             return true;
         }
