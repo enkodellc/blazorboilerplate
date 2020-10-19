@@ -86,38 +86,45 @@ namespace BlazorBoilerplate.Storage
 
         private async Task ImportResxLanguages()
         {
-            if (!await _localizationDbContext.LocalizationRecords.AnyAsync())
+            try
             {
-                _logger.LogInformation("Importing Resx files in db");
-
-                var regex = new Regex(@".(\w{2}-\w{2}).resx");
-
-                foreach (var resxFile in Directory.GetFiles(@"..\..\Shared\BlazorBoilerplate.Localization", "*.resx"))
+                if (!await _localizationDbContext.LocalizationRecords.AnyAsync())
                 {
-                    var m = regex.Match(resxFile);
+                    _logger.LogInformation("Importing Resx files in db");
 
-                    var culture = Shared.SqlLocalizer.Settings.NeutralCulture;
+                    var regex = new Regex(@".(\w{2}-\w{2}).resx");
 
-                    if (m.Success)
-                        culture = m.Groups[1].Value;
-
-                    XDocument doc = XDocument.Load(new XmlTextReader(resxFile));
-
-                    foreach (var node in doc.Element("root").Elements("data"))
+                    foreach (var resxFile in Directory.GetFiles(@"..\..\Shared\BlazorBoilerplate.Localization", "*.resx"))
                     {
-                        _localizationDbContext.Add(new LocalizationRecord()
+                        var m = regex.Match(resxFile);
+
+                        var culture = Shared.SqlLocalizer.Settings.NeutralCulture;
+
+                        if (m.Success)
+                            culture = m.Groups[1].Value;
+
+                        XDocument doc = XDocument.Load(new XmlTextReader(resxFile));
+
+                        foreach (var node in doc.Element("root").Elements("data"))
                         {
-                            LocalizationCulture = culture,
-                            Key = node.Attribute("name").Value,
-                            Text = node.Element("value").Value,
-                            ResourceKey = "Global"
-                        });
+                            _localizationDbContext.Add(new LocalizationRecord()
+                            {
+                                LocalizationCulture = culture,
+                                Key = node.Attribute("name").Value,
+                                Text = node.Element("value").Value,
+                                ResourceKey = "Global"
+                            });
+                        }
+
+                        await _localizationDbContext.SaveChangesAsync();
                     }
 
-                    await _localizationDbContext.SaveChangesAsync();
+                    SqlStringLocalizerFactory.SetLocalizationRecords(_localizationDbContext.LocalizationRecords);
                 }
-
-                SqlStringLocalizerFactory.SetLocalizationRecords(_localizationDbContext.LocalizationRecords);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Importing Resx files in db error: {0}",ex.Message);
             }
         }
 

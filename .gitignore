@@ -354,3 +354,5 @@ healthchecksdb
 
 /src/Server/BlazorBoilerplate.Server/Modules
 /src/Server/BlazorBoilerplate.Server/Keys
+/src/Server/BlazorBoilerplate.Storage/Properties/PublishProfiles/FolderProfile.pubxml
+/src/Server/BlazorBoilerplate.Storage/Properties/PublishProfiles/FolderProfile1.pubxml
