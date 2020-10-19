@@ -19,13 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Logs\**" />
-    <Content Remove="Logs\**" />
-    <EmbeddedResource Remove="Logs\**" />
-    <None Remove="Logs\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Helpers\Templates\ForgotPassword.template" />
     <None Remove="Helpers\Templates\NewUserConfirmationEmail.template" />
     <None Remove="Helpers\Templates\NewUserEmail.template" />
@@ -124,13 +117,9 @@
       <DependentUpon>AdminController.tt</DependentUpon>
     </Compile>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Logs\" />
-  </ItemGroup>
    
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildingInsideVisualStudio)' == 'true'">
-    <Exec Command="del &quot;$(ProjectDir)Logs\*.*&quot; /q" />
+    <Exec Command="if exist &quot;$(ProjectDir)Logs\*.*&quot; del &quot;$(ProjectDir)Logs\*.*&quot; /q" />
   </Target>
 
 </Project>
