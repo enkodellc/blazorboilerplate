@@ -1,4 +1,4 @@
-# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.CommonUI/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
+# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/docs/images/logo-title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
 Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to BOTH (WebAssembly / Core-Hosted) and Server-Side Blazor with a .NET Core 3.1 Server. The UI for this application is by Material Design provided mostly by MatBlazor.
 Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4. Version 0.6.0 and up are capable of both CSB and SSB!    
@@ -137,12 +137,13 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.9.0 Under Development (Development branch Major Project Refactor - Thanks GioviQ)
+### 2.0.0 Development is now Master  (Major Project Refactor - Thanks GioviQ)
 - Localization Support. Thanks [GioviQ](https://github.com/GioviQ) 
 - DotNet Template Solution. Thanks [GioviQ](https://github.com/GioviQ) 
-- Update to Identity Server. Thanks [GioviQ](https://github.com/GioviQ) 
+- Update to Identity Server 4.1.0,. Thanks [GioviQ](https://github.com/GioviQ) 
 - [Demo for Development Branch - SSB](https://blazor-server.quarella.net/)
 - [Demo for Development Branch - CSB](https://blazor-wasm.quarella.net/)
+- Nuget Package Updates / WebAssembly 3.2.1
 
 ### 1.0.0 - Master branch
 - Nuget Package updates Blazor 3.2 - Production!
