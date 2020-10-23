@@ -1,16 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>8.0</LangVersion>
-    <Version>2.0.0</Version>
-    <Authors>Keith Fimreite, Giovanni Quarella</Authors>
-    <Company>EnkodeLLC</Company>
     <Title>BlazorBoilerplate Shared</Title>
-    <Description>Blazor Boilerplate is starter kit / SPA Admin Template for Blazor</Description>
-    <WebPage>https://blazorboilerplate.com/</WebPage>
-    <PackageProjectUrl>https://blazorboilerplate.com/</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Blazored.FluentValidation" Version="1.3.2" />
