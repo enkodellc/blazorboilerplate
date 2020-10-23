@@ -5,15 +5,7 @@
     <OutputType>Exe</OutputType>
     <LangVersion>8.0</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <Version>2.0.0</Version>
-    <Authors>Keith Fimreite, Giovanni Quarella</Authors>
-    <Company>EnkodeLLC</Company>
     <Title>BlazorBoilerplate Client</Title>
-    <Description>Blazor Boilerplate is starter kit / SPA Admin Template for Blazor</Description>
-    <WebPage>https://blazorboilerplate.com/</WebPage>
-    <PackageProjectUrl>https://blazorboilerplate.com/</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/enkodellc/blazorboilerplate</RepositoryUrl>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking> <!-- because Mono.Cecil.AssemblyResolutionException: Failed to resolve assembly: Microsoft.Data.OData 5.8.4 -->
   </PropertyGroup>
