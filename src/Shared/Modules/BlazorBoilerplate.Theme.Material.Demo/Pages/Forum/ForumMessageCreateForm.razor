@@ -17,9 +17,6 @@
                             placeholder="Type your message here..."
                             aria-label="Message"
                             @bind-Value="@messageDto.Text" />
-                @* https://chrissainty.com/a-detailed-look-at-data-binding-in-blazor/ *@
-                @* https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-3.0 *@
-                @* https://remibou.github.io/Using-the-Blazor-form-validation/ *@
                 <div class="input-group-append">
                     <button id="messageCreate" 
                             class="btn btn-warning" 
@@ -47,7 +44,7 @@
         Creating = true;
         StateHasChanged();
         await Send(messageDto);
-        messageDto.Text = "";
+        messageDto.Text = string.Empty;
         Creating = false;
         StateHasChanged();
     }

@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BlazorBoilerplate.Theme.Material\BlazorBoilerplate.Theme.Material.csproj" />
   </ItemGroup>
 

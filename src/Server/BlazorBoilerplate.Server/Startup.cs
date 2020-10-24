@@ -25,6 +25,7 @@ using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication.Twitter;
 using Microsoft.AspNetCore.Authorization;
@@ -222,6 +223,23 @@ namespace BlazorBoilerplate.Server
                 options.SupportedTokens = SupportedTokens.Jwt;
                 options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
                 options.ApiName = IdentityServerConfig.LocalApiName;
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/chathub")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             #region ExternalAuthProviders
@@ -499,7 +517,6 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IAdminManager, AdminManager>();
             services.AddTransient<IEmailManager, EmailManager>();
             services.AddTransient<IExternalAuthManager, ExternalAuthManager>();
-            services.AddTransient<IMessageManager, MessageManager>();
 
             #region Automapper
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/
@@ -596,8 +613,9 @@ namespace BlazorBoilerplate.Server
             app.UseBlazorFrameworkFiles(); //ClientSideBlazor
 
             app.UseRouting();
-            //app.UseAuthentication(); //Removed for IS4
+
             app.UseIdentityServer();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseMultiTenant();

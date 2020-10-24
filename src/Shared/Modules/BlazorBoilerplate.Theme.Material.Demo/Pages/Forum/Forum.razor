@@ -1,7 +1,6 @@
 ﻿@page "/forum"
-@inject IAuthorizationService AuthorizationService
 @inherits ForumPageModel
-@inject HttpClient Http
+@inject IStringLocalizer<Global> L
 
 <AuthorizeView Context="AuthorizeContext">
     <NotAuthorized>
@@ -12,7 +11,7 @@
 </AuthorizeView>
 
 <h1>Forum</h1>
-<p>This forum page uses SignalR and persists in a database. </p>
+<p>This forum page uses SignalR and persists in a database.</p>
 
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
@@ -23,7 +22,7 @@
             {
                 <MatListItem>
                     <MatListItemText>
-                        Loading messages...
+                        @L["Loading"]
                     </MatListItemText>
                 </MatListItem>
             }
@@ -31,7 +30,7 @@
             {
                 @foreach (var message in Messages)
                 {
-                    <ForumMessage Delete="Delete" Message="@message"  />
+                    <ForumMessage Delete="Delete" Message="@message" />
                 }
             }
         </MatList>
