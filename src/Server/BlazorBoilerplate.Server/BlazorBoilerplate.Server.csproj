@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="logs\**" />
+    <Content Remove="logs\**" />
+    <EmbeddedResource Remove="logs\**" />
+    <None Remove="logs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Helpers\Templates\ForgotPassword.template" />
     <None Remove="Helpers\Templates\NewUserConfirmationEmail.template" />
     <None Remove="Helpers\Templates\NewUserEmail.template" />
