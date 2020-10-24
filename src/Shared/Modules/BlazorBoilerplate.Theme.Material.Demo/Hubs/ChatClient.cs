@@ -1,136 +1,19 @@
-﻿using BlazorBoilerplate.Theme.Material.Demo.Pages;
-using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Theme.Material.Demo.Hubs
 {
 
     /// <summary>
-    /// Generic client class that interfaces .NET Standard/Blazor with SignalR Javascript client
+    /// Generic client class that interfaces .NET Standard/Blazor with SignalR .NET Core client
     /// </summary>
     public class ChatClient : IDisposable
     {
-
-        #region static methods
-
-        /// <summary>
-        /// internal dictionary of SignalR clients by Key
-        /// </summary>
-        private static readonly Dictionary<string, ChatClient> _clients = new Dictionary<string, ChatClient>();
-
-
-        /// <summary>
-        /// Inbound message handler 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="method"></param>
-        /// <param name="username"></param>
-        /// <param name="message"></param>
-        /// <remarks>
-        /// This method is called from Javascript when amessage is received
-        /// </remarks>
-        [JSInvokable]
-        public static void ReceiveMessage(string key, string method, int id, string username, string message)
-        {
-            if (_clients.ContainsKey(key))
-            {
-                var client = _clients[key];
-                switch (method)
-                {
-                    case "ReceiveMessage":
-                        client.HandleReceiveMessage(id, username, message);
-                        return;
-
-                    default:
-                        throw new NotImplementedException(method);
-                }
-            }
-            else
-            {
-                // unable to match the message to a client
-                Console.WriteLine($"ReceiveMessage: unable to find {key}");
-            }
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Ctor: create a new client for the given hub URL
-        /// </summary>
-        /// <param name="hubUrl"></param>
-        public ChatClient(IJSRuntime JSRuntime)
-        {
-            _JSruntime = JSRuntime;
-            // create a unique key for this client
-            _key = Guid.NewGuid().ToString();
-            // add to the list of clients
-            _clients.Add(_key, this);
-        }
-
-        /// <summary>
-        /// The Hub URL for chat client
-        /// </summary>
-        const string HUBURL = "/chathub";
-
-        /// <summary>
-        /// Our unique key for this client instance
-        /// </summary>
-        /// <remarks>
-        /// We cannot pass JS objects to Blazor/C# so we use a unique key
-        /// to reference each instance. The JS client will store the object
-        /// under our key so we can reference it
-        /// </remarks>
-        private readonly string _key;
-
-        /// <summary>
-        /// Name of the chatter
-        /// </summary>
-        private readonly string _username;
-
-        /// <summary>
-        /// Flag to show if started
-        /// </summary>
-        private bool _started = false;
-
-        /// <summary>
-        /// JS runtime from DI
-        /// </summary>
-        private readonly IJSRuntime _JSruntime;
-
-
-        /// <summary>
-        /// Start the SignalR client on JS
-        /// </summary>
-        public async Task Start()
-        {
-            if (!_started)
-            {
-                // the callback method for inbound messages
-                const string assembly = "BlazorBoilerplate.Theme.Material.Demo";//TODO: Make this dynamic with the application
-                const string method = "ReceiveMessage";
-                // invoke the JS interop start client method
-                Console.WriteLine("ChatClient: calling Start()");
-                var _ = await _JSruntime.InvokeAsync<object>("ChatClient.Start", _key, HUBURL, assembly, method);
-                Console.WriteLine("ChatClient: Start returned");
-                _started = true;
-
-                // register user
-                await _JSruntime.InvokeAsync<object>("ChatClient.Register", _key, _username);
-            }
-        }
-
-        /// <summary>
-        /// Handle an inbound message from a hub
-        /// </summary>
-        /// <param name="method">event name</param>
-        /// <param name="message">message content</param>
-        private void HandleReceiveMessage(int id, string username, string message)
-        {
-            // raise an event to subscribers
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(id, username, message));
-        }
+        private readonly HubConnection connection;
 
         /// <summary>
         /// Event raised when this client receives a message
@@ -140,42 +23,42 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Hubs
         /// </remarks>
         public event MessageReceivedEventHandler MessageReceived;
 
-        /// <summary>
-        /// Send a message to the hub
-        /// </summary>
-        /// <param name="message">message to send</param>
+        public ChatClient(HttpClient httpClient)
+        {
+            connection = new HubConnectionBuilder()
+                .WithUrl($"{httpClient.BaseAddress}chathub", options =>
+                {
+                    foreach (var header in httpClient.DefaultRequestHeaders)
+                        if (header.Key == "Cookie")
+                            options.Headers.Add(header.Key, header.Value.First());
+                })
+                .WithAutomaticReconnect()
+                .Build();
+        }
+
+        public async Task Start()
+        {
+            connection.On<int, string, string>("ReceiveMessage", (id, username, message) =>
+            {
+                MessageReceived?.Invoke(this, new MessageReceivedEventArgs(id, username, message));
+            });
+
+            await connection.StartAsync();
+        }
+
         public async Task Send(string message)
         {
-            // check we are connected
-            if (!_started)
-                throw new InvalidOperationException("Client not started");
-            // send the message
-            await _JSruntime.InvokeAsync<object>("ChatClient.Send", _key, message);
+            await connection.InvokeAsync("SendMessage", message);
         }
-
-        /// <summary>
-        /// Delete a message from the hub by id
-        /// </summary>
-        /// <param name="id">message of id to be deleted</param>
         public async Task Delete(int id)
         {
-            // check we are connected
-            if (!_started)
-                throw new InvalidOperationException("Client not started");
-            // send the message
-            await _JSruntime.InvokeAsync<object>("ChatClient.Delete", _key, id);
+            await connection.InvokeAsync("DeleteMessage", id);
         }
-
-        /// <summary>
-        /// Stop the client (if started)
-        /// </summary>
         public async Task Stop()
         {
-            if (_started)
+            if (connection.State != HubConnectionState.Disconnected)
             {
-                // disconnect the client
-                await _JSruntime.InvokeAsync<object>("ChatClient.Stop", _key);
-                _started = false;
+                await connection.StopAsync();
             }
         }
 
@@ -185,18 +68,14 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Hubs
         public void Dispose()
         {
             Console.WriteLine("ChatClient: Disposing");
-            // ensure we stop if connected
-            if (_started)
+
+            if (connection.State != HubConnectionState.Disconnected)
             {
                 Task.Run(async () =>
                 {
                     await Stop();
                 }).Wait();
             }
-
-            // remove this key from the list of clients
-            if (_clients.ContainsKey(_key))
-                _clients.Remove(_key);
         }
     }
 

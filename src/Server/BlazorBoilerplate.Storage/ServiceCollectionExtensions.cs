@@ -1,6 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Storage.Stores;
 using Finbuckle.MultiTenant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,8 +31,6 @@ namespace BlazorBoilerplate.Storage
 
             services.AddDbContext<LocalizationDbContext>(builder => GetDbContextOptions<LocalizationDbContext>(builder, configuration));
             services.AddScoped<LocalizationPersistenceManager>();
-
-            services.AddTransient<IMessageStore, MessageStore>();
 
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
 

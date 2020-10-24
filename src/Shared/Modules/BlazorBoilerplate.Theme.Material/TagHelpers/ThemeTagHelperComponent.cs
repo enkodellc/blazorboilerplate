@@ -18,7 +18,7 @@ namespace BlazorBoilerplate.Theme.Material.TagHelpers
 <link rel=""icon"" type=""image/x-icon"" href=""_content/{path}/images/favicon.ico"">
 <link href=""_content/{path}/css/bootstrap/bootstrap.min.css"" rel=""stylesheet"" />
 <link href=""https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"" />
-<link href=""_content/{path}/fonts/roboto.css"" rel=""stylesheet"" />
+<link href=""_content/{path}/fonts/roboto/roboto.css"" rel=""stylesheet"" />
 <link href=""_content/MatBlazor/dist/matBlazor.css"" rel=""stylesheet"" />
 <link href=""_content/{path}/css/site.css"" rel=""stylesheet"" />");
             }

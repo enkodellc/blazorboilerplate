@@ -22,7 +22,6 @@ namespace BlazorBoilerplate.Theme.Material.Demo
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<ITagHelperComponent, ThemeTagHelperComponent>();
             Init(services);
         }
 
