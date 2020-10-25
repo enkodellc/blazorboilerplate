@@ -18,10 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
 using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile;
 
