@@ -1,43 +1,15 @@
-﻿using BlazorBoilerplate.Shared.Interfaces.Db;
-using BlazorBoilerplate.Shared.SqlLocalizer;
-using Breeze.Sharp;
+﻿using BlazorBoilerplate.Shared.Localizer;
 using System;
 using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Shared.Dto.Db
 {
-    public class LocalizationRecord : BaseEntity, ILocalizationRecord, IEquatable<LocalizationRecord>
+    public partial class LocalizationRecord : IEquatable<LocalizationRecord>
     {
-        public long Id
-        {
-            get { return GetValue<long>(); }
-            set { SetValue(value); }
-        }
-        public string Key
-        {
-            get { return GetValue<string>(); }
-            set { SetValue(value); }
-        }
-        public string Text
-        {
-            get { return GetValue<string>(); }
-            set { SetValue(value); }
-        }
-        public string LocalizationCulture
-        {
-            get { return GetValue<string>(); }
-            set { SetValue(value); }
-        }
-        public string ResourceKey
-        {
-            get { return GetValue<string>(); }
-            set { SetValue(value); }
-        }
-
         public LocalizationRecord()
         {
-            LocalizationCulture = SqlLocalizer.Settings.NeutralCulture;
-            ResourceKey = nameof(Global);
+            Culture = Settings.NeutralCulture;
+            ContextId = nameof(Global);
         }
 
         public override bool Equals(object obj)
@@ -48,14 +20,14 @@ namespace BlazorBoilerplate.Shared.Dto.Db
         public bool Equals(LocalizationRecord other)
         {
             return other != null &&
-                   Key == other.Key &&
-                   LocalizationCulture == other.LocalizationCulture &&
-                   ResourceKey == other.ResourceKey;
+                   MsgId == other.MsgId &&
+                   Culture == other.Culture &&
+                   ContextId == other.ContextId;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Key, LocalizationCulture, ResourceKey);
+            return HashCode.Combine(MsgId, Culture, ContextId);
         }
 
         public static bool operator ==(LocalizationRecord left, LocalizationRecord right)
