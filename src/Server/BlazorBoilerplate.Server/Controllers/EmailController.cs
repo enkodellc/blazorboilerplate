@@ -1,6 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Dto.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

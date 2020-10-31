@@ -1,6 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Shared.Localizer;
 using Humanizer;
 using Microsoft.Extensions.Localization;
 using System;

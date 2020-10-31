@@ -26,11 +26,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Infrastructure\BlazorBoilerplate.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Shared.Localizer\BlazorBoilerplate.Shared.Localizer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Migrations\ConfigurationDb\" />
     <Folder Include="Migrations\ApplicationDb\" />
+    <Folder Include="Migrations\LocalizationDb\" />
     <Folder Include="Migrations\TenantStoreDb\" />
     <Folder Include="Migrations\PersistedGrantDb\" />
   </ItemGroup>

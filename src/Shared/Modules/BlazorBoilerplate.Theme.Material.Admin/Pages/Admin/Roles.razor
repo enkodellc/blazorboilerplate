@@ -22,8 +22,8 @@ else
         <MatTableRow Context="RoleRow">
             <td>
                 <div style="width:155px;">
-                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Shared.DefaultRoleNames.Administrator)"></MatIconButton>
-                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Shared.DefaultRoleNames.Administrator)"></MatIconButton>
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)"></MatIconButton>
                 </div>
             </td>
             <td><div style="width:130px;">@RoleRow.Name</div></td>

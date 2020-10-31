@@ -1,5 +1,5 @@
 ﻿using BlazorBoilerplate.Server.Aop;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;

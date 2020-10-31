@@ -73,7 +73,7 @@ else
                 <MatTab Label="Main">
                     <fieldset>
                         <div class="form-group">
-                            <MatTextField @bind-Value="@currentApiResource.Name" Disabled="@isCurrentApiResourceKeyReadOnly" Label="Id" Icon="description" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                            <MatTextField @bind-Value="@currentApiResource.Name" Disabled="@isCurrentApiContextIdReadOnly" Label="Id" Icon="description" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                         </div>
                         <div class="form-group">
                             <MatSlideToggle @bind-Value="@currentApiResource.Enabled" Label="Enabled"></MatSlideToggle>
@@ -203,7 +203,7 @@ else
     int pageSize { get; set; } = 15;
     int currentPage { get; set; } = 0;
 
-    bool isCurrentApiResourceKeyReadOnly = false;
+    bool isCurrentApiContextIdReadOnly = false;
 
     List<ApiResourceDto> apiResources;
     ApiResourceDto currentApiResource { get; set; } = new ApiResourceDto();
@@ -279,7 +279,7 @@ else
                 labelUpsertDialogOkButton = L["Update"];
             }
 
-            isCurrentApiResourceKeyReadOnly = !isInsertOperation;
+            isCurrentApiContextIdReadOnly = !isInsertOperation;
 
             jwtClaimSelections.Clear();
 

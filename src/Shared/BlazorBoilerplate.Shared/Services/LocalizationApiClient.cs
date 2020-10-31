@@ -1,10 +1,9 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Db;
-using BlazorBoilerplate.Shared.Interfaces.Db;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Localization;
-using BlazorBoilerplate.Shared.SqlLocalizer;
 using Breeze.Sharp;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,12 +19,17 @@ namespace BlazorBoilerplate.Shared.Services
         public LocalizationApiClient(HttpClient httpClient, ILogger<LocalizationApiClient> logger) : base(httpClient, logger, rootApiPath)
         { }
 
-        public async Task<QueryResult<LocalizationRecord>> GetLocalizationRecords(string key = null)
+        public async Task<QueryResult<PluralFormRule>> GetPluralFormRules()
+        {
+            return await GetItems<PluralFormRule>(from: "PluralFormRules");
+        }
+
+        public async Task<QueryResult<LocalizationRecord>> GetLocalizationRecords(string msgId = null)
         {
             try
             {
                 var query = new EntityQuery<LocalizationRecord>()
-                    .WithParameter("resourceKey", nameof(Global)).WithParameter("key", key).From("LocalizationRecords");
+                    .WithParameter("contextId", nameof(Global)).WithParameter("msgId", msgId).From("LocalizationRecords");
 
                 var response = await entityManager.ExecuteQuery(query, CancellationToken.None);
 
@@ -49,12 +53,12 @@ namespace BlazorBoilerplate.Shared.Services
             }
         }
 
-        public async Task<QueryResult<string>> GetLocalizationRecordKeys(int? take, int? skip, string filter = null)
+        public async Task<QueryResult<string>> GetLocalizationRecordMsgIds(int? take, int? skip, string filter = null)
         {
             try
             {
                 var query = new EntityQuery<string>()
-                    .WithParameter("resourceKey", nameof(Global)).WithParameter("filter", filter).From("LocalizationRecordKeys").InlineCount();
+                    .WithParameter("contextId", nameof(Global)).WithParameter("filter", filter).From("LocalizationRecordMsgIds").InlineCount();
 
                 if (take != null)
                     query = query.Take(take.Value);
@@ -85,27 +89,31 @@ namespace BlazorBoilerplate.Shared.Services
             }
         }
 
-        public async Task<ApiResponseDto> DeleteLocalizationRecordKey(string key)
+        public async Task<ApiResponseDto> DeleteLocalizationRecordMsgId(string msgId)
         {
-            return await httpClient.PostJsonAsync<ApiResponseDto>($"{rootApiPath}DeleteLocalizationRecordKey", new LocalizationRecordFilterModel { ResourceKey = nameof(Global), Key = key });
+            return await httpClient.PostJsonAsync<ApiResponseDto>($"{rootApiPath}DeleteLocalizationRecordMsgId", new LocalizationRecordFilterModel { ContextId = nameof(Global), MsgId = msgId });
         }
-        public async Task<ApiResponseDto> EditLocalizationRecordKey(string oldkey, string newKey)
+        public async Task<ApiResponseDto> EditLocalizationRecordMsgId(string oldMsgId, string newMsgId)
         {
-            return await httpClient.PostJsonAsync<ApiResponseDto>($"{rootApiPath}EditLocalizationRecordKey", new ChangeLocalizationRecordModel { ResourceKey = nameof(Global), Key = oldkey, NewKey = newKey });
+            return await httpClient.PostJsonAsync<ApiResponseDto>($"{rootApiPath}EditLocalizationRecordMsgId", new ChangeLocalizationRecordModel { ContextId = nameof(Global), MsgId = oldMsgId, NewMsgId = newMsgId });
         }
         public async Task<ApiResponseDto> ReloadTranslations()
         {
             return await httpClient.PostJsonAsync<ApiResponseDto>($"{rootApiPath}ReloadTranslations", null);
         }
 
-        public void AddEntity(ILocalizationRecord localizationRecord)
+        public void AddEntity(LocalizationRecord localizationRecord)
         {
-            base.AddEntity((IEntity)localizationRecord);
+            AddEntity((IEntity)localizationRecord);
         }
 
-        public void RemoveEntity(ILocalizationRecord localizationRecord)
+        public void RemoveEntity(LocalizationRecord localizationRecord)
         {
-            base.RemoveEntity((IEntity)localizationRecord);
+            RemoveEntity((IEntity)localizationRecord);
+        }
+        public async Task<ApiResponseDto> Upload(MultipartFormDataContent content)
+        {
+            return await httpClient.PostFileAsync<ApiResponseDto>($"{rootApiPath}Upload", content);
         }
     }
 }

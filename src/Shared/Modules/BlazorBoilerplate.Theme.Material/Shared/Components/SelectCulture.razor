@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager navigationManager
 @inject IJSRuntime js
 
-<MatSelectValue Value="CurrentCulture" Items="@BlazorBoilerplate.Shared.SqlLocalizer.Settings.SupportedCulturesWithName"
+<MatSelectValue Value="CurrentCulture" Items="@BlazorBoilerplate.Shared.Localizer.Settings.SupportedCulturesWithName"
                 ValueSelector=@(i => i.Item2)
                 ValueChanged="(string i) => OnCultureChanged(i)">
     <ItemTemplate Context="CultureItem">

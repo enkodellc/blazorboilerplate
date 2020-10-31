@@ -1,5 +1,5 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
-using BlazorBoilerplate.Shared.Interfaces;
+﻿using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Localizer;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;

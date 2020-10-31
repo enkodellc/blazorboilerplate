@@ -1,5 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Shared.Localizer;
 using Breeze.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;

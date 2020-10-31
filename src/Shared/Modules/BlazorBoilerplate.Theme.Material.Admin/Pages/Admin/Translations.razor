@@ -5,7 +5,7 @@
 
 <h1>@L["Translations"]</h1>
 
-@if (localizationRecordKeys == null)
+@if (localizationRecordMsgIds == null)
 {
 <LoadingBackground ShowLogoBox="true">
     <label>@L["Loading"]</label>
@@ -14,13 +14,13 @@
 else
 {
 <div class="mat-layout-grid">
-    <MatTextField ValueChanged="(string filter) => LoadKeys(filter)" Icon="search" />
+    <MatTextField ValueChanged="(string filter) => LoadMsgIds(filter)" Icon="search" />
     <div class="mat-layout-grid-inner">
         <div class="mat-layout-grid-cell">
-            <MatTable Items="@localizationRecordKeys" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false"
+            <MatTable Items="@localizationRecordMsgIds" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false"
                       AllowSelection="true" SelectionChanged="async (object key) => await LoadLocalizationRecords((string)key)">
                 <MatTableHeader>
-                    <th><MatButton Icon="add" Label=@L["NewTranslation"] OnClick="@OpenNewKeyDialogOpen"></MatButton></th>
+                    <th><MatButton Icon="add" Label=@L["NewTranslation"] OnClick="@OpenNewMsgIdDialogOpen"></MatButton></th>
                     <th>@L["Key"]</th>
                 </MatTableHeader>
                 <MatTableRow Context="keyRow">
@@ -45,73 +45,77 @@ else
                 <MatTableRow Context="row">
                     <td>
                         <div>
-                            <MatIconButton Icon="delete" OnClick="@(() => DeleteLocalizationRecord(row))" Disabled="@(row.LocalizationCulture == BlazorBoilerplate.Shared.SqlLocalizer.Settings.NeutralCulture)"></MatIconButton>
+                            <MatIconButton Icon="delete" OnClick="@(() => DeleteLocalizationRecord(row))" Disabled="@(row.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture)"></MatIconButton>
                         </div>
                     </td>
-                    <td><b>@row.LocalizationCulture</b></td>
+                    <td><b>@row.Culture</b></td>
                     <td>
-                        <MatTextField @bind-Value="@row.Text" TextArea="true" FullWidth="true" Required="true"></MatTextField>
+                        <MatTextField @bind-Value="@row.Translation" TextArea="true" FullWidth="true" Required="true"></MatTextField>
                     </td>
                 </MatTableRow>
             </MatTable>
-            @if(LocalizationCultures.Count > 0)
+            @if (LocalizationCultures.Count > 0)
             {<EditForm Model="@newLocalizationRecord" OnValidSubmit="@SaveNewLocalizationRecord">
-                <FluentValidationValidator />
-                <ValidationSummary />
-                <fieldset>
-                    <div class="form-group">
-                        <MatSelectItem @bind-Value="@newLocalizationRecord.LocalizationCulture" Items="@LocalizationCultures" Label=@L["Culture"]></MatSelectItem>
-                        <MatTextField @bind-Value="@newLocalizationRecord.Text" Label=@L["Translation"] FullWidth="true" TextArea="true"></MatTextField>
-                        <MatButton Type="submit" Raised="true">@L["Add"]</MatButton>
-                    </div>
-                </fieldset>
-            </EditForm>}
+                    <FluentValidationValidator />
+                    <ValidationSummary />
+                    <fieldset>
+                        <div class="form-group">
+                            <MatSelectItem @bind-Value="@newLocalizationRecord.Culture" Items="@LocalizationCultures" Label=@L["Culture"]></MatSelectItem>
+                            <MatTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" TextArea="true"></MatTextField>
+                            <MatButton Type="submit" Raised="true">@L["Add"]</MatButton>
+                        </div>
+                    </fieldset>
+                </EditForm>}
         </div>
     </div>
     <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
     <MatButton OnClick="@SaveChanges">@L["Save"]</MatButton>
     <MatButton OnClick="@ReloadTranslations">@L["ReloadTranslations"]</MatButton>
+    @*Hack. See https://github.com/SamProf/MatBlazor/issues/713*@
+    <MatButton OnClick="@(e => { navigationManager.NavigateTo("/api/localization/export", true); })">@L["Export"]</MatButton>
+    @*<MatButton Link="/api/localization/export">@L["Export"]</MatButton>*@
+    <MatFileUpload OnChange="@Upload" Label="@L["Import PO file"]"></MatFileUpload>
 </div>
 
 <MatDialog @bind-IsOpen="@isEditDialogOpen">
-    <MatDialogTitle>@L["Edit {0}", currentKey]</MatDialogTitle>
+    <MatDialogTitle>@L["Edit {0}", currentMsgId]</MatDialogTitle>
     <MatDialogContent>
         <div class="form-group">
-            <MatTextField @bind-Value="@newKey" Label=@L["Key"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-Value="@newMsgId" Label=@L["Key"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isEditDialogOpen = false; })">@L["Cancel"]</MatButton>
-        <MatButton OnClick="@(()=>EditLocalizationRecordKey(newKey))">@L["Save"]</MatButton>
+        <MatButton OnClick="@(()=>EditLocalizationRecordMsgId(newMsgId))">@L["Save"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@isDeleteDialogOpen">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @L["Are you sure you want to delete {0}?", currentKey]
+        @L["Are you sure you want to delete {0}?", currentMsgId]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteDialogOpen = false; })">@L["Cancel"]</MatButton>
-        <MatButton OnClick="@(()=>DeleteLocalizationRecordKey(currentKey))">@L["Delete"]</MatButton>
+        <MatButton OnClick="@(()=>DeleteLocalizationRecordMsgId(currentMsgId))">@L["Delete"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
-<MatDialog @bind-IsOpen="@isNewKeyDialogOpen">
+<MatDialog @bind-IsOpen="@isNewMsgIdDialogOpen">
     <MatDialogTitle>@L["NewTranslation"]</MatDialogTitle>
     <MatDialogContent>
-        <EditForm id="newKeyForm" Model="@newLocalizationRecord" OnValidSubmit="@SaveNewKey">
+        <EditForm id="newKeyForm" Model="@newLocalizationRecord" OnValidSubmit="@SaveNewMsgId">
             <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@newLocalizationRecord.Key" Label=@L["Key"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@newLocalizationRecord.MsgId" Label=@L["Key"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@newLocalizationRecord.LocalizationCulture" Label=@L["Culture"] Icon="public" IconTrailing="true" FullWidth="true" Required="true" Disabled="true"></MatTextField>
+                    <MatTextField @bind-Value="@newLocalizationRecord.Culture" Label=@L["Culture"] Icon="public" IconTrailing="true" FullWidth="true" Required="true" Disabled="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@newLocalizationRecord.Text" Label=@L["Translation"] FullWidth="true" Required="true" TextArea="true"></MatTextField>
+                    <MatTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" Required="true" TextArea="true"></MatTextField>
                 </div>
             </fieldset>
         </EditForm>

@@ -1,21 +1,18 @@
-﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Infrastructure.Storage.Permissions;
+using BlazorBoilerplate.Shared.Localizer;
 using Finbuckle.MultiTenant;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
-using Karambolo.Common;
-using Karambolo.PO;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -37,8 +34,8 @@ namespace BlazorBoilerplate.Storage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ApplicationPermissions _applicationPermissions;
+        private readonly ILocalizationProvider _localizationProvider;
         private readonly ILogger _logger;
-        private readonly IWebHostEnvironment _environment;
 
         public DatabaseInitializer(
             TenantStoreDbContext tenantStoreDbContext,
@@ -49,7 +46,8 @@ namespace BlazorBoilerplate.Storage
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             ApplicationPermissions applicationPermissions,
-            ILogger<DatabaseInitializer> logger, IWebHostEnvironment env)
+            ILocalizationProvider localizationProvider,
+            ILogger<DatabaseInitializer> logger)
         {
             _tenantStoreDbContext = tenantStoreDbContext;
             _localizationDbContext = localizationDbContext;
@@ -59,8 +57,8 @@ namespace BlazorBoilerplate.Storage
             _userManager = userManager;
             _roleManager = roleManager;
             _applicationPermissions = applicationPermissions;
+            _localizationProvider = localizationProvider;
             _logger = logger;
-            _environment = env;
         }
 
         public virtual async Task SeedAsync()
@@ -68,7 +66,7 @@ namespace BlazorBoilerplate.Storage
             //Apply EF Core migration
             await MigrateAsync();
 
-            await ImportTrasnlations();
+            await ImportTranslations();
 
             await EnsureAdminIdentitiesAsync();
 
@@ -87,105 +85,17 @@ namespace BlazorBoilerplate.Storage
             await _configurationContext.Database.MigrateAsync();
         }
 
-        private async Task ImportTrasnlations()
+        private async Task ImportTranslations()
         {
             try
             {
                 if (!await _localizationDbContext.LocalizationRecords.AnyAsync())
-                {
-                    _logger.LogInformation("Importing PO files in db");
-
-                    var basePath = "Localization";
-
-                    IReadOnlyDictionary<string, POCatalog> TextCatalogs = new Dictionary<string, POCatalog>();
-
-                    var cultures = _environment.ContentRootFileProvider.GetDirectoryContents(basePath)
-                        .Where(fi => fi.IsDirectory)
-                        .Select(fi => fi.Name)
-                        .ToArray();
-
-                    var textCatalogFiles = cultures.SelectMany(
-                        c => _environment.ContentRootFileProvider.GetDirectoryContents(Path.Combine(basePath, c))
-                        .Where(fi => !fi.IsDirectory && ".po".Equals(Path.GetExtension(fi.Name), StringComparison.OrdinalIgnoreCase)),
-                        (c, f) => (Culture: c, FileInfo: f));
-
-                    var textCatalogs = new List<(string FileName, string Culture, POCatalog Catalog)>();
-
-                    var parserSettings = new POParserSettings
-                    {
-                        SkipComments = true,
-                        SkipInfoHeaders = true,
-                    };
-
-                    Parallel.ForEach(textCatalogFiles,
-                        () => new POParser(parserSettings),
-                        (it, s, p) =>
-                        {
-                            POParseResult result;
-                            using (var stream = it.FileInfo.CreateReadStream())
-                                result = p.Parse(new StreamReader(stream));
-
-                            if (result.Success)
-                            {
-                                lock (textCatalogs)
-                                    textCatalogs.Add((it.FileInfo.Name, it.Culture, result.Catalog));
-                            }
-                            else
-                                _logger.LogWarning("Translation file \"{FILE}\" has errors.", Path.Combine(basePath, it.Culture, it.FileInfo.Name));
-
-                            return p;
-                        },
-                        Noop<POParser>.Action);
-
-                    TextCatalogs = textCatalogs
-                        .GroupBy(it => it.Culture, it => (it.FileName, it.Catalog))
-                        .ToDictionary(g => g.Key, g => g
-                            .OrderBy(it => it.FileName)
-                            .Select(it => it.Catalog)
-                            .Aggregate((acc, src) =>
-                            {
-                                foreach (var entry in src)
-                                    try { acc.Add(entry); }
-                                    catch (ArgumentException) { _logger.LogWarning("Multiple translations for key {KEY}.", FormatKey(entry.Key)); }
-
-                                return acc;
-                            }));
-
-                    foreach (var textCatalog in TextCatalogs)
-                    {
-                        foreach (var item in textCatalog.Value)
-                        {
-                            foreach (var entry in item)
-                                _localizationDbContext.Add(new LocalizationRecord()
-                                {
-                                    LocalizationCulture = textCatalog.Key,
-                                    Key = item.Key.Id,
-                                    Text = entry,
-                                    ResourceKey = item.Key.ContextId ?? nameof(Global)
-                                });
-                        }
-
-                        await _localizationDbContext.SaveChangesAsync();
-                    }
-
-                    SqlStringLocalizerFactory.SetLocalizationRecords(_localizationDbContext.LocalizationRecords);
-                }
+                    await ((StorageLocalizationProvider)_localizationProvider).InitDbFromPoFiles(_localizationDbContext);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Importing PO files in db error: {0}", ex.Message);
+                _logger.LogError("Importing PO files in db error: {0}", ex.GetBaseException().Message);
             }
-        }
-
-        public string FormatKey(POKey key)
-        {
-            var result = string.Concat("'", key.Id, "'");
-            if (key.PluralId != null)
-                result = string.Concat(result, "-'", key.PluralId, "'");
-            if (key.ContextId != null)
-                result = string.Concat(result, "@'", key.ContextId, "'");
-
-            return result;
         }
 
         private async Task SeedDemoDataAsync()

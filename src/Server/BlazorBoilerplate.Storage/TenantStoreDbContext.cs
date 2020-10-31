@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Shared;
+﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Shared;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Stores;
 using Microsoft.EntityFrameworkCore;

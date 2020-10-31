@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.Interfaces.Db;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Infrastructure.Storage.Permissions;
+using BlazorBoilerplate.Shared.Localizer;
 using Breeze.Persistence;
 using Breeze.Persistence.EFCore;
 using FluentValidation;
@@ -91,7 +92,7 @@ namespace BlazorBoilerplate.Storage
 
                             if (validator == null)
                             {
-                                var iface = entityType.GetInterfaces().SingleOrDefault(i => i.Namespace == typeof(ILocalizationRecord).Namespace);
+                                var iface = entityType.GetInterfaces().SingleOrDefault(i => i.Namespace == typeof(LocalizationRecord).Namespace);
 
                                 if (iface != null)
                                 {

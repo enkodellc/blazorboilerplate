@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Infrastructure.Server;
+﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Shared.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace BlazorBoilerplate.Server.Pages
         {
             await _accountManager.ForgetTwoFactorClient(User);
 
-            return LocalRedirect(Url.Content($"~{Shared.Settings.ProfilePath}"));
+            return LocalRedirect(Url.Content($"~{Settings.ProfilePath}"));
         }
     }
 }

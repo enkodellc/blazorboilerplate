@@ -59,7 +59,7 @@
     {
         var returnUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
 
-        navigationManager.NavigateTo($"{BlazorBoilerplate.Shared.Settings.LoginPath}/{returnUrl}", forceLoad: false);
+        navigationManager.NavigateTo($"{BlazorBoilerplate.Constants.Settings.LoginPath}/{returnUrl}", forceLoad: false);
     }
 
     [CascadingParameter]

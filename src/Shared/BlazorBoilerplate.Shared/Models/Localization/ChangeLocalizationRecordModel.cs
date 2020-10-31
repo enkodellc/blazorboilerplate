@@ -2,9 +2,9 @@
 {
     public class ChangeLocalizationRecordModel
     {
-        public string ResourceKey { get; set; }
-        public string Key { get; set; }
+        public string ContextId { get; set; }
+        public string MsgId { get; set; }
 
-        public string NewKey { get; set; }
+        public string NewMsgId { get; set; }
     }
 }

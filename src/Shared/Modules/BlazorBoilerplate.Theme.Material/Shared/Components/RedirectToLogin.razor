@@ -2,6 +2,6 @@
 @code {
     protected override void OnInitialized()
     {
-        Navigation.NavigateTo($"{BlazorBoilerplate.Shared.Settings.LoginPath}?returnurl={Uri.EscapeDataString(Navigation.Uri)}", true);
+        Navigation.NavigateTo($"{BlazorBoilerplate.Constants.Settings.LoginPath}?returnurl={Uri.EscapeDataString(Navigation.Uri)}", true);
     }
 }

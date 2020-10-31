@@ -1,10 +1,11 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
-using BlazorBoilerplate.Shared;
+﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
 using Breeze.Sharp;
+using Karambolo.Common.Localization;
 using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -76,7 +77,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                 users = new List<ApplicationUser>(result);
                 totalItemsCount = (int)result.InlineCount.Value;
 
-                matToaster.Add($"Total Items: {totalItemsCount}", MatToastType.Success, L["Operation Successful"]);
+                matToaster.Add(L["One item found", Plural.From("{0} items found", totalItemsCount)], MatToastType.Success, L["Operation Successful"]);
             }
             catch (Exception ex)
             {

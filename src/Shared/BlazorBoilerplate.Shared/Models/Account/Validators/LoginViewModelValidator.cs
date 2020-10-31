@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
+﻿using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.Extensions.Localization;
 
 namespace BlazorBoilerplate.Shared.Models.Account.Validators

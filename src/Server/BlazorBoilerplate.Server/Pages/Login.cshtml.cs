@@ -1,3 +1,4 @@
+using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Storage;
@@ -38,12 +39,12 @@ namespace BlazorBoilerplate.Server.Pages
                         loginParameters.ReturnUrl = (await _context.UserProfiles.SingleOrDefaultAsync(i => i.ApplicationUser.NormalizedUserName == loginParameters.UserName.ToUpper()))?.LastPageVisited ?? "/";
 
                     if ((response.Result as LoginResponseModel)?.RequiresTwoFactor == true)
-                        loginParameters.ReturnUrl = $"{Shared.Settings.LoginWith2faPath}?returnurl={Uri.EscapeDataString(loginParameters.ReturnUrl)}";
+                        loginParameters.ReturnUrl = $"{Settings.LoginWith2faPath}?returnurl={Uri.EscapeDataString(loginParameters.ReturnUrl)}";
                 }
             }
 
             if (!result)
-                loginParameters.ReturnUrl = $"{Shared.Settings.LoginPath}/{loginParameters.ReturnUrl ?? string.Empty}";
+                loginParameters.ReturnUrl = $"{Settings.LoginPath}/{loginParameters.ReturnUrl ?? string.Empty}";
 
             return LocalRedirect(Url.Content($"~{loginParameters.ReturnUrl}"));
         }

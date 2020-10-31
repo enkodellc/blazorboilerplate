@@ -1,8 +1,8 @@
-﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-using BlazorBoilerplate.Infrastructure.Server;
+﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using BlazorBoilerplate.Shared.Models.Account;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
