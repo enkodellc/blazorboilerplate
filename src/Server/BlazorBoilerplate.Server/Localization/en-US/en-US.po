@@ -1,15 +1,16 @@
-#, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2020-10-29 09:31+0100\n"
+"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: AdvaTel resgenEx 0.11\n"
-"Project-Id-Version: PACKAGE VERSION\n"
-"PO-Revision-Date: 2020-10-25 08:10+01:00\n"
-"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
-"Language-Team: English\n"
-"Report-Msgid-Bugs-To: \n"
+"X-Generator: Poedit 2.4.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "CreateApiResourcePermission"
@@ -690,3 +691,28 @@ msgstr "Add"
 msgid "ReloadTranslations"
 msgstr "Reload translations"
 
+msgid "One item found"
+msgid_plural "{0} items found"
+msgstr[0] "One item found"
+msgstr[1] "{0} items found"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Import PO file"
+msgstr "Import PO file"
+
+msgid "File not selected"
+msgstr "File not selected"
+
+msgid "File not valid"
+msgstr "File not valid"
+
+msgid "File empty"
+msgstr "File empty"
+
+msgid "PO File without a valid language"
+msgstr "PO File without a valid language"
+
+msgid "Only PO files"
+msgstr "Only PO files"

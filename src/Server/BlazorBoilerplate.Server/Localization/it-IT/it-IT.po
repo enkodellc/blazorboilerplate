@@ -1,27 +1,22 @@
-#, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2020-10-30 17:49+0100\n"
+"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.1\n"
-"Project-Id-Version: \n"
-"PO-Revision-Date: 2020-10-25 08:30+0100\n"
-"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
-"Language-Team: English\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"POT-Creation-Date: \n"
-"Language: it_IT\n"
 
 msgid "CreateApiResourcePermission"
 msgstr "Crea una nuova risorsa API  OpenID"
 
 msgid "CreateClientPermission"
 msgstr "Crea un nuovo client OpenID"
-
-msgid "CreateIdentityResourcePermission"
-msgstr "Crea una nuova risorsa identità OpenID"
 
 msgid "CreateRolePermission"
 msgstr "Crea un nuovo ruolo"
@@ -35,9 +30,6 @@ msgstr "Elimina una risorsa API OpenID"
 msgid "DeleteClientPermission"
 msgstr "Elimina un client OpenID"
 
-msgid "DeleteIdentityResourcePermission"
-msgstr "Elimina una risorsa identità OpenID"
-
 msgid "DeleteRolePermission"
 msgstr "Elimina un ruolo"
 
@@ -49,9 +41,6 @@ msgstr "Legge i dati di una risorsa API OpenID"
 
 msgid "ReadClientPermission"
 msgstr "Legge i dati di un client OpenID"
-
-msgid "ReadIdentityResourcePermission"
-msgstr "Legge i dati di una risorsa identità OpenID"
 
 msgid "ReadRolePermission"
 msgstr "Legge i dati di un ruolo (permessi, ecc.)"
@@ -65,14 +54,23 @@ msgstr "Modifica una risorsa API OpenID"
 msgid "UpdateClientPermission"
 msgstr "Modifica un client OpenID"
 
-msgid "UpdateIdentityResourcePermission"
-msgstr "Modifica una risorsa identità OpenID"
-
 msgid "UpdateRolePermission"
 msgstr "Modifica un ruolo"
 
 msgid "UpdateUserPermission"
 msgstr "Modifica un utente"
+
+msgid "CreateIdentityResourcePermission"
+msgstr "Crea una nuova risorsa identità OpenID"
+
+msgid "ReadIdentityResourcePermission"
+msgstr "Legge i dati di una risorsa identità OpenID"
+
+msgid "UpdateIdentityResourcePermission"
+msgstr "Modifica una risorsa identità OpenID"
+
+msgid "DeleteIdentityResourcePermission"
+msgstr "Elimina una risorsa identità OpenID"
 
 msgid "Delete"
 msgstr "Elimina"
@@ -395,6 +393,90 @@ msgstr "Nome mittente"
 msgid "MainSettings"
 msgstr "Impostazioni principali"
 
+msgid "AppAdminNavApiAuditLog"
+msgstr "Log di controllo utilizzo API"
+
+msgid "AppAdminNavDBLoggingView"
+msgstr "Log"
+
+msgid "AppAdminNavFrontEnd"
+msgstr ""
+
+msgid "AppAdminNavMonitoring"
+msgstr "Monitoraggio"
+
+msgid "AppHelpAndSupport"
+msgstr "Aiuto e supporto"
+
+msgid "AppHoverAdmin"
+msgstr "Amministrazione"
+
+msgid "AppHoverNavMinimize"
+msgstr "Minimizza barra di navigazione"
+
+msgid "AppHoverNavToggle"
+msgstr "Commuta barra di navigazione"
+
+msgid "AppName"
+msgstr ""
+
+msgid "AppNavDashboard"
+msgstr "Cruscotto"
+
+msgid "AppNavDragAndDrop"
+msgstr ""
+
+msgid "AppNavEmail"
+msgstr ""
+
+msgid "AppNavFeatures"
+msgstr "Caratteristiche"
+
+msgid "AppNavForum"
+msgstr ""
+
+msgid "AppNavHome"
+msgstr ""
+
+msgid "AppNavReadEmail"
+msgstr "Leggi email"
+
+msgid "AppNavScreenshots"
+msgstr ""
+
+msgid "AppNavSendEmail"
+msgstr "Invia email"
+
+msgid "AppNavSponsors"
+msgstr "Sponsor"
+
+msgid "AppShortName"
+msgstr ""
+
+msgid "BreadCrumbadmin"
+msgstr "Amministrazione"
+
+msgid "BreadCrumbadminapiResources"
+msgstr "Risorse API OpenID"
+
+msgid "BreadCrumbadminapilog"
+msgstr "Log di controllo utilizzo API"
+
+msgid "BreadCrumbadminclients"
+msgstr "Client OpenID"
+
+msgid "BreadCrumbadmindblog"
+msgstr "Log applicativo"
+
+msgid "BreadCrumbadminidentityResources"
+msgstr "Risorse Identità OpenID"
+
+msgid "BreadCrumbadminmultitenancy"
+msgstr "Gestione siti in comproprietà"
+
+msgid "BreadCrumbadminroles"
+msgstr "Gestione ruoli"
+
 msgid "BreadCrumbadminsettings"
 msgstr "Impostazioni"
 
@@ -407,74 +489,32 @@ msgstr "Utenti"
 msgid "BreadCrumbdashboard"
 msgstr "Cruscotto"
 
+msgid "BreadCrumbdrag_and_drop"
+msgstr ""
+
 msgid "BreadCrumbemail"
 msgstr "Invia email"
 
 msgid "BreadCrumbemail_view"
 msgstr "Leggi email"
 
+msgid "BreadCrumbforum"
+msgstr "Forum"
+
+msgid "BreadCrumbHome"
+msgstr "Home"
+
+msgid "BreadCrumbscreenshots"
+msgstr ""
+
 msgid "BreadCrumbsponsors"
 msgstr "Sponsor"
 
-msgid "BreadCrumbadmin"
-msgstr "Amministrazione"
+msgid "BreadCrumbtodo_list"
+msgstr "Lista ToDo"
 
 msgid "TodoNav"
 msgstr "Lista ToDo"
-
-msgid "AppNavDashboard"
-msgstr "Cruscotto"
-
-msgid "AppNavReadEmail"
-msgstr "Leggi email"
-
-msgid "AppNavSendEmail"
-msgstr "Invia email"
-
-msgid "AppNavSponsors"
-msgstr "Sponsor"
-
-msgid "AppHelpAndSupport"
-msgstr "Aiuto e supporto"
-
-msgid "BreadCrumbadminroles"
-msgstr "Gestione ruoli"
-
-msgid "BreadCrumbadminmultitenancy"
-msgstr "Gestione siti in comproprietà"
-
-msgid "BreadCrumbadminidentityResources"
-msgstr "Risorse Identità OpenID"
-
-msgid "BreadCrumbadminapiResources"
-msgstr "Risorse API OpenID"
-
-msgid "AppAdminNavMonitoring"
-msgstr "Monitoraggio"
-
-msgid "AppHoverAdmin"
-msgstr "Amministrazione"
-
-msgid "AppHoverNavMinimize"
-msgstr "Minimizza barra di navigazione"
-
-msgid "AppHoverNavToggle"
-msgstr "Commuta barra di navigazione"
-
-msgid "AppNavFeatures"
-msgstr "Caratteristiche"
-
-msgid "AppAdminNavApiAuditLog"
-msgstr "Log di controllo utilizzo API"
-
-msgid "AppAdminNavDBLoggingView"
-msgstr "Log"
-
-msgid "BreadCrumbadminapilog"
-msgstr "Log di controllo utilizzo API"
-
-msgid "BreadCrumbadminclients"
-msgstr "Client OpenID"
 
 msgid "CurrentPassword"
 msgstr "Password corrente"
@@ -548,9 +588,6 @@ msgstr "Il campo {0} non è un indirizzo email valido."
 msgid "FieldRequired"
 msgstr "Il campo {0} è obbligatorio."
 
-msgid "BreadCrumbadmindblog"
-msgstr "Log applicativo"
-
 msgid "ConcurrencyFailure"
 msgstr "C'è già una modifica in corso."
 
@@ -576,7 +613,8 @@ msgid "InvalidToken"
 msgstr "Token non valido."
 
 msgid "InvalidUserName"
-msgstr "Il nome utente '{0}' non è valido. Deve contenere solo lettere o numeri."
+msgstr ""
+"Il nome utente '{0}' non è valido. Deve contenere solo lettere o numeri."
 
 msgid "LoginAlreadyAssociated"
 msgstr "Un utente con questo login esiste già."
@@ -590,11 +628,13 @@ msgstr "Le password devono contenere almeno una numero."
 msgid "PasswordRequiresLower"
 msgstr "Le password devono contenere almeno una lettera minuscola."
 
+msgid "PasswordRequiresNonAlphanumeric"
+msgstr ""
+"Le password devono contenere almeno un carattere che non sia lettera o "
+"numero."
+
 msgid "PasswordRequiresUpper"
 msgstr "Le password devono contenere almeno una lettera maiuscola."
-
-msgid "PasswordRequiresNonAlphanumeric"
-msgstr "Le password devono contenere almeno un carattere che non sia lettera o numero."
 
 msgid "PasswordTooShort"
 msgstr "Le password devono avere almeno {0} caratteri."
@@ -652,3 +692,29 @@ msgstr "Aggiungi"
 
 msgid "ReloadTranslations"
 msgstr "Ricarica traduzioni"
+
+msgid "One item found"
+msgid_plural "{0} items found"
+msgstr[0] "Trovato un elemento"
+msgstr[1] "{0} elementi trovati"
+
+msgid "Export"
+msgstr "Esporta"
+
+msgid "Import PO file"
+msgstr "Importa file PO"
+
+msgid "File not selected"
+msgstr "File non selezionato"
+
+msgid "File not valid"
+msgstr "File non valido"
+
+msgid "File empty"
+msgstr "File vuoto"
+
+msgid "PO File without a valid language"
+msgstr "File PO senza un linguaggio valido"
+
+msgid "Only PO files"
+msgstr "Solo file PO"

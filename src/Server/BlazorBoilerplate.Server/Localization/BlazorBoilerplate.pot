@@ -4,13 +4,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: AdvaTel resgenEx 0.11\n"
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "PO-Revision-Date: 2020-10-25 09:10+01:00\n"
 "Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
 "Language-Team: English\n"
 "Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"POT-Creation-Date: \n"
 
 msgid "CreateApiResourcePermission"
 msgstr ""
@@ -690,3 +690,28 @@ msgstr ""
 msgid "ReloadTranslations"
 msgstr ""
 
+msgid "One item found"
+msgid_plural "{0} items found"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Import PO file"
+msgstr ""
+
+msgid "File not selected"
+msgstr ""
+
+msgid "File not valid"
+msgstr ""
+
+msgid "File empty"
+msgstr ""
+
+msgid "PO File without a valid language"
+msgstr ""
+
+msgid "Only PO files"
+msgstr ""
