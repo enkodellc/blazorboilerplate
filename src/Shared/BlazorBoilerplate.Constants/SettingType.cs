@@ -1,4 +1,4 @@
-﻿namespace BlazorBoilerplate.Shared.Dto.Db
+﻿namespace BlazorBoilerplate.Constants
 {
     public enum SettingType
     {

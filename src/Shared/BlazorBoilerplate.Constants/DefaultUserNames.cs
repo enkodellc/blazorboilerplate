@@ -1,4 +1,4 @@
-﻿namespace BlazorBoilerplate.Shared
+﻿namespace BlazorBoilerplate.Constants
 {
     public static class DefaultUserNames
     {
