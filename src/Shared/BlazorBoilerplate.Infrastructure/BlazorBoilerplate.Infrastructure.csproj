@@ -5,22 +5,14 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Finbuckle.MultiTenant" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
-  </ItemGroup>
+
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Utils\BlazorBoilerplate.SourceGenerator\BlazorBoilerplate.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\BlazorBoilerplate.Infrastructure.Storage\BlazorBoilerplate.Infrastructure.Storage.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="AuthorizationDefinitions\Permissions.tt">
-      <LastGenOutput>Permissions.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
     <None Update="Server\IAdminManager.tt">
       <LastGenOutput>IAdminManager.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -32,11 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="AuthorizationDefinitions\Permissions.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Permissions.tt</DependentUpon>
-    </Compile>
     <Compile Update="Server\IAdminManager.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
