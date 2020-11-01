@@ -1,7 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Server.Aop;
-using BlazorBoilerplate.Server.Helpers;
 using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Models;
 using MailKit.Net.Imap;
@@ -24,19 +23,20 @@ namespace BlazorBoilerplate.Server.Managers
     public class EmailManager : IEmailManager
     {
         private EmailConfiguration _emailConfiguration;
+        private readonly IEmailFactory _emailFactory;
         private readonly ILogger<EmailManager> _logger;
 
-        public EmailManager(ITenantSettings<EmailConfiguration> emailConfiguration, ILogger<EmailManager> logger)
+        public EmailManager(ITenantSettings<EmailConfiguration> emailConfiguration, IEmailFactory emailFactory, ILogger<EmailManager> logger)
         {
             _emailConfiguration = emailConfiguration.Value;
+            _emailFactory = emailFactory;
             _logger = logger;
         }
 
+        //Used from API
         public async Task<ApiResponse> Send(EmailDto parameters)
         {
-            var email = new EmailMessageDto();
-
-            email.ToAddresses.Add(new EmailAddressDto(parameters.ToName, parameters.ToAddress));
+            EmailMessageDto email = null;
 
             //This forces all emails from the API to use the Test template to prevent spam
             parameters.TemplateName = "Test";
@@ -47,7 +47,9 @@ namespace BlazorBoilerplate.Server.Managers
                 switch (parameters.TemplateName)
                 {
                     case "Test":
-                        email.BuildTestEmail(); //example of email Template usage
+                        email = _emailFactory.BuildTestEmail();
+
+                        email.ToAddresses.Add(new EmailAddressDto(parameters.ToName, parameters.ToAddress));
                         break;
                     default:
                         break;
@@ -55,6 +57,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
             else
             {
+                email = _emailFactory.BuildTestEmail();
                 email.Subject = parameters.Subject;
                 email.Body = parameters.Body;
             }
@@ -62,6 +65,7 @@ namespace BlazorBoilerplate.Server.Managers
             //Add a new From Address if you so choose, default is set in appsettings.json
             //email.FromAddresses.Add(new EmailAddress("New From Name", "email@domain.com"));
             _logger.LogInformation("Test Email: {0}", email.Subject);
+
             try
             {
                 await SendEmailAsync(email);

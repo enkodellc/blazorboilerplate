@@ -1,5 +1,6 @@
 ﻿using AspectInjector.Broker;
 using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Server.Factories;
 using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;

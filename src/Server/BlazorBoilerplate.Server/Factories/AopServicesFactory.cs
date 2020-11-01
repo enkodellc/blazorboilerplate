@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Serilog.Extensions.Logging;
 using System;
 
-namespace BlazorBoilerplate.Server
+namespace BlazorBoilerplate.Server.Factories
 {
     public static class AopServicesFactory
     {

@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "CreateApiResourcePermission"
-msgstr "Crea una nuova risorsa API  OpenID"
+msgstr "Crea una nuova risorsa API OpenID"
 
 msgid "CreateClientPermission"
 msgstr "Crea un nuovo client OpenID"

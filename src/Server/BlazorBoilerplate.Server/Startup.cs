@@ -5,7 +5,7 @@ using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Extensions;
-using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Factories;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
@@ -516,6 +516,8 @@ namespace BlazorBoilerplate.Server
 
             services.Add(ServiceDescriptor.Scoped(typeof(ITenantSettings<>), typeof(TenantSettingsManager<>)));
 
+            services.AddTransient<IEmailFactory, EmailFactory>();
+
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAdminManager, AdminManager>();
             services.AddTransient<IEmailManager, EmailManager>();
@@ -597,8 +599,6 @@ namespace BlazorBoilerplate.Server
 
             // cookie policy to deal with temporary browser incompatibilities
             app.UseCookiePolicy();
-
-            EmailTemplates.Initialize(env);
 
             if (env.IsDevelopment())
             {

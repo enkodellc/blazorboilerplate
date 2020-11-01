@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.Dto;
+﻿using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.Dto.Email;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Infrastructure.Server
 {
