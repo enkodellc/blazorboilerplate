@@ -11,10 +11,10 @@ namespace BlazorBoilerplate.Shared.Interfaces
         void AddEntity(LocalizationRecord entity);
         void RemoveEntity(LocalizationRecord entity);
         Task<QueryResult<PluralFormRule>> GetPluralFormRules();
-        Task<QueryResult<LocalizationRecord>> GetLocalizationRecords(string key = null);
-        Task<QueryResult<string>> GetLocalizationRecordMsgIds(int? take, int? skip, string filter = null);
-        Task<ApiResponseDto> DeleteLocalizationRecordMsgId(string key);
-        Task<ApiResponseDto> EditLocalizationRecordMsgId(string oldkey, string newKey);
+        Task<QueryResult<LocalizationRecord>> GetLocalizationRecords(LocalizationRecordKey key = null);
+        Task<QueryResult<LocalizationRecordKey>> GetLocalizationRecordKeys(int? take, int? skip, string filter = null);
+        Task<ApiResponseDto> DeleteLocalizationRecordKey(LocalizationRecordKey key);
+        Task<ApiResponseDto> EditLocalizationRecordKey(LocalizationRecordKey oldkey, LocalizationRecordKey newKey);
         Task<ApiResponseDto> ReloadTranslations();
         Task<ApiResponseDto> Upload(MultipartFormDataContent content);
     }

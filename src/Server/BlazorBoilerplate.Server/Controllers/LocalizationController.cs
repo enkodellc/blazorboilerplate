@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Server.Aop;
+using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Localization;
 using BlazorBoilerplate.Storage;
@@ -74,15 +75,17 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
-        public IQueryable<string> LocalizationRecordMsgIds(string contextId, string filter)
+        public IQueryable<LocalizationRecordKey> LocalizationRecordKeys(string contextId, string filter)
         {
             return persistenceManager.GetEntities<LocalizationRecord>()
                 .Where(i => (contextId == null || i.ContextId == contextId) && (filter == null || i.MsgId.ToLower().Contains(filter.ToLower()) || i.Translation.ToLower().Contains(filter.ToLower())))
-                .Distinct(i => i.MsgId).OrderBy(i => i.MsgId).Select(i => i.MsgId).AsQueryable();
+                .OrderBy(i => i.ContextId).ThenBy(i => i.MsgId)
+                .Select(i => new LocalizationRecordKey() { MsgId = i.MsgId, ContextId = i.ContextId })
+                .Distinct(i => new LocalizationRecordKey() { MsgId = i.MsgId, ContextId = i.ContextId }).AsQueryable();
         }
 
         [HttpPost]
-        public async Task<ApiResponse> DeleteLocalizationRecordMsgId([FromBody] LocalizationRecordFilterModel filter)
+        public async Task<ApiResponse> DeleteLocalizationRecordKey([FromBody] LocalizationRecordFilterModel filter)
         {
             int deleted = await persistenceManager.DbContext.Database
                 .ExecuteSqlRawAsync("DELETE FROM LocalizationRecords WHERE ContextId = {0} AND MsgId = {1}", filter.ContextId, filter.MsgId);
@@ -91,10 +94,11 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ApiResponse> EditLocalizationRecordMsgId([FromBody] ChangeLocalizationRecordModel model)
+        public async Task<ApiResponse> EditLocalizationRecordKey([FromBody] ChangeLocalizationRecordModel model)
         {
             await persistenceManager.DbContext.Database
-                .ExecuteSqlRawAsync("UPDATE LocalizationRecords SET MsgId = {2} WHERE ContextId = {0} AND MsgId = {1}", model.ContextId, model.MsgId, model.NewMsgId);
+                .ExecuteSqlRawAsync("UPDATE LocalizationRecords SET ContextId = {2}, MsgId = {3} WHERE ContextId = {0} AND MsgId = {1}",
+                model.ContextId, model.MsgId, model.NewContextId, model.NewMsgId);
 
             return new ApiResponse(Status200OK);
         }

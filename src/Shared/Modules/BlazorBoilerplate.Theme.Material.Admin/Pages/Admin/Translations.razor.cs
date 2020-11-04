@@ -1,10 +1,12 @@
-﻿using BlazorBoilerplate.Shared.Dto.Db;
+﻿using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
 using Karambolo.Common.Localization;
 using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
+using ObjectCloner.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +23,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
         [Inject] ILocalizationApiClient localizationApiClient { get; set; }
         [Inject] protected IStringLocalizer<Global> L { get; set; }
 
-        protected List<string> localizationRecordMsgIds { get; set; }
+        protected List<LocalizationRecordKey> localizationRecordKeys { get; set; }
 
         protected List<string> LocalizationCultures { get; set; } = new List<string>();
 
@@ -32,17 +34,19 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
         protected bool isDeleteDialogOpen = false;
         protected bool isEditDialogOpen = false;
-        protected bool isNewMsgIdDialogOpen = false;
+        protected bool isNewKeyDialogOpen = false;
 
 
-        protected string currentMsgId { get; set; }
-        protected string newMsgId { get; set; }
+        protected LocalizationRecordKey currentKey { get; set; }
+        protected LocalizationRecordKey newKey { get; set; } = new LocalizationRecordKey();
+
+        private LocalizationRecordKey oldKey { get; set; }
 
         protected LocalizationRecord newLocalizationRecord { get; set; } = new LocalizationRecord();
 
         protected override async Task OnInitializedAsync()
         {
-            await LoadMsgIds();
+            await LoadKeys();
         }
 
         protected async Task OnPage(MatPaginatorPageEvent e)
@@ -50,17 +54,17 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             pageSize = e.PageSize;
             pageIndex = e.PageIndex;
 
-            await LoadMsgIds();
+            await LoadKeys();
         }
-        protected async Task LoadMsgIds(string filter = null)
+        protected async Task LoadKeys(string filter = null)
         {
             localizationRecords = new List<LocalizationRecord>();
 
             try
             {
                 localizationApiClient.ClearEntitiesCache();
-                var result = await localizationApiClient.GetLocalizationRecordMsgIds(pageSize, pageIndex * pageSize, filter);
-                localizationRecordMsgIds = new List<string>(result);
+                var result = await localizationApiClient.GetLocalizationRecordKeys(pageSize, pageIndex * pageSize, filter);
+                localizationRecordKeys = new List<LocalizationRecordKey>(result);
                 totalItemsCount = (int)result.InlineCount.Value;
 
                 matToaster.Add(L["One item found", Plural.From("{0} items found", totalItemsCount)], MatToastType.Success, L["Operation Successful"]);
@@ -71,14 +75,14 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             }
         }
 
-        protected async Task LoadLocalizationRecords(string msgId)
+        protected async Task LoadLocalizationRecords(LocalizationRecordKey key)
         {
-            if (msgId != null)
+            if (key != null)
                 try
                 {
-                    currentMsgId = msgId;
+                    currentKey = key;
                     localizationApiClient.ClearEntitiesCache();
-                    var result = await localizationApiClient.GetLocalizationRecords(msgId);
+                    var result = await localizationApiClient.GetLocalizationRecords(key);
                     localizationRecords = new List<LocalizationRecord>(result);
 
                     LocalizationCultures.Clear();
@@ -87,7 +91,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                         .Where(i => !localizationRecords.Any(l => l.Culture == i)));
 
                     if (LocalizationCultures.Count > 0)
-                        newLocalizationRecord = new LocalizationRecord() { MsgId = currentMsgId, Culture = LocalizationCultures[0] };
+                        newLocalizationRecord = new LocalizationRecord() { ContextId = currentKey.ContextId, MsgId = currentKey.MsgId, Culture = LocalizationCultures[0] };
 
                     matToaster.Add(L["One item found", Plural.From("{0} items found", result.Count())], MatToastType.Success, L["Operation Successful"]);
                 }
@@ -101,24 +105,26 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             StateHasChanged();
         }
 
-        protected void OpenEditDialog(string msgId)
+        protected void OpenEditDialog(LocalizationRecordKey key)
         {
-            currentMsgId = newMsgId = msgId;
+            newKey = key;
+            oldKey = key.DeepClone();
             isEditDialogOpen = true;
         }
 
-        protected async Task EditLocalizationRecordMsgId(string msgId)
+        protected async Task EditLocalizationRecordKey()
         {
-            if (msgId != null && currentMsgId != null)
+            if (oldKey != null && newKey != null && oldKey != newKey)
                 try
                 {
                     localizationApiClient.ClearEntitiesCache();
-                    var response = await localizationApiClient.EditLocalizationRecordMsgId(currentMsgId, msgId);
+                    var response = await localizationApiClient.EditLocalizationRecordKey(oldKey, newKey);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        await LoadMsgIds();
+                        await LoadKeys();
                         localizationRecords = new List<LocalizationRecord>();
+                        LocalizationCultures.Clear();
 
                         matToaster.Add(L["Operation Successful"], MatToastType.Success);
                     }
@@ -135,19 +141,20 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             StateHasChanged();
         }
 
-        protected async Task DeleteLocalizationRecordMsgId(string msgId)
+        protected async Task DeleteLocalizationRecordKey(LocalizationRecordKey key)
         {
-            if (msgId != null)
+            if (key != null)
                 try
                 {
                     localizationApiClient.ClearEntitiesCache();
-                    var response = await localizationApiClient.DeleteLocalizationRecordMsgId(msgId);
+                    var response = await localizationApiClient.DeleteLocalizationRecordKey(key);
 
 
                     if (response.IsSuccessStatusCode)
                     {
-                        await LoadMsgIds();
+                        await LoadKeys();
                         localizationRecords = new List<LocalizationRecord>();
+                        LocalizationCultures.Clear();
 
                         matToaster.Add(response.Message, MatToastType.Success, L["Operation Successful"]);
                     }
@@ -164,17 +171,17 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             StateHasChanged();
         }
 
-        protected void OpenDeleteDialog(string msgId)
+        protected void OpenDeleteDialog(LocalizationRecordKey key)
         {
-            currentMsgId = msgId;
+            currentKey = key;
             isDeleteDialogOpen = true;
         }
 
-        protected void OpenNewMsgIdDialogOpen()
+        protected void OpenNewKeyDialogOpen()
         {
             newLocalizationRecord = new LocalizationRecord();
             localizationApiClient.AddEntity(newLocalizationRecord);
-            isNewMsgIdDialogOpen = true;
+            isNewKeyDialogOpen = true;
         }
 
         protected void DeleteLocalizationRecord(LocalizationRecord record)
@@ -202,12 +209,12 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             return result;
         }
 
-        protected async Task SaveNewMsgId()
+        protected async Task SaveNewKey()
         {
             if (await SaveChanges())
             {
-                isNewMsgIdDialogOpen = false;
-                await LoadMsgIds();
+                isNewKeyDialogOpen = false;
+                await LoadKeys();
                 newLocalizationRecord = new LocalizationRecord();
             }
         }
@@ -217,14 +224,14 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             localizationApiClient.AddEntity(newLocalizationRecord);
 
             if (await SaveChanges())
-                await LoadLocalizationRecords(currentMsgId);
+                await LoadLocalizationRecords(currentKey);
         }
 
         protected async Task CancelChanges()
         {
             localizationApiClient.CancelChanges();
-            isNewMsgIdDialogOpen = false;
-            await LoadLocalizationRecords(currentMsgId);
+            isNewKeyDialogOpen = false;
+            await LoadLocalizationRecords(currentKey);
         }
 
         protected async Task ReloadTranslations()

@@ -5,7 +5,7 @@
 
 <h1>@L["Translations"]</h1>
 
-@if (localizationRecordMsgIds == null)
+@if (localizationRecordKeys == null)
 {
 <LoadingBackground ShowLogoBox="true">
     <label>@L["Loading"]</label>
@@ -14,14 +14,15 @@
 else
 {
 <div class="mat-layout-grid">
-    <MatTextField ValueChanged="(string filter) => LoadMsgIds(filter)" Icon="search" />
+    <MatTextField ValueChanged="(string filter) => LoadKeys(filter)" Icon="search" />
     <div class="mat-layout-grid-inner">
         <div class="mat-layout-grid-cell">
-            <MatTable Items="@localizationRecordMsgIds" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false"
-                      AllowSelection="true" SelectionChanged="async (object key) => await LoadLocalizationRecords((string)key)">
+            <MatTable Items="@localizationRecordKeys" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false"
+                      AllowSelection="true" SelectionChanged="async (object key) => await LoadLocalizationRecords((LocalizationRecordKey)key)">
                 <MatTableHeader>
-                    <th><MatButton Icon="add" Label=@L["NewTranslation"] OnClick="@OpenNewMsgIdDialogOpen"></MatButton></th>
-                    <th>@L["Key"]</th>
+                    <th><MatButton Icon="add" Label=@L["NewTranslation"] OnClick="@OpenNewKeyDialogOpen"></MatButton></th>
+                    <th>@L["MsgId"]</th>
+                    <th>@L["ContextId"]</th>
                 </MatTableHeader>
                 <MatTableRow Context="keyRow">
                     <td>
@@ -30,7 +31,8 @@ else
                             <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(keyRow))"></MatIconButton>
                         </div>
                     </td>
-                    <td>@keyRow</td>
+                    <td>@keyRow.MsgId</td>
+                    <td>@keyRow.ContextId</td>
                 </MatTableRow>
             </MatTable>
             <MatPaginator PageSize="@pageSize" Page="async a => await OnPage(a)" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
@@ -78,38 +80,44 @@ else
 </div>
 
 <MatDialog @bind-IsOpen="@isEditDialogOpen">
-    <MatDialogTitle>@L["Edit {0}", currentMsgId]</MatDialogTitle>
+    <MatDialogTitle>@L["Edit {0}", currentKey]</MatDialogTitle>
     <MatDialogContent>
         <div class="form-group">
-            <MatTextField @bind-Value="@newMsgId" Label=@L["Key"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            <MatTextField @bind-Value="@newKey.ContextId" Label=@L["ContextId"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-Value="@newKey.MsgId" Label=@L["MsgId"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         </div>
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isEditDialogOpen = false; })">@L["Cancel"]</MatButton>
-        <MatButton OnClick="@(()=>EditLocalizationRecordMsgId(newMsgId))">@L["Save"]</MatButton>
+        <MatButton OnClick="@(()=>EditLocalizationRecordKey())">@L["Save"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 <MatDialog @bind-IsOpen="@isDeleteDialogOpen">
     <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
     <MatDialogContent>
-        @L["Are you sure you want to delete {0}?", currentMsgId]
+        @L["Are you sure you want to delete {0}?", currentKey]
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { isDeleteDialogOpen = false; })">@L["Cancel"]</MatButton>
-        <MatButton OnClick="@(()=>DeleteLocalizationRecordMsgId(currentMsgId))">@L["Delete"]</MatButton>
+        <MatButton OnClick="@(()=>DeleteLocalizationRecordKey(currentKey))">@L["Delete"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 
-<MatDialog @bind-IsOpen="@isNewMsgIdDialogOpen">
+<MatDialog @bind-IsOpen="@isNewKeyDialogOpen">
     <MatDialogTitle>@L["NewTranslation"]</MatDialogTitle>
     <MatDialogContent>
-        <EditForm id="newKeyForm" Model="@newLocalizationRecord" OnValidSubmit="@SaveNewMsgId">
+        <EditForm id="newKeyForm" Model="@newLocalizationRecord" OnValidSubmit="@SaveNewKey">
             <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@newLocalizationRecord.MsgId" Label=@L["Key"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@newLocalizationRecord.ContextId" Label=@L["ContextId"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@newLocalizationRecord.MsgId" Label=@L["MsgId"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                 </div>
                 <div class="form-group">
                     <MatTextField @bind-Value="@newLocalizationRecord.Culture" Label=@L["Culture"] Icon="public" IconTrailing="true" FullWidth="true" Required="true" Disabled="true"></MatTextField>

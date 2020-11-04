@@ -2,7 +2,6 @@
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Localization;
 using Breeze.Sharp;
 using Microsoft.Extensions.Logging;
@@ -24,12 +23,12 @@ namespace BlazorBoilerplate.Shared.Services
             return await GetItems<PluralFormRule>(from: "PluralFormRules");
         }
 
-        public async Task<QueryResult<LocalizationRecord>> GetLocalizationRecords(string msgId = null)
+        public async Task<QueryResult<LocalizationRecord>> GetLocalizationRecords(LocalizationRecordKey key = null)
         {
             try
             {
                 var query = new EntityQuery<LocalizationRecord>()
-                    .WithParameter("contextId", nameof(Global)).WithParameter("msgId", msgId).From("LocalizationRecords");
+                    .WithParameter("contextId", key.ContextId).WithParameter("msgId", key.MsgId).From("LocalizationRecords");
 
                 var response = await entityManager.ExecuteQuery(query, CancellationToken.None);
 
@@ -53,12 +52,12 @@ namespace BlazorBoilerplate.Shared.Services
             }
         }
 
-        public async Task<QueryResult<string>> GetLocalizationRecordMsgIds(int? take, int? skip, string filter = null)
+        public async Task<QueryResult<LocalizationRecordKey>> GetLocalizationRecordKeys(int? take, int? skip, string filter = null)
         {
             try
             {
-                var query = new EntityQuery<string>()
-                    .WithParameter("contextId", nameof(Global)).WithParameter("filter", filter).From("LocalizationRecordMsgIds").InlineCount();
+                var query = new EntityQuery<LocalizationRecordKey>()
+                    .WithParameter("contextId", null).WithParameter("filter", filter).From("LocalizationRecordKeys").InlineCount();
 
                 if (take != null)
                     query = query.Take(take.Value);
@@ -69,13 +68,13 @@ namespace BlazorBoilerplate.Shared.Services
 
                 var response = await entityManager.ExecuteQuery(query, CancellationToken.None);
 
-                QueryResult<string> result;
+                QueryResult<LocalizationRecordKey> result;
 
-                if (response is QueryResult<string>)
-                    result = (QueryResult<string>)response;
+                if (response is QueryResult<LocalizationRecordKey>)
+                    result = (QueryResult<LocalizationRecordKey>)response;
                 else
                 {
-                    result = new QueryResult<string>();
+                    result = new QueryResult<LocalizationRecordKey>();
                     result.Results = response;
                 }
 
@@ -89,13 +88,14 @@ namespace BlazorBoilerplate.Shared.Services
             }
         }
 
-        public async Task<ApiResponseDto> DeleteLocalizationRecordMsgId(string msgId)
+        public async Task<ApiResponseDto> DeleteLocalizationRecordKey(LocalizationRecordKey key)
         {
-            return await httpClient.PostJsonAsync<ApiResponseDto>($"{rootApiPath}DeleteLocalizationRecordMsgId", new LocalizationRecordFilterModel { ContextId = nameof(Global), MsgId = msgId });
+            return await httpClient.PostJsonAsync<ApiResponseDto>($"{rootApiPath}DeleteLocalizationRecordKey", new LocalizationRecordFilterModel { ContextId = key.ContextId, MsgId = key.MsgId });
         }
-        public async Task<ApiResponseDto> EditLocalizationRecordMsgId(string oldMsgId, string newMsgId)
+        public async Task<ApiResponseDto> EditLocalizationRecordKey(LocalizationRecordKey oldKey, LocalizationRecordKey newKey)
         {
-            return await httpClient.PostJsonAsync<ApiResponseDto>($"{rootApiPath}EditLocalizationRecordMsgId", new ChangeLocalizationRecordModel { ContextId = nameof(Global), MsgId = oldMsgId, NewMsgId = newMsgId });
+            return await httpClient.PostJsonAsync<ApiResponseDto>($"{rootApiPath}EditLocalizationRecordKey",
+                new ChangeLocalizationRecordModel { ContextId = oldKey.ContextId, NewContextId = newKey.ContextId, MsgId = oldKey.MsgId, NewMsgId = newKey.MsgId });
         }
         public async Task<ApiResponseDto> ReloadTranslations()
         {
