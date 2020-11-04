@@ -39,3 +39,31 @@ msgstr ""
 msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
 msgid "ForgotPassword.template"
 msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "TestEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PlainTextTestEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PasswordReset.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserNotificationEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserConfirmationEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "ForgotPassword.subject"
+msgstr ""

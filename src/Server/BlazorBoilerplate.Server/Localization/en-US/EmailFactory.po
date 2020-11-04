@@ -40,3 +40,31 @@ msgstr "<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" src
 msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
 msgid "ForgotPassword.template"
 msgstr "<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" src=\"https://blazorboilerplate.com/images/logo.png\" alt=\"Blazor Boilerplate\"/> BlazorBoilerplate   </h1>   <h3>Dear {name},</h3>   <p>     You requested for a password reset, kindly use this <a href=\"{callbackUrl}\">link</a> to reset your password.   </p>   <br/>   <p>Cheers!</p>  </div>"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "TestEmail.subject"
+msgstr "Hello {0} from BlazorBoilerplate Team"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PlainTextTestEmail.subject"
+msgstr "Hello {0} from BlazorBoilerplate Team"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PasswordReset.subject"
+msgstr "BlazorBoilerplate Password Reset for {0}"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserNotificationEmail.subject"
+msgstr "A new user '{0}' has registered on BlazorBoilerplate"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserEmail.subject"
+msgstr "Welcome {0} to BlazorBoilerplate"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserConfirmationEmail.subject"
+msgstr "Welcome {0} to BlazorBoilerplate"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "ForgotPassword.subject"
+msgstr "BlazorBoilerplate Forgot Password Reset for {0}"
