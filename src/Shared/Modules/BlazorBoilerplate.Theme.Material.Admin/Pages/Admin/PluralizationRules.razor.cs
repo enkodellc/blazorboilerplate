@@ -42,7 +42,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                 LocalizationCultures.AddRange(BlazorBoilerplate.Shared.Localizer.Settings.SupportedCultures
                     .Where(i => !PluralFormRules.Any(l => l.Language == i)));
 
-                matToaster.Add(L["One item found", Plural.From("{0} items found", (int)result.InlineCount.Value)], MatToastType.Success, L["Operation Successful"]);
+                matToaster.Add(L["One item found", Plural.From("{0} items found", PluralFormRules.Count)], MatToastType.Success, L["Operation Successful"]);
             }
             catch (Exception ex)
             {
