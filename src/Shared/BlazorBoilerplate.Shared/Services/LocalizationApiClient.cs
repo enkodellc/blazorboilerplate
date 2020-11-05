@@ -27,8 +27,10 @@ namespace BlazorBoilerplate.Shared.Services
         {
             try
             {
-                var query = new EntityQuery<LocalizationRecord>()
-                    .WithParameter("contextId", key.ContextId).WithParameter("msgId", key.MsgId).From("LocalizationRecords");
+                var query = new EntityQuery<LocalizationRecord>().From("LocalizationRecords");
+
+                if (key != null)
+                    query = query.WithParameter("contextId", key.ContextId).WithParameter("msgId", key.MsgId);
 
                 var response = await entityManager.ExecuteQuery(query, CancellationToken.None);
 
