@@ -1,0 +1,70 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2020-10-29 09:31+0100\n"
+"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "TestEmail.template"
+msgstr "<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" src=\"https://blazorboilerplate.com/images/logo.png\" alt=\"Blazor Boilerplate\"/> Blazor Boilerplate   </h1>   <p>Hello {user},</p>   <p>     This is a <strong>TEST</strong> email. If you are using BlazorBoilerplate please <a href=\"https://github.com/enkodellc/blazorboilerplate\">star the repo on Github</a>.     We are looking for more contributors to grow the project. There are several areas of improvement needed and if you are using the repo in your project please submit your PR's or suggestions.   </p>   <p>     Join our <a href=\"https://gitter.im/blazorboilerplate/community\">chat on Gitter</a> to disucss future project features, timelines and to get involved.   </p>   <p>The email was on {testDate}.</p>   <p>     <br />   </p>   <p>Regards,</p>   <p>BlazorBoilerplate Email Template</p> </div>"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PlainTextTestEmail.template"
+msgstr "Hello, This email was sent using the plain text test email template. The test was on {date}.  Regards, Blazor BoilerplateTemplate"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PasswordReset.template"
+msgstr "<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" src=\"https://blazorboilerplate.com/images/logo.png\" alt=\"Blazor Boilerplate\"/> BlazorBoilerplate   </h1>   <h3>Dear {userName},</h3>   <p>Your password has been successfully reset, you can now login with your new password.</p>   <br/>   <div>     Cheers!   </div> </div>"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserNotificationEmail.template"
+msgstr "<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" src=\"https://blazorboilerplate.com/images/logo.png\" alt=\"Blazor Boilerplate\"/> BlazorBoilerplate   </h1>   <p>Hello {name},</p>   <p>     A new user has been added as a new user to <a href=\"https://blazorboilerplate.com\" target=\"_blank\">blazorboilerplate.com</a>   </p>   <p>     Created by {creator}<br/>     Company: {company}<br/>     Roles: {roles}<br/>     Name: {name}<br/>     User Name: {userName}<br/>>     Email: {email}<br/>   </p>   <p>     <br />   </p>   <p>Regards,</p>   <p>BlazorBoilerplate Team</p> </div>"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserEmail.template"
+msgstr "<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" src=\"https://blazorboilerplate.com/images/logo.png\" alt=\"Blazor Boilerplate\"/> BlazorBoilerplate   </h1>   <p>Hello {fullName},</p>   <p>     You have been added as a new user to <a href=\"https://blazorboilerplate.com\" target=\"_blank\">https://blazorboilerplate.com</a> Below are your new credentials.   </p>   <p>     User Name: {userName}<br />     Email: {email}<br />     Password: {password}   </p>   <ul>     <li>       Please save this email to refer to your login credentials.     </li>     <li>       You can log in using the <a href=\"https://blazorboilerplate.com/account/login\">link provided here.</a>     </li>   </ul>   <p>     <br />   </p>   <p>Thank you, and welcome aboard the BlazorBoilerplate</p> </div>"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserConfirmationEmail.template"
+msgstr "<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" src=\"https://blazorboilerplate.com/images/logo.png\" alt=\"Blazor Boilerplate\"/> BlazorBoilerplate   </h1>   <p>Hello {userName},</p>   <p>     Please confirm your account by: <a href='{callbackUrl}'>clicking this link.</a>   </p>   <p>     <strong>UserId:</strong> {userId}<br />     <strong>Token:</strong> {token}<br/>   </p>   <p>Thank you, and welcome to the BlazorBoilerplate</p> </div>"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "ForgotPassword.template"
+msgstr "<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" src=\"https://blazorboilerplate.com/images/logo.png\" alt=\"Blazor Boilerplate\"/> BlazorBoilerplate   </h1>   <h3>Dear {name},</h3>   <p>     You requested for a password reset, kindly use this <a href=\"{callbackUrl}\">link</a> to reset your password.   </p>   <br/>   <p>Cheers!</p>  </div>"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "TestEmail.subject"
+msgstr "Hello {0} from BlazorBoilerplate Team"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PlainTextTestEmail.subject"
+msgstr "Hello {0} from BlazorBoilerplate Team"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PasswordReset.subject"
+msgstr "BlazorBoilerplate Password Reset for {0}"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserNotificationEmail.subject"
+msgstr "A new user '{0}' has registered on BlazorBoilerplate"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserEmail.subject"
+msgstr "Welcome {0} to BlazorBoilerplate"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserConfirmationEmail.subject"
+msgstr "Welcome {0} to BlazorBoilerplate"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "ForgotPassword.subject"
+msgstr "BlazorBoilerplate Forgot Password Reset for {0}"

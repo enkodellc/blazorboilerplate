@@ -12,7 +12,7 @@
     </Authorized>
     <NotAuthorized>
         <MatTooltip Tooltip="@L["Login"]">
-            <MatIconButton Icon="account_box" RefBack="@context" Link="@BlazorBoilerplate.Shared.Settings.LoginPath"></MatIconButton>
+            <MatIconButton Icon="account_box" RefBack="@context" Link="@BlazorBoilerplate.Constants.Settings.LoginPath"></MatIconButton>
         </MatTooltip>
     </NotAuthorized>
 </AuthorizeView>
@@ -24,7 +24,7 @@
         await ((IdentityAuthenticationStateProvider)authStateProvider).Logout();
 
         if (navigationManager.IsWebAssembly())
-            navigationManager.NavigateTo(BlazorBoilerplate.Shared.Settings.LoginPath);
+            navigationManager.NavigateTo(BlazorBoilerplate.Constants.Settings.LoginPath);
 
     }
 }

@@ -92,7 +92,7 @@ else
 
             dbLogItems = new List<DbLog>(result);
             totalItemsCount = (int)result.InlineCount.Value;
-            matToaster.Add($"Total Items: {totalItemsCount}", MatToastType.Success, L["Operation Successful"]);
+            matToaster.Add(L["One item found", Plural.From("{0} items found", totalItemsCount)], MatToastType.Success, L["Operation Successful"]);
         }
         catch (Exception ex)
         {

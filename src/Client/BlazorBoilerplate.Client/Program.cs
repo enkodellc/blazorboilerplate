@@ -1,9 +1,9 @@
 ﻿using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
-using BlazorBoilerplate.Shared.SqlLocalizer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.DataProtection;
@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using System;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -35,7 +34,12 @@ namespace BlazorBoilerplate.Client
 
             builder.RootComponents.AddRange(new[] { ModuleProvider.RootComponentMapping });
 
-            builder.Services.AddSqlLocalization(options => options.ReturnOnlyKeyIfNotFound = !builder.HostEnvironment.IsDevelopment());
+            builder.Services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
+            builder.Services.AddTextLocalization(options =>
+            {
+                options.ReturnOnlyKeyIfNotFound = !builder.HostEnvironment.IsDevelopment();
+                options.FallBackNeutralCulture = !builder.HostEnvironment.IsDevelopment();
+            });
             builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
             builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddAuthorizationCore(config =>
@@ -73,10 +77,16 @@ namespace BlazorBoilerplate.Client
 
                 var localizationApiClient = serviceScope.ServiceProvider.GetService<ILocalizationApiClient>();
 
-                var localizationRecords = (await localizationApiClient.GetLocalizationRecords()).ToList();
+                var localizationProvider = serviceScope.ServiceProvider.GetService<ILocalizationProvider>();
 
-                SqlStringLocalizerFactory.SetLocalizationRecords(localizationRecords);
-            }            
+                var localizationRecordsTask = localizationApiClient.GetLocalizationRecords();
+
+                var pluralFormRulesTask = localizationApiClient.GetPluralFormRules();
+
+                await Task.WhenAll(new Task[] { localizationRecordsTask, pluralFormRulesTask });
+
+                localizationProvider.Init(localizationRecordsTask.Result, pluralFormRulesTask.Result);
+            }
 
             await host.RunAsync();
         }

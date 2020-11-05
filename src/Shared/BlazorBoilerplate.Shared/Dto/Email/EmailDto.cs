@@ -1,5 +1,4 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Shared.Dto.Email
 {

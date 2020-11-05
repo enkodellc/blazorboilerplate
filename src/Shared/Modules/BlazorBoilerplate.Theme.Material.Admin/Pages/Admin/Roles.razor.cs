@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
+﻿using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;

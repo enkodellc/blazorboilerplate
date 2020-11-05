@@ -24,16 +24,28 @@
             </MatNavItem>
         </MatNavSubMenuList>
     </MatNavSubMenu>
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/translations").AbsoluteUri">
-        <MatIcon>public</MatIcon> <span class="miniHover">@L["Translations"]</span>
-    </MatNavItem>
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem AllowSelection="false">
+                <MatIcon>public</MatIcon> <span class="miniHover">@L["Localization"]</span>
+            </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/translations").AbsoluteUri">
+                <MatIcon>translate</MatIcon> <span class="miniHover">@L["Translations"]</span>
+            </MatNavItem>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/pluralizationrules").AbsoluteUri">
+                <MatIcon>group</MatIcon> <span class="miniHover">@L["Pluralization rules"]</span>
+            </MatNavItem>
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
     <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri">
         <MatIcon>supervisor_account</MatIcon> <span class="miniHover">@L["Users"]</span>
     </MatNavItem>
     <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri">
         <MatIcon>supervisor_account</MatIcon> <span class="miniHover">@L["Roles"]</span>
     </MatNavItem>
-    @if (tenant.Id == BlazorBoilerplate.Shared.Settings.DefaultTenantId)
+    @if (tenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)
     {
         <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/multitenancy").AbsoluteUri">
             <MatIcon>account_balance</MatIcon> <span class="miniHover">@L["MultiTenancy"]</span>

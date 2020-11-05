@@ -18,38 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Helpers\Templates\ForgotPassword.template" />
-    <None Remove="Helpers\Templates\NewUserConfirmationEmail.template" />
-    <None Remove="Helpers\Templates\NewUserEmail.template" />
-    <None Remove="Helpers\Templates\NewUserNotificationEmail.template" />
-    <None Remove="Helpers\Templates\PasswordReset.template" />
-    <None Remove="Helpers\Templates\PlainTextTestEmail.template" />
-    <None Remove="Helpers\Templates\TestEmail.template" />
     <None Remove="Managers\ve-10D7.tmp" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Helpers\Templates\ForgotPassword.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Helpers\Templates\NewUserConfirmationEmail.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Helpers\Templates\NewUserEmail.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Helpers\Templates\NewUserNotificationEmail.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Helpers\Templates\PasswordReset.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Helpers\Templates\PlainTextTestEmail.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Helpers\Templates\TestEmail.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -58,6 +27,7 @@
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Breeze.AspNetCore.NetCore" Version="3.0.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.2.0" />
+    <PackageReference Include="FormatWith" Version="3.0.1" />
     <PackageReference Include="IdentityServer4" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.1" />
@@ -100,7 +70,10 @@
       <LastGenOutput>AdminController.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="Modules\*.*">
+    <None Update="Modules\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Localization\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -86,7 +86,7 @@
         {
             var result = await apiClient.GetToDos();
             todos = new List<Todo>(result);
-            matToaster.Add($"Total Items: {result.InlineCount}", MatToastType.Success, L["Operation Successful"]);
+            matToaster.Add(L["One item found", Plural.From("{0} items found", (int)result.InlineCount)], MatToastType.Success, L["Operation Successful"]);
         }
         catch (Exception ex)
         {

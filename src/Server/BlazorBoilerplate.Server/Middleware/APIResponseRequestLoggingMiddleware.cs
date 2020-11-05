@@ -1,7 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Extensions;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Storage;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;

@@ -1,5 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Shared.Localizer;
 using Breeze.Persistence;
 using Finbuckle.MultiTenant;
 using FluentValidation;

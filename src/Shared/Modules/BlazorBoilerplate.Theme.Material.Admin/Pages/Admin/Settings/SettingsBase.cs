@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
+﻿using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Constants;
 
 namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
 {

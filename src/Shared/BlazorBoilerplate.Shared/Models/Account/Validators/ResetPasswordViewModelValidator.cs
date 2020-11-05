@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
+﻿using BlazorBoilerplate.Shared.Localizer;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 

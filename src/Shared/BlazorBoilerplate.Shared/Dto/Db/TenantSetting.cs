@@ -1,35 +1,10 @@
-using Breeze.Sharp;
 using System;
 using System.ComponentModel;
 
 namespace BlazorBoilerplate.Shared.Dto.Db
 {
-    public partial class TenantSetting : BaseEntity
+    public partial class TenantSetting
     {
-        public SettingKey Key
-        {
-            get { return GetValue<SettingKey>(); }
-            set { SetValue(value); }
-        }
-
-        public String TenantId
-        {
-            get { return GetValue<String>(); }
-            set { SetValue(value); }
-        }
-
-        public SettingType Type
-        {
-            get { return GetValue<SettingType>(); }
-            set { SetValue(value); }
-        }
-
-        public string Value
-        {
-            get { return GetValue<string>(); }
-            set { SetValue(value); }
-        }
-
         private T GetterValue<T>()
         {
             TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));

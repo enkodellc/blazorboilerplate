@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.SqlLocalizer;
+﻿using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 

@@ -2,7 +2,7 @@
 {
     public class LocalizationRecordFilterModel
     {
-        public string ResourceKey { get; set; }
-        public string Key { get; set; }
+        public string ContextId { get; set; }
+        public string MsgId { get; set; }
     }
 }

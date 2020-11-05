@@ -1,8 +1,9 @@
-﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Shared;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Infrastructure.Storage.Permissions;
+using BlazorBoilerplate.Shared.Localizer;
 using Finbuckle.MultiTenant;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -11,13 +12,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
 using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile;
 
@@ -36,6 +34,7 @@ namespace BlazorBoilerplate.Storage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ApplicationPermissions _applicationPermissions;
+        private readonly ILocalizationProvider _localizationProvider;
         private readonly ILogger _logger;
 
         public DatabaseInitializer(
@@ -47,6 +46,7 @@ namespace BlazorBoilerplate.Storage
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             ApplicationPermissions applicationPermissions,
+            ILocalizationProvider localizationProvider,
             ILogger<DatabaseInitializer> logger)
         {
             _tenantStoreDbContext = tenantStoreDbContext;
@@ -57,6 +57,7 @@ namespace BlazorBoilerplate.Storage
             _userManager = userManager;
             _roleManager = roleManager;
             _applicationPermissions = applicationPermissions;
+            _localizationProvider = localizationProvider;
             _logger = logger;
         }
 
@@ -65,7 +66,7 @@ namespace BlazorBoilerplate.Storage
             //Apply EF Core migration
             await MigrateAsync();
 
-            await ImportResxLanguages();
+            await ImportTranslations();
 
             await EnsureAdminIdentitiesAsync();
 
@@ -84,47 +85,16 @@ namespace BlazorBoilerplate.Storage
             await _configurationContext.Database.MigrateAsync();
         }
 
-        private async Task ImportResxLanguages()
+        private async Task ImportTranslations()
         {
             try
             {
                 if (!await _localizationDbContext.LocalizationRecords.AnyAsync())
-                {
-                    _logger.LogInformation("Importing Resx files in db");
-
-                    var regex = new Regex(@".(\w{2}-\w{2}).resx");
-
-                    foreach (var resxFile in Directory.GetFiles(@"..\..\Shared\BlazorBoilerplate.Localization", "*.resx"))
-                    {
-                        var m = regex.Match(resxFile);
-
-                        var culture = Shared.SqlLocalizer.Settings.NeutralCulture;
-
-                        if (m.Success)
-                            culture = m.Groups[1].Value;
-
-                        XDocument doc = XDocument.Load(new XmlTextReader(resxFile));
-
-                        foreach (var node in doc.Element("root").Elements("data"))
-                        {
-                            _localizationDbContext.Add(new LocalizationRecord()
-                            {
-                                LocalizationCulture = culture,
-                                Key = node.Attribute("name").Value,
-                                Text = node.Element("value").Value,
-                                ResourceKey = "Global"
-                            });
-                        }
-
-                        await _localizationDbContext.SaveChangesAsync();
-                    }
-
-                    SqlStringLocalizerFactory.SetLocalizationRecords(_localizationDbContext.LocalizationRecords);
-                }
+                    await ((StorageLocalizationProvider)_localizationProvider).InitDbFromPoFiles(_localizationDbContext);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Importing Resx files in db error: {0}",ex.Message);
+                _logger.LogError("Importing PO files in db error: {0}", ex.GetBaseException().Message);
             }
         }
 

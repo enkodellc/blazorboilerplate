@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorBoilerplate.Constants;
+using System;
 using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Shared.Dto.Db

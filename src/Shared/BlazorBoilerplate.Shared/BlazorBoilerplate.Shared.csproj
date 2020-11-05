@@ -18,6 +18,11 @@
     <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BlazorBoilerplate.Constants\BlazorBoilerplate.Constants.csproj" />
+    <ProjectReference Include="..\BlazorBoilerplate.Shared.DataInterfaces\BlazorBoilerplate.Shared.DataInterfaces.csproj" />
+    <ProjectReference Include="..\BlazorBoilerplate.Shared.Localizer\BlazorBoilerplate.Shared.Localizer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="Dto\Admin\ResourceDtoCustomUserClaims.tt">
       <LastGenOutput>ResourceDtoCustomUserClaims.txt</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>

@@ -47,7 +47,12 @@ namespace {namespaceName}
         public DateTime ModifiedOn {{ get; set; }}
 
         public ApplicationUser CreatedBy {{ get; set; }}
+
+        public Guid? CreatedById {{ get; set; }}
+
         public ApplicationUser ModifiedBy {{ get; set; }}
+
+        public Guid? ModifiedById {{ get; set; }}
     }}
 }}
 ";

@@ -1,17 +1,16 @@
-﻿using BlazorBoilerplate.Infrastructure.Server;
+﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Extensions;
-using BlazorBoilerplate.Server.Helpers;
-using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Email;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
-using BlazorBoilerplate.Shared.SqlLocalizer;
 using IdentityModel;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -42,6 +41,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<AccountManager> _logger;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly IEmailFactory _emailFactory;
         private readonly IEmailManager _emailManager;
         private readonly IClientStore _clientStore;
         private readonly IConfiguration _configuration;
@@ -58,6 +58,7 @@ namespace BlazorBoilerplate.Server.Managers
             SignInManager<ApplicationUser> signInManager,
             ILogger<AccountManager> logger,
             RoleManager<ApplicationRole> roleManager,
+            IEmailFactory emailFactory,
             IEmailManager emailManager,
             IClientStore clientStore,
             IConfiguration configuration,
@@ -72,6 +73,7 @@ namespace BlazorBoilerplate.Server.Managers
             _signInManager = signInManager;
             _logger = logger;
             _roleManager = roleManager;
+            _emailFactory = emailFactory;
             _emailManager = emailManager;
             _clientStore = clientStore;
             _configuration = configuration;
@@ -129,9 +131,8 @@ namespace BlazorBoilerplate.Server.Managers
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token); //token must be a query string parameter as it is very long
 
-                var email = new EmailMessageDto();
+                var email = _emailFactory.BuildForgotPasswordEmail(user.UserName, callbackUrl, token);
                 email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                email.BuildForgotPasswordEmail(user.UserName, callbackUrl, token); //Replace First UserName with Name if you want to add name to Registration Form
 
                 _logger.LogInformation("Forgot Password Email Sent: {0}", user.Email);
                 await _emailManager.SendEmailAsync(email);
@@ -463,9 +464,8 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 #region Email Successful Password change
 
-                var email = new EmailMessageDto();
+                var email = _emailFactory.BuildPasswordResetEmail(user.UserName);
                 email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                email.BuildPasswordResetEmail(user.UserName); //Replace First UserName with Name if you want to add name to Registration Form
 
                 _logger.LogInformation($"Reset Password Successful Email Sent: {user.Email}");
                 await _emailManager.SendEmailAsync(email);
@@ -695,9 +695,8 @@ namespace BlazorBoilerplate.Server.Managers
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token);
 
-                    var email = new EmailMessageDto();
+                    var email = _emailFactory.BuildNewUserConfirmationEmail(user.UserName, user.Email, callbackUrl, user.Id.ToString(), token);
                     email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                    email = EmailTemplates.BuildNewUserConfirmationEmail(email, user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
 
                     _logger.LogInformation("New user created: {0}", user);
                     await _emailManager.SendEmailAsync(email);
@@ -712,9 +711,8 @@ namespace BlazorBoilerplate.Server.Managers
 
             try
             {
-                var email = new EmailMessageDto();
+                var email = _emailFactory.BuildNewUserEmail(user.FullName, user.UserName, user.Email, parameters.Password);
                 email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-                email.BuildNewUserEmail(user.FullName, user.UserName, user.Email, parameters.Password);
 
                 _logger.LogInformation("New user created: {0}", user);
                 await _emailManager.SendEmailAsync(email);
@@ -885,7 +883,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             _logger.LogInformation("New user registered: {0}", user);
 
-            var emailMessage = new EmailMessageDto();
+            EmailMessageDto emailMessage;
 
             if (requireConfirmEmail)
             {
@@ -893,11 +891,11 @@ namespace BlazorBoilerplate.Server.Managers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var callbackUrl = $"{_configuration["BlazorBoilerplate:ApplicationUrl"]}/Account/ConfirmEmail/{user.Id}?token={token}";
 
-                emailMessage.BuildNewUserConfirmationEmail(user.UserName, user.Email, callbackUrl, user.Id.ToString(), token); //Replace First UserName with Name if you want to add name to Registration Form
+                emailMessage = _emailFactory.BuildNewUserConfirmationEmail(user.UserName, user.Email, callbackUrl, user.Id.ToString(), token);
             }
             else
             {
-                emailMessage.BuildNewUserEmail(user.FullName, user.UserName, user.Email, password);
+                emailMessage = _emailFactory.BuildNewUserEmail(user.FullName, user.UserName, user.Email, password);
             }
 
             emailMessage.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));

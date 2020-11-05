@@ -1,3 +1,4 @@
+using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Models.Account;
 using Microsoft.AspNetCore.Authorization;
@@ -37,7 +38,7 @@ namespace BlazorBoilerplate.Server.Pages
             }
 
             if (!result)
-                loginParameters.ReturnUrl = $"{Shared.Settings.LoginWith2faPath}/{loginParameters.ReturnUrl ?? string.Empty}";
+                loginParameters.ReturnUrl = $"{Settings.LoginWith2faPath}/{loginParameters.ReturnUrl ?? string.Empty}";
 
             return LocalRedirect(Url.Content($"~{loginParameters.ReturnUrl}"));
         }

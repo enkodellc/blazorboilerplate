@@ -222,7 +222,7 @@
                     if (response.Result?.RequiresTwoFactor == true)
                     {
                         var par = string.IsNullOrEmpty(ReturnUrl) ? string.Empty : $"?returnurl={Uri.EscapeDataString(ReturnUrl)}";
-                        navigationManager.NavigateTo($"{BlazorBoilerplate.Shared.Settings.LoginWith2faPath}{par}", true);
+                        navigationManager.NavigateTo($"{BlazorBoilerplate.Constants.Settings.LoginWith2faPath}{par}", true);
                     }
                     else
                     {

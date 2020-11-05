@@ -1,20 +1,20 @@
 using AutoMapper;
-using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Extensions;
-using BlazorBoilerplate.Server.Helpers;
+using BlazorBoilerplate.Server.Factories;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Shared.Providers; //ServerSideBlazor
 using BlazorBoilerplate.Shared.Services;
-using BlazorBoilerplate.Shared.SqlLocalizer;
 using BlazorBoilerplate.Shared.Validators.Db;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -78,12 +79,14 @@ namespace BlazorBoilerplate.Server
             _enableAPIDoc = configuration.GetSection("BlazorBoilerplate:Api:Doc:Enabled").Get<bool>();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSqlLocalization(options => options.ReturnOnlyKeyIfNotFound = !_environment.IsDevelopment())
-                .Configure<RequestLocalizationOptions>(options =>
+            services.AddSingleton<ILocalizationProvider, StorageLocalizationProvider>();
+            services.AddTextLocalization(options =>
+            {
+                options.ReturnOnlyKeyIfNotFound = !_environment.IsDevelopment();
+                options.FallBackNeutralCulture = !_environment.IsDevelopment();
+            }).Configure<RequestLocalizationOptions>(options =>
             {
                 options.DefaultRequestCulture = new RequestCulture(Settings.SupportedCultures[0]);
                 options.AddSupportedCultures(Settings.SupportedCultures);
@@ -418,7 +421,7 @@ namespace BlazorBoilerplate.Server
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                options.LoginPath = Shared.Settings.LoginPath;
+                options.LoginPath = Constants.Settings.LoginPath;
                 //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 // ReturnUrlParameter requires
                 //using Microsoft.AspNetCore.Authentication.Cookies;
@@ -513,6 +516,8 @@ namespace BlazorBoilerplate.Server
 
             services.Add(ServiceDescriptor.Scoped(typeof(ITenantSettings<>), typeof(TenantSettingsManager<>)));
 
+            services.AddTransient<IEmailFactory, EmailFactory>();
+
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAdminManager, AdminManager>();
             services.AddTransient<IEmailManager, EmailManager>();
@@ -595,8 +600,6 @@ namespace BlazorBoilerplate.Server
             // cookie policy to deal with temporary browser incompatibilities
             app.UseCookiePolicy();
 
-            EmailTemplates.Initialize(env);
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -625,9 +628,11 @@ namespace BlazorBoilerplate.Server
                 var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
                 databaseInitializer.SeedAsync().Wait();
 
+                var localizationProvider = serviceScope.ServiceProvider.GetService<ILocalizationProvider>();
+
                 var localizationDbContext = serviceScope.ServiceProvider.GetService<LocalizationDbContext>();
 
-                SqlStringLocalizerFactory.SetLocalizationRecords(localizationDbContext.LocalizationRecords);
+                localizationProvider.Init(localizationDbContext.LocalizationRecords.Include(i => i.PluralTranslations), localizationDbContext.PluralFormRules);
             }
 
             app.UseMiddleware<UserSessionMiddleware>();

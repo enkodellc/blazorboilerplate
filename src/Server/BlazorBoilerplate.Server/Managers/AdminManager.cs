@@ -3,7 +3,7 @@ using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Shared.SqlLocalizer;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Models.Account;
@@ -20,6 +20,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using BlazorBoilerplate.Infrastructure.Storage.Permissions;
+using BlazorBoilerplate.Constants;
 
 namespace BlazorBoilerplate.Server.Managers
 {
@@ -159,7 +161,7 @@ namespace BlazorBoilerplate.Server.Managers
                 response = new ApiResponse(Status400BadRequest, L["The role {0} doesn't exist", roleDto.Name]);
             else
             {
-                if (roleDto.Name == Shared.DefaultRoleNames.Administrator)
+                if (roleDto.Name == DefaultRoleNames.Administrator)
                     response = new ApiResponse(Status403Forbidden, L["Role {0} cannot be edited", roleDto.Name]);
                 else
                 {
@@ -197,7 +199,7 @@ namespace BlazorBoilerplate.Server.Managers
                 response = new ApiResponse(Status404NotFound, L["RoleInUseWarning", name]);
             else
             {
-                if (name == Shared.DefaultRoleNames.Administrator)
+                if (name == DefaultRoleNames.Administrator)
                     response = new ApiResponse(Status403Forbidden, L["Role {0} cannot be deleted", name]);
                 else
                 {
@@ -447,7 +449,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             var response = new ApiResponse(Status200OK, L["Tenant {0} updated", tenantDto.Name], tenantDto);
 
-            if (tenantDto.Identifier != tenant.Identifier && (tenantDto.Identifier == Shared.Settings.DefaultTenantId || tenant.Identifier == Shared.Settings.DefaultTenantId))
+            if (tenantDto.Identifier != tenant.Identifier && (tenantDto.Identifier == Constants.Settings.DefaultTenantId || tenant.Identifier == Constants.Settings.DefaultTenantId))
                 response = new ApiResponse(Status403Forbidden, L["Default Tenant identifier cannot be changed and must be unique"]);
             else
             {
@@ -464,7 +466,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             var response = new ApiResponse(Status200OK, L["Tenant {0} deleted", id]);
 
-            if (id == Shared.Settings.DefaultTenantId)
+            if (id == Constants.Settings.DefaultTenantId)
                 response = new ApiResponse(Status403Forbidden, L["Tenant {0} cannot be deleted", id]);
             else
             {
