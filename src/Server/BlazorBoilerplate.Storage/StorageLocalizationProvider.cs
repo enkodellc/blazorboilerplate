@@ -96,15 +96,15 @@ namespace BlazorBoilerplate.Storage
         public async Task ImportTextCatalog(LocalizationDbContext localizationDbContext, POCatalog textCatalog)
         {
             if (textCatalog == null || textCatalog.Count == 0)
-                throw new DomainException(L["File empty"]);
+                throw new DomainException("File empty");
 
             try
             {
-                var culture = new CultureInfo(textCatalog.Language ?? string.Empty);
+                var culture = new CultureInfo(textCatalog.Language.Replace("_", "-") ?? string.Empty);
             }
             catch (CultureNotFoundException)
             {
-                throw new DomainException(L["PO File without a valid language"]);
+                throw new DomainException("PO File without a valid language");
             }
 
             await localizationDbContext.Upsert(new PluralFormRule()

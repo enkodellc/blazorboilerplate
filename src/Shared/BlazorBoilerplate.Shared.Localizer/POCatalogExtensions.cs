@@ -5,6 +5,6 @@ namespace BlazorBoilerplate.Shared.Localizer
 {
     public static class POCatalogExtensions
     {
-        public static string GetCultureName(this POCatalog catalogo) => new CultureInfo(catalogo.Language).Name;
+        public static string GetCultureName(this POCatalog catalogo) => new CultureInfo(catalogo.Language.Replace("_", "-")).Name;
     }
 }
