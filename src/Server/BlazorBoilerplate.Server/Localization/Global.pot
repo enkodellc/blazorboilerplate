@@ -715,3 +715,21 @@ msgstr ""
 
 msgid "Only PO files"
 msgstr ""
+
+msgid "Plural"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Count"
+msgstr ""
+
+msgid "Selector"
+msgstr ""
+
+msgid "Localization"
+msgstr ""
+
+msgid "Pluralization rules"
+msgstr ""

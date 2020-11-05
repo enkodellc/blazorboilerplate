@@ -24,9 +24,21 @@
             </MatNavItem>
         </MatNavSubMenuList>
     </MatNavSubMenu>
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/translations").AbsoluteUri">
-        <MatIcon>public</MatIcon> <span class="miniHover">@L["Translations"]</span>
-    </MatNavItem>
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem AllowSelection="false">
+                <MatIcon>public</MatIcon> <span class="miniHover">@L["Localization"]</span>
+            </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/translations").AbsoluteUri">
+                <MatIcon>translate</MatIcon> <span class="miniHover">@L["Translations"]</span>
+            </MatNavItem>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/pluralizationrules").AbsoluteUri">
+                <MatIcon>group</MatIcon> <span class="miniHover">@L["Pluralization rules"]</span>
+            </MatNavItem>
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
     <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri">
         <MatIcon>supervisor_account</MatIcon> <span class="miniHover">@L["Users"]</span>
     </MatNavItem>

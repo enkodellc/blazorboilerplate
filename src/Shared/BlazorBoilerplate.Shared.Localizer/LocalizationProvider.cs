@@ -29,19 +29,24 @@ namespace BlazorBoilerplate.Shared.Localizer
                 {
                     foreach (var culture in localizationRecords.Select(i => i.Culture).Distinct())
                     {
-                        var catalog = new POCatalog();
+                        var pluralFormRule = pluralFormRules.SingleOrDefault(i => i.Language == culture);
 
-                        catalog.Encoding = "UTF-8";
+                        if (pluralFormRule == null)
+                        {
+                            Logger.LogError($"Missing PluralFormRule for {culture}");
+                            continue;
+                        }                            
 
-                        var pluralFormRule = pluralFormRules.Single(i => i.Language == culture);
-
-                        catalog.PluralFormCount = pluralFormRule.Count;
-                        catalog.PluralFormSelector = pluralFormRule.Selector;
-                        catalog.Language = culture;
-
-                        catalog.Headers = new Dictionary<string, string>
+                        var catalog = new POCatalog
+                        {
+                            Encoding = "UTF-8",
+                            PluralFormCount = pluralFormRule.Count,
+                            PluralFormSelector = pluralFormRule.Selector,
+                            Language = culture,
+                            Headers = new Dictionary<string, string>
                         {
                             { "X-Generator", "BlazorBoilerplate" },
+                        }
                         };
 
                         foreach (var localizationRecord in localizationRecords.Where(i => i.Culture == culture))
@@ -74,7 +79,7 @@ namespace BlazorBoilerplate.Shared.Localizer
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError($"CreateCatalogsFromDb: {ex.GetBaseException().Message}");
+                    Logger.LogError($"Init: {ex.GetBaseException().StackTrace}");
                 }
 
                 TextCatalogs = textCatalogs;

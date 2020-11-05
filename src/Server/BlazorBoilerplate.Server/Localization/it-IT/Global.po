@@ -718,3 +718,21 @@ msgstr "File PO senza un linguaggio valido"
 
 msgid "Only PO files"
 msgstr "Solo file PO"
+
+msgid "Plural"
+msgstr "Plurale"
+
+msgid "Index"
+msgstr "Indice"
+
+msgid "Count"
+msgstr "Conteggio"
+
+msgid "Selector"
+msgstr "Selettore"
+
+msgid "Localization"
+msgstr "Localizzazione"
+
+msgid "Pluralization rules"
+msgstr "Regole di pluralizzazione"

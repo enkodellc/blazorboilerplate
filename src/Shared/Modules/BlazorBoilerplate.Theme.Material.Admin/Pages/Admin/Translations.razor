@@ -43,6 +43,7 @@ else
                     <th></th>
                     <th>@L["Culture"]</th>
                     <th style="width: 100%;">@L["Translation"]</th>
+                    <th></th>
                 </MatTableHeader>
                 <MatTableRow Context="row">
                     <td>
@@ -53,6 +54,11 @@ else
                     <td><b>@row.Culture</b></td>
                     <td>
                         <MatTextField @bind-Value="@row.Translation" TextArea="true" FullWidth="true" Required="true"></MatTextField>
+                    </td>
+                    <td>
+                        <div>
+                            <MatButton Outlined="@(row.PluralTranslations.Count == 0)" Raised="@(row.PluralTranslations.Count > 0)" OnClick="@(() => OpenPluralDialog(row))">@L["Plural"]</MatButton>
+                        </div>
                     </td>
                 </MatTableRow>
             </MatTable>
@@ -70,12 +76,12 @@ else
                 </EditForm>}
         </div>
     </div>
-    <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
-    <MatButton OnClick="@SaveChanges">@L["Save"]</MatButton>
-    <MatButton OnClick="@ReloadTranslations">@L["ReloadTranslations"]</MatButton>
+    <MatButton OnClick="@CancelChanges" Raised="true">@L["Cancel"]</MatButton>
+    <MatButton OnClick="@SaveChanges" Raised="true">@L["Save"]</MatButton>
+    <MatButton OnClick="@ReloadTranslations" Raised="true">@L["ReloadTranslations"]</MatButton>
     @*Hack. See https://github.com/SamProf/MatBlazor/issues/713*@
-    <MatButton OnClick="@(e => { navigationManager.NavigateTo("/api/localization/export", true); })">@L["Export"]</MatButton>
-    @*<MatButton Link="/api/localization/export">@L["Export"]</MatButton>*@
+    <MatButton OnClick="@(e => { navigationManager.NavigateTo("/api/localization/export", true); })" Raised="true">@L["Export"]</MatButton>
+    @*<MatButton Link="/api/localization/export" Raised="true">@L["Export"]</MatButton>*@
     <MatFileUpload OnChange="@Upload" Label="@L["Import PO file"]"></MatFileUpload>
 </div>
 
@@ -131,6 +137,48 @@ else
     <MatDialogActions>
         <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
         <MatButton Type="submit" form="newKeyForm" Raised="true">@L["Save"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@isPluralDialogOpen">
+    <MatDialogTitle>@L["Plural"]</MatDialogTitle>
+    <MatDialogContent>
+        <MatTable Items="@currentLocalizationRecord.PluralTranslations" Class="mat-elevation-z5" Striped="true" ShowPaging="false" PageSize="50">
+            <MatTableHeader>
+                <th></th>
+                <th>@L["Index"]</th>
+                <th>@L["Translation"]</th>
+            </MatTableHeader>
+            <MatTableRow Context="row">
+                <td>
+                    <div>
+                        <MatIconButton Icon="delete" OnClick="@(() => DeletePluralTranslation(row))"></MatIconButton>
+                    </div>
+                </td>
+                <td>
+                    <MatTextField @bind-Value="@row.Index" TextArea="true" FullWidth="true" Required="true"></MatTextField>
+                </td>
+                <td>
+                    <MatTextField @bind-Value="@row.Translation" TextArea="true" FullWidth="true" Required="true"></MatTextField>
+                </td>
+            </MatTableRow>
+        </MatTable>
+        @if (PluralFormRules[currentLocalizationRecord.Culture].Count > currentLocalizationRecord.PluralTranslations.Count)
+        {<EditForm Model="@newPlural" OnValidSubmit="@SaveNewPlural">
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <fieldset>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@newPlural.Index" Label=@L["Index"] FullWidth="true"></MatTextField>
+                        <MatTextField @bind-Value="@newPlural.Translation" Label=@L["Translation"] FullWidth="true" TextArea="true"></MatTextField>
+                        <MatButton Type="submit" Raised="true">@L["Add"]</MatButton>
+                    </div>
+                </fieldset>
+            </EditForm>}
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CancelPluralChanges">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@SaveChanges" Raised="true">@L["Save"]</MatButton>
     </MatDialogActions>
 </MatDialog>
 }

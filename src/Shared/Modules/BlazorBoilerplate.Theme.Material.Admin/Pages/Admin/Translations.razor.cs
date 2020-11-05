@@ -25,6 +25,8 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
         protected List<LocalizationRecordKey> localizationRecordKeys { get; set; }
 
+        protected Dictionary<string, PluralFormRule> PluralFormRules { get; set; }
+
         protected List<string> LocalizationCultures { get; set; } = new List<string>();
 
         protected List<LocalizationRecord> localizationRecords { get; set; } = new List<LocalizationRecord>();
@@ -35,7 +37,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
         protected bool isDeleteDialogOpen = false;
         protected bool isEditDialogOpen = false;
         protected bool isNewKeyDialogOpen = false;
-
+        protected bool isPluralDialogOpen = false;
 
         protected LocalizationRecordKey currentKey { get; set; }
         protected LocalizationRecordKey newKey { get; set; } = new LocalizationRecordKey();
@@ -44,9 +46,14 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
         protected LocalizationRecord newLocalizationRecord { get; set; } = new LocalizationRecord();
 
+        protected LocalizationRecord currentLocalizationRecord { get; set; } = new LocalizationRecord();
+
+        protected PluralTranslation newPlural { get; set; } = new PluralTranslation();
+
         protected override async Task OnInitializedAsync()
         {
             await LoadKeys();
+            await LoadPluralFormRules();
         }
 
         protected async Task OnPage(MatPaginatorPageEvent e)
@@ -68,6 +75,19 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                 totalItemsCount = (int)result.InlineCount.Value;
 
                 matToaster.Add(L["One item found", Plural.From("{0} items found", totalItemsCount)], MatToastType.Success, L["Operation Successful"]);
+            }
+            catch (Exception ex)
+            {
+                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            }
+        }
+
+        private async Task LoadPluralFormRules()
+        {
+            try
+            {
+                var result = await localizationApiClient.GetPluralFormRules();
+                PluralFormRules = result.ToDictionary(i => i.Language);
             }
             catch (Exception ex)
             {
@@ -177,6 +197,13 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             isDeleteDialogOpen = true;
         }
 
+        protected void OpenPluralDialog(LocalizationRecord record)
+        {
+            currentLocalizationRecord = record;
+            newPlural = new PluralTranslation();
+            isPluralDialogOpen = true;
+        }
+
         protected void OpenNewKeyDialogOpen()
         {
             newLocalizationRecord = new LocalizationRecord();
@@ -188,6 +215,12 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
         {
             localizationApiClient.RemoveEntity(record);
             localizationRecords.Remove(record);
+        }
+
+        protected void DeletePluralTranslation(PluralTranslation plural)
+        {
+            localizationApiClient.RemoveEntity(plural);
+            currentLocalizationRecord.PluralTranslations.Remove(plural);
         }
 
         protected async Task<bool> SaveChanges()
@@ -219,6 +252,19 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             }
         }
 
+        protected async Task SaveNewPlural()
+        {
+            newPlural.LocalizationRecord = currentLocalizationRecord;
+            localizationApiClient.AddEntity(newPlural);
+
+            if (currentLocalizationRecord.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture
+                && newPlural.Index == 1)
+                currentLocalizationRecord.MsgIdPlural = newPlural.Translation;
+
+            if (await SaveChanges())
+                newPlural = new PluralTranslation();
+        }
+
         protected async Task SaveNewLocalizationRecord()
         {
             localizationApiClient.AddEntity(newLocalizationRecord);
@@ -232,6 +278,12 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             localizationApiClient.CancelChanges();
             isNewKeyDialogOpen = false;
             await LoadLocalizationRecords(currentKey);
+        }
+
+        protected void CancelPluralChanges()
+        {
+            localizationApiClient.CancelChanges();
+            isPluralDialogOpen = false;
         }
 
         protected async Task ReloadTranslations()
