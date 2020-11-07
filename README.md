@@ -75,7 +75,7 @@ opportunity to learn, share, grow, and get feedback on what hopefully will be a 
   
 I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and 
  suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository. If you wish to hire me for 
- consulting or as a contractor please reach out via [email](support@blazorboilerplate.com) or [https://gitter.im/enkodellc](https://gitter.im/enkodellc). I have taken well  over 1,000 hours  to create, maintain, and answer questions. Please [donate](https://www.paypal.me/enkodellc) to support my efforts.
+ consulting or as a contractor please reach out via [email](mailto:support@blazorboilerplate.com) or [https://gitter.im/enkodellc](https://gitter.im/enkodellc). I have taken well  over 1,000 hours  to create, maintain, and answer questions. Please [donate](https://www.paypal.me/enkodellc) to support my efforts.
 
 ## Completed 
  - Basic Login / User Creation
@@ -183,7 +183,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Admin Roles / Permissions Management. Thanks [vd3d](https://github.com/vd3d)
 - Fix Login EditForm / Double submit of Login. Thanks [MarkStega](https://github.com/MarkStega)
 - UserProfile Fixes. Thanks [mobinseven](https://github.com/mobinseven)
-- Chrome Cookie updates. Thanks [oneparameter](oneparameter)
+- Chrome Cookie updates. Thanks [oneparameter](https://github.com/oneparameter)
     
 ### 0.4.0
  - Docker Support. Thanks [npraskins](https://github.com/npraskins) & [acid12](https://github.com/acid12)
