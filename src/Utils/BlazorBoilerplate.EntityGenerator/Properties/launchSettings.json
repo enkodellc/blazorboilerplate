@@ -2,7 +2,7 @@
   "profiles": {
     "BlazorBoilerplate.EntityGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "$(SolutionDir)"
+      "commandLineArgs": "\"$(SolutionDir)"
     }
   }
 }
