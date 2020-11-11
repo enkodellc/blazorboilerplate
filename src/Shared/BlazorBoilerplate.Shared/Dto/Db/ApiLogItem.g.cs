@@ -77,5 +77,13 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             set { SetValue(value); }
         }
 
+        IApplicationUser IApiLogItem.ApplicationUser { get => ApplicationUser; set => ApplicationUser = (ApplicationUser)value; }
+
+        public ApplicationUser ApplicationUser
+        {
+            get { return GetValue<ApplicationUser>(); }
+            set { SetValue(value); }
+        }
+
     }
 }

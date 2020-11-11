@@ -30,5 +30,7 @@ namespace BlazorBoilerplate.Shared.DataInterfaces
 
         Guid? ApplicationUserId { get; set; }
 
+        IApplicationUser ApplicationUser { get; set; }
+
     }
 }
