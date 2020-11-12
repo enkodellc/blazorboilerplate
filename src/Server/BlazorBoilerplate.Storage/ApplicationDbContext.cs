@@ -62,6 +62,14 @@ namespace BlazorBoilerplate.Storage
                 .IsRequired();
             });
 
+            modelBuilder.Entity<ApiLogItem>(b =>
+            {
+                b.HasOne(e => e.ApplicationUser)
+                    .WithMany(e => e.ApiLogItems)
+                    .HasForeignKey(e => e.ApplicationUserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
             modelBuilder.ShadowProperties();
 
             modelBuilder.Entity<TenantSetting>().IsMultiTenant().ToTable("TenantSettings").HasKey(i => new { i.TenantId, i.Key }); ;

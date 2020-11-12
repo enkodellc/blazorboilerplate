@@ -32,8 +32,6 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
@@ -44,6 +42,8 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     FirstName = table.Column<string>(maxLength: 64, nullable: true),
                     LastName = table.Column<string>(maxLength: 64, nullable: true),
                     FullName = table.Column<string>(maxLength: 64, nullable: true),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
                     TenantId = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
@@ -129,7 +129,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

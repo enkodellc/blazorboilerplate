@@ -16,7 +16,7 @@ else
 <div class="mat-layout-grid">
     <MatTextField ValueChanged="(string filter) => LoadKeys(filter)" Icon="search" />
     <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
             <MatTable Items="@localizationRecordKeys" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false"
                       AllowSelection="true" SelectionChanged="async (object key) => await LoadLocalizationRecords((LocalizationRecordKey)key)">
                 <MatTableHeader>
@@ -37,7 +37,7 @@ else
             </MatTable>
             <MatPaginator PageSize="@pageSize" Page="async a => await OnPage(a)" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
         </div>
-        <div class="mat-layout-grid-cell">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-9">
             <MatTable Items="@localizationRecords" Class="mat-elevation-z5" Striped="true" ShowPaging="false" PageSize="50">
                 <MatTableHeader>
                     <th></th>

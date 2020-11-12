@@ -855,7 +855,6 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status400BadRequest, msg);
             }
         }
-
         public async Task<ApplicationUser> RegisterNewUserAsync(string userName, string email, string password, bool requireConfirmEmail)
         {
             var user = new ApplicationUser
@@ -864,6 +863,11 @@ namespace BlazorBoilerplate.Server.Managers
                 Email = email
             };
 
+            return await RegisterNewUserAsync(user, password, requireConfirmEmail);
+        }
+
+        public async Task<ApplicationUser> RegisterNewUserAsync(ApplicationUser user, string password, bool requireConfirmEmail)
+        {
             var result = password == null ?
                 await _userManager.CreateAsync(user) :
                 await _userManager.CreateAsync(user, password);

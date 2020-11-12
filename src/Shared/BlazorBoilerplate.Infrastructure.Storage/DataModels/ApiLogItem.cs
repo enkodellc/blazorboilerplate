@@ -39,5 +39,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         public string IPAddress { get; set; }
 
         public Guid? ApplicationUserId { get; set; }
+
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }
