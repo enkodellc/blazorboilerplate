@@ -75,10 +75,5 @@ namespace BlazorBoilerplate.Shared.Localizer
         {
             return this;
         }
-
-        IStringLocalizer IStringLocalizer.WithCulture(CultureInfo culture)
-        {
-            return WithCulture(culture);
-        }
     }
 }
