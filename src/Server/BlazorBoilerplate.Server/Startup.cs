@@ -154,20 +154,13 @@ namespace BlazorBoilerplate.Server
                         // if managed app identity is used
                         if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UseManagedAppIdentity"]) == true)
                         {
-                            try
-                            {
-                                AzureServiceTokenProvider azureServiceTokenProvider = new AzureServiceTokenProvider();
+                            AzureServiceTokenProvider azureServiceTokenProvider = new AzureServiceTokenProvider();
 
-                                var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
+                            var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
 
-                                var certificateBundle = keyVaultClient.GetSecretAsync(Configuration["HostingOnAzure:AzureKeyVault:VaultURI"], Configuration["HostingOnAzure:AzurekeyVault:CertificateName"]).GetAwaiter().GetResult();
-                                var certificate = Convert.FromBase64String(certificateBundle.Value);
-                                cert = new X509Certificate2(certificate, (string)null, X509KeyStorageFlags.MachineKeySet);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw ex;
-                            }
+                            var certificateBundle = keyVaultClient.GetSecretAsync(Configuration["HostingOnAzure:AzureKeyVault:VaultURI"], Configuration["HostingOnAzure:AzurekeyVault:CertificateName"]).GetAwaiter().GetResult();
+                            var certificate = Convert.FromBase64String(certificateBundle.Value);
+                            cert = new X509Certificate2(certificate, (string)null, X509KeyStorageFlags.MachineKeySet);
                         }
                     }
                     else // if app id and app secret are used
@@ -540,32 +533,32 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<AppState>();
 
             // setup HttpClient for server side in a client side compatible fashion ( with auth cookie )
-            if (!services.Any(x => x.ServiceType == typeof(HttpClient)))
+            // if (!services.Any(x => x.ServiceType == typeof(HttpClient)))
+            // {
+            services.AddScoped(s =>
             {
-                services.AddScoped(s =>
-                {
                     // creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
                     var navigationManager = s.GetRequiredService<NavigationManager>();
-                    var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
-                    var cookies = httpContextAccessor.HttpContext.Request.Cookies;
-                    var client = new HttpClient(new HttpClientHandler { UseCookies = false });
-                    if (cookies.Any())
+                var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
+                var cookies = httpContextAccessor.HttpContext.Request.Cookies;
+                var client = new HttpClient(new HttpClientHandler { UseCookies = false });
+                if (cookies.Any())
+                {
+                    var cks = new List<string>();
+
+                    foreach (var cookie in cookies)
                     {
-                        var cks = new List<string>();
-
-                        foreach (var cookie in cookies)
-                        {
-                            cks.Add($"{cookie.Key}={cookie.Value}");
-                        }
-
-                        client.DefaultRequestHeaders.Add("Cookie", string.Join(';', cks));
+                        cks.Add($"{cookie.Key}={cookie.Value}");
                     }
 
-                    client.BaseAddress = new Uri(navigationManager.BaseUri);
+                    client.DefaultRequestHeaders.Add("Cookie", string.Join(';', cks));
+                }
 
-                    return client;
-                });
-            }
+                client.BaseAddress = new Uri(navigationManager.BaseUri);
+
+                return client;
+            });
+            // }
 
             services.AddTransient<ILocalizationApiClient, LocalizationApiClient>();
             services.AddTransient<IApiClient, ApiClient>();
