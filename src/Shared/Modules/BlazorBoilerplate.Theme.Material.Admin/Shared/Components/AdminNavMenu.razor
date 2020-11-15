@@ -1,0 +1,112 @@
+@using Microsoft.AspNetCore.Components;
+@inherits DynamicComponentContainer
+@inject NavigationManager navigationManager
+@inject HttpClient Http
+@inject IStringLocalizer<Global> L
+
+<MatNavMenu Multi="true" Class="app-sidebar">
+    <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
+        <MatIcon>home</MatIcon> <span class="miniHover">Frontend</span>
+    </MatNavItem>
+
+    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
+        <MatIcon>bar_chart</MatIcon> <span class="miniHover">@L["Dashboard"]</span>
+    </MatNavItem>
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/settings").AbsoluteUri" AllowSelection="false">
+                <MatIcon>settings_applications</MatIcon> <span class="miniHover">@L["Settings"]</span>
+            </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/settings/email").AbsoluteUri">
+                <MatIcon>email</MatIcon> <span class="miniHover">@L["Email"]</span>
+            </MatNavItem>
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem AllowSelection="false">
+                <MatIcon>public</MatIcon> <span class="miniHover">@L["Localization"]</span>
+            </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/translations").AbsoluteUri">
+                <MatIcon>translate</MatIcon> <span class="miniHover">@L["Translations"]</span>
+            </MatNavItem>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/pluralizationrules").AbsoluteUri">
+                <MatIcon>group</MatIcon> <span class="miniHover">@L["Pluralization rules"]</span>
+            </MatNavItem>
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
+    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri">
+        <MatIcon>supervisor_account</MatIcon> <span class="miniHover">@L["Users"]</span>
+    </MatNavItem>
+    <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri">
+        <MatIcon>supervisor_account</MatIcon> <span class="miniHover">@L["Roles"]</span>
+    </MatNavItem>
+    @if (tenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)
+    {
+        <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/multitenancy").AbsoluteUri">
+            <MatIcon>account_balance</MatIcon> <span class="miniHover">@L["MultiTenancy"]</span>
+        </MatNavItem>
+    }
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem AllowSelection="false">
+                <MatIcon>settings_applications</MatIcon> <span class="miniHover">IdentityServer4</span>
+            </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/clients").AbsoluteUri">
+                <MatIcon>devices</MatIcon> <span class="miniHover">@L["OpenIdClients"]</span>
+            </MatNavItem>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/identityResources").AbsoluteUri">
+                <MatIcon>person_outline</MatIcon> <span class="miniHover">@L["IdentityResources"]</span>
+            </MatNavItem>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/apiResources").AbsoluteUri">
+                <MatIcon>cloud</MatIcon> <span class="miniHover">@L["ApiResources"]</span>
+            </MatNavItem>
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem AllowSelection="false">
+                <MatIcon>settings_applications</MatIcon> <span class="miniHover">@L["AppAdminNavMonitoring"]</span>
+            </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/apilog").AbsoluteUri">
+                <MatIcon>change_history</MatIcon> <span class="miniHover">@L["AppAdminNavApiAuditLog"]</span>
+            </MatNavItem>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("admin/dblog").AbsoluteUri">
+                <MatIcon>notes</MatIcon> <span class="miniHover">@L["AppAdminNavDBLoggingView"]</span>
+            </MatNavItem>
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
+    @foreach (var component in components)
+    {
+        @CreateDynamicComponent(component);
+    }
+</MatNavMenu>
+
+@code {
+    TenantDto tenant = new TenantDto();
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var apiResponse = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<TenantDto>>("api/admin/tenant");
+            if (apiResponse.StatusCode == Status200OK)
+            {
+                tenant = apiResponse.Result;
+            }
+        }
+    }
+}

@@ -1,0 +1,136 @@
+﻿@page "/"
+
+<h1><img src="_content/BlazorBoilerplate.Theme.Material/images/logo-title.png" alt="Loading" title="BlazorBoilerplate" style="max-width: 100%;" /></h1>
+
+<p>Welcome to the Blazor Boilerplate app / starter template.</p>
+<p>
+    <strong>Blazor Boilerplate</strong> is now a fairly mature repository thanks to time and contributors.
+    Our goal is to be an <strong>enterprise level solution</strong>, to jump start your new web project with Blazor.
+    It's based on Blazor with the .Net Core Framework 3.1+.
+    Expect a lot of changes in the future as Blazor is growing and changing rapidly.
+</p>
+<p>
+    <a href="https://blazor-boilerplate.readthedocs.io/" target="_blank"> Project Documentation</a>
+</p>
+<p>
+    <a href="/swagger/index.html" target="_blank"> Swagger API Documentation</a>
+</p>
+<p>
+    This project can run client side / Webassembly Blazor or Server Side Blazor. Just set the desidered runtime in admin section.
+    The ASP.NET Core app serves the Blazor app to clients.
+    The WebAssembly / client-side Blazor app can interact with the server over the network using web API calls.
+    I / Enkode is more interested in this hosted model the most to keep the load on the server low.
+    For more about pros and cons of Blazor Server vs Blazor WebAssembly read <a href="https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1" target="_blank">ASP.NET Core Blazor hosting models</a>
+    or watch Daniel Roth on <a href="https://www.youtube.com/watch?v=XoizucRjxgU" target="_blank">BlazorDay 2020</a>.
+</p>
+<p>
+    The repo is moving along... it takes time to build as I am often contributing to <a href="https://github.com/SamProf/MatBlazor" target="_blank">MatBlazor</a> as well to obtain UI changes that are needed for the theme.
+    With more support each project can grow faster. Please contribute, or at minimum star the repositories on Github
+</p>
+<p>
+    <DonateButton /> - Help support this repo / code and hosting costs.
+    Other devs are charging $30 - $1500 to download their code with similar functionality.
+</p>
+<p>
+    <MatButton Link="https://github.com/enkodellc/blazorboilerplate"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;  Github Repository / Contribute</MatButton>- Contribute to this repo to help it grow!
+</p>
+<hr />
+<h2>Authorization / Identity</h2>
+<p>
+    Take notice of the disabled menu items.
+    If you <a href="/account/login">Login</a> [Username: <strong>user</strong> | Password: <strong>user123</strong>] or [Username: <strong>admin</strong> | Password: <strong>admin123</strong>] you can view those pages.
+    As Blazor grows the security features in this starter template will as well.
+</p>
+<hr />
+<h2>Blazor Boilerplate Highlights:</h2>
+<p>
+    <ul class="list-unstyled">
+        <li><i class="fa fa-check"></i> Client Side Blazor / Server Side Blazor options for debug / release  - Thanks <a href="https://github.com/markstega" target="_blank">Mark Stega</a></li>
+        <li><i class="fa fa-check"></i> Identity Server 4 - Thanks <a href="https://github.com/ganmuru" target="_blank">ganmuru</a></li>
+        <li><i class="fa fa-check"></i> User, role, permission and organization unit management UI</li>
+        <li><i class="fa fa-check"></i> Responsive Admin Theme - [Blazor Sidebar Navigation Menu]</li>
+        <li><i class="fa fa-check"></i> Loading Screen</li>
+        <li><i class="fa fa-check"></i> <a href="/swagger/index.html" target="_blank">Swagger Ui API visualizer</a></li>
+        <li><i class="fa fa-check"></i> Material Design / MatBlazor Components</li>
+        <li><i class="fa fa-check"></i> Basic Account Creation, Login, Forgot Password</li>
+        <li><i class="fa fa-check"></i> MailKit SMTP Email</li>
+        <li><i class="fa fa-check"></i> Response Middleware for Consistent API Responses and Error Handling with Toasts</li>
+        <li><i class="fa fa-check"></i> Audit Log to track all API calls, great for debugging and audit user history - Audit Log screen in progress.</li>
+        <li><i class="fa fa-check"></i> Real time chat and notification system - Thanks <a href="https://github.com/ajgoldenwings" target="_blank">ajgoldenwings</a></li>
+        <li><i class="fa fa-check"></i> Docker configuration</li>
+        <li><i class="fa fa-check"></i> Azure Hosting Setup / Wiki</li>
+    </ul>
+</p>
+<hr />
+<h2>Blazor Boilerplate Roadmap:</h2>
+<p>
+    Looking for contributors in the following areas:
+    <ul>
+        <li>Separate Data Layer for Entity Framework or Dapper. (I so far do not like EF)</li>
+        <li>Review Application Architecture / Patterns</li>
+        <li>Client-side & Server side Caching / Performance improvements</li>
+        <li>Tests</li>
+    </ul>
+</p>
+<p>
+    This project was initially derived from <a href="https://github.com/stavroskasidis/BlazorWithIdentity" target="_blank">https://github.com/stavroskasidis/BlazorWithIdentity</a> and utilizes <a href="https://www.matblazor.com/" target="_blank">MatBlazor</a> extensively.
+</p>
+<hr />
+<h3>MatBlazor / Material Design Components Utilized</h3>
+<ul>
+    <li>AppBar</li>
+    <li>Blazor Alert Message</li>
+    <li>Button</li>
+    <li>Card</li>
+    <li>Checkbox</li>
+    <li>Dialog</li>
+    <li>Drawer</li>
+    <li>Expansion Panel</li>
+    <li>Icon</li>
+    <li>Icon Button</li>
+    <li>List</li>
+    <li>Nav Bar</li>
+    <li>MatFab</li>
+    <li>SnackBar</li>
+    <li>Table</li>
+    <li>TextField</li>
+    <li>Toast</li>
+    <li>Tooltip</li>
+</ul>
+<hr />
+<h3> Disclaimer / About the Author</h3>
+<p>
+    I (Enkodellc) started this repository as I was frustrated with the examples out there that people were charging money for and were in my opinion
+    incomplete or closed source. I paid for 4-5 of these solutions and none of them were what I was looking for. This is my
+    attempt to create something that developers can start a Blazor project with several great features to build from.
+    I have a lot of experience with ASP.Net webforms, I am new to .NET Core and Blazor.
+    This code is not meant to be perfect or follow every Best Practice. It though is my ambition to learn and get feedback on what Best Practices
+    can be implemented.
+    I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and
+    suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository.
+</p>
+<p>
+    I am building this because I have a project that will be using this as a framework so my features are what I foresee that project needing. It is re-write of a legacy
+    .Net WebForms project. Please take the time to Star, Contribute or Donate to support my efforts to continue to drive the project, especially if you use it in production.
+</p>
+
+<MatSnackbar @bind-IsOpen="@lazySnackbarIsOpen">
+    <MatSnackbarContent>If you like BlazorBoilerplate, please put a <a href="https://github.com/enkodellc/blazorboilerplate" target="_blank">star on GitHub</a>.</MatSnackbarContent>
+    <MatSnackbarActions>
+        <MatIconButton Icon="@MatIconNames.Stars" Link="https://github.com/enkodellc/blazorboilerplate" style="color: white !important;" target="_blank"></MatIconButton>
+    </MatSnackbarActions>
+</MatSnackbar>
+
+@code{
+    bool lazySnackbarIsOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await Task.Delay(TimeSpan.FromSeconds(3)).ContinueWith((_) =>
+        {
+            this.lazySnackbarIsOpen = true;
+        });
+    }
+}

@@ -1,0 +1,371 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"PO-Revision-Date: 2020-10-25 08:10+01:00\n"
+"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Language: fa_IR\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "CreateApiResourcePermission"
+msgstr "دسترسی ساخت منبع داده‌ورزی"
+
+msgid "CreateClientPermission"
+msgstr "دسترسی ساخت کارآور OpenID"
+
+msgid "CreateIdentityResourcePermission"
+msgstr "دسترسی ساخت منبع شناسایی OpenID"
+
+msgid "CreateRolePermission"
+msgstr "دسترسی ساخت نقش"
+
+msgid "CreateUserPermission"
+msgstr "دسترسی ساخت کاربر"
+
+msgid "DeleteApiResourcePermission"
+msgstr "دسترسی پاک‌کردن منبع داده‌ورزی"
+
+msgid "DeleteClientPermission"
+msgstr "دسترسی پاک‌کردن کارآور OpenID"
+
+msgid "DeleteIdentityResourcePermission"
+msgstr "دسترسی پاک‌کردن منبع شناسایی"
+
+msgid "DeleteRolePermission"
+msgstr "دسترسی پاک‌کردن نقش"
+
+msgid "DeleteUserPermission"
+msgstr "دسترسی پاک‌کردن کاربر"
+
+msgid "ReadApiResourcePermission"
+msgstr "دسترسی به نمایش منابع داده‌ورزی"
+
+msgid "ReadClientPermission"
+msgstr "دسترسی به نمایش فهرست کارآوران"
+
+msgid "ReadIdentityResourcePermission"
+msgstr "دسترسی به نمایش فهرست منابع شناسایی"
+
+msgid "ReadRolePermission"
+msgstr "دسترسی به نمایش فهرست نقش‌ها"
+
+msgid "ReadUserPermission"
+msgstr "دسترسی به نمایش فهرست کاربران"
+
+msgid "UpdateApiResourcePermission"
+msgstr "دسترسی ویرایش منابع داده‌ورزی"
+
+msgid "UpdateClientPermission"
+msgstr "دسترسی ویرایش کارآورها"
+
+msgid "UpdateIdentityResourcePermission"
+msgstr "دسترسی ویرایش منابع شناسایی"
+
+msgid "UpdateRolePermission"
+msgstr "دسترسی ویرایش نقش‌ها"
+
+msgid "UpdateUserPermission"
+msgstr "دسترسی ویرایش کاربران"
+
+msgid "Delete"
+msgstr "پاک‌کردن"
+
+msgid "Cancel"
+msgstr "لغو"
+
+msgid "Users"
+msgstr "کاربران"
+
+msgid "Roles"
+msgstr "نقش‌ها"
+
+msgid "ApiResources"
+msgstr "منبع داده‌ورزی OpenID"
+
+msgid "IdentityResources"
+msgstr "منابع شناسایی"
+
+msgid "OpenIdClients"
+msgstr "کارآور OpenID"
+
+msgid "Dashboard"
+msgstr "پیشخوان"
+
+msgid "Loading"
+msgstr "بارگذاری"
+
+msgid "New Client"
+msgstr "افزودن کارآور"
+
+msgid "New User"
+msgstr "افزودن کاربر"
+
+msgid "New Role"
+msgstr "افزودن نقش"
+
+msgid "New API Resource"
+msgstr "افزودن منبع داده‌ورزی"
+
+msgid "New Identity Resource"
+msgstr "منبع شناسایی"
+
+msgid "{0} users fetched"
+msgstr "{0} کاربر دریافت شد"
+
+msgid "Operation Successful"
+msgstr "با کامیابی انجام شد"
+
+msgid "Operation Failed"
+msgstr "انجام نشد"
+
+msgid "{0} roles fetched"
+msgstr "{0} نقش دریافت شد"
+
+msgid "{0} clients fetched"
+msgstr "{0} کارآور دریافت شد"
+
+msgid "{0} identity resources fetched"
+msgstr "{0} منبع شناسایی دریافت شد"
+
+msgid "{0} API resources fetched"
+msgstr "{0} منبع  دریافت شد"
+
+msgid "Create"
+msgstr "ساختن"
+
+msgid "Update"
+msgstr "ویرایش"
+
+msgid "Edit {0}"
+msgstr "ویرایش '{0}'"
+
+msgid "Permissions list fetched"
+msgstr "فهرست دسترسی‌ها دریافت شد"
+
+msgid "Role {0} created"
+msgstr "نقش {0} ساخته شد"
+
+msgid "Role {0} already exists"
+msgstr "نقش {0} پیش از این ساخته شده"
+
+msgid "The role {0} doesn't exist"
+msgstr "نقش {0} یافت نشد"
+
+msgid "Role {0} deleted"
+msgstr "نقش {0} پاک شد"
+
+msgid "RoleInUseWarning"
+msgstr "نقش {0} به دست‌کم یک کاربر داده شده و نمی‌تواند پاک شود"
+
+msgid "Client {0} created"
+msgstr "کارآور {0} ساخته شد"
+
+msgid "The client {0} doesn't exist"
+msgstr "کارآور {0} یافت نشد"
+
+msgid "Client {0} updated"
+msgstr "کارآور {0} ویرایش شد"
+
+msgid "Client {0} deleted"
+msgstr "کارآور {0} پاک شد"
+
+msgid "Role {0} updated"
+msgstr "نقش {0} ویرایش شد"
+
+msgid "Identity Resource {0} created"
+msgstr "منبع شناسایی {0} ساخته شد"
+
+msgid "Identity Resource {0} updated"
+msgstr "منبع شناسایی {0} ویرایش شد"
+
+msgid "Identity Resource {0} deleted"
+msgstr "منبع شناسایی {0} پاک شد"
+
+msgid "API Resource {0} created"
+msgstr "منبع داده‌ورزی {0} ساخته شد"
+
+msgid "API Resource {0} updated"
+msgstr "منبع داده‌ورزی {0} ویرایش شد"
+
+msgid "API Resource {0} deleted"
+msgstr "منبع داده‌ورزی {0} پاک شد"
+
+msgid "The API resource {0} doesn't exist"
+msgstr "منبع داده‌ورزی {0} یافت نشد"
+
+msgid "The Identity resource {0} doesn't exist"
+msgstr "منبع شناسایی {0} یافت نشد"
+
+msgid "UserName"
+msgstr "نام کاربری"
+
+msgid "Login"
+msgstr "ورود"
+
+msgid "Sign in with"
+msgstr "ورود با"
+
+msgid "Sign up"
+msgstr "نام‌نویسی"
+
+msgid "Keep me logged in"
+msgstr "مرا به یاد بسپار"
+
+msgid "Log in"
+msgstr "ورود"
+
+msgid "Forgot your password?"
+msgstr "فراموشی رمز"
+
+msgid "Submit"
+msgstr "فرستادن"
+
+msgid "LoginFailed"
+msgstr "ورود ناکام"
+
+msgid "ResetPasswordFailed"
+msgstr "بازنشانی رمز انجام نشد"
+
+msgid "ForgotPasswordEmailSent"
+msgstr "ایمیل بازنشانی رمز فرستاده شد"
+
+msgid "Confirm Email"
+msgstr "تایید ایمیل"
+
+msgid "Send Confirmation"
+msgstr "فرستادن راستی‌آزمایی"
+
+msgid "EmailVerificationFailed"
+msgstr "ایمیل راستی‌آزمایی نشد"
+
+msgid "EmailVerificationSuccessful"
+msgstr "ایمیل با کامیابی راستی‌آزمایی شد"
+
+msgid "ResetPasswordSuccessful"
+msgstr "بازنشانی رمز با کامیابی انجام شد"
+
+msgid "Password Reset"
+msgstr "بازنشانی رمز"
+
+msgid "Password Confirmation"
+msgstr "تایید رمز"
+
+msgid "Reset Password"
+msgstr "بازنشانی رمز"
+
+msgid "UserCreationFailed"
+msgstr "ساخت کاربر کامیاب نبود"
+
+msgid "UserCreationSuccessful"
+msgstr "کاربر با کامیابی ساخته شد"
+
+msgid "Registration"
+msgstr "نام‌نویسی"
+
+msgid "PasswordConfirmationFailed"
+msgstr "رمز با تایید رمز خوانایی ندارد"
+
+msgid "ConfirmPassword"
+msgstr "تایید رمز"
+
+msgid "ErrorInvalidLength"
+msgstr "{0} باید بیشتر از {2} و کمتر از {1} حرف باشد"
+
+msgid "SpacesNotPermitted"
+msgstr "فاصله مجاز نیست"
+
+msgid "Role"
+msgstr "نقش"
+
+msgid "Name"
+msgstr "نام"
+
+msgid "AlreadyRegistered"
+msgstr "این کاربر پیش از این نام‌نویسی کرده"
+
+msgid "Register"
+msgstr "نام‌نویسی"
+
+msgid "InvalidData"
+msgstr "داده‌ی نامناسب"
+
+msgid "The user {0} doesn't exist"
+msgstr "کاربر {0} یافت نشد"
+
+msgid "The user doesn't exist"
+msgstr "چنین کاربری یافت نشد"
+
+msgid "User {0} created"
+msgstr "کاربر {0} ساخته شد"
+
+msgid "Confirm Delete"
+msgstr "تایید پاک شدن"
+
+msgid "Logout"
+msgstr "بیرون‌شدن"
+
+msgid "ConcurrencyFailure"
+msgstr "خطای همزمانی رخ داده و ردیف مورد نظر، پیش از این، تغییر کرده."
+
+msgid "DefaultError"
+msgstr "خطایی ناشناخته رخ داد."
+
+msgid "DuplicateEmail"
+msgstr "ایمیل {0} پیش از این گرفته شده."
+
+msgid "DuplicateRoleName"
+msgstr "نام {0} برای نقش دیگری پیشتر استفاده شده."
+
+msgid "DuplicateUserName"
+msgstr "نام کاربری {0} پیش از این گرفته شده."
+
+msgid "InvalidEmail"
+msgstr "ایمیل {0} درست نیست."
+
+msgid "InvalidRoleName"
+msgstr "نام {0} برای نقش قابل استفاده نیست."
+
+msgid "InvalidToken"
+msgstr "نشان (توکن) نادرست است."
+
+msgid "InvalidUserName"
+msgstr "نام کاربری {0} قابل استفاده نیست. نام کاربری باید از حروف و اعداد تشکیل شده باشد."
+
+msgid "LoginAlreadyAssociated"
+msgstr "کاربری با این نام کاربری وجود دارد."
+
+msgid "PasswordMismatch"
+msgstr "رمز نادرست است."
+
+msgid "PasswordRequiresDigit"
+msgstr "رمز باید دست‌کم یک شماره ('0'-'9') داشته باشد."
+
+msgid "PasswordRequiresLower"
+msgstr "رمز باید دست‌کم یک حرف کوچک ('a'-'z') داشته باشد."
+
+msgid "PasswordRequiresNonAlphanumeric"
+msgstr "رمز باید دست‌کم یک نشانه داشته باشد."
+
+msgid "PasswordRequiresUpper"
+msgstr "رمز باید دست‌کم یک حرف بزرگ ('A'-'Z') داشته باشد."
+
+msgid "PasswordTooShort"
+msgstr "درازای رمز باید دست‌کم {0} باشد."
+
+msgid "UserAlreadyHasPassword"
+msgstr "کاربر رمز داشته."
+
+msgid "UserAlreadyInRole"
+msgstr "کاربر در نقش '{0}' بوده."
+
+msgid "UserLockoutNotEnabled"
+msgstr "حساب کاربر قفل نیست."
+
+msgid "UserNotInRole"
+msgstr "کاربر در نقش '{0}' نیست."
+

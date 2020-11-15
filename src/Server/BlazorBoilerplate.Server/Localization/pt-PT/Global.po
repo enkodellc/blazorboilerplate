@@ -1,0 +1,518 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"PO-Revision-Date: 2020-10-25 08:10+01:00\n"
+"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Language: pt_PT\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "CreateApiResourcePermission"
+msgstr "Criar um recurso novo da API"
+
+msgid "CreateClientPermission"
+msgstr "Criar um novo cliente"
+
+msgid "CreateRolePermission"
+msgstr "Criar uma atribuição nova"
+
+msgid "CreateUserPermission"
+msgstr "Criar um novo utilizador"
+
+msgid "DeleteApiResourcePermission"
+msgstr "Apagar qualquer recurso da API"
+
+msgid "DeleteClientPermission"
+msgstr "Apagar qualquer cliente"
+
+msgid "DeleteRolePermission"
+msgstr "Apagar qualquer atribuição"
+
+msgid "DeleteUserPermission"
+msgstr "Apagar qualquer utilizador"
+
+msgid "ReadApiResourcePermission"
+msgstr "Ler os dados dos recursos da API"
+
+msgid "ReadClientPermission"
+msgstr "Ler dados dos clientes"
+
+msgid "ReadRolePermission"
+msgstr "Ler dados de atribuição (permissões, etc.)"
+
+msgid "ReadUserPermission"
+msgstr "Ler dados de utilizadores (Nomes, Emails, Numeros de Telefone, etc.)"
+
+msgid "UpdateApiResourcePermission"
+msgstr "Editar recursos da API existentes"
+
+msgid "UpdateClientPermission"
+msgstr "Editar clientes existentes"
+
+msgid "UpdateRolePermission"
+msgstr "Editar atribuições existentes"
+
+msgid "UpdateUserPermission"
+msgstr "Editar utilizadores existentes"
+
+msgid "CreateIdentityResourcePermission"
+msgstr "Criar uma autorização do recurso da identidade"
+
+msgid "ReadIdentityResourcePermission"
+msgstr "Ler dados dos recursos da identidade"
+
+msgid "UpdateIdentityResourcePermission"
+msgstr "Editar recursos da Identidade existentes"
+
+msgid "DeleteIdentityResourcePermission"
+msgstr "Apagar qualquer recurso da Identidade"
+
+msgid "Delete"
+msgstr "Apagar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Users"
+msgstr "Utilizadores"
+
+msgid "Roles"
+msgstr "Atribuições"
+
+msgid "ApiResources"
+msgstr "Recursos da API OpenID"
+
+msgid "IdentityResources"
+msgstr "Recursos da Identidade OpenID"
+
+msgid "OpenIdClients"
+msgstr "Clientes OpenID"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Loading"
+msgstr "Carregando..."
+
+msgid "New Client"
+msgstr "Novo Cliente"
+
+msgid "New User"
+msgstr "Novo Utilizador"
+
+msgid "New Role"
+msgstr "Nova Atribuição"
+
+msgid "New API Resource"
+msgstr "Novo Recurso da API"
+
+msgid "New Identity Resource"
+msgstr "Novo Recurso de Identidade"
+
+msgid "{0} users fetched"
+msgstr "{0} utilizadores encontrados"
+
+msgid "Operation Successful"
+msgstr "Operação bem sucessida"
+
+msgid "Operation Failed"
+msgstr "Operação Falhou"
+
+msgid "{0} roles fetched"
+msgstr "{0} atribuições encontradas"
+
+msgid "{0} clients fetched"
+msgstr "{0} clientes encontrados"
+
+msgid "{0} identity resources fetched"
+msgstr "{0} recursos da Identidade encontrados"
+
+msgid "{0} API resources fetched"
+msgstr "{0} recursos da API encontrados"
+
+msgid "Create"
+msgstr "Criar"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Edit {0}"
+msgstr "Editar '{0}'"
+
+msgid "Permissions list fetched"
+msgstr "Lista de authorizações recebida"
+
+msgid "Role {0} created"
+msgstr "Atribuição {0} criada"
+
+msgid "Role {0} already exists"
+msgstr "Atribuição {0} já existe"
+
+msgid "The role {0} doesn't exist"
+msgstr "A atribuição {0} não existe"
+
+msgid "Role {0} deleted"
+msgstr "Atribuição {0} apagada"
+
+msgid "RoleInUseWarning"
+msgstr "Esta atribuição {0} está a ser utilizada por um utilizador, e não pode ser apagada."
+
+msgid "Client {0} created"
+msgstr "Cliente {0} criado"
+
+msgid "The client {0} doesn't exist"
+msgstr "O cliente {0} não existe"
+
+msgid "Client {0} updated"
+msgstr "Cliente {0} actualizado"
+
+msgid "Client {0} deleted"
+msgstr "Cliente {0} apagado"
+
+msgid "Role {0} updated"
+msgstr "Atribuição {0} actualizada"
+
+msgid "Identity Resource {0} created"
+msgstr "Recurso da Identidade {0} creado"
+
+msgid "Identity Resource {0} updated"
+msgstr "Recurso da Identidade {0} actualizado"
+
+msgid "Identity Resource {0} deleted"
+msgstr "Recurso da Identidade {0} apagado"
+
+msgid "API Resource {0} created"
+msgstr "Recurso da API {0} criado"
+
+msgid "API Resource {0} updated"
+msgstr "Recurso da API {0} actualizado"
+
+msgid "API Resource {0} deleted"
+msgstr "Recurso da API {0} apagado"
+
+msgid "The API resource {0} doesn't exist"
+msgstr "O recurso da API {0} não existe"
+
+msgid "The Identity resource {0} doesn't exist"
+msgstr "O recurso da Identidade {0} não existe"
+
+msgid "UserName"
+msgstr "Nome do Utilizador"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Sign in with"
+msgstr "Iniciar sessão com"
+
+msgid "Sign up"
+msgstr "Registrar-me"
+
+msgid "Keep me logged in"
+msgstr "Mantenha-me registrado"
+
+msgid "Log in"
+msgstr "Log in"
+
+msgid "Forgot your password?"
+msgstr "Esqueceu a Password? "
+
+msgid "Submit"
+msgstr "Submeter"
+
+msgid "LoginFailed"
+msgstr "Tentativas de login falharam"
+
+msgid "ResetPasswordFailed"
+msgstr "Tentativa de Recuperar Password Falhou"
+
+msgid "ForgotPasswordEmailSent"
+msgstr "Email enviado com a Password esquecida"
+
+msgid "Confirm Email"
+msgstr "Confirme Email"
+
+msgid "Send Confirmation"
+msgstr "Enviar Confirmação"
+
+msgid "EmailVerificationFailed"
+msgstr "Verificação do Email Falhou"
+
+msgid "EmailVerificationSuccessful"
+msgstr "Verificação do Email com Successo"
+
+msgid "ResetPasswordSuccessful"
+msgstr "Password Recuperada com Successo"
+
+msgid "Password Reset"
+msgstr "Recuperar Password"
+
+msgid "Password Confirmation"
+msgstr "Confirmação da Password"
+
+msgid "Reset Password"
+msgstr "Recuperar Password"
+
+msgid "UserCreationFailed"
+msgstr "Criação do Utilizador Falhou"
+
+msgid "UserCreationSuccessful"
+msgstr "Criação do Utilizador com Successo"
+
+msgid "Registration"
+msgstr "Registração"
+
+msgid "PasswordConfirmationFailed"
+msgstr "A password de confirmação é diferente da password dada."
+
+msgid "ConfirmPassword"
+msgstr "Confirme a password"
+
+msgid "ErrorInvalidLength"
+msgstr "O {0} têm que ter pelo menos {2} e um máximo de {1} characteres de cumprimento."
+
+msgid "SpacesNotPermitted"
+msgstr "Espaços não são permitidos."
+
+msgid "Role"
+msgstr "Atribuição"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "AlreadyRegistered"
+msgstr "Já está registrado?"
+
+msgid "Register"
+msgstr "Registrar"
+
+msgid "InvalidData"
+msgstr "Os dados remetidos são invalidos."
+
+msgid "The user {0} doesn't exist"
+msgstr "O utilizador {0} não existe"
+
+msgid "The user doesn't exist"
+msgstr "O utilizador não existe"
+
+msgid "User {0} created"
+msgstr "Utilizador {0} criado"
+
+msgid "Confirm Delete"
+msgstr "Confirme Apagar"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Tenants"
+msgstr "Inquilinos"
+
+msgid "Tenant"
+msgstr "Inquilino"
+
+msgid "MultiTenancy"
+msgstr "Multi-Inquilino"
+
+msgid "{0} tenants fetched"
+msgstr "{0} inquilinos encontrados"
+
+msgid "Tenant {0} created"
+msgstr "Inquilino {0} criado"
+
+msgid "The tenant {0} doesn't exist"
+msgstr "O inquilino {0} não existe"
+
+msgid "Tenant {0} updated"
+msgstr "Inquilino {0} actualizado"
+
+msgid "Tenant {0} deleted"
+msgstr "Inquilino {0} apagado"
+
+msgid "Role {0} cannot be deleted"
+msgstr "Atribuição {0} não pode ser apagada"
+
+msgid "Tenant {0} cannot be deleted"
+msgstr "Inquilino {0} não pode ser apagado"
+
+msgid "Role {0} cannot be edited"
+msgstr "Atribuição {0} não pode ser alterada"
+
+msgid "AuthenticationRequired"
+msgstr "Autenticação Necessária"
+
+msgid "LoginRequired"
+msgstr "Por favor login primeiro"
+
+msgid "Operation not allowed"
+msgstr "Operação não é premitida"
+
+msgid "NotAuthorizedTo"
+msgstr "Não esta autorizado a fazer esta operação"
+
+msgid "PleaseWait"
+msgstr "Por favor aguarde..."
+
+msgid "Settings"
+msgstr "Configurações"
+
+msgid "EmailSettings"
+msgstr "Configurações do Email"
+
+msgid "OutgoingEmail"
+msgstr "Email de saída"
+
+msgid "IncomingEmail"
+msgstr "Recebendo email"
+
+msgid "SmtpServer"
+msgstr "Servidor SMTP"
+
+msgid "PopServer"
+msgstr "Servidor POP3"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Port"
+msgstr "Porta"
+
+msgid "ImapServer"
+msgstr "Servidor IMAP"
+
+msgid "SenderEmail"
+msgstr "Remetente do Email"
+
+msgid "SenderName"
+msgstr "Nome do Remetente"
+
+msgid "MainSettings"
+msgstr "Configurações principais"
+
+msgid "BreadCrumbadmin"
+msgstr "Admin"
+
+msgid "AppHelpAndSupport"
+msgstr "Ajuda & Supporto"
+
+msgid "AppHoverAdmin"
+msgstr "Administração"
+
+msgid "AppHoverNavMinimize"
+msgstr "Minimize a Barra de Navigação"
+
+msgid "AppHoverNavToggle"
+msgstr "Esconda a Barra de Navigação"
+
+msgid "AppName"
+msgstr "Blazer Boilerplate"
+
+msgid "AppNavHome"
+msgstr "Homepage"
+
+msgid "AppShortName"
+msgstr "BlazorBP"
+
+msgid "AppAdminNavApiAuditLog"
+msgstr "Registo de Auditoria do API"
+
+msgid "AppAdminNavDBLoggingView"
+msgstr "Visualizador de Log DB"
+
+msgid "AppAdminNavFrontEnd"
+msgstr "Frente/Site"
+
+msgid "AppAdminNavMonitoring"
+msgstr "Monitoria"
+
+msgid "AppNavDashboard"
+msgstr "Dashboard"
+
+msgid "AppNavDragAndDrop"
+msgstr "Drag and Drop"
+
+msgid "AppNavEmail"
+msgstr "Email"
+
+msgid "AppNavFeatures"
+msgstr "Funcionalidades"
+
+msgid "AppNavForum"
+msgstr "Forum"
+
+msgid "AppNavReadEmail"
+msgstr "Ler Emails"
+
+msgid "AppNavScreenshots"
+msgstr "Screenshots"
+
+msgid "AppNavSendEmail"
+msgstr "Enviar Email"
+
+msgid "AppNavSponsors"
+msgstr "Patrocinadores"
+
+msgid "BreadCrumbadminapiResources"
+msgstr "Recursos API"
+
+msgid "BreadCrumbadminapilog"
+msgstr "Registo de Auditoria do API"
+
+msgid "BreadCrumbadminclients"
+msgstr "Clientes"
+
+msgid "BreadCrumbadmindblog"
+msgstr "Visualizador de Log DB"
+
+msgid "BreadCrumbadminidentityResources"
+msgstr "Recursos da Identidade"
+
+msgid "BreadCrumbadminmultitenancy"
+msgstr "Gerencia de Inquilinos"
+
+msgid "BreadCrumbadminroles"
+msgstr "Gerência de Atribuições"
+
+msgid "BreadCrumbadminsettings"
+msgstr "Configurações"
+
+msgid "BreadCrumbadminsettingsemail"
+msgstr "Configurações de Email"
+
+msgid "BreadCrumbadminusers"
+msgstr "Utilizadores"
+
+msgid "BreadCrumbdashboard"
+msgstr "Dashboard"
+
+msgid "BreadCrumbdrag_and_drop"
+msgstr "Drag and Drop"
+
+msgid "BreadCrumbemail"
+msgstr "Enviar Email"
+
+msgid "BreadCrumbemail_view"
+msgstr "Ler Email"
+
+msgid "BreadCrumbforum"
+msgstr "Forum"
+
+msgid "BreadCrumbHome"
+msgstr "Home"
+
+msgid "BreadCrumbscreenshots"
+msgstr "Screenshots"
+
+msgid "BreadCrumbsponsors"
+msgstr "Patrocinadores"
+
+msgid "BreadCrumbtodo_list"
+msgstr "ToDo"
+
+msgid "TodoNav"
+msgstr "Lista Todo"
+

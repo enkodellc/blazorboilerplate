@@ -1,0 +1,270 @@
+@page "/account/login"
+
+@layout LoginLayout
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider authStateProvider
+@inject IMatToaster matToaster
+@inject AppState appState
+@inject NavigationManager NavigationManager
+@inject IJSRuntime js
+@inject IStringLocalizer<Global> L
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <LoadingBackground ShowLogoBox="true">
+            <label>@L["Loading"]</label>
+        </LoadingBackground>
+    </Authorized>
+    <NotAuthorized>
+        @if (RedirectInProgress)
+        {
+            <LoadingBackground ShowLogoBox="true">
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        }
+        else
+        {@if (loginViewModel.EnableLocalLogin)
+            {<MatCard>
+                    <div class="hidden-mdc-down">
+                        <MatIconButton Icon="home" Class="float-left" Link="/" />
+                    </div>
+                    <div class="logo">
+                        <a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
+                        <br />
+                        <h4>@L["Log in"]</h4>
+                    </div>
+                    <EditForm Model="@loginViewModel" OnValidSubmit="@SubmitLogin">
+                        <FluentValidationValidator />
+                        <ValidationSummary />
+                        <fieldset>
+                            <div class="form-group">
+                                <MatTextField id="userName" @bind-Value="@loginViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MatTextField>
+                            </div>
+                            <div class="form-group">
+                                <MatTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="2"></MatTextField>
+                            </div>
+                            <div class="form-group">
+                                <MatButton class="float-right" Type="submit" Raised="true" tabindex="3">@L["Login"]</MatButton>
+                                @if (loginViewModel.AllowRememberLogin)
+                                {<MatCheckbox @bind-Value="@loginViewModel.RememberMe" class="filled-in chk-col-blue">@L["Keep me logged in"]</MatCheckbox>}
+                            </div>
+                        </fieldset>
+                    </EditForm>
+                    <hr />
+                    <div>
+                        <MatButton class="float-left" OnClick="@Register" Raised="true">@L["Sign up"]</MatButton>
+                    </div>
+                </MatCard>
+                <MatAccordion>
+                    <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
+                        <MatExpansionPanelSummary>
+                            <MatExpansionPanelHeader>@L["Forgot your password?"]</MatExpansionPanelHeader>
+                            <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            <EditForm Model="@forgotPasswordViewModel" OnValidSubmit="@ForgotPassword">
+                                <FluentValidationValidator />
+                                <ValidationSummary />
+                                <div class="form-group">
+                                    <MatTextField @bind-Value="@forgotPasswordViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                                </div>
+                                <div class="form-group">
+                                    <MatButton class="float-right" Type="submit" Raised="true">@L["Submit"]</MatButton>
+                                </div>
+                            </EditForm>
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+                </MatAccordion>}
+        @if (loginViewModel.VisibleExternalProviders.Any())
+        {
+            <br />
+            <MatCard>
+                @if (!loginViewModel.EnableLocalLogin)
+                {<div class="hidden-mdc-down">
+                        <MatIconButton Icon="home" Class="float-left" Link="/" />
+                    </div>}
+                <div class="logo">
+                    @if (!loginViewModel.EnableLocalLogin)
+                    {<a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
+                    <br />}
+                    <h4>@L["Sign in with"]</h4>
+                </div>
+                <div style="text-align: center">
+                    @foreach (var provider in loginViewModel.VisibleExternalProviders)
+                    {
+                        @switch (provider.AuthenticationScheme)
+                        {
+                            case "Google":
+                            case "Facebook":
+                                <div class="form-group">
+                                    <MatButton Style="min-width: 140px;" OnClick="@(() => SignInWith(provider))" Raised="true"><img height="18" src="/images/@(provider.AuthenticationScheme.ToLower()).svg" /></MatButton>
+                                </div>
+                                break;
+                            case "Twitter":
+                            case "Microsoft":
+                            case "Apple":
+                                <div class="form-group">
+                                    <MatButton Style="min-width: 140px;" OnClick="@(() => SignInWith(provider))" Raised="true"><img height="18" src="/images/@(provider.AuthenticationScheme.ToLower()).svg" />&nbsp;@provider.DisplayName</MatButton>
+                                </div>
+                                break;
+                            default:
+                                <div class="form-group">
+                                    <MatButton Style="min-width: 140px;" OnClick="@(() => SignInWith(provider))" Raised="true" Label="@provider.DisplayName" />
+                                </div>
+                                break;
+                        }
+                    }
+                </div>
+            </MatCard>}
+        @if (!loginViewModel.EnableLocalLogin && !loginViewModel.VisibleExternalProviders.Any())
+        {
+            <div class="alert alert-warning">
+                <strong>Invalid login request</strong>
+                There are no login schemes configured for this client.
+            </div>
+        }
+    }
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+
+    string navigateTo = null;
+    IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
+    bool forgotPasswordToggle = false;
+    bool RedirectInProgress = false;
+    static bool LoginSuccess = false;
+    LoginViewModel loginViewModel { get; set; } = new LoginViewModel();
+    ForgotPasswordViewModel forgotPasswordViewModel { get; set; } = new ForgotPasswordViewModel();
+
+    string ReturnUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (navigationManager.TryGetQueryString<string>("ReturnUrl", out string url))
+            ReturnUrl = url;
+
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated || LoginSuccess)
+            RedirectInProgress = true;
+        else
+        {
+            identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
+
+            var apiResponse = await identityAuthenticationStateProvider.BuildLoginViewModel(ReturnUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                loginViewModel = apiResponse.Result;
+
+                if (loginViewModel.IsExternalLoginOnly)
+                {
+                    if (!string.IsNullOrEmpty(ReturnUrl))
+                        ReturnUrl = Uri.EscapeDataString(ReturnUrl);
+                    // we only have one option for logging in and it's an external provider
+                    navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
+                }
+            }
+            else
+                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["LoginFailed"]);
+        }
+
+        LoginSuccess = false;
+    }
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (navigationManager.IsWebAssembly())
+        {
+            var user = (await authenticationStateTask).User;
+
+            if (user.Identity.IsAuthenticated && navigateTo != null)
+                navigationManager.NavigateTo(navigateTo);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !RedirectInProgress)
+            await js.InvokeVoidAsync("interop.SetFocus", "userName");
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    void SignInWith(ExternalProvider provider)
+    {
+        if (!string.IsNullOrEmpty(ReturnUrl))
+            ReturnUrl = Uri.EscapeDataString(ReturnUrl);
+
+        navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{provider.AuthenticationScheme}/{ReturnUrl}", true);
+    }
+
+    void Register()
+    {
+        navigationManager.NavigateTo("/account/register");
+    }
+
+    async Task SubmitLogin()
+    {
+        try
+        {
+            loginViewModel.ReturnUrl = ReturnUrl;
+            var response = await identityAuthenticationStateProvider.Login(loginViewModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                if (navigationManager.IsWebAssembly())
+                {
+                    if (response.Result?.RequiresTwoFactor == true)
+                    {
+                        var par = string.IsNullOrEmpty(ReturnUrl) ? string.Empty : $"?returnurl={Uri.EscapeDataString(ReturnUrl)}";
+                        navigationManager.NavigateTo($"{BlazorBoilerplate.Constants.Settings.LoginWith2faPath}{par}", true);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(ReturnUrl))
+                        {
+                            var userProfile = await appState.GetUserProfile();
+
+                            navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                        }
+                        else
+                            navigateTo = ReturnUrl;
+
+
+                        navigationManager.NavigateTo(navigateTo);
+                    }
+                }
+                else
+                    RedirectInProgress = true;
+
+                LoginSuccess = true;
+            }
+            else
+                matToaster.Add(response.Message, MatToastType.Danger, L["LoginFailed"]);
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, L["LoginFailed"]);
+        }
+    }
+
+    async Task ForgotPassword()
+    {
+        try
+        {
+            await identityAuthenticationStateProvider.ForgotPassword(forgotPasswordViewModel);
+            matToaster.Add(L["ForgotPasswordEmailSent"], MatToastType.Success);
+            forgotPasswordViewModel.Email = string.Empty;
+            forgotPasswordToggle = false;
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, L["ResetPasswordFailed"]);
+        }
+    }
+}

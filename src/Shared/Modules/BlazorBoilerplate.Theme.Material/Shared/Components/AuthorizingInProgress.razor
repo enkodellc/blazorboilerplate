@@ -1,0 +1,8 @@
+﻿@inject IStringLocalizer<Global> L
+<LayoutView Layout="typeof(LoginLayout)">
+    <LoadingBackground ShowLogoBox="true">
+        <div class="login-body">
+            <label>@L["PleaseWait"]</label>
+        </div>
+    </LoadingBackground>
+</LayoutView>

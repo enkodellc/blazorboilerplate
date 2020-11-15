@@ -1,0 +1,735 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2020-10-25 09:10+01:00\n"
+"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"POT-Creation-Date: \n"
+
+msgid "CreateApiResourcePermission"
+msgstr ""
+
+msgid "CreateClientPermission"
+msgstr ""
+
+msgid "CreateRolePermission"
+msgstr ""
+
+msgid "CreateUserPermission"
+msgstr ""
+
+msgid "DeleteApiResourcePermission"
+msgstr ""
+
+msgid "DeleteClientPermission"
+msgstr ""
+
+msgid "DeleteRolePermission"
+msgstr ""
+
+msgid "DeleteUserPermission"
+msgstr ""
+
+msgid "ReadApiResourcePermission"
+msgstr ""
+
+msgid "ReadClientPermission"
+msgstr ""
+
+msgid "ReadRolePermission"
+msgstr ""
+
+msgid "ReadUserPermission"
+msgstr ""
+
+msgid "UpdateApiResourcePermission"
+msgstr ""
+
+msgid "UpdateClientPermission"
+msgstr ""
+
+msgid "UpdateRolePermission"
+msgstr ""
+
+msgid "UpdateUserPermission"
+msgstr ""
+
+msgid "CreateIdentityResourcePermission"
+msgstr ""
+
+msgid "ReadIdentityResourcePermission"
+msgstr ""
+
+msgid "UpdateIdentityResourcePermission"
+msgstr ""
+
+msgid "DeleteIdentityResourcePermission"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "Roles"
+msgstr ""
+
+msgid "ApiResources"
+msgstr ""
+
+msgid "IdentityResources"
+msgstr ""
+
+msgid "OpenIdClients"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Loading"
+msgstr ""
+
+msgid "New Client"
+msgstr ""
+
+msgid "New User"
+msgstr ""
+
+msgid "New Role"
+msgstr ""
+
+msgid "New API Resource"
+msgstr ""
+
+msgid "New Identity Resource"
+msgstr ""
+
+msgid "{0} users fetched"
+msgstr ""
+
+msgid "Operation Successful"
+msgstr ""
+
+msgid "Operation Failed"
+msgstr ""
+
+msgid "{0} roles fetched"
+msgstr ""
+
+msgid "{0} clients fetched"
+msgstr ""
+
+msgid "{0} identity resources fetched"
+msgstr ""
+
+msgid "{0} API resources fetched"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Edit {0}"
+msgstr ""
+
+msgid "Permissions list fetched"
+msgstr ""
+
+msgid "Role {0} created"
+msgstr ""
+
+msgid "Role {0} already exists"
+msgstr ""
+
+msgid "The role {0} doesn't exist"
+msgstr ""
+
+msgid "Role {0} deleted"
+msgstr ""
+
+msgid "RoleInUseWarning"
+msgstr ""
+
+msgid "Client {0} created"
+msgstr ""
+
+msgid "The client {0} doesn't exist"
+msgstr ""
+
+msgid "Client {0} updated"
+msgstr ""
+
+msgid "Client {0} deleted"
+msgstr ""
+
+msgid "Role {0} updated"
+msgstr ""
+
+msgid "Identity Resource {0} created"
+msgstr ""
+
+msgid "Identity Resource {0} updated"
+msgstr ""
+
+msgid "Identity Resource {0} deleted"
+msgstr ""
+
+msgid "API Resource {0} created"
+msgstr ""
+
+msgid "API Resource {0} updated"
+msgstr ""
+
+msgid "API Resource {0} deleted"
+msgstr ""
+
+msgid "The API resource {0} doesn't exist"
+msgstr ""
+
+msgid "The Identity resource {0} doesn't exist"
+msgstr ""
+
+msgid "UserName"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Sign in with"
+msgstr ""
+
+msgid "Sign up"
+msgstr ""
+
+msgid "Keep me logged in"
+msgstr ""
+
+msgid "Log in"
+msgstr ""
+
+msgid "Forgot your password?"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "LoginFailed"
+msgstr ""
+
+msgid "ResetPasswordFailed"
+msgstr ""
+
+msgid "ForgotPasswordEmailSent"
+msgstr ""
+
+msgid "Confirm Email"
+msgstr ""
+
+msgid "Send Confirmation"
+msgstr ""
+
+msgid "EmailVerificationFailed"
+msgstr ""
+
+msgid "EmailVerificationSuccessful"
+msgstr ""
+
+msgid "ResetPasswordSuccessful"
+msgstr ""
+
+msgid "Password Reset"
+msgstr ""
+
+msgid "Password Confirmation"
+msgstr ""
+
+msgid "Reset Password"
+msgstr ""
+
+msgid "UserCreationFailed"
+msgstr ""
+
+msgid "UserCreationSuccessful"
+msgstr ""
+
+msgid "Registration"
+msgstr ""
+
+msgid "PasswordConfirmationFailed"
+msgstr ""
+
+msgid "ConfirmPassword"
+msgstr ""
+
+msgid "ErrorInvalidLength"
+msgstr ""
+
+msgid "SpacesNotPermitted"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "AlreadyRegistered"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid "InvalidData"
+msgstr ""
+
+msgid "The user {0} doesn't exist"
+msgstr ""
+
+msgid "The user doesn't exist"
+msgstr ""
+
+msgid "User {0} created"
+msgstr ""
+
+msgid "Confirm Delete"
+msgstr ""
+
+msgid "Logout"
+msgstr ""
+
+msgid "Tenants"
+msgstr ""
+
+msgid "Tenant"
+msgstr ""
+
+msgid "MultiTenancy"
+msgstr ""
+
+msgid "{0} tenants fetched"
+msgstr ""
+
+msgid "Tenant {0} created"
+msgstr ""
+
+msgid "The tenant {0} doesn't exist"
+msgstr ""
+
+msgid "Tenant {0} updated"
+msgstr ""
+
+msgid "Tenant {0} deleted"
+msgstr ""
+
+msgid "Role {0} cannot be deleted"
+msgstr ""
+
+msgid "Tenant {0} cannot be deleted"
+msgstr ""
+
+msgid "Role {0} cannot be edited"
+msgstr ""
+
+msgid "AuthenticationRequired"
+msgstr ""
+
+msgid "LoginRequired"
+msgstr ""
+
+msgid "Operation not allowed"
+msgstr ""
+
+msgid "NotAuthorizedTo"
+msgstr ""
+
+msgid "PleaseWait"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "EmailSettings"
+msgstr ""
+
+msgid "OutgoingEmail"
+msgstr ""
+
+msgid "IncomingEmail"
+msgstr ""
+
+msgid "SmtpServer"
+msgstr ""
+
+msgid "PopServer"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Port"
+msgstr ""
+
+msgid "ImapServer"
+msgstr ""
+
+msgid "SenderEmail"
+msgstr ""
+
+msgid "SenderName"
+msgstr ""
+
+msgid "MainSettings"
+msgstr ""
+
+msgid "AppAdminNavApiAuditLog"
+msgstr ""
+
+msgid "AppAdminNavDBLoggingView"
+msgstr ""
+
+msgid "AppAdminNavFrontEnd"
+msgstr ""
+
+msgid "AppAdminNavMonitoring"
+msgstr ""
+
+msgid "AppHelpAndSupport"
+msgstr ""
+
+msgid "AppHoverAdmin"
+msgstr ""
+
+msgid "AppHoverNavMinimize"
+msgstr ""
+
+msgid "AppHoverNavToggle"
+msgstr ""
+
+msgid "AppName"
+msgstr ""
+
+msgid "AppNavDashboard"
+msgstr ""
+
+msgid "AppNavDragAndDrop"
+msgstr ""
+
+msgid "AppNavEmail"
+msgstr ""
+
+msgid "AppNavFeatures"
+msgstr ""
+
+msgid "AppNavForum"
+msgstr ""
+
+msgid "AppNavHome"
+msgstr ""
+
+msgid "AppNavReadEmail"
+msgstr ""
+
+msgid "AppNavScreenshots"
+msgstr ""
+
+msgid "AppNavSendEmail"
+msgstr ""
+
+msgid "AppNavSponsors"
+msgstr ""
+
+msgid "AppShortName"
+msgstr ""
+
+msgid "BreadCrumbadmin"
+msgstr ""
+
+msgid "BreadCrumbadminapiResources"
+msgstr ""
+
+msgid "BreadCrumbadminapilog"
+msgstr ""
+
+msgid "BreadCrumbadminclients"
+msgstr ""
+
+msgid "BreadCrumbadmindblog"
+msgstr ""
+
+msgid "BreadCrumbadminidentityResources"
+msgstr ""
+
+msgid "BreadCrumbadminmultitenancy"
+msgstr ""
+
+msgid "BreadCrumbadminroles"
+msgstr ""
+
+msgid "BreadCrumbadminsettings"
+msgstr ""
+
+msgid "BreadCrumbadminsettingsemail"
+msgstr ""
+
+msgid "BreadCrumbadminusers"
+msgstr ""
+
+msgid "BreadCrumbdashboard"
+msgstr ""
+
+msgid "BreadCrumbdrag_and_drop"
+msgstr ""
+
+msgid "BreadCrumbemail"
+msgstr ""
+
+msgid "BreadCrumbemail_view"
+msgstr ""
+
+msgid "BreadCrumbforum"
+msgstr ""
+
+msgid "BreadCrumbHome"
+msgstr ""
+
+msgid "BreadCrumbscreenshots"
+msgstr ""
+
+msgid "BreadCrumbsponsors"
+msgstr ""
+
+msgid "BreadCrumbtodo_list"
+msgstr ""
+
+msgid "TodoNav"
+msgstr ""
+
+msgid "CurrentPassword"
+msgstr ""
+
+msgid "NewPassword"
+msgstr ""
+
+msgid "Update Password"
+msgstr ""
+
+msgid "UpdatePasswordSuccessful"
+msgstr ""
+
+msgid "UpdatePasswordFailed"
+msgstr ""
+
+msgid "FirstName"
+msgstr ""
+
+msgid "LastName"
+msgstr ""
+
+msgid "Change Password"
+msgstr ""
+
+msgid "User Profile"
+msgstr ""
+
+msgid "RememberBrowser"
+msgstr ""
+
+msgid "ForgotAuthenticator"
+msgstr ""
+
+msgid "RecoveryCode"
+msgstr ""
+
+msgid "LockedUser"
+msgstr ""
+
+msgid "EmailNotConfirmed"
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "TwoFactorAuthentication"
+msgstr ""
+
+msgid "BrowserRemembered"
+msgstr ""
+
+msgid "RecoveryCodesLeft"
+msgstr ""
+
+msgid "AuthenticatorCode"
+msgstr ""
+
+msgid "VerificationCode"
+msgstr ""
+
+msgid "VerificationCodeInvalid"
+msgstr ""
+
+msgid "ResetAuthenticator"
+msgstr ""
+
+msgid "EmailInvalid"
+msgstr ""
+
+msgid "FieldRequired"
+msgstr ""
+
+msgid "ConcurrencyFailure"
+msgstr ""
+
+msgid "DefaultError"
+msgstr ""
+
+msgid "DuplicateEmail"
+msgstr ""
+
+msgid "DuplicateRoleName"
+msgstr ""
+
+msgid "DuplicateUserName"
+msgstr ""
+
+msgid "InvalidEmail"
+msgstr ""
+
+msgid "InvalidRoleName"
+msgstr ""
+
+msgid "InvalidToken"
+msgstr ""
+
+msgid "InvalidUserName"
+msgstr ""
+
+msgid "LoginAlreadyAssociated"
+msgstr ""
+
+msgid "PasswordMismatch"
+msgstr ""
+
+msgid "PasswordRequiresDigit"
+msgstr ""
+
+msgid "PasswordRequiresLower"
+msgstr ""
+
+msgid "PasswordRequiresNonAlphanumeric"
+msgstr ""
+
+msgid "PasswordRequiresUpper"
+msgstr ""
+
+msgid "PasswordTooShort"
+msgstr ""
+
+msgid "UserAlreadyHasPassword"
+msgstr ""
+
+msgid "UserAlreadyInRole"
+msgstr ""
+
+msgid "UserLockoutNotEnabled"
+msgstr ""
+
+msgid "UserNotInRole"
+msgstr ""
+
+msgid "UnauthorizedAccess"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Are you sure you want to delete {0}?"
+msgstr ""
+
+msgid "Change password for {0}"
+msgstr ""
+
+msgid "ItemsDeleted"
+msgstr ""
+
+msgid "Translations"
+msgstr ""
+
+msgid "Culture"
+msgstr ""
+
+msgid "NewTranslation"
+msgstr ""
+
+msgid "Translation"
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "VerifyCode"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "ReloadTranslations"
+msgstr ""
+
+msgid "One item found"
+msgid_plural "{0} items found"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Import PO file"
+msgstr ""
+
+msgid "File not selected"
+msgstr ""
+
+msgid "File not valid"
+msgstr ""
+
+msgid "File empty"
+msgstr ""
+
+msgid "PO File without a valid language"
+msgstr ""
+
+msgid "Only PO files"
+msgstr ""
+
+msgid "Plural"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Count"
+msgstr ""
+
+msgid "Selector"
+msgstr ""
+
+msgid "Localization"
+msgstr ""
+
+msgid "Pluralization rules"
+msgstr ""

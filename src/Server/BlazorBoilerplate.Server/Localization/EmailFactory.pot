@@ -1,0 +1,69 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2020-10-25 09:10+01:00\n"
+"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"POT-Creation-Date: \n"
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "TestEmail.template"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PlainTextTestEmail.template"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PasswordReset.template"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserNotificationEmail.template"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserEmail.template"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserConfirmationEmail.template"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "ForgotPassword.template"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "TestEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PlainTextTestEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "PasswordReset.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserNotificationEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "NewUserConfirmationEmail.subject"
+msgstr ""
+
+msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgid "ForgotPassword.subject"
+msgstr ""

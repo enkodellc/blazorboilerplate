@@ -1,0 +1,53 @@
+﻿@page "/email"
+@using BlazorBoilerplate.Shared.Dto.Email
+
+@inject HttpClient Http
+@inject IMatToaster matToaster
+
+@using static Microsoft.AspNetCore.Http.StatusCodes
+
+<h1>Send Email</h1>
+<p>Test out SMTP email sending with MailKit. This will send out an email using a default "Test" template if you have setup your smtp server in <i>appsettings.json</i>.</p>
+<EditForm Model="@emailParameters" OnValidSubmit="@SendEmail">
+    <FluentValidationValidator />
+    <ValidationSummary />
+    <fieldset>
+        <div class="form-group">
+            <MatTextField @bind-Value="@emailParameters.ToAddress" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group d-flex justify-content-end">
+            <MatButton Type="submit" Raised="true">Send Test Template Email</MatButton>
+        </div>
+    </fieldset>
+</EditForm>
+
+@code {
+
+    EmailDto emailParameters { get; set; } = new EmailDto();
+    protected override void OnInitialized()
+    {
+        //set the template name so it passes model validation
+        emailParameters.TemplateName = "Test";
+    }
+
+    async Task SendEmail()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Email/Send", emailParameters);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Success);
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Email Send Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Email Send Failed");
+        }
+    }
+}

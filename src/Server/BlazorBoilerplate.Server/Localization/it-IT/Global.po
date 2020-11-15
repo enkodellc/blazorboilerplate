@@ -1,0 +1,738 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2020-10-30 17:49+0100\n"
+"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "CreateApiResourcePermission"
+msgstr "Crea una nuova risorsa API OpenID"
+
+msgid "CreateClientPermission"
+msgstr "Crea un nuovo client OpenID"
+
+msgid "CreateRolePermission"
+msgstr "Crea un nuovo ruolo"
+
+msgid "CreateUserPermission"
+msgstr "Crea un nuovo utente"
+
+msgid "DeleteApiResourcePermission"
+msgstr "Elimina una risorsa API OpenID"
+
+msgid "DeleteClientPermission"
+msgstr "Elimina un client OpenID"
+
+msgid "DeleteRolePermission"
+msgstr "Elimina un ruolo"
+
+msgid "DeleteUserPermission"
+msgstr "Elimina un utente"
+
+msgid "ReadApiResourcePermission"
+msgstr "Legge i dati di una risorsa API OpenID"
+
+msgid "ReadClientPermission"
+msgstr "Legge i dati di un client OpenID"
+
+msgid "ReadRolePermission"
+msgstr "Legge i dati di un ruolo (permessi, ecc.)"
+
+msgid "ReadUserPermission"
+msgstr "Legge i dati di un utente (nome, email, telefono, ecc.)"
+
+msgid "UpdateApiResourcePermission"
+msgstr "Modifica una risorsa API OpenID"
+
+msgid "UpdateClientPermission"
+msgstr "Modifica un client OpenID"
+
+msgid "UpdateRolePermission"
+msgstr "Modifica un ruolo"
+
+msgid "UpdateUserPermission"
+msgstr "Modifica un utente"
+
+msgid "CreateIdentityResourcePermission"
+msgstr "Crea una nuova risorsa identità OpenID"
+
+msgid "ReadIdentityResourcePermission"
+msgstr "Legge i dati di una risorsa identità OpenID"
+
+msgid "UpdateIdentityResourcePermission"
+msgstr "Modifica una risorsa identità OpenID"
+
+msgid "DeleteIdentityResourcePermission"
+msgstr "Elimina una risorsa identità OpenID"
+
+msgid "Delete"
+msgstr "Elimina"
+
+msgid "Cancel"
+msgstr "Annulla"
+
+msgid "Users"
+msgstr "Utenti"
+
+msgid "Roles"
+msgstr "Ruoli"
+
+msgid "ApiResources"
+msgstr "Risorse API OpenID"
+
+msgid "IdentityResources"
+msgstr "Risorse Identità OpenID"
+
+msgid "OpenIdClients"
+msgstr "Client OpenID"
+
+msgid "Dashboard"
+msgstr "Cruscotto"
+
+msgid "Loading"
+msgstr "Caricamento in corso..."
+
+msgid "New Client"
+msgstr "Nuovo Client"
+
+msgid "New User"
+msgstr "Nuovo Utente"
+
+msgid "New Role"
+msgstr "Nuovo Ruolo"
+
+msgid "New API Resource"
+msgstr "Nuova Risorsa API"
+
+msgid "New Identity Resource"
+msgstr "Nuova Risorsa Identità"
+
+msgid "{0} users fetched"
+msgstr "Recuperati {0} utenti"
+
+msgid "Operation Successful"
+msgstr "Operazione riuscita"
+
+msgid "Operation Failed"
+msgstr "Operazione fallita"
+
+msgid "{0} roles fetched"
+msgstr "Recuperati {0} ruoli"
+
+msgid "{0} clients fetched"
+msgstr "Recuperati {0} client"
+
+msgid "{0} identity resources fetched"
+msgstr "Recuperate {0} risorse identità"
+
+msgid "{0} API resources fetched"
+msgstr "Recuperate {0} risorse API"
+
+msgid "Create"
+msgstr "Crea"
+
+msgid "Update"
+msgstr "Aggiorna"
+
+msgid "Edit {0}"
+msgstr "Aggiorna '{0}'"
+
+msgid "Permissions list fetched"
+msgstr "Recuperato elenco permessi"
+
+msgid "Role {0} created"
+msgstr "Creato ruolo {0}"
+
+msgid "Role {0} already exists"
+msgstr "Il ruolo {0} esiste già"
+
+msgid "The role {0} doesn't exist"
+msgstr "Il ruolo {0} non esiste"
+
+msgid "Role {0} deleted"
+msgstr "Ruolo {0} eliminato"
+
+msgid "RoleInUseWarning"
+msgstr "Il ruolo {0} è in uso da un utente e non può essere eliminato"
+
+msgid "Client {0} created"
+msgstr "Creato client {0}"
+
+msgid "The client {0} doesn't exist"
+msgstr "Il client {0} non esiste"
+
+msgid "Client {0} updated"
+msgstr "Client {0} aggiornato"
+
+msgid "Client {0} deleted"
+msgstr "Client {0} eliminato"
+
+msgid "Role {0} updated"
+msgstr "Ruolo {0} aggiornato"
+
+msgid "Identity Resource {0} created"
+msgstr "Creata risorsa identità {0}"
+
+msgid "Identity Resource {0} updated"
+msgstr "Risorsa identità {0} aggiornata"
+
+msgid "Identity Resource {0} deleted"
+msgstr "Risorsa identità {0} eliminata"
+
+msgid "API Resource {0} created"
+msgstr "Creata risorsa API  {0}"
+
+msgid "API Resource {0} updated"
+msgstr "Risorsa API {0} aggiornata"
+
+msgid "API Resource {0} deleted"
+msgstr "Risorsa API {0} eliminata"
+
+msgid "The API resource {0} doesn't exist"
+msgstr "La risorsa API {0} non esiste"
+
+msgid "The Identity resource {0} doesn't exist"
+msgstr "La risorsa identità {0} non esiste"
+
+msgid "UserName"
+msgstr "Nome utente"
+
+msgid "Login"
+msgstr "Accedi"
+
+msgid "Sign in with"
+msgstr "Accedi con"
+
+msgid "Sign up"
+msgstr "Registrati"
+
+msgid "Keep me logged in"
+msgstr "Resta connesso"
+
+msgid "Log in"
+msgstr "Accesso"
+
+msgid "Forgot your password?"
+msgstr "Password dimenticata?"
+
+msgid "Submit"
+msgstr "Invia"
+
+msgid "LoginFailed"
+msgstr "Accesso fallito"
+
+msgid "ResetPasswordFailed"
+msgstr "Reimpostazione password fallita"
+
+msgid "ForgotPasswordEmailSent"
+msgstr "Email reimpostazione password inviata"
+
+msgid "Confirm Email"
+msgstr "Conferma Email"
+
+msgid "Send Confirmation"
+msgstr "Invia conferma"
+
+msgid "EmailVerificationFailed"
+msgstr "Verifica email fallita"
+
+msgid "EmailVerificationSuccessful"
+msgstr "Verifica email riuscita"
+
+msgid "ResetPasswordSuccessful"
+msgstr "Reimpostazione password riuscita"
+
+msgid "Password Reset"
+msgstr "Reimpostazione password"
+
+msgid "Password Confirmation"
+msgstr "Conferma password"
+
+msgid "Reset Password"
+msgstr "Reimposta password"
+
+msgid "UserCreationFailed"
+msgstr "Creazione utente fallita"
+
+msgid "UserCreationSuccessful"
+msgstr "Creazione utente riuscita"
+
+msgid "Registration"
+msgstr "Registrazione"
+
+msgid "PasswordConfirmationFailed"
+msgstr "La password e la password di conferma non corrispondono."
+
+msgid "ConfirmPassword"
+msgstr "Conferma password"
+
+msgid "ErrorInvalidLength"
+msgstr "Il campo {0} deve avere almeno {2} caratteri ed al massimo {1}."
+
+msgid "SpacesNotPermitted"
+msgstr "Gli spazi non sono consentiti."
+
+msgid "Role"
+msgstr "Ruolo"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "AlreadyRegistered"
+msgstr "Già registrato?"
+
+msgid "Register"
+msgstr "Registrati"
+
+msgid "InvalidData"
+msgstr "I dati inseriti non sono validi."
+
+msgid "The user {0} doesn't exist"
+msgstr "L'utente {0} non esiste"
+
+msgid "The user doesn't exist"
+msgstr "L'utente non esiste"
+
+msgid "User {0} created"
+msgstr "Creato utente {0}"
+
+msgid "Confirm Delete"
+msgstr "Conferma eliminazione"
+
+msgid "Logout"
+msgstr "Disconnetti"
+
+msgid "Tenants"
+msgstr "Siti in comproprietà"
+
+msgid "Tenant"
+msgstr "Sito in comproprietà"
+
+msgid "MultiTenancy"
+msgstr "Siti in comproprietà"
+
+msgid "{0} tenants fetched"
+msgstr "Recuperati {0} siti in comproprietà"
+
+msgid "Tenant {0} created"
+msgstr "Creato sito in comproprietà {0}"
+
+msgid "The tenant {0} doesn't exist"
+msgstr "Il sito in comproprietà {0} non esiste"
+
+msgid "Tenant {0} updated"
+msgstr "Sito in comproprietà {0} aggiornato"
+
+msgid "Tenant {0} deleted"
+msgstr "Sito in comproprietà {0} eliminato"
+
+msgid "Role {0} cannot be deleted"
+msgstr "Il ruolo {0} non può essere eliminato"
+
+msgid "Tenant {0} cannot be deleted"
+msgstr "Il sito {0} non può essere eliminato"
+
+msgid "Role {0} cannot be edited"
+msgstr "Il ruolo {0} non può essere modificato"
+
+msgid "AuthenticationRequired"
+msgstr "Richiesta autenticazione"
+
+msgid "LoginRequired"
+msgstr "Si prega di effettuare l'accesso"
+
+msgid "Operation not allowed"
+msgstr "Operazione non consentita"
+
+msgid "NotAuthorizedTo"
+msgstr "Non sei autorizzato ad effettuare l'operazione"
+
+msgid "PleaseWait"
+msgstr "Attendere prego..."
+
+msgid "Settings"
+msgstr "Impostazioni"
+
+msgid "EmailSettings"
+msgstr "Impostazioni Email"
+
+msgid "OutgoingEmail"
+msgstr "Posta in uscita"
+
+msgid "IncomingEmail"
+msgstr "Posta in arrivo"
+
+msgid "SmtpServer"
+msgstr "Server SMTP"
+
+msgid "PopServer"
+msgstr "Server POP3"
+
+msgid "Save"
+msgstr "Salva"
+
+msgid "Port"
+msgstr "Porta"
+
+msgid "ImapServer"
+msgstr "Server IMAP"
+
+msgid "SenderEmail"
+msgstr "Email mittente"
+
+msgid "SenderName"
+msgstr "Nome mittente"
+
+msgid "MainSettings"
+msgstr "Impostazioni principali"
+
+msgid "AppAdminNavApiAuditLog"
+msgstr "Log di controllo utilizzo API"
+
+msgid "AppAdminNavDBLoggingView"
+msgstr "Log"
+
+msgid "AppAdminNavFrontEnd"
+msgstr ""
+
+msgid "AppAdminNavMonitoring"
+msgstr "Monitoraggio"
+
+msgid "AppHelpAndSupport"
+msgstr "Aiuto e supporto"
+
+msgid "AppHoverAdmin"
+msgstr "Amministrazione"
+
+msgid "AppHoverNavMinimize"
+msgstr "Minimizza barra di navigazione"
+
+msgid "AppHoverNavToggle"
+msgstr "Commuta barra di navigazione"
+
+msgid "AppName"
+msgstr ""
+
+msgid "AppNavDashboard"
+msgstr "Cruscotto"
+
+msgid "AppNavDragAndDrop"
+msgstr ""
+
+msgid "AppNavEmail"
+msgstr ""
+
+msgid "AppNavFeatures"
+msgstr "Caratteristiche"
+
+msgid "AppNavForum"
+msgstr ""
+
+msgid "AppNavHome"
+msgstr ""
+
+msgid "AppNavReadEmail"
+msgstr "Leggi email"
+
+msgid "AppNavScreenshots"
+msgstr ""
+
+msgid "AppNavSendEmail"
+msgstr "Invia email"
+
+msgid "AppNavSponsors"
+msgstr "Sponsor"
+
+msgid "AppShortName"
+msgstr ""
+
+msgid "BreadCrumbadmin"
+msgstr "Amministrazione"
+
+msgid "BreadCrumbadminapiResources"
+msgstr "Risorse API OpenID"
+
+msgid "BreadCrumbadminapilog"
+msgstr "Log di controllo utilizzo API"
+
+msgid "BreadCrumbadminclients"
+msgstr "Client OpenID"
+
+msgid "BreadCrumbadmindblog"
+msgstr "Log applicativo"
+
+msgid "BreadCrumbadminidentityResources"
+msgstr "Risorse Identità OpenID"
+
+msgid "BreadCrumbadminmultitenancy"
+msgstr "Gestione siti in comproprietà"
+
+msgid "BreadCrumbadminroles"
+msgstr "Gestione ruoli"
+
+msgid "BreadCrumbadminsettings"
+msgstr "Impostazioni"
+
+msgid "BreadCrumbadminsettingsemail"
+msgstr "Configurazione Email"
+
+msgid "BreadCrumbadminusers"
+msgstr "Utenti"
+
+msgid "BreadCrumbdashboard"
+msgstr "Cruscotto"
+
+msgid "BreadCrumbdrag_and_drop"
+msgstr ""
+
+msgid "BreadCrumbemail"
+msgstr "Invia email"
+
+msgid "BreadCrumbemail_view"
+msgstr "Leggi email"
+
+msgid "BreadCrumbforum"
+msgstr "Forum"
+
+msgid "BreadCrumbHome"
+msgstr "Home"
+
+msgid "BreadCrumbscreenshots"
+msgstr ""
+
+msgid "BreadCrumbsponsors"
+msgstr "Sponsor"
+
+msgid "BreadCrumbtodo_list"
+msgstr "Lista ToDo"
+
+msgid "TodoNav"
+msgstr "Lista ToDo"
+
+msgid "CurrentPassword"
+msgstr "Password corrente"
+
+msgid "NewPassword"
+msgstr "Nuova password"
+
+msgid "Update Password"
+msgstr "Aggiorna password"
+
+msgid "UpdatePasswordSuccessful"
+msgstr "Aggiornamento password riuscito"
+
+msgid "UpdatePasswordFailed"
+msgstr "Aggiornamento password fallito"
+
+msgid "FirstName"
+msgstr "Nome"
+
+msgid "LastName"
+msgstr "Cognome"
+
+msgid "Change Password"
+msgstr "Cambia password"
+
+msgid "User Profile"
+msgstr "Profilo utente"
+
+msgid "RememberBrowser"
+msgstr "Ricorda questo browser"
+
+msgid "ForgotAuthenticator"
+msgstr "Hai dimenticato la tua app authenticator?"
+
+msgid "RecoveryCode"
+msgstr "Codice di ripristino"
+
+msgid "LockedUser"
+msgstr "L'utente è bloccato"
+
+msgid "EmailNotConfirmed"
+msgstr "Email non verificata"
+
+msgid "Code"
+msgstr "Codice"
+
+msgid "TwoFactorAuthentication"
+msgstr "Autenticazione a due fattori"
+
+msgid "BrowserRemembered"
+msgstr "Browser memorizzato"
+
+msgid "RecoveryCodesLeft"
+msgstr "Codici di ripristino rimasti"
+
+msgid "AuthenticatorCode"
+msgstr "Codice authenticator"
+
+msgid "VerificationCode"
+msgstr "codice di verifica"
+
+msgid "VerificationCodeInvalid"
+msgstr "Il codice di verifica non è valido"
+
+msgid "ResetAuthenticator"
+msgstr "Resetta authenticator app"
+
+msgid "EmailInvalid"
+msgstr "Il campo {0} non è un indirizzo email valido."
+
+msgid "FieldRequired"
+msgstr "Il campo {0} è obbligatorio."
+
+msgid "ConcurrencyFailure"
+msgstr "C'è già una modifica in corso."
+
+msgid "DefaultError"
+msgstr "Errore sconosciuto."
+
+msgid "DuplicateEmail"
+msgstr "L'email '{0}' è già in uso."
+
+msgid "DuplicateRoleName"
+msgstr "Il nome di ruolo '{0}' è già in uso."
+
+msgid "DuplicateUserName"
+msgstr "Il nome utente '{0}' è già in uso."
+
+msgid "InvalidEmail"
+msgstr "L'email '{0}' non è valido."
+
+msgid "InvalidRoleName"
+msgstr "Il nome di ruolo '{0}' non è valido."
+
+msgid "InvalidToken"
+msgstr "Token non valido."
+
+msgid "InvalidUserName"
+msgstr ""
+"Il nome utente '{0}' non è valido. Deve contenere solo lettere o numeri."
+
+msgid "LoginAlreadyAssociated"
+msgstr "Un utente con questo login esiste già."
+
+msgid "PasswordMismatch"
+msgstr "Password non corretta."
+
+msgid "PasswordRequiresDigit"
+msgstr "Le password devono contenere almeno una numero."
+
+msgid "PasswordRequiresLower"
+msgstr "Le password devono contenere almeno una lettera minuscola."
+
+msgid "PasswordRequiresNonAlphanumeric"
+msgstr ""
+"Le password devono contenere almeno un carattere che non sia lettera o "
+"numero."
+
+msgid "PasswordRequiresUpper"
+msgstr "Le password devono contenere almeno una lettera maiuscola."
+
+msgid "PasswordTooShort"
+msgstr "Le password devono avere almeno {0} caratteri."
+
+msgid "UserAlreadyHasPassword"
+msgstr "L'utente ha già la password impostata."
+
+msgid "UserAlreadyInRole"
+msgstr "L'utente è già nel ruolo '{0}'."
+
+msgid "UserLockoutNotEnabled"
+msgstr "Il blocco utente non è abilitato."
+
+msgid "UserNotInRole"
+msgstr "L'utente non è nel ruolo '{0}'."
+
+msgid "UnauthorizedAccess"
+msgstr "Accesso non autorizzato"
+
+msgid "Permissions"
+msgstr "Permessi"
+
+msgid "Allow"
+msgstr "Consenti"
+
+msgid "Are you sure you want to delete {0}?"
+msgstr "Vuoi eliminare '{0}'?"
+
+msgid "Change password for {0}"
+msgstr "Cambia password per {0}"
+
+msgid "ItemsDeleted"
+msgstr "{0} elementi sono stati eliminati."
+
+msgid "Translations"
+msgstr "Traduzioni"
+
+msgid "Culture"
+msgstr "Cultura"
+
+msgid "NewTranslation"
+msgstr "Nuova traduzione"
+
+msgid "Translation"
+msgstr "Traduzione"
+
+msgid "Key"
+msgstr "Chiave"
+
+msgid "VerifyCode"
+msgstr "Verifica codice"
+
+msgid "Add"
+msgstr "Aggiungi"
+
+msgid "ReloadTranslations"
+msgstr "Ricarica traduzioni"
+
+msgid "One item found"
+msgid_plural "{0} items found"
+msgstr[0] "Trovato un elemento"
+msgstr[1] "{0} elementi trovati"
+
+msgid "Export"
+msgstr "Esporta"
+
+msgid "Import PO file"
+msgstr "Importa file PO"
+
+msgid "File not selected"
+msgstr "File non selezionato"
+
+msgid "File not valid"
+msgstr "File non valido"
+
+msgid "File empty"
+msgstr "File vuoto"
+
+msgid "PO File without a valid language"
+msgstr "File PO senza un linguaggio valido"
+
+msgid "Only PO files"
+msgstr "Solo file PO"
+
+msgid "Plural"
+msgstr "Plurale"
+
+msgid "Index"
+msgstr "Indice"
+
+msgid "Count"
+msgstr "Conteggio"
+
+msgid "Selector"
+msgstr "Selettore"
+
+msgid "Localization"
+msgstr "Localizzazione"
+
+msgid "Pluralization rules"
+msgstr "Regole di pluralizzazione"

@@ -1,0 +1,63 @@
+﻿@implements IDisposable
+@using System.Timers
+
+<div class="refresh-timer row">
+
+    <div>@Label</div>
+    <div>
+        <MatSlideToggle @bind-Value="timer.Enabled" />
+    </div>
+    <div class="refresh-timer-interval-wrapper">
+        <MatNumericUpDownField Label="@Text"
+                               Value="@Interval"
+                               ValueChanged="@UpdateInterval"
+                               DecimalPlaces="0"
+                               Dense="true"
+                               Minimum="1"
+                               TValue="double">
+
+        </MatNumericUpDownField>
+    </div>
+</div>
+@code {
+
+    private Timer timer = new Timer();
+
+
+    /// <summary>
+    /// Delegate invoked on timer interval
+    /// </summary>
+    [Parameter] public ElapsedEventHandler ElapsedEvent { get; set; }
+
+    /// <summary>
+    /// Text Placed to the left of the interval selection dropdown.
+    /// Defaults to 'Refresh Interval: .
+    /// </summary>
+    [Parameter]
+    public string Label { get; set; } = "Refresh Interval: ";
+    [Parameter] public string Text { get; set; } = "Seconds";
+
+    /// <summary>
+    /// Timer Interval Value in Seconds. Defaults to 5
+    /// </summary>
+    [Parameter] public double Interval { get; set; } = 5;
+    protected override void OnInitialized()
+    {
+
+        timer.Enabled = false;
+        timer.Interval = Interval * 1000;
+        timer.Elapsed += ElapsedEvent;
+        base.OnInitialized();
+
+    }
+    void UpdateInterval(double newInterval)
+    {
+        Interval = newInterval;
+        timer.Interval = newInterval * 1000; //convert to milliseconds
+    }
+    public void Dispose()
+    {
+        timer.Elapsed -= ElapsedEvent;
+        timer.Dispose();
+    }
+}

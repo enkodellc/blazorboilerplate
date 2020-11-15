@@ -1,0 +1,180 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Blazor Boilerplate Team
+# This file is distributed under the same license as the Blazor Boilerplate
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Blazor Boilerplate \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-06 17:43+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:2
+#: b47fb16a82b34e92bb7ab6651871c592
+msgid "Breeze Sharp with Blazor"
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:4
+#: 24784370640f40ba9db4878cf54347c4
+msgid ""
+"What you will read here are my personal opinions. I have been using "
+"Breeze from years for both web and desktop applications and I have no "
+"connection with Breeze team."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:7
+#: a738a5c319ed4468ba8b40e681c08a1c
+msgid "`Giovanni Quarella <https://github.com/GioviQ>`_"
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:9
+#: 5966789ed80b42bfa2c7aac280d48ef5
+msgid "Recommended **CRUD API design** is too verborse and boring."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:11
+#: 2c937716102c4dcabdd36ff7c076bf7e
+msgid ""
+"For each CRUD action Create, Read, Update and Delete you have to add a "
+"method to your API controller. Also you have to repeat the same pattern "
+"for every entity of your application domain."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:14
+#: 2b6285fc622b47588c9672fb3f9af5e0
+msgid ""
+"In real use cases you cannot perform also single actions on entities, "
+"because changes have to happen at the same time in a transaction. So you "
+"have to write other code..."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:17
+#: 764f075ba0b9499192210d6271f0b0e0
+msgid "Do you know good coders are lazy? Do you know the DRY principle?"
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:19
+#: 795a47883a6c4ba19f35b537189c06f9
+msgid "The solution is a `Breeze Controller`_."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:21
+#: 9283ed0febbb4d6387809bf2c84220e6
+msgid ""
+"As you can read in the official documentation: *“One controller to rule "
+"them all …”*."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:24
+#: c01985ad8537432fb037e1fcdfc0e46f
+msgid "Breeze Server"
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:25
+#: add47315337f4bbeaa6407abef1eda00
+msgid ""
+"In this project the `Breeze Controller`_ is `ApplicationController`_ and "
+"the `EFPersistenceManager`_ is `ApplicationPersistenceManager`_."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:27
+#: 35ad167b9cce4f6ba2d177ae806c527e
+msgid ""
+"The `ApplicationController`_ has no **Authorize** attribute, because to "
+"keep policy management with Breeze, I implemented a simple custom policy "
+"management in `ApplicationPersistenceManager`_."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:31
+#: 097e8bfa1e5a406486911abe86b41375
+msgid ""
+"First of all you can mark the `EF entities`_ with `Permissions "
+"attribute`_ which takes `CRUD Actions flag enum`_ as parameter. Examples:"
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:55
+#: 428131516b174342871e9adfddbfb64d
+msgid ""
+"In BeforeSaveEntities method of `ApplicationPersistenceManager`_ the "
+"actions of the entities to be saved are compared with the claims of "
+"permission type of the current user. If a policy is violated an "
+"EntityErrorsException is thrown."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:60
+#: 7d44188dcc1e42bebeff0bdea4c1e0a6
+msgid ""
+"To check **Actions.Read** in `ApplicationController`_ you have to access "
+"EF DbSet with **GetEntities** method of `ApplicationPersistenceManager`_."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:64
+#: 5f7c1f50e5b447d19180ed1c8d6ee800
+msgid "Breeze.Sharp (Breeze C# client)"
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:66
+#: 7dbe7f49efd245ea973228917853dba8
+msgid ""
+"To access Breeze Controller you have to use `Breeze.Sharp`_. In Blazor "
+"BlazorBoilerplate `ApiClient`_ is what you need to query "
+"`ApplicationController`_. You can inject `IApiClient`_ in every Razor "
+"page where entities are requested."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:70
+#: c3f74e4829e64630bebf6db05eb406d4
+msgid ""
+"The `Breeze.Sharp entities`_ are the so called DTO and you have create "
+"one for every entities of your Entity Framework context. In this project "
+"they are in `BlazorBoilerplate.Shared.Dto.Db`_."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:74
+#: f93aa81363f245b891eac7c3d7d5f120
+msgid "Notes"
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:76
+#: 5c8326a1f7144b9c89d2091287b6a9f7
+msgid ""
+"At the moment **Todo** is the only entity used to demonstrate "
+"Breeze.Sharp capabilities. In fact you can extend the use to all other "
+"entities, but administrative entities (users, roles, etc.) are managed by"
+" others libraries like **ASP.NET Core Identity** and **IdentityServer4**,"
+" so I preferred to keep the dedicated AdminController."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:80
+#: e2bc501b58ad4eadabc81bf24152c0a9
+msgid "If you think that is all wonderful, here it comes the **drawback**."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:82
+#: 37ffa19c99c747c492363db8ac9011a5
+msgid ""
+"The used of C# as a replacement of javascript is something very new: it "
+"is the Blazor revolution. So till now Breeze.Sharp has been used a little"
+" only on desktop application. In fact the most used Breeze client is the "
+"javascript client BreezeJS and Breeze itself is not .NET centric."
+msgstr ""
+
+#: ../../quickstarts/breeze_sharp_with_blazor.rst:86
+#: 91e2e6e131224e9a8f288a2db092c3b7
+msgid ""
+"For this reason `breeze.sharp library`_ is rarely updated, so to make "
+"BlazorBoilerplate working with Breeze I used my fork "
+"`GioviQ/breeze.sharp`_ where I fixed some issues. You can find the "
+"package in folder **nupkg** and **nuget.config** tells Visual Studio to "
+"use this folder as a package source."
+msgstr ""
+

@@ -1,0 +1,51 @@
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+@using Microsoft.AspNetCore.Components.Forms
+
+<EditForm OnValidSubmit="CreateMessage" Model="@messageDto" autocomplete="off" >
+    <div class="card-footer">
+        <div class="input-group">
+            @if (Creating)
+            {
+                <button style="width:100%;" class="btn btn-light">
+                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Creating...
+                </button>
+            }
+            else
+            {
+                <InputText id="btn btn-input" 
+                            class="form-control"
+                            placeholder="Type your message here..."
+                            aria-label="Message"
+                            @bind-Value="@messageDto.Text" />
+                <div class="input-group-append">
+                    <button id="messageCreate" 
+                            class="btn btn-warning" 
+                            ref="createButton" 
+                            type="submit">Send</button>
+                </div>
+            }
+        </div>
+    </div>
+</EditForm>
+
+@code
+{
+    MessageDto messageDto { get; set; } = new MessageDto();
+
+    [Parameter]
+    public Func<MessageDto, Task> Send { get; set; }
+
+    bool IsOpened { get; set; }
+
+    bool Creating { get; set; } = false;
+
+    async Task CreateMessage()
+    {
+        Creating = true;
+        StateHasChanged();
+        await Send(messageDto);
+        messageDto.Text = string.Empty;
+        Creating = false;
+        StateHasChanged();
+    }
+}

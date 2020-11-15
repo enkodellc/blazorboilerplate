@@ -1,0 +1,9 @@
+﻿
+
+//-> ApiResourceDto.CustomUserClaims.cs
+
+//-> IdentityResourceDto.CustomUserClaims.cs
+// Generated helper templates
+// Generated items
+// BlazorBoilerplate.Shared\Dto\Admin\ApiResourceDto.CustomUserClaims.cs
+// BlazorBoilerplate.Shared\Dto\Admin\IdentityResourceDto.CustomUserClaims.cs

@@ -1,0 +1,75 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Blazor Boilerplate Team
+# This file is distributed under the same license as the Blazor Boilerplate
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Blazor Boilerplate \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-06 17:43+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../features/multitenancy.rst:2 c5b00551f0f64697a1604808c6159cca
+msgid "MultiTenancy"
+msgstr ""
+
+#: ../../features/multitenancy.rst:4 75338bd57393466385cef4786026065a
+msgid ""
+"The implementation of multitenancy is based on `Finbuckle.MultiTenant "
+"<https://www.finbuckle.com/MultiTenant>`_."
+msgstr ""
+
+#: ../../features/multitenancy.rst:6 ee0eb3f3e8004e84b1f4e30869cfbee3
+msgid "The host strategy is used:"
+msgstr ""
+
+#: ../../features/multitenancy.rst:16 53fd03318593415c858c997209e55baf
+msgid "Setup Visual Studio and Windows for multiple bindinds"
+msgstr ""
+
+#: ../../features/multitenancy.rst:18 9e9b4de3fd0844b789be7b0232328028
+msgid ""
+"Open \\\\src\\\\.vs\\\\BlazorBoilerplate\\config\\\\\\ "
+"**applicationhost.config** and add these bindings:"
+msgstr ""
+
+#: ../../features/multitenancy.rst:34 60bdd906b6fa44568613f202abbfc196
+msgid ""
+"Run as administrator \\\\src\\\\Utils\\\\Scripts\\\\\\ "
+"**addTenantBindings.cmd** to enable access in Windows to the above "
+"bindings. It contains commands like"
+msgstr ""
+
+#: ../../features/multitenancy.rst:42 91c8f8e33dc242aba234606c5500663c
+msgid ""
+"Open as administrator C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\\\ "
+"**hosts** and add the following line:"
+msgstr ""
+
+#: ../../features/multitenancy.rst:49 eb186f5487214c3bb56888e3f127dd53
+msgid ""
+"Delete the previous database if any, because DatabaseInitializer inits "
+"TenantInfo for the two tenants."
+msgstr ""
+
+#: ../../features/multitenancy.rst:52 b041418dffe64c928959591ab0122f67
+msgid ""
+"Run debug and in Admin UI you will find a MultiTenancy section with links"
+" to the two demo tenants."
+msgstr ""
+
+#: ../../features/multitenancy.rst:55 ce328df9d2374066b12c863e5be7b853
+msgid ""
+"In the following screenshot you see the configuration with the two online"
+" demo tenants."
+msgstr ""
+

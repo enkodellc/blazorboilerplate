@@ -1,0 +1,162 @@
+﻿@page "/todo_list"
+@inject IApiClient apiClient
+@inject IMatToaster matToaster
+@inject IStringLocalizer<Global> L
+
+<h1>Todo List - CRUD</h1>
+<p>
+    This Todo List demonstrates fetching data from the server and CRUD for Blazor with <a href="http://breeze.github.io" target="_blank">Breeze</a> to make API design easy.
+    Check out the <a href="https://github.com/enkodellc/blazorboilerplate" target="_blank">repository to view the source.</a>
+    If you find this helpful please contribute or <DonateButton /> to support further development.
+    <b>Delete is Protected to Admin users only</b>.
+</p>
+
+<MatTable Class="mat-elevation-z5" Items="@todos" Striped="true" FilterByColumnName="Title" DebounceMilliseconds="150" PageSize="10">
+    <MatTableHeader>
+        <th>
+            <div style="width:135px;">
+                <MatButton Icon="playlist_add" Label="New Todo" OnClick="@((e) => OpenDialog())" Raised="true"></MatButton>
+            </div>
+        </th>
+        <th>Id</th>
+        <th>Completed</th>
+        <th style="min-width:180px;">Todo</th>
+        <th>Created on</th>
+        <th>Created by</th>
+    </MatTableHeader>
+    <MatTableRow Context="TodoRow">
+        <td>
+            <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(TodoRow.Id))"></MatIconButton>
+        </td>
+        <td>@String.Format("{0:d}", TodoRow.Id)</td>
+        <td><MatCheckbox class="filled-in chk-col-blue" TValue="bool" Value="@TodoRow.IsCompleted" ValueChanged="@((item) => Update(TodoRow))"></MatCheckbox></td>
+        <td>@TodoRow.Title</td>
+        <td>@TodoRow.CreatedOn</td>
+        <td>@TodoRow.CreatedBy?.UserName</td>
+    </MatTableRow>
+</MatTable>
+
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Create Todo</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@todo" OnValidSubmit="@NewEntity">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@todo.Title" Label="Title" Icon="title" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatCheckbox @bind-Value="@todo.IsCompleted" Label="Completed"></MatCheckbox>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { dialogIsOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@NewEntity">Create Todo</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+    <MatDialogContent>
+        @L["Are you sure you want to delete {0}?", todo.Title]
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { deleteDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@Delete">@L["Delete"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    bool deleteDialogOpen = false;
+    bool dialogIsOpen = false;
+    List<Todo> todos = new List<Todo>();
+    Todo todo { get; set; } = new Todo();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMainEntities();
+    }
+
+    async Task LoadMainEntities()
+    {
+        try
+        {
+            var result = await apiClient.GetToDos();
+            todos = new List<Todo>(result);
+            matToaster.Add(L["One item found", Plural.From("{0} items found", (int)result.InlineCount)], MatToastType.Success, L["Operation Successful"]);
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+    }
+
+    public async void Update(Todo todo)
+    {
+        try
+        {
+            todo.IsCompleted = !todo.IsCompleted;
+
+            await apiClient.SaveChanges();
+
+            matToaster.Add($"{todo.Title} updated", MatToastType.Success, L["Operation Successful"]);
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+    }
+
+    public async Task Delete()
+    {
+        try
+        {
+            apiClient.RemoveEntity(todo);
+            await apiClient.SaveChanges();
+            todos.Remove(todo);
+            matToaster.Add($"{todo.Title} deleted", MatToastType.Success, L["Operation Successful"]);
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+
+        todo = new Todo();
+
+        deleteDialogOpen = false;
+    }
+
+    public void OpenDialog()
+    {
+        dialogIsOpen = true;
+    }
+
+    public void OpenDeleteDialog(long todoId)
+    {
+        todo = todos.Where(x => x.Id == todoId).SingleOrDefault();
+        deleteDialogOpen = true;
+    }
+
+    public async Task NewEntity()
+    {
+        dialogIsOpen = false;
+
+        try
+        {
+            apiClient.AddEntity(todo);
+
+            await apiClient.SaveChanges();
+
+            await LoadMainEntities();
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+
+        todo = new Todo();
+    }
+}

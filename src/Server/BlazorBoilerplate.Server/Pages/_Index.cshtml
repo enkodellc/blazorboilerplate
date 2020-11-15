@@ -1,0 +1,85 @@
+﻿@page "/"
+@namespace BlazorBoilerplate.Server.Pages
+@using BlazorBoilerplate.Infrastructure.Server
+@using BlazorBoilerplate.Shared.Models
+@using BlazorBoilerplate.Shared.Providers
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Localization
+@using System.Globalization
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, BlazorBoilerplate.Shared
+@inject IWebHostEnvironment env
+@inject ITenantSettings<MainConfiguration> mainConfiguration
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="Enkodellc / Keith Fimreite, Giovanni Quarella">
+    <meta name="description" content="Blazor Boilerplate & Starter Kit - A real world Example ">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
+    {
+        <title>BlazorBoilerplate Starter Kit (Server)</title>
+    }
+    else
+    {
+        <title>BlazorBoilerplate Starter Kit (WASM)</title>
+    }
+    <base href="~/" />
+    <link href="manifest.json" rel="manifest" />
+</head>
+<body>
+    @{
+        if (HttpContext.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName] == null)
+            HttpContext.Response.Cookies.Append(
+               CookieRequestCultureProvider.DefaultCookieName,
+               CookieRequestCultureProvider.MakeCookieValue(
+                 new RequestCulture(
+                     CultureInfo.CurrentCulture,
+                     CultureInfo.CurrentUICulture)),
+                 new Microsoft.AspNetCore.Http.CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+    }
+
+    @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
+    {
+        @(Html.AntiForgeryToken())
+        <app>
+            <component type="ModuleProvider.RootComponentMapping.ComponentType" render-mode="Server" />
+        </app>
+    }
+    else
+    {
+        <app wasm>
+        </app>
+    }
+
+    <div id="blazor-error-ui">
+        <i class="material-icons">error</i>
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
+    {
+        <script src="_framework/blazor.server.js"></script>
+    }
+    else
+    {
+        <script src="_framework/blazor.webassembly.js"></script>
+    }
+    <!-- load remaining JS after blazor boot loads -->
+    <script src="js/interop.js"></script>
+    <!-- https://docs.microsoft.com/en-us/aspnet/core/blazor/progressive-web-app -->
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+</html>

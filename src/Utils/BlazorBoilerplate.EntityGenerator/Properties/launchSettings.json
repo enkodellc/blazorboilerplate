@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BlazorBoilerplate.EntityGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "\"$(SolutionDir)"
+    }
+  }
+}

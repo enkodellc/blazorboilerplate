@@ -1,0 +1,104 @@
+﻿@page "/admin/dblog"
+
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@layout AdminLayout
+@inject IApiClient apiClient
+@inject IMatToaster matToaster
+@inject IStringLocalizer<Global> L
+
+@using System.Linq.Expressions;
+
+<h1>Db Log Viewer</h1>
+<p>
+    Paginated viewing and fetching of system logs from the database.
+</p>
+
+@if (dbLogItems == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <div class="row" style="margin-left: 0;">
+        <RefreshTimer ElapsedEvent="@(async (_, __) => await LoadData(DebugLevel))" />
+    </div>
+    <MatSelectValue Value="DebugLevel" Items="@DebugLevels"
+                    ValueSelector=@(i => i)
+                    ValueChanged="(string i) => LoadData(i)">
+    </MatSelectValue>
+    <MatTable Items="@dbLogItems" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
+        <MatTableHeader>
+            <th>Timestamp</th>
+            <th>Logging Level</th>
+            <th>Log Message</th>
+            <th>Exception</th>
+            <th>Recorded Properties</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td><span style="font-size:small">@context.TimeStamp.ToString()</span></td>
+            <td><span style="font-size:small">@context.Level</span></td>
+            <td><span style="font-size:small">@context.Message</span></td>
+            <td><span style="font-size:small">@context.Exception?.ToString()</span></td>
+            <td>
+                @if (context.LogProperties?.Any() ?? false)
+                    {
+                    <ul>
+                        @foreach (var propertyPair in context.LogProperties)
+                            {
+                            <li style="font-size:small">@($"{propertyPair.Key}:  {propertyPair.Value}")</li>
+                            }
+                    </ul>
+                    }
+            </td>
+        </MatTableRow>
+    </MatTable>
+    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
+}
+
+@code {
+    List<DbLog> dbLogItems;
+    string[] DebugLevels = { string.Empty, "Debug", "Information", "Warning", "Error" };
+    string DebugLevel = string.Empty;
+    private int pageSize { get; set; } = 10;
+    private int pageIndex { get; set; } = 0;
+    private int totalItemsCount { get; set; } = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    async Task OnPage(MatPaginatorPageEvent e)
+    {
+        pageSize = e.PageSize;
+        pageIndex = e.PageIndex;
+
+        await LoadData(DebugLevel);
+    }
+
+    protected async Task LoadData(string debugLevel = "")
+    {
+        try
+        {
+            DebugLevel = debugLevel;
+            Expression<Func<DbLog, bool>> predicate = null;
+
+            if (debugLevel != string.Empty)
+                predicate = (i => i.Level == debugLevel);
+
+            var result = await apiClient.GetLogs(predicate, pageSize, pageIndex * pageSize);
+
+            dbLogItems = new List<DbLog>(result);
+            totalItemsCount = (int)result.InlineCount.Value;
+            matToaster.Add(L["One item found", Plural.From("{0} items found", totalItemsCount)], MatToastType.Success, L["Operation Successful"]);
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+}

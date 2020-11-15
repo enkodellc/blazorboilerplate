@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Keith Fimreite",
+  "classifications": [ "Web", "Blazor", "WebAssembly", "WebApi", "IdentityServer4" ], 
+  "name": "Blazor Boilerplate & Starter Kit",
+  "defaultName": "BlazorBoilerplate",
+  "description": "Blazor Boilerplate SPA Admin Template for Blazor Server and Client",
+  "identity": "BlazorBoilerplate.CSharp",
+  "groupIdentity": "BlazorBoilerplate",
+  "shortName": "blazorboilerplate",
+  "tags": {
+    "language": "C#",
+    "type":"project"
+  },
+  "sourceName": "BlazorBoilerplate",
+  "preferNameDirectory": true,
+  "sources": [
+    {
+      "source": "./",
+      "target": "./",
+      "exclude": [
+        ".template.config/**"
+      ]
+    }
+  ]
+}

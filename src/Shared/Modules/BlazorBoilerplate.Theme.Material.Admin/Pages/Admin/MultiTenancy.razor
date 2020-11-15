@@ -1,0 +1,272 @@
+﻿@page "/admin/multitenancy"
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@layout AdminLayout
+@inject HttpClient Http
+@inject IMatToaster matToaster
+@inject NavigationManager Navigation
+@inject IStringLocalizer<Global> L
+
+@using System.Net
+
+<h1>@L["Tenants"]</h1>
+<p>Tenants Management.</p>
+
+@if (tenants == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Class="mat-elevation-z5" Items="@tenants" Striped="true">
+        <MatTableHeader>
+            <th><MatButton Icon="add" Label=@L["New Tenant"] OnClick="@(() => OpenUpsertTenantDialog())"></MatButton></th>
+            <th>Id</th>
+            <th>Identifier</th>
+            <th>@L["Name"]</th>
+            <th>ConnectionString</th>
+        </MatTableHeader>
+        <MatTableRow Context="TenantRow">
+            <td>
+                <div style="width:155px;">
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertTenantDialog(TenantRow))"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteTenantDialog(TenantRow))" Disabled="@(TenantRow.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)"></MatIconButton>
+                </div>
+            </td>
+            <td><div style="min-width:130px;">@TenantRow.Id</div></td>
+            <td>
+                <div style="min-width:130px; white-space:nowrap;">
+                    @TenantRow.Identifier
+                    @if (TenantRow.Id != BlazorBoilerplate.Constants.Settings.DefaultTenantId)
+                        {
+                        <MatIconButton Link="@GetTenantUri(TenantRow)" Target="_blank">
+                            <MatIcon>@MatIconNames.Link</MatIcon>
+                        </MatIconButton>
+                        }
+                </div>
+            </td>
+            <td><div style="min-width:130px;">@TenantRow.Name</div></td>
+            <td><div style="min-width:130px;">@TenantRow.ConnectionString</div></td>
+        </MatTableRow>
+    </MatTable>
+}
+
+<MatDialog @bind-IsOpen="@isUpsertTenantDialogOpen">
+    <MatDialogTitle>
+        @labelUpsertDialogTitle
+    </MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@currentTenant">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentTenant.Id" Disabled="@isCurrentTenantKeyReadOnly" Label="Id" Icon="description" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentTenant.Identifier" Disabled="@(currentTenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)" Label="Identifier" Icon="description" IconTrailing="true" FullWidth="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentTenant.Name" Label=@L["Name"] Icon="description" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentTenant.ConnectionString" Label="ConnectionString" Icon="description" IconTrailing="true" FullWidth="true" TextArea="true"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@UpsertTenant">@labelUpsertDialogOkButton</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@isDeleteTenantDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure you want to delete the Tenant "@currentTenant.Name" ?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isDeleteTenantDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteTenantAsync">@L["Delete"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    int pageSize { get; set; } = 15;
+    int currentPage { get; set; } = 0;
+
+    bool isCurrentTenantKeyReadOnly = false;
+
+    List<TenantDto> tenants;
+    TenantDto currentTenant { get; set; } = new TenantDto();
+
+    #region OnInitializedAsync
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitializeTenantsListAsync();
+    }
+
+    private string GetTenantUri(TenantDto tenant)
+    {
+        var builder = new UriBuilder(Navigation.BaseUri);
+        builder.Host = tenant.Identifier;
+        return builder.Uri.ToString();
+    }
+
+    public async Task InitializeTenantsListAsync()
+    {
+        try
+        {
+            var response = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<List<TenantDto>>>($"api/Admin/Tenants?pageSize={pageSize}&pageNumber={currentPage}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                matToaster.Add(response.Message, MatToastType.Success, L["Operation Successful"]);
+                tenants = response.Result;
+            }
+            else
+                matToaster.Add(response.Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+    }
+
+    #endregion
+
+    #region OpenUpsertTenantDialog
+
+    class Selection
+    {
+        public bool IsSelected { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
+    };
+
+    bool isUpsertTenantDialogOpen = false;
+    bool isInsertOperation;
+
+    string labelUpsertDialogTitle;
+    string labelUpsertDialogOkButton;
+
+
+    void OpenUpsertTenantDialog(TenantDto tenant = null)
+    {
+        try
+        {
+            isInsertOperation = tenant == null;
+
+            currentTenant = tenant ?? new TenantDto();
+
+            // Update the UI
+            if (isInsertOperation)
+            {
+                labelUpsertDialogTitle = L["New Tenant"];
+                labelUpsertDialogOkButton = L["Create"];
+            }
+            else
+            {
+                labelUpsertDialogTitle = L["Edit {0}", currentTenant.Name];
+                labelUpsertDialogOkButton = L["Update"];
+            }
+
+            isCurrentTenantKeyReadOnly = !isInsertOperation;
+
+            if (!isInsertOperation)
+                currentTenant.SaveState();
+
+            isUpsertTenantDialogOpen = true;
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+    }
+
+    void CancelChanges()
+    {
+        currentTenant.RestoreState();
+        isUpsertTenantDialogOpen = false;
+    }
+
+    async Task UpsertTenant()
+    {
+        try
+        {
+            if (currentTenant == null)
+            {
+                matToaster.Add("Tenant Creation Error", MatToastType.Danger, "New Tenant not found");
+                return;
+            }
+
+            ApiResponseDto response;
+
+            if (isInsertOperation)
+                response = await Http.PostJsonAsync<ApiResponseDto>("api/Admin/Tenant", currentTenant);
+            else
+                response = await Http.PutJsonAsync<ApiResponseDto>("api/Admin/Tenant", currentTenant);
+
+            if (response.IsSuccessStatusCode)
+            {
+                matToaster.Add(response.Message, MatToastType.Success);
+
+                StateHasChanged();
+            }
+            else
+                matToaster.Add(response.Message, MatToastType.Danger);
+
+
+            await OnInitializedAsync();
+
+            isUpsertTenantDialogOpen = false;
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+        finally
+        {
+            currentTenant.ClearState();
+        }
+    }
+
+    #endregion
+
+    #region OpenDeleteTenantDialog
+
+    bool isDeleteTenantDialogOpen = false;
+
+    void OpenDeleteTenantDialog(TenantDto tenant)
+    {
+        currentTenant = tenant;
+        isDeleteTenantDialogOpen = true;
+    }
+
+    async Task DeleteTenantAsync()
+    {
+        try
+        {
+            var response = await Http.DeleteAsync($"api/Admin/Tenant/{currentTenant.Name}");
+            if (response.StatusCode != (HttpStatusCode)Status200OK)
+            {
+                matToaster.Add("Tenant Delete Failed", MatToastType.Danger);
+                return;
+            }
+
+            matToaster.Add("Tenant Deleted", MatToastType.Success);
+            await OnInitializedAsync();
+            isDeleteTenantDialogOpen = false;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+    }
+
+    #endregion
+}

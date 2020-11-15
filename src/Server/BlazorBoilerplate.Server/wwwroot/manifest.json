@@ -1,0 +1,15 @@
+{
+  "name": "BlazorBoilerplate & Starter Kit",
+  "short_name": "BlazorBoilerplate",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5D2E8F",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

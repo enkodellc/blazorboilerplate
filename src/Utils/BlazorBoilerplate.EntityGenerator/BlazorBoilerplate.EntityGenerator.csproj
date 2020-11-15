@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Infrastructure.Storage\BlazorBoilerplate.Infrastructure.Storage.csproj" />
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="rem del &quot;$(SolutionDir)\Shared\BlazorBoilerplate.Shared\Dto\Db\*.g.cs&quot; /q&#xD;&#xA;rem del &quot;$(SolutionDir)\Shared\BlazorBoilerplate.Shared.DataInterfaces\*.g.cs&quot; /q" />
+  </Target>
+
+</Project>

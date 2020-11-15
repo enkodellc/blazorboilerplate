@@ -1,0 +1,396 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: AdvaTel resgenEx 0.11\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"PO-Revision-Date: 2020-10-25 08:10+01:00\n"
+"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Language: de_DE\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "CreateApiResourcePermission"
+msgstr "Erstellen einer neuen API-Ressource"
+
+msgid "CreateClientPermission"
+msgstr "Erstellen eines neuen Clients"
+
+msgid "CreateRolePermission"
+msgstr "Erstellen einer neuen Rolle"
+
+msgid "CreateUserPermission"
+msgstr "Erstellen eines neuen Benutzers"
+
+msgid "DeleteApiResourcePermission"
+msgstr "Lösche alle API-Ressources"
+
+msgid "DeleteClientPermission"
+msgstr "Lösche alle Clients"
+
+msgid "DeleteRolePermission"
+msgstr "Lösche alle Rollen"
+
+msgid "DeleteUserPermission"
+msgstr "Lösche alle Benutzer"
+
+msgid "ReadApiResourcePermission"
+msgstr "Lese API Ressource-Daten"
+
+msgid "ReadClientPermission"
+msgstr "Lese Clients-Daten"
+
+msgid "ReadRolePermission"
+msgstr "Lese Rollen-Daten Berechtigungen etc.\")"
+
+msgid "ReadUserPermission"
+msgstr "Lese Benutzer-Daten (Namen, Emails, Telefonnummern, etc.)"
+
+msgid "UpdateApiResourcePermission"
+msgstr "Bearbeite existierende API-Ressourcen"
+
+msgid "UpdateClientPermission"
+msgstr "Bearbeite existierende Clients"
+
+msgid "UpdateRolePermission"
+msgstr "Bearbeite existierende Rollen"
+
+msgid "UpdateUserPermission"
+msgstr "Bearbeite existierende Benutzer"
+
+msgid "CreateIdentityResourcePermission"
+msgstr "Erstellen einer neuen Identity-Ressource"
+
+msgid "ReadIdentityResourcePermission"
+msgstr "Lese Identity-Ressource-Daten"
+
+msgid "UpdateIdentityResourcePermission"
+msgstr "Bearbeite existierende Identity-Ressourcen"
+
+msgid "DeleteIdentityResourcePermission"
+msgstr "Lösche alle Identity-Ressources"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Users"
+msgstr "Benutzer"
+
+msgid "Roles"
+msgstr "Rollen"
+
+msgid "ApiResources"
+msgstr "OpenID API Ressourcen"
+
+msgid "IdentityResources"
+msgstr "OpenID Identity Ressourcen"
+
+msgid "OpenIdClients"
+msgstr "OpenID Clients"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Loading"
+msgstr "Ladevorgang läuft..."
+
+msgid "New Client"
+msgstr "Neuer Client"
+
+msgid "New User"
+msgstr "Neuer Benutzer"
+
+msgid "New Role"
+msgstr "Neue Rolle"
+
+msgid "New API Resource"
+msgstr "Neue API Ressource"
+
+msgid "New Identity Resource"
+msgstr "Neue Identity Ressource"
+
+msgid "{0} users fetched"
+msgstr "{0} Benutzer abgerufen"
+
+msgid "Operation Successful"
+msgstr "Vorgang erfolgreich"
+
+msgid "Operation Failed"
+msgstr "Vorgang fehlgeschlagen"
+
+msgid "{0} roles fetched"
+msgstr "{0} Rollen abgerufen"
+
+msgid "{0} clients fetched"
+msgstr "{0} Clients abgerufen"
+
+msgid "{0} identity resources fetched"
+msgstr "{0} Identity-Ressourcen abgerufen"
+
+msgid "{0} API resources fetched"
+msgstr "{0} API-Ressourcen abgerufen"
+
+msgid "Create"
+msgstr "Erstellen"
+
+msgid "Update"
+msgstr "Aktualsieren"
+
+msgid "Edit {0}"
+msgstr "Bearbeiten '{0}'"
+
+msgid "Permissions list fetched"
+msgstr "Berechtigungsliste abgerufen"
+
+msgid "Role {0} created"
+msgstr "Rolle {0} erstellt"
+
+msgid "Role {0} already exists"
+msgstr "Rolle {0} existiert bereits "
+
+msgid "The role {0} doesn't exist"
+msgstr "Die Rolle {0} existiert nicht."
+
+msgid "Role {0} deleted"
+msgstr "Rolle {0} gelöscht"
+
+msgid "RoleInUseWarning"
+msgstr "Diese Rolle {0} wird noch durch einen Benutzer verwendet. Sie kann daher nicht gelöscht werden."
+
+msgid "Client {0} created"
+msgstr "Client {0} erstellt"
+
+msgid "The client {0} doesn't exist"
+msgstr "Der Client {0} existiert nicht."
+
+msgid "Client {0} updated"
+msgstr "Client {0} aktualisiert"
+
+msgid "Client {0} deleted"
+msgstr "Client {0} gelöscht"
+
+msgid "Role {0} updated"
+msgstr "Rolle {0} aktualisiert"
+
+msgid "Identity Resource {0} created"
+msgstr "Identity Ressource {0} erstellt"
+
+msgid "Identity Resource {0} updated"
+msgstr "Identity Ressource {0} aktualisiert"
+
+msgid "Identity Resource {0} deleted"
+msgstr "Identity Ressource {0} gelöscht"
+
+msgid "API Resource {0} created"
+msgstr "API Ressource {0} erstellt"
+
+msgid "API Resource {0} updated"
+msgstr "API Ressource {0} aktualisiert"
+
+msgid "API Resource {0} deleted"
+msgstr "API Ressource {0} gelöscht"
+
+msgid "The API resource {0} doesn't exist"
+msgstr "Die API-Ressource {0} existiert nicht."
+
+msgid "The Identity resource {0} doesn't exist"
+msgstr "Die Identity-Ressource {0} existiert nicht."
+
+msgid "UserName"
+msgstr "Benutzername"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Sign in with"
+msgstr "Anmelden mit"
+
+msgid "Sign up"
+msgstr "Anmelden"
+
+msgid "Keep me logged in"
+msgstr "Eingeloggt bleiben"
+
+msgid "Log in"
+msgstr "Log in"
+
+msgid "Forgot your password?"
+msgstr "Passwort vergessen?"
+
+msgid "Submit"
+msgstr "Absenden"
+
+msgid "LoginFailed"
+msgstr "Login-Versuch fehlgeschlagen"
+
+msgid "ResetPasswordFailed"
+msgstr "Versuch Passwort zurückzusetzen fehlgeschlagen"
+
+msgid "ForgotPasswordEmailSent"
+msgstr "Passwort-Vergessen Email gesendet"
+
+msgid "Confirm Email"
+msgstr "Bestätige Email"
+
+msgid "Send Confirmation"
+msgstr "Bestätigung senden"
+
+msgid "EmailVerificationFailed"
+msgstr "Email Verifizierung fehlgeschlagen"
+
+msgid "EmailVerificationSuccessful"
+msgstr "Email Verifizierung erfolgreich"
+
+msgid "ResetPasswordSuccessful"
+msgstr "Passwort erfolgreich zurückgesetzt"
+
+msgid "Password Reset"
+msgstr "Passwort zurücksetzen"
+
+msgid "Password Confirmation"
+msgstr "Passwort bestätigen"
+
+msgid "Reset Password"
+msgstr "Passwort zurücksetzen"
+
+msgid "UserCreationFailed"
+msgstr "Benutzer erstellen fehlgeschlagen"
+
+msgid "UserCreationSuccessful"
+msgstr "Benutzer erfolgreich erstellt"
+
+msgid "Registration"
+msgstr "Registrierung"
+
+msgid "PasswordConfirmationFailed"
+msgstr "Das Passwort und das Bestätigungspasswort stimmen nicht überein."
+
+msgid "ConfirmPassword"
+msgstr "Bestätige Passwort"
+
+msgid "ErrorInvalidLength"
+msgstr "{0} muss mindestens {2} und darf maximal {1} Zeichen lang sein."
+
+msgid "SpacesNotPermitted"
+msgstr "Leerzeichen sind nicht gestattet"
+
+msgid "Role"
+msgstr "Rolle"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "AlreadyRegistered"
+msgstr "Bereits registriert?"
+
+msgid "Register"
+msgstr "Registrieren"
+
+msgid "InvalidData"
+msgstr "Eingegebene Daten sind nicht gültig"
+
+msgid "The user {0} doesn't exist"
+msgstr "Der Benutzer {0} existiert nicht."
+
+msgid "The user doesn't exist"
+msgstr "Der Benutzer existiert nicht."
+
+msgid "User {0} created"
+msgstr "Benutzer {0} erstellt"
+
+msgid "Confirm Delete"
+msgstr "Bestätige Löschen"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Tenants"
+msgstr "Mandanten"
+
+msgid "Tenant"
+msgstr "Mandant"
+
+msgid "MultiTenancy"
+msgstr "Mehrmandantenfähigkeit"
+
+msgid "{0} tenants fetched"
+msgstr "{0} Mandanten abgerufen"
+
+msgid "Tenant {0} created"
+msgstr "Mandant {0} erstellt"
+
+msgid "The tenant {0} doesn't exist"
+msgstr "Der Mandant {0} existiert nicht."
+
+msgid "Tenant {0} updated"
+msgstr "Mandant {0} aktualisiert"
+
+msgid "Tenant {0} deleted"
+msgstr "Mandant {0} gelöscht"
+
+msgid "Role {0} cannot be deleted"
+msgstr "Rolle{0} kann nicht gelöscht werden"
+
+msgid "Tenant {0} cannot be deleted"
+msgstr "Mandant {0} kann nicht gelöscht werden"
+
+msgid "Role {0} cannot be edited"
+msgstr "Rolle {0} kann nicht bearbeitet werden"
+
+msgid "AuthenticationRequired"
+msgstr "Authentifizierung erforderlich"
+
+msgid "LoginRequired"
+msgstr "Bitte zuerst einloggen"
+
+msgid "Operation not allowed"
+msgstr "Vorgang nicht erlaubt"
+
+msgid "NotAuthorizedTo"
+msgstr "Sie sind nicht authorisiert diesen Vorgang durchzuführen."
+
+msgid "PleaseWait"
+msgstr "Bitte warten..."
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "EmailSettings"
+msgstr "Email Einstellungen"
+
+msgid "OutgoingEmail"
+msgstr "Ausgehende Email"
+
+msgid "IncomingEmail"
+msgstr "Eingehende Email"
+
+msgid "SmtpServer"
+msgstr "SMTP Server"
+
+msgid "PopServer"
+msgstr "POP3 Server"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Port"
+msgstr "Port"
+
+msgid "ImapServer"
+msgstr "IMAP Server"
+
+msgid "SenderEmail"
+msgstr "Absender E-Mail"
+
+msgid "SenderName"
+msgstr "Absender Name"
+
+msgid "MainSettings"
+msgstr "Einstellungen"
+

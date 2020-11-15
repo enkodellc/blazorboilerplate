@@ -1,0 +1,39 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+var entities = new [] { ("Role", "name"), ("Client", "clientId"), ("ApiResource", "name"), ("IdentityResource", "name"), ("Tenant", "id") };
+#>
+
+using System.Threading.Tasks;
+using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Shared.Dto.Admin;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BlazorBoilerplate.Infrastructure.Server
+{
+    public interface IAdminManager
+    {
+        Task<ApiResponse> GetUsers(int pageSize = 10, int pageNumber = 0);
+
+        ApiResponse GetPermissions();
+<# foreach(var entity in entities)
+{#>
+
+        #region <#=entity.Item1#>s
+        Task<ApiResponse> Get<#=entity.Item1#>sAsync(int pageSize = 0, int pageNumber = 0);
+
+        Task<ApiResponse> Get<#=entity.Item1#>Async(string <#=entity.Item2#>);
+
+        Task<ApiResponse> Create<#=entity.Item1#>Async(<#=entity.Item1#>Dto <#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto);
+
+        Task<ApiResponse> Update<#=entity.Item1#>Async([FromBody] <#=entity.Item1#>Dto <#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto);
+
+        Task<ApiResponse> Delete<#=entity.Item1#>Async(string <#=entity.Item2#>);
+        #endregion
+<#}#>
+    }
+}

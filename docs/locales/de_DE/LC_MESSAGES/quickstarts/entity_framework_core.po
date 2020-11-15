@@ -1,0 +1,173 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Blazor Boilerplate Team
+# This file is distributed under the same license as the Blazor Boilerplate
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Blazor Boilerplate \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-06 17:43+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../quickstarts/entity_framework_core.rst:2
+#: 3615ffa17225423180cf48d5761e3d06
+msgid "Entity Framework Core"
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:5
+#: 9e94b195940b4410be15889cdbb27f89
+msgid "Migrations"
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:6
+#: 23f4e79887a54a20a40f2f94bc78d966
+msgid ""
+"You can perform Entity Framework Core migrations directly from Visual "
+"Studio with `Package Manager Console <https://docs.microsoft.com/en-"
+"us/ef/core/miscellaneous/cli/powershell>`_ or with `command-line "
+"interface <https://docs.microsoft.com/en-"
+"us/ef/core/miscellaneous/cli/dotnet>`_."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:9
+#: 824723ca3b8e423a86ce7f732beed190
+msgid ""
+"Here some tips to manage migrations in Blazor Boilerplate with command-"
+"line interface (CLI)."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:11
+#: 4e12a62d49cd4e60825fc33bb1504b9a
+msgid "1. Make sure you have installed CLI; from the command line execute: ::"
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:16
+#: 6ffcf914b46d4aafa77b32e3a2f8263b
+msgid "or to update ::"
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:21
+#: ad52d8ecc3544ec8a2e366d89859f155
+msgid "Keep in mind that every DbContext has its own migrations."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:23
+#: be4f859ad81f4c54a3fb250394c9e896
+msgid ""
+"The main DbContext is **ApplicationDbContext**. "
+"**PersistedGrantDbContext** and **ConfigurationDbContext** depend on "
+"`IdentityServer4 "
+"<https://identityserver4.readthedocs.io/en/latest/quickstarts/5_entityframework.html"
+"#database-schema-changes-and-using-ef-migrations>`_; if new versions have"
+" changed one or both db contexts, you have to add migrations. The "
+"migrations are in **BlazorBoilerplate.Storage**, so you have to open your"
+" shell in this path. Then you have to specify the project where the db "
+"contexts are added to the services, because **dotnet ef** has to know how"
+" to find and instantiate them. In our case the so called startup project "
+"is **BlazorBoilerplate.Server**. So the commands are:"
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:41
+#: 984c899589f146d2957f951433801638
+msgid ""
+"Without the **--no-build** parameter, **dotnet** rebuilds the startup "
+"project, but if you have just built it with Visual Studio, it is just a "
+"waste of time. Also the **dotnet** build is not the Visual Studio build, "
+"so to avoid issue, use this procedure."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:46
+#: 3f80aef0793b492bbb412c66bd6107d8
+msgid ""
+"The name of migration, in this case *4Preview3*, is only descriptive and "
+"it does not need to be unique, because automatically the name is "
+"prepended with date time."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:50
+#: f10a929d17414bc585f399e0aa652580
+msgid ""
+"If the command is successful, **[datetime]_[migration-name].cs** is added"
+" to the solution. Also the **[db-context-name]ModelSnapshot.cs** is "
+"updated to reflect the db changes in case a new db has to be created."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:54
+#: 46c04c585b1f4a0e82b47594078e2657
+msgid ""
+"When you run the project, the migrations are applied to the database (in "
+"our case we have only one db). The db table **\\__EFMigrationsHistory** "
+"keeps track of applied migrations without information about the related "
+"db context. To get this information use the following command; for "
+"example for ConfigurationDbContext: ::"
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:63
+#: 1a712bee8c544ad1b2e77ba95020f600
+msgid ""
+"You can also update the database, without running the project with the "
+"following command: ::"
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:69
+#: 147f9744d66d40e8b5d7abdda913b3ca
+msgid ""
+"If you specify a previous migration, you can revert the db changes to "
+"that migration."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:72
+#: 583a32f63356499d98cf04c8d2096ba8
+msgid "**Warning**"
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:74
+#: a969b6beb5d0427893ee79c912feb128
+msgid ""
+"The migrations are not smart, when you have an existing db with populated"
+" tables. If migrations add keys and/or unique indexes or something else "
+"violating referential integrity, you have to manually modify "
+"**[datetime]_[migration-name].cs** for example to add some SQL to fix the"
+" errors. E.g. **migrationBuilder.Sql(\"UPDATE AspNetUserLogins SET "
+"Id=NEWID() WHERE Id=''\");** to add unique values to a new field before "
+"setting as a new primary key."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:83
+#: 08b5dac579e44e498cc13129745cf615
+msgid "Shadow Properties vs Source Generator"
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:85
+#: 913164c73dc44a16a7fa879a025d14b1
+msgid ""
+"Always keeping in mind the DRY principle, it is boring implementing audit"
+" information and adding the same properties **CreatedOn**, "
+"**ModifiedOn**, **CreatedBy** and **ModifiedBy** to all entities."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:88
+#: 956049575ea6468d92be594903d18af5
+msgid ""
+"Some articles teach you to use `Shadow Properties`_ to add audit "
+"information, but this is not the right solution, if you want expose these"
+" properties on the mapped entity types and use them e.g. in UI."
+msgstr ""
+
+#: ../../quickstarts/entity_framework_core.rst:91
+#: 9a4168dbf1834c889eb03ef05db3362d
+msgid ""
+"A solution is using `Source Generator`_. `AuditableGenerator`_ generates "
+"for every class implementing **IAuditable** the above properties. "
+"Remember all classes implementing **IAuditable** have to be **partial**."
+msgstr ""
+

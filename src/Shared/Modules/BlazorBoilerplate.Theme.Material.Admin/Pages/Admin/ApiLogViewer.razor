@@ -1,0 +1,87 @@
+﻿@page "/admin/apilog"
+
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@layout AdminLayout
+@inject IApiClient apiClient
+@inject IMatToaster matToaster
+@inject IStringLocalizer<Global> L
+
+<h1>Blazor / .NET Core Middleware Audit Log</h1>
+<p>
+    This is an example of the .NET Core Middleware that logs all API calls into the database. We filter out "api/account" calls for Login / Logout / GetUser to keep it somewhat reasonable.
+    This code can be easily modified to fit your needs. I think this is a great feature for you to track your user interactions and errors. For instance, if Bob logged in and filled out a form with
+    erroneous data, it will log the error as well as the request data. Then you could easily look through this audit log and recreate his actions. Afterwards, you could add additional validation or handle the
+    input in an appropriate manner.
+</p>
+
+@if (apiLogItems == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Items="@apiLogItems" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
+        <MatTableHeader>
+            <th><div style="width:175px;"><MatFAB Icon="refresh" OnClick="@(() => LoadData())" Raised="true" Mini="true" Style="margin-right:16px;"></MatFAB> Date / Time</div></th>
+            <th>Http Code</th>
+            <th>IP Address</th>
+            <th>Method</th>
+            <th>Response Time</th>
+            <th><div style="width:175px;">UserId</div></th>
+            <th>Path</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.RequestTime</td>
+            <td>@context.StatusCode</td>
+            <td><span style="font-size:small">@context.IPAddress</span></td>
+            <td>@context.Method</td>
+            <td>@context.ResponseMillis</td>
+            <td>@context.ApplicationUserId</td>
+            <td>@context.Path</td>
+        </MatTableRow>
+    </MatTable>
+    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
+}
+
+
+@code {
+    List<ApiLogItem> apiLogItems;
+
+    private int pageSize { get; set; } = 10;
+    private int pageIndex { get; set; } = 0;
+    private int totalItemsCount { get; set; } = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    async Task OnPage(MatPaginatorPageEvent e)
+    {
+        pageSize = e.PageSize;
+        pageIndex = e.PageIndex;
+
+        await LoadData();
+    }
+
+    protected async Task LoadData()
+    {
+        try
+        {
+            var result = await apiClient.GetApiLogs(null, pageSize, pageIndex * pageSize);
+
+            apiLogItems = new List<ApiLogItem>(result);
+            totalItemsCount = (int)result.InlineCount.Value;
+            matToaster.Add(L["One item found", Plural.From("{0} items found", totalItemsCount)], MatToastType.Success, L["Operation Successful"]);
+
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+}

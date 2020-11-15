@@ -1,0 +1,42 @@
+version: '3.5'
+
+services:
+  blazorboilerplate:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - 53415:80
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development #Consider changing this in Production
+      - Serilog__MinimumLevel__Default=Debug #Consider changing this in Production
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=blazor_boilerplate;Trusted_Connection=True;MultipleActiveResultSets=true;User=sa;Password=yourVeryStrong(!)Password;Integrated Security=false
+      - BlazorBoilerplate__UseSqlServer=true
+      - BlazorBoilerplate__ApplicationUrl=blazorboilerplate
+      - BlazorBoilerplate__IS4ApplicationUrl=blazorboilerplate
+    networks:
+      - bb
+    restart: on-failure
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    volumes:
+      - dbdata:/var/opt/mssql
+    environment:
+      - SA_PASSWORD=yourVeryStrong(!)Password
+      - ACCEPT_EULA=Y
+    ports:
+      - 1533:1433 #expose port, so can connect to it using host: 'localhost,1533' | user: sa, password: yourVeryStrong(!)Password
+    networks:
+      - bb
+
+volumes:
+  dbdata:
+
+networks:
+  bb:
+    name: bb_network
+    ipam:
+      driver: default

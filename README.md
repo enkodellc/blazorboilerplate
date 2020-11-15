@@ -1,12 +1,12 @@
-# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/src/BlazorBoilerplate.CommonUI/wwwroot/images/Blazor-Boilerplate-Title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
+# <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/docs/images/logo-title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
-Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to BOTH (WebAssembly / Core-Hosted) and Server-Side Blazor with a .NET Core 3.1 Server. The UI for this application is by Material Design provided mostly by MatBlazor.
-Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Version 0.3.0 and up will be using Identity Server 4. Version 0.6.0 and up are capable of both CSB and SSB!    
+Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to run both WebAssembly (Core-Hosted) and Server-Side Blazor with a .NET Core 3.1 Server. Just set the desidered runtime in admin section.
+The UI for this application is by Material Design provided mostly by MatBlazor.
 
 ## Repository Notes
 - Read the news below to stay up to date on the repo. We will try to keep the latest major changes on a different branch and have the more stable / tested version on the master branch.
 - Development Branch is the latest dev code for future release.
-- Fluxor - Branched from version 0.6.0 with an example with [Blazor Fluxor](https://github.com/enkodellc/blazorboilerplate/tree/blazorfluxor) *Note: not really being maintained at this time
+- Fluxor - Branched from version 0.6.0 with an example with [Blazor Fluxor](https://github.com/enkodellc/blazorboilerplate/tree/blazorfluxor) *Note: not maintained
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
@@ -20,7 +20,7 @@ Version 0.2.3 and below utilize AspNETCore Authorization / Authentication. Versi
 - This repository is community driven. It is not and never will be controlled by a corporation. It's success is dependent on people using it, reviewing it, offering suggestions and most importantly contributing. Please join the [gitter discussion](https://gitter.im/blazorboilerplate/community) 
 - To create a boilerplate with Blazor / Razor components that includes the most common functionality to start a real world application quickly.
 - Avoid many external components & libraries which can make it difficult to maintain, update, track down code, learn code and issues.
-- Minimal Javascript. Currently only using them for SignalR for the Forum and MatBlazor / Material Design. We may use components with JS in them but so far no Javascript has been written specifically for anything in the repository.
+- Minimal Javascript. Currently only using them for MatBlazor / Material Design. We may use components with JS in them but so far no Javascript has been written specifically for anything in the repository.
 
 
 # Live demo
@@ -38,14 +38,14 @@ Complete all Blazor dependencies.
 - Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef**
 
 ### How to run
-1. Install the latest .NET Core SDK **https://dotnet.microsoft.com/download/dotnet-core/3.1** and the latest **Visual Studio 2019 (v16.6)**
+1. Install the latest .NET Core SDK **https://dotnet.microsoft.com/download/dotnet-core/3.1** and the latest **Visual Studio 2019 (v16.7.6)**
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
 [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html)
 
 ## Publish on IIS - What works for me on my Windows Server 2016 & SQL Server 2014 (Enkodellc)
-1. Publish BlazorBoilerplate.Server project to your IIS website folder using CSB or SSB.
+1. Publish BlazorBoilerplate.Server project to your IIS website folder.
 2. Install your SSL. Make sure your SSL is in the **WebHosting** Certificate Store.
     - A free certificate from [Let's Encrypt](https://letsencrypt.org/) will work. 
     - For steps 2 & 3 the utility [win-acme](https://github.com/win-acme/win-acme) installs the
@@ -75,7 +75,7 @@ opportunity to learn, share, grow, and get feedback on what hopefully will be a 
   
 I have taken small solutions from other repositories and will do my best to recognize those contributions. I am very open to ideas and 
  suggestions. I am not a great developer, but I try. So please take this into consideration when using this repository. If you wish to hire me for 
- consulting or as a contractor please reach out via [email](support@blazorboilerplate.com) or [https://gitter.im/enkodellc](https://gitter.im/enkodellc). I have taken well  over 1,000 hours  to create, maintain, and answer questions. Please [donate](https://www.paypal.me/enkodellc) to support my efforts.
+ consulting or as a contractor please reach out via [email](mailto:support@blazorboilerplate.com) or [https://gitter.im/enkodellc](https://gitter.im/enkodellc). I have taken well  over 1,000 hours  to create, maintain, and answer questions. Please [donate](https://www.paypal.me/enkodellc) to support my efforts.
 
 ## Completed 
  - Basic Login / User Creation
@@ -97,13 +97,7 @@ I have taken small solutions from other repositories and will do my best to reco
  - Dual Mode (CSB / SSB) - Client Side / Webassembly & Sever Side. Thanks [MarkStega](https://github.com/MarkStega)
  - Error Log to Database with Serilog & SQL. Thanks [np-at](https://github.com/np-at)
  
-## Road map / Possible future features in no particular order
-- Multi-Tenant - This is most likely the next major revision 0.9.0 - *restructure* branch. Looks like it might be in place by end of April.
-- Caching / speed improvement? Review possible optimizations for Blazor to make sure BB is running as efficient as can be.
-- Create a Nuget Packages Template. There has been several request for BB to be broken into packages. I unfortunately do not have the resources to this at this time. There is discussions with some of the contributors to do a professional version.
-- Possibly switch from Entity Framework Core to Dapper. So far EF is not my cup of Tea. I think dapper will be stronger and faster just my opinion. I like SQL code, less automagic code with more control. Just my style.
-- Localization - Looking for any contributors who have some expertise in this. Previw 4 is tentative for .resx support.
-- Branch for [PWA  (Progressive Web App)](https://devblogs.microsoft.com/aspnet/blazor-webassembly-3-2-0-preview-2-release-now-available/) for testing & possible implementation 
+## [Road map](https://github.com/enkodellc/blazorboilerplate/projects/1)
 
 ## License
 This project is licensed under the terms of the [MIT license](LICENSE).
@@ -137,12 +131,13 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ## News
 
-### 0.9.0 Under Development (Development branch Major Project Refactor - Thanks GioviQ)
+### 2.0.0 Development is now Master  (Major Project Refactor - Thanks GioviQ) ([Documentation](https://blazor-boilerplate.readthedocs.io/en/latest/))
 - Localization Support. Thanks [GioviQ](https://github.com/GioviQ) 
 - DotNet Template Solution. Thanks [GioviQ](https://github.com/GioviQ) 
-- Update to Identity Server. Thanks [GioviQ](https://github.com/GioviQ) 
+- Update to Identity Server 4.1.0,. Thanks [GioviQ](https://github.com/GioviQ) 
 - [Demo for Development Branch - SSB](https://blazor-server.quarella.net/)
 - [Demo for Development Branch - CSB](https://blazor-wasm.quarella.net/)
+- Nuget Package Updates / WebAssembly 3.2.1
 
 ### 1.0.0 - Master branch
 - Nuget Package updates Blazor 3.2 - Production!
@@ -188,7 +183,7 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Admin Roles / Permissions Management. Thanks [vd3d](https://github.com/vd3d)
 - Fix Login EditForm / Double submit of Login. Thanks [MarkStega](https://github.com/MarkStega)
 - UserProfile Fixes. Thanks [mobinseven](https://github.com/mobinseven)
-- Chrome Cookie updates. Thanks [oneparameter](oneparameter)
+- Chrome Cookie updates. Thanks [oneparameter](https://github.com/oneparameter)
     
 ### 0.4.0
  - Docker Support. Thanks [npraskins](https://github.com/npraskins) & [acid12](https://github.com/acid12)
