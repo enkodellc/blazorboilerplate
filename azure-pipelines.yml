@@ -17,7 +17,7 @@ steps:
   displayName: 'Install SDK'
   inputs:
     packageType: sdk
-    version: '3.1.x'
+    version: '5.0.x'
     includePreviewVersions: true
 
 # - task: NuGetToolInstaller@0
