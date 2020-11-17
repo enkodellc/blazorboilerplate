@@ -7,6 +7,7 @@ using BlazorBoilerplate.Shared.Models.Localization;
 using BlazorBoilerplate.Storage;
 using Breeze.AspNetCore;
 using Breeze.Persistence;
+using Breeze.Persistence.EFCore;
 using Breeze.Sharp.Core;
 using IdentityServer4.AccessTokenValidation;
 using Karambolo.PO;
@@ -17,6 +18,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -114,7 +117,16 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpPost]
         public SaveResult SaveChanges([FromBody] JObject saveBundle)
         {
-            return persistenceManager.SaveChanges(saveBundle);
+            try
+            {
+                return persistenceManager.SaveChanges(saveBundle);
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<EFEntityError>();
+                errors.Add(new EFEntityError(null, null, ex.GetBaseException().Message, null));
+                throw new EntityErrorsException(errors);
+            }
         }
 
         [HttpGet]
