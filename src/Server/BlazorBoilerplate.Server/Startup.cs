@@ -537,8 +537,8 @@ namespace BlazorBoilerplate.Server
             // {
             services.AddScoped(s =>
             {
-                    // creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
-                    var navigationManager = s.GetRequiredService<NavigationManager>();
+                // creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
+                var navigationManager = s.GetRequiredService<NavigationManager>();
                 var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
                 var cookies = httpContextAccessor.HttpContext.Request.Cookies;
                 var client = new HttpClient(new HttpClientHandler { UseCookies = false });
