@@ -53,7 +53,7 @@ else
                     </td>
                     <td><b>@row.Culture</b></td>
                     <td>
-                        <MatTextField @bind-Value="@row.Translation" TextArea="true" FullWidth="true" Required="true"></MatTextField>
+                        <MatTextField @bind-Value="@row.Translation" TextArea="true" FullWidth="true" Required="true" Style="resize: both"></MatTextField>
                     </td>
                     <td>
                         <div>
@@ -69,7 +69,7 @@ else
                     <fieldset>
                         <div class="form-group">
                             <MatSelectItem @bind-Value="@newLocalizationRecord.Culture" Items="@LocalizationCultures" Label=@L["Culture"]></MatSelectItem>
-                            <MatTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" TextArea="true"></MatTextField>
+                            <MatTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" TextArea="true" Style="resize: both"></MatTextField>
                             <MatButton Type="submit" Raised="true">@L["Add"]</MatButton>
                         </div>
                     </fieldset>
@@ -129,7 +129,7 @@ else
                     <MatTextField @bind-Value="@newLocalizationRecord.Culture" Label=@L["Culture"] Icon="public" IconTrailing="true" FullWidth="true" Required="true" Disabled="true"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" Required="true" TextArea="true"></MatTextField>
+                    <MatTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" Required="true" TextArea="true" Style="resize: both"></MatTextField>
                 </div>
             </fieldset>
         </EditForm>
@@ -159,7 +159,7 @@ else
                     <MatTextField @bind-Value="@row.Index" TextArea="true" FullWidth="true" Required="true"></MatTextField>
                 </td>
                 <td>
-                    <MatTextField @bind-Value="@row.Translation" TextArea="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@row.Translation" TextArea="true" FullWidth="true" Required="true" Style="resize: both"></MatTextField>
                 </td>
             </MatTableRow>
         </MatTable>
@@ -170,7 +170,7 @@ else
                 <fieldset>
                     <div class="form-group">
                         <MatTextField @bind-Value="@newPlural.Index" Label=@L["Index"] FullWidth="true"></MatTextField>
-                        <MatTextField @bind-Value="@newPlural.Translation" Label=@L["Translation"] FullWidth="true" TextArea="true"></MatTextField>
+                        <MatTextField @bind-Value="@newPlural.Translation" Label=@L["Translation"] FullWidth="true" TextArea="true" Style="resize: both"></MatTextField>
                         <MatButton Type="submit" Raised="true">@L["Add"]</MatButton>
                     </div>
                 </fieldset>
