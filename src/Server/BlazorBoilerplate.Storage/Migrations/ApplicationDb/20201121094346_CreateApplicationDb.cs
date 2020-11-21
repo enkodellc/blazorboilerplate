@@ -249,7 +249,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     Title = table.Column<string>(maxLength: 128, nullable: false),
                     IsCompleted = table.Column<bool>(nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: true),
                     CreatedById = table.Column<Guid>(nullable: true),
                     ModifiedById = table.Column<Guid>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false)

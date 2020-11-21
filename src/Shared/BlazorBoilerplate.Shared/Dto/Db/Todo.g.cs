@@ -35,9 +35,9 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             set { SetValue(value); }
         }
 
-        public DateTime ModifiedOn
+        public DateTime? ModifiedOn
         {
-            get { return GetValue<DateTime>(); }
+            get { return GetValue<DateTime?>(); }
             set { SetValue(value); }
         }
 

@@ -15,7 +15,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .HasAnnotation("ProductVersion", "3.1.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -314,7 +314,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     b.Property<Guid?>("ModifiedById")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2(7)");
 
                     b.Property<string>("Title")
