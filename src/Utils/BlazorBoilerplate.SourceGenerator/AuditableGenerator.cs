@@ -44,7 +44,7 @@ namespace {namespaceName}
         public DateTime CreatedOn {{ get; set; }}
 
         [Column(TypeName = ""datetime2(7)"")]
-        public DateTime ModifiedOn {{ get; set; }}
+        public DateTime? ModifiedOn {{ get; set; }}
 
         public ApplicationUser CreatedBy {{ get; set; }}
 

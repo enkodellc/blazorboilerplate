@@ -1,0 +1,16 @@
+﻿@inject IJSRuntime JSRuntime
+@code {
+    [Parameter]
+    public Func<ElementReference> Control { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Control is null)
+            throw new ArgumentNullException(nameof(Control));
+
+        if (firstRender)
+        {
+            await Control().FocusAsync();
+        }
+    }
+}

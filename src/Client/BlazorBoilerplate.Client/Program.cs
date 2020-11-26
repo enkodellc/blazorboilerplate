@@ -50,11 +50,11 @@ namespace BlazorBoilerplate.Client
                 // config.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  Only works on the server end
             });
 
-            builder.Services.AddTransient<ILocalizationApiClient, LocalizationApiClient>();
+            builder.Services.AddScoped<ILocalizationApiClient, LocalizationApiClient>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
             builder.Services.AddScoped<IAccountApiClient, AccountApiClient>();
             builder.Services.AddScoped<AppState>();
-            builder.Services.AddTransient<IApiClient, ApiClient>();
+            builder.Services.AddScoped<IApiClient, ApiClient>();
 
             foreach (var module in ModuleProvider.Modules)
                 module.ConfigureWebAssemblyServices(builder.Services);

@@ -259,10 +259,22 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
             if (currentLocalizationRecord.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture
                 && newPlural.Index == 1)
-                currentLocalizationRecord.MsgIdPlural = newPlural.Translation;
+                foreach (var record in localizationRecords)
+                    record.MsgIdPlural = newPlural.Translation;
 
             if (await SaveChanges())
                 newPlural = new PluralTranslation();
+        }
+
+        protected async Task<bool> SavePluralChanges()
+        {
+            var msgIdPlural = localizationRecords.Single(i => i.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture)
+                .PluralTranslations.Single(i => i.Index == 1).Translation;
+
+            foreach (var record in localizationRecords)
+                record.MsgIdPlural = msgIdPlural;
+
+            return await SaveChanges();
         }
 
         protected async Task SaveNewLocalizationRecord()

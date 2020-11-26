@@ -1,6 +1,6 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/docs/images/logo-title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
-Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to run both WebAssembly (Core-Hosted) and Server-Side Blazor with a .NET Core 3.1 Server. Just set the desidered runtime in admin section.
+Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to run both WebAssembly (Core-Hosted) and Server-Side Blazor with a .NET 5.0 Server. Just set the desidered runtime in admin section.
 The UI for this application is by Material Design provided mostly by MatBlazor.
 
 ## Repository Notes
@@ -33,12 +33,12 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- The latest [.Net Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- The latest [.Net 5.0 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 - Install the Latest Visual Studio 2019 with the ASP.NET and web development workload selected.
 - Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef**
 
 ### How to run
-1. Install the latest .NET Core SDK **https://dotnet.microsoft.com/download/dotnet-core/3.1** and the latest **Visual Studio 2019 (v16.7.6)**
+1. Install the latest **Visual Studio 2019 (v16.8 at least)**
 2. Clone or download.
 3. Open the solution in Visual Studio and press F5.
 4. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:

@@ -16,7 +16,7 @@ namespace BlazorBoilerplate.Shared.DataInterfaces
 
         DateTime CreatedOn { get; set; }
 
-        DateTime ModifiedOn { get; set; }
+        DateTime? ModifiedOn { get; set; }
 
         IApplicationUser CreatedBy { get; set; }
 

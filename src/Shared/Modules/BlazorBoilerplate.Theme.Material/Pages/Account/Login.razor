@@ -38,7 +38,8 @@
                         <ValidationSummary />
                         <fieldset>
                             <div class="form-group">
-                                <MatTextField id="userName" @bind-Value="@loginViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MatTextField>
+                                <MatTextField @ref="UserNameInput" @bind-Value="@loginViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MatTextField>
+                                <AutoFocus Control=@(() => UserNameInput.InputRef) />
                             </div>
                             <div class="form-group">
                                 <MatTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="2"></MatTextField>
@@ -128,6 +129,8 @@
 </AuthorizeView>
 @code {
 
+    private MatTextField<string> UserNameInput;
+
     string navigateTo = null;
     IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
     bool forgotPasswordToggle = false;
@@ -185,14 +188,6 @@
             if (user.Identity.IsAuthenticated && navigateTo != null)
                 navigationManager.NavigateTo(navigateTo);
         }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && !RedirectInProgress)
-            await js.InvokeVoidAsync("interop.SetFocus", "userName");
-
-        await base.OnAfterRenderAsync(firstRender);
     }
 
     void SignInWith(ExternalProvider provider)

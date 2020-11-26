@@ -49,15 +49,27 @@ namespace BlazorBoilerplate.Server.Aop
 
         private ApiResponse GetApiResponseFor(string method, Exception ex)
         {
+            int code = Status500InternalServerError;
             string msg = ex.GetBaseException().StackTrace;
+
             var isDomainException = ex is DomainException;
+            var isUnauthorizedAccessException = ex is UnauthorizedAccessException;
 
             if (isDomainException)
+            {
+                code = Status400BadRequest;
                 msg = ((DomainException)ex).Description;
+            }
+
+            if (isUnauthorizedAccessException)
+            {
+                code = Status401Unauthorized;
+                msg = ex.Message;
+            }
 
             _logger.LogError($"{method}: {msg}");
 
-            return new ApiResponse(Status500InternalServerError, isDomainException ? msg : L["Operation Failed"]);
+            return new ApiResponse(code, (isDomainException || isUnauthorizedAccessException) ? msg : L["Operation Failed"]);
         }
 
         private ApiResponse WrapSync(Func<object[], object> target, object[] args, string name)
