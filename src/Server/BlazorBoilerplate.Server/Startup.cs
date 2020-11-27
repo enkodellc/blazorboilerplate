@@ -199,13 +199,13 @@ namespace BlazorBoilerplate.Server
                 // pass the resulting certificate to Identity Server
                 if (cert != null)
                 {
-                    identityServerBuilder.AddSigningCredential(cert);
-                    Log.Logger.Information($"Added certificate {cert.Subject} to Identity Server");
+                   //aso identityServerBuilder.AddSigningCredential(cert);
+                   //aso Log.Logger.Information($"Added certificate {cert.Subject} to Identity Server");
                 }
                 else
                 {
-                    Log.Logger.Debug("Trying to use WebHosting Certificate for Identity Server");
-                    identityServerBuilder.AddWebHostingCertificate();
+                    //aso Log.Logger.Debug("Trying to use WebHosting Certificate for Identity Server");
+                    //aso identityServerBuilder.AddWebHostingCertificate();
                 }
             }
 

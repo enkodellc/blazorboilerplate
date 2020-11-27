@@ -1,0 +1,2362 @@
+﻿@page "/cogmodel"
+@using System
+@using System.Threading
+@using System.Threading.Tasks
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject IAuthorizationService AuthorizationService
+@inject AuthenticationStateProvider authStateProvider
+@inject IMatToaster matToaster
+@inject AppState appState
+
+@inject IJSRuntime JSRuntime
+@using System.Diagnostics
+@inject NavigationManager navigationManager
+
+@code {
+
+    public async Task LongRunningOperationAsync(int ModelCount, int TrialCount, int CycleCount) // assume we return an int from this long running operation
+    {
+
+        //double[,] ModelsICPloty = new double[ModelNumber, 2];
+
+        //for (int i = 0; i < ModelCount; i++)
+        // {
+        //     pointsInpModelsCPloty[i] = new Point { X = i, Y = 0 };
+        //    pointsInpModelsIPloty[i] = new Point { X = i, Y = 0 };
+        //    pointsInpModelsI_CPloty[i] = new Point { X = i, Y = 0 };
+        // }
+
+        //////////////////////////////////////m===================1==========>.....
+
+
+        for (m = 0; m < ModelCount; m++)
+        {
+
+
+            for (i = 0; i <= 2; i++)
+            {
+
+                // i.
+                // outbLX(i).
+                outbLX[i] = 0;
+                outbLY[i] = 0;
+
+                // i.
+                // outbRX(i).
+                outbRX[i] = 0;
+                outbRY[i] = 0;
+
+                // i.
+                // taskX(i).
+                taskX[i] = 0;
+                taskY[i] = 0;
+
+                // i.
+                // outaX(i).
+                outaX[i] = 0;
+                outaY[i] = 0;
+
+            }
+
+
+            for (i = 0; i <= 1; i++)
+            {
+                // i.
+                // gainRate(i).
+                gainRate[i] = 1;
+                // i.
+                // gainRate1(i).
+                gainRate1[i] = 1;
+                // i.
+                // gainRate2(i).
+                gainRate2[i] = 1;
+
+                // gainRate(2).
+                gainRate[2] = 1;
+
+            }
+
+
+            if (1 == 2) /////////// for continue model or add initial noise
+            {
+
+                // i.
+                // outbLX().
+                // outbLX(i).
+                outbLX[i] = outbLX[i];// + samplesP1[i];
+                                      // i.
+                                      // outbLY(i).
+                outbLY[i] = 0;
+
+                // i.
+                // outbRX().
+                // outbRX(i).
+                outbRX[i] = outbRX[i];// + samplesP1[i];
+                                      // i.
+                                      // outbRY(i).
+                outbRY[i] = 0;
+
+                //taskX(i) = 0#
+                //taskY(i) = 0#
+                //outaX(i) = outaX(i) + GausDeviation(1 * Val(TextNoiseRI.Text)) 'outaX(i) * Val(TextNoiseRI.Text) '
+                //outaY(i) = 0#
+
+                // outbLX().
+                // outbLX(2).
+                outbLX[2] = outbLX[2];// + samplesP1[2];
+                                      // outbLY(2).
+                outbLY[2] = 0;
+
+                // outbRX().
+                // outbRX(2).
+                outbRX[2] = outbRX[2];// + samplesP1[2];
+                                      // outbRY(2).
+                outbRY[2] = 0;
+
+                ///'''''''''''''''''''''''''''''''''''''''''
+
+            }
+
+            // energyHop.
+
+            for (i = 0; i <= 1; i++)
+            {
+                // i.
+                // upd(i).
+                upd[i] = 0;
+                for (j = 0; j <= 1; j++)
+                {
+                    // j.
+                    // i.
+                    // j.
+                    // i.
+                    // ar5(i, j).
+                    if (i != j)
+                    {
+                        ar5[i, j] = -1;// double.Parse(inhT.Text);
+                    }
+                    else
+                    {
+                        // j.
+                        // i.
+                        // ar5(i, j).
+                        ar5[i, j] = 0;
+                    }
+                }
+            }
+
+            //asoarr
+
+            //double[] inpaArray = { 1, 0, 1 };
+
+            // double[] inpbArray = { 1, 0, 1 };
+
+            // energyHop.
+            energyHop = 0;
+            onceTime1 = 0;
+
+            rt = 0;
+            rtI = 1;
+            rtC = 1;
+            rtMeanI = 0;
+            rtMeanC = 0;
+
+            rtSumC = 0;
+            rtSumI = 0;
+
+            double landaP = 0.95;//double.Parse(TextLandaP.Text); //0.95
+                                 // alfaP.
+            double alfaP = 1; //0.8
+
+            double landaM = 0.74; //double.Parse(TextLandaM.Text); //0.74
+            double landaR = 0.925;// double.Parse(TextLandaR.Text); //0.925
+                                  // alfaR.
+            double alfaR = 1.0D; //0.2
+            double landaT = .75;//double.Parse(TextLandaT.Text);//.75
+
+            ///''''''cowan
+            // v.
+            double v = .3;// double.Parse(TextV0.Text);//.3
+                          // u.
+            double u = 0;
+            // vACH.
+            double vACH = 0;
+            // uACH.
+            double uACH = 0;
+            // hv.
+            double hv = 0;
+            // hvACH.
+            double hvACH = 0;
+            // thv.
+            double thv = .98;// double.Parse(TextThv.Text); //0.98
+
+            //hv = thv * hv + (1# - thv) * v
+
+            // tv.
+            double tv = .92;// double.Parse(TextTv.Text); //0.92
+                            // tu.
+            double tu = .996;// double.Parse(TextTu.Text); //0.996
+
+            // a1.
+            double a1 = 2;
+            // a2.
+            double a2 = 3;
+
+            // t1.
+            double t1 = 1.25;
+            // t2.
+            double t2 = 1.5;
+
+            // b.
+            double b = 4;
+            //n = (short) 1;
+            // For n = 1 To CShort(Text1TrialsNumber.Text)
+
+            // neLCT.
+            double neLCT = 0;
+            // neLCP.
+            double neLCP = 0;
+            double neLC = 0;
+            double Conf = 0;
+
+            // g1.
+            double g1 = 3;// double.Parse(TextGain1.Text);//3
+                          // g2.
+                          //double g2 = 1;// double.Parse(TextGain2.Text);//1
+
+            // cLC.
+            double cLC = CLC;// double.Parse(TextcLCL.Text);//4.52
+
+            ///TextGain2.Text = 3
+
+            // g1.
+            // g.
+            double g = g1;
+
+            inp[0] = 0;
+            // inp(1).
+            inp[1] = 0;
+
+            g = 3;
+
+            int iHop;
+
+            //future
+
+            //ic = 1;
+            double neLCACHp, neLCACHt, neLCACH;
+
+            Random random = new Random(DateTime.Now.Millisecond);
+
+            //if (ModelNumber > 0)
+            // {
+            durMaskTargetISI = m * durM_T_ISIcoef;
+
+            //durMask += m * 15;
+            // }
+
+            // if (!(chartTrial.Data.ElementAt(1) is Scatter scatterTrial1)) return;
+
+            trialsRTlist.Clear();
+
+
+            TrialsStr1 = "";
+
+            //aso///////////////////////////////////>>>>n>>>>>>2>>>>>>>>>>>>>>>>>>>>>
+            for (n = 0; n < TrialCount; n++)
+            {
+
+                ConfTrial = 0;
+                onceTime1 = 0;
+
+                Random randomIC = new Random(DateTime.Now.Millisecond);
+
+                //if (Val1 == true)
+                //{
+                //    inpaArray[0] = 1;
+                //    inpbArray[0] = 1;
+                //    inpaArray[1] = 0;
+                //    inpbArray[1] = 0;
+                //    ic = 1;
+
+                //}
+                //else
+                //{
+                //    inpaArray[0] = 1;
+                //    inpbArray[0] = 0;
+                //    inpaArray[1] = 0;
+                //    inpbArray[1] = 1;
+                //    ic = 2;
+
+                // }
+
+                // if (TrialNumber > 1)
+                // {
+
+                int num = randomIC.Next();
+                //MessageBox.Show((num % 2).ToString());
+                if (num % 2 == 0)
+                {
+                    inpaArray[0] = inpamax;
+                    inpbArray[0] = inpbmax;
+                    inpaArray[1] = inpamin;
+                    inpbArray[1] = inpbmin;
+                    ic = 1;
+                }
+                else
+                {
+                    inpaArray[0] = inpamax;
+                    inpbArray[0] = inpbmin;
+                    inpaArray[1] = inpamin;
+                    inpbArray[1] = inpbmax;
+                    ic = 2;
+                }
+
+                //}
+
+                inpaArray[2] = inpamask;
+                inpbArray[2] = inpbmask;
+
+
+                //do if (n > 1)//double.Parse(Text1TrialsNumber.Text) == 1)
+                //do {
+                //cyclePrime.Text = "1200";// ((short)short.Parse(cyclePrime.Text) - 500).ToString();
+                //durFix.Text = "500";//((short)short.Parse(durFix.Text) - 500).ToString();
+                //do }
+
+
+                //await chartModel.Clear();
+                //await InvokeAsync(StateHasChanged);
+                // await Task.Delay(1); // 1 second delay
+
+                singleTrialList.Clear();
+
+
+                ////////////////////////////////////---c------3----------....>>>>>>>
+
+                for (c = 0; c < CycleCount; c++)
+                {
+                    // await InvokeAsync(StateHasChanged);
+                    // await Task.Delay(1); // 1 second delay
+
+
+                    // await Task.Delay(1);
+                    // c.
+                    if (c > durFix && c <= durFix + durPrime)
+                    {
+
+                        for (i = 0; i <= 1; i++)
+                        {
+                            // i.
+                            // inpaX(i).
+                            inpaX[i] = inpaArray[i];
+
+                        }
+
+                    }
+                    else
+                    {
+
+                        for (i = 0; i <= 1; i++)
+                        {
+
+                            inpaX[i] = 0;
+                        }
+
+                    }
+
+                    ///////////////////////////////////////preMaskISI
+                    ///
+
+
+                    if (c > durFix + durPrime + durPrimeMaskISI && c <= durFix + durPrime + durPrimeMaskISI + durMask)
+                    {
+                        // inpaX(2).
+                        inpaX[2] = inpaArray[2];
+                        // inpbX(2).
+                        inpbX[2] = inpbArray[2];
+
+                    }
+
+                    else
+                    {
+                        // inpaX(2).
+                        inpaX[2] = 0;
+                        // inpbX(2).
+                        inpbX[2] = 0;
+
+                    }
+
+                    // preISI.
+                    if (c > durFix + durPrime + durPrimeMaskISI + durMask + durMaskTargetISI && c <= durFix + durPrime + durPrimeMaskISI + durMask + durMaskTargetISI + durTarget)
+                    {
+
+                        for (i = 0; i <= 1; i++)
+                        {
+                            // i.
+                            // inpbX(i).
+                            inpbX[i] = inpbArray[i];
+
+                        }
+
+                    }
+
+                    else
+                    {
+                        for (i = 0; i <= 1; i++)
+                        {
+                            inpbX[i] = 0;
+                        }
+                    }
+
+                    ///'new
+                    //For i = 0 To 1
+                    //  If Val(TextThreshACH.Text) > 0 And (taskX(0) > Val(TextThreshACH.Text) Or taskX(1) > Val(TextThreshACH.Text)) Then gainRate1(i) = Val(Abs(TextRatioIC.Text))
+                    //If c > Val(durFix) + Val(durPrime) Then gainRate1(i) = 1
+                    //Next
+                    ///'''''''''''''tmpVal(TextRatioTask.Text)
+                    //newer
+
+                    neLCACHp = 0;
+                    if (ThreshACH > 0)
+                    {
+                        // neLCACHp.
+                        neLCACHp = 0;
+                        for (i = 0; i <= 1; i++)
+                        {
+                            //If (c > Val(durFix) And c <= Val(durFix) + Val(TextThreshACH.Text)) Then gainRate1(i) = Val(Abs(TextRatioIC.Text)) Else gainRate1(i) = 1
+                            // c.
+                            if (c > durFix && c <= durFix + ThreshACH)
+                            {
+                                // i.
+                                // vACH.
+                                // gainRate1(i).
+                                gainRate1[i] = Math.Abs(ACH) * vACH;
+                                // neLCACHp.
+                                neLCACHp = 1;
+                            }
+                            else
+                            {
+                                // i.
+                                // gainRate1(i).
+                                gainRate1[i] = 1;
+                                // neLCACHp.
+                                neLCACHp = 0;
+                            }
+                            // i.
+                            // gainRate1(i).
+                            // i.
+                            // gainRate1(i).
+                            if (gainRate1[i] < 1)
+                            {
+                                gainRate1[i] = 1;
+                            }
+                        }
+                    }
+
+                    ///''''''''''''''''''''''''''''''''''''''''''''''''newest
+
+                    ///'''''''''''''tmpVal(TextRatioTask.Text)      preISI + Val(durFix.Text) + Val(durPrime.Text) + Val(durMask.Text) + Val(durTarget.Text)
+                    //newer
+
+                    neLCACHt = 0;
+                    if (ACH > 0)
+                    {
+                        // neLCACHt.
+                        neLCACHt = 0;
+
+                        for (i = 0; i <= 1; i++)
+                        {
+                            // preISI.
+                            if (c > durFix + durPrime + durMask + durMaskTargetISI && c <= durFix + durPrime + durMask + durMaskTargetISI + ACH)
+                            {
+                                // i.
+                                // vACH.
+                                // gainRate2(i).
+                                gainRate2[i] = Math.Abs(ACH) * vACH;
+                                // neLCACHt.
+                                neLCACHt = 1;
+                            }
+                            else
+                            {
+                                // i.
+                                // gainRate2(i).
+                                gainRate2[i] = 1;
+                                // neLCACHt.
+                                neLCACHt = 0;
+                            }
+                            // i.
+                            // gainRate2(i).
+                            // i.
+                            // gainRate2(i).
+                            if (gainRate2[i] < 1)
+                            {
+                                gainRate2[i] = 1;
+                            }
+                        }
+                    }
+
+                    ///'''''''''''''''''''''''''''''''''''''''*.6  *.4
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+                    ///'''''''''''''''''''''''''''''''''''''''
+
+                    // noiseLMI.
+                    // outbLX(1).
+                    // outbLX(0).
+                    // inpaX(1).
+                    // inpaX(0).
+                    // inpaX(2).
+                    // outbLX(2).
+                    // outbLY(2).
+
+                    // Random rnd1 = new Random();
+                    double samplesLMI1 = Draw(noiseMasks);//(rnd1.NextDouble() - .5) / 10;
+
+                    //public static double ff25(double xme, double μ = 0.0, double σ = 0.25)
+                    // {
+                    //   return 1d / Math.Sqrt(2 * 0.25 * 0.25 * Math.PI) * Math.Exp(-((xme - 0.0) * (xme - 0.0) / (2 * 0.25 * 0.25));
+                    // }
+
+                    outbLY[2] = BiasMasks + outbLX[2] * SelfMasks + inpaX[2] * ConMasks + inpaX[0] * CrossPri + inpaX[1] * CrossPri + outbLX[0] * InhMasks + outbLX[1] * InhMasks + samplesLMI1; //- outbLY(i) '2L gets in from 1 only (abs..)
+
+                    // noiseRMI.
+                    // outbRX(1).
+                    // outbRX(0).
+                    // inpbX(1).
+                    // inpbX(0).
+                    // inpbX(2).
+                    // outbRX(2).
+                    // outbRY(2).\
+
+                    // double samplesRMI1 = Draw25();//(rnd1.NextDouble() - .5) / 10;
+
+                    double samplesRMI1 = Draw(noiseMasks);//(rnd1.NextDouble() - .5) / 10;
+
+
+                    outbRY[2] = BiasMasks + outbRX[2] * SelfMasks + inpbX[2] * ConMasks + inpbX[0] * CrossTar + inpbX[1] * CrossTar + outbRX[0] * InhMasks + outbRX[1] * InhMasks + samplesRMI1; //- outbLY(i) '2L gets in from 1 only (abs..)
+
+                    for (i = 0; i <= 1; i++)
+                    {
+                        // net         self         inp1            con1                       inh/compete
+                        // i.
+                        // noiseP.
+                        // outbLX(2).
+                        // outbLX( + 2).
+                        // inpaX(i).
+                        // inpaX( + 2).
+                        // outbLX(i).
+                        // outbLY(i).
+
+                        //double samplesP1 = Draw2();//(rnd1.NextDouble() - .5) / 10;
+
+                        double samplesP1 = Draw(noisePTR);//(rnd1.NextDouble() - .5) / 10;
+
+
+                        outbLY[i] = biasPL + outbLX[i] * SelfPri + inpaX[((short)(~i)) + 2] * CrossPri + outbLX[2] * CrossLMasks + inpaX[i] * conPrime + outbLX[((short)(~i)) + 2] * inhPri + outbLX[2] * InhMasks + samplesP1; //- outbLY(i) '2L gets in from 1 only (abs..)
+                                                                                                                                                                                                                                // outbRX(i).
+                                                                                                                                                                                                                                // outbRY(i).
+                        outbRY[i] = biasPR + outbRX[i] * SelfTar + inpbX[((short)(~i)) + 2] * CrossTar + outbRX[2] * CrossLMasks + inpbX[i] * conTarget + outbRX[((short)(~i)) + 2] * inhTar + outbRX[2] * InhMasks + samplesP1; // - outbRY(i)  '2R gets in from 1 only (abs..)
+                                                                                                                                                                                                                                 //aso rp?  }
+                    }
+
+                    for (i = 0; i <= 1; i++)
+                    {
+                        // i.
+                        // gainRate1(i).
+                        // gainRate(i).
+                        // alfaP.
+                        // outbLY().
+                        // landaP.
+                        // outbLX().
+                        // outbLX(i).
+                        outbLX[i] = landaP * outbLX[i] + (1.0D - landaP) * (1.0D / (1.0D + Math.Exp(-outbLY[i] * alfaP * gainRate[i] * gainRate1[i])));
+                        // i.
+                        // gainRate2(i).
+                        // gainRate(i).
+                        // alfaP.
+                        // outbRY().
+                        // landaP.
+                        // outbRX().
+                        // outbRX(i).
+                        outbRX[i] = landaP * outbRX[i] + (1.0D - landaP) * (1.0D / (1.0D + Math.Exp(-outbRY[i] * alfaP * gainRate[i] * gainRate2[i])));
+
+                        // c.
+                        // i.
+                        // outbLX(i).
+                        // leftRightPL().
+                        // leftRightPL(i, c - 1).
+                        // leftRightPL[i, c - 1] = leftRightPL[i, c - 1] + outbLX[i];
+                        // c.
+                        // i.
+                        // outbRX(i).
+                        // leftRightPR().
+                        // leftRightPR(i, c - 1).
+                        //leftRightPR[i, c - 1] = leftRightPR[i, c - 1] + outbRX[i];
+                    }
+
+                    // gainRate(2).
+                    // outbLY().
+                    // landaM.
+                    // outbLX().
+                    // outbLX(2).
+                    outbLX[2] = landaM * outbLX[2] + (1.0D - landaM) * (1.0D / (1.0D + Math.Exp(-outbLY[2] * gainRate[2])));
+
+                    // gainRate(2).
+                    // outbRY().
+                    // landaM.
+                    // outbRX().
+                    // outbRX(2).
+                    outbRX[2] = landaM * outbRX[2] + (1.0D - landaM) * (1.0D / (1.0D + Math.Exp(-outbRY[2] * gainRate[2])));
+
+                    for (i = 0; i <= 1; i++)
+                    {
+                        // i.
+
+                        // noiseT.
+                        // taskX( + 2).
+                        // outbRX(i).
+                        // outbLX(i).
+                        // taskX(i).
+                        // taskY(i).
+
+                        // double samplesT1 = Draw025();//(rnd1.NextDouble() - .5) / 10;
+
+                        double samplesT1 = Draw(noiseTask);//(rnd1.NextDouble() - .5) / 10;
+
+                        taskY[i] = biasTask + taskX[i] * SelfT + outbLX[i] * conPrimeTask + outbRX[i] * conTargetTask + taskX[((short)(~i)) + 2] * inhT + samplesT1; //- taskY(i)
+                    }
+
+                    ///'''''''
+
+                    for (i = 0; i <= 1; i++)
+                    {
+                        // net         self         inp1            con1                       inh/compete
+                        // leftRightPL(i, c - 1) = leftRightPL(i, c - 1) + outbLX(i)
+                        // leftRightPR(i, c - 1) = leftRightPR(i, c - 1) + outbRX(i)
+
+                        // taskX(i) = landaT * taskX(i) + (1 - landaT) * (1# / (1# + Math.Exp(-taskY(i)))) '* gainRate(i))))
+                        // i.
+                        // gainRate(i).
+                        // taskY().
+                        // landaT.
+                        // taskX().
+                        // taskX(i).
+                        taskX[i] = landaT * taskX[i] + (1 - landaT) * (1.0D / (1.0D + Math.Exp(-taskY[i] * gainRate[i])));
+
+                        /// biasTask(i).Text = -1
+                        //task(i).Text = Format(taskX(i), "#.00")
+                    }
+
+                    ///'''''''''NEW HOP
+                    ///'''''''''NEW HOP
+
+                    if (ThreshT > 0)  ///if using Task
+                    {
+
+                        for (i = 0; i <= 1; i++)
+                        {
+                            inpConf[i] = 0;
+
+                            // i.
+                            // taskX(i).
+                            // i.
+                            // inp(i).
+                            if (taskX[i] > ThreshT)
+                            {
+                                inpConf[i] = 1;
+                            }
+                            // else
+                            // {
+                            // i.
+                            // inp(i).
+                            //  inp[i] = 0;
+                            // } //-1
+                        }
+
+                    }
+                    else //not using Task but L or R representation layer
+                    {
+
+                        for (i = 0; i <= 1; i++)
+                        {
+                            inpConf[i] = 0;
+
+                            // i.
+                            // inp(i).
+                            // outbLX(i).
+                            // i.
+                            // inp(i).
+                            if (outbLX[i] > ThreshPri || outbRX[i] > ThreshTar)
+                            {
+                                inpConf[i] = 1;
+                            }
+                            //Else inp(i) = 0 '-1
+                        }
+
+                        //for (i = 0; i <= 1; i++)
+                        // {
+                        //   inp[i] = 0;
+
+                        // i.
+                        // inp(i).
+                        // outbRX(i).
+                        // i.
+                        // inp(i).
+                        // if (outbRX[i] > ThreshTar && inp[i] != 1)
+                        // {
+                        //    inp[i] = 1;
+                        // }
+                        //Else inp(i) = 0  '-1
+                        ///End If
+
+                        //inp(i) = taskX(i) - 0.5
+                        // i.
+                        // upd(i).
+                        //upd[i] = 0;
+                        //}
+
+                    }
+
+                    ///   temp = 0;
+                    // energyHop.
+                    energyHop = 0;
+
+                    for (iHop = 1; iHop <= 1; iHop++)//////not implementett
+                    {
+
+                        for (i = 0; i <= 1; i++)
+                        {
+                            updConf[i] = 0;//////not implementett
+                            for (j = 0; j <= 1; j++)
+                            {
+                                // i.
+                                // upd(i).
+                                // j.
+                                // inp(j).
+                                // ar5().
+                                updConf[i] = ar5[i, j] * inpConf[j] + updConf[i];//////not implementett
+                                                                                 // i.
+                                                                                 // inp(i).
+                                                                                 // j.
+                                                                                 // inp(j).
+                                                                                 // ar5().
+                                                                                 // energyHop.
+                                energyHop = energyHop - ar5[i, j] * inpConf[j] * inpConf[i];
+                            }
+
+                            //temp = temp + energyHop
+                        }
+
+                        //tempAll = tempAll + temp
+
+                        //For i = 0 To 1
+                        //  If upd(i) >= 0 Then inp(i) = 1
+                        // If upd(i) < 0 Then inp(i) = -1
+                        //Next i
+
+                    }
+
+                    ///''''''''''''''END
+                    // energyHop.
+                    // Conf.
+                    Conf = energyHop / 2; // '(taskX(0) - 0.5) * (taskX(1) - 0.5) / (Abs(taskX(0) - 0.5) * Abs(taskX(1) - 0.5))
+
+                    //2018-9  exe att
+                    // neLC.
+                    neLC = 0;
+
+                    // outbLX(1).
+                    // outbLX(0).
+                    // neLCP.
+                    if (outbLX[0] >= ThreshPri || outbLX[1] >= ThreshPri)
+                    {
+                        neLCP = 1;
+                    }
+                    else
+                    {
+                        // neLCP.
+                        neLCP = 0;
+                    }
+
+                    // n.
+                    // c.
+                    // neLCC.
+                    //2018-9   cue/orient? att
+
+                    if (outbRX[0] >= ThreshTar || outbRX[1] >= ThreshTar)
+                    {
+                        neLCT = 1;
+                    }
+                    else
+                    {
+                        // neLCT.
+                        neLCT = 0;
+                    }
+
+                    ConfTrial += Conf;
+
+                    //if (ic == 2 & c > durFix + durPrime)//ConfTrial > ThreshConf && c > durFix)
+                    // {
+                    //g = g2;
+                    //}
+
+                    // g2.
+                    // g.
+                    // c.
+                    // g1.
+                    // g2.
+                    // g.
+                    if (ConfTrial > ThreshConf) //(c > durFix + durPrime && ic == 2)
+                    {
+                        g = 1;
+                    }
+                    else
+                    {
+                        g = 3;
+                    }
+
+                    // neLCACHt.
+                    // neLCACHp.
+                    // neLCACH.
+
+                    //ach if (neLCACHp == 1 || neLCACHt == 1)
+                    //ach {
+                    //ach neLCACH = 1;
+                    //ach  }
+                    //ach else
+                    //ach {
+                    // neLCACH.
+                    //ach neLCACH = 0;
+                    //ach }
+
+                    // uACH.
+                    //ach if (ACH > 0 || ThreshACH > 0)
+                    //ach {
+                    //ach uACH = 0;
+                    //ach }
+
+                    // t1.
+                    // neLCACH.
+                    // uACH.
+                    // b.
+                    // vACH.
+                    // a1.
+                    // tv.
+
+                    //ach vACH = tv * vACH + (1.0D - tv) * (1.0D / (1.0D + Math.Exp(-(3 * (a1 * vACH - b * uACH + neLCACH - t1)))));
+
+                    // t2.
+                    // vACH.
+                    // a2.
+                    // tu.
+                    // uACH.
+
+                    //ach uACH = tu * uACH + (1.0D - tu) * (1.0D / (1.0D + Math.Exp(-3 * (a2 * vACH - t2))));
+                    // vACH.
+                    // thv.
+                    // hvACH.
+
+                    //ach hvACH = thv * hvACH + (1.0D - thv) * vACH;
+
+                    ///'''''''''
+                    // neLCC.
+                    // neLCT.
+                    // neLCP.
+                    // neLC.
+
+                    if (neLCP == 1 || neLCT == 1) //| neLCC == 1
+                    {
+                        neLC = 1;
+                    }
+                    else
+                    {
+                        // neLC.
+                        neLC = 0;
+                    }
+
+                    // t1.
+                    // neLC.
+                    // u.
+                    // b.
+                    // v.
+                    // a1.
+                    // g.
+                    // tv.
+                    v = tv * v + (1.0D - tv) * (1.0D / (1.0D + Math.Exp(-(g * (a1 * v - b * u + neLC - t1)))));
+                    // t2.
+                    // v.
+                    // a2.
+                    // g.
+                    // tu.
+                    // u.
+                    u = tu * u + (1.0D - tu) * (1.0D / (1.0D + Math.Exp(-g * (a2 * v - t2))));
+                    // v.
+                    // thv.
+                    // hv.
+                    hv = thv * hv + (1.0D - thv) * v;
+
+                    //If neLC = 1 And cLC * hv > 1 Then '(neLC = 1 Or onceTimeLC = True)
+
+                    // hv.
+                    // cLC.
+
+                    if (cLC * hv > CLCthresh) //(neLC = 1 Or onceTimeLC = True)
+                    {
+                        for (i = 0; i <= 2; i++)
+                        {
+                            // i.
+                            // hv.
+                            // cLC.
+                            // gainRate(i).
+                            gainRate[i] = cLC * hv;
+                        }
+
+                    }
+
+                    ///''''''''''''''''''upper left module
+                    //outb con inh
+
+                    for (i = 0; i <= 1; i++)
+                    {
+                        //net         bias                  self       inpFromPerc1     con1                         inpFromPerc2                           comp/inh
+                        // i.
+                        // noiseR.
+                        // outaX( + 2).
+                        // outbRX(i).
+                        // outbLX(i).
+                        // outaX(i).
+                        // outaY(i).
+
+                        //double samplesR1 = Draw2();//(rnd1.NextDouble() - .5) / 10;
+                        double samplesR1 = Draw(noisePTR);//(rnd1.NextDouble() - .5) / 10;
+
+                        outaY[i] = biasOut + outaX[i] * SelfO + outbLX[i] * conResponse + outbRX[i] * conResponse + outaX[((short)(~i)) + 2] * inhO + samplesR1; //- outaY(i)
+                    }
+
+                    for (i = 0; i <= 1; i++)
+                    {
+                        // i.
+                        // gainRate(i).
+                        // alfaR.
+                        // outaY().
+                        // landaR.
+                        // outaX().
+                        // outaX(i).
+                        outaX[i] = landaR * outaX[i] + (1.0D - landaR) * (1.0D / (1.0D + Math.Exp(-outaY[i] * alfaR * gainRate[i])));
+
+                    }
+
+                    if ((outaX[0] >= ThreshO || outaX[1] >= ThreshO) && onceTime1 == 0) //And outaX(1) > outaX(0))
+                    {
+                        onceTime1 = 1;
+                        //TextBoxMultiLine.AppendText(n.ToString() + "-L-L-" + c.ToString() + "---");
+                        //rtMeanIC1 = c;
+                        rt = c;
+
+
+                        //TextBoxMultiLine.AppendText("rt new=" + (rt.ToString()));// double.Parse(Text1TrialsNumber.Text)).ToString() + "...");
+
+                        // c=short.Parse(cyclePrime.Text);
+                        //MessageBox.Show(outaX[0].ToString()+"--"+ outaX[1].ToString() + "--" + onceTime1.ToString());
+                    }
+
+                    //use _conLT_1 and _conLT_0 in task
+                    //chart if (checkBox1ShowChart.Checked == true)
+
+                    // pointsInpAtt[c] = new Point { X = v, Y = u, Z = hv };
+                    // pointsInpPrime[c] = new Point { X = outbLX[0], Y = outbLX[1], Z = outbLX[2] };
+                    //  pointsInpTarget[c] = new Point { X = outbRX[0], Y = outbRX[1], Z = outbRX[2] };
+                    //  pointsInpConf[c] = new Point { X = c, Y = ConfTrial };
+                    //  pointsInpTask[c] = new Point { X = taskX[0], Y = taskX[1], Z = taskX[2] };
+                    //   pointsInpResponse[c] = new Point { X = outaX[0], Y = outaX[1], Z = outaX[2] };
+
+
+                    ///////////////////////////////////////////////////.........>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                    if (c % asoSingleTrialSpeed == 0)
+                    {
+
+
+                        singleTrialList.Add(new singleTrialDataItem
+                        {
+                            singleTrialCycle = (c + 1).ToString(),
+                            singleTrialOutbLLX = outbLX[0],
+                            singleTrialOutbLRX = outbLX[1],
+                            singleTrialOutbLMX = outbLX[2],
+                            singleTrialOutbRLX = outbRX[0],
+                            singleTrialOutbRRX = outbRX[1],
+                            singleTrialOutbRMX = outbRX[2],
+                            singleTrialOutaLX = outaX[0],
+                            singleTrialOutaRX = outaX[1],
+                            singleTrialOutaThresh = ThreshO,
+                            singleTrialTaskLX = taskX[0],
+                            singleTrialTaskRX = taskX[1],
+                            singleTrialTaskThresh = ThreshT,
+                            singleTrialAttV = v,
+                            singleTrialAttU = u,
+                            singleTrialAttHv = hv,
+                            singleTrialConf = Conf,
+                            singleTrialConfThresh = ThreshConf,
+                            singleTrialConfTrial = ConfTrial,
+                        });
+
+                        //////////////////////////////////////////RL
+                        await InvokeAsync(StateHasChanged);
+
+                        ////prime
+                        //singleTrialCycle.Add(c);
+
+                        //asoLine1Cycle0y.Add(outbLX[0]);
+                        await Task.Delay(1);
+
+
+
+                        //asoLine1Cycle1y.Add(outbLX[1]);
+
+
+
+                        //asoLine1Cycle2y.Add(outbLX[2]);
+
+                        ////target
+
+                        //asoLine2Cycle0y.Add(outbRX[0]);
+
+
+
+                        //asoLine2Cycle1y.Add(outbRX[1]);
+
+
+
+                        //asoLine2Cycle2y.Add(outbRX[2]);
+
+                        /////////////////////////////////////motor/out
+
+
+                        //asoLine3Cycle0y.Add(outaX[0]);
+
+
+
+                        //asoLine3Cycle1y.Add(outaX[1]);
+
+
+
+                        //asoLine3Cycle2y.Add(ThreshO);
+
+                        //////////////////////////////////////////task
+
+
+
+                        //asoLine4Cycle0y.Add(taskX[0]);
+
+
+
+                        //asoLine4Cycle1y.Add(taskX[1]);
+
+
+                        //asoLine4Cycle2y.Add(ThreshT);
+
+
+                        //////////////////////////////////////////att
+
+
+
+                        //asoLine5Cycle0y.Add(v);
+
+
+                        //asoLine5Cycle1y.Add(u);
+
+
+                        //asoLine5Cycle2y.Add(hv);
+
+
+                        ////////////////////////////////////////////conf
+
+                        //asoLine6Cycle0y.Add(Conf);
+
+                        //asoLine6Cycle1y.Add(ThreshConf);
+
+                        //asoLine6Cycle2y.Add(ConfTrial);
+                    }
+
+                    singleTrialArray = singleTrialList.ToArray();
+
+                }  //for loop c ////////////////////////////////......---------------->>>>>>>>>>>>>>>>>>
+
+
+                // for (i=0;i< double.Parse(Text1TrialsNumber.Text); i++)
+                //{
+                //  rtMeanIC1 = rtMeanIC1 + rtMeanIC[i];
+                //}
+                //TextBoxMultiLine.AppendText ("rt="+(rtMeanIC1/ double.Parse(Text1TrialsNumber.Text)).ToString()+Environment.NewLine);
+
+                //Application.DoEvents();
+                //}
+
+                if (rt > 0)
+                {
+                    //rt = rt - durMaskTargetISI;
+                    if (ic == 1)
+                    {
+                        rtSumC += rt;
+                        rtMeanC = rtSumC / rtC;
+                        rtC++;
+                        TrialsStr1 = TrialsStr1 + "c" + ";" + rt.ToString() + ",";
+                        // TextBoxMultiLine.AppendText(nnew.ToString() + "rtC=" + (rtMeanC / rtC).ToString() + Environment.NewLine);
+                        //Jobs.Add(new JobDto { Id = n, Description = ic.ToString(), Status = JobStatuses.Running, RT_MeanC = rtMeanC });
+
+                    }
+                    else
+                    {
+
+                        rtSumI += rt;
+                        rtMeanI = rtSumI / rtI;
+                        rtI++;
+                        TrialsStr1 = TrialsStr1 + "i" + ";" + rt.ToString() + ",";
+                        //rt -= rtMeanI;
+                        //TextBoxMultiLine.AppendText(nnew.ToString() + "rtI=" + (rtMeanI / rtI).ToString() + Environment.NewLine);
+
+                        //Jobs.Add(new JobDto { Id = n, Description = ic.ToString(), Status = JobStatuses.Completed,  RT_MeanI = rtMeanI  });
+
+                    }
+                }
+
+                //pointsInpModelsI_C[m] = new Point { X = m, Y = rtMeanI - rtMeanC };
+
+
+
+
+
+
+                //chartIC.Series["IC"].Points.AddXY(nnew, rtMeanI / rtI - rtMeanC / rtC);
+                //chartIC.Series["G"].Points.AddXY(nnew, rt - 650);
+
+                //ChartConflict.Series["T"].Points.AddXY(c, 0);
+                //ChartConflict.Series["G"].Points.AddXY(c, 0);
+
+                // trialsRTarray[n].cycleX=n;
+                // trialsRTarray[n].trialRT=Convert.ToDouble(rt);
+
+                trialsRTlist.Add(new trialDataItem
+                {
+                    trialCycleX = (n + 1).ToString(),
+                    // Date = DateTime.Parse("2020-03-01"),
+                    trialRT = rt
+
+                });
+
+                trialsRTarray = trialsRTlist.ToArray();
+                // revenue20192 = trialsRTlist.ToArray();
+
+
+                mProgress = (Convert.ToDouble(n + 1) / TrialCount) * 100;
+
+                await Task.Delay(1); // 1 second delay
+
+                await InvokeAsync(StateHasChanged);
+
+
+                //nTotal++;
+            } //for loop n.//////////////////.........>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+            modelsRTlist.Add(new modelDataItem
+            {
+                modelCycleX = (m + 1).ToString(),
+                // Date = DateTime.Parse("2020-03-01"),
+                modelRTc = rtMeanC,
+                modelRTi = rtMeanI,
+
+                modelRTic = (rtMeanI - rtMeanC) * 10,
+                TrialsStr = TrialsStr1,
+
+
+            });
+
+            modelsRTarray = modelsRTlist.ToArray();
+
+
+
+            // for (int i = 0; i < pointsInpModelsC.Length; i++)
+            // {
+
+            //aso var /////////////////
+            // await Task.Delay(1); // 1 second delay
+
+
+
+
+            //asoTimeElapsed = stopwatch.ElapsedMilliseconds;
+            //stopwatch.Stop();
+
+            // if (spinning == true)
+            // {
+            //               await InvokeAsync(StateHasChanged);
+            //mm = Convert.ToDouble(m);
+
+            //ModelsIC[m, 0] = rtMeanC;
+            //ModelsIC[m, 1] = rtMeanI;
+
+
+            //pointsInpModelsC[m] = new Point { X = m, Y = rtMeanC - durMaskTargetISI };
+            //pointsInpModelsI[m] = new Point { X = m, Y = rtMeanI - durMaskTargetISI };
+
+            // pointsInpModelsI_C[m] = new Point { X = m, Y = rtMeanI - rtMeanC };
+
+            //  ModelsData.Add(new Models
+            // {
+            //     No = m + 1,
+            //     RTincong = rtMeanI,
+            //     RTcong = rtMeanC,
+            //     TrialsStr = TrialsStr1,
+
+            // });
+
+            // mProgress = (Convert.ToDouble(m + 1) / ModelCount) * 100;
+
+
+
+
+
+
+            //await InvokeAsync(StateHasChanged);
+
+
+        } //for loop m.................>>>>>>>>>>>>>>>>>>>>>>>>>>>>>!!!!!!!!!!!!!!!!!!!!!>>>>>>>>>>
+        spinning = false;
+        await Task.Delay(1);
+        await InvokeAsync(StateHasChanged);
+
+
+
+        // return rt; ///->result
+    }
+
+    static Random rnd = new Random();
+
+    public double Draw(double noi)
+    {
+        while (true)
+        {
+            // Get random values from interval [0,1]
+            var xme = rnd.NextDouble();
+            //Task.Delay(1).Wait();
+
+            var yme = rnd.NextDouble();
+
+            // Is the point (x,y) under the curve of the density function?
+            if (yme < f(xme, 0.0, noi))
+                return xme;
+        }
+    }
+
+
+
+    public double f(double xme, double μ, double σ)
+    {
+        return 1d / Math.Sqrt(2 * σ * σ * Math.PI) * Math.Exp(-((xme - μ) * (xme - μ)) / (2 * σ * σ));
+    }
+
+    public void MyMethodAsync0()
+    {
+        spinning = false;
+
+        n = TrialNumber;
+
+        m = ModelNumber;
+
+        n = TrialNumber;
+
+        InvokeAsync(StateHasChanged);
+
+        //result = -1;
+
+    }
+
+    int asoCountDown = 0;
+
+    public async Task MyMethodAsync()
+    {
+        //asoCountDown = 1;
+
+        if (spinning == true)
+        {
+            MyMethodAsync0();
+        }
+        else
+        {
+            modelsRTlist.Clear();
+            //result = -1;
+
+            spinning = true;
+            Task longRunningTask = LongRunningOperationAsync(ModelNumber, TrialNumber, N);
+        }
+        // Count = TrialNumber;
+
+        //c = ModelNumber;
+        ////spinning = false;
+
+        // createUserDialogOpen = true;
+        //// await Task.Delay(1);
+        ////await InvokeAsync(StateHasChanged);
+        //// spinning = true;
+
+        //ModelsData.Clear();
+
+        ////modelsRTlist.Clear();
+
+
+
+        // await Task.Run(() => LongRunningOperationAsync());  //<--here!
+        //currentCount++;
+
+        //m = ModelNumber;
+        //n = TrialNumber;
+        //c = N;
+        //                await InvokeAsync(StateHasChanged);
+
+        //and now we call await on the task
+        //// Timer timer2 = new Timer(new TimerCallback(_ =>
+        //// {
+        ////  if (asoCountDown <= 0) return;
+        ////  asoCountDown--;
+        //c
+        // Note that the following line is necessary because otherwise
+        // Blazor would not recognize the state change and not refresh the UI
+
+        // Task longRunningTask = LongRunningOperationAsync(ModelNumber, TrialNumber, N);
+
+        ////   InvokeAsync(StateHasChanged);
+        //// }), null, 1000, 1000);
+
+        // independent work which doesn't need the result of LongRunningOperationAsync can be done here
+        // await longRunningTask;
+
+        //Val0 = false;
+        //use the result
+
+        ////spinning = false;
+        //// await Task.CompletedTask;
+    }
+
+    //////////////////////////////////////////////////
+    //stopwatch.Start();
+    // await chartCycle.React();
+    //await chartCycle1Prime.React();
+    //asoTimeElapsed = stopwatch.ElapsedMilliseconds;
+    //stopwatch.Stop();
+
+}
+
+<MatTabGroup @bind-ActiveIndex="@tabIndex">
+    <MatTab Label="Priming Blocks">
+        <p>Blocks: @m / @ModelNumber</p>
+        <p><RadzenProgressBar @bind-Value="@mProgress" /></p>
+        <p>Trials: @n / @TrialNumber</p>
+
+
+        <div class="mat-layout-grid">
+            <label>Blocks Chart Visible<RadzenCheckBox @bind-Value="modelsChart" Name="models"></RadzenCheckBox></label>
+            <RadzenChart Visible="modelsChart">
+                <label>Smooth<RadzenCheckBox @bind-Value="@smoothModels" Name="smooth"></RadzenCheckBox></label>
+                <RadzenColumnSeries StrokeWidth="5" Data="@modelsRTarray" CategoryProperty="modelCycleX" Title="RTc" ValueProperty="modelRTc" />
+                <RadzenColumnSeries StrokeWidth="5" Data="@modelsRTarray" CategoryProperty="modelCycleX" Title="RTi" ValueProperty="modelRTi" />
+                <RadzenLineSeries Smooth="@smoothModels" Data="@modelsRTarray" CategoryProperty="modelCycleX" Title="RTc-RTi" LineType="LineType.Solid" ValueProperty="modelRTic">
+                    <RadzenMarkers MarkerType="MarkerType.Circle" />
+                </RadzenLineSeries>
+                <RadzenColumnOptions Radius="5" />
+                <RadzenValueAxis Formatter="@FormatAsUSD">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Mean RT (ms)" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+
+        <div class="mat-layout-grid">
+            <label>Trials Chart Visible<RadzenCheckBox @bind-Value="@trialsChart" Name="trials"></RadzenCheckBox></label>
+            <RadzenChart Visible="trialsChart">
+                <label>Smooth<RadzenCheckBox @bind-Value="@smoothTrials" Name="smooth"></RadzenCheckBox></label>
+                <RadzenLineSeries Smooth="@smoothTrials" Data="@trialsRTarray" CategoryProperty="trialCycleX" Title="RT" LineType="LineType.Solid" ValueProperty="trialRT">
+                    <RadzenMarkers MarkerType="MarkerType.Circle" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Step="5" Padding="20" FormatString="{0}" />
+                <RadzenValueAxis Formatter="@FormatAsUSD">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Trial RT (ms)" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+
+        <div class="mat-layout-grid">
+            <label>Single Trial Chart Visible<RadzenCheckBox @bind-Value="@singleTrialChart" @onclick="asoKeepDataSingleTrial" Name="SingleChart"></RadzenCheckBox></label>
+            <RadzenChart Style="height: 600px;" Visible="singleTrialChart">
+                <label>Smooth<RadzenCheckBox @bind-Value="@smoothTrial" Name="smooth"></RadzenCheckBox></label>
+                <label>Speed/Resolution: Min 1 <RadzenSlider @bind-Value="asoSingleTrialSpeed" TValue="int" Min="1" Max="N" Step="10" Change="@((args) => Change(args, "Slider from 1 to 100"))" Style="margin-bottom: 0px;" /> Max @N</label>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="L-Prime" LineType="LineType.Solid" ValueProperty="singleTrialOutbLLX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="R-Prime" LineType="LineType.Solid" ValueProperty="singleTrialOutbLRX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="L-Mask" LineType="LineType.Solid" ValueProperty="singleTrialOutbLMX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="L-Target" LineType="LineType.Solid" ValueProperty="singleTrialOutbRLX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="R-Target" LineType="LineType.Solid" ValueProperty="singleTrialOutbRRX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="R-Mask" LineType="LineType.Solid" ValueProperty="singleTrialOutbRMX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="L-Response" LineType="LineType.Solid" ValueProperty="singleTrialOutaLX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="R-Response" LineType="LineType.Solid" ValueProperty="singleTrialOutaRX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="Threshold-R" LineType="LineType.Solid" ValueProperty="singleTrialOutaThresh">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="L-Task" LineType="LineType.Solid" ValueProperty="singleTrialTaskLX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="R-Task" LineType="LineType.Solid" ValueProperty="singleTrialTaskRX">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="Threshold-T" LineType="LineType.Solid" ValueProperty="singleTrialTaskThresh">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="V-Attention" LineType="LineType.Solid" ValueProperty="singleTrialAttV">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="U-Attention" LineType="LineType.Solid" ValueProperty="singleTrialAttU">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="HV-Attention" LineType="LineType.Solid" ValueProperty="singleTrialAttHv">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="Conflict-1" LineType="LineType.Solid" ValueProperty="singleTrialConf">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="Conflict-T" LineType="LineType.Solid" ValueProperty="singleTrialConfThresh">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smoothTrial" Data="@singleTrialArray" CategoryProperty="singleTrialCycle" Title="Conflict-C" LineType="LineType.Solid" ValueProperty="singleTrialConfTrial">
+                    <RadzenMarkers MarkerType="MarkerType.Auto" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Step="100" Padding="100" FormatString="{0}" />
+                <RadzenValueAxis Formatter="@FormatAsUSD" Min="0" Max="1">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Activation" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+
+        <div class="mat-layout-grid">
+            <button class="btn  @(spinning ?  "btn-dark" : "btn-primary") "
+                    @onclick="@MyMethodAsync">
+                Start/Stop @ModelNumber Blocks of @TrialNumber Trials
+            </button>
+        </div>
+
+
+        @*
+              <p>
+            <button class="btn @(spinning ?  "btn-primary" : "btn-dark") "
+                    @onclick="@MyMethodAsync0">
+                Stop!
+            </button>
+            <MatButton Raised="true" Icon="chart" @onclick="@(e => LongRunningOperationAsync(ModelNumber, TrialNumber, N))">Run Multi Models2</MatButton>
+             </p>           <MatButton Raised="true" Icon="chart" @onclick="@(e => { createUserDialogOpen = true; })">One Trial Graph</MatButton>
+        *@
+
+        <MatAccordion>
+            <MatExpansionPanel @bind-Expanded="@Val0">
+                <MatExpansionPanelSummary>
+                    <MatExpansionPanelHeader>Model Module Panel</MatExpansionPanelHeader>
+                    <MatExpansionPanelSubHeader>
+                        Click To @(Val0 ? "Close" : "Open")
+                    </MatExpansionPanelSubHeader>
+                </MatExpansionPanelSummary>
+                <MatExpansionPanelDetails>
+                    <div class="mat-layout-grid">
+                        <div class="mat-layout-grid-inner">
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="ModelNumber" @bind-Value="@ModelNumber"></MatTextField>
+                            </div>
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="TrialNumber" @bind-Value="@TrialNumber"></MatTextField>
+                            </div>
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="DurationTrial" @bind-Value="@N"></MatTextField>
+                            </div>
+                        </div>
+                        <div class="mat-layout-grid-inner">
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="DurationFix" @bind-Value="@durFix"></MatTextField>
+                            </div>
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="DurationPrime" @bind-Value="@durPrime"></MatTextField>
+                            </div>
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="DurationMask" @bind-Value="@durMask"></MatTextField>
+                            </div>
+                        </div>
+                        <div class="mat-layout-grid-inner">
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="DurationTarget" @bind-Value="@durTarget"></MatTextField>
+                            </div>
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="PrimeMaskISI" @bind-Value="@durPrimeMaskISI"></MatTextField>
+                            </div>
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="M_T_ISI_Coef" @bind-Value="@durM_T_ISIcoef"></MatTextField>
+                            </div>
+                        </div>
+                        <div class="mat-layout-grid-inner">
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="NoisePTM" @bind-Value="@noisePTR"></MatTextField>
+                            </div>
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="NoiseMasks" @bind-Value="@noiseMasks"></MatTextField>
+                            </div>
+                            <div class="mat-layout-grid-cell">
+                                <MatTextField Label="NoiseTass" @bind-Value="@noiseTask"></MatTextField>
+                            </div>
+                        </div>
+                    </div>
+                </MatExpansionPanelDetails>
+            </MatExpansionPanel>
+        </MatAccordion>
+    </MatTab>
+
+    @if (spinning == false)
+    {
+        <MatTab Label="Settings">
+            <MatSlideToggle @bind-Value="@Val1"></MatSlideToggle> <span>@Val1</span>
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="@Val1">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Model Module Panel</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader>
+                            Click To @(Val1 ? "Close" : "Open")
+                        </MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <div class="mat-layout-grid">
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="ModelNumber" @bind-Value="@ModelNumber"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="TrialNumber" @bind-Value="@TrialNumber"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="DurationTrial" @bind-Value="@N"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="DurationFix" @bind-Value="@durFix"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="DurationPrime" @bind-Value="@durPrime"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="DurationMask" @bind-Value="@durMask"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="DurationTarget" @bind-Value="@durTarget"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="PrimeMaskISI" @bind-Value="@durPrimeMaskISI"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="MaskTargetISI" @bind-Value="@durMaskTargetISI"></MatTextField>
+
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="NoisePTM" @bind-Value="@noisePTR"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="NoiseMasks" @bind-Value="@noiseMasks"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="NoiseTass" @bind-Value="@noiseTask"></MatTextField>
+                                </div>
+                            </div>
+                        </div>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+
+            <MatSlideToggle @bind-Value="@Val2"></MatSlideToggle> <span>@Val2</span>
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="@Val2">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Prime Module Panel</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader>
+                            Click To @(Val2 ? "Close" : "Open")
+                        </MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <div class="mat-layout-grid">
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="CrossPri" @bind-Value="@CrossPri"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="SelfPri" @bind-Value="@SelfPri"></MatTextField>
+                                </div>
+
+                            </div>
+                            <div class="mat-layout-grid-inner">
+
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="InpPrimeMin" @bind-Value="@inpamin"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="InpPrimeMax" @bind-Value="@inpamax"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="ThreshPri" @bind-Value="@ThreshPri"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="inhPri" @bind-Value="@inhPri"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="biasPri" @bind-Value="@biasPL"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="conPri" @bind-Value="@conPrime"></MatTextField>
+                                </div>
+                            </div>
+                        </div>
+
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+
+            <MatSlideToggle @bind-Value="@Val3"></MatSlideToggle> <span>@Val3</span>
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="@Val3">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Target Module Panel</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader>
+                            Click To @(Val3 ? "Close" : "Open")
+                        </MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <div class="mat-layout-grid">
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="CrossTar" @bind-Value="@CrossTar"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="SelfTar" @bind-Value="@SelfTar"></MatTextField>
+                                </div>
+
+                            </div>
+                            <div class="mat-layout-grid-inner">
+
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="InpTargetMin" @bind-Value="@inpbmin"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="InpTargetMax" @bind-Value="@inpbmax"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="inhTar" @bind-Value="@inhTar"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="ThreshTar" @bind-Value="@ThreshTar"></MatTextField>
+                                </div>
+
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="biasTar" @bind-Value="@biasPR"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="conTar" @bind-Value="@conTarget"></MatTextField>
+                                </div>
+
+                            </div>
+                        </div>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+
+            <MatSlideToggle @bind-Value="@Val4"></MatSlideToggle> <span>@Val4</span>
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="@Val4">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Response Module Panel</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader>
+                            Click To @(Val4 ? "Close" : "Open")
+                        </MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <div class="mat-layout-grid">
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="SelfO" @bind-Value="@SelfO"></MatTextField>
+                                </div>
+
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="inhO" @bind-Value="@inhO"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="ThreshO" @bind-Value="@ThreshO"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="biasOut" @bind-Value="@biasOut"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="conResponse" @bind-Value="@conResponse"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="conResponse" @bind-Value="@conResponse"></MatTextField>
+                                </div>
+                            </div>
+
+                        </div>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+
+            <MatSlideToggle @bind-Value="@Val5"></MatSlideToggle> <span>@Val5</span>
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="@Val5">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Task Module Panel</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader>
+                            Click To @(Val5 ? "Close" : "Open")
+                        </MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <div class="mat-layout-grid">
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="SelfT" @bind-Value="@SelfT"></MatTextField>
+                                </div>
+
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="inhT" @bind-Value="@inhT"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="ThreshT" @bind-Value="@ThreshT"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="inhT" @bind-Value="@biasTask"></MatTextField>
+                                </div>
+                            </div>
+                        </div>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+
+            <MatSlideToggle @bind-Value="@Val6"></MatSlideToggle> <span>@Val6</span>
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="@Val6">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Conflict Module Panel</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader>
+                            Click To @(Val6 ? "Close" : "Open")
+                        </MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <div class="mat-layout-grid">
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="ThresholdConf" @bind-Value="@ThreshConf"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="CLC" @bind-Value="@CLC"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="CLCthresh" @bind-Value="@CLCthresh"></MatTextField>
+                                </div>
+                            </div>
+                        </div>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+
+            <MatSlideToggle @bind-Value="@Val7"></MatSlideToggle> <span>@Val7</span>
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="@Val7">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Mask Module Panel</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader>
+                            Click To @(Val7 ? "Close" : "Open")
+                        </MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <div class="mat-layout-grid">
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="SelfMasks" @bind-Value="@SelfMasks"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="BiasMasks" @bind-Value="@BiasMasks"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="CrossLMasks" @bind-Value="@CrossLMasks"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="ConMasks" @bind-Value="@ConMasks"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="InhMasks" @bind-Value="@InhMasks"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="MaskTargetISI" @bind-Value="@durMaskTargetISI"></MatTextField>
+                                </div>
+                            </div>
+                            <div class="mat-layout-grid-inner">
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="M_T_ISI_Coef" @bind-Value="@durM_T_ISIcoef"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="InpPrimeMask" @bind-Value="@inpamask"></MatTextField>
+                                </div>
+                                <div class="mat-layout-grid-cell">
+                                    <MatTextField Label="InpTargetMask" @bind-Value="@inpbmask"></MatTextField>
+                                </div>
+                            </div>
+                        </div>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+        </MatTab>
+    }
+
+
+    <MatDialog @bind-IsOpen="@createUserDialogOpen" @ondblclick="@(e => { createUserDialogOpen = false; })" @onkeypress="@(e => { createUserDialogOpen = false; })">
+        <p>
+            <button class="btn @(createUserDialogOpen ?  "btn-primary" : "btn-dark") "
+                    @onclick="@MyMethodAsync0">
+                Stop When the Graph is Ready
+            </button>
+            <MatButton Raised="true" Icon="close" @onclick="@(e => { createUserDialogOpen = false; })">Close Current Window</MatButton>
+        </p>
+
+        <p>
+            <button class="btn @(createUserDialogOpen ?  "btn-primary" : "btn-dark") "
+                    @onclick="@MyMethodAsync0">
+                Stop When the Graph is Ready
+            </button>
+            <MatButton Raised="true" Icon="close" @onclick="@(e => { createUserDialogOpen = false; })">Close Current Window</MatButton>
+        </p>
+    </MatDialog>
+
+    @if (spinning == false)
+    {
+        <MatTab Label="Tables">
+
+            @if (modelsRTlist.Count == 0)
+            {
+                <LoadingBackground ShowLogoBox="true">
+                    <label>No Data Yet</label>
+                </LoadingBackground>
+            }
+            else
+            {
+
+                <MatTable Class="mat-elevation-z5" Items="modelsRTlist" AllowSelection="true"
+                          DebounceMilliseconds="150">
+                    <MatTableHeader>
+                        <th>Model Number</th>
+                        <th>Congruent RTs</th>
+                        <th>Incongruent Rts </th>
+                        <th>Incongruent RTs-Congruent RTs</th>
+
+                        @for (int j = 0; j < modelsRTlist[0].TrialsStr.Split(",").Length - 1; j++)
+                        {
+                            <th>
+                                Trial: @(j+1)
+                            </th>
+                        }
+
+                    </MatTableHeader>
+                    <MatTableRow Context="UserRow">
+                        <td>
+                            @UserRow.modelCycleX
+                        </td>
+                        <td>@UserRow.modelRTc</td>
+
+                        <td>@UserRow.modelRTi</td>
+
+                        <td>@UserRow.modelRTic</td>
+
+
+                        @for (int i = 0; i < UserRow.TrialsStr.Split(",").Length - 1; i++)
+                                {
+                            <td>
+                                @(UserRow.TrialsStr.Split(",")[i])
+                            </td>
+                                }
+                        @*
+                            <td>
+
+                                <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
+                                    <Authorized>
+                                        <MatIconButton Icon="edit"></MatIconButton>
+                                    </Authorized>
+                                    <NotAuthorized>
+                                        <MatIconButton Icon="edit" Disabled="true"></MatIconButton>
+                                    </NotAuthorized>
+                                </AuthorizeView>
+                                <MatIconButton Icon="rotate_right"></MatIconButton>
+                                <AuthorizeView Policy="@Policies.IsAdmin" Context="AuthorizeContext">
+                                    <Authorized>
+                                        <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow.TestIdd))"></MatIconButton>
+                                    </Authorized>
+                                    <NotAuthorized>
+                                        <MatIconButton Icon="delete" Disabled="true"></MatIconButton>
+                                    </NotAuthorized>
+                                </AuthorizeView>
+
+                            </td>
+                        *@
+                    </MatTableRow>
+                </MatTable>
+            }
+
+        </MatTab>
+    }
+</MatTabGroup>
+
+
+@code
+{
+
+    bool smoothModels = true;
+    bool smoothTrials = true;
+    bool smoothTrial = true;
+
+    public bool singleTrialChart { get; set; } = true;
+
+    bool modelsChart = true;
+    bool trialsChart = true;
+    bool primeChart = false;
+    bool targetChart = false;
+    bool responseChart = false;
+    bool taskChart = false;
+    bool attentionChart = false;
+    bool conflictChart = false;
+
+
+    trialDataItem[] trialsRTarray = new trialDataItem[] { };
+    modelDataItem[] modelsRTarray = new modelDataItem[] { };
+    singleTrialDataItem[] singleTrialArray = new singleTrialDataItem[] { };
+
+    public class singleTrialDataItem
+    {
+        //public DateTime Date { get; set; }
+        public string singleTrialCycle { get; set; }
+        public double singleTrialOutbLLX { get; set; }
+        public double singleTrialOutbLRX { get; set; }
+        public double singleTrialOutbLMX { get; set; }
+        public double singleTrialOutbRLX { get; set; }
+        public double singleTrialOutbRRX { get; set; }
+        public double singleTrialOutbRMX { get; set; }
+        public double singleTrialOutaLX { get; set; }
+        public double singleTrialOutaRX { get; set; }
+        public double singleTrialOutaThresh { get; set; }
+        public double singleTrialTaskLX { get; set; }
+        public double singleTrialTaskRX { get; set; }
+        public double singleTrialTaskThresh { get; set; }
+        public double singleTrialAttV { get; set; }
+        public double singleTrialAttU { get; set; }
+        public double singleTrialAttHv { get; set; }
+        public double singleTrialConf { get; set; }
+        public double singleTrialConfThresh { get; set; }
+        public double singleTrialConfTrial { get; set; }
+
+    }
+
+
+    public class trialDataItem
+    {
+        //public DateTime Date { get; set; }
+        public double trialRT { get; set; }
+        public string trialCycleX { get; set; }
+
+    }
+
+
+
+    public class modelDataItem
+    {
+        public string modelCycleX { get; set; }
+        public double modelRTc { get; set; }
+        public double modelRTi { get; set; }
+        public double modelRTic { get; set; }
+
+        public string TrialsStr { get; set; }
+
+    }
+
+    // List<DataItem> ModelsData2 = new List<DataItem>();
+
+    List<trialDataItem> trialsRTlist = new List<trialDataItem>();
+    List<modelDataItem> modelsRTlist = new List<modelDataItem>();
+    List<singleTrialDataItem> singleTrialList = new List<singleTrialDataItem>();
+    List<singleTrialDataItem> singleTrialListack = new List<singleTrialDataItem>();
+
+    string FormatAsUSD(object value)
+    {
+        return ((double)value).ToString("F1", CultureInfo.InvariantCulture);
+    }
+
+    public int tabIndex = 0;
+
+    void ChangeTab(MouseEventArgs e)
+    {
+        if (spinning == false)
+        {
+            tabIndex = tabIndex == 0 ? 3 : 0;//(tabIndex < 3 & tabIndex >1) ? tabIndex - 1 : 3;
+
+        }
+    }
+    public string AsoStr = "Cognitive";
+
+    int currentCount = 0;
+
+    bool spinning = false;
+    //definition1 start
+
+    /// <summary>
+    /// //////////////////////////////////////////num loop and dur////////////////>>>>>>>
+
+    int ModelNumber = 5;
+
+    string TrialsStr1 = "";
+
+    int TrialNumber = 50;
+
+    int N = 1000;
+
+    public double mProgress { get; set; }
+    public double nProgress { get; set; }
+
+
+    public int m, n, c;// nTotal;
+    int i, j;
+
+    int durFix = 500;
+    int durPrime = 45;
+    int durMask = 75;
+    int durTarget = 200;
+
+    int durM_T_ISIcoef = 35;
+
+    public int durMaskTargetISI = 0;
+
+    public int durPrimeMaskISI = 0;
+
+    //aso////////////////////////////////////////////////rt////////////////
+
+    int onceTime1;/// <summary>////////Rt once!
+    int rt;
+    int rtI;
+    int rtC;
+    int rtMeanI;
+    int rtMeanC;
+    int rtSumC;
+    int rtSumI;
+
+    // int rtMeanI0;
+    int rtMeanC0;
+    //int rtMeanI1;
+    int rtMeanC1;
+    //int rtMeanI2;
+    int rtMeanC2;
+    //int rtMeanI3;
+    int rtMeanC3;
+    //int rtMeanI4;
+    int rtMeanC4;
+
+    int onceCycle;
+    int ic;
+
+    /// <summary>
+    /// ///////////////////////Conf Hop Att
+    /// </summary>
+    ///
+    double CLC = 3.85;
+    double CLCthresh = 1.00;
+    double ThreshConf = 1;
+    double ConfTrial = 0;
+
+    int CueOnset = 0;
+    int CueOffset = 0;
+
+    int ACH = 0;
+    int ThreshACH = 0;
+
+    double[,] ar5 = new double[3, 3];
+    double[] inp = new double[3];
+    double[] upd = new double[3];
+
+    double[] gainRate1 = new double[3];
+    double[] gainRate2 = new double[3];
+    double[] gainRate = new double[3];
+
+    double[] inpConf = new double[4];
+    double[] updConf = new double[4];
+
+    double energyHop;
+
+    //aso var ////////////////////////////////Layers act
+
+    double[] taskX = new double[3];
+    double[] taskY = new double[3];
+    double[] outaX = new double[4];
+    double[] outbLX = new double[4];
+    double[] outbRX = new double[4];
+    double[] inpaX = new double[4];
+    double[] inpbX = new double[4];
+    double[] outaY = new double[4];
+    double[] outbLY = new double[4];
+    double[] outbRY = new double[4];
+
+    ///////////////////////////////////////////////////////con
+    //conLO
+    double conResponse = 1.5;
+    //conRO
+    // double[] conROArray = { 1.5, 1.5 };
+
+    //conLT
+    double conPrime = 3.0;
+    //conRT
+    double conTarget = 3.0;
+
+    //cona
+    double conPrimeTask = 1;
+
+    //conb
+    double conTargetTask = 1;
+
+    // double ConMasks = 1.50;
+    double ConMasks = 1.50;
+    ///////////////////////////////////////////////////////self
+
+    double SelfMasks = 1.50;
+    // double SelfMasks = 1.50;
+    double SelfPri = 1.50;
+    double SelfTar = 1.50;
+    double SelfO = 1.00;
+    double SelfT = 1.00;
+
+    ///////////////////////////////////////////////////////cross
+
+    double CrossPri = 0.33;
+    double CrossTar = 0.33;
+
+    double CrossLMasks = 0.75;
+    // double CrossLMasks = 0.75;
+
+    ///////////////////////////////////////////////////////thresh
+
+    double ThreshT = 0.45;
+    double ThreshPri = 0.65;
+    double ThreshTar = 0.65;
+    double ThreshO = 0.7;
+
+    ///////////////////////////////////////////////////////inh
+
+    double inhO = -1.0;
+    double inhPri = -1.0;
+    double inhTar = -1.0;
+    double InhMasks = -1.0;
+    // double InhMasks = -1.0;
+    double inhT = -1.0;
+
+    ///////////////////////////////////////////////////////bias
+
+    //int[] biasOutArray = { -2, -2 };
+
+    //double[] biasPLArray = { -.5, -.5 };
+
+    // double[] biasPRArray = { -.5, -.5 };
+
+    // double[] biasTaskArray = { -.85, -.85 };
+
+    double biasOut = -2.0;
+
+    double biasPL = -0.5;
+
+    double biasPR = -0.5;
+
+    double biasTask = -1.25;
+
+    double BiasMasks = -1.25; //other biases?!
+                              // double BiasMasks = -0.5;
+
+    /// <summary>
+    /// ///////////////////////////////////////////////////noise
+    /// </summary>
+    double noisePTR = 0.15;// double.Parse(TextNoiseP.Text); //.5 ''noiseSD = 0.03 i.e. +- .05
+                           // noiseLMI.
+    double noiseMasks = 0.25;// double.Parse(TextNoiseLMI.Text);
+                             // noiseT.
+    double noiseTask = 0.05;// double.Parse(TextNoiseT.Text); //'noiseSD = 0.05 i.e. +- .070
+
+    /// <summary>
+    /// ////////////////////////////////////////////////////////inp
+    /// </summary>
+    double[] inpaArray = { 1, 0, 1 };
+
+    double[] inpbArray = { 1, 0, 1 };
+
+    //int[] inpaArray = { 1, 0, 1 };
+
+    //int[] inpbArray = { 1, 0, 1 };
+
+    double inpamin = 0;
+    double inpamax = 1;
+
+    double inpbmin = 0;
+    double inpbmax = 1;
+
+    double inpamask = 1;
+    double inpbmask = 1;
+
+
+    private bool Val0 = false;
+    private bool Val1 = false;
+    private bool Val2 = false;
+    private bool Val3 = false;
+    private bool Val4 = false;
+    private bool Val5 = false;
+    private bool Val6 = false;
+    private bool Val7 = false;
+    private bool Val8 = false;
+
+    //int result = -1;
+
+    //  public int Count { get; set; }
+
+    //////////await start
+
+    Stopwatch stopwatch = new Stopwatch();
+    // public long asoTimeElapsed = 0;
+
+    //  public int asoCountDown = 1;
+
+    // List<Point> allTestData = new List<Point>();
+
+    List<Models> ModelsData = new List<Models>();
+
+    //Point pointsInpModelsCTable = new Point();
+    // Point pointsInpModelsITable = new Point();
+
+    // public class Point
+    // {
+    //    public double X { get; set; }
+    //    public double Y { get; set; }
+    //    public double Z { get; set; }
+    // }
+
+    //////graph
+
+    //  var deltas = new Point[N - 1];
+    //  Point min = new Point();
+    // Point max = new Point();
+
+    public class Models
+    {
+        public int No { get; set; }//whole string for messagedto?
+        public double RTcong { get; set; }
+        public double RTincong { get; set; }
+        public string TrialsStr { get; set; }//non string
+                                             //all params! or imps
+                                             //single trial data?!
+    }
+
+}
+
+@code
+    {
+
+
+    bool createUserDialogOpen = false;
+
+    async Task asoKeepDataSingleTrial()
+    {
+        // singleTrialArray = singleTrialList.ToArray();
+        asoSingleTrialSpeed = N;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    // IEnumerable<int> values = new int[] { 14, 78 };
+    public int asoSingleTrialSpeed = 20;
+    //int valueWithStep = 30;
+
+
+    void Change(dynamic value, string name)
+    {
+        //var str = value is IEnumerable ? string.Join(", ", value) : value;
+        // events.Add(DateTime.Now, $"{name} value changed to {str}");
+        StateHasChanged();
+    }
+
+}

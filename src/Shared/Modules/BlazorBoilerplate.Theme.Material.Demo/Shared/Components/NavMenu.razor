@@ -35,23 +35,28 @@
             <span class="miniHover"> @L["AppNavEmail"]</span>
         </MatNavItem>
     </MatNavSubMenuHeader>
-    <MatNavSubMenuList>
-        <MatNavItem Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>inbox</MatIcon> <span class="miniHover">@L["AppNavReadEmail"]</span>
-        </MatNavItem>
-        <MatNavItem Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>send</MatIcon> <span class="miniHover">@L["AppNavSendEmail"]</span>
-        </MatNavItem>
-    </MatNavSubMenuList>
+    @*
+             <MatNavSubMenuList>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatIcon>inbox</MatIcon> <span class="miniHover">@L["AppNavReadEmail"]</span>
+            </MatNavItem>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+                <MatIcon>send</MatIcon> <span class="miniHover">@L["AppNavSendEmail"]</span>
+            </MatNavItem>
+        </MatNavSubMenuList>
+    *@
+
 </MatNavSubMenu>
+@*
+     <MatNavItem Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+        <MatIcon>forum</MatIcon> <span class="miniHover">@L["AppNavForum"]</span>
+    </MatNavItem>
 
-<MatNavItem Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-    <MatIcon>forum</MatIcon> <span class="miniHover">@L["AppNavForum"]</span>
-</MatNavItem>
+    <MatNavItem Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri">
+        <MatIcon>attach_money</MatIcon> <span class="miniHover">@L["AppNavSponsors"]</span>
+    </MatNavItem>
+*@
 
-<MatNavItem Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri">
-    <MatIcon>attach_money</MatIcon> <span class="miniHover">@L["AppNavSponsors"]</span>
-</MatNavItem>
 
 @code {
 

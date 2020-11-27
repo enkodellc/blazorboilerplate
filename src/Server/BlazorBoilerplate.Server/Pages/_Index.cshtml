@@ -17,7 +17,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="author" content="Enkodellc / Keith Fimreite, Giovanni Quarella">
+    <meta name="author" content="ASo">
     <meta name="description" content="Blazor Boilerplate & Starter Kit - A real world Example ">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
@@ -31,6 +31,8 @@
     }
     <base href="~/" />
     <link href="manifest.json" rel="manifest" />
+    <link href="_content/Radzen.Blazor/css/default.css" rel="stylesheet">
+
 </head>
 <body>
     @{
@@ -77,6 +79,10 @@
     {
         <script src="_framework/blazor.webassembly.js"></script>
     }
+    <script async src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    <script>
+        window.SetFocus = (id) => document.getElementById(id).focus();
+    </script>
     <!-- load remaining JS after blazor boot loads -->
     <script src="js/interop.js"></script>
     <!-- https://docs.microsoft.com/en-us/aspnet/core/blazor/progressive-web-app -->

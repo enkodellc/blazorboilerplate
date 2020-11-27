@@ -1,8 +1,8 @@
-﻿@page "/admin"
-@attribute [Authorize(Policy = Policies.IsAdmin)]
-@layout AdminLayout
+﻿@page "/fileupload"
+@using System.IO;
+@using System.Net.Http.Headers
 
-@using System.IO
+@inject HttpClient client
 
 <h1>.NET 5.0 Blazor InputFile Options</h1>
 <p>Investigating the <b>InputFile</b> component</p>
@@ -23,20 +23,21 @@
 
     @if (files != null && files.Count > 1)
     {
-<div>
-    <ul>
-        @foreach (var file in files)
-        {
-<li>@file.Name</li>}
-    </ul>
-</div>}
+        <div>
+            <ul>
+                @foreach (var file in files)
+                {
+                    <li>@file.Name</li>
+                }
+            </ul>
+        </div>}
     @if (urls.Count > 0)
     {
         foreach (var url in urls)
         {
-<br />
-                    <a href="@url" download>@url</a>}
-            }
+            <br />
+            <a href="@url" download>@url</a>}
+    }
 </div>
 
 @code { IReadOnlyList<IBrowserFile> files;
@@ -101,7 +102,7 @@
             guid = Guid.NewGuid().ToString();
         }
 
-        var relativePath = Path.Combine("wwwroot\\uploads", guid);
+        var relativePath = Path.Combine("uploads", guid);
         var dirToSave = Path.Combine("", relativePath);
         var di = new DirectoryInfo(dirToSave);
         if (!di.Exists)
@@ -121,5 +122,41 @@
 
         var url = Path.Combine(relativePath, file.Name).Replace("\\", "/");
         return url;
+    } }
+
+
+
+<h1>Please upload new file to the hosted server</h1>
+<InputFile OnChange="@SendData" />
+<div>
+
+    @if (@imageData.Count > 0)
+    {
+        <img src="@imageData[0]" width="200" />
+
+    }
+</div>
+
+
+@code { private List<string> imageData = new List<string>();
+
+    private async Task SendData(InputFileChangeEventArgs eventArgs)
+    {
+        var file = eventArgs.File;
+
+        var content = new MultipartFormDataContent();
+        content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+        content.Add(new StreamContent(file.OpenReadStream(), Convert.ToInt32(file.Size)), "file", file.Name);
+        await client.PostAsync("", content);
+        await LoadImage(file);
+    }
+
+    async Task LoadImage(IBrowserFile file)
+    {
+        long maxFileSize = 1024 * 1024 * 15;
+        using var fileStream = file.OpenReadStream(maxFileSize);
+        using var memoryStream = new MemoryStream();
+        await fileStream.CopyToAsync(memoryStream);
+        imageData.Add($"data:png;base64,{Convert.ToBase64String(memoryStream.ToArray())}");
     } }
 

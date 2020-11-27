@@ -1,0 +1,1396 @@
+﻿@page "/saman1"
+@using System.Timers
+@implements IDisposable
+@inject HttpClient Http
+@inject IAuthorizationService AuthorizationService
+@inherits ForumPageModel
+@using BlazorBoilerplate.Shared.Dto.Sample
+@inject IMatToaster matToaster
+
+@inject NavigationManager navigationManager
+@inject IJSRuntime JSRuntime
+
+@*
+        @using BlazorBoilerplate.CommonUI.Helpers
+    @using BlazorBoilerplate.Shared.Dto.Account
+    @using Blazored.TextEditor
+*@
+
+
+@if (samanFixShow == true)
+{
+    <div style="display:flex;justify-content:center; align-content:center; height: 140px ">
+    </div>
+    <div style="display:flex;justify-content:center; align-content:center; height: 200px ">
+        <svg width="200" height="200" viewBox="-5 -5 200 200" style="border:medium;">
+            <ellipse cx="@(leftScreen+100)" cy="@(topScreen+50)" rx="30" ry="5" style="fill:black" />
+            <ellipse cx="@(leftScreen+100)" cy="@(topScreen+50)" rx="5" ry="30" style="fill:black" />
+        </svg>
+    </div>
+    <div style="display:flex;justify-content:center; align-content:center; height: 140px ">
+    </div>
+
+
+}
+
+@if (asoStart == true)
+{
+    <p>
+        <MatSlider Label="Left وسط چین" @bind-Value="@leftScreen" Step="1" EnableStep="true" ValueMin="-70" ValueMax="60" Markers="true" Pin="true" TValue="int" Discrete="true" Style=" height: 60px; border-style:double; background-color:beige; margin-bottom:20px"></MatSlider>
+    </p>
+    <p>
+        <MatSlider Label="Top وسط چین" @bind-Value="@topScreen" Step="1" EnableStep="true" ValueMin="-10" ValueMax="100" Markers="true" Pin="true" TValue="int" Discrete="true" Style=" height: 60px; border-style:double; background-color:beige; margin-bottom:20px"></MatSlider>
+    </p>
+    @*
+        <p>
+            <MatSlider @bind-Value="@topScreen" Step="1" EnableStep="true" ValueMin="0" ValueMax="200" Markers="true" Pin="true" TValue="int" Discrete="true" Style=" height: 60px; border-style:double; background-color:beige; margin-bottom:20px">Top</MatSlider>
+        </p>
+    *@
+    <MatButton Style="vertical-align:central;  background-color:azure; width:140px; height:140px" tabindex="0" id="s0" OnClick="asoStartFirst">Start</MatButton>
+
+}
+
+@if (samanStim1Show == true)
+{
+    <div style="display:flex;justify-content:center; align-content:center; height: 140px ">
+    </div>
+    <div style="display:flex;justify-content:center; align-content:center; height: 200px;border:0;" @onclick="@(e => samanStim1Hit(""))" @onkeypress="@(e => samanStim1Hit(e.Code))">
+        <svg width="200" height="200" viewBox="-5 -5 200 200">
+            <circle cx="@(leftScreen+100)" cy="@(topScreen+50)" r="30" stroke="black" stroke-width="10" fill="white" />
+        </svg>
+    </div>
+    <div style="display:flex;justify-content:center; align-content:center; height: 140px ">
+    </div>
+}
+
+
+
+@if (samanStim2Show == true)
+{
+    <div style="display:flex;justify-content:center; align-content:center; height: 140px ">
+    </div>
+    <div style="display:flex;justify-content:center; align-content:center; height: 200px; border:hidden;" @onclick="@(e => samanStim2Hit(""))" @onkeypress="@(e => samanStim2Hit(e.Code))">
+        <svg width="200" height="200" viewBox="-5 -5 200 200">
+            <circle cx="@(leftScreen+100)" cy="@(topScreen+50)" r="30" stroke="black" stroke-width="3" fill="black" />
+        </svg>
+    </div>
+    <div style="display:flex;justify-content:center; align-content:center; height: 140px ">
+    </div>
+}
+
+
+@if (asoFeedbackShow == true)
+{
+    <div style="display:flex;justify-content:center; align-content:center; height: 140px ">
+    </div>
+    <div style="display:flex;justify-content:center; align-content:center; height: 200px ">
+        <svg width="500" height="100" viewBox="-5 -5 500 200" style="border:medium;">
+            @if (result == 1)
+            {
+                <circle cx="@leftScreen" cy="@(topScreen+50)" r="40" stroke="red" stroke-width="3" fill="red" />
+                <circle cx="@(leftScreen+100)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+200)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+300)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+400)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+            }
+            @if (result == 2)
+            {
+                <circle cx="@(leftScreen)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+100)" cy="@(topScreen+50)" r="40" stroke="green" stroke-width="3" fill="green" />
+                <circle cx="@(leftScreen+200)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+300)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+400)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+            }
+            @if (result == 3)
+            {
+                <circle cx="@(leftScreen+0)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+100)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+200)" cy="@(topScreen+50)" r="40" stroke="green" stroke-width="3" fill="green" />
+                <circle cx="@(leftScreen+300)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+400)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+            }
+            @if (result == 4)
+            {
+                <circle cx="@(leftScreen+0)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+100)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+200)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+300)" cy="@(topScreen+50)" r="40" stroke="green" stroke-width="3" fill="green" />
+                <circle cx="@(leftScreen+400)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+            }
+            @if (result == 5)
+            {
+                <circle cx="@(leftScreen+0)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+100)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+200)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+300)" cy="@(topScreen+50)" r="40" stroke="black" stroke-width="3" fill="black" />
+                <circle cx="@(leftScreen+400)" cy="@(topScreen+50)" r="40" stroke="red" stroke-width="3" fill="red" />
+            }
+
+        </svg>
+    </div>
+    <div style="display:flex;justify-content:center; align-content:center; height: 140px">
+    </div>
+}
+<MatDialog @bind-IsOpen="@createUserDialogOpen" @ondblclick="@(e => { createUserDialogOpen = false; })" @onkeypress="@(e => { createUserDialogOpen = false; })">
+    <p>
+        <MatButton Raised="true" Icon="close" @onclick="@(e => { createUserDialogOpen = false; })">Close Current Window</MatButton>
+    </p>
+    <strong>Thank You For Your Participation!</strong>
+    <strong>!موفق باشید-پايان</strong>
+    <p>
+        <MatButton Raised="true" Icon="close" @onclick="@(e => { createUserDialogOpen = false; })">Close Current Window</MatButton>
+    </p>
+</MatDialog>
+
+@if (1 == 2)//valueTestSelect == true)
+{
+    <p>
+        <strong> Select a Test  انتخاب یک تست </strong>
+        <MatSelectValue @bind-Value="@value1" Items="@testArr" ValueSelector=@(i => i.ToString()) @onclick="@(e => UpdateHeading2(e, TestEssay, value1, value1, false))"></MatSelectValue>
+        <strong>Selected Test: @value1</strong>
+    </p>
+}
+
+
+@if (asoScaleShow == true)
+{
+    <p>
+        <MatSlider @bind-Value="@Val4" Step="10" EnableStep="true" ValueMin="0" ValueMax="100" Markers="true" Pin="true" TValue="int" Discrete="true" Style=" height: 60px;  background-color:beige; margin-bottom:5px" @onclick="@(() => SatisfyScale(Val4))"></MatSlider>
+    </p>
+
+}
+
+
+
+@code
+{
+    public int Val4
+    {
+        get => _val4;
+        set
+        {
+            _val4 = value;
+            this.StateHasChanged();
+        }
+    }
+
+    private int _val4 = 50;
+
+    int leftScreen = 50;
+    int topScreen = 50;
+
+    public int iloop;
+    public string asoImgHtml1;
+    public string asoRnd45 = "637075149896258769835096518427816297565408379";
+    public string[] asoImgHtml;
+
+    public bool asoStart0 { get; set; }
+    public bool asoStart1 { get; set; }
+
+    public bool asoStart { get; set; }
+    public bool asoNext { get; set; }
+
+    public bool asoScaleShow { get; set; }
+    public bool asoPortionShow { get; set; }
+    public bool asoResponseShow { get; set; }
+    public bool asoFeedbackShow { get; set; }
+
+    public bool samanFixShow { get; set; }
+    public bool samanStim1Show { get; set; }
+    public bool samanStim2Show { get; set; }
+
+    public bool samanFeedbackShow { get; set; }
+
+    public int asoCBMsession { get; set; }
+
+
+    public double asoMePoint, asoHisPoint = 0;
+
+    public int asoSatisfyScale { get; set; }
+
+
+    public int asoLocation { get; set; }
+    public int asoDirection { get; set; }
+    public int asoRatioRnd { get; set; }
+
+    // public bool asoRatioRndOnce { get; set; }
+
+
+    List<JobDto> Jobs = new List<JobDto>();
+
+    List<JobList> JobsList = new List<JobList>();
+
+    List<JobDto> JobsImage = new List<JobDto>();
+
+    List<JobDto> JobsFixation = new List<JobDto>();
+    List<JobDto> JobsPrime = new List<JobDto>();
+    List<JobDto> JobsMask = new List<JobDto>();
+    List<JobDto> JobsTarget = new List<JobDto>();
+
+    public JobDto jobDtoAso { get; set; } = new JobDto();
+
+    List<ReportPeriodDto> ReportPeriods = new List<ReportPeriodDto>();
+
+
+    public string testStr1 = "";
+
+    public string testStr2 = "";
+    public string testStr3 = "1";
+
+    public string value1 = "";
+    public string value11 = "";
+    public string value111 = "";
+    public string value1111 = "";
+
+    public bool valueTestSelect = true;
+    public bool valueGetImage = false;
+    public bool valueStart = false;
+    public bool valueGetData = false;
+
+
+    public int placeImage = -1;
+
+    public string testStr = "";
+
+    public string testStrId = "";
+    public string testStrItemNo = "";
+    public string testStrTxT = "";
+    public string testStrOpt = "";
+    public string testStrResult = "";
+    public string TestEssay = "";
+
+    public string test1ValueCode11;
+    public string test1ValueCode1111;
+
+    bool createUserDialogOpen = false;
+    bool start1 = false;
+
+    //public string upImage0 = "_content/BlazorBoilerplate.CommonUI/images/RockPapS/paper.jpg";
+
+    //public string downImage0 = "_content/BlazorBoilerplate.CommonUI/images/RockPapS/rock.jpg";
+    //public string downImage1 = "_content/BlazorBoilerplate.CommonUI/images/RockPapS/scissors.jpg";
+
+    //$
+
+    public string upImage0 = "";//"_content/BlazorBoilerplate.CommonUI/images/RockPapS/paper.jpg";
+
+    public string downImage0 = "Yes";//"_content/BlazorBoilerplate.CommonUI/images/RockPapS/rock.jpg";
+    public string downImage1 = "No";//"_content/BlazorBoilerplate.CommonUI/images/RockPapS/scissors.jpg";
+
+    public string upImage1Star = "_content/BlazorBoilerplate.CommonUI/images/RockPapS/1Star.jpg";
+    public string upImage2Star = "_content/BlazorBoilerplate.CommonUI/images/RockPapS/2Star.jpg";
+
+
+    public string upImage0A { get; set; }
+    public string downImage0B { get; set; }
+    public string downImage1B { get; set; }
+
+
+    //aso5 BlazoredTextEditor QuillHtml;
+
+    public MessageDto messageDto { get; set; } = new MessageDto();
+
+
+    [Parameter]
+    public string test1ValueCode111 { get; set; }
+
+    // [Inject]
+    // public AuthenticationStateProvider authStateProvider { get; set; }
+
+
+    //UserInfoDto UserInfo { get; set; } = new UserInfoDto();
+    //[Inject]
+
+    //public Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    string AsoRT;
+    double AsoRTcounter = 0.0;
+    public int result;
+
+    Timer timer;
+    string resultMessage = string.Empty;
+    string resultMessageColor = string.Empty;
+
+    Random randomIC = new Random(DateTime.Now.Millisecond);
+    int asoLoop = 0;
+
+
+    bool Val1 = false;
+
+
+
+    protected override void OnInitialized()
+    {
+
+        //asoImgHtml[0] = "<p>aso</p>";
+        timer = new Timer();
+        timer.Interval = 1;
+        timer.Elapsed += TimerOnElapsed;
+        //timer.Start();
+
+        upImage0A = "1";
+        downImage0B = "";
+        downImage1B = "";
+
+        messageDto.Text = "";
+
+        value1 = "SAM";
+
+        asoPortionShow = false;
+        asoResponseShow = false;
+        asoScaleShow = false;
+
+        samanFixShow = true;
+        samanStim1Show = false;
+        samanStim2Show = false;
+
+        samanFeedbackShow = false;
+
+        asoFeedbackShow = false;
+
+        asoCBMsession = 0;
+        asoStart = true;
+        // asoStart1 = false;
+
+        // asoStart = false;
+
+        // asoNext = true;
+
+        //asoSatisfyScale = 50;
+    }
+
+    // protected override
+
+
+    async Task OnInitializedAsync13()
+    {
+
+        //asoImgHtml[0] = "<p>aso</p>";
+        timer = new Timer();
+        timer.Interval = 1;
+        timer.Elapsed += TimerOnElapsed;
+        //  timer.Start();
+
+        value1 = "SAM";
+
+        // var UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
+    }
+
+    // set by the @ref attribute
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        //tabindex="0" id="s1"
+
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("SetFocus", "s0");
+        }
+        // else
+        //{
+
+        //if (samanStim1Show==true)
+        //{
+        //   await JSRuntime.InvokeVoidAsync("SetFocus", "s1");
+
+        // }
+        //  if (samanStim2Show == true)
+        // {
+        //    await JSRuntime.InvokeVoidAsync("SetFocus", "s2");
+
+
+        //}
+
+        //}
+    }
+
+    public string asoUser = "aso";
+    //ApplicationUser currentUser;
+    [Inject]
+    private AuthenticationStateProvider authStateProvider { get; set; }
+
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    async Task asoStartFirst()
+    {
+
+        //asoUser = currentUser.UserName.ToString();
+        // currentUser.UserName();
+        var UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
+        if (UserInfo.IsAuthenticated)
+        {
+            asoUser = UserInfo.UserName.ToString();
+            StateHasChanged();
+        }
+        samanFixShow = false;
+        //var UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
+        await Task.Delay(500);
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(500);
+
+        foreach (var message in Messages)
+        {
+            // string asoTmp = message.Text.Split("*")[0].Trim();
+            // string asoTmp2 = message.Text.Split("*")[1].Trim().Substring(3, 1);
+            string asoTmp3 = message.Text.Split("*")[1];
+            string asoTmp2 = message.Text.Split("*")[0];
+
+            if (asoUser == asoTmp2 && asoTmp3 == "SAM")
+            {
+                // asoCBMsession = Convert.ToInt32(asoTmp2.Trim());
+                // return;
+                asoCBMsession++;
+                matToaster.Add(message.UserName, MatToastType.Success, asoCBMsession.ToString());
+
+            }
+            else
+            {
+                //  asoCBMsession = -1;
+                //  matToaster.Add(UserInfo.UserName, MatToastType.Success, asoTmp);
+            }
+            //StateHasChanged();
+
+        }
+
+        asoStart = false;
+
+        PlayAgain();
+
+        //asoStart1 = false;
+        //asoStart = true;
+
+        //asoStart0 = false;
+        // asoStart1 = true;
+
+    }
+
+
+
+
+
+    async Task PlayAgain()
+    {
+        if (asoLoop == 0)
+        {
+
+            //asoLoop = 0;
+
+            asoNext = false;
+        }
+
+        Val4 = 50;
+
+        // var UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
+
+
+        // valueTestSelect = false;
+        // resultMessage = string.Empty;
+        // AsoRTcounter = 0.0;
+        result = 2;
+        AsoRT = "";
+        // start1 = true;
+        // placeImage = 0;
+        // Val1 = true;
+
+        //upImage0A = (Convert.ToInt32(asoRnd45.Substring(asoLoop, 1)) + 1).ToString();//upImage0;
+        downImage0B = downImage0;
+        downImage1B = downImage1;
+
+        samanFixShow = true;
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(1000);
+        samanFixShow = false;
+        await InvokeAsync(StateHasChanged);
+
+        samanStim1Show = true;
+        await InvokeAsync(StateHasChanged);
+
+        //await Task.Delay(500);
+
+        //asoFeedbackShow = false;
+        //asoPortionShow = true;
+        //StateHasChanged();
+
+        //asoScaleShow = false;
+        //await Task.Delay(1000);
+        // StateHasChanged();
+        //await Task.Delay(1000);
+        //asoPortionShow = false;
+        //await Task.Delay(1000);
+        // asoRatioRndOnce = true;
+
+        //if (asoRatioRnd == 0) { asoLocation = Math.Abs(asoLocation - 1); }
+
+        //asoResponseShow = true;
+
+        //timer.Start();
+        //  }
+    }
+
+    async Task samanStim1Hit(string asoKey)
+    {
+        //letter = $"Pressed: [{e.Key}]";
+
+        //asoResponseShow = false;
+        //asoRatioRndOnce = true;
+        timer.Start();
+        samanStim1Show = false;
+        await InvokeAsync(StateHasChanged);
+        samanStim2Show = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+
+
+    async Task samanStim2Hit(string asoKey)
+    {
+        //asoResponseShow = false;
+        //asoRatioRndOnce = true;
+        //Val1 = false;
+
+        timer.Stop();
+
+        samanStim2Show = false;
+
+        AsoRTcounter = AsoRTcounter * 3;
+
+        AsoRT = AsoRTcounter.ToString();
+
+
+        if (AsoRTcounter >= 2400 && AsoRTcounter <= 2600)
+        {
+            result = 3;
+        }
+
+        if (AsoRTcounter > 1800 && AsoRTcounter < 2400)
+        {
+            result = 2;
+        }
+
+        if (AsoRTcounter > 2600 && AsoRTcounter <= 3200)
+        {
+            result = 4;
+        }
+
+        if (AsoRTcounter <= 1800)
+        {
+            result = 1;
+        }
+
+        if (AsoRTcounter > 3200)
+        {
+            result = 5;
+        }
+
+
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(500);
+
+        asoFeedbackShow = true;
+        await InvokeAsync(StateHasChanged);
+
+        int num = randomIC.Next(1000, 1500);
+
+        await Task.Delay(num);
+        asoFeedbackShow = false;
+        await InvokeAsync(StateHasChanged);
+        //asoPortionShow = false;
+
+        asoLoop++;
+
+        //await Task.Delay(1000);
+
+        //asoScaleShow = true;
+        //asoResponseShow = true;
+
+        // asoNext = true;
+
+        placeImage = -1;
+
+        //result = h;// hand.PlayAgainst(opponentHand);
+
+        //result = 3;
+
+        // upImage0A = "";
+        // downImage0B = "";
+        // downImage1B = "";
+
+        // if (asoLoop < 100 && asoLoop > 0)
+
+        // {
+        messageDto.Text = ItemNo + "_" + asoLoop.ToString() + "_" + result.ToString() + "_" + AsoRT + "_" + asoLocation.ToString() + "_" + asoDirection.ToString() + "_" + asoRatioRnd.ToString() + "#" + messageDto.Text;
+        // }
+
+        if (asoLoop == 50)
+        {
+            asoStart = false;
+            valueStart = false;
+            //asoNext = false;
+
+            try
+            {
+                //  var UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
+
+                // foreach (var mess in Messages)
+                // {
+                //   if (mess.Text.Substring(0, 2) == "a1")
+                //   {
+                // messageDto.Text = messageDto.Text + value1 + "r_" + ItemNo + "_" + asoLoop.ToString() + "_" + result.ToString() + "_" + AsoRT + "_" + asoLocation.ToString() + "_" + asoDirection.ToString() + "_" + UserInfo.UserName + "*";
+                messageDto.Text = asoUser + "*" + value1 + "*" + (asoCBMsession + 1).ToString() + "*" + DateTime.Now + "*" + messageDto.Text;
+                //messageDto1.Text = TestText1;
+                //messageDto1.Ov = TestOptionVal1;
+                //messageDto1.TestId=asoSave;
+                // messageDto1.TestFactorNo = TestFactorNo1;
+                //messageDto1.TestId = TestId1;
+                //messageDto1.TestItemNo = TestItemNo1;
+                // messageDto1.TestItemReverse = TestItemReverse1;
+                // messageDto1.TestOptionNo = TestOptionNo1;
+                // messageDto1.TestOptionStartAt = TestOptionStartAt1;
+                // messageDto1.TestOptionsTxT = TestOptionsText1;
+                // messageDto1.TestOptionVal = TestOptionVal1;
+                //Creating = true;
+                //StateHasChanged();
+                //messageDto.UserName = UserInfo.UserName;
+                messageDto.When = DateTime.Now;
+
+                await Send(messageDto);
+                //messageDto.Text = "";
+                //Creating = false;
+                //StateHasChanged();
+                // }
+                //}
+
+                matToaster.Add(asoSatisfyScale.ToString(), MatToastType.Info, "End, Thank You!");
+                createUserDialogOpen = true;
+
+            }
+
+            catch (Exception ex)
+
+            {
+                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Error");
+            }
+
+
+            // asoNext = false;
+            Dispose();
+            navigationManager.NavigateTo("");
+            //return;
+        }
+
+        else
+        {
+            AsoRTcounter = 0;
+            await PlayAgain();
+        }
+
+
+        // asoNext = true;
+    }
+
+
+
+
+    private void TimerOnElapsed(object sender, ElapsedEventArgs e)
+    {
+        AsoRTcounter++;
+        // indexOpponentHand = (indexOpponentHand + 1) % hands.Count;
+        // opponentHand = hands[indexOpponentHand];
+        //  asoImgHtml[indexOpponentHand] = allTestData[indexOpponentHand].Messagee;// await this.QuillHtml.GetHTML();
+        //asoImgHtml1[indexOpponentHand] = allTestData[indexOpponentHand].Messagee;// await this.QuillHtml.GetHTML();
+
+        if (AsoRTcounter > 2000)
+        {
+            timer.Stop();
+            samanStim2Hit("");
+        }
+        // await InvokeAsync(StateHasChanged);
+    }
+
+    async Task SatisfyScale(int s)
+    {
+
+        asoSatisfyScale = s;
+
+        matToaster.Add(s.ToString() + "/100", MatToastType.Info, "Number: " + asoLoop.ToString());
+        asoNext = true;
+    }
+
+
+    public void Dispose()
+    {
+        if (timer != null)
+        {
+            timer.Dispose();
+        }
+    }
+
+
+
+    public string TestOptionsTxT0 = "abcdefghijklmnopqrstuvwxyz";
+    public string Ov;
+    string TestId;// = "";
+    string ItemOptions;// = "";
+
+    string ItemNo;// = "";
+
+
+    public string TestResult;
+
+    public string asoText = "";
+
+    public string[] testArrOpt = new[]
+    {
+                "",
+            };
+
+    List<TestData> allTestData = new List<TestData>();
+
+    public string lastUpdatedJob = "";
+
+    void HandleStatusUpdated(JobDto updatedJob)
+    {
+        //  lastUpdatedJob = updatedJob.Description;
+    }
+
+    public class TestData
+    {
+        public string UserNamee { get; set; }
+        public string TestIdd { get; set; }
+        public string ItemNoo { get; set; }
+        public string ItemOptionss { get; set; }
+        public string Messagee { get; set; }
+        public string TestResultt { get; set; }
+
+        //e.Message, isMine, ItemNo, ItemOptions, TestResult
+        //public bool mine { get; set; }
+        //public string email { get; set; }
+        //public int id { get; set; }
+
+        // public decimal? price { get; set; }
+        //public DateTime? created_date { get; set; }
+        //public TestTypes? Testtype { get; set; }
+
+        /// <summary>
+        /// Returns row CSS if price over 800
+        /// </summary>
+        //public string RowClass => price.GetValueOrDefault(0) > 50 ? "table-danger" : null;
+    }
+
+    public string[] testArr = new[]
+{
+                "",
+            };
+
+
+    public string[] testArrTxT = new[]
+    {
+                "",
+            };
+
+    private string _currentSelectedTask;
+
+    async Task asoGetImg()
+
+    {
+        testStr = "";
+        allTestData.Clear();
+        foreach (var message in Messages)
+        {
+            // matToaster.Add(k.ToString(), MatToastType.Danger, "k");
+            testStr = testStr + TestId + "#";//message.Text.Substring(0, 6) + " ";
+
+            testArrTxT = message.Text.Split("*");
+            TestId = testArrTxT[0].Trim(); //message.Text.Substring(0, 6);// = "";
+
+            ItemNo = testArrTxT[1].Trim(); //Convert.ToInt32(message.Text.Substring(6, 3)).ToString();// = "";
+            ItemOptions = testArrTxT[2].Trim();//message.Text.Substring(9, Convert.ToInt32(message.Text.Substring(9, 2)));//"qwertyuiop_asdfghjklz_qwertyuiop_asdfghjklz_";//
+
+            asoText = testArrTxT[3].Trim(); //message.Text.Substring(53, message.Text.Length - 53);// Convert.ToInt32 (message.Text.Length)-25);
+            TestResult = testArrTxT[4].Trim();
+
+            if (TestId == value1 && (TestId.Length == 4))// || UserInfo.UserName == "cogsci")) //(message.Text.Substring(0, 6) == value1)
+            {
+
+                allTestData.Add(new TestData
+                {
+                    TestIdd = TestId,
+                    UserNamee = message.UserName,
+                    ItemOptionss = ItemOptions,
+                    ItemNoo = ItemNo,
+                    TestResultt = TestResult,
+                    Messagee = asoText,
+                });
+            }
+
+        }
+
+
+        if (Jobs.Count == 0)
+        {
+            for (int i = 0; i < allTestData.Count; i++)
+            {
+                Jobs.Add(new JobDto { Id = Convert.ToInt32(allTestData[i].ItemNoo), Description = allTestData[i].Messagee, Status = JobStatuses.Todo, LastUpdated = DateTime.Now });
+
+            }
+        }
+        else
+
+        {
+            if (JobsImage.Count == 0)
+            {
+                for (int i = 0; i < allTestData.Count; i++)
+                {
+                    JobsImage.Add(new JobDto { Id = Convert.ToInt32(allTestData[i].ItemNoo), Description = allTestData[i].Messagee, Status = JobStatuses.Todo, LastUpdated = DateTime.Now });
+
+                }
+            }
+        }
+
+
+        valueStart = true;
+
+    }
+
+
+
+
+    public void SelectionChangedEvent(object row)
+    {
+
+        if (row == null)
+        {
+            _currentSelectedTask = "";
+        }
+        else
+        {
+            _currentSelectedTask = string.Format("Task Nr. {0} has been selected", ((TestData)row).TestIdd);
+        }
+
+        this.StateHasChanged();
+    }
+
+    async Task UpdateHeading4(string testEssay, string buttonNumber, string itm, bool chk)
+    {
+
+        test1ValueCode11 = testEssay;
+        test1ValueCode111 = buttonNumber;
+        test1ValueCode1111 = itm;
+
+        createUserDialogOpen = true;
+
+    }
+
+
+    async Task UpdateHeading3(MouseEventArgs e, string testOptt, string buttonNumber, string itm, bool chk)
+    {
+
+        //test1ValueCode11 = buttonNumber;
+        test1ValueCode111 = itm;
+        //test1ValueCode1111 = test1ValueCode1111 + itm + "#";
+        //test1ValueCode11111 = test1ValueCode11111 + buttonNumber + "#";
+        //value1111 = itm;
+        //var UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
+
+        TestResult = itm + "," + buttonNumber + "," + testOptt + "," + asoUser;
+        matToaster.Add("MCTest ", MatToastType.Success, TestResult);
+
+        if (1 == 1)
+
+        {
+
+            try
+            {
+
+                // foreach (var mess in Messages)
+                // {
+                //   if (mess.Text.Substring(0, 2) == "a1")
+                //   {
+                messageDto.Text = test1ValueCode111 + "r*" + ItemNo + "*" + ItemOptions + "*" + asoText + "*" + TestResult + "*";
+
+                //messageDto1.Text = TestText1;
+                //messageDto1.Ov = TestOptionVal1;
+                //messageDto1.TestId=asoSave;
+                // messageDto1.TestFactorNo = TestFactorNo1;
+                //messageDto1.TestId = TestId1;
+                //messageDto1.TestItemNo = TestItemNo1;
+                // messageDto1.TestItemReverse = TestItemReverse1;
+                // messageDto1.TestOptionNo = TestOptionNo1;
+                // messageDto1.TestOptionStartAt = TestOptionStartAt1;
+                // messageDto1.TestOptionsTxT = TestOptionsText1;
+                // messageDto1.TestOptionVal = TestOptionVal1;
+                //Creating = true;
+                //StateHasChanged();
+                await Send(messageDto);
+                //messageDto.Text = "";
+                //Creating = false;
+                //StateHasChanged();
+                // }
+                //}
+
+
+            }
+
+            catch (Exception ex)
+
+            {
+                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, "Error");
+            }
+
+
+        }
+
+    }
+
+
+    async Task UpdateHeading2(EventArgs e, string testEssay, string buttonNumber1, string itm, bool chk)
+    {
+
+
+        string testStr1 = "";
+        testStr = "";
+
+        foreach (var message in Messages)
+        {
+            testArrTxT = message.Text.Split("*");
+            TestId = testArrTxT[0].Trim(); //message.Text.Substring(0, 6);// = "";
+
+
+            // matToaster.Add(k.ToString(), MatToastType.Danger, "k");
+            testStr = testStr + TestId + "#";//message.Text.Substring(0, 6) + " ";
+
+
+            //created_date = DateTime.Now,
+
+        }
+        testArr = testStr.Split("#");
+
+
+
+        for (int i = 0; i < testArr.Count(); i++)
+        {
+            for (int j = i + 1; j < testArr.Count(); j++)
+                if (testArr[i].ToString() == testArr[j].ToString())
+                    testArr[j] = "";
+        }
+
+        for (int i = 0; i < testArr.Count(); i++)
+        {
+            if (testArr[i].ToString() != "" && testArr[i].ToString().Length == 4)
+
+                testStr1 = testStr1 + "#" + testArr[i].ToString();
+        }
+        // testStr1 = "101010#";
+        testArr = testStr1.Trim().Split("#");
+
+
+        allTestData.Clear();
+        // itmOpIndx++;
+        // item_chk = item_chk + itm.ToString();
+        test1ValueCode111 = buttonNumber1;
+        //test1ValueCode111 = itm;
+        //UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserInfo();
+        //var UserInfo = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
+
+        testStr = "";
+        foreach (var message in Messages)
+        {
+            // matToaster.Add(k.ToString(), MatToastType.Danger, "k");
+            testStr = testStr + TestId + "#";//message.Text.Substring(0, 6) + " ";
+
+            testArrTxT = message.Text.Split("*");
+            TestId = testArrTxT[0].Trim(); //message.Text.Substring(0, 6);// = "";
+
+            ItemNo = testArrTxT[1].Trim(); //Convert.ToInt32(message.Text.Substring(6, 3)).ToString();// = "";
+            ItemOptions = testArrTxT[2].Trim();//message.Text.Substring(9, Convert.ToInt32(message.Text.Substring(9, 2)));//"qwertyuiop_asdfghjklz_qwertyuiop_asdfghjklz_";//
+
+            asoText = testArrTxT[3].Trim(); //message.Text.Substring(53, message.Text.Length - 53);// Convert.ToInt32 (message.Text.Length)-25);
+            TestResult = testArrTxT[4].Trim();
+
+            if (TestId == value1 && (TestId.Length == 4))// || UserInfo.UserName == "cogsci")) //(message.Text.Substring(0, 6) == value1)
+            {
+
+                allTestData.Add(new TestData
+                {
+                    TestIdd = TestId,
+                    UserNamee = message.UserName,
+                    ItemOptionss = ItemOptions,
+                    ItemNoo = ItemNo,
+                    TestResultt = TestResult,
+                    Messagee = asoText,
+                });
+            }
+
+        }
+
+        //testStr3 = "1";
+
+        //StateHasChanged();
+
+        matToaster.Add("Selected Test: ", MatToastType.Success, buttonNumber1);
+        valueGetImage = true;
+        //test1ValueCode111 = value1;
+
+        // test1ValueCode111 = itm;
+        // test1ValueCode1111 = test1ValueCode1111 + itm + "#";
+        // test1ValueCode11111 = test1ValueCode11111 + buttonNumber + "#";
+        // value1111 = itm;
+
+    }
+
+}
+
+
+@*
+                            @for (int i = 0; i < asoMePoint; i++)
+                            {
+                                <div style="display:flex;justify-content:center;margin-bottom:5px; height: 5px; width: 5px">
+                                    <img src="@upImage1Star" class="image" />
+
+                                </div>
+                            }
+
+                            @for (int i = 0; i < asoHisPoint; i++)
+                            {
+                                <div style="display:flex;justify-content:center;margin-bottom:5px; height: 5px; width: 5px">
+                                    <img src="@upImage2Star" class="image" />
+
+                                </div>
+                            }
+                            <p>
+                            <progress value="@(asoMePoint*5)" max="500" style=" height: 5px; color: red; border: solid"></progress>
+
+                        </p>
+
+                        <p>
+                            <progress value="@(asoHisPoint*5)" max="500" style=" height: 5px; color: red; border: solid"></progress>
+
+                        </p>
+
+
+                            @if (1 == 2)//asoStart == true)
+                            {
+                                <MatButton @onclick="@asoGetImg">Start</MatButton>
+                            }
+
+                            @if (valueGetImage == true)
+                            {
+
+                                <JobsContainer Jobs="Jobs" OnStatusUpdated="HandleStatusUpdated">
+                                    <JobList ListStatus="JobStatuses.Todo" AllowedStatuses="@(new JobStatuses[] { JobStatuses.Started })" />
+                                    <JobList ListStatus="JobStatuses.Started" AllowedStatuses="@(new JobStatuses[] { JobStatuses.Todo })" />
+                                    <JobList ListStatus="JobStatuses.Completed" AllowedStatuses="@(new JobStatuses[] { JobStatuses.Todo })" />
+                                </JobsContainer>
+
+
+                                <JobsContainer Jobs="JobsImage" OnStatusUpdated="HandleStatusUpdated">
+                                    <JobList ListStatus="JobStatuses.Todo" AllowedStatuses="@(new JobStatuses[] { JobStatuses.Started })" />
+                                    <JobList ListStatus="JobStatuses.Started" AllowedStatuses="@(new JobStatuses[] { JobStatuses.Todo })" />
+                                    <JobList ListStatus="JobStatuses.Completed" AllowedStatuses="@(new JobStatuses[] { JobStatuses.Todo })" />
+                                </JobsContainer>
+                            }
+
+                        @{
+                        if (0 == 1)
+                        {
+                            foreach (var mess in Messages)
+                            {
+                                if (mess.Text.Substring(0, 2) == "a1")
+                                {
+                                    <td><div style="width:300px;">@mess.Text.Substring(2, 1)</div></td>
+                                    <svg width="300" height="400" viewBox="-5 -5 300 400">
+                                        <image x="-5" y="-5" width="300" height="400" href="_content/BlazorBoilerplate.CommonUI/images/screenshots/@(mess.Text.Substring(asoLocation+1, 1)).jpg" />
+                                    </svg>
+                                }
+                            }
+                        }
+                    }
+
+
+                <MatProgressBar Progress=@(Convert.ToDouble(asoMePoint)/(asoMePoint+asoHisPoint))></MatProgressBar>
+                <MatProgressBar Progress=@(Convert.ToDouble(asoMePoint)/(asoMePoint+asoHisPoint))></MatProgressBar>
+                <MatProgressBar Progress=@(Convert.ToDouble(asoMePoint)/(asoMePoint+asoHisPoint))></MatProgressBar>
+                <MatProgressBar Progress=@(Convert.ToDouble(asoMePoint)/(asoMePoint+asoHisPoint))></MatProgressBar>
+                <MatProgressBar Progress=@(Convert.ToDouble(asoMePoint)/(asoMePoint+asoHisPoint))></MatProgressBar>
+                <MatProgressBar Progress=@(Convert.ToDouble(asoMePoint)/(asoMePoint+asoHisPoint))></MatProgressBar>
+                <MatProgressBar Progress=@(Convert.ToDouble(asoMePoint)/(asoMePoint+asoHisPoint))></MatProgressBar>
+                <MatProgressBar Progress=@(Convert.ToDouble(asoMePoint)/(asoMePoint+asoHisPoint))></MatProgressBar>
+                <MatProgressBar Progress=@(Convert.ToDouble(asoMePoint)/(asoMePoint+asoHisPoint))></MatProgressBar>
+                <p>
+                    <strong style="text-align:center">Your Total Portion: @(asoMePoint)/@(asoHisPoint)</strong>
+                </p>
+
+
+                <p>
+                    <div style="display:flex;justify-content:center;margin-bottom:0px">
+                        @(upImage0A)
+                        <svg width="@(Convert.ToInt32(upImage0A))" height="60">
+                            <rect width="@Convert.ToInt32(upImage0A)" height="50" fill="blue" stroke="blue" />
+                        </svg>
+                        <svg width="@(20- Convert.ToInt32(upImage0A))" height="60">
+                            <rect width="@(20- Convert.ToInt32(upImage0A))" height="50" fill="purple" stroke="purple" />
+                        </svg>
+                        @(20 - Convert.ToInt32(upImage0A))
+                    </div>
+
+                </p>
+
+                <div style="display:flex;justify-content:center;margin-bottom:5px">
+                    @if (upImage0A.Length > 20)
+                    {
+                        <img src="@upImage0A" class="image" />
+                    }
+                    else
+                    {
+                        <strong style="text-align:center">Current Offer: @upImage0A ... @(20- Convert.ToInt32(upImage0A))</strong>
+                    }
+                </div>
+
+                        @if (1 == 2)//!string.IsNullOrEmpty(resultMessage))
+                    {
+                        <strong style="color: @resultMessageColor">@resultMessage</strong>
+                        <strong>  @AsoRT</strong>
+                    }
+                    <MatTextField @bind-Value="asoMePoint" Style="background-color:blue; width:60px; text-align:center"></MatTextField>
+                    <MatTextField @bind-Value="asoHisPoint" Style="background-color: purple; width: 60px; text-align: center"></MatTextField>
+                 <p>
+                    @if (asoLocation == 0)
+                    {
+
+                        if (downImage0B.Length > 20)
+                        {
+                            <img src="@downImage0B" class="image selectable-image" @onclick="@(() => SelectHand(0))" />
+                            <img src="@downImage1B" class="image selectable-image" @onclick="@(() => SelectHand(1))" />
+                        }
+                        else
+                        {
+                            <MatIconButton Icon="check" @onclick="@(() => SelectHand(0))" Style="width:80px; height:60px; background-color:cadetblue ;  ">@downImage0</MatIconButton>
+                            <MatIconButton Icon="cancel" @onclick="@(() => SelectHand(1))" Style="width:80px; height:60px; background-color:lightcoral ;  ">@downImage1</MatIconButton>
+                        }
+                    }
+                    else
+                    {
+                        if (downImage0B.Length > 20)
+                        {
+                            <img src="@downImage1B" class="image selectable-image" @onclick="@(() => SelectHand(0))" />
+                            <img src="@downImage0B" class="image selectable-image" @onclick="@(() => SelectHand(1))" />
+                        }
+                        else
+                        {
+                            <MatIconButton Icon="cancel" @onclick="@(() => SelectHand(1))" Style="width:80px; height:60px; background-color: lightcoral;  ">@downImage1</MatIconButton>
+                            <MatIconButton Icon="check" @onclick="@(() => SelectHand(0))" Style="width:80px; height:60px; background-color: cadetblue;  ">@downImage0</MatIconButton>
+                        }
+                    }
+                </p>
+
+
+            @if (asoResponseShow == true)
+            {
+                <div style="display:flex;justify-content:center; margin-bottom:5px">
+                    <p>
+                        @if (asoDirection==0)
+                        {
+                        @if (asoLocation == 0)
+                        {
+                            <div style="display:flex;justify-content:center; margin-bottom:5px">
+                                <svg width="300" height="400" viewBox="-5 -5 300 400">
+                                    <image @onclick="@(() => SelectHand(0))" x="-5" y="-5" width="300" height="400" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@(0).jpg" />
+                                </svg>
+                                <svg width="300" height="400" viewBox="-5 -5 300 400">
+                                    <image @onclick="@(() => SelectHand(1))" x="-5" y="-5" width="300" height="400" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                                </svg>
+                                @asoLocation
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="display:flex;justify-content:center; margin-bottom:5px">
+                                <svg width="300" height="400" viewBox="-5 -5 300 400">
+                                    <image @onclick="@(() => SelectHand(1))" x="-5" y="-5" width="300" height="400" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                                </svg>
+                                <svg width="300" height="400" viewBox="-5 -5 300 400">
+                                    <image @onclick="@(() => SelectHand(0))" x="-5" y="-5" width="300" height="400" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@(0).jpg" />
+                                </svg>
+                                @asoLocation
+                            </div>
+                        }
+                        }
+                        else
+                        {
+                        @if (asoLocation == 0)
+                        {
+                            <div style="display:flex;justify-content:center; margin-bottom:5px">
+                                <svg width="300" height="400" viewBox="-5 -5 300 400">
+                                    <image @onclick="@(() => SelectHand(0))" x="-5" y="-5" width="300" height="400" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@(0).jpg" />
+                                </svg>
+                                <svg width="300" height="400" viewBox="-5 -5 300 400">
+                                    <image @onclick="@(() => SelectHand(1))" x="-5" y="-5" width="300" height="400" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                                </svg>
+                                @asoLocation
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="display:flex;justify-content:center; margin-bottom:5px">
+                                <svg width="300" height="400" viewBox="-5 -5 300 400">
+                                    <image @onclick="@(() => SelectHand(1))" x="-5" y="-5" width="300" height="400" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                                </svg>
+                                <svg width="300" height="400" viewBox="-5 -5 300 400">
+                                    <image @onclick="@(() => SelectHand(0))" x="-5" y="-5" width="300" height="400" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@(0).jpg" />
+                                </svg>
+                                @asoLocation
+                            </div>
+                        }
+                        }
+                    </p>
+                </div>
+            }
+
+
+
+        @if (asoResponseShow == true)
+        {
+            @if (asoDirection == 0)
+            {
+                @if (asoLocation == 0)
+                {
+                    <div style="display:flex;justify-content:center; margin-bottom:5px">
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image @onclick="@(() => SelectHand(0))" x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@(0).jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image @onclick="@(() => SelectHand(1))" x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                        </svg>
+                    </div>
+
+
+                    <div style="display:flex;justify-content:center;margin-bottom:5px">
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                    </div>
+
+                }
+                else
+                {
+
+                    <div style="display:flex;justify-content:center; margin-bottom:5px">
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                    </div>
+
+                    <div style="display:flex;justify-content:center;margin-bottom:5px">
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image @onclick="@(() => SelectHand(0))" x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@(0).jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image @onclick="@(() => SelectHand(1))" x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                        </svg>
+                    </div>
+
+                }
+            }
+            else
+            {
+                @if (asoLocation == 0)
+                {
+                    <div style="display:flex;justify-content:center; margin-bottom:5px">
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image @onclick="@(() => SelectHand(0))" x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@(0).jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image @onclick="@(() => SelectHand(1))" x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                        </svg>
+                    </div>
+
+
+                    <div style="display:flex;justify-content:center;margin-bottom:5px">
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                    </div>
+
+                }
+                else
+                {
+
+                    <div style="display:flex;justify-content:center; margin-bottom:5px">
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@("b").jpg" />
+                        </svg>
+                    </div>
+
+                    <div style="display:flex;justify-content:center; margin-bottom:5px">
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image @onclick="@(() => SelectHand(0))" x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/neutr/@(0).jpg" />
+                        </svg>
+                        <svg width="200" height="300" viewBox="-5 -5 200 300">
+                            <image @onclick="@(() => SelectHand(1))" x="-5" y="-5" width="200" height="300" href="_content/BlazorBoilerplate.CommonUI/images/cbm/angri/@("b").jpg" />
+                        </svg>
+                    </div>
+                }
+            }
+        }
+            <div style="display:flex;justify-content:center; ">
+            <p>
+                <MatButton Label="@asoLoop.ToString()" Style="background-color: lightskyblue;  background-color:lightblue; width:100px; height:60px" OnClick="PlayAgain"> <strong style="text-emphasis-color:gold;">==>></strong> </MatButton>
+            </p>
+        </div>
+
+        @if (asoFeedbackShow == true)
+    {
+        @asoMePoint
+        <div style="display:flex;justify-content:left; margin-bottom:5px">
+            <svg height="60">
+                <rect width="@asoMePoint" height="60" fill="blue" stroke="yellow" />
+            </svg>
+        </div>
+        @asoHisPoint
+        <div style="display:flex;justify-content:left; margin-bottom:5px">
+            <svg height="60">
+                <rect width="@asoHisPoint" height="60" fill="purple" stroke="yellow" />
+            </svg>
+        </div>
+    }
+*@
+
