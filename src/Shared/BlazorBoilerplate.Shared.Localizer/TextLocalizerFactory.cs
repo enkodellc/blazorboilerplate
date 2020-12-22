@@ -18,7 +18,7 @@ namespace BlazorBoilerplate.Shared.Localizer
         {
             var contextId = resourceSource.FullName;
 
-            if (resourceSource == typeof(Global))
+            if (resourceSource == typeof(Global) || !_options.Value.UseTypeFullNames)
                 contextId = resourceSource.Name;
 
             return new LocalizationManager(_provider, contextId, _options);
