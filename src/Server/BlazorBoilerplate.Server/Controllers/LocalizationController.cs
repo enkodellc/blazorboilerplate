@@ -24,6 +24,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -170,7 +171,14 @@ namespace BlazorBoilerplate.Server.Controllers
 
                 stream.Position = 0;
 
-                var result = parser.Parse(new StreamReader(stream));
+                string text;
+
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    text = reader.ReadToEnd().Trim('\0');
+                }
+
+                var result = parser.Parse(text);
 
                 if (result.Success)
                 {
