@@ -42,27 +42,16 @@ namespace BlazorBoilerplate.Storage
         {
             //builder.EnableSensitiveDataLogging();
             var migrationsAssembly = typeof(T).GetTypeInfo().Assembly.GetName().Name;
-            var useSqlServer = Convert.ToBoolean(configuration[$"{projectName}:UseSqlServer"] ?? "false");
-            var dbConnString = useSqlServer
-                ? configuration.GetConnectionString("DefaultConnection")
-                : $"Filename={configuration.GetConnectionString("SqlLiteConnectionFileName")}";
+            var useSqlServer = !Convert.ToBoolean(configuration[$"{projectName}:UsePostgresServer"] ?? "false");
 
             if (useSqlServer)
-            {
-                builder.UseSqlServer(dbConnString, options =>
+                builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), options =>
                 {
                     options.CommandTimeout(60);
                     options.MigrationsAssembly(migrationsAssembly);
                 });
-            }
-            else if (Convert.ToBoolean(configuration[$"{projectName}:UsePostgresServer"] ?? "false"))
-            {
-                builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), options => options.MigrationsAssembly(migrationsAssembly));
-            }
             else
-            {
-                builder.UseSqlite(dbConnString, options => options.MigrationsAssembly(migrationsAssembly));
-            }
+                builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), options => options.MigrationsAssembly(migrationsAssembly));
         }
 
         public static IIdentityServerBuilder AddIdentityServerStores(this IIdentityServerBuilder builder, IConfiguration configuration)
