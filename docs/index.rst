@@ -14,7 +14,7 @@ Blazor Boilerplate is a starter template for `Blazor web apps <https://dotnet.mi
 With Blazor Boilerplate you can easily switch between the two modes of Blazor.
 
 
-From Microsoft documentation `ASP.NET Core Blazor hosting models <https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1>`_.
+From Microsoft documentation `ASP.NET Core Blazor hosting models <https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models>`_.
 
 Blazor Server
 ------------------

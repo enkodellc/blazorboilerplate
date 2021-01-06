@@ -4,38 +4,34 @@ Localization has moved from Resource based localization to Database based locali
 so translation are no more in dll satellite libraries, but in table **LocalizationRecords**.
 Look at `LocalizationDbContext <https://github.com/enkodellc/blazorboilerplate/blob/master/src/Server/BlazorBoilerplate.Storage/LocalizationDbContext.cs>`_.
 
-The localization code is in `BlazorBoilerplate.Shared project <https://github.com/enkodellc/blazorboilerplate/tree/master/src/Shared/BlazorBoilerplate.Shared/SqlLocalizer>`_.
+The localization code is in `BlazorBoilerplate.Shared.Localizer project <https://github.com/enkodellc/blazorboilerplate/tree/master/src/Shared/BlazorBoilerplate.Shared.Localizer>`_.
+The supported cultures are defined in `Settings.cs <https://github.com/enkodellc/blazorboilerplate/blob/master/src/Shared/BlazorBoilerplate.Shared.Localizer/Settings.cs>`_.
 
 At this time **Data Annotations** do not support **IStringLocalizer<>**,
 so to localize validation error messages, we have to use `Blazored.FluentValidation <https://github.com/Blazored/FluentValidation>`_.
 
+Po files
+________
+This project adopts the `PO file format <https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html>`_ as standard translations files.
+In the admin section you can edit translations and import and export PO files.
+There are a lot of free and paid tools and online services to manage these files. E.g.:
 
-The **Localization project** contains main application **Strings.[language-country].resx** files with available languages.
+`Poedit <https://poedit.net/>`_
 
-.. note:: This project is only used to store resx files to init **LocalizationRecords** table in `DatabaseInitializer <https://github.com/enkodellc/blazorboilerplate/blob/master/src/Server/BlazorBoilerplate.Storage/DatabaseInitializer.cs#L87>`_.
-   Warning! This is not a production ready solution and it will change in future.
+`Eazy Po <http://www.eazypo.ca/>`_
 
+`Crowdin <https://www.crowdin.com/>`_ `(PO file format support) <https://support.crowdin.com/file-formats/po/>`_
 
-If you add new keys, you have to provide always english (en-us) neutral language and only other languages you know.
+To manage PO files BlazorBoilerplate uses `Karambolo.PO <https://github.com/adams85/po>`_ library.
+So to handle plurals the Karambolo.PO syntax is used like in the example below.
 
-Managing all these resx files can be tricky, so it is better to install a Visual Studio extension like `ResXManager`_.
-
-.. image:: /images/resx-resource-manager.png
-   :align: center
-
-With `ResXManager`_ is easy to add a new language from the user interface.
-
-Then you have to add the new supported culture in `Settings.cs <https://github.com/enkodellc/blazorboilerplate/blob/master/src/Shared/BlazorBoilerplate.Shared/SqlLocalizer/Settings.cs>`_.
-
-For module specific localization, consider using a local resx file.
 
 Everywhere you need localized text, inject **IStringLocalizer<Global>** and look how it is used throughout the code.
 
 ::
 
- L["text key usually in english"]
+ L["MsgId usually in english"]
 
-
-
-
-.. _ResXManager: https://marketplace.visualstudio.com/items?itemName=TomEnglert.ResXManager
+ L["Email {0} is not valid", email]
+ 
+ L["One item found", Plural.From("{0} items found", totalItemsCount)]
