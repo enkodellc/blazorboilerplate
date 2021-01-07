@@ -15,12 +15,12 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
             RequiredDomain = requiredDomain;
         }
     }
-    
+
     public class DomainRequirementHandler : AuthorizationHandler<DomainRequirement>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, DomainRequirement requirement)
         {
-            if (!context.User.HasClaim(c=>c.Type == ClaimTypes.Email))
+            if (!context.User.HasClaim(c => c.Type == ClaimTypes.Email))
             {
                 return Task.CompletedTask;
             }
@@ -31,7 +31,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
             {
                 context.Succeed(requirement);
             }
-            
+
             // you can add as many checks as your want for a given policy
             return Task.CompletedTask;
         }

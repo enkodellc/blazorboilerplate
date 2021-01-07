@@ -13,6 +13,7 @@ namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
         public const string IsMyDomain = "IsMyDomain";
         public const string TwoFactorEnabled = "TwoFactorEnabled";
 
+        //In DatabaseInitializer: await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", "true"));
         public static AuthorizationPolicy IsAdminPolicy()
         {
             return new AuthorizationPolicyBuilder()
