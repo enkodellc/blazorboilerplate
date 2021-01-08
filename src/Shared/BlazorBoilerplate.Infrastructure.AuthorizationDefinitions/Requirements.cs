@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 // using modified example from https://chrissainty.com/securing-your-blazor-apps-configuring-policy-based-authorization-with-blazor/
 
-namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
+namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
 {
     public class DomainRequirement : IAuthorizationRequirement
     {

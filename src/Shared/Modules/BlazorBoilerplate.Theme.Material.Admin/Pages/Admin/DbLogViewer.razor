@@ -1,6 +1,6 @@
 ﻿@page "/admin/dblog"
 
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
 @inject IApiClient apiClient
 @inject IMatToaster matToaster

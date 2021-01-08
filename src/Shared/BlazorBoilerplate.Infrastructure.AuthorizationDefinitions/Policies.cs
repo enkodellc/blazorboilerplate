@@ -3,7 +3,7 @@
 //This is ASP.Net Core Identity
 //see https://chrissainty.com/securing-your-blazor-apps-configuring-policy-based-authorization-with-blazor/
 
-namespace BlazorBoilerplate.Shared.AuthorizationDefinitions
+namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
 {
     public static class Policies
     {

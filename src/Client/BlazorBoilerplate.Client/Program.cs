@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;

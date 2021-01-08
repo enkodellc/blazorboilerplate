@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlazorBoilerplate.Constants\BlazorBoilerplate.Constants.csproj" />
+    <ProjectReference Include="..\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared.DataInterfaces\BlazorBoilerplate.Shared.DataInterfaces.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared.Localizer\BlazorBoilerplate.Shared.Localizer.csproj" />
   </ItemGroup>

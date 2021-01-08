@@ -1,5 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Localizer;
-using BlazorBoilerplate.Shared.AuthorizationDefinitions;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Theme.Material.Admin.Shared.Layouts;
@@ -15,7 +15,7 @@ using BlazorBoilerplate.Constants;
 
 namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
 {
-    [Authorize(Policy = Policies.IsAdmin)]
+    [Authorize(Policies.IsAdmin)]
     [Layout(typeof(AdminLayout))]
     public abstract class SettingsBase : ComponentBase
     {

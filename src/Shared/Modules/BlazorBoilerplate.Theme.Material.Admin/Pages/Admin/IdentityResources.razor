@@ -1,5 +1,5 @@
 @page "/admin/identityResources"
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
 @inject HttpClient Http
 @inject IMatToaster matToaster

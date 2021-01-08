@@ -1,4 +1,5 @@
 using AutoMapper;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
@@ -8,7 +9,6 @@ using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Server.Factories;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
-using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;

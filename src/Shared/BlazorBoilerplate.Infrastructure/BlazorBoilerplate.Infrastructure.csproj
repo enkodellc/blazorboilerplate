@@ -7,6 +7,7 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Infrastructure.Storage\BlazorBoilerplate.Infrastructure.Storage.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
   </ItemGroup>

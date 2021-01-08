@@ -62,7 +62,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.EntityGen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Shared.DataInterfaces", "Shared\BlazorBoilerplate.Shared.DataInterfaces\BlazorBoilerplate.Shared.DataInterfaces.csproj", "{2D67021C-4608-464A-9ECA-2EA5CC56D6CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.Shared.Localizer", "Shared\BlazorBoilerplate.Shared.Localizer\BlazorBoilerplate.Shared.Localizer.csproj", "{746B25CA-DAEC-4A90-9ED5-357038C675D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Shared.Localizer", "Shared\BlazorBoilerplate.Shared.Localizer\BlazorBoilerplate.Shared.Localizer.csproj", "{746B25CA-DAEC-4A90-9ED5-357038C675D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.Infrastructure.AuthorizationDefinitions", "Shared\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions.csproj", "{1D566D73-A7A1-4EE8-BA33-50D049901FB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -278,6 +280,18 @@ Global
 		{746B25CA-DAEC-4A90-9ED5-357038C675D7}.Release|x64.Build.0 = Release|Any CPU
 		{746B25CA-DAEC-4A90-9ED5-357038C675D7}.Release|x86.ActiveCfg = Release|Any CPU
 		{746B25CA-DAEC-4A90-9ED5-357038C675D7}.Release|x86.Build.0 = Release|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Debug|x64.Build.0 = Debug|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Debug|x86.Build.0 = Debug|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Release|x64.ActiveCfg = Release|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Release|x64.Build.0 = Release|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Release|x86.ActiveCfg = Release|Any CPU
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -304,6 +318,7 @@ Global
 		{5617019B-5A43-4485-9092-BA8BA9B4DED5} = {683E9CAE-E8CE-4093-9665-58B12F12E6DB}
 		{2D67021C-4608-464A-9ECA-2EA5CC56D6CA} = {ABC8E72F-DA04-4370-A612-2E22542D42AA}
 		{746B25CA-DAEC-4A90-9ED5-357038C675D7} = {ABC8E72F-DA04-4370-A612-2E22542D42AA}
+		{1D566D73-A7A1-4EE8-BA33-50D049901FB4} = {ABC8E72F-DA04-4370-A612-2E22542D42AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {75F45143-A365-4C32-A2D5-56BDADCE76CC}

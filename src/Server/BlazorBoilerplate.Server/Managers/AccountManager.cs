@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
@@ -6,7 +7,6 @@ using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Extensions;
-using BlazorBoilerplate.Shared.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
