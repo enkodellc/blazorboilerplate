@@ -83,6 +83,7 @@ namespace BlazorBoilerplate.Server.Controllers
                     }
                 };
 
+#pragma warning disable CA1416 // Validate platform compatibility
                 var id = new ClaimsIdentity(AccountOptions.WindowsAuthenticationSchemeName);
                 id.AddClaim(new Claim(JwtClaimTypes.Subject, wp.FindFirst(ClaimTypes.PrimarySid).Value));
                 id.AddClaim(new Claim(JwtClaimTypes.Name, wp.Identity.Name));
@@ -95,11 +96,13 @@ namespace BlazorBoilerplate.Server.Controllers
                     var roles = groups.Select(x => new Claim(JwtClaimTypes.Role, x.Value));
                     id.AddClaims(roles);
                 }
+#pragma warning restore CA1416 // Validate platform compatibility
 
                 await HttpContext.SignInAsync(
                     IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme,
                     new ClaimsPrincipal(id),
                     props);
+
                 return Redirect(props.RedirectUri);
             }
             else
