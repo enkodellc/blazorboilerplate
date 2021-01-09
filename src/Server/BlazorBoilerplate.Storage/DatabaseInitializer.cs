@@ -23,9 +23,6 @@ namespace BlazorBoilerplate.Storage
 {
     public class DatabaseInitializer : IDatabaseInitializer
     {
-        private const string adminRoleName = DefaultRoleNames.Administrator;
-        private const string userRoleName = DefaultRoleNames.User;
-
         private readonly LocalizationDbContext _localizationDbContext;
         private readonly PersistedGrantDbContext _persistedGrantContext;
         private readonly ConfigurationDbContext _configurationContext;
@@ -102,8 +99,8 @@ namespace BlazorBoilerplate.Storage
         {
             if ((await _userManager.FindByNameAsync(DefaultUserNames.User)) == null)
             {
-                await EnsureRoleAsync(userRoleName, "Default user", new string[] { });
-                await CreateUserAsync(DefaultUserNames.User, "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { userRoleName });
+                await EnsureRoleAsync(DefaultRoleNames.User, "Default user", new string[] { });
+                await CreateUserAsync(DefaultUserNames.User, "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.User });
             }
 
             if (_tenantStoreDbContext.TenantInfo.Count() < 2)
@@ -221,7 +218,7 @@ namespace BlazorBoilerplate.Storage
             await EnsureRoleAsync(DefaultRoleNames.Administrator, "Default administrator", _applicationPermissions.GetAllPermissionValues());
             await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
 
-            ApplicationRole adminRole = await _roleManager.FindByNameAsync(adminRoleName);
+            ApplicationRole adminRole = await _roleManager.FindByNameAsync(DefaultRoleNames.Administrator);
             var AllClaims = _applicationPermissions.GetAllPermissionValues().Distinct();
             var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
             var NewClaims = AllClaims.Except(RoleClaims);
