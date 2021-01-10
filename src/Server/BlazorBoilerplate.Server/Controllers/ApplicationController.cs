@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Storage;
 using Breeze.AspNetCore;
 using Breeze.Persistence;
@@ -50,12 +51,14 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policies.IsAdmin)]
         public IQueryable<ApplicationUser> Users()
         {
             return persistenceManager.GetEntities<ApplicationUser>().Include(i => i.UserRoles).ThenInclude(i => i.Role).OrderBy(i => i.UserName);
         }
 
         [HttpGet]
+        [Authorize(Policies.IsAdmin)]
         public IQueryable<ApplicationRole> Roles()
         {
             return persistenceManager.GetEntities<ApplicationRole>().OrderBy(i => i.Name);
@@ -69,12 +72,14 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policies.IsAdmin)]
         public IQueryable<DbLog> Logs()
         {
             return persistenceManager.GetEntities<DbLog>().AsNoTracking().OrderByDescending(i => i.TimeStamp);
         }
 
         [HttpGet]
+        [Authorize(Policies.IsAdmin)]
         public IQueryable<ApiLogItem> ApiLogs()
         {
             return persistenceManager.GetEntities<ApiLogItem>().AsNoTracking().OrderByDescending(i => i.RequestTime);
