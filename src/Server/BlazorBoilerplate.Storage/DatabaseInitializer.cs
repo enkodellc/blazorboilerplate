@@ -100,7 +100,7 @@ namespace BlazorBoilerplate.Storage
             if ((await _userManager.FindByNameAsync(DefaultUserNames.User)) == null)
             {
                 await EnsureRoleAsync(DefaultRoleNames.User, "Default user", new string[] { });
-                await CreateUserAsync(DefaultUserNames.User, "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.User });
+                await CreateUserAsync(DefaultUserNames.User, "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.User });
             }
 
             if (_tenantStoreDbContext.TenantInfo.Count() < 2)
@@ -216,7 +216,7 @@ namespace BlazorBoilerplate.Storage
         public async Task EnsureAdminIdentitiesAsync()
         {
             await EnsureRoleAsync(DefaultRoleNames.Administrator, "Default administrator", _entityPermissions.GetAllPermissionValues());
-            await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
+            await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
 
             ApplicationRole adminRole = await _roleManager.FindByNameAsync(DefaultRoleNames.Administrator);
             var AllClaims = _entityPermissions.GetAllPermissionValues().Distinct();

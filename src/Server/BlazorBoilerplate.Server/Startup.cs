@@ -348,16 +348,7 @@ namespace BlazorBoilerplate.Server
             #endregion
 
             #region Authorization
-            //Add Policies / Claims / Authorization - https://identityserver4.readthedocs.io/en/latest/topics/add_apis.html#advanced
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
-                options.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
-                options.AddPolicy(Policies.IsReadOnly, Policies.IsReadOnlyPolicy());
-                options.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  // valid only on serverside operations
-                options.AddPolicy(Policies.TwoFactorEnabled, Policies.IsTwoFactorEnabledPolicy());
-            });
-
+            //Add Policies / Claims / Authorization - https://identityserver4.readthedocs.io/en/latest/topics/add_apis.html#advanced 
             services.AddScoped<EntityPermissions>();
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();

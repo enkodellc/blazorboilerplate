@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Authorization
 {
-    public class AuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
+    public class AuthorizationPolicyProvider : SharedAuthorizationPolicyProvider
     {
         private readonly AuthorizationOptions _options;
 

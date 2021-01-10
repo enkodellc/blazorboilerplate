@@ -4,6 +4,7 @@ using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.DataProtection;
@@ -42,17 +43,13 @@ namespace BlazorBoilerplate.Client
             });
             builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
             builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddAuthorizationCore(config =>
-            {
-                config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
-                config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
-                config.AddPolicy(Policies.IsReadOnly, Policies.IsReadOnlyPolicy());
-                config.AddPolicy(Policies.TwoFactorEnabled, Policies.IsTwoFactorEnabledPolicy());
-                // config.AddPolicy(Policies.IsMyDomain, Policies.IsMyDomainPolicy());  Only works on the server end
-            });
+
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddSingleton<IAuthorizationPolicyProvider, SharedAuthorizationPolicyProvider>();
+            builder.Services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
+            builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 
             builder.Services.AddScoped<ILocalizationApiClient, LocalizationApiClient>();
-            builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
             builder.Services.AddScoped<IAccountApiClient, AccountApiClient>();
             builder.Services.AddScoped<AppState>();
             builder.Services.AddScoped<IApiClient, ApiClient>();
