@@ -30,7 +30,7 @@ namespace BlazorBoilerplate.Storage
         private readonly TenantStoreDbContext _tenantStoreDbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly ApplicationPermissions _applicationPermissions;
+        private readonly EntityPermissions _entityPermissions;
         private readonly ILocalizationProvider _localizationProvider;
         private readonly ILogger _logger;
 
@@ -42,7 +42,7 @@ namespace BlazorBoilerplate.Storage
             ConfigurationDbContext configurationContext,
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
-            ApplicationPermissions applicationPermissions,
+            EntityPermissions entityPermissions,
             ILocalizationProvider localizationProvider,
             ILogger<DatabaseInitializer> logger)
         {
@@ -53,7 +53,7 @@ namespace BlazorBoilerplate.Storage
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
-            _applicationPermissions = applicationPermissions;
+            _entityPermissions = entityPermissions;
             _localizationProvider = localizationProvider;
             _logger = logger;
         }
@@ -215,11 +215,11 @@ namespace BlazorBoilerplate.Storage
 
         public async Task EnsureAdminIdentitiesAsync()
         {
-            await EnsureRoleAsync(DefaultRoleNames.Administrator, "Default administrator", _applicationPermissions.GetAllPermissionValues());
+            await EnsureRoleAsync(DefaultRoleNames.Administrator, "Default administrator", _entityPermissions.GetAllPermissionValues());
             await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazoreboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
 
             ApplicationRole adminRole = await _roleManager.FindByNameAsync(DefaultRoleNames.Administrator);
-            var AllClaims = _applicationPermissions.GetAllPermissionValues().Distinct();
+            var AllClaims = _entityPermissions.GetAllPermissionValues().Distinct();
             var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
             var NewClaims = AllClaims.Except(RoleClaims);
 
@@ -243,7 +243,7 @@ namespace BlazorBoilerplate.Storage
                 if (claims == null)
                     claims = new string[] { };
 
-                string[] invalidClaims = claims.Where(c => _applicationPermissions.GetPermissionByValue(c) == null).ToArray();
+                string[] invalidClaims = claims.Where(c => _entityPermissions.GetPermissionByValue(c) == null).ToArray();
                 if (invalidClaims.Any())
                     throw new Exception("The following claim types are invalid: " + string.Join(", ", invalidClaims));
 
@@ -255,7 +255,7 @@ namespace BlazorBoilerplate.Storage
 
                 foreach (string claim in claims.Distinct())
                 {
-                    result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _applicationPermissions.GetPermissionByValue(claim)));
+                    result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _entityPermissions.GetPermissionByValue(claim)));
 
                     if (!result.Succeeded)
                         await _roleManager.DeleteAsync(role);

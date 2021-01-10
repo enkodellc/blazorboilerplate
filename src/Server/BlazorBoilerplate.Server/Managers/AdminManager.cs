@@ -33,7 +33,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ConfigurationDbContext _configurationDbContext;
         private readonly TenantStoreDbContext _tenantStoreDbContext;
-        private readonly ApplicationPermissions _applicationPermissions;
+        private readonly EntityPermissions _entityPermissions;
         private readonly ILogger<AdminManager> _logger;
         private readonly IStringLocalizer<Global> L;
 
@@ -42,7 +42,7 @@ namespace BlazorBoilerplate.Server.Managers
             RoleManager<ApplicationRole> roleManager,
             ConfigurationDbContext configurationDbContext,
             TenantStoreDbContext tenantStoreDbContext,
-            ApplicationPermissions applicationPermissions,
+            EntityPermissions entityPermissions,
             ILogger<AdminManager> logger,
             IStringLocalizer<Global> l)
         {
@@ -51,7 +51,7 @@ namespace BlazorBoilerplate.Server.Managers
             _roleManager = roleManager;
             _configurationDbContext = configurationDbContext;
             _tenantStoreDbContext = tenantStoreDbContext;
-            _applicationPermissions = applicationPermissions;
+            _entityPermissions = entityPermissions;
             _logger = logger;
             L = l;
         }
@@ -81,7 +81,7 @@ namespace BlazorBoilerplate.Server.Managers
 
         public ApiResponse GetPermissions()
         {
-            var permissions = _applicationPermissions.GetAllPermissionNames();
+            var permissions = _entityPermissions.GetAllPermissionNames();
             return new ApiResponse(Status200OK, L["Permissions list fetched"], permissions);
         }
 
@@ -97,7 +97,7 @@ namespace BlazorBoilerplate.Server.Managers
             foreach (var role in listResponse)
             {
                 var claims = await _roleManager.GetClaimsAsync(role);
-                var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => _applicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
+                var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
                 roleDtoList.Add(new RoleDto
                 {
@@ -114,7 +114,7 @@ namespace BlazorBoilerplate.Server.Managers
             var identityRole = await _roleManager.FindByNameAsync(roleName);
 
             var claims = await _roleManager.GetClaimsAsync(identityRole);
-            var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => _applicationPermissions.GetPermissionByValue(x.Value).Name).ToList();
+            var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
             var roleDto = new RoleDto
             {
@@ -144,7 +144,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             foreach (var claim in roleDto.Permissions)
             {
-                var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _applicationPermissions.GetPermissionByName(claim)));
+                var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _entityPermissions.GetPermissionByName(claim)));
 
                 if (!resultAddClaim.Succeeded)
                     await _roleManager.DeleteAsync(role);
@@ -178,7 +178,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                     foreach (var claim in roleDto.Permissions)
                     {
-                        var result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _applicationPermissions.GetPermissionByName(claim)));
+                        var result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _entityPermissions.GetPermissionByName(claim)));
 
                         if (!result.Succeeded)
                             await _roleManager.DeleteAsync(role);

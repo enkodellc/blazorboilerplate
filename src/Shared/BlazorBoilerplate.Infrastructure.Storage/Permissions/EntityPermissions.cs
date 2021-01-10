@@ -9,25 +9,25 @@ using System.Reflection;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
 {
-    public class ApplicationPermissions
+    public class EntityPermissions
     {
-        private static readonly ReadOnlyCollection<ApplicationPermission> AllPermissions;
-        private static readonly ReadOnlyCollection<ApplicationPermission> AllPermissionsForTenants;
+        private static readonly ReadOnlyCollection<EntityPermission> AllPermissions;
+        private static readonly ReadOnlyCollection<EntityPermission> AllPermissionsForTenants;
 
         private bool IsMasterTenant;
         /// <summary>
         /// Generates ApplicationPermissions based on Permissions Type by iterating over its nested classes and getting constant strings in each class as Value and Name, LocalizedDescriptionAttribute of the constant string as Description, the nested class name as GroupName.
         /// </summary>
-        static ApplicationPermissions()
+        static EntityPermissions()
         {
-            List<ApplicationPermission> allPermissions = new List<ApplicationPermission>();
+            List<EntityPermission> allPermissions = new List<EntityPermission>();
             IEnumerable<object> permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Static | BindingFlags.Public).Cast<TypeInfo>();
             foreach (TypeInfo permissionClass in permissionClasses)
             {
                 IEnumerable<FieldInfo> permissions = permissionClass.DeclaredFields.Where(f => f.IsLiteral);
                 foreach (FieldInfo permission in permissions)
                 {
-                    ApplicationPermission applicationPermission = new ApplicationPermission
+                    EntityPermission applicationPermission = new EntityPermission
                     {
                         Value = permission.GetValue(null).ToString(),
                         Name = permission.GetValue(null).ToString().Replace('.', ' '),
@@ -49,8 +49,8 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
                 var requiredPermissions = entity.GetCustomAttribute<PermissionsAttribute>(false);
 
                 foreach (Actions action in Enum.GetValues(typeof(Actions)))
-                    if ((requiredPermissions.Actions & action) == action && action != Actions.CRUD)
-                        allPermissions.Add(new ApplicationPermission
+                    if ((requiredPermissions.Actions & action) == action && action != Actions.CRUD && action != Actions.CUD)
+                        allPermissions.Add(new EntityPermission
                         {
                             Value = $"{entity.Name}.{action}",
                             Name = $"{entity.Name} {action}",
@@ -62,22 +62,22 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
             AllPermissionsForTenants = allPermissions.Where(i => !i.Value.StartsWith("Tenant.")).ToList().AsReadOnly();
         }
 
-        public ApplicationPermissions(TenantInfo tenantInfo)
+        public EntityPermissions(TenantInfo tenantInfo)
         {
             IsMasterTenant = tenantInfo == null || tenantInfo.Id == Settings.DefaultTenantId;
         }
 
-        private IEnumerable<ApplicationPermission> GetAllPermission()
+        private IEnumerable<EntityPermission> GetAllPermission()
         {
             return IsMasterTenant ? AllPermissions : AllPermissionsForTenants;
         }
 
-        public ApplicationPermission GetPermissionByName(string permissionName)
+        public EntityPermission GetPermissionByName(string permissionName)
         {
             return GetAllPermission().Where(p => p.Name == permissionName).FirstOrDefault();
         }
 
-        public ApplicationPermission GetPermissionByValue(string permissionValue)
+        public EntityPermission GetPermissionByValue(string permissionValue)
         {
             return GetAllPermission().Where(p => p.Value == permissionValue).FirstOrDefault();
         }

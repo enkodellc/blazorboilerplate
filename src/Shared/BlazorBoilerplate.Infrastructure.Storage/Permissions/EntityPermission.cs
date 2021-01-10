@@ -1,11 +1,11 @@
 ﻿namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
 {
-    public class ApplicationPermission
+    public class EntityPermission
     {
-        public ApplicationPermission()
+        public EntityPermission()
         { }
 
-        public ApplicationPermission(string name, string value, string groupName, string description = null)
+        public EntityPermission(string name, string value, string groupName, string description = null)
         {
             Name = name;
             Value = value;
@@ -23,7 +23,7 @@
             return Value;
         }
 
-        public static implicit operator string(ApplicationPermission permission)
+        public static implicit operator string(EntityPermission permission)
         {
             return permission.Value;
         }

@@ -358,7 +358,7 @@ namespace BlazorBoilerplate.Server
                 options.AddPolicy(Policies.TwoFactorEnabled, Policies.IsTwoFactorEnabledPolicy());
             });
 
-            services.AddScoped<ApplicationPermissions>();
+            services.AddScoped<EntityPermissions>();
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
             services.AddTransient<IAuthorizationHandler, PermissionRequirementHandler>();
