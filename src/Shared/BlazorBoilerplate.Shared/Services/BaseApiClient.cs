@@ -94,11 +94,15 @@ namespace BlazorBoilerplate.Shared.Services
             Expression<Func<T, object>> orderBy = null,
             Expression<Func<T, object>> orderByDescending = null,
             int? take = null,
-            int? skip = null)
+            int? skip = null,
+            Dictionary<string, object> parameters = null)
         {
             try
             {
                 var query = new EntityQuery<T>().InlineCount().From(from);
+
+                if (parameters != null)
+                    query = query.WithParameters(parameters);
 
                 if (predicate != null)
                     query = query.Where(predicate);
