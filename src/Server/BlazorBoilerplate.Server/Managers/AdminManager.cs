@@ -97,7 +97,7 @@ namespace BlazorBoilerplate.Server.Managers
             foreach (var role in listResponse)
             {
                 var claims = await _roleManager.GetClaimsAsync(role);
-                var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
+                var permissions = claims.Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
                 roleDtoList.Add(new RoleDto
                 {
@@ -114,7 +114,7 @@ namespace BlazorBoilerplate.Server.Managers
             var identityRole = await _roleManager.FindByNameAsync(roleName);
 
             var claims = await _roleManager.GetClaimsAsync(identityRole);
-            var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
+            var permissions = claims.Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
             var roleDto = new RoleDto
             {
@@ -144,7 +144,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             foreach (var claim in roleDto.Permissions)
             {
-                var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _entityPermissions.GetPermissionByName(claim)));
+                var resultAddClaim = await _roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, _entityPermissions.GetPermissionByName(claim)));
 
                 if (!resultAddClaim.Succeeded)
                     await _roleManager.DeleteAsync(role);
@@ -169,16 +169,16 @@ namespace BlazorBoilerplate.Server.Managers
                     var role = await _roleManager.FindByNameAsync(roleDto.Name);
 
                     var claims = await _roleManager.GetClaimsAsync(role);
-                    var permissions = claims.Where(x => x.Type == ClaimConstants.Permission).Select(x => x.Value).ToList();
+                    var permissions = claims.Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => x.Value).ToList();
 
                     foreach (var permission in permissions)
                     {
-                        await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, permission));
+                        await _roleManager.RemoveClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, permission));
                     }
 
                     foreach (var claim in roleDto.Permissions)
                     {
-                        var result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _entityPermissions.GetPermissionByName(claim)));
+                        var result = await _roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, _entityPermissions.GetPermissionByName(claim)));
 
                         if (!result.Succeeded)
                             await _roleManager.DeleteAsync(role);

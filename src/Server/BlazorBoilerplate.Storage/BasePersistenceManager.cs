@@ -41,7 +41,7 @@ namespace BlazorBoilerplate.Storage
 
                 if (user == null || user.Identity.IsAuthenticated == false)
                     throw new UnauthorizedAccessException(L["AuthenticationRequired"] + ": " + L["LoginRequired"]);
-                else if (!user.Claims.Any(c => c.Type == ClaimConstants.Permission && c.Value == $"{typeof(TEntity).Name}.{Actions.Read}"))
+                else if (!user.Claims.Any(c => c.Type == ApplicationClaimTypes.Permission && c.Value == $"{typeof(TEntity).Name}.{Actions.Read}"))
                     throw new UnauthorizedAccessException(L["Operation not allowed"] + ": " + L["NotAuthorizedTo"]);
             }
 
@@ -82,7 +82,7 @@ namespace BlazorBoilerplate.Storage
                         {
                             if (user == null || user.Identity.IsAuthenticated == false)
                                 errors.Add(new EFEntityError(entityInfo, L["AuthenticationRequired"], L["LoginRequired"], null));
-                            else if (!user.Claims.Any(c => c.Type == ClaimConstants.Permission && c.Value == $"{entityType.Name}.{requiredAction}"))
+                            else if (!user.Claims.Any(c => c.Type == ApplicationClaimTypes.Permission && c.Value == $"{entityType.Name}.{requiredAction}"))
                                 errors.Add(new EFEntityError(entityInfo, L["Operation not allowed"], L["NotAuthorizedTo"], null));
                         }
 

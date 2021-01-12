@@ -224,14 +224,14 @@ namespace BlazorBoilerplate.Storage
             var NewClaims = AllClaims.Except(RoleClaims);
 
             foreach (string claim in NewClaims)
-                await _roleManager.AddClaimAsync(adminRole, new Claim(ClaimConstants.Permission, claim));
+                await _roleManager.AddClaimAsync(adminRole, new Claim(ApplicationClaimTypes.Permission, claim));
 
             var DeprecatedClaims = RoleClaims.Except(AllClaims);
             var roles = await _roleManager.Roles.ToListAsync();
 
             foreach (string claim in DeprecatedClaims)
                 foreach (var role in roles)
-                    await _roleManager.RemoveClaimAsync(role, new Claim(ClaimConstants.Permission, claim));
+                    await _roleManager.RemoveClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, claim));
 
             _logger.LogInformation("Inbuilt account generation completed");
         }
@@ -255,7 +255,7 @@ namespace BlazorBoilerplate.Storage
 
                 foreach (string claim in claims.Distinct())
                 {
-                    result = await _roleManager.AddClaimAsync(role, new Claim(ClaimConstants.Permission, _entityPermissions.GetPermissionByValue(claim)));
+                    result = await _roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, _entityPermissions.GetPermissionByValue(claim)));
 
                     if (!result.Succeeded)
                         await _roleManager.DeleteAsync(role);
@@ -289,14 +289,14 @@ namespace BlazorBoilerplate.Storage
                         new Claim(JwtClaimTypes.GivenName, firstName),
                         new Claim(JwtClaimTypes.FamilyName, lastName),
                         new Claim(JwtClaimTypes.Email, email),
-                        new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
+                        new Claim(JwtClaimTypes.EmailVerified, ClaimValues.trueString, ClaimValueTypes.Boolean),
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber)
                     }).Result;
 
                 //add claims version of roles
                 foreach (var role in roles.Distinct())
                 {
-                    await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", "true"));
+                    await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", ClaimValues.trueString));
                 }
 
                 ApplicationUser user = await _userManager.FindByNameAsync(applicationUser.UserName);

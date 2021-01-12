@@ -42,7 +42,7 @@ namespace BlazorBoilerplate.Storage
                         JwtClaimTypes.Email,
                         JwtClaimTypes.PhoneNumber,
                         JwtClaimTypes.Role,
-                        ClaimConstants.Permission,
+                        ApplicationClaimTypes.Permission,
                         Policies.IsUser,
                         Policies.IsAdmin
                     }

@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                 bool created = false;
                 switch (policyName)
                 {
-                    //In DatabaseInitializer: await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", "true"));
+                    //In DatabaseInitializer: await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", ClaimValues.trueString));
                     case Policies.IsAdmin:
                         policy = new AuthorizationPolicyBuilder()
                             .RequireAuthenticatedUser()

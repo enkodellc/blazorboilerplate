@@ -678,7 +678,7 @@ namespace BlazorBoilerplate.Server.Managers
                         new Claim(Policies.IsUser, string.Empty),
                         new Claim(JwtClaimTypes.Name, parameters.UserName),
                         new Claim(JwtClaimTypes.Email, parameters.Email),
-                        new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
+                        new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean)
                     }).Result;
             }
 
@@ -804,7 +804,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                         //HACK to switch to claims auth
                         foreach (var role in rolesToAdd)
-                            await _userManager.AddClaimAsync(user, new Claim($"Is{role}", "true"));
+                            await _userManager.AddClaimAsync(user, new Claim($"Is{role}", ClaimValues.trueString));
                     }
 
                     var rolesToRemove = currentUserRoles.Where(role => !userViewModel.Roles.Contains(role)).ToList();
@@ -818,7 +818,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                         //HACK to switch to claims auth
                         foreach (var role in rolesToRemove)
-                            await _userManager.RemoveClaimAsync(user, new Claim($"Is{role}", "true"));
+                            await _userManager.RemoveClaimAsync(user, new Claim($"Is{role}", ClaimValues.trueString));
                     }
                 }
                 catch (Exception ex)
@@ -879,7 +879,7 @@ namespace BlazorBoilerplate.Server.Managers
                     new Claim(Policies.IsUser, string.Empty),
                     new Claim(JwtClaimTypes.Name, user.UserName),
                     new Claim(JwtClaimTypes.Email, user.Email),
-                    new Claim(JwtClaimTypes.EmailVerified, "false", ClaimValueTypes.Boolean)
+                    new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean)
                 });
 
             if (await _roleManager.RoleExistsAsync(DefaultRoleNames.User))
