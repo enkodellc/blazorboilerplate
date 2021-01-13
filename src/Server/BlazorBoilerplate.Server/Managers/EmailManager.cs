@@ -169,62 +169,63 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        public void Send(EmailMessageDto emailMessage)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ApiResponse> SendEmailAsync(EmailMessageDto emailMessage)
         {
-            var message = new MimeMessage();
-
-            // Set From Address it was not set
-            if (emailMessage.FromAddresses.Count == 0)
+            try
             {
-                emailMessage.FromAddresses.Add(new EmailAddressDto(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
+                var message = new MimeMessage();
+
+                // Set From Address it was not set
+                if (emailMessage.FromAddresses.Count == 0)
+                {
+                    emailMessage.FromAddresses.Add(new EmailAddressDto(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
+                }
+
+                message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                message.Cc.AddRange(emailMessage.CcAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                message.Bcc.AddRange(emailMessage.BccAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+
+                //Use for testing - send a copy of any email to from address when in debug mode
+                //if (System.Diagnostics.Debugger.IsAttached)
+                //{
+                //    message.To.Clear();
+                //    message.To.Add(new MailboxAddress(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
+                //}
+
+                message.Subject = emailMessage.Subject;
+
+                message.Body = emailMessage.IsHtml ? new BodyBuilder { HtmlBody = emailMessage.Body }.ToMessageBody() : new TextPart("plain") { Text = emailMessage.Body };
+
+                //Be careful that the SmtpClient class is the one from Mailkit not the framework!
+                using (var emailClient = new SmtpClient())
+                {
+                    if (!_emailConfiguration.SmtpUseSSL)
+                    {
+                        emailClient.ServerCertificateValidationCallback = (object sender2, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
+                    }
+
+                    await emailClient.ConnectAsync(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL);
+
+                    //Remove any OAuth functionality as we won't be using it.
+                    emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+                    if (!string.IsNullOrWhiteSpace(_emailConfiguration.SmtpUsername))
+                    {
+                        await emailClient.AuthenticateAsync(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
+                    }
+
+                    await emailClient.SendAsync(message);
+
+                    await emailClient.DisconnectAsync(true);
+
+                    return new ApiResponse(Status203NonAuthoritative);
+                }
             }
-
-            message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-            message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-            message.Cc.AddRange(emailMessage.CcAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-            message.Bcc.AddRange(emailMessage.BccAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-
-            //Use for testing - send a copy of any email to from address when in debug mode
-            //if (System.Diagnostics.Debugger.IsAttached)
-            //{
-            //    message.To.Clear();
-            //    message.To.Add(new MailboxAddress(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
-            //}
-
-            message.Subject = emailMessage.Subject;
-
-            message.Body = emailMessage.IsHtml ? new BodyBuilder { HtmlBody = emailMessage.Body }.ToMessageBody() : new TextPart("plain") { Text = emailMessage.Body };
-
-            //TODO store all emails in Database
-
-            //Be careful that the SmtpClient class is the one from Mailkit not the framework!
-            using (var emailClient = new SmtpClient())
+            catch (Exception ex)
             {
-                if (!_emailConfiguration.SmtpUseSSL)
-                {
-                    emailClient.ServerCertificateValidationCallback = (object sender2, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
-                }
-
-                await emailClient.ConnectAsync(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL);
-
-                //Remove any OAuth functionality as we won't be using it.
-                emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-
-                if (!string.IsNullOrWhiteSpace(_emailConfiguration.SmtpUsername))
-                {
-                    await emailClient.AuthenticateAsync(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
-                }
-
-                await emailClient.SendAsync(message);
-
-                await emailClient.DisconnectAsync(true);
-
-                return new ApiResponse(Status203NonAuthoritative);
+                _logger.LogError("SendEmailAsync failed: {0}", ex.StackTrace);
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
     }

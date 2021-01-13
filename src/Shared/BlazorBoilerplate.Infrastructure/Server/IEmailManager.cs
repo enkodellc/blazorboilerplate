@@ -13,6 +13,5 @@ namespace BlazorBoilerplate.Infrastructure.Server
         List<EmailMessageDto> ReceiveEmail(int maxCount = 10);
         Task<ApiResponse> ReceiveMailImapAsync();
         Task<ApiResponse> ReceiveMailPopAsync(int min = 0, int max = 0);
-        void Send(EmailMessageDto emailMessage);
     }
 }
