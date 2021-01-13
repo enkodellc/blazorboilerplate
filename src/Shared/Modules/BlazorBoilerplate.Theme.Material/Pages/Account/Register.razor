@@ -43,17 +43,29 @@
 </MatCard>
 
 @code {
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
     RegisterViewModel registerViewModel { get; set; } = new RegisterViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+            navigationManager.NavigateTo("/");
+    }
 
     async Task RegisterUser()
     {
         try
         {
             var response = await ((IdentityAuthenticationStateProvider)authStateProvider).Register(registerViewModel);
+
             if (response.IsSuccessStatusCode)
             {
                 matToaster.Add("New User Email Verification was sent to: " + registerViewModel.Email, MatToastType.Success, L["UserCreationSuccessful"]);
-                navigationManager.NavigateTo("");
+                navigationManager.NavigateTo("/");
             }
             else
             {
