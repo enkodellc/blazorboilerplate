@@ -28,7 +28,6 @@ namespace BlazorBoilerplate.Shared.Providers
         public async Task<ApiResponseDto<LoginResponseModel>> Login(LoginInputModel parameters)
         {
             ApiResponseDto<LoginResponseModel> apiResponse = await _accountApiClient.Login(parameters);
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
