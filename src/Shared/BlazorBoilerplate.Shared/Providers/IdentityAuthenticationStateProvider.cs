@@ -65,7 +65,6 @@ namespace BlazorBoilerplate.Shared.Providers
         public async Task<ApiResponseDto> ConfirmEmail(ConfirmEmailViewModel parameters)
         {
             ApiResponseDto apiResponse = await _accountApiClient.ConfirmEmail(parameters);
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
