@@ -109,6 +109,9 @@ namespace BlazorBoilerplate.Server.Managers
 
             await _signInManager.SignInAsync(user, true);
 
+            await _userManager.RemoveClaimAsync(user, new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean));
+            await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.EmailVerified, ClaimValues.trueString, ClaimValueTypes.Boolean));
+
             return new ApiResponse(Status200OK, L["EmailVerificationSuccessful"]);
         }
 
