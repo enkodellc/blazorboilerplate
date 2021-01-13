@@ -910,6 +910,8 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 await _emailManager.SendEmailAsync(emailMessage);
+
+                _logger.LogInformation($"New user email sent to {user.Email}");
             }
             catch (Exception ex)
             {

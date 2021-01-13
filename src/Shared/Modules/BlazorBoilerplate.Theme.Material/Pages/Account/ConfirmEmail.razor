@@ -70,8 +70,7 @@
             else
                 matToaster.Add(apiResponse.Message, MatToastType.Danger);
 
-            //Todo Take user to their profile page to edit their profile.
-            navigationManager.NavigateTo("/");
+            navigationManager.NavigateTo("/account/login");
         }
         catch (Exception ex)
         {
