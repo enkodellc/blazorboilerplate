@@ -50,6 +50,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly UrlEncoder _urlEncoder;
         private readonly IEventService _events;
         private readonly IStringLocalizer<Global> L;
+        private readonly string baseUrl;
 
         private static readonly UserViewModel LoggedOutUser = new UserViewModel { IsAuthenticated = false, Roles = new List<string>() };
 
@@ -82,6 +83,7 @@ namespace BlazorBoilerplate.Server.Managers
             _urlEncoder = urlEncoder;
             _events = events;
             L = l;
+            baseUrl = configuration["Robot:ApplicationUrl"];
         }
 
         public async Task<ApiResponse> ConfirmEmail(ConfirmEmailViewModel parameters)
@@ -132,7 +134,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token); //token must be a query string parameter as it is very long
+                string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", baseUrl, user.Id, token); //token must be a query string parameter as it is very long
 
                 var email = _emailFactory.BuildForgotPasswordEmail(user.UserName, callbackUrl, token);
                 email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
@@ -696,7 +698,7 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", _configuration["BlazorBoilerplate:ApplicationUrl"], user.Id, token);
+                    string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", baseUrl, user.Id, token);
 
                     var email = _emailFactory.BuildNewUserConfirmationEmail(user.UserName, user.Email, callbackUrl, user.Id.ToString(), token);
                     email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
@@ -896,7 +898,7 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = $"{_configuration["BlazorBoilerplate:ApplicationUrl"]}/Account/ConfirmEmail/{user.Id}?token={token}";
+                var callbackUrl = $"{baseUrl}/Account/ConfirmEmail/{user.Id}?token={token}";
 
                 emailMessage = _emailFactory.BuildNewUserConfirmationEmail(user.UserName, user.Email, callbackUrl, user.Id.ToString(), token);
             }
