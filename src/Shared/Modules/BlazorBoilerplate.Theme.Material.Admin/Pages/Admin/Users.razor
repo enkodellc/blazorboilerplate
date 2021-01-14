@@ -29,7 +29,8 @@ else
                 </div>
             </td>
             <td><div style="width:130px;">@UserRow.UserName</div></td>
-            <td>@UserRow.Email</td>
+            <td style="white-space: nowrap">@UserRow.Email @if (UserRow.EmailConfirmed)
+                            {<MatIcon Style="vertical-align: text-bottom" Icon="check_circle"></MatIcon>}</td>
             <td>
                 @if (@UserRow.UserRoles != null)
                     {<MatChipSet>

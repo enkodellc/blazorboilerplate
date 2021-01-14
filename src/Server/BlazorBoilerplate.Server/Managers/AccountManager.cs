@@ -94,25 +94,28 @@ namespace BlazorBoilerplate.Server.Managers
             }
 
             var user = await _userManager.FindByIdAsync(parameters.UserId);
+
             if (user == null)
             {
                 _logger.LogInformation(L["The user {0} doesn't exist", parameters.UserId]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
-            var token = parameters.Token;
-            var result = await _userManager.ConfirmEmailAsync(user, token);
-            if (!result.Succeeded)
+            if (!user.EmailConfirmed)
             {
-                var msg = string.Join(",", result.Errors.Select(i => i.Description));
-                _logger.LogWarning("User Email Confirmation Failed: {0}", msg);
-                return new ApiResponse(Status400BadRequest, msg);
+                var token = parameters.Token;
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+
+                if (!result.Succeeded)
+                {
+                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                    _logger.LogWarning("User Email Confirmation Failed: {0}", msg);
+                    return new ApiResponse(Status400BadRequest, msg);
+                }
+
+                await _userManager.RemoveClaimAsync(user, new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean));
+                await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.EmailVerified, ClaimValues.trueString, ClaimValueTypes.Boolean));
             }
-
-            await _signInManager.SignInAsync(user, true);
-
-            await _userManager.RemoveClaimAsync(user, new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean));
-            await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.EmailVerified, ClaimValues.trueString, ClaimValueTypes.Boolean));
 
             return new ApiResponse(Status200OK, L["EmailVerificationSuccessful"]);
         }
