@@ -224,7 +224,8 @@ namespace BlazorBoilerplate.Server.Managers
             }
             catch (Exception ex)
             {
-                _logger.LogError("SendEmailAsync failed: {0}", ex.StackTrace);
+                _logger.LogError("SendEmailAsync failed ({0}:{1} SSL:{2}): {3}",
+                    _emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL, ex.StackTrace);
                 return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }
