@@ -20,12 +20,17 @@ namespace BlazorBoilerplate.Theme.Material.TagHelpers
 <link href=""https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"" />
 <link href=""_content/{path}/fonts/roboto/roboto.css"" rel=""stylesheet"" />
 <link href=""_content/MatBlazor/dist/matBlazor.css"" rel=""stylesheet"" />
+<link href=""//cdn.quilljs.com/1.3.6/quill.snow.css"" rel=""stylesheet"">
+<link href=""//cdn.quilljs.com/1.3.6/quill.bubble.css"" rel=""stylesheet"">
 <link href=""_content/{path}/css/site.css"" rel=""stylesheet"" />");
             }
             else if (string.Equals(context.TagName, "body", StringComparison.OrdinalIgnoreCase))
             {
                 output.PostContent.AppendHtml(@$"
-<script src=""_content/MatBlazor/dist/matBlazor.js""></script>");
+<script src=""_content/MatBlazor/dist/matBlazor.js""></script>
+<script src=""https://cdn.quilljs.com/1.3.6/quill.js""></script>
+<script src=""_content/Blazored.TextEditor/quill-blot-formatter.min.js""></script>
+<script src=""_content/Blazored.TextEditor/Blazored-BlazorQuill.js""></script>");
             }
 
             return Task.CompletedTask;

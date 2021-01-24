@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
+using Blazored.TextEditor;
 using Karambolo.Common.Localization;
 using MatBlazor;
 using Microsoft.AspNetCore.Components;
@@ -38,6 +39,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
         protected bool isEditDialogOpen = false;
         protected bool isNewKeyDialogOpen = false;
         protected bool isPluralDialogOpen = false;
+        protected bool isEditAsHtmlDialogOpen = false;
 
         protected LocalizationRecordKey currentKey { get; set; }
         protected LocalizationRecordKey newKey { get; set; } = new LocalizationRecordKey();
@@ -49,6 +51,8 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
         protected LocalizationRecord currentLocalizationRecord { get; set; } = new LocalizationRecord();
 
         protected PluralTranslation newPlural { get; set; } = new PluralTranslation();
+
+        protected BlazoredTextEditor HtmlEditor;
 
         protected override async Task OnInitializedAsync()
         {
@@ -203,7 +207,12 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             newPlural = new PluralTranslation();
             isPluralDialogOpen = true;
         }
-
+        protected void OpenEditAsHtmlDialog(LocalizationRecord record)
+        {
+            currentLocalizationRecord = record;
+            HtmlEditor.LoadHTMLContent(currentLocalizationRecord.Translation);
+            isEditAsHtmlDialogOpen = true;
+        }
         protected void OpenNewKeyDialogOpen()
         {
             newLocalizationRecord = new LocalizationRecord();
@@ -283,6 +292,15 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
             if (await SaveChanges())
                 await LoadLocalizationRecords(currentKey);
+        }
+
+        protected async Task SaveLocalizationRecordAsHTML()
+        {
+            currentLocalizationRecord.Translation = await HtmlEditor.GetHTML();
+
+            await SaveChanges();
+
+            isEditAsHtmlDialogOpen = false;
         }
 
         protected async Task CancelChanges()
