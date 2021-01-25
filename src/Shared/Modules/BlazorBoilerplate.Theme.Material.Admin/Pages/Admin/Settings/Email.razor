@@ -1,5 +1,6 @@
 ﻿@page "/admin/settings/email"
 @inherits SettingsBase
+@using BlazorBoilerplate.Shared.Dto.Email
 
 <MatH4>@L["EmailSettings"]</MatH4>
 
@@ -77,12 +78,55 @@ else
 
     <MatButton OnClick="@(()=>apiClient.CancelChanges())">@L["Cancel"]</MatButton>
     <MatButton OnClick="@SaveChanges">@L["Save"]</MatButton>
+    <MatButton OnClick="@(e => { isSendEmailDialogOpen = true; })">@L["Send test email"]</MatButton>
+
+    <MatDialog @bind-IsOpen="@isSendEmailDialogOpen">
+        <MatDialogTitle>@L["Send test email"]</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm id="emailForm" Model="@email" OnValidSubmit="@SendTestEmail">
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <fieldset>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@email.ToAddress" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    </div>
+                </fieldset>
+            </EditForm>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { isSendEmailDialogOpen = false; })">@L["Cancel"]</MatButton>
+            <MatButton Type="submit" form="emailForm">@L["Send"]</MatButton>
+        </MatDialogActions>
+    </MatDialog>
 }
 
 @code {
+    bool isSendEmailDialogOpen = false;
+    EmailDto email { get; set; } = new EmailDto();
 
     protected override async Task OnInitializedAsync()
     {
         await LoadSettings("EmailConfiguration_");
+    }
+
+    async Task SendTestEmail()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = await apiClient.SendTestEmail(email);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                matToaster.Add(apiResponse.Message, MatToastType.Success);
+            }
+            else
+            {
+                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, L["Operation Failed"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, L["Operation Failed"]);
+        }
     }
 }

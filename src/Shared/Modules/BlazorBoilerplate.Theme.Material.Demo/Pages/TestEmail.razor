@@ -1,14 +1,13 @@
 ﻿@page "/email"
 @using BlazorBoilerplate.Shared.Dto.Email
+@attribute [Authorize]
 
-@inject HttpClient Http
+@inject IApiClient apiClient
 @inject IMatToaster matToaster
 
-@using static Microsoft.AspNetCore.Http.StatusCodes
-
 <h1>Send Email</h1>
-<p>Test out SMTP email sending with MailKit. This will send out an email using a default "Test" template if you have setup your smtp server in <i>appsettings.json</i>.</p>
-<EditForm Model="@emailParameters" OnValidSubmit="@SendEmail">
+<p>Test out SMTP email sending with MailKit. This will send out an email using a default "Test" template.</p>
+<EditForm Model="@emailParameters" OnValidSubmit="@SendTestEmail">
     <FluentValidationValidator />
     <ValidationSummary />
     <fieldset>
@@ -23,18 +22,13 @@
 
 @code {
 
-    EmailDto emailParameters { get; set; } = new EmailDto();
-    protected override void OnInitialized()
-    {
-        //set the template name so it passes model validation
-        emailParameters.TemplateName = "Test";
-    }
+    EmailDto emailParameters { get; set; } = new EmailDto();    
 
-    async Task SendEmail()
+    async Task SendTestEmail()
     {
         try
         {
-            ApiResponseDto apiResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Email/Send", emailParameters);
+            ApiResponseDto apiResponse = await apiClient.SendTestEmail(emailParameters);
 
             if (apiResponse.IsSuccessStatusCode)
             {

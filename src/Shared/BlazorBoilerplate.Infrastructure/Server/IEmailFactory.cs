@@ -5,7 +5,8 @@ namespace BlazorBoilerplate.Infrastructure.Server
 {
     public interface IEmailFactory
     {
-        EmailMessageDto BuildTestEmail();
+        string BaseUrl { get; }
+        EmailMessageDto BuildTestEmail(string recipient);
         EmailMessageDto GetPlainTextTestEmail(DateTime date);
         EmailMessageDto BuildNewUserConfirmationEmail(string recepientName, string userName, string callbackUrl, string userId, string token);
         EmailMessageDto BuildNewUserEmail(string fullName, string userName, string emailAddress, string password);

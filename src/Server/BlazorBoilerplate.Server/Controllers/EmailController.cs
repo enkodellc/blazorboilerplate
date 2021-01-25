@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using BlazorBoilerplate.Server.Aop;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiResponseException]
+    [Route("api/[controller]/[action]")]
     [Authorize]
     [ApiController]
     public class EmailController : ControllerBase
@@ -24,16 +26,14 @@ namespace BlazorBoilerplate.Server.Controllers
             L = l;
         }
 
-        [HttpPost("Send")]
-        [ProducesResponseType((int)Status200OK)]
-        [ProducesResponseType((int)Status400BadRequest)]
-        public async Task<ApiResponse> Send(EmailDto parameters)
+        [HttpPost]
+        [ProducesResponseType(Status200OK)]
+        [ProducesResponseType(Status400BadRequest)]
+        public async Task<ApiResponse> SendTestEmail([FromBody] EmailDto parameters)
             => ModelState.IsValid ?
-                await _emailManager.Send(parameters) :
+                await _emailManager.SendTestEmail(parameters) :
                 new ApiResponse(Status400BadRequest, L["InvalidData"]);
 
-        [HttpGet("Receive")]
-        [Authorize]
         public async Task<ApiResponse> Receive()
             => await _emailManager.ReceiveMailImapAsync();
     }

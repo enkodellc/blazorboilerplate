@@ -1,4 +1,6 @@
-﻿using BlazorBoilerplate.Shared.Dto.Db;
+﻿using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Db;
+using BlazorBoilerplate.Shared.Dto.Email;
 using Breeze.Sharp;
 using System;
 using System.Linq.Expressions;
@@ -18,5 +20,7 @@ namespace BlazorBoilerplate.Shared.Interfaces
         Task<QueryResult<ApiLogItem>> GetApiLogs(Expression<Func<ApiLogItem, bool>> predicate = null, int? take = null, int? skip = null);
 
         Task<QueryResult<Todo>> GetToDos();
+
+        Task<ApiResponseDto> SendTestEmail(EmailDto email);
     }
 }

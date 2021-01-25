@@ -33,43 +33,17 @@ namespace BlazorBoilerplate.Server.Managers
             _logger = logger;
         }
 
-        //Used from API
-        public async Task<ApiResponse> Send(EmailDto parameters)
+        //Used by API
+        public async Task<ApiResponse> SendTestEmail(EmailDto parameters)
         {
-            EmailMessageDto email = null;
-
-            //This forces all emails from the API to use the Test template to prevent spam
-            parameters.TemplateName = "Test";
-
-            //Send a Template email or a custom one since it is hardcoded to Test template it will not do a custom email.
-            if (!string.IsNullOrEmpty(parameters.TemplateName))
-            {
-                switch (parameters.TemplateName)
-                {
-                    case "Test":
-                        email = _emailFactory.BuildTestEmail();
-
-                        email.ToAddresses.Add(new EmailAddressDto(parameters.ToName, parameters.ToAddress));
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else
-            {
-                email = _emailFactory.BuildTestEmail();
-                email.Subject = parameters.Subject;
-                email.Body = parameters.Body;
-            }
-
-            //Add a new From Address if you so choose, default is set in appsettings.json
-            //email.FromAddresses.Add(new EmailAddress("New From Name", "email@domain.com"));
-            _logger.LogInformation("Test Email: {0}", email.Subject);
+            EmailMessageDto email = _emailFactory.BuildTestEmail(parameters.ToName);
+            email.ToAddresses.Add(new EmailAddressDto(parameters.ToName, parameters.ToAddress));
+            email.Subject = $"Test email from {_emailFactory.BaseUrl}";
+            email.Body = "Test email completed.";
 
             try
             {
-                await SendEmailAsync(email);
-                return new ApiResponse(Status200OK, "Email Successfuly Sent");
+                return await SendEmailAsync(email);
             }
             catch (Exception ex)
             {
@@ -186,13 +160,6 @@ namespace BlazorBoilerplate.Server.Managers
                 message.Cc.AddRange(emailMessage.CcAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                 message.Bcc.AddRange(emailMessage.BccAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
 
-                //Use for testing - send a copy of any email to from address when in debug mode
-                //if (System.Diagnostics.Debugger.IsAttached)
-                //{
-                //    message.To.Clear();
-                //    message.To.Add(new MailboxAddress(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
-                //}
-
                 message.Subject = emailMessage.Subject;
 
                 message.Body = emailMessage.IsHtml ? new BodyBuilder { HtmlBody = emailMessage.Body }.ToMessageBody() : new TextPart("plain") { Text = emailMessage.Body };
@@ -219,13 +186,18 @@ namespace BlazorBoilerplate.Server.Managers
 
                     await emailClient.DisconnectAsync(true);
 
-                    return new ApiResponse(Status203NonAuthoritative);
+                    var msg = $"Email successfully sent to {string.Join(" - ", message.To.Select(i => i.Name))}";
+
+                    _logger.LogInformation(msg);
+
+                    return new ApiResponse(Status200OK, msg);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("SendEmailAsync failed ({0}:{1} SSL:{2}): {3}",
-                    _emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL, ex.StackTrace);
+                _logger.LogError("SendEmailAsync failed ({0}:{1} SSL:{2}): {3} {4}",
+                    _emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL, ex.GetBaseException().Message, ex.StackTrace);
+
                 return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
             }
         }

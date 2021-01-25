@@ -1,4 +1,7 @@
-﻿using BlazorBoilerplate.Shared.Dto.Db;
+﻿using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Db;
+using BlazorBoilerplate.Shared.Dto.Email;
+using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using Breeze.Sharp;
 using Microsoft.Extensions.Logging;
@@ -45,6 +48,10 @@ namespace BlazorBoilerplate.Shared.Services
         public async Task<QueryResult<Todo>> GetToDos()
         {
             return await GetItems<Todo>(from: "Todos", orderByDescending: i => i.CreatedOn);
+        }
+        public async Task<ApiResponseDto> SendTestEmail(EmailDto email)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Email/SendTestEmail", email);
         }
     }
 }

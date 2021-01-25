@@ -5,12 +5,10 @@
 @inject HttpClient Http
 @inject IMatToaster matToaster
 
-<h1>Secure Page</h1>
-<p>This is a secure page. You must be logged in to have access.</p>
-<h2>Email Retrieval</h2>
-<p>This component demonstrates fetching and viewing emails from an account (if you have one configured in appsettings.json).</p>
+<h1>Email Retrieval</h1>
+<p>This component demonstrates fetching and viewing emails from an account.</p>
 
-<button @onclick="GetMessagesAsync" class="btn-primary">FETCH MESSAGES</button>
+<button @onclick="GetMessagesAsync" class="btn-primary">Fetch emails</button>
 
 
 @if (emails == null)
@@ -92,7 +90,6 @@ else
 
     ApiResponseDto apiResponse;
     bool ModalOpen { get; set; }
-    //   string emailsAsString { get; set; }
     string modalTitle { get; set; }
 
     void openModal(int hash)

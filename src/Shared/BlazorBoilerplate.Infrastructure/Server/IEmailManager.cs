@@ -7,7 +7,7 @@ namespace BlazorBoilerplate.Infrastructure.Server
 {
     public interface IEmailManager
     {
-        Task<ApiResponse> Send(EmailDto parameters);
+        Task<ApiResponse> SendTestEmail(EmailDto parameters);
         Task<ApiResponse> Receive();
         Task<ApiResponse> SendEmailAsync(EmailMessageDto emailMessage);
         List<EmailMessageDto> ReceiveEmail(int maxCount = 10);

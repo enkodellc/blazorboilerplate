@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Shared.Dto.Email;
 using FormatWith;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using System;
 
@@ -9,19 +10,21 @@ namespace BlazorBoilerplate.Server.Factories
     public class EmailFactory : IEmailFactory
     {
         protected readonly IStringLocalizer<EmailFactory> L;
-        public EmailFactory(IStringLocalizer<EmailFactory> l)
+        public string BaseUrl { get; private set; }
+        public EmailFactory(IStringLocalizer<EmailFactory> l, IConfiguration configuration)
         {
             L = l;
+            BaseUrl = configuration["Robot:ApplicationUrl"];
         }
 
-        public EmailMessageDto BuildTestEmail()
+        public EmailMessageDto BuildTestEmail(string recipient)
         {
             var emailMessage = new EmailMessageDto();
 
             emailMessage.Body = L["TestEmail.template"].Value
-                .FormatWith(new { user = emailMessage.ToAddresses[0].Name, testDate = DateTime.Now });
+                .FormatWith(new { BaseUrl, user = recipient, testDate = DateTime.Now });
 
-            emailMessage.Subject = L["TestEmail.subject", emailMessage.ToAddresses[0].Name];
+            emailMessage.Subject = L["TestEmail.subject", recipient];
 
             return emailMessage;
         }
