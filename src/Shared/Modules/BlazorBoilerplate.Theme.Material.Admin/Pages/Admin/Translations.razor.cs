@@ -298,8 +298,6 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
         {
             currentLocalizationRecord.Translation = await HtmlEditor.GetHTML();
 
-            await SaveChanges();
-
             isEditAsHtmlDialogOpen = false;
         }
 
