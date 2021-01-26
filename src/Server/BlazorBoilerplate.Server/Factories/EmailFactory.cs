@@ -22,7 +22,7 @@ namespace BlazorBoilerplate.Server.Factories
             var emailMessage = new EmailMessageDto();
 
             emailMessage.Body = L["TestEmail.template"].Value
-                .FormatWith(new { BaseUrl, user = recipient, testDate = DateTime.Now });
+                .FormatWith(new { baseUrl = BaseUrl, user = recipient, testDate = DateTime.Now });
 
             emailMessage.Subject = L["TestEmail.subject", recipient];
 
@@ -41,14 +41,14 @@ namespace BlazorBoilerplate.Server.Factories
 
             return emailMessage;
         }
-        public EmailMessageDto BuildNewUserConfirmationEmail(string recepientName, string userName, string callbackUrl, string userId, string token)
+        public EmailMessageDto BuildNewUserConfirmationEmail(string fullName, string userName, string callbackUrl)
         {
             var emailMessage = new EmailMessageDto();
 
             emailMessage.Body = L["NewUserConfirmationEmail.template"].Value
-                .FormatWith(new { name = recepientName, userName, callbackUrl, userId, token });
+                .FormatWith(new { baseUrl = BaseUrl, name = fullName, userName, callbackUrl });
 
-            emailMessage.Subject = L["NewUserConfirmationEmail.subject", recepientName];
+            emailMessage.Subject = L["NewUserConfirmationEmail.subject", fullName];
 
             return emailMessage;
         }
@@ -57,7 +57,7 @@ namespace BlazorBoilerplate.Server.Factories
             var emailMessage = new EmailMessageDto();
 
             emailMessage.Body = L["NewUserEmail.template"].Value
-                .FormatWith(new { fullName = userName, userName, email = emailAddress, password });
+                .FormatWith(new { baseUrl = BaseUrl, fullName = userName, userName, email = emailAddress, password });
 
             emailMessage.Subject = L["NewUserEmail.subject", fullName];
 
@@ -69,7 +69,7 @@ namespace BlazorBoilerplate.Server.Factories
             //placeholder not actually implemented
 
             emailMessage.Body = L["NewUserNotificationEmail.template"].Value
-                .FormatWith(new { creator, name, userName, roles, company });
+                .FormatWith(new { baseUrl = BaseUrl, creator, name, userName, roles, company });
 
             emailMessage.Subject = L["NewUserNotificationEmail.subject", userName];
 
@@ -80,7 +80,7 @@ namespace BlazorBoilerplate.Server.Factories
             var emailMessage = new EmailMessageDto();
 
             emailMessage.Body = L["ForgotPassword.template"].Value
-                .FormatWith(new { name, callbackUrl, token });
+                .FormatWith(new { baseUrl = BaseUrl, name, callbackUrl, token });
 
             emailMessage.Subject = L["ForgotPassword.subject", name];
 
@@ -91,7 +91,7 @@ namespace BlazorBoilerplate.Server.Factories
             var emailMessage = new EmailMessageDto();
 
             emailMessage.Body = L["PasswordReset.template"].Value
-                .FormatWith(new { userName });
+                .FormatWith(new { baseUrl = BaseUrl, userName });
 
             emailMessage.Subject = L["PasswordReset.subject", userName];
 

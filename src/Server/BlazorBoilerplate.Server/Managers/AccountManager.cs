@@ -703,7 +703,7 @@ namespace BlazorBoilerplate.Server.Managers
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", baseUrl, user.Id, token);
 
-                    var email = _emailFactory.BuildNewUserConfirmationEmail(user.UserName, user.Email, callbackUrl, user.Id.ToString(), token);
+                    var email = _emailFactory.BuildNewUserConfirmationEmail(user.FullName, user.UserName, callbackUrl);
                     email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
 
                     _logger.LogInformation("New user created: {0}", user);
@@ -903,7 +903,7 @@ namespace BlazorBoilerplate.Server.Managers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var callbackUrl = $"{baseUrl}/Account/ConfirmEmail/{user.Id}?token={token}";
 
-                emailMessage = _emailFactory.BuildNewUserConfirmationEmail(user.UserName, user.Email, callbackUrl, user.Id.ToString(), token);
+                emailMessage = _emailFactory.BuildNewUserConfirmationEmail(user.FullName, user.UserName, callbackUrl);
             }
             else
             {
