@@ -123,6 +123,7 @@ namespace BlazorBoilerplate.Server.Managers
         public async Task<ApiResponse> ForgotPassword(ForgotPasswordViewModel parameters)
         {
             var user = await _userManager.FindByEmailAsync(parameters.Email);
+
             if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
             {
                 _logger.LogInformation("Forgot Password with non-existent email / user: {0}", parameters.Email);
@@ -130,30 +131,21 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status200OK, L["Operation Successful"]);
             }
 
-            // TODO: Break out the email sending here, to a separate class/service etc..
-            #region Forgot Password Email
+            // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", baseUrl, user.Id, token); //token must be a query string parameter as it is very long
 
-            try
-            {
-                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", baseUrl, user.Id, token); //token must be a query string parameter as it is very long
+            var email = _emailFactory.BuildForgotPasswordEmail(user.UserName, callbackUrl, token);
+            email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
 
-                var email = _emailFactory.BuildForgotPasswordEmail(user.UserName, callbackUrl, token);
-                email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
+            var response = await _emailManager.SendEmailAsync(email);
 
-                _logger.LogInformation("Forgot Password Email Sent: {0}", user.Email);
-                await _emailManager.SendEmailAsync(email);
-                return new ApiResponse(Status200OK, "Forgot Password Email Sent");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Forgot Password email failed: {0}", ex.GetBaseException().Message);
-            }
+            if (response.IsSuccessStatusCode)
+                _logger.LogInformation($"Reset Password Successful Email Sent: {user.Email}");
+            else
+                _logger.LogError($"Reset Password Successful Email Sent: {user.Email}");
 
-            #endregion Forgot Password Email
-
-            return new ApiResponse(Status200OK, L["Operation Successful"]);
+            return response;
         }
 
         public async Task<ApiResponse> BuildLoginViewModel(string returnUrl)
@@ -465,22 +457,20 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
-            // TODO: Break this out into it's own self-contained Email Helper service.
-
             var result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
             if (result.Succeeded)
             {
-                #region Email Successful Password change
-
                 var email = _emailFactory.BuildPasswordResetEmail(user.UserName);
                 email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
 
-                _logger.LogInformation($"Reset Password Successful Email Sent: {user.Email}");
-                await _emailManager.SendEmailAsync(email);
+                var response = await _emailManager.SendEmailAsync(email);
 
-                #endregion Email Successful Password change
+                if (response.IsSuccessStatusCode)
+                    _logger.LogInformation($"Reset Password Successful Email to {user.Email}");
+                else
+                    _logger.LogError($"Fail to send Reset Password Email to {user.Email}");
 
-                return new ApiResponse(Status200OK, $"Reset Password Successful Email Sent: {user.Email}");
+                return response;
             }
             else
             {

@@ -38,22 +38,13 @@ namespace BlazorBoilerplate.Server.Managers
         {
             EmailMessageDto email = _emailFactory.BuildTestEmail(parameters.ToName);
             email.ToAddresses.Add(new EmailAddressDto(parameters.ToName, parameters.ToAddress));
-            email.Subject = $"Test email from {_emailFactory.BaseUrl}";
-            email.Body = "Test email completed.";
 
-            try
-            {
-                return await SendEmailAsync(email);
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse(Status500InternalServerError, ex.Message);
-            }
+            return await SendEmailAsync(email);
         }
 
         public Task<ApiResponse> Receive()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public List<EmailMessageDto> ReceiveEmail(int maxCount = 10)
