@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspectInjector" Version="2.4.3" />
+    <PackageReference Include="AspectInjector" Version="2.4.4" />
     <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Breeze.AspNetCore.NetCore" Version="3.0.1" />
