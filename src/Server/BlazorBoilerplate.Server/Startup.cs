@@ -175,7 +175,14 @@ namespace BlazorBoilerplate.Server
                     var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
                     using (X509Store store = new X509Store("WebHosting", StoreLocation.LocalMachine))
                     {
-                        store.Open(OpenFlags.ReadOnly);
+                        try
+                        {
+                            store.Open(OpenFlags.ReadOnly);
+                        }
+                        catch(System.Security.Cryptography.CryptographicException)
+                        {
+
+                        }
                         var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
                         if (certs.Count > 0)
                         {
