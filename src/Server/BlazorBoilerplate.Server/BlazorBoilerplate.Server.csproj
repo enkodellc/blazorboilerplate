@@ -22,10 +22,10 @@
 
   <ItemGroup>
     <PackageReference Include="AspectInjector" Version="2.4.4" />
-    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.0" />
+    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.1" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Breeze.AspNetCore.NetCore" Version="3.0.1" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="9.4.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="9.5.0" />
     <PackageReference Include="FormatWith" Version="3.0.1" />
     <PackageReference Include="IdentityServer4" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
