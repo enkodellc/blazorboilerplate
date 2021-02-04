@@ -175,13 +175,9 @@ namespace BlazorBoilerplate.Server
                     var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
                     using (X509Store store = new X509Store("WebHosting", StoreLocation.LocalMachine))
                     {
-                        try
+                        if(OperatingSystem.IsWindows())
                         {
                             store.Open(OpenFlags.ReadOnly);
-                        }
-                        catch(System.Security.Cryptography.CryptographicException)
-                        {
-
                         }
                         var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
                         if (certs.Count > 0)
@@ -209,7 +205,7 @@ namespace BlazorBoilerplate.Server
                     identityServerBuilder.AddSigningCredential(cert);
                     Log.Logger.Information($"Added certificate {cert.Subject} to Identity Server");
                 }
-                else
+                else if(OperatingSystem.IsWindows())
                 {
                     Log.Logger.Debug("Trying to use WebHosting Certificate for Identity Server");
                     identityServerBuilder.AddWebHostingCertificate();
