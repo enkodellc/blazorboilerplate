@@ -173,12 +173,14 @@ namespace BlazorBoilerplate.Server
                 if (Convert.ToBoolean(Configuration[$"{projectName}:UseLocalCertStore"]) == true)
                 {
                     var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
-                    using (X509Store store = new X509Store("WebHosting", StoreLocation.LocalMachine))
+                    var storeLocation = StoreLocation.LocalMachine;
+                    if(OperatingSystem.IsLinux())
                     {
-                        if(OperatingSystem.IsWindows())
-                        {
-                            store.Open(OpenFlags.ReadOnly);
-                        }
+                        storeLocation = StoreLocation.CurrentUser;
+                    }
+                    using (X509Store store = new X509Store(StoreName.My, storeLocation))
+                    {
+                        store.Open(OpenFlags.ReadOnly);
                         var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
                         if (certs.Count > 0)
                         {
