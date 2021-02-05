@@ -174,7 +174,7 @@ namespace BlazorBoilerplate.Server
                 {
                     var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
                     var storeLocation = StoreLocation.LocalMachine;
-                    if(OperatingSystem.IsLinux())
+                    if (OperatingSystem.IsLinux())
                     {
                         storeLocation = StoreLocation.CurrentUser;
                     }
@@ -207,10 +207,14 @@ namespace BlazorBoilerplate.Server
                     identityServerBuilder.AddSigningCredential(cert);
                     Log.Logger.Information($"Added certificate {cert.Subject} to Identity Server");
                 }
-                else if(OperatingSystem.IsWindows())
+                else if (OperatingSystem.IsWindows())
                 {
                     Log.Logger.Debug("Trying to use WebHosting Certificate for Identity Server");
                     identityServerBuilder.AddWebHostingCertificate();
+                }
+                else
+                {
+                    throw new Exception("Missing Certificate for Identity Server");
                 }
             }
 
