@@ -13,7 +13,7 @@ namespace BlazorBoilerplate.Server.Extensions
         {
             var assemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
 
-            assemblyPath = @$"{assemblyPath}\Modules";
+            assemblyPath = Path.Combine(@$"{assemblyPath}","Modules");
 
             List<Assembly> allAssemblies = new List<Assembly>();
 
