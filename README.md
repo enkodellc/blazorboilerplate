@@ -46,7 +46,7 @@ Complete all Blazor dependencies.
 
 ## Publish on IIS - What works for me on my Windows Server 2016 & SQL Server 2014 (Enkodellc)
 1. Publish BlazorBoilerplate.Server project to your IIS website folder.
-2. Install your SSL. Make sure your SSL is in the **WebHosting** Certificate Store.
+2. Install your SSL. Make sure your SSL is in the **WebHosting** Certificate Store, and in Linux **My** Certificate Store.
     - A free certificate from [Let's Encrypt](https://letsencrypt.org/) will work. 
     - For steps 2 & 3 the utility [win-acme](https://github.com/win-acme/win-acme) installs the
 certificate on your server, performs renewal and configure your IIS Website Bindings to have https binding with the SSL certificate set and Port 443 for default.

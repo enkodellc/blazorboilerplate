@@ -174,11 +174,13 @@ namespace BlazorBoilerplate.Server
                 {
                     var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
                     var storeLocation = StoreLocation.LocalMachine;
+                    dynamic storeName = "WebHosting";
                     if (OperatingSystem.IsLinux())
                     {
                         storeLocation = StoreLocation.CurrentUser;
+                        storeName = StoreName.My;
                     }
-                    using (X509Store store = new X509Store(StoreName.My, storeLocation))
+                    using (X509Store store = new X509Store(storeName, storeLocation))
                     {
                         store.Open(OpenFlags.ReadOnly);
                         var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
