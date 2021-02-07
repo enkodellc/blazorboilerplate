@@ -542,7 +542,13 @@ namespace BlazorBoilerplate.Server
                 var navigationManager = s.GetRequiredService<NavigationManager>();
                 var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
                 var cookies = httpContextAccessor.HttpContext.Request.Cookies;
-                var client = new HttpClient(new HttpClientHandler { UseCookies = false });
+                var httpClientHandler = new HttpClientHandler(){ UseCookies = false };
+                if (_environment.IsDevelopment())
+                {
+                    // Return 'true' to allow certificates that are untrusted/invalid
+                    httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
+                }
+                var client = new HttpClient(httpClientHandler);
                 if (cookies.Any())
                 {
                     var cks = new List<string>();
@@ -601,11 +607,11 @@ namespace BlazorBoilerplate.Server
             }
             else
             {
+                app.UseHttpsRedirection();
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //    app.UseHsts(); //HSTS Middleware (UseHsts) to send HTTP Strict Transport Security Protocol (HSTS) headers to clients.
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseBlazorFrameworkFiles(); //ClientSideBlazor
 

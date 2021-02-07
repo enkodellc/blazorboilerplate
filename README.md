@@ -124,6 +124,14 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - Prerequisite: Install [Docker Desktop](https://go.microsoft.com/fwlink/?linkid=847268) 
 - Include / Reload **docker-compose** project in solution.
 - [Do Docker stuff](https://docs.docker.com/v17.09/docker-for-windows/install/) - I don't have much experience with Docker.
+- The following will happen in the **browser** with ASPNETCORE_ENVIRONMENT=Development:
+- Connecting via localhost in chrome or firefox will work until you attempt to login. Clicking login you will get a console error: "Cannot assign requested address (localhost:port)" because the js client is trying to connect to your local machine rather than the docker container.
+- Connecting over external ip address: Will work, but you will get a console error in the following scenarios:
+- in chrome over http: Cannot read property 'register' of undefined
+- in chrome over https: DOMException: Failed to register a ServiceWorker for scope ('https://x.x.x.x:port/') with script ('https://x.x.x.x:port/service-worker.js'): An SSL certificate error occurred when fetching the script. 
+- in firefox over http: navigator.serviceWorker is undefined
+- in firefox over https: No error until after you login. After login you will get error: WebSocket is not in the OPEN state. The setting ServerCertificateCustomValidationCallback = () => { return true; }   prevents the ssl error.
+- In ASPNETCORE_ENVIRONMENT=Production: Same as above except http will redirect to https
 
 ### Azure Support
 - [Azure Hosting Wiki](https://github.com/enkodellc/blazorboilerplate/wiki/Hosting-Blazor-boilerplate-on-Microsoft-Azure) 
