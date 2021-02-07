@@ -12,58 +12,58 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "POT-Creation-Date: \n"
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "TestEmail.template"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "PlainTextTestEmail.template"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "PasswordReset.template"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "NewUserNotificationEmail.template"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "NewUserEmail.template"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "NewUserConfirmationEmail.template"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "ForgotPassword.template"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "TestEmail.subject"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "PlainTextTestEmail.subject"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "PasswordReset.subject"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "NewUserNotificationEmail.subject"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "NewUserEmail.subject"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "NewUserConfirmationEmail.subject"
 msgstr ""
 
-msgctxt "BlazorBoilerplate.Server.Factories.EmailFactory"
+msgctxt "EmailFactory"
 msgid "ForgotPassword.subject"
 msgstr ""
