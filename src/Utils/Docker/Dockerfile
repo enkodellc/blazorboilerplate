@@ -14,6 +14,8 @@ FROM build AS publish
 RUN dotnet publish "BlazorBoilerplate.Server.csproj" -c Release -o /app/publish
 RUN dotnet dev-certs https --clean
 RUN dotnet dev-certs https -ep /app/publish/aspnetapp.pfx -p Admin123
+#if .pfx was provided from certificate authority uncomment the below
+#COPY src/Server/BlazorBoilerplate.Server/AuthSample.pfx /app/publish/aspnetapp.pfx
 
 FROM base AS final
 WORKDIR /app

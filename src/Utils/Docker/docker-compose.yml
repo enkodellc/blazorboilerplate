@@ -17,6 +17,7 @@ services:
       - BlazorBoilerplate__UseSqlServer=true
       - BlazorBoilerplate__ApplicationUrl=blazorboilerplate
       - BlazorBoilerplate__IS4ApplicationUrl=blazorboilerplate
+      - BlazorBoilerplate__CertificatePassword=Admin123
       - ASPNETCORE_URLS=https://+:443;http://+80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=Admin123
       - ASPNETCORE_Kestrel__Certificates__Default__Path=aspnetapp.pfx
