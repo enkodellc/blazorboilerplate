@@ -193,10 +193,13 @@ namespace BlazorBoilerplate.Server
                             var certPath = Path.Combine(_environment.ContentRootPath, "AuthSample.pfx");
 
                             if (File.Exists(certPath))
-                                cert = new X509Certificate2(certPath, "Admin123",
+                            {
+                                string certificatePassword = Configuration[$"{projectName}:CertificatePassword"] ?? "Admin123";
+                                cert = new X509Certificate2(certPath, certificatePassword,
                                                     X509KeyStorageFlags.MachineKeySet |
                                                     X509KeyStorageFlags.PersistKeySet |
                                                     X509KeyStorageFlags.Exportable);
+                            }
                         }
 
                         store.Close();
