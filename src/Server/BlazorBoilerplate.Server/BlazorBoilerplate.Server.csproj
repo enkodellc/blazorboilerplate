@@ -32,7 +32,7 @@
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.1.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.2" />
