@@ -26,7 +26,7 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Hubs
         public ChatClient(HttpClient httpClient)
         {
             connection = new HubConnectionBuilder()
-                .WithUrl($"{httpClient.BaseAddress}chathub", options =>
+                .WithUrl(new Uri(httpClient.BaseAddress, "chathub"), options =>
                 {
                     foreach (var header in httpClient.DefaultRequestHeaders)
                         if (header.Key == "Cookie")
