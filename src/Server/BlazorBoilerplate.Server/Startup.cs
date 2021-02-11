@@ -173,37 +173,39 @@ namespace BlazorBoilerplate.Server
                 if (Convert.ToBoolean(Configuration[$"{projectName}:UseLocalCertStore"]) == true)
                 {
                     var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
+                    
                     var storeLocation = StoreLocation.LocalMachine;
+                    
                     dynamic storeName = "WebHosting";
+
                     if (OperatingSystem.IsLinux())
                     {
                         storeLocation = StoreLocation.CurrentUser;
                         storeName = StoreName.My;
                     }
-                    using (X509Store store = new X509Store(storeName, storeLocation))
+
+                    using X509Store store = new X509Store(storeName, storeLocation);
+                    store.Open(OpenFlags.ReadOnly);
+                    var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
+                    if (certs.Count > 0)
                     {
-                        store.Open(OpenFlags.ReadOnly);
-                        var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
-                        if (certs.Count > 0)
-                        {
-                            cert = certs[0];
-                        }
-                        else
-                        {
-                            var certPath = Path.Combine(_environment.ContentRootPath, "AuthSample.pfx");
-
-                            if (File.Exists(certPath))
-                            {
-                                string certificatePassword = Configuration[$"{projectName}:CertificatePassword"] ?? "Admin123";
-                                cert = new X509Certificate2(certPath, certificatePassword,
-                                                    X509KeyStorageFlags.MachineKeySet |
-                                                    X509KeyStorageFlags.PersistKeySet |
-                                                    X509KeyStorageFlags.Exportable);
-                            }
-                        }
-
-                        store.Close();
+                        cert = certs[0];
                     }
+                    else
+                    {
+                        var certPath = Path.Combine(_environment.ContentRootPath, "AuthSample.pfx");
+
+                        if (File.Exists(certPath))
+                        {
+                            string certificatePassword = Configuration[$"{projectName}:CertificatePassword"] ?? "Admin123";
+                            cert = new X509Certificate2(certPath, certificatePassword,
+                                                X509KeyStorageFlags.MachineKeySet |
+                                                X509KeyStorageFlags.PersistKeySet |
+                                                X509KeyStorageFlags.Exportable);
+                        }
+                    }
+
+                    store.Close();
                 }
 
                 // pass the resulting certificate to Identity Server
@@ -231,7 +233,7 @@ namespace BlazorBoilerplate.Server
             {
                 options.Authority = authAuthority;
                 options.SupportedTokens = SupportedTokens.Jwt;
-                options.RequireHttpsMetadata = _environment.IsProduction() ? true : false;
+                options.RequireHttpsMetadata = _environment.IsProduction();
                 options.ApiName = IdentityServerConfig.LocalApiName;
                 options.Events = new JwtBearerEvents
                 {

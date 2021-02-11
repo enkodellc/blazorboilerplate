@@ -47,16 +47,18 @@ namespace BlazorBoilerplate.Storage
             if (useSqlServer)
             {
                 var connectionString = configuration.GetConnectionString("DefaultConnection");
+
                 if(string.IsNullOrEmpty(connectionString))
                     throw new ArgumentNullException("The DefaultConnection was not found.");
-                if(connectionString.ToLower().Contains("multipleactiveresultsets=true") == false)
+
+                if(!connectionString.ToLower().Contains("multipleactiveresultsets=true"))
                     throw new ArgumentException("When Sql Server is in use the DefaultConnection must contain: MultipleActiveResultSets=true");
-                builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), options =>
+
+                builder.UseSqlServer(connectionString, options =>
                 {
                     options.CommandTimeout(60);
                     options.MigrationsAssembly(migrationsAssembly);
                 });
-
             }
             else
                 builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), options => options.MigrationsAssembly(migrationsAssembly));
