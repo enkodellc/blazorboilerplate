@@ -32,25 +32,25 @@
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.1.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureKeyVault" Version="3.1.11" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.11" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureKeyVault" Version="3.1.12" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.12" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="5.0.3" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
-    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.0" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.10.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.10.2" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.2.0-dev-00244" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00887" />
     <PackageReference Include="MailKit" Version="2.10.1" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.3" />
   </ItemGroup>
 
   <ItemGroup>

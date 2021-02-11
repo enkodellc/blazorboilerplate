@@ -2,7 +2,7 @@
 @attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
 @inject HttpClient Http
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 @inject NavigationManager Navigation
 @inject IStringLocalizer<Global> L
 
@@ -124,15 +124,15 @@ else
 
             if (response.IsSuccessStatusCode)
             {
-                matToaster.Add(response.Message, MatToastType.Success, L["Operation Successful"]);
+                viewNotifier.Show(response.Message, ViewNotifierType.Success, L["Operation Successful"]);
                 tenants = response.Result;
             }
             else
-                matToaster.Add(response.Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(response.Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 
@@ -183,7 +183,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 
@@ -199,7 +199,7 @@ else
         {
             if (currentTenant == null)
             {
-                matToaster.Add("Tenant Creation Error", MatToastType.Danger, "New Tenant not found");
+                viewNotifier.Show("Tenant Creation Error", ViewNotifierType.Error, "New Tenant not found");
                 return;
             }
 
@@ -212,12 +212,12 @@ else
 
             if (response.IsSuccessStatusCode)
             {
-                matToaster.Add(response.Message, MatToastType.Success);
+                viewNotifier.Show(response.Message, ViewNotifierType.Success);
 
                 StateHasChanged();
             }
             else
-                matToaster.Add(response.Message, MatToastType.Danger);
+                viewNotifier.Show(response.Message, ViewNotifierType.Error);
 
 
             await OnInitializedAsync();
@@ -226,7 +226,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
         finally
         {
@@ -253,18 +253,18 @@ else
             var response = await Http.DeleteAsync($"api/Admin/Tenant/{currentTenant.Name}");
             if (response.StatusCode != (HttpStatusCode)Status200OK)
             {
-                matToaster.Add("Tenant Delete Failed", MatToastType.Danger);
+                viewNotifier.Show("Tenant Delete Failed", ViewNotifierType.Error);
                 return;
             }
 
-            matToaster.Add("Tenant Deleted", MatToastType.Success);
+            viewNotifier.Show("Tenant Deleted", ViewNotifierType.Success);
             await OnInitializedAsync();
             isDeleteTenantDialogOpen = false;
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 

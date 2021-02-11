@@ -1,6 +1,6 @@
 ﻿@page "/todo_list"
 @inject IApiClient apiClient
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 @inject IStringLocalizer<Global> L
 
 <h1>Todo List - CRUD</h1>
@@ -86,11 +86,11 @@
         {
             var result = await apiClient.GetToDos();
             todos = new List<Todo>(result);
-            matToaster.Add(L["One item found", Plural.From("{0} items found", (int)result.InlineCount)], MatToastType.Success, L["Operation Successful"]);
+            viewNotifier.Show(L["One item found", Plural.From("{0} items found", (int)result.InlineCount)], ViewNotifierType.Success, L["Operation Successful"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 
@@ -102,11 +102,11 @@
 
             await apiClient.SaveChanges();
 
-            matToaster.Add($"{todo.Title} updated", MatToastType.Success, L["Operation Successful"]);
+            viewNotifier.Show($"{todo.Title} updated", ViewNotifierType.Success, L["Operation Successful"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 
@@ -117,11 +117,11 @@
             apiClient.RemoveEntity(todo);
             await apiClient.SaveChanges();
             todos.Remove(todo);
-            matToaster.Add($"{todo.Title} deleted", MatToastType.Success, L["Operation Successful"]);
+            viewNotifier.Show($"{todo.Title} deleted", ViewNotifierType.Success, L["Operation Successful"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
 
         todo = new Todo();
@@ -154,7 +154,7 @@
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
 
         todo = new Todo();

@@ -1,8 +1,8 @@
-﻿using BlazorBoilerplate.Shared.Localizer;
-using BlazorBoilerplate.Shared.Dto;
+﻿using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;
-using MatBlazor;
+using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using System;
@@ -17,7 +17,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
     public class RolesPage : ComponentBase
     {
         [Inject] HttpClient Http { get; set; }
-        [Inject] IMatToaster matToaster { get; set; }
+        [Inject] IViewNotifier viewNotifier { get; set; }
         [Inject] protected IStringLocalizer<Global> L { get; set; }
         protected int pageSize { get; set; } = 15;
         protected int currentPage { get; set; } = 0;
@@ -42,15 +42,15 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
                 if (apiResponse.IsSuccessStatusCode)
                 {
-                    matToaster.Add(apiResponse.Message, MatToastType.Success, L["Operation Successful"]);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
                     roles = apiResponse.Result;
                 }
                 else
-                    matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 
@@ -114,7 +114,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 
@@ -124,7 +124,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             {
                 if (string.IsNullOrWhiteSpace(currentRoleName))
                 {
-                    matToaster.Add("Role Creation Error", MatToastType.Danger, "Enter in a Role Name");
+                    viewNotifier.Show("Role Creation Error", ViewNotifierType.Error, "Enter in a Role Name");
                     return;
                 }
 
@@ -143,12 +143,12 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
                 if (apiResponse.IsSuccessStatusCode)
                 {
-                    matToaster.Add(apiResponse.Message, MatToastType.Success);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
 
                     StateHasChanged();
                 }
                 else
-                    matToaster.Add(apiResponse.Message, MatToastType.Danger);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error);
 
 
                 // this.StateHasChanged();
@@ -158,7 +158,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 
@@ -182,17 +182,17 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
                 if (response.IsSuccessStatusCode)
                 {
-                    matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                    viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
                     await OnInitializedAsync();
                     isDeleteRoleDialogOpen = false;
                     StateHasChanged();                    
                 }
                 else
-                    matToaster.Add(L["Operation Failed"], MatToastType.Danger);
+                    viewNotifier.Show(L["Operation Failed"], ViewNotifierType.Error);
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 

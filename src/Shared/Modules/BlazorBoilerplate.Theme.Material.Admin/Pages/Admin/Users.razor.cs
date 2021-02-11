@@ -19,7 +19,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 {
     public class UsersPage : ComponentBase
     {
-        [Inject] IMatToaster matToaster { get; set; }
+        [Inject] IViewNotifier viewNotifier { get; set; }
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
         [Inject] IApiClient apiClient { get; set; }
         [Inject] protected IStringLocalizer<Global> L { get; set; }
@@ -77,11 +77,11 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                 users = new List<ApplicationUser>(result);
                 totalItemsCount = (int)result.InlineCount.Value;
 
-                matToaster.Add(L["One item found", Plural.From("{0} items found", totalItemsCount)], MatToastType.Success, L["Operation Successful"]);
+                viewNotifier.Show(L["One item found", Plural.From("{0} items found", totalItemsCount)], ViewNotifierType.Success, L["Operation Successful"]);
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 
@@ -101,7 +101,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 
@@ -159,16 +159,16 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
                 if (apiResponse.IsSuccessStatusCode)
                 {
-                    matToaster.Add(apiResponse.Message, MatToastType.Success);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
                     await LoadUsers();
                     editDialogOpen = false;
                 }
                 else
-                    matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
             finally
             {
@@ -185,17 +185,17 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
                 if (apiResponse.IsSuccessStatusCode)
                 {
-                    matToaster.Add(apiResponse.Message, MatToastType.Success);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
                     await LoadUsers();
                     newUserViewModel = new RegisterViewModel();
                     createUserDialogOpen = false;
                 }
                 else
-                    matToaster.Add(apiResponse.Message, MatToastType.Danger, L["UserCreationFailed"]);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["UserCreationFailed"]);
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["UserCreationFailed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["UserCreationFailed"]);
             }
             finally
             {
@@ -212,15 +212,15 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                 var apiResponse = await identityAuthenticationStateProvider.AdminChangePassword(changePasswordViewModel);
 
                 if (apiResponse.IsSuccessStatusCode)
-                    matToaster.Add(L["Operation Successful"], MatToastType.Success, apiResponse.Message);
+                    viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success, apiResponse.Message);
                 else
-                    matToaster.Add(apiResponse.Message, MatToastType.Danger);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error);
 
                 changePasswordDialogOpen = false;
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["ResetPasswordFailed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["ResetPasswordFailed"]);
             }
             finally
             {
@@ -234,13 +234,13 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             {
                 apiClient.RemoveEntity(currentUser);
                 await apiClient.SaveChanges();
-                matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
                 deleteUserDialogOpen = false;
                 await LoadUsers();
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
     }

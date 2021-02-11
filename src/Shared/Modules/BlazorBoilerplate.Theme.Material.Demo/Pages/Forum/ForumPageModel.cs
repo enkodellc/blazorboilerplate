@@ -1,8 +1,8 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Sample;
+using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Theme.Material.Demo.Hubs;
-using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
@@ -24,7 +24,7 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Pages
         private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
         [Inject]
-        private IMatToaster matToaster { get; set; }
+        private IViewNotifier viewNotifier { get; set; }
 
         UserViewModel userViewModel { get; set; } = new UserViewModel();
 
@@ -54,11 +54,11 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Pages
 
                 await Client.Start();
 
-                matToaster.Add("Chat started", MatToastType.Info);
+                viewNotifier.Show("Chat started", ViewNotifierType.Info);
             }
             catch (Exception e)
             {
-                matToaster.Add($"ERROR: Failed to start chat client: {e.Message}", MatToastType.Danger);
+                viewNotifier.Show($"ERROR: Failed to start chat client: {e.Message}", ViewNotifierType.Error);
             }
         }
 
@@ -82,7 +82,7 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Pages
             Client.Dispose();
             Client = null;
 
-            matToaster.Add("Chat ended", MatToastType.Info);
+            viewNotifier.Show("Chat ended", ViewNotifierType.Info);
         }
 
         public async Task Delete(MessageDto messageDto)

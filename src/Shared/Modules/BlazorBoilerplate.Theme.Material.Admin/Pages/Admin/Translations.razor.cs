@@ -20,7 +20,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
     public class TranslationsPage : ComponentBase
     {
         [Inject] protected NavigationManager navigationManager { get; set; }
-        [Inject] IMatToaster matToaster { get; set; }
+        [Inject] IViewNotifier viewNotifier { get; set; }
         [Inject] ILocalizationApiClient localizationApiClient { get; set; }
         [Inject] protected IStringLocalizer<Global> L { get; set; }
 
@@ -78,11 +78,11 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                 localizationRecordKeys = new List<LocalizationRecordKey>(result);
                 totalItemsCount = (int)result.InlineCount.Value;
 
-                matToaster.Add(L["One item found", Plural.From("{0} items found", totalItemsCount)], MatToastType.Success, L["Operation Successful"]);
+                viewNotifier.Show(L["One item found", Plural.From("{0} items found", totalItemsCount)], ViewNotifierType.Success, L["Operation Successful"]);
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 
@@ -95,7 +95,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 
@@ -117,11 +117,11 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                     if (LocalizationCultures.Count > 0)
                         newLocalizationRecord = new LocalizationRecord() { ContextId = currentKey.ContextId, MsgId = currentKey.MsgId, Culture = LocalizationCultures[0] };
 
-                    matToaster.Add(L["One item found", Plural.From("{0} items found", result.Count())], MatToastType.Success, L["Operation Successful"]);
+                    viewNotifier.Show(L["One item found", Plural.From("{0} items found", result.Count())], ViewNotifierType.Success, L["Operation Successful"]);
                 }
                 catch (Exception ex)
                 {
-                    matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                    viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
                 }
             else
                 localizationRecords = new List<LocalizationRecord>();
@@ -150,14 +150,14 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                         localizationRecords = new List<LocalizationRecord>();
                         LocalizationCultures.Clear();
 
-                        matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                        viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
                     }
                     else
-                        matToaster.Add(response.Message, MatToastType.Warning, L["Operation Failed"]);
+                        viewNotifier.Show(response.Message, ViewNotifierType.Warning, L["Operation Failed"]);
                 }
                 catch (Exception ex)
                 {
-                    matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                    viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
                 }
 
             isEditDialogOpen = false;
@@ -180,14 +180,14 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                         localizationRecords = new List<LocalizationRecord>();
                         LocalizationCultures.Clear();
 
-                        matToaster.Add(response.Message, MatToastType.Success, L["Operation Successful"]);
+                        viewNotifier.Show(response.Message, ViewNotifierType.Success, L["Operation Successful"]);
                     }
                     else
-                        matToaster.Add(response.Message, MatToastType.Warning, L["Operation Failed"]);
+                        viewNotifier.Show(response.Message, ViewNotifierType.Warning, L["Operation Failed"]);
                 }
                 catch (Exception ex)
                 {
-                    matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                    viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
                 }
 
             isDeleteDialogOpen = false;
@@ -240,12 +240,12 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             {
                 await localizationApiClient.SaveChanges();
 
-                matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
             }
             catch (Exception ex)
             {
                 result = false;
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
 
             return result;
@@ -322,15 +322,15 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
                 if (response.IsSuccessStatusCode)
                 {
-                    matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                    viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
                     navigationManager.NavigateTo(navigationManager.Uri, true);
                 }
                 else
-                    matToaster.Add(response.Message, MatToastType.Warning, L["Operation Failed"]);
+                    viewNotifier.Show(response.Message, ViewNotifierType.Warning, L["Operation Failed"]);
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 
@@ -339,7 +339,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             foreach (var file in files)
             {
                 if (Path.GetExtension(file.Name).ToLower() != ".po")
-                    matToaster.Add(L["Only PO files"], MatToastType.Warning, L["Operation Failed"]);
+                    viewNotifier.Show(L["Only PO files"], ViewNotifierType.Warning, L["Operation Failed"]);
                 else
                 {
                     try
@@ -355,15 +355,15 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
                         if (response.IsSuccessStatusCode)
                         {
-                            matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                            viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
                             navigationManager.NavigateTo(navigationManager.Uri, true);
                         }
                         else
-                            matToaster.Add(response.Message, MatToastType.Warning, L["Operation Failed"]);
+                            viewNotifier.Show(response.Message, ViewNotifierType.Warning, L["Operation Failed"]);
                     }
                     catch (Exception ex)
                     {
-                        matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                        viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
                     }
                 }
             }

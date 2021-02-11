@@ -2,7 +2,6 @@
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
 using Karambolo.Common.Localization;
-using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using System;
@@ -14,7 +13,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 {
     public class PluralizationRulesPage : ComponentBase
     {
-        [Inject] IMatToaster matToaster { get; set; }
+        [Inject] IViewNotifier viewNotifier { get; set; }
         [Inject] ILocalizationApiClient localizationApiClient { get; set; }
         [Inject] protected IStringLocalizer<Global> L { get; set; }
 
@@ -42,11 +41,11 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                 LocalizationCultures.AddRange(BlazorBoilerplate.Shared.Localizer.Settings.SupportedCultures
                     .Where(i => !PluralFormRules.Any(l => l.Language == i)));
 
-                matToaster.Add(L["One item found", Plural.From("{0} items found", PluralFormRules.Count)], MatToastType.Success, L["Operation Successful"]);
+                viewNotifier.Show(L["One item found", Plural.From("{0} items found", PluralFormRules.Count)], ViewNotifierType.Success, L["Operation Successful"]);
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
         protected async Task OpenDelete(PluralFormRule pluralFormRule)
@@ -67,12 +66,12 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             {
                 await localizationApiClient.SaveChanges();
 
-                matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
             }
             catch (Exception ex)
             {
                 result = false;
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
 
             return result;

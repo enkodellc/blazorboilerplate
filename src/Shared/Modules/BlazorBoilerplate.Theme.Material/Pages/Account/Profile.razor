@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider authStateProvider
 @inject IStringLocalizer<Global> L
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 
 <h1>@L["User Profile"]</h1>
 <p>User profile management.</p>
@@ -139,7 +139,7 @@ else
                 ForgetTwoFactorClient().ContinueWith(t =>
                 {
                     if (t.IsFaulted)
-                        matToaster.Add(t.Exception.Message, MatToastType.Danger, L["Operation Failed"]);
+                        viewNotifier.Show(t.Exception.Message, ViewNotifierType.Error, L["Operation Failed"]);
                 });
         }
     }
@@ -153,7 +153,7 @@ else
                 EnableDisable2fa().ContinueWith(t =>
                 {
                     if (t.IsFaulted)
-                        matToaster.Add(t.Exception.Message, MatToastType.Danger, L["Operation Failed"]);
+                        viewNotifier.Show(t.Exception.Message, ViewNotifierType.Error, L["Operation Failed"]);
                 });
         }
     }
@@ -176,7 +176,7 @@ else
     {
         if (updatePasswordViewModel.NewPassword != updatePasswordViewModel.NewPasswordConfirm)
         {
-            matToaster.Add(L["PasswordConfirmationFailed"], MatToastType.Warning);
+            viewNotifier.Show(L["PasswordConfirmationFailed"], ViewNotifierType.Warning);
         }
         else
         {
@@ -185,13 +185,13 @@ else
                 var apiResponse = await identityAuthenticationStateProvider.UpdatePassword(updatePasswordViewModel);
 
                 if (apiResponse.IsSuccessStatusCode)
-                    matToaster.Add(L["UpdatePasswordSuccessful"], MatToastType.Success);
+                    viewNotifier.Show(L["UpdatePasswordSuccessful"], ViewNotifierType.Success);
                 else
-                    matToaster.Add(apiResponse.Message, MatToastType.Danger, L["UpdatePasswordFailed"]);
+                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["UpdatePasswordFailed"]);
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.Message, MatToastType.Danger, L["UpdatePasswordFailed"]);
+                viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["UpdatePasswordFailed"]);
             }
 
             updatePasswordDialogOpen = false;
@@ -205,13 +205,13 @@ else
             var apiResponse = await identityAuthenticationStateProvider.UpdateUser(userViewModel);
 
             if (apiResponse.IsSuccessStatusCode)
-                matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
             else
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 
@@ -221,12 +221,12 @@ else
 
         if (apiResponse.IsSuccessStatusCode)
         {
-            matToaster.Add(L["Operation Successful"], MatToastType.Success);
+            viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
             userViewModel = apiResponse.Result;
             StateHasChanged();
         }
         else
-            matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
 
     }
 
@@ -238,17 +238,17 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
                 userViewModel = apiResponse.Result;
                 authenticatorVerificationCodeViewModel = new AuthenticatorVerificationCodeViewModel();
                 StateHasChanged();
             }
             else
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
 
     }
@@ -261,13 +261,13 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
                 userViewModel = apiResponse.Result;
                 StateHasChanged();
             }
             else
             {
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
     }
@@ -278,13 +278,13 @@ else
 
         if (apiResponse.IsSuccessStatusCode)
         {
-            matToaster.Add(L["Operation Successful"], MatToastType.Success);
+            viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
             userViewModel = apiResponse.Result;
             StateHasChanged();
         }
         else
         {
-            matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 }

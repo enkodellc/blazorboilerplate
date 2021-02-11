@@ -1,9 +1,9 @@
-﻿using BlazorBoilerplate.Shared.Localizer;
+﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Theme.Material.Admin.Shared.Layouts;
-using MatBlazor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BlazorBoilerplate.Constants;
 
 namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
 {
@@ -25,7 +24,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
 
         [Inject] protected IApiClient apiClient { get; set; }
 
-        [Inject] protected IMatToaster matToaster { get; set; }
+        [Inject] protected IViewNotifier viewNotifier { get; set; }
 
         [Inject] protected IStringLocalizer<Global> L { get; set; }
 
@@ -49,7 +48,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
 
@@ -64,7 +63,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
 
                 await apiClient.SaveChanges();
 
-                matToaster.Add(L["Operation Successful"], MatToastType.Success);
+                viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
 
                 if (reload)
                     navigationManager.NavigateTo(navigationManager.Uri, true);
@@ -72,7 +71,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
             }
             catch (Exception ex)
             {
-                matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
             }
         }
     }

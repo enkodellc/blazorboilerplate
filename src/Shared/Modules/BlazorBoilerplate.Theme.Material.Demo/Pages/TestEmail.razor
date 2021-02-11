@@ -3,7 +3,7 @@
 @attribute [Authorize]
 
 @inject IApiClient apiClient
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 
 <h1>Send Email</h1>
 <p>Test out SMTP email sending with MailKit. This will send out an email using a default "Test" template.</p>
@@ -32,16 +32,16 @@
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(apiResponse.Message, MatToastType.Success);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
             }
             else
             {
-                matToaster.Add(apiResponse.Message + " : " + apiResponse.StatusCode, MatToastType.Danger, "Email Send Failed");
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, "Email Send Failed");
             }
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "Email Send Failed");
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, "Email Send Failed");
         }
     }
 }

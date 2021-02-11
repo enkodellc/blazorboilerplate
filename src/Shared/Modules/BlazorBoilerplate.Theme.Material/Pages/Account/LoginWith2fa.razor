@@ -3,7 +3,7 @@
 @layout LoginLayout
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authStateProvider
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 @inject AppState appState
 @inject NavigationManager NavigationManager
 @inject IJSRuntime js
@@ -126,7 +126,7 @@
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, L["LoginFailed"]);
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["LoginFailed"]);
         }
     }
 
@@ -141,7 +141,7 @@
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, L["LoginFailed"]);
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["LoginFailed"]);
         }
     }
 
@@ -168,6 +168,6 @@
             LoginSuccess = true;
         }
         else
-            matToaster.Add(response.Message, MatToastType.Danger, L["LoginFailed"]);
+            viewNotifier.Show(response.Message, ViewNotifierType.Error, L["LoginFailed"]);
     }
 }

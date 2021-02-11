@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Theme.Material.Services;
 using BlazorBoilerplate.Theme.Material.TagHelpers;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -38,6 +39,8 @@ namespace BlazorBoilerplate.Theme.Material
                 config.MaximumOpacity = 95;
                 config.VisibleStateDuration = 3000;
             });
+
+            services.AddScoped<IViewNotifier, ViewNotifier>();
         }
 
         public void ConfigureWebAssemblyServices(IServiceCollection services)
@@ -52,6 +55,8 @@ namespace BlazorBoilerplate.Theme.Material
                 config.MaximumOpacity = 95;
                 config.VisibleStateDuration = 3000;
             });
+
+            services.AddScoped<IViewNotifier, ViewNotifier>();
 
             var sp = services.BuildServiceProvider();
             

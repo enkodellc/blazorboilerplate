@@ -3,7 +3,7 @@
 @layout LoginLayout
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authStateProvider
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 @inject AppState appState
 @inject NavigationManager NavigationManager
 @inject IJSRuntime js
@@ -164,7 +164,7 @@
                 }
             }
             else
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["LoginFailed"]);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["LoginFailed"]);
         }
     }
 
@@ -214,11 +214,11 @@
                 }
             }
             else
-                matToaster.Add(response.Message, MatToastType.Danger, L["LoginFailed"]);
+                viewNotifier.Show(response.Message, ViewNotifierType.Error, L["LoginFailed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, L["LoginFailed"]);
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["LoginFailed"]);
         }
     }
 
@@ -227,13 +227,13 @@
         try
         {
             await identityAuthenticationStateProvider.ForgotPassword(forgotPasswordViewModel);
-            matToaster.Add(L["ForgotPasswordEmailSent"], MatToastType.Success);
+            viewNotifier.Show(L["ForgotPasswordEmailSent"], ViewNotifierType.Success);
             forgotPasswordViewModel.Email = string.Empty;
             forgotPasswordToggle = false;
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, L["ResetPasswordFailed"]);
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["ResetPasswordFailed"]);
         }
     }
 }

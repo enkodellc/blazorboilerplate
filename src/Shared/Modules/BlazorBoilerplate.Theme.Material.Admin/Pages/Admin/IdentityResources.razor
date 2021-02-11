@@ -2,7 +2,7 @@
 @attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
 @inject HttpClient Http
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 @inject IStringLocalizer<Global> L
 
 @using IdentityServer4.Models
@@ -158,15 +158,15 @@ else
 
             if (identiyResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(identiyResponse.Message, MatToastType.Success, L["Operation Successful"]);
+                viewNotifier.Show(identiyResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
                 identiyResources = identiyResponse.Result;
             }
             else
-                matToaster.Add(identiyResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(identiyResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 
@@ -232,7 +232,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 
@@ -256,7 +256,7 @@ else
         {
             if (currentIdentityResource == null)
             {
-                matToaster.Add("IdentityResource Creation Error", MatToastType.Danger, "New Identity Resource not found");
+                viewNotifier.Show("IdentityResource Creation Error", ViewNotifierType.Error, "New Identity Resource not found");
                 return;
             }
 
@@ -275,12 +275,12 @@ else
 
             if (identiyResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(identiyResponse.Message, MatToastType.Success);
+                viewNotifier.Show(identiyResponse.Message, ViewNotifierType.Success);
 
                 StateHasChanged();
             }
             else
-                matToaster.Add(identiyResponse.Message, MatToastType.Danger);
+                viewNotifier.Show(identiyResponse.Message, ViewNotifierType.Error);
 
 
             await OnInitializedAsync();
@@ -289,7 +289,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
         finally
         {
@@ -316,18 +316,18 @@ else
             var response = await Http.DeleteAsync($"api/Admin/IdentityResource/{currentIdentityResource.Name}");
             if (response.StatusCode != (HttpStatusCode)Status200OK)
             {
-                matToaster.Add("Identity Resource Delete Failed", MatToastType.Danger);
+                viewNotifier.Show("Identity Resource Delete Failed", ViewNotifierType.Error);
                 return;
             }
 
-            matToaster.Add("Identity Resource Deleted", MatToastType.Success);
+            viewNotifier.Show("Identity Resource Deleted", ViewNotifierType.Success);
             await OnInitializedAsync();
             isDeleteIdentityResourceDialogOpen = false;
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 

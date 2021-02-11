@@ -2,7 +2,7 @@
 @attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
 @inject HttpClient Http
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 @inject IStringLocalizer<Global> L
 
 @using IdentityServer4.Models
@@ -350,15 +350,15 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(apiResponse.Message, MatToastType.Success, L["Operation Successful"]);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
                 clients = apiResponse.Result;
             }
             else
-                matToaster.Add(apiResponse.Message, MatToastType.Danger, L["Operation Failed"]);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 
@@ -472,7 +472,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 
@@ -496,7 +496,7 @@ else
         {
             if (currentClient == null)
             {
-                matToaster.Add("Client Creation Error", MatToastType.Danger, "New Client not found");
+                viewNotifier.Show("Client Creation Error", ViewNotifierType.Error, "New Client not found");
                 return;
             }
 
@@ -517,12 +517,12 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(apiResponse.Message, MatToastType.Success);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
 
                 StateHasChanged();
             }
             else
-                matToaster.Add(apiResponse.Message, MatToastType.Danger);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error);
 
 
             await OnInitializedAsync();
@@ -531,7 +531,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
         finally
         {
@@ -558,18 +558,18 @@ else
             var response = await Http.DeleteAsync($"api/Admin/Client/{currentClient.ClientId}");
             if (response.StatusCode != (HttpStatusCode)Status200OK)
             {
-                matToaster.Add("Client Delete Failed", MatToastType.Danger);
+                viewNotifier.Show("Client Delete Failed", ViewNotifierType.Error);
                 return;
             }
 
-            matToaster.Add("Client Deleted", MatToastType.Success);
+            viewNotifier.Show("Client Deleted", ViewNotifierType.Success);
             await OnInitializedAsync();
             isDeleteClientDialogOpen = false;
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
 

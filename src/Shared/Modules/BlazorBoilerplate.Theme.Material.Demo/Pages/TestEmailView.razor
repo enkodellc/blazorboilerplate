@@ -3,7 +3,7 @@
 @attribute [Authorize]
 
 @inject HttpClient Http
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 
 <h1>Email Retrieval</h1>
 <p>This component demonstrates fetching and viewing emails from an account.</p>
@@ -123,11 +123,7 @@ else
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, "Email retrieval failed", null, config =>
-                {
-                    config.RequireInteraction = true;
-                });
-
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, "Email retrieval failed");
         }
     }
 }

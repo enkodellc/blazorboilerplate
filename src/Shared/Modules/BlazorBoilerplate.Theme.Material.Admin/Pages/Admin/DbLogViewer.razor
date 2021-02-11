@@ -3,7 +3,7 @@
 @attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
 @inject IApiClient apiClient
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 @inject IStringLocalizer<Global> L
 
 @using System.Linq.Expressions;
@@ -92,11 +92,11 @@ else
 
             dbLogItems = new List<DbLog>(result);
             totalItemsCount = (int)result.InlineCount.Value;
-            matToaster.Add(L["One item found", Plural.From("{0} items found", totalItemsCount)], MatToastType.Success, L["Operation Successful"]);
+            viewNotifier.Show(L["One item found", Plural.From("{0} items found", totalItemsCount)], ViewNotifierType.Success, L["Operation Successful"]);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.GetBaseException().Message, MatToastType.Danger, L["Operation Failed"]);
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
 
         await InvokeAsync(StateHasChanged);

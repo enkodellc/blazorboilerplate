@@ -4,7 +4,7 @@
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authStateProvider
 @inject IStringLocalizer<Global> L
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 
 <MatCard>
     <div class="hidden-mdc-down">
@@ -64,17 +64,17 @@
 
             if (response.IsSuccessStatusCode)
             {
-                matToaster.Add("New User Email Verification was sent to: " + registerViewModel.Email, MatToastType.Success, L["UserCreationSuccessful"]);
+                viewNotifier.Show("New User Email Verification was sent to: " + registerViewModel.Email, ViewNotifierType.Success, L["UserCreationSuccessful"]);
                 navigationManager.NavigateTo("/");
             }
             else
             {
-                matToaster.Add(response.Message, MatToastType.Danger, L["UserCreationFailed"]);
+                viewNotifier.Show(response.Message, ViewNotifierType.Error, L["UserCreationFailed"]);
             }
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, L["UserCreationFailed"]);
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["UserCreationFailed"]);
         }
     }
 }

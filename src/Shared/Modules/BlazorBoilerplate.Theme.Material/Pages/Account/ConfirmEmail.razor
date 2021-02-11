@@ -7,7 +7,7 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider authStateProvider
 @inject IStringLocalizer<Global> L
-@inject IMatToaster matToaster
+@inject IViewNotifier viewNotifier
 
 @if (string.IsNullOrEmpty(UserId))
 {
@@ -74,16 +74,16 @@ else
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                matToaster.Add(apiResponse.Message, MatToastType.Success);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
 
                 navigationManager.NavigateTo("/account/login");
             }
             else
-                matToaster.Add(apiResponse.Message, MatToastType.Danger);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error);
         }
         catch (Exception ex)
         {
-            matToaster.Add(ex.Message, MatToastType.Danger, L["EmailVerificationFailed"]);
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["EmailVerificationFailed"]);
         }
     }
 }
