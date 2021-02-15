@@ -630,6 +630,10 @@ ul.breadcrumb {
     .logo-img {
         height: 38px;
     }
+    .selectCulture,
+    .donate span {
+        display: none;
+    }
 }
 
 /* Small devices (landscape phones, less than 768px)*/
