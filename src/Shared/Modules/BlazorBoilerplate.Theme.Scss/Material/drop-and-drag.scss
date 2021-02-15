@@ -1,0 +1,20 @@
+﻿.jobs-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.job-status {
+    display: flex;
+    flex-direction: column;
+    width: 312px;
+}
+
+.job-status ul {
+    flex: 1;
+}
+
+.dropzone {
+    padding: 30px;
+    border: 1px dashed #75868a;
+    list-style: none;
+}

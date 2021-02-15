@@ -1,0 +1,24 @@
+﻿@import "colors.scss";
+
+.triangle-container {
+    left: calc(-50vw + 50%);
+    position: fixed;
+    right: calc(-50vw + 50%);
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+    background-color: $mdc-theme-primary;
+}
+
+.triangles {
+    background-image: url("/_content/BlazorBoilerplate.Theme.Material/images/triangles.svg");
+    background-size: cover;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    mix-blend-mode: hard-light;
+    position: fixed;
+    right: 0;
+    top: 0;
+    background-position: center center;
+}

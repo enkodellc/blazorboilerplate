@@ -1,0 +1,23 @@
+﻿div.refresh-timer.row {
+    margin-left: 0;
+    margin-right: 0;
+    -moz-align-content: center;
+    -o-align-content: center;
+    -webkit-align-content: center;
+    align-content: center;
+    -o-justify-content: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+div.refresh-timer.row div {
+    -webkit-align-self: center;
+    -o-align-self: center;
+    align-self: center;
+    margin-left: .2rem;
+    margin-right: .2rem;
+}
+
+div.refresh-timer-interval-wrapper {
+    width: 100px;
+}

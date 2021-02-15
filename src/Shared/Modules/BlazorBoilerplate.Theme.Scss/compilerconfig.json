@@ -1,0 +1,13 @@
+﻿[
+  {
+    "outputFile": "../BlazorBoilerplate.Theme.Material/wwwroot/css/site.css",
+    "inputFile": "Material/site.scss",
+    "minify": {
+      "termSemicolons": true
+    },
+    "options": {
+      "lineFeed": "crlf",
+      "relativeUrls": true
+    }
+  }
+]

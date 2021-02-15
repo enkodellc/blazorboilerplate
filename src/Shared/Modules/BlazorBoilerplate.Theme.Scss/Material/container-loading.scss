@@ -1,0 +1,12 @@
+﻿.loading-container {
+    position: relative;
+    text-align: center;
+    background-color: #fff;
+    margin: 10% auto 0 auto;
+    padding: 20px;
+}
+
+.loading-container, .mdc-card {
+    border-radius: 0 !important;
+    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;
+}

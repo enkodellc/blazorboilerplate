@@ -1,0 +1,19 @@
+﻿.container-fluid {
+    min-height: 350px;
+    padding: 20px 30px;
+}
+
+.page-footer {
+    display: flex;
+    flex: 0 0 auto;
+    background: #fff;
+    color: #4d4d4d;
+    padding: 9px 12px 9px 18px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.21);
+    margin-top: 30px;
+    font-size: 12px;
+}
+
+.flex-1 {
+    flex: 1;
+}

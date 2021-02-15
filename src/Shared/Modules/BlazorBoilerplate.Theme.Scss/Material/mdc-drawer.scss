@@ -1,0 +1,203 @@
+﻿@import "colors.scss";
+
+.mdc-nav-li {
+    list-style: none;
+}
+.mini .mdc-drawer,
+.mini .app-sidebar {
+    width: 54px;
+    transition: width .4s ease-in-out;
+}
+
+.mini .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+    margin-left: 54px;
+    transition: margin-left .4s ease-in-out;
+}
+
+.mini .drawer-profile {
+    padding: 0 4px;
+}
+
+.mini .after.mdc-sub-menu-icon,
+.mini .miniHover {
+    transform: translateX(200%);
+    animation: slide-out 1s forwards;
+    transition: .4s ease-in-out;
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+}
+
+.mini .mdc-drawer:hover .after.mdc-sub-menu-icon,
+.mini .mdc-drawer:hover .miniHover {
+    transform: translateX(0%);
+    animation: slide-in 1s forwards;
+    transition: width .4s ease-in-out;
+    visibility: visible;
+    opacity: 1;
+    position: relative;
+}
+
+.mini .mdc-drawer:hover .after.mdc-sub-menu-icon {
+    position: absolute;
+}
+
+.mini .drawer-footer .mdc-button {
+    min-width: 36px;
+}
+
+.mdc-drawer:hover,
+.mdc-drawer:hover .app-sidebar,
+.full .mdc-drawer,
+.full .app-sidebar {
+    width: 256px;
+    transition: width .4s ease-in-out;
+}
+
+.closed .mdc-drawer,
+.closed .app-sidebar {
+    width: 0;
+    transition: width .4s ease-in-out;
+}
+
+.mini .mdc-drawer:hover.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content,
+.full .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+    margin-left: 256px;
+    transition: margin-left .4s ease-in-out;
+}
+
+.closed .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+    margin-left: 0;
+    transition: margin-left .4s ease-in-out;
+}
+
+.mdc-drawer__content {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    color: #FFF;
+}
+
+.mdc-drawer .mdc-list-item {
+    margin: 8px 0 !important;
+    border-radius: 0 !important;
+    color: #fff !important;
+}
+
+.mdc-drawer .mdc-list-item:active {
+    box-shadow: inset 3px 0 0 #886ab5;
+}
+
+.mdc-drawer .mdc-list-item--disabled {
+    color: #775e91 !important;
+}
+
+.mdc-drawer a.mdc-list-item {
+    padding: 0 14px !important;
+}
+
+.mdc-drawer .mdc-list-item--selected {
+    border-left: solid 3px rgba(255, 255, 255, .5);
+}
+
+.mdc-drawer .mdc-list-item--selected::before {
+    opacity: 0.3 !important;
+}
+
+.mdc-expansion-panel--selected .mat-expansion-panel__summary {
+    border-left: solid 3px rgba(255, 255, 255, .3);
+}
+
+.mdc-expansion-panel--selected .mat-expansion-panel__summary::before {
+    opacity: 0.2 !important;
+}
+
+.mat-accordion .mdc-nav-menu .mat-expansion-panel.mat-expansion-panel--expanded {
+    margin: 0;
+}
+
+.drawer-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $mdc-theme-primary;
+    height: 64px;
+    color: #fff;
+}
+
+.drawer-logo a {
+    color: #fff;
+}
+
+.drawer-header {
+}
+
+.drawer-profile {
+    padding: 16px;
+    border-bottom: solid 1px #777;
+    background-image: url("/_content/BlazorBoilerplate.Theme.Material/images/profile-bg.jpg");
+    background-size: cover;
+    color: #fff;
+    font-size: 12px;
+}
+
+.drawer-profile a,
+.drawer-profile .material-icons {
+    color: #fff;
+    vertical-align: text-bottom;
+}
+
+.app-sidebar .material-icons {
+    margin-right: 8px;
+    padding-left: 7px;
+}
+
+.app-sidebar .mat-expansion-panel__content .material-icons {
+    padding-left: 2px;
+    margin-left: -3px;
+}
+
+.app-sidebar .mdc-nav-li .material-icons {
+    margin-right: 8px;
+    padding-left: 0;
+}
+
+.mdc-drawer {
+    /*margin-top: 64px;*/
+    box-shadow: 2px 0 5px 0 rgba(0,0,0,0.16);
+}
+
+.mdc-drawer-app-content {
+    background-color: #f5f5f5;
+}
+
+.mat-drawer-container-responsive {
+    display: flex;
+    flex-direction: row;
+}
+
+.mat-drawer-container-responsive .mdc-drawer {
+    width: unset !important;
+    position: relative;
+}
+
+.mat-drawer-container-responsive .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+    margin-left: unset !important;
+    position: relative;
+    flex: 1;
+}
+
+.mdc-top-app-bar--fixed-adjust {
+    padding-top: 0 !important;
+    overflow: hidden;
+}
+
+.drawer-footer {
+    position: absolute;
+    text-align: left;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: solid 1px #AAA;
+    font-size: 12px;
+    padding: 0 12px 0 12px;
+    background-color: lightgray
+}

@@ -1,0 +1,118 @@
+﻿/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 596.98px) {
+    .drawer-logo {
+        height: 56px;
+    }
+
+    .logo-img {
+        height: 38px;
+    }
+}
+
+/* Small devices (landscape phones, less than 768px)*/
+@media (max-width: 767.98px) {
+
+    .mdc-drawer, .app-sidebar {
+        width: 54px !important;
+        transform: translateX(0%);
+        transition: width .4s ease-in-out;
+    }
+
+    .drawer-profile {
+        padding: 0 4px;
+    }
+
+    .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+        margin-left: 54px !important;
+        transition: margin-left .2s ease-in-out;
+    }
+
+    .mat-accordion .mdc-nav-menu .mat-expansion-panel__content {
+        padding-left: 6px;
+    }
+
+    .full .mdc-drawer:hover .mat-accordion .mdc-nav-menu .mat-expansion-panel__content {
+        padding-left: 13px;
+    }
+
+    .mdc-sub-menu-icon,
+    .drawer-profile span,
+    .miniHover,
+    .brand {
+        visibility: hidden;
+        opacity: 0;
+        position: fixed;
+    }
+
+    .mdc-drawer:hover,
+    .mdc-drawer:hover .app-sidebar,
+    .full .mdc-drawer,
+    .full .app-sidebar {
+        width: 256px !important;
+        z-index: 99;
+    }
+
+    .full .drawer-profile span,
+    .full .miniHover,
+    .full .brand,
+    .mdc-drawer:hover .drawer-profile span,
+    .mdc-drawer:hover .miniHover,
+    .mdc-drawer:hover .brand {
+        visibility: visible;
+        opacity: 1;
+        position: relative;
+    }
+
+    .full .mdc-top-app-bar__section--align-end {
+        display: none;
+        transition: .4s ease-in-out;
+    }
+
+    .full .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+        margin-left: 256px !important;
+        transition: margin-left .2s ease-in-out;
+    }
+
+    .closed .mdc-drawer,
+    .closed .app-sidebar {
+        width: 0 !important;
+        transform: translateX(0%);
+        transition: width .4s ease-in-out;
+    }
+
+    .closed .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+        margin-left: 0 !important;
+        transition: margin-left .2s ease-in-out;
+    }
+
+    .drawer-footer {
+        padding: 0;
+    }
+
+    .closed .mdc-drawer {
+        transform: translateX(-100%);
+        animation: slide-out 1s forwards;
+        transition: .4s ease-in-out;
+    }
+
+    .login-container .mdc-card {
+        padding: 20px;
+        width: 300px;
+    }
+
+    .login-container .mat-accordion {
+        width: 300px;
+    }
+
+    .loading-container {
+        padding: 10px;
+    }
+}
+
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) {
+}
+
+/* Large devices (desktops, less than 1200px) */
+@media (max-width: 1199.98px) {
+}

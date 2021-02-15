@@ -1,0 +1,46 @@
+﻿@import "colors.scss";
+
+html, body {
+    font-family: Roboto, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+app {
+    position: relative;
+    display: flex;
+    /*flex-direction: column;*/
+}
+
+/* Material Theme */
+:root {
+    --mdc-theme-primary: $mdc-theme-primary;
+    --mdc-theme-secondary: $mdc-theme-secondary;
+    /* --mdc-theme-on-primary: $mdc-theme-on-primary; */
+    /* --mdc-theme-on-secondary: $mdc-theme-on-secondary; */
+    --mdc-theme-text-primary: $mdc-theme-text-primary;
+    --mdc-theme-text-secondary: $mdc-theme-text-secondary;
+    --mdc-theme-text-on-primary: $mdc-theme-text-on-primary;
+    --mdc-theme-text-on-secondary: $mdc-theme-text-on-secondary;
+    /*--mdc-theme-surface: mdc-theme-surface; */
+}
+
+@import "breadcrumb.scss";
+@import "container-body-login.scss";
+@import "container-loading.scss";
+@import "container-triangles.scss";
+@import "drop-and-drag.scss";
+@import "footer.scss";
+@import "forms.scss";
+@import "logo.scss";
+@import "mat-paginator.scss";
+@import "mat-toast.scss";
+@import "mdc-dialog.scss";
+@import "mdc-drawer.scss";
+@import "mdc-icon-button.scss";
+@import "mdc-table.scss";
+@import "mdc-tab-scroller.scss";
+@import "mdc-top-app-bar.scss";
+@import "media-queries.scss";
+@import "misc.scss";
+@import "page.scss";
+@import "timer-refresh.scss";
+@import "webkit-scrollbar.scss";

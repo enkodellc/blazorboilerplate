@@ -1,0 +1,52 @@
+﻿.contrib-card {
+    padding: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.contrib-card img {
+    height: 50px;
+    width: 50px;
+}
+
+.screenshot {
+    text-align: center;
+    display: block;
+}
+
+.screenshot img {
+    max-width: 100%;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui::before {
+    margin: auto;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+#blazor-error-ui {
+    z-index: 9999;
+    display: none;
+    background: #fff;
+    margin: 0 auto;
+    padding: 10px 20px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;
+}

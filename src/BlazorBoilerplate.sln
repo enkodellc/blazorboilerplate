@@ -64,7 +64,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Shared.Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Shared.Localizer", "Shared\BlazorBoilerplate.Shared.Localizer\BlazorBoilerplate.Shared.Localizer.csproj", "{746B25CA-DAEC-4A90-9ED5-357038C675D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.Infrastructure.AuthorizationDefinitions", "Shared\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions.csproj", "{1D566D73-A7A1-4EE8-BA33-50D049901FB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Infrastructure.AuthorizationDefinitions", "Shared\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions.csproj", "{1D566D73-A7A1-4EE8-BA33-50D049901FB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.Theme.Scss", "Shared\Modules\BlazorBoilerplate.Theme.Scss\BlazorBoilerplate.Theme.Scss.csproj", "{CDDF4156-285E-4061-A176-3B7DEB3B7976}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -292,6 +294,18 @@ Global
 		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Release|x64.Build.0 = Release|Any CPU
 		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Release|x86.ActiveCfg = Release|Any CPU
 		{1D566D73-A7A1-4EE8-BA33-50D049901FB4}.Release|x86.Build.0 = Release|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Debug|x64.Build.0 = Debug|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Debug|x86.Build.0 = Debug|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Release|x64.ActiveCfg = Release|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Release|x64.Build.0 = Release|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Release|x86.ActiveCfg = Release|Any CPU
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -319,6 +333,7 @@ Global
 		{2D67021C-4608-464A-9ECA-2EA5CC56D6CA} = {ABC8E72F-DA04-4370-A612-2E22542D42AA}
 		{746B25CA-DAEC-4A90-9ED5-357038C675D7} = {ABC8E72F-DA04-4370-A612-2E22542D42AA}
 		{1D566D73-A7A1-4EE8-BA33-50D049901FB4} = {ABC8E72F-DA04-4370-A612-2E22542D42AA}
+		{CDDF4156-285E-4061-A176-3B7DEB3B7976} = {BE02426C-DCC8-41E6-BFCE-8A03657F53B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {75F45143-A365-4C32-A2D5-56BDADCE76CC}
