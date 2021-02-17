@@ -73,11 +73,6 @@ app {
     padding: 20px;
 }
 
-/* Login page */
-.login-body {
-    position: relative;
-}
-
 .logo {
     text-align: center;
 }
@@ -91,20 +86,6 @@ app {
     box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;
 }
 
-    .login-container .mdc-card {
-        padding: 40px 30px;
-        width: 500px;
-    }
-
-    .login-container .mat-accordion {
-        width: 500px;
-    }
-
-.container-fluid .login-container {
-    display: block;
-    max-width: 500px;
-}
-
 .additional-info {
     color: #636c72;
     background-color: rgba(0,0,0,.04);
@@ -116,28 +97,6 @@ app {
     text-align: center;
     font-size: .875rem;
 }
-
-.login-container {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-align: center;
-    align-items: center;
-    align-content: center;
-    margin: 5% auto 0;
-}
-
-.login-body {
-    flex-direction: column;
-    margin: 0 auto;
-}
-
-    .login-body .mat-accordion .mat-expansion-panel__header {
-        flex-basis: 80%;
-    }
-
-    .login-body .mat-expansion-panel {
-        background-color: #f4f4f4 !important;
-    }
 
 
 /* app bar */
@@ -179,7 +138,6 @@ app {
     z-index: -1;
     transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;
 }
-
 .hidden-mdc-down nav a {
     color: #E00;
     display: block;
@@ -451,32 +409,6 @@ hr {
     clear: both;
 }
 
-/* breadcrumbs */
-ul.breadcrumb {
-    padding: 10px 16px;
-    list-style: none;
-    background-color: #eee;
-}
-
-    /* Add a slash symbol (/) before/behind each list item */
-    ul.breadcrumb li + li:before {
-        padding: 8px;
-        content: "›";
-    }
-
-    ul.breadcrumb li,
-    ul.breadcrumb li a {
-        text-transform: uppercase;
-        text-shadow: none;
-        font-size: 13px;
-        text-decoration: none;
-        display: inline;
-    }
-
-        ul.breadcrumb li a:hover {
-            text-decoration: underline;
-        }
-
 .mdc-checkbox + label {
     margin-bottom: 0px !important;
 }
@@ -720,15 +652,6 @@ ul.breadcrumb {
         transform: translateX(-100%);
         animation: slide-out 1s forwards;
         transition: .4s ease-in-out;
-    }
-
-    .login-container .mdc-card {
-        padding: 20px;
-        width: 300px;
-    }
-
-    .login-container .mat-accordion {
-        width: 300px;
     }
 
     .loading-container {
