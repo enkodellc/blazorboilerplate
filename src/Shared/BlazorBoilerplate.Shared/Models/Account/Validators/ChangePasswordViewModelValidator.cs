@@ -12,9 +12,7 @@ namespace BlazorBoilerplate.Shared.Models.Account.Validators
             RuleFor(p => p.UserId)
                 .NotEmpty();
 
-            RuleFor(p => p.Password)
-                .NotEmpty()
-                .Length(6, 100).WithName(L["Password"]);
+            RuleFor(p => p.Password).Password(L);
 
             RuleFor(p => p.PasswordConfirm)
                 .Equal(p => p.Password).WithMessage(x => L["PasswordConfirmationFailed"]).WithName(L["ConfirmPassword"]);

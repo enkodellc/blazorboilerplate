@@ -14,9 +14,7 @@ namespace BlazorBoilerplate.Shared.Models.Account.Validators
                 .Matches(@"^[^\s]+$").WithMessage(x => L["SpacesNotPermitted"])
                 .Length(2, 64).WithName(L["UserName"]);
 
-            RuleFor(p => p.Password)
-                .NotEmpty()
-                .Length(6, 100).WithName(L["Password"]);
+            RuleFor(p => p.Password).Password(L);
         }
     }
 }

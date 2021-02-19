@@ -1,4 +1,5 @@
 using AutoMapper;
+using static BlazorBoilerplate.Constants.PasswordPolicy;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
@@ -374,11 +375,11 @@ namespace BlazorBoilerplate.Server
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = RequireDigit;
+                options.Password.RequiredLength = RequiredLength;
+                options.Password.RequireNonAlphanumeric = RequireNonAlphanumeric;
+                options.Password.RequireUppercase = RequireUppercase;
+                options.Password.RequireLowercase = RequireLowercase;
                 //options.Password.RequiredUniqueChars = 6;
 
                 // Lockout settings

@@ -9,9 +9,7 @@ namespace BlazorBoilerplate.Shared.Models.Account.Validators
     {
         public UpdatePasswordViewModelValidator(IStringLocalizer<Global> l) : base(l)
         {
-            RuleFor(p => p.NewPassword)
-                .NotEmpty()
-                .Length(6, 100).WithName(L["Password"]);
+            RuleFor(p => p.NewPassword).Password(L);
 
             RuleFor(p => p.NewPasswordConfirm)
                 .Equal(p => p.NewPassword).WithMessage(x => L["PasswordConfirmationFailed"]).WithName(L["ConfirmPassword"]);

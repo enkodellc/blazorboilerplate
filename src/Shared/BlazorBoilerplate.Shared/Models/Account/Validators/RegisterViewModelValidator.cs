@@ -12,6 +12,8 @@ namespace BlazorBoilerplate.Shared.Models.Account.Validators
                 .NotEmpty()
                 .EmailAddress().WithName(L["Email"]);
 
+            RuleFor(p => p.Password).Password(L);
+
             RuleFor(p => p.PasswordConfirm)
                 .Equal(p => p.Password).WithMessage(x => L["PasswordConfirmationFailed"]).WithName(L["ConfirmPassword"]);
         }
