@@ -51,7 +51,7 @@ Complete all Blazor dependencies.
     - For steps 2 & 3 the utility [win-acme](https://github.com/win-acme/win-acme) installs the
 certificate on your server, performs renewal and configure your IIS Website Bindings to have https binding with the SSL certificate set and Port 443 for default.
 
-3. Configure your IIS Website Bindings to have https binding with the SSL certificate set and Port 443 for default.
+3. Configure your IIS Website Bindings to have https binding with the SSL certificate set and Port 443 for default. Enable WebSockets for SignalR.
 4. Configure / create appsettings.production.config. Set Connection String. If you are using Sql Server then make sure your connection string contains **MultipleActiveResultSets=true**, Set Thumbprint / SSL. Thumbprint example:  **143fbd7bc36e78b1bcf9a53c13336eaebe33353a**
 5. Login with either the user **[user | user123]** or admin **[admin | admin123]** default accounts.
 
