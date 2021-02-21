@@ -1,10 +1,10 @@
 ﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.Storage;
-using BlazorBoilerplate.Shared;
 using Finbuckle.MultiTenant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 
@@ -12,6 +12,10 @@ namespace BlazorBoilerplate.Storage
 {
     public static class ServiceCollectionExtensions
     {
+#if DEBUG
+        public static readonly ILoggerFactory factory = LoggerFactory.Create(builder => { builder.AddConsole(); });
+#endif
+
         private static readonly string projectName = nameof(BlazorBoilerplate);
 
         public static IServiceCollection RegisterStorage(this IServiceCollection services, IConfiguration configuration)
@@ -40,7 +44,9 @@ namespace BlazorBoilerplate.Storage
 
         public static void GetDbContextOptions<T>(DbContextOptionsBuilder builder, IConfiguration configuration) where T : DbContext
         {
-            //builder.EnableSensitiveDataLogging();
+#if DEBUG
+            builder.UseLoggerFactory(factory).EnableSensitiveDataLogging();
+#endif
             var migrationsAssembly = typeof(T).GetTypeInfo().Assembly.GetName().Name;
             var useSqlServer = !Convert.ToBoolean(configuration[$"{projectName}:UsePostgresServer"] ?? "false");
 
