@@ -23,6 +23,7 @@ namespace BlazorBoilerplate.Storage
 {
     public class DatabaseInitializer : IDatabaseInitializer
     {
+        private readonly ApiContentDbContext _ApiContentDbContext;
         private readonly LocalizationDbContext _localizationDbContext;
         private readonly PersistedGrantDbContext _persistedGrantContext;
         private readonly ConfigurationDbContext _configurationContext;
@@ -35,6 +36,7 @@ namespace BlazorBoilerplate.Storage
         private readonly ILogger _logger;
 
         public DatabaseInitializer(
+            ApiContentDbContext ApiContentDbContext,
             TenantStoreDbContext tenantStoreDbContext,
             LocalizationDbContext localizationDbContext,
             ApplicationDbContext context,
@@ -46,6 +48,7 @@ namespace BlazorBoilerplate.Storage
             ILocalizationProvider localizationProvider,
             ILogger<DatabaseInitializer> logger)
         {
+            _ApiContentDbContext = ApiContentDbContext;
             _tenantStoreDbContext = tenantStoreDbContext;
             _localizationDbContext = localizationDbContext;
             _persistedGrantContext = persistedGrantContext;
@@ -75,6 +78,7 @@ namespace BlazorBoilerplate.Storage
 
         private async Task MigrateAsync()
         {
+            await _ApiContentDbContext.Database.MigrateAsync();
             await _tenantStoreDbContext.Database.MigrateAsync();
             await _localizationDbContext.Database.MigrateAsync();
             await _context.Database.MigrateAsync();

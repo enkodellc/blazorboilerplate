@@ -39,6 +39,7 @@ namespace BlazorBoilerplate.Storage
 
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
 
+            services.AddDbContext<ApiContentDbContext>(builder => GetDbContextOptions<ApiContentDbContext>(builder, configuration));
             return services;
         }
 

@@ -51,14 +51,20 @@
     <PackageReference Include="MailKit" Version="2.10.1" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="[3.1.10,5.0)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Infrastructure\BlazorBoilerplate.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Shared.ApiContentService\BlazorBoilerplate.Shared.ApiContentService.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material\BlazorBoilerplate.Theme.Material.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Storage\BlazorBoilerplate.Storage.csproj" />
     <ProjectReference Include="..\..\Client\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
+    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Singleton.TaskScheduler\BlazorBoilerplate.Singleton.TaskScheduler.csproj" />
   </ItemGroup>
 
   <ItemGroup>
