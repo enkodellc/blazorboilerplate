@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BlazorBoilerplate.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                     case Policies.IsUser:
                         policy = new AuthorizationPolicyBuilder()
                             .RequireAuthenticatedUser()
-                            .RequireClaim("IsUser")
+                            .RequireAssertion(ctx => ctx.User.HasClaim(claim => claim.Type == "IsUser") || ctx.User.IsInRole(DefaultRoleNames.Administrator))
                             .Build();
 
                         created = true;
