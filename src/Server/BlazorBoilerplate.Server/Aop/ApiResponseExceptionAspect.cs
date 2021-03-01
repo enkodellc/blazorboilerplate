@@ -50,7 +50,7 @@ namespace BlazorBoilerplate.Server.Aop
         private ApiResponse GetApiResponseFor(string method, Exception ex)
         {
             int code = Status500InternalServerError;
-            string msg = ex.GetBaseException().StackTrace;
+            string msg = ex.GetBaseException().Message + "\n\n" + ex.GetBaseException().StackTrace;
 
             var isDomainException = ex is DomainException;
             var isUnauthorizedAccessException = ex is UnauthorizedAccessException;
