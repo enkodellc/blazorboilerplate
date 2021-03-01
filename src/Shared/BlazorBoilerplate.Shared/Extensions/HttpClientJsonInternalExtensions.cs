@@ -114,6 +114,25 @@ namespace BlazorBoilerplate.Shared.Extensions
             }
         }
 
+        public static async Task<T> DeleteAsync<T>(this HttpClient httpClient, string requestUri)
+        {
+            var response = await httpClient.DeleteAsync(requestUri);
+
+            // Make sure the call was successful before we
+            // attempt to process the response content
+            response.EnsureSuccessStatusCode();
+
+            if (typeof(T) == typeof(IgnoreResponse))
+            {
+                return default;
+            }
+            else
+            {
+                var stringContent = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<T>(stringContent, JsonSerializerOptionsProvider.Options);
+            }
+        }
+
         public static async Task<T> PostFileAsync<T>(this HttpClient httpClient, string requestUri, MultipartFormDataContent content)
         {
             var response = await httpClient.PostAsync(requestUri, content);
