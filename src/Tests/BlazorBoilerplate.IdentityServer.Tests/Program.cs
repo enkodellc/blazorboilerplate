@@ -30,7 +30,7 @@ namespace BlazorBoilerplate.Server.Tests.Oidc
             var serilog = new LoggerConfiguration()
                 .MinimumLevel.Error()
                 .Enrich.FromLogContext()
-                .WriteTo.LiterateConsole(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message}{NewLine}{Exception}{NewLine}")
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message}{NewLine}{Exception}{NewLine}")
                 .CreateLogger();
 
             serviceProvider.GetService<ILoggerFactory>().AddSerilog(serilog);
