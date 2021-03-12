@@ -29,7 +29,7 @@
 
 # Terraform Required
 - Install Terraform https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/aws-get-started
-- Navigate to ./src/Utils/Terraform
+- Navigate to ./src/Utils/Terraform/AWS
 - terraform init
 - terraform plan
 - terraform apply
