@@ -43,12 +43,17 @@ ________
  export TF_VAR_ASPNETCORE_ENVIRONMENT=$(pass ASPNETCORE_ENVIRONMENT)
  export TF_VAR_Serilog__MinimumLevel__Default=$(pass Serilog__MinimumLevel__Default)
 
-::
-
  In Windows use setx instead. e.g. 
  setx TF_VAR_access_key=$(pass access_key)
 
-3. Install Terraform https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/aws-get-started
+::
+
+
+3. Install Terraform at https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/aws-get-started
+::
+ - follow instructions on page
+
+::
 
 4. Deploy using Terraform
 ::
@@ -59,7 +64,7 @@ ________
 
 ::
 
-Terraform for Azure
+Terraform for Azure (Todo)
 ________
 1. Once **pass** is installed and initialized do the following to store the environment variables in pass
 ::
@@ -74,14 +79,19 @@ ________
  todo:
  export TF_VAR_param1=$(pass param1)
  export TF_VAR_param2=$(pass param2)
-::
 
  In Windows use setx instead. e.g. 
  setx TF_VAR_param1=$(pass param1)
 
-3. Install Terraform https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/aws-get-started
+::
 
-4. Deploy using Terraform
+3. Install Terraform at https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/azure-get-started
+::
+ - follow instructions on page
+
+::
+
+4. Deploy using Terraform (Todo)
 ::
  cd ./src/Utils/Terraform/Azure
  terraform init
