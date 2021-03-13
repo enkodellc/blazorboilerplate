@@ -78,6 +78,7 @@ Cons
    quickstarts/breeze_sharp_with_blazor
    quickstarts/entity_framework_core
    quickstarts/localization
+   quickstarts/deploy_with_terraform
 
 .. toctree::
    :maxdepth: 3
