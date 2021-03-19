@@ -25,6 +25,7 @@ namespace BlazorBoilerplate.Server.Factories
                     options.AddSupportedUICultures(Settings.SupportedCultures);
                 })
                 .AddTransient<ApiResponseExceptionAspect>()
+                .AddTransient<LogExceptionAspect>()
                 .AddSingleton<ILoggerFactory>(services => new SerilogLoggerFactory())
                 .BuildServiceProvider();
         }
