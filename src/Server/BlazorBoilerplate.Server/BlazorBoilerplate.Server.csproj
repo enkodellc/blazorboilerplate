@@ -26,11 +26,11 @@
     <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.2" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Breeze.AspNetCore.NetCore" Version="5.0.2" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="9.5.2" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="9.5.3" />
     <PackageReference Include="FormatWith" Version="3.0.1" />
-    <PackageReference Include="IdentityServer4" Version="4.1.1" />
+    <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
-    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.1" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.4" />
@@ -48,7 +48,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="4.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.2.0-dev-00264" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00909" />
-    <PackageReference Include="MailKit" Version="2.11.0" />
+    <PackageReference Include="MailKit" Version="2.11.1" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.4" />
   </ItemGroup>
