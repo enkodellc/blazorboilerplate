@@ -21,7 +21,7 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=aspnetapp.pfx
     networks:
       - bb
-    restart: on-failure
+    restart: always #starts on docker service start and restarts on failure
 
   sqlserver:
     image: ${docker_sqlserver_image}
@@ -34,6 +34,7 @@ services:
       - 1533:1433 #expose port, so can connect to it using host: 'localhost,1533' | user: sa, password: ${sa_password}
     networks:
       - bb
+    restart: always #starts on docker service start and restarts on failure
 
 volumes:
   dbdata:
