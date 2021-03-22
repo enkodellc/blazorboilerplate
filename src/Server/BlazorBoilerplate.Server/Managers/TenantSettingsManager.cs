@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Storage;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Linq;
 
@@ -20,7 +21,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             get
             {
-                var settings = _dbContext.TenantSettings.ToDictionary(i => i.Key, i => i.Value.ToString());
+                var settings = _dbContext.TenantSettings.AsNoTracking().ToDictionary(i => i.Key, i => i.Value.ToString());
                 var tsettings = settings.Concat(TenantSettingValues.Default.ToDictionary(i => i.Key, i => i.Value.Item1)
                     .Where(kvp => !settings.ContainsKey(kvp.Key)))
                     .Where(i => i.Key.ToString().StartsWith(prefix))
