@@ -38,7 +38,7 @@ namespace BlazorBoilerplate.Shared.Localizer
                 else
                     culture = culture.Parent;
 
-            return null;
+            return Provider.TextCatalogs[Settings.NeutralCulture];
         }
 
         public override IExtendedStringLocalizer WithCulture(CultureInfo culture)
