@@ -7,6 +7,7 @@
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
     <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+    <BlazorWebAssemblyI18NAssemblies>all</BlazorWebAssemblyI18NAssemblies>
     <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking> <!-- because Mono.Cecil.AssemblyResolutionException: Failed to resolve assembly: Microsoft.Data.OData 5.8.4 -->
   </PropertyGroup>
 
@@ -18,6 +19,16 @@
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Admin\BlazorBoilerplate.Theme.Material.Admin.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <BlazorLinkerDescriptor Include="LinkerConfig.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TrimmerRootAssembly Include="BlazorBoilerplate.Theme.Material" />
+    <TrimmerRootAssembly Include="BlazorBoilerplate.Theme.Material.Admin" />
+    <TrimmerRootAssembly Include="BlazorBoilerplate.Theme.Material.Demo" />
   </ItemGroup>
 
 </Project>
