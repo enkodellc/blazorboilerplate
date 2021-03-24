@@ -20,29 +20,34 @@ namespace BlazorBoilerplate.Shared.Providers
 
             //TODO a table should define the mapping between tenant and module
             //only one ITheme module per tenant. Now I simply take the first one.
-            var theme = AssembliesWithPages.First(w => w.ExportedTypes.Any(t => t.GetInterfaces().Contains(typeof(ITheme))));
+            var theme = AssembliesWithPages.FirstOrDefault(w => w.ExportedTypes.Any(t => t.GetInterfaces().Contains(typeof(ITheme))));
 
-            ((List<Assembly>)AssembliesWithPages).Remove(theme);
-
-            ITheme themeInstance = (ITheme)Activator.CreateInstance(theme.ExportedTypes.Single(t => t.GetInterfaces().Contains(typeof(ITheme))));
-
-            RootComponentMapping = themeInstance.RootComponentMapping;
-
-            var modules = new List<IModule>();
-
-            foreach (var assembly in assemblies)
+            if (theme == null)
+                throw new Exception("No module contains ITheme");
+            else
             {
-                var implementationType = assembly.ExportedTypes.SingleOrDefault(t => !t.IsAbstract && t.GetInterfaces().Contains(typeof(IModule)));
+                ((List<Assembly>)AssembliesWithPages).Remove(theme);
 
-                if (implementationType != null)
+                ITheme themeInstance = (ITheme)Activator.CreateInstance(theme.ExportedTypes.Single(t => t.GetInterfaces().Contains(typeof(ITheme))));
+
+                RootComponentMapping = themeInstance.RootComponentMapping;
+
+                var modules = new List<IModule>();
+
+                foreach (var assembly in assemblies)
                 {
-                    IModule moduleInstance = (IModule)Activator.CreateInstance(implementationType);
+                    var implementationType = assembly.ExportedTypes.SingleOrDefault(t => !t.IsAbstract && t.GetInterfaces().Contains(typeof(IModule)));
 
-                    modules.Add(moduleInstance);
+                    if (implementationType != null)
+                    {
+                        IModule moduleInstance = (IModule)Activator.CreateInstance(implementationType);
+
+                        modules.Add(moduleInstance);
+                    }
                 }
-            }
 
-            Modules = modules.OrderBy(m => m.Order);
+                Modules = modules.OrderBy(m => m.Order);
+            }
         }
     }
 }
