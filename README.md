@@ -40,8 +40,9 @@ Complete all Blazor dependencies.
 ### How to run
 1. Install the latest **Visual Studio 2019 (v16.8 at least)**
 2. Clone or download.
-3. Open the solution in Visual Studio and press F5.
-4. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
+3. Review / Update appsettings.json - DefaultConnection.
+4. Open the solution in Visual Studio and press F5.
+5. To view the API using Swagger UI, Run the solution and go to: [http://localhost:53414/swagger/index.html](http://localhost:53414/swagger/index.html). Live example:
 [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html)
 
 ## Publish on IIS - What works for me on my Windows Server 2016 & SQL Server 2014 (Enkodellc)
