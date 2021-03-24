@@ -155,7 +155,7 @@ namespace BlazorBoilerplate.Server
                         // if managed app identity is used
                         if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UseManagedAppIdentity"]) == true)
                         {
-                            AzureServiceTokenProvider azureServiceTokenProvider = new AzureServiceTokenProvider();
+                            AzureServiceTokenProvider azureServiceTokenProvider = new();
 
                             var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
 
@@ -185,7 +185,7 @@ namespace BlazorBoilerplate.Server
                         storeName = StoreName.My;
                     }
 
-                    using X509Store store = new X509Store(storeName, storeLocation);
+                    using X509Store store = new(storeName, storeLocation);
                     store.Open(OpenFlags.ReadOnly);
                     var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
                     if (certs.Count > 0)
@@ -477,6 +477,9 @@ namespace BlazorBoilerplate.Server
                 {
                     o.DetailedErrors = true;
                 }
+            }).AddHubOptions(o =>
+            {
+                o.MaximumReceiveMessageSize = 131072;
             });
 
             services.AddSignalR();

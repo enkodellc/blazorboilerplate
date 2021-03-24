@@ -15,7 +15,7 @@ namespace BlazorBoilerplate.Server.Extensions
 
             assemblyPath = Path.Combine(@$"{assemblyPath}","Modules");
 
-            List<Assembly> allAssemblies = new List<Assembly>();
+            List<Assembly> allAssemblies = new();
 
             if (Directory.Exists(assemblyPath))
             {
