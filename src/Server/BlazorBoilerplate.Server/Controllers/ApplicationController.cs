@@ -93,6 +93,10 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 return persistenceManager.SaveChanges(saveBundle);
             }
+            catch (EntityErrorsException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 var errors = new List<EFEntityError>();
