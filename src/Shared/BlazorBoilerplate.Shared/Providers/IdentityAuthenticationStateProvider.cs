@@ -44,9 +44,9 @@ namespace BlazorBoilerplate.Shared.Providers
             return apiResponse;
         }
 
-        public async Task<ApiResponseDto> Logout()
+        public async Task<ApiResponseDto> Logout(string returnUrl = null)
         {
-            ApiResponseDto apiResponse = await _accountApiClient.Logout();
+            ApiResponseDto apiResponse = await _accountApiClient.Logout(returnUrl);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }

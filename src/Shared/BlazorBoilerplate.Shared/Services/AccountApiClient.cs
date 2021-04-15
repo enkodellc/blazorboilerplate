@@ -67,13 +67,13 @@ namespace BlazorBoilerplate.Shared.Services
             return response;
         }
 
-        public async Task<ApiResponseDto> Logout()
+        public async Task<ApiResponseDto> Logout(string returnUrl = null)
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
 
             if (!_navigationManager.IsWebAssembly())
                 if (response.IsSuccessStatusCode)
-                    await SubmitServerForm("/server/logout/", new AccountFormModel());
+                    await SubmitServerForm("/server/logout/", new AccountFormModel() { ReturnUrl = returnUrl });
 
             return response;
         }

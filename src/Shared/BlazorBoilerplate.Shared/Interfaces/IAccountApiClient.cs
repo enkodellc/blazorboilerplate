@@ -16,7 +16,7 @@ namespace BlazorBoilerplate.Shared.Interfaces
         Task<ApiResponseDto> ResetPassword(ResetPasswordViewModel parameters);
         Task<ApiResponseDto> UpdatePassword(UpdatePasswordViewModel parameters);
         Task<ApiResponseDto> AdminChangePassword(ChangePasswordViewModel parameters);
-        Task<ApiResponseDto> Logout();
+        Task<ApiResponseDto> Logout(string returnUrl = null);
         Task<ApiResponseDto> ConfirmEmail(ConfirmEmailViewModel parameters);
         Task<UserViewModel> GetUserViewModel();
         Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel);
