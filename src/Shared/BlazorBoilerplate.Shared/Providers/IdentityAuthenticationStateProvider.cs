@@ -34,20 +34,17 @@ namespace BlazorBoilerplate.Shared.Providers
         public async Task<ApiResponseDto> LoginWith2fa(LoginWith2faInputModel parameters)
         {
             ApiResponseDto apiResponse = await _accountApiClient.LoginWith2fa(parameters);
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
         public async Task<ApiResponseDto> LoginWithRecoveryCode(LoginWithRecoveryCodeInputModel parameters)
         {
             ApiResponseDto apiResponse = await _accountApiClient.LoginWithRecoveryCode(parameters);
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 
         public async Task<ApiResponseDto> Logout(string returnUrl = null)
         {
             ApiResponseDto apiResponse = await _accountApiClient.Logout(returnUrl);
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
             return apiResponse;
         }
 

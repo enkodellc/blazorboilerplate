@@ -22,9 +22,5 @@
     {
         appState.ClearUserProfile();
         await ((IdentityAuthenticationStateProvider)authStateProvider).Logout();
-
-        if (navigationManager.IsWebAssembly())
-            navigationManager.NavigateTo(BlazorBoilerplate.Constants.Settings.LoginPath);
-
     }
 }
