@@ -9,4 +9,4 @@ With Blazor Boilerplate you can switch at runtime between WebAssembly or Server 
 .. image:: /images/dual_mode_blazor.png
    :align: center
 
-Choose the desiderd runtime in the dropdown list and then click on Save button. The application is then reloaded.
+Choose the desired runtime in the dropdown list and then click on Save button. The application is then reloaded.
