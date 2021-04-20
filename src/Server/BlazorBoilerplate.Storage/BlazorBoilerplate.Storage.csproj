@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="Breeze.Persistence.EFCore" Version="5.0.3" />
+    <PackageReference Include="Breeze.Persistence.EFCore" Version="5.0.4" />
     <PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="6.2.0" />
     <PackageReference Include="Finbuckle.MultiTenant.EntityFrameworkCore" Version="6.2.0" />
     <PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" Version="4.0.0" />
