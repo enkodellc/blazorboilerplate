@@ -25,8 +25,8 @@
     <PackageReference Include="AspectInjector" Version="2.5.0" />
     <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.4" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="Breeze.AspNetCore.NetCore" Version="5.0.3" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="10.0.3" />
+    <PackageReference Include="Breeze.AspNetCore.NetCore" Version="5.0.4" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.0.4" />
     <PackageReference Include="FormatWith" Version="3.0.1" />
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
