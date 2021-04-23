@@ -151,6 +151,8 @@ namespace BlazorBoilerplate.Server.Managers
                 message.Cc.AddRange(emailMessage.CcAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                 message.Bcc.AddRange(emailMessage.BccAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
 
+                message.Sender = new MailboxAddress(_emailConfiguration.FromName, _emailConfiguration.FromAddress);
+
                 message.Subject = emailMessage.Subject;
 
                 message.Body = emailMessage.IsHtml ? new BodyBuilder { HtmlBody = emailMessage.Body }.ToMessageBody() : new TextPart("plain") { Text = emailMessage.Body };
