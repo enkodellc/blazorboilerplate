@@ -1,0 +1,138 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "12:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Humanizer
+    versions:
+    - 2.9.7
+  - dependency-name: Npgsql.EntityFrameworkCore.PostgreSQL
+    versions:
+    - 5.0.5
+    - 5.0.5.1
+  - dependency-name: Breeze.AspNetCore.NetCore
+    versions:
+    - 5.0.2.1
+    - 5.0.4
+  - dependency-name: Breeze.Persistence.EFCore
+    versions:
+    - 5.0.2.1
+    - 5.0.3
+    - 5.0.4
+  - dependency-name: FluentValidation.AspNetCore
+    versions:
+    - 10.0.4
+    - 9.5.0
+    - 9.5.1
+    - 9.5.3
+  - dependency-name: NSwag.AspNetCore
+    versions:
+    - 13.10.2
+    - 13.10.3
+    - 13.10.5
+    - 13.10.6
+    - 13.10.7
+    - 13.10.8
+    - 13.10.9
+  - dependency-name: Microsoft.AspNetCore.DataProtection.AzureStorage
+    versions:
+    - 3.1.14
+  - dependency-name: Microsoft.AspNetCore.DataProtection.AzureKeyVault
+    versions:
+    - 3.1.12
+    - 3.1.14
+  - dependency-name: Microsoft.AspNetCore.DataProtection.Extensions
+    versions:
+    - 5.0.3
+    - 5.0.5
+  - dependency-name: Microsoft.AspNetCore.Components.WebAssembly
+    versions:
+    - 5.0.5
+  - dependency-name: Microsoft.EntityFrameworkCore
+    versions:
+    - 5.0.5
+  - dependency-name: Microsoft.AspNetCore.Authentication.MicrosoftAccount
+    versions:
+    - 5.0.5
+  - dependency-name: Microsoft.Extensions.Identity.Stores
+    versions:
+    - 5.0.4
+    - 5.0.5
+  - dependency-name: Microsoft.EntityFrameworkCore.SqlServer
+    versions:
+    - 5.0.5
+  - dependency-name: Serilog.AspNetCore
+    versions:
+    - 4.0.0
+    - 4.1.0
+  - dependency-name: Serilog.Settings.Configuration
+    versions:
+    - 3.2.0-dev-00264
+    - 3.2.0-dev-00266
+  - dependency-name: Newtonsoft.Json
+    versions:
+    - 13.0.1
+  - dependency-name: IdentityServer4.EntityFramework.Storage
+    versions:
+    - 4.1.2
+  - dependency-name: IdentityServer4.EntityFramework
+    versions:
+    - 4.1.2
+  - dependency-name: IdentityServer4
+    versions:
+    - 4.1.2
+  - dependency-name: IdentityServer4.AspNetIdentity
+    versions:
+    - 4.1.2
+  - dependency-name: IdentityServer4.Storage
+    versions:
+    - 4.1.2
+  - dependency-name: MailKit
+    versions:
+    - 2.11.1
+  - dependency-name: Finbuckle.MultiTenant
+    versions:
+    - 6.2.0
+  - dependency-name: Microsoft.AspNetCore.Authentication.Twitter
+    versions:
+    - 5.0.4
+  - dependency-name: Microsoft.AspNetCore.Mvc.NewtonsoftJson
+    versions:
+    - 5.0.4
+  - dependency-name: AspectInjector
+    versions:
+    - 2.5.0
+  - dependency-name: Microsoft.CodeAnalysis.CSharp
+    versions:
+    - 3.9.0
+  - dependency-name: FlexLabs.EntityFrameworkCore.Upsert
+    versions:
+    - 4.0.0
+  - dependency-name: Finbuckle.MultiTenant.EntityFrameworkCore
+    versions:
+    - 6.2.0
+  - dependency-name: Finbuckle.MultiTenant.AspNetCore
+    versions:
+    - 6.2.0
+  - dependency-name: Microsoft.Extensions.Localization.Abstractions
+    versions:
+    - 5.0.3
+  - dependency-name: Microsoft.AspNetCore.Components.WebAssembly.Server
+    versions:
+    - 5.0.3
+  - dependency-name: Microsoft.AspNetCore.Authentication.Facebook
+    versions:
+    - 5.0.3
+  - dependency-name: Microsoft.AspNetCore.Authentication.Google
+    versions:
+    - 5.0.3
+  - dependency-name: Microsoft.Azure.Services.AppAuthentication
+    versions:
+    - 1.6.1
+  - dependency-name: AspNet.Security.OAuth.Apple
+    versions:
+    - 5.0.1
