@@ -1,4 +1,2 @@
-cd ..\..\Server\BlazorBoilerplate.Server\bin\Debug\netcoreapp3.1
-start BlazorBoilerplate.Server.exe --environment "Development"
-pause
-taskkill /IM BlazorBoilerplate.Server.exe
+cd ..\..\Server\BlazorBoilerplate.Server
+dotnet run --launch-profile Kestrel
