@@ -22,10 +22,13 @@ namespace BlazorBoilerplate.Shared.Services
 
         protected readonly EntityManager entityManager;
 
+        protected readonly string rootApiPath;
+
         public BaseApiClient(HttpClient httpClient, ILogger<BaseApiClient> logger, string rootApiPath = "api/data/")
         {
             this.logger = logger;
             this.httpClient = httpClient;
+            this.rootApiPath = rootApiPath;
 
             Configuration.Instance.QueryUriStyle = QueryUriStyle.JSON;
             Configuration.Instance.ProbeAssemblies(typeof(ApplicationUser).Assembly);
