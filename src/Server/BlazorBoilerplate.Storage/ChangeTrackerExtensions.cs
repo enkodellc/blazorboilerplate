@@ -25,13 +25,17 @@ namespace BlazorBoilerplate.Storage
                     if (entry.State == EntityState.Added)
                     {
                         entry.Property("CreatedOn").CurrentValue = timestamp;
-                        entry.Property("CreatedById").CurrentValue = userId;
+
+                        if (userId != null)
+                            entry.Property("CreatedById").CurrentValue = userId;
                     }
 
                     if (entry.State == EntityState.Deleted || entry.State == EntityState.Modified)
                     {
                         entry.Property("ModifiedOn").CurrentValue = timestamp;
-                        entry.Property("ModifiedById").CurrentValue = userId;
+
+                        if (userId != null)
+                            entry.Property("ModifiedById").CurrentValue = userId;
                     }
                 }
 
