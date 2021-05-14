@@ -126,18 +126,23 @@ namespace BlazorBoilerplate.Storage
                 });
 
             if (!_context.Todos.Any())
-                _context.Todos.AddRange(
-                        new Todo
-                        {
-                            IsCompleted = false,
-                            Title = "Test BlazorBoilerplate"
-                        },
-                        new Todo
-                        {
-                            IsCompleted = false,
-                            Title = "Test BlazorBoilerplate 1",
-                        }
-                );
+            {
+                var rnd = new Random();
+
+                var fruits = new string[] { "apples", "pears", "peaches", "oranges" };
+
+                var users = _context.Users.ToArray();
+
+                for (int i = 0; i < 1000; i++)
+                    _context.Todos.Add(
+                            new Todo
+                            {
+                                IsCompleted = false,
+                                Title = $"Buy {rnd.Next(2, 5)} {fruits[rnd.Next(fruits.Length)]}",
+                                CreatedById = users[rnd.Next(users.Length)].Id
+                            }
+                    );
+            }
 
             if (!_context.ApiLogs.Any())
             {

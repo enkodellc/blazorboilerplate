@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Storage;
 using Breeze.AspNetCore;
 using Breeze.Persistence;
@@ -66,9 +67,36 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IQueryable<Todo> Todos()
+        public IQueryable<Todo> Todos([FromQuery] ToDoFilter filter)
         {
-            return persistenceManager.GetEntities<Todo>().Include(i => i.CreatedBy).Include(i => i.ModifiedBy).OrderBy(i => i.Id);
+            return persistenceManager.GetEntities<Todo>()
+                .Include(i => i.CreatedBy)
+                .Include(i => i.ModifiedBy)
+                .IgnoreQueryFilters()
+                .Where(i =>
+                (filter.From == null || i.CreatedOn >= filter.From) && (filter.To == null || i.CreatedOn <= filter.To) &&
+                (filter.CreatedById == null || i.CreatedById == filter.CreatedById) &&
+                (filter.ModifiedById == null || i.ModifiedById == filter.ModifiedById) &&
+                (filter.IsCompleted == null || i.IsCompleted == filter.IsCompleted))
+                .OrderByDescending(i => i.CreatedOn);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IQueryable<ApplicationUser> TodoCreators([FromQuery] ToDoFilter filter)
+        {
+            filter.CreatedById = null;
+
+            return Todos(filter).Where(i => i.CreatedById != null).Select(i => i.CreatedBy).Distinct();
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IQueryable<ApplicationUser> TodoEditors([FromQuery] ToDoFilter filter)
+        {
+            filter.ModifiedById = null;
+
+            return Todos(filter).Where(i => i.ModifiedById != null).Select(i => i.ModifiedBy).Distinct();
         }
 
         [HttpGet]

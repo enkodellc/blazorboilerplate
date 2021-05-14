@@ -73,6 +73,13 @@ app {
     padding: 20px;
 }
 
+.loading-items {
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('../images/preloader.gif') center no-repeat #fff;
+}
+
 .logo {
     text-align: center;
 }
