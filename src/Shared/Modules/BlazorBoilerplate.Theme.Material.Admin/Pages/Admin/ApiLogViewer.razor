@@ -6,6 +6,13 @@
 @inject IViewNotifier viewNotifier
 @inject IStringLocalizer<Global> L
 
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminapilog"] />
+    </Breadcrumbs>
+</TopSection>
+
 <h1>Blazor / .NET Core Middleware Audit Log</h1>
 <p>
     This is an example of the .NET Core Middleware that logs all API calls into the database. We filter out "api/account" calls for Login / Logout / GetUser to keep it somewhat reasonable.

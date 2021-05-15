@@ -3,6 +3,13 @@
 @attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
 
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminroles"] />
+    </Breadcrumbs>
+</TopSection>
+
 <h1>@L["Roles"]</h1>
 
 @if (roles == null)

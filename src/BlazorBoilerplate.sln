@@ -64,7 +64,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Shared.Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Shared.Localizer", "Shared\BlazorBoilerplate.Shared.Localizer\BlazorBoilerplate.Shared.Localizer.csproj", "{746B25CA-DAEC-4A90-9ED5-357038C675D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoilerplate.Infrastructure.AuthorizationDefinitions", "Shared\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions.csproj", "{1D566D73-A7A1-4EE8-BA33-50D049901FB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Infrastructure.AuthorizationDefinitions", "Shared\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions\BlazorBoilerplate.Infrastructure.AuthorizationDefinitions.csproj", "{1D566D73-A7A1-4EE8-BA33-50D049901FB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

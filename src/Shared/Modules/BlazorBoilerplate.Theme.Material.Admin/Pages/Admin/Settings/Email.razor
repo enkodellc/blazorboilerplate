@@ -2,6 +2,14 @@
 @inherits SettingsBase
 @using BlazorBoilerplate.Shared.Dto.Email
 
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Link="/admin/settings" Title=@L["BreadCrumbadminsettings"] />
+        <Breadcrumb Title=@L["BreadCrumbadminsettingsemail"] />
+    </Breadcrumbs>
+</TopSection>
+
 <MatH4>@L["EmailSettings"]</MatH4>
 
 @if (settings == null)

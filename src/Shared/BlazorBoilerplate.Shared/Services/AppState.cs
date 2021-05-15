@@ -19,14 +19,12 @@ namespace BlazorBoilerplate.Shared.Services
 
         public readonly string AppName = string.Empty;
         public readonly string AppShortName = string.Empty;
-        public readonly string BreadCrumbHome = string.Empty;
 
         public AppState(IApiClient apiClient, IStringLocalizer<Global> l)
         {
             L = l;
             AppName = L["AppName"].ToString().Humanize(LetterCasing.Title);
             AppShortName = L["AppShortName"].ToString().Humanize(LetterCasing.Title);
-            BreadCrumbHome = L["BreadCrumbHome"].ToString().ToUpper();
             _apiClient = apiClient;
         }
 

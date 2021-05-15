@@ -1,6 +1,13 @@
 ﻿@page "/admin/settings"
 @inherits SettingsBase
 
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminsettings"] />
+    </Breadcrumbs>
+</TopSection>
+
 <MatH4>@L["MainSettings"]</MatH4>
 
 @if (settings == null)
