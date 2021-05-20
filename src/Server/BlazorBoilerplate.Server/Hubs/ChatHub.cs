@@ -15,7 +15,7 @@ namespace BlazorBoilerplate.Server.Hubs
     [Authorize]
     public class ChatHub : Hub
     {
-        private static readonly Dictionary<string, string> userLookup = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> userLookup = new();
 
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;

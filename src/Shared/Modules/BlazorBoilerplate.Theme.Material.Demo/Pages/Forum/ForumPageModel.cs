@@ -26,13 +26,13 @@ namespace BlazorBoilerplate.Theme.Material.Demo.Pages
         [Inject]
         private IViewNotifier viewNotifier { get; set; }
 
-        UserViewModel userViewModel { get; set; } = new UserViewModel();
+        UserViewModel userViewModel { get; set; } = new();
 
         ChatClient Client { get; set; }
 
         public string MessagePost { get; set; }
 
-        public List<MessageDto> Messages = new List<MessageDto>();
+        public List<MessageDto> Messages = new();
 
         protected override async Task OnInitializedAsync()
         {

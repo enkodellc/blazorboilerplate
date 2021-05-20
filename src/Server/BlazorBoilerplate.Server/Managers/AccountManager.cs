@@ -52,7 +52,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IStringLocalizer<Global> L;
         private readonly string baseUrl;
 
-        private static readonly UserViewModel LoggedOutUser = new UserViewModel { IsAuthenticated = false, Roles = new List<string>() };
+        private static readonly UserViewModel LoggedOutUser = new() { IsAuthenticated = false, Roles = new List<string>() };
 
         public AccountManager(IDatabaseInitializer databaseInitializer,
             UserManager<ApplicationUser> userManager,
@@ -662,8 +662,8 @@ namespace BlazorBoilerplate.Server.Managers
                 Email = parameters.Email
             };
 
-            user.UserName = parameters.UserName;
             var result = await _userManager.CreateAsync(user, parameters.Password);
+            
             if (!result.Succeeded)
             {
                 var msg = string.Join(",", result.Errors.Select(i => i.Description));
@@ -916,20 +916,20 @@ namespace BlazorBoilerplate.Server.Managers
             return user;
         }
 
-        private string FormatKey(string unformattedKey)
+        private static string FormatKey(string unformattedKey)
         {
             var result = new StringBuilder();
             int currentPosition = 0;
 
             while (currentPosition + 4 < unformattedKey.Length)
             {
-                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
+                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(' ');
                 currentPosition += 4;
             }
 
             if (currentPosition < unformattedKey.Length)
             {
-                result.Append(unformattedKey.Substring(currentPosition));
+                result.Append(unformattedKey[currentPosition..]);
             }
 
             return result.ToString().ToUpperInvariant();
