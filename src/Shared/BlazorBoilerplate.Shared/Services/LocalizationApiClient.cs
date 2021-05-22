@@ -14,8 +14,7 @@ namespace BlazorBoilerplate.Shared.Services
 {
     public class LocalizationApiClient : BaseApiClient, ILocalizationApiClient
     {
-        private const string rootApiPath = "api/localization/";
-        public LocalizationApiClient(HttpClient httpClient, ILogger<LocalizationApiClient> logger) : base(httpClient, logger, rootApiPath)
+        public LocalizationApiClient(HttpClient httpClient, ILogger<LocalizationApiClient> logger) : base(httpClient, logger, "api/localization/")
         { }
 
         public async Task<QueryResult<PluralFormRule>> GetPluralFormRules()
