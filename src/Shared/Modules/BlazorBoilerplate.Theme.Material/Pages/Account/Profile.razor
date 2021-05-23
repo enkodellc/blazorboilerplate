@@ -15,14 +15,14 @@
 else
 {
     <div class="form-group">
-        <MatButton Type="submit" form="mainForm" Raised="true">@L["Update"]</MatButton>
+        <MatButton Type="submit" form="mainForm" Raised="true">@L["Save"]</MatButton>
         @if (userViewModel.HasPassword)
         {
-            <MatButton Icon="rotate_right" OnClick="@(() => OpenUpdatePasswordDialog())" Label=@L["Change Password"] Raised="true"></MatButton>
+            <MatButton Icon="rotate_right" OnClick="@(() => OpenUpdatePasswordDialog())" Label=@L["Change Password"] Raised="true" Style="margin-left: 10px"></MatButton>
         }
         @if (userViewModel.HasAuthenticator)
         {
-            <MatButton Icon="rotate_right" OnClick="@(() => DisableAuthenticator())" Label=@L["ResetAuthenticator"] Raised="true"></MatButton>
+            <MatButton Icon="rotate_right" OnClick="@(() => DisableAuthenticator())" Label=@L["ResetAuthenticator"] Raised="true" Style="margin-left: 10px"></MatButton>
         }
     </div>
     <EditForm id="mainForm" Model="@userViewModel" OnValidSubmit="@UpdateUser">
