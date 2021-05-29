@@ -16,7 +16,7 @@
         </LoadingBackground>
     </Authorized>
     <NotAuthorized>
-        @if (loginViewModel.EnableLocalLogin)
+        @if (loginViewModel?.EnableLocalLogin == true)
         {
             <MatCard>
                 <div class="hidden-mdc-down">
@@ -128,13 +128,13 @@
 
     private MatTextField<string> UserNameInput;
 
-    string navigateTo = null;
-    IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
-    bool forgotPasswordToggle = false;
-    LoginViewModel loginViewModel { get; set; } = new LoginViewModel();
-    ForgotPasswordViewModel forgotPasswordViewModel { get; set; } = new ForgotPasswordViewModel();
+    private string navigateTo = null;
+    private IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
+    private bool forgotPasswordToggle = false;
+    private LoginViewModel loginViewModel;
+    private ForgotPasswordViewModel forgotPasswordViewModel { get; set; } = new ForgotPasswordViewModel();
 
-    string ReturnUrl;
+    private string ReturnUrl;
 
     protected override async Task OnInitializedAsync()
     {
