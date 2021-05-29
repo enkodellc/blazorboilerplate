@@ -13,7 +13,7 @@ namespace BlazorBoilerplate.Storage
     public static class ServiceCollectionExtensions
     {
 #if DEBUG
-        public static readonly ILoggerFactory factory = LoggerFactory.Create(builder => { builder.AddConsole(); });
+        public static readonly ILoggerFactory factory = LoggerFactory.Create(builder => { builder.AddDebug(); });
 #endif
 
         private static readonly string projectName = nameof(BlazorBoilerplate);
