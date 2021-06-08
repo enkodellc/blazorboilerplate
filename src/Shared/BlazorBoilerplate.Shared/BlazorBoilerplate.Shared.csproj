@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Blazored.FluentValidation" Version="2.0.0" />
     <PackageReference Include="Breeze.Sharp" Version="0.9.11" />
-    <PackageReference Include="Humanizer" Version="2.10.1" />
+    <PackageReference Include="Humanizer" Version="2.11.10" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="5.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.6" />
