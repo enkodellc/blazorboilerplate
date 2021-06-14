@@ -12,7 +12,7 @@
 <h1>@L["IdentityResources"]</h1>
 <p>Identity Resources Management.</p>
 
-@if (identiyResources == null)
+@if (identityResources == null)
 {
     <LoadingBackground ShowLogoBox="true">
         <label>@L["Loading"]</label>
@@ -20,7 +20,7 @@
 }
 else
 {
-    <MatTable Class="mat-elevation-z5" Items="@identiyResources" Striped="true">
+    <MatTable Class="mat-elevation-z5" Items="@identityResources" Striped="true">
         <MatTableHeader>
             <th><MatButton Icon="add" Label=@L["New Identity Resource"] OnClick="@(() => OpenUpsertIdentityResourceDialog())"></MatButton></th>
             <th>@L["Name"]</th>
@@ -139,7 +139,7 @@ else
 
     bool isCurrentIdentityContextIdReadOnly = false;
 
-    List<IdentityResourceDto> identiyResources;
+    List<IdentityResourceDto> identityResources;
     IdentityResourceDto currentIdentityResource { get; set; } = new IdentityResourceDto();
     Secret currentSecret { get; set; } = new Secret();
 
@@ -154,15 +154,15 @@ else
     {
         try
         {
-            var identiyResponse = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<List<IdentityResourceDto>>>($"api/Admin/IdentityResources?pageSize={pageSize}&pageNumber={currentPage}");
+            var identityResponse = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<List<IdentityResourceDto>>>($"api/Admin/IdentityResources?pageSize={pageSize}&pageNumber={currentPage}");
 
-            if (identiyResponse.IsSuccessStatusCode)
+            if (identityResponse.IsSuccessStatusCode)
             {
-                viewNotifier.Show(identiyResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
-                identiyResources = identiyResponse.Result;
+                viewNotifier.Show(identityResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+                identityResources = identityResponse.Result;
             }
             else
-                viewNotifier.Show(identiyResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
+                viewNotifier.Show(identityResponse.Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
         catch (Exception ex)
         {
@@ -189,13 +189,13 @@ else
     List<Selection> jwtClaimSelections = new List<Selection>();
 
 
-    void OpenUpsertIdentityResourceDialog(IdentityResourceDto identiyResource = null)
+    void OpenUpsertIdentityResourceDialog(IdentityResourceDto identityResource = null)
     {
         try
         {
-            isInsertOperation = identiyResource == null;
+            isInsertOperation = identityResource == null;
 
-            currentIdentityResource = identiyResource ?? new IdentityResourceDto();
+            currentIdentityResource = identityResource ?? new IdentityResourceDto();
 
             // Update the UI
             if (isInsertOperation)
@@ -236,9 +236,9 @@ else
         }
     }
 
-    async Task UpdateEnabled(IdentityResourceDto identiyResource)
+    async Task UpdateEnabled(IdentityResourceDto identityResource)
     {
-        currentIdentityResource = identiyResource;
+        currentIdentityResource = identityResource;
         currentIdentityResource.Enabled = !currentIdentityResource.Enabled;
         isInsertOperation = false;
         await UpsertIdentityResource();
@@ -266,21 +266,21 @@ else
                 ((List<string>)currentIdentityResource.UserClaims).AddRange(currentIdentityResource.CustomUserClaims);
             }
 
-            ApiResponseDto identiyResponse;
+            ApiResponseDto identityResponse;
 
             if (isInsertOperation)
-                identiyResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Admin/IdentityResource", currentIdentityResource);
+                identityResponse = await Http.PostJsonAsync<ApiResponseDto>("api/Admin/IdentityResource", currentIdentityResource);
             else
-                identiyResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Admin/IdentityResource", currentIdentityResource);
+                identityResponse = await Http.PutJsonAsync<ApiResponseDto>("api/Admin/IdentityResource", currentIdentityResource);
 
-            if (identiyResponse.IsSuccessStatusCode)
+            if (identityResponse.IsSuccessStatusCode)
             {
-                viewNotifier.Show(identiyResponse.Message, ViewNotifierType.Success);
+                viewNotifier.Show(identityResponse.Message, ViewNotifierType.Success);
 
                 StateHasChanged();
             }
             else
-                viewNotifier.Show(identiyResponse.Message, ViewNotifierType.Error);
+                viewNotifier.Show(identityResponse.Message, ViewNotifierType.Error);
 
 
             await OnInitializedAsync();
@@ -303,9 +303,9 @@ else
 
     bool isDeleteIdentityResourceDialogOpen = false;
 
-    void OpenDeleteIdentityResourceDialog(IdentityResourceDto identiyResource)
+    void OpenDeleteIdentityResourceDialog(IdentityResourceDto identityResource)
     {
-        currentIdentityResource = identiyResource;
+        currentIdentityResource = identityResource;
         isDeleteIdentityResourceDialogOpen = true;
     }
 

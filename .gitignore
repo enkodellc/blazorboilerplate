@@ -354,3 +354,7 @@ healthchecksdb
 
 /src/Server/BlazorBoilerplate.Server/Modules
 /src/Server/BlazorBoilerplate.Server/Keys
+/src/Server/BlazorBoilerplate.Server/Properties/PublishProfiles
+/src/Server/BlazorBoilerplate.Server/Properties/ServiceDependencies/ClaimCentre - Web Deploy/profile.arm.json
+/src/Server/BlazorBoilerplate.Server/appsettings.Development.json
+/src/Server/BlazorBoilerplate.Server/appsettings.Production.json
