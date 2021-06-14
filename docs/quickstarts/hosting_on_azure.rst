@@ -1,4 +1,4 @@
-**Hosting Blazor Boilerplate 2.0.0 on Azure**
+Hosting Blazor Boilerplate on Azure
 =============================================
 
 (Note: This document builds upon, and credits, an earlier pdf guide

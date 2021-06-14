@@ -79,6 +79,7 @@ Cons
    quickstarts/entity_framework_core
    quickstarts/localization
    quickstarts/deploy_with_terraform
+   quickstarts/hosting_on_azure
 
 .. toctree::
    :maxdepth: 3
