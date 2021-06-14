@@ -219,6 +219,8 @@ namespace BlazorBoilerplate.Server
                             var certificateIdentifier = Configuration["HostingOnAzure:AzureKeyVault:CertificateIdentifier"];
 
                             dataProtectionBuilder.PersistKeysToAzureBlobStorage(blobClient);
+                            // 1. Remove the call to ProtectKeysWithAzureKeyVault below for the first run to create the keys.xml blob in place.
+                            // 2. Add the call to ProtectKeysWithAzureKeyVault for subsequent runs.so that keys.xml gets created - see the setup doc for more information
                             dataProtectionBuilder.ProtectKeysWithAzureKeyVault(new Uri(certificateIdentifier), tokenCredential);
                         
                             // Azure Key Vault Access Policy must grant the following permissions to the blazor-boilerplate app: 
