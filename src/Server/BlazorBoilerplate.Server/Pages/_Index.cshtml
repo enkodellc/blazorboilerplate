@@ -70,6 +70,11 @@
         <a class="dismiss">🗙</a>
     </div>
 
+    <!-- load remaining JS after blazor boot loads -->
+    <script src="js/interop.js"></script>
+    <!-- https://docs.microsoft.com/en-us/aspnet/core/blazor/progressive-web-app -->
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+
     @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
     {
         <script src="_framework/blazor.server.js"></script>
@@ -78,9 +83,5 @@
     {
         <script src="_framework/blazor.webassembly.js"></script>
     }
-    <!-- load remaining JS after blazor boot loads -->
-    <script src="js/interop.js"></script>
-    <!-- https://docs.microsoft.com/en-us/aspnet/core/blazor/progressive-web-app -->
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
 </html>

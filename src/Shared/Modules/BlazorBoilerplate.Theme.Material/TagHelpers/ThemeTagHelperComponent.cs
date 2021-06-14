@@ -24,9 +24,9 @@ namespace BlazorBoilerplate.Theme.Material.TagHelpers
 <link href=""//cdn.quilljs.com/1.3.6/quill.bubble.css"" rel=""stylesheet"">
 <link href=""_content/{path}/css/site.css"" rel=""stylesheet"" />");
             }
-            else if (string.Equals(context.TagName, "body", StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(context.TagName, "app", StringComparison.OrdinalIgnoreCase))
             {
-                output.PostContent.AppendHtml(@$"
+                output.PostElement.AppendHtml(@$"
 <script src=""_content/MatBlazor/dist/matBlazor.js""></script>
 <script src=""https://cdn.quilljs.com/1.3.6/quill.js""></script>
 <script src=""_content/Blazored.TextEditor/quill-blot-formatter.min.js""></script>
