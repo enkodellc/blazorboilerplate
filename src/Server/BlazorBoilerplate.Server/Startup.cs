@@ -1,4 +1,9 @@
 using AutoMapper;
+using Azure.Core;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Security.KeyVault.Certificates;
+using Azure.Storage.Blobs;
 using static BlazorBoilerplate.Constants.PasswordPolicy;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
@@ -39,8 +44,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -126,7 +129,7 @@ namespace BlazorBoilerplate.Server
 
             X509Certificate2 cert = null;
 
-            var keysFolder = Path.Combine(_environment.ContentRootPath, "Keys");
+            var keysLocalFolder = Path.Combine(_environment.ContentRootPath, "Keys");
 
             if (_environment.IsDevelopment())
             {
@@ -137,38 +140,100 @@ namespace BlazorBoilerplate.Server
 
                 identityServerBuilder.AddDeveloperSigningCredential();
 
-                dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
+                dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysLocalFolder));
             }
             else
             {
-                // running on azure
-                // please make sure to replace your vault URI and your certificate name in appsettings.json!
+                // Running on Azure Web App service - read the setup doc at blazor-boilerplate.readthedocs.io
+
+                // appsettings.json parameters used:
+                //  "RunsOnAzure": true,
+                //  "RunningAsAppService": true,
+                //  "RunningAsDocker": false, // not implemented yet
+                //  "AzureKeyVault": {
+                //      "UsingKeyVault": true,
+                //      "UseManagedAppIdentity": true, 
+                //      "AppKey": "", // not implemented yet.
+                //      "AppSecret": "",
+                //      "KeyVaultURI": "https://YOURVAULTNAMEHERE.vault.azure.net/",
+                //      "CertificateIdentifier": "https://YOURVAULTNAMEHERE.vault.azure.net/certificates/BBAUTH/<HEX_VERSION_STRING_HERE>",
+                //      "CertificateName": "BBAUTH", 
+                //      "StorageAccountBlobBaseUrl": "https://<YOUR_STORAGE_ACCOUNT_NAME_HERE>.blob.core.windows.net",
+                //      "ContainerName": "blazor-boilerplate-keys",
+                //      "KeysBlobName": "keys.xml"
                 if (Convert.ToBoolean(Configuration["HostingOnAzure:RunsOnAzure"]) == true)
                 {
-                    // if we use a key vault
-                    if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UsingKeyVault"]) == true)
+                    if (Convert.ToBoolean(Configuration["HostingOnAzure:AzureKeyVault:UsingKeyVault"]) == true)
                     {
-                        //https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview
-                        dataProtectionBuilder.PersistKeysToAzureBlobStorage(new Uri("<blobUriWithSasToken>"))
-                            .ProtectKeysWithAzureKeyVault("<keyIdentifier>", "<clientId>", "<clientSecret>");
-
-                        // if managed app identity is used
                         if (Convert.ToBoolean(Configuration["HostingOnAzure:AzurekeyVault:UseManagedAppIdentity"]) == true)
                         {
-                            AzureServiceTokenProvider azureServiceTokenProvider = new();
+                            //https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview
 
-                            var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
+                            // In production environment we have already configured Managed Identity (blazor-boilerplate) using Azure Portal for our app to access Key Vault and Blob Storage. 
 
-                            var certificateBundle = keyVaultClient.GetSecretAsync(Configuration["HostingOnAzure:AzureKeyVault:VaultURI"], Configuration["HostingOnAzure:AzurekeyVault:CertificateName"]).GetAwaiter().GetResult();
-                            var certificate = Convert.FromBase64String(certificateBundle.Value);
-                            cert = new X509Certificate2(certificate, (string)null, X509KeyStorageFlags.MachineKeySet);
+                            // Set up TokenCredential options for production and development environments
+                            bool isDeployed = !_environment.IsDevelopment();
+                            var credentialOptions = new DefaultAzureCredentialOptions
+                            {
+                                ExcludeEnvironmentCredential = isDeployed,
+                                ExcludeManagedIdentityCredential = false, // we only use this one in production
+                                ExcludeSharedTokenCacheCredential = isDeployed,
+                                ExcludeVisualStudioCredential = isDeployed,
+                                ExcludeVisualStudioCodeCredential = isDeployed,
+                                ExcludeAzureCliCredential = isDeployed,
+                                ExcludeInteractiveBrowserCredential = isDeployed,
+
+                            };
+
+                            // In development environment DefaultAzureCredential() will use the shared token credential from the IDE. In Visual Studio this is under Options - Azure Service Authentication.
+                            if (_environment.IsDevelopment())
+                            {
+                                // credentialOptions.SharedTokenCacheUsername = "<username@abc.onmicrosoft.com>"; // specify user name to use if more than one Azure username is configured in IDE. 
+                                // var defaultTenantId = "?????-????-????-????-????????"; // specify AAD tenant to authenticate against (from Azure Portal - AAD - Tenant ID) 
+                                // credentialOptions.SharedTokenCacheTenantId = defaultTenantId;
+                                // credentialOptions.VisualStudioCodeTenantId = defaultTenantId;
+                                // credentialOptions.VisualStudioTenantId = defaultTenantId;
+                            }
+
+                            TokenCredential tokenCredential = new DefaultAzureCredential(credentialOptions);
+
+                            // The Azure Storage Container (blazor-boilerplate-keys) Access Control must grant blazor-boilerplate the following roles:
+                            // - Storage Blob Data Contributor
+
+                            var blobServiceClient = new BlobServiceClient(
+                                new Uri(Configuration["HostingOnAzure:AzureKeyVault:StorageAccountBlobBaseUrl"]),
+                                tokenCredential);
+
+                            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(Configuration["HostingOnAzure:AzureKeyVault:ContainerName"]);
+                            BlobClient blobClient = blobContainerClient.GetBlobClient(Configuration["HostingOnAzure:AzureKeyVault:KeysBlobName"]);
+
+                            var certificateIdentifier = Configuration["HostingOnAzure:AzureKeyVault:CertificateIdentifier"];
+
+                            dataProtectionBuilder.PersistKeysToAzureBlobStorage(blobClient);
+                            // 1. Remove the call to ProtectKeysWithAzureKeyVault below for the first run to create the keys.xml blob in place.
+                            // 2. Add the call to ProtectKeysWithAzureKeyVault for subsequent runs.so that keys.xml gets created - see the setup doc for more information
+                            dataProtectionBuilder.ProtectKeysWithAzureKeyVault(new Uri(certificateIdentifier), tokenCredential);
+
+                            // Azure Key Vault Access Policy must grant the following permissions to the blazor-boilerplate app: 
+                            // - Secret Permissions: Get
+                            // - Certificate Permissions: Get
+
+                            // Retrieve the certificate and extract the secret so that we can build the new X509 certificate for later use by Identity Server
+                            var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration["HostingOnAzure:AzureKeyVault:KeyVaultUri"]), credential: new DefaultAzureCredential());
+                            var secretClient = new SecretClient(vaultUri: new Uri(Configuration["HostingOnAzure:AzureKeyVault:KeyVaultUri"]), credential: new DefaultAzureCredential());
+                            KeyVaultCertificateWithPolicy certificateWithPolicy = certificateClient.GetCertificateAsync(Configuration["HostingOnAzure:AzureKeyVault:CertificateName"]).GetAwaiter().GetResult(); // retrieves latest version of certificate
+                            KeyVaultSecretIdentifier secretIdentifier = new KeyVaultSecretIdentifier(certificateWithPolicy.SecretId);
+                            KeyVaultSecret secret = secretClient.GetSecretAsync(secretIdentifier.Name, secretIdentifier.Version).GetAwaiter().GetResult();
+                            byte[] privateKeyBytes = Convert.FromBase64String(secret.Value);
+
+                            cert = new X509Certificate2(privateKeyBytes, (string)null, X509KeyStorageFlags.MachineKeySet);
                         }
                     }
                     else // if app id and app secret are used
                         throw new NotImplementedException();
                 }
                 else
-                    dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
+                    dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysLocalFolder));
 
                 //TODO this implementation does not consider certificate expiration 
                 if (Convert.ToBoolean(Configuration[$"{projectName}:UseLocalCertStore"]) == true)
