@@ -98,7 +98,7 @@
 {<MatDialog @bind-IsOpen="@dialogIsOpen">
     <MatDialogTitle>Create Todo</MatDialogTitle>
     <MatDialogContent>
-        <EditForm Model="@currentTodo" OnValidSubmit="@NewEntity">
+        <EditForm id="newTodoForm" Model="@currentTodo" OnValidSubmit="@NewEntity">
             <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
@@ -113,7 +113,7 @@
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(e => { dialogIsOpen = false; })">@L["Cancel"]</MatButton>
-        <MatButton OnClick="@NewEntity">Create Todo</MatButton>
+        <MatButton Type="submit" form="newTodoForm" Raised="true">Create Todo</MatButton>
     </MatDialogActions>
 </MatDialog>
 
