@@ -1,4 +1,4 @@
-Hosting Blazor Boilerplate on Azure
+**Hosting Blazor Boilerplate 2.0.0 on Azure**
 =============================================
 
 (Note: This document builds upon, and credits, an earlier pdf guide
@@ -38,68 +38,58 @@ Configure Azure Environment
 Create the Azure Web App
 ------------------------
 
-Using either the Azure Portal App
-(https://portal.azure.com/App/Download?acceptLicense=true) or the portal
-web interface, create a new Web App and configure it as follows:
+  Using either the Azure Portal App (https://portal.azure.com/App/Download?acceptLicense=true) or the portal web interface, create a new Web App and configure it as follows:
 
-.. image:: /images/hosting_on_azure/image1.png
+  .. image:: /images/hosting_on_azure/image1.png
    :width: 3.51389in
    :height: 4.39077in
 
-**Resource Group:** (create new) blazor_boilerplate_demo_rg
+  **Resource Group:** (create new) blazor_boilerplate_demo_rg
 
-**Instance Name:** blazor-boilerplate**(.azurewebsites.net)
+  **Instance Name:** blazor-boilerplate \*\*(.azurewebsites.net)
 
-**Publish:** Code
+  **Publish:** Code
 
-**Stack:** .NET 5
+  **Stack:** .NET 5
 
-**OS:** Windows
+  **OS:** Windows
 
-**Region:** (whatever works for you)
+  **Region:** (whatever works for you)
 
-**App Service Plan:** (create new) blazor-boilerplate-app-service-plan.
-Select the Dev/Free F1 tier for demo purposes.
+  **App Service Plan:** (create new) blazor-boilerplate-app-service-plan. Select the Dev/Free F1 tier for demo purposes.
 
-\*\* The instance name must be globally unique. It is created in the
-azurewebsites.net domain.
+  \*\* The instance name must be globally unique. It is created in the azurewebsites.net domain.
 
-Review + create the new web app, then open the resource to continue with
-configuration.
+  **Review + Create** the new web app, then open the resource to continue with configuration.
 
 Configure the Azure Web App
 ---------------------------
 
-.. image:: /images/hosting_on_azure/image2.png
+  .. image:: /images/hosting_on_azure/image2.png
    :width: 7.26875in
    :height: 2.80417in
 
-a. Select **Configuration** and **General Settings** and configure as
-   follows:
+a. Select **Configuration** and **General Settings** and configure as follows:
 
-..
+  .. image:: /images/hosting_on_azure/image3.png
+   :width: 2.44444in
+   :height: 4.17264in
 
-   .. image:: /images/hosting_on_azure/image3.png
-      :width: 2.44444in
-      :height: 4.17264in
+  **Stack:** .NET
 
-   **Stack:** .NET
+  **Stack:** .NET
 
-   **.NET Version:** .NET 5*\*
+  **.NET Version:** .NET 5*\*
 
-   **Platform:** 64 Bit
+  **Platform:** 64 Bit
 
-   **Pipeline:** Integrated
+  **Pipeline:** Integrated
 
-   **Web Sockets:** On
+  **Web Sockets:** On - \* Important
 
-   **Remote Debugging:** On / VS 2019
+  \*\* Currently there is a bug in the portal that causes .NET version to display .NET Core (3.1/2.1) whenever you return to the general settings page. This is OK, it doesn't affect our demo.
 
-\*\* Currently there is a bug in the portal that causes .NET version
-   to display .NET Core (3.1/2.1) whenever you return to the general
-   settings page. This is OK, it doesn't affect our demo.
-
-   Save these general settings and exit configuration.
+  Save these general settings and exit configuration.
 
 b. Select **Identity** and confirm that that **System Assigned** identity
    is turned **on**.
@@ -117,7 +107,7 @@ c. Configure **Custom Domains** and **TLS/SSL Settings**
    By default, the new web app is accessible via
    http://blazor-boilerplate.azurewebsites.net\ **.** To enable various
    security features in Blazor Boilerplate to function in a hosted
-   environment it must be secured with an SSL certificate.
+   environment it must be secured with a certificate.
 
    Either:
 
@@ -127,13 +117,12 @@ c. Configure **Custom Domains** and **TLS/SSL Settings**
 
    Or:
 
--  create your own host in a custom domain you control (e.g.,
+-  secure your own host in a custom domain you control (e.g.,
    http://blazor-boilerplate.demodomain.com)
 
 ..
 
-   The SSL certificate you create must of course match the host and
-   domain name of your web app.
+
 
    If you are using a custom domain, select **Custom Domains** and add and verify a new custom domain.
    Note: you will need access to DNS host records for your chosen domain
@@ -142,7 +131,7 @@ c. Configure **Custom Domains** and **TLS/SSL Settings**
 
    Create a Private Key Certificate which will be used for TLS/SSL
    binding, using the hostname you have chosen, in this example
-   blazor-boilerplate.demodomain.com. Create a self-signed certificate
+   blazor-boilerplate.demodomain.com. Use a development certificate like AuthKey.pfx, create a self-signed certificate
    or a use a free service like letsencrypt.org.
    Make sure you mark the private key as exportable when you create the
    certificate.
@@ -179,6 +168,10 @@ Create and Configure Azure SQL Server and SQL Database
 
    **Compute/Storage:** Basic 5DTU/2GB (about US$5 per month)
 
+   **Admin Login:** <Your_Admin_Username>
+
+   **Admin Password:** <Your_Admin_Password>
+
    Once created, open the new SQL database resource and select **Show
    database connection strings**. Copy the **ADO.NET (SQL Authentication)**
    string and save it for use in the next step.
@@ -198,9 +191,9 @@ Configure Visual Studio Project for Azure Publishing
       :width: 3in
       :height: 2.18293in
 
-   **Release:** Any CPU
+   **Configuration:** Debug - Any CPU
 
-   **Framework:** .net5.0
+   **Framework:** .Net5.0
 
    **Deployment Mode:** Self-Contained
 
@@ -228,19 +221,25 @@ Configure Visual Studio Project for Azure Publishing
       :height: 2.17372in
 
    Select the **Connection** tab and confirm that the **Destination
-   URL** is http://blazor-boilerplate.azurewebsites.net or change it to
-   your custom one (http://blazor-boilerplate.demodomain.com) if you are
+   URL** is \http://blazor-boilerplate.azurewebsites.net or change it to
+   your custom one (\http://blazor-boilerplate.demodomain.com) if you are
    using a custom domain. This is the URL that the publish tool will
    open after publishing.
 
 Create and Configure Azure Key Vault
 ------------------------------------
 
-   This key vault will hold the .pfx certificate in the cloud so that
-   BlazorBoilerplate can access it securely.
+   Azure Web App could be running multiple instances in multiple deployment slots. By default, 
+   the app stores encrypted information in local storage and separate instances 
+   can't access it. We need to store it in a central, protected place that can be 
+   accessed by all instances, and all instances must be able to unencrypt 
+   the content.
+
+   We use Azure Blob Storage as the central store (persistence provider) and Azure Key Vault as 
+   the common encryption provider. 
 
    Create a new Azure Key Vault in the blazor_boilerplate_demo_rg
-   resource group and name it blazor-boilerplate-demo-vault.
+   resource group and name it blazor-boilerplate-demo-kv.
 
    Open the new resource, select **Certificates** and choose **+
    Generate/Import**, then import your .pfx certificate.
@@ -255,13 +254,15 @@ Create and Configure Azure Key Vault
    Advanced Policy Configuration** has **Exportable Private Key** set to
    Yes.
 
+   Select and open the certificate and copy the **X.509 SHA-1 Thumbprint (in hex)** for use later in appsettings.json.
+
    Return to the key vault main menu and select **Access Policies**. Add
    a new policy, then click **Select Principal** and search for / select
    the Azure App Service you created earlier (e.g. blazor-boilerplate).
 
    Give the policy Get access to **Secret Permissions**, because
    Identity Server needs access to the private key so we will import the
-   certificate as a secret.
+   certificate as a secret. It should also have Get access to **Certificate Permissions**.
 
    .. image:: /images/hosting_on_azure/image10.png
       :width: 3.18139in
@@ -294,126 +295,77 @@ Configure Blazor Boilerplate & Deploy to Azure
 Configure Azure settings in appsettings.json 
 --------------------------------------------
 
-   In Visual Studio, open the BlazorBoilerplate solution if it isn't
-   already, then select the **BlazorBoilerplate.Server** project. Edit
-   **appsettings.json**.
+  In Visual Studio, open the BlazorBoilerplate solution if it isn't already, then select the **BlazorBoilerplate.Server** project. Edit
+  **appsettings.json**.
 
-Set **DefaultConnection** to the string we stored earlier, e.g:
+  Set **DefaultConnection** to the string we stored earlier, e.g:
 
-   Data
-   Source=tcp:blazor-boilerplate-demo-sql.database.windows.net,1433;
-   Initial Catalog=blazor-boilerplate-demo-db;User Id=<adminusername>;
-   Password=<adminuserpassword>; Trusted_Connection=False; Encrypt=True;
-   MultipleActiveResultSets=True;
+  Data Source=tcp:blazor-boilerplate-demo-sql.database.windows.net,1433; Initial Catalog=blazor-boilerplate-demo-db; User Id=<adminusername>;    Password=<adminuserpassword>; Trusted_Connection=False; Encrypt=True; MultipleActiveResultSets=True;
 
-Edit both of the following sections and insert your saved parameters where shown:
+  Edit both of the following sections and insert your own saved parameters where shown:
 
-**"HostingOnAzure":** {
+  **HostingOnAzure**
 
-"RunsOnAzure": true,
+  "RunsOnAzure": true,
 
-"RunningAsAppService": true,
+  "RunningAsAppService": true,
 
-"RunningAsDocker": false, // not implemented yet.
+  "RunningAsDocker": false, // not implemented yet.
 
-"AzureKeyVault": {
+  "AzureKeyVault": {
 
-"UsingKeyVault": true,
+   "UsingKeyVault": true,
 
-"UseManagedAppIdentity": true,
+   "UseManagedAppIdentity": true,
 
-"AppKey": "", // not implemented yet.
+   "AppKey": "", // not implemented yet.
 
-"AppSecret": "",
+   "AppSecret": "",
 
-"VaultURI": "https://blazor-boilerplate-demo.vault.azure.net/",
+   "KeyVaultURI": "\https://blazor-boilerplate-demo.vault.azure.net/",
 
-"CertificateIdentifier": "https://
-blazor-boilerplate-demo.vault.azure.net/certificates/BBAUTH/??????",
+   "CertificateIdentifier": "\https://blazor-boilerplate-demo.vault.azure.net/certificates/BBAUTH/<HEX_STRING_HERE>",
 
-"CertificateName": "BBAUTH",
+   "CertificateName": "BBAUTH",
 
-   "StorageConnectionString": "DefaultEndpointsProtocol=https;
-   AccountName=blazorboilerplate_storage; AccountKey=???????????????????????????==;
-   EndpointSuffix=core.windows.net",
+   "ContainerName": "blazor-boilerplate-keys",
 
-"ContainerName": "blazor-boilerplate-keys",
+   "KeysBlobName": "keys.xml"
 
-"KeyBlobName": "keys.xml"
+  }
 
-}
 
-},
 
-**"BlazorBoilerplate"**: {
+  **BlazorBoilerplate** 
 
-"ApplicationUrl": "https://blazor-boilerplate.demodomain.com",
+  "ApplicationUrl": "\https://blazor-boilerplate.demodomain.com",
 
-"IS4ApplicationUrl": "https://blazor-boilerplate.demodomain.com",
+  "IS4ApplicationUrl": "\https://blazor-boilerplate.demodomain.com",
 
-"UseLocalCertStore": false,
+  "UseLocalCertStore": false,
 
-"CertificateThumbprint": "???????????????????????????????????",
+  "CertificateThumbprint": "<X.509_SHA-1_THUMBPRINT_HERE>",
 
-"RequireConfirmedEmail": false,
+  ...
 
-"API": {
 
-"Logging": {
-
-"Enabled": true,
-
-"IgnorePaths": [ "/api/account", "/api/admin", "/api/apilog" ]
-
-},
-
-"Doc": {
-
-"Enabled": true
-
-}
-
-},
-
-"UsePostgresServer": false
-
-},
-
-   You may also want to change **Serilog / MinimumLevel / Default** from
-   'Warning' to 'Debug' while you are getting the demo up and running.
+  You may also want to change **Serilog / MinimumLevel / Default** from 'Warning' to 'Debug' while you are getting the demo up and running.
 
 Check / Modify Startup.cs
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
-   In Visual Studio, open the BlazorBoilerplate solution if it isn't
-   already, then select the **BlazorBoilerplate.Server** project. Edit
-   **Startup.cs**.
+  In Visual Studio, open the BlazorBoilerplate solution if it isn't already, then select the **BlazorBoilerplate.Server** project. Edit **Startup.cs**.
 
-   The section that relates to Azure hosting begins around line 147.
-   Edit the two lines below as shown:
+  The section that relates to Azure hosting begins around line 147. Find the two lines below:
 
-   (Add a reference to **using Azure.Identity;**)
+  **dataProtectionBuilder.PersistKeysToAzureBlobStorage**\(blobClient);
 
-   **dataProtectionBuilder.PersistKeysToAzureBlobStorage**\ (Configuration["HostingOnAzure:AzureKeyVault:StorageConnectionString"],
-   Configuration["HostingOnAzure:AzureKeyVault:ContainerName"],
-   Configuration["HostingOnAzure:AzureKeyVault:KeyBlobName"]);
+  **dataProtectionBuilder.ProtectKeysWithAzureKeyVault**\(new Uri(certificateIdentifier), new DefaultAzureCredential(credentialOptions));
 
-   **dataProtectionBuilder.ProtectKeysWithAzureKeyVault**\ (new
-   Uri(Configuration["HostingOnAzure:AzureKeyVault:CertificateIdentifier"]),
-   new DefaultAzureCredential());
-
-   These lines will now read their configuration values from
-   **appsettings.json**.
-
-   There is a limitation of persisting keys to blob storage in the
-   library we are currently using. The blob won't get created on first
-   run, and will probably error. To fix this, comment out the
-   **dataProtectionBuilder.ProtectKeysWithAzureKeyVault** for now, publish the app and let it run, and
-   verify that **keys.xml** is created in the blob container before you
-   uncomment it.
+  There is a current limitation of persisting keys to blob storage. The blob won't get created on first run, and the app will probably error on startup. To fix this, comment out the line **dataProtectionBuilder.ProtectKeysWithAzureKeyVault**, publish the app and let it run, and verify that **keys.xml** is created in the keys blob container before you uncomment it.
 
 Publish the BlazorBoilerplate Solution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------
 
    Right-Click the **BlazorBoilerplate.Server** project and select
    **Publish.** Hit the Publish button and check that the app publishes
@@ -437,57 +389,38 @@ Publish the BlazorBoilerplate Solution
    page.
 
 Azure Troubleshooting Tips
---------------------------
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 Kudu
-~~~~
+----
 
-The **Kudu Diagnostic Console** is available at
-https://blazor-boilerplate.scm.azurewebsites.net/DebugConsole.
+  The **Kudu Diagnostic Console** is available at \https://blazor-boilerplate.scm.azurewebsites.net/DebugConsole.
 
-A few of the more useful troubleshooting logs are:
+  A few of the more useful troubleshooting logs are:
 
-**/LogFiles/stdout_???_??.log**. This is where you can monitor various
-EntityFrameworkCore database commands.
+  **/LogFiles/stdout_???_??.log**.
 
-**/site/wwwroot/Logs/log-????.log.** If you set the **Serilog
-MinimumLevel** to Debug earlier you will see the full series of startup
-log entries, including any errors related to startup.
+  **/site/wwwroot/Logs/log-????.log.** If you set the **SerilogMinimumLevel** to Debug earlier you will see the full series of startup log entries, including any errors related to startup.
 
-You can also stream logs from the web app either within the Azure Portal
-(Web App Service / Monitoring / Log Stream) or to Visual Studio if you
-prefer.
+  You can also stream logs from the web app either within the Azure Portal (Web App Service / Monitoring / Log Stream) or to Visual Studio if you prefer.
 
 Remote Debug in Visual Studio
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------
 
-To remotely debug, you must first publish a **Debug Configuration** of
-Blazor Boilerplate to Azure.
+  To remotely debug, you must first publish a **Debug Configuration** of Blazor Boilerplate to Azure. Edit the **Publish Profile** in Visual Studio and set **Configuration** to Debug - Any CPU.
 
-As a simple remote debugging test, try the following:
+  As a simple remote debugging test, try the following:
 
-Open **the Shared / Modules** folder and the
-**BlazorBoilerplate.Theme.Material.Demo** project. Open the **Pages**
-folder and edit **TodoList.razor.** Set a breakpoint at the line **await
-LoadMainEntities();**
+  Open **the Shared / Modules** folder and the **BlazorBoilerplate.Theme.Material.Demo** project. Open the **Pages** folder and edit **TodoList.razor.** Set a breakpoint at the line **await LoadMainEntities();**
 
-Open **Cloud Explorer** in Visual Studio and select your web app within your subscription (under App Services),
-right-click and**Attach Debugger** to the Blazor
-Boilerplate app as described above. The Visual Studio Output Window will
-show the application starting up. Once symbols are loaded a browser
-should open and display the home page. Select **ToDo List** and
-execution should halt at the **await LoadMainEntities();** breakpoint in VS.
+  Open **Cloud Explorer** in Visual Studio and select your web app within your subscription (under App Services), right-click and **Attach Debugger** to the Blazor Boilerplate app. The Visual Studio Output Window will show the application starting up. Once symbols are loaded a browser should open and display the home page. Select **ToDo List** and execution should halt at the **await LoadMainEntities();** breakpoint in VS.
 
 Azure Portal Web App Diagnostic Tools
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------
 
-**App Service Diagnostics** as accessed via **Diagnose and Solve
-Problems** within the Web App on the Azure Portal.
+  **App Service Diagnostics** as accessed via **Diagnose and Solve Problems** within the Web App on the Azure Portal.
 
-.. image:: /images/hosting_on_azure/image12.png
+  .. image:: /images/hosting_on_azure/image12.png
    :width: 3.69463in
    :height: 1.19451in
 
-**Diagnostic Tools** has a couple of useful tools, including **Check
-Connection String**, access to **Application Event Logs**, and
-**Advanced Application Restart**.
+  **Diagnostic Tools** has a couple of useful tools, including **Check Connection String**, access to **Application Event Logs**, and **Advanced Application Restart**
