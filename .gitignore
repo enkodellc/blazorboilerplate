@@ -347,10 +347,21 @@ healthchecksdb
 *.p8
 
 /docs/_build
+
 /src/BlazorBoilerplate.Server/*.db
-
 /src/BlazorBoilerplate.Server/appsettings.Local.json
-/src/BlazorBoilerplate.Server/Keys
 
-/src/Server/BlazorBoilerplate.Server/Modules
+/src/BlazorBoilerplate.Server/Keys
+/src/BlazorBoilerplate.Server/Modules
+/src/BlazorBoilerplate.Server/Properties/PublishProfiles
+/src/BlazorBoilerplate.Server/Properties/ServiceDependencies
+!/src/BlazorBoilerplate.Server/Properties/PublishProfiles/Release-win-x64.pubxml
+
+/src/Server/BlazorBoilerplate.Server/*.db
+/src/Server/BlazorBoilerplate.Server/appsettings.Local.json
+
 /src/Server/BlazorBoilerplate.Server/Keys
+/src/Server/BlazorBoilerplate.Server/Modules
+/src/Server/BlazorBoilerplate.Server/Properties/PublishProfiles
+/src/Server/BlazorBoilerplate.Server/Properties/ServiceDependencies
+!/src/Server/BlazorBoilerplate.Server/Properties/PublishProfiles/Release-win-x64.pubxml
