@@ -5,7 +5,7 @@
 produced by @soomon).
 
 This guide produces a working **demonstration** installation of Blazor
-Boilerplate on Azure App Services using the Development branch. Various
+Boilerplate on Azure App Services. Various
 configuration settings, security and design considerations **must be
 evaluated** before moving into production.
 
@@ -44,6 +44,8 @@ Create the Azure Web App
    :width: 3.51389in
    :height: 4.39077in
 
+..
+  
   **Resource Group:** (create new) blazor_boilerplate_demo_rg
 
   **Instance Name:** blazor-boilerplate \*\*(.azurewebsites.net)
@@ -75,7 +77,7 @@ a. Select **Configuration** and **General Settings** and configure as follows:
    :width: 2.44444in
    :height: 4.17264in
 
-  **Stack:** .NET
+..
 
   **Stack:** .NET
 
@@ -105,7 +107,7 @@ c. Configure **Custom Domains** and **TLS/SSL Settings**
 ..
 
    By default, the new web app is accessible via
-   http://blazor-boilerplate.azurewebsites.net\ **.** To enable various
+   \http://blazor-boilerplate.azurewebsites.net\. To enable various
    security features in Blazor Boilerplate to function in a hosted
    environment it must be secured with a certificate.
 
@@ -118,7 +120,7 @@ c. Configure **Custom Domains** and **TLS/SSL Settings**
    Or:
 
 -  secure your own host in a custom domain you control (e.g.,
-   http://blazor-boilerplate.demodomain.com)
+   \http://blazor-boilerplate.demodomain.com)
 
 ..
 
@@ -159,6 +161,8 @@ Create and Configure Azure SQL Server and SQL Database
       :width: 1.88194in
       :height: 1.87133in
 
+..
+
    Select **+ Create Database** and configure the new database as
    follows:
 
@@ -191,6 +195,8 @@ Configure Visual Studio Project for Azure Publishing
       :width: 3in
       :height: 2.18293in
 
+..
+
    **Configuration:** Debug - Any CPU
 
    **Framework:** .Net5.0
@@ -219,6 +225,8 @@ Configure Visual Studio Project for Azure Publishing
    .. image:: /images/hosting_on_azure/image8.png
       :width: 1.56953in
       :height: 2.17372in
+
+..
 
    Select the **Connection** tab and confirm that the **Destination
    URL** is \http://blazor-boilerplate.azurewebsites.net or change it to
@@ -250,6 +258,8 @@ Create and Configure Azure Key Vault
       :width: 2.65291in
       :height: 3.17377in
 
+..
+
    Select the certificate in the list and check that **Issuance Policy /
    Advanced Policy Configuration** has **Exportable Private Key** set to
    Yes.
@@ -267,6 +277,8 @@ Create and Configure Azure Key Vault
    .. image:: /images/hosting_on_azure/image10.png
       :width: 3.18139in
       :height: 3.4375in
+
+..
 
    Copy the **DNS Name** of the key vault and save it so that you can
    add it to appsettings.json in a later step.
@@ -382,6 +394,8 @@ Publish the BlazorBoilerplate Solution
       :width: 2.75926in
       :height: 1.55556in
 
+..
+
    The site should now
    redirect to https://blazor-boilerplate.demodomain.com or
    https://blazor-boilerplate.azurewebsites.net if you aren't using a
@@ -422,5 +436,7 @@ Azure Portal Web App Diagnostic Tools
   .. image:: /images/hosting_on_azure/image12.png
    :width: 3.69463in
    :height: 1.19451in
+
+..
 
   **Diagnostic Tools** has a couple of useful tools, including **Check Connection String**, access to **Application Event Logs**, and **Advanced Application Restart**
