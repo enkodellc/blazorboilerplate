@@ -8,7 +8,6 @@
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
     <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
     <BlazorWebAssemblyI18NAssemblies>all</BlazorWebAssemblyI18NAssemblies>
-    <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking> <!-- because Mono.Cecil.AssemblyResolutionException: Failed to resolve assembly: Microsoft.Data.OData 5.8.4 -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,13 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <BlazorLinkerDescriptor Include="LinkerConfig.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TrimmerRootAssembly Include="BlazorBoilerplate.Theme.Material" />
-    <TrimmerRootAssembly Include="BlazorBoilerplate.Theme.Material.Admin" />
-    <TrimmerRootAssembly Include="BlazorBoilerplate.Theme.Material.Demo" />
+    <BlazorWebAssemblyLazyLoad Include="BlazorBoilerplate.Theme.Material.Admin.dll" />
+    <BlazorWebAssemblyLazyLoad Include="Blazored.TextEditor.dll" />
   </ItemGroup>
 
 </Project>

@@ -26,7 +26,6 @@ namespace BlazorBoilerplate.Client
 
             //TODO see what oqtane does
             var baseModule = new Theme.Material.Module();
-            var adminModule = new Theme.Material.Admin.Module();
             var demoModule = new Theme.Material.Demo.Module();
 
             Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();

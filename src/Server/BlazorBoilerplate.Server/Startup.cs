@@ -64,6 +64,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using static IdentityServer4.IdentityServerConstants;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using Microsoft.AspNetCore.Components.WebAssembly.Services;
 
 namespace BlazorBoilerplate.Server
 {
@@ -96,6 +97,8 @@ namespace BlazorBoilerplate.Server
                 options.AddSupportedCultures(Settings.SupportedCultures);
                 options.AddSupportedUICultures(Settings.SupportedCultures);
             });
+
+            services.AddScoped<LazyAssemblyLoader>();
 
             var dataProtectionBuilder = services.AddDataProtection().SetApplicationName(projectName);
 
