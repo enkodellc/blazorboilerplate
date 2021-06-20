@@ -11,8 +11,9 @@ namespace BlazorBoilerplate.Shared.Providers
     public static class ModuleProvider
     {
         private static List<Assembly> assembliesWithPages;
+        private static List<IModule> modules;
 
-        public static IEnumerable<IModule> Modules { get; private set; }
+        public static IEnumerable<IModule> Modules { get => modules; }
         public static RootComponentMapping RootComponentMapping { get; private set; }
         public static IEnumerable<Assembly> AssembliesWithPages { get => assembliesWithPages; }
 
@@ -34,7 +35,7 @@ namespace BlazorBoilerplate.Shared.Providers
 
                 RootComponentMapping = themeInstance.RootComponentMapping;
 
-                var modules = new List<IModule>();
+                modules = new List<IModule>();
 
                 foreach (var assembly in assemblies)
                 {
@@ -48,7 +49,7 @@ namespace BlazorBoilerplate.Shared.Providers
                     }
                 }
 
-                Modules = modules.OrderBy(m => m.Order);
+                modules = modules.OrderBy(m => m.Order).ToList();
             }
         }
 
@@ -56,8 +57,10 @@ namespace BlazorBoilerplate.Shared.Providers
         public static void AddModules(IEnumerable<Assembly> assemblies)
         {
             foreach (var assembly in assemblies)
-                if (!assembliesWithPages.Contains(assembly))
+            {
+                if (!assembliesWithPages.Contains(assembly) && assembly.ExportedTypes.Any(t => t.GetCustomAttributes<RouteAttribute>(inherit: false).Any()))
                     assembliesWithPages.Add(assembly);
+            }
         }
     }
 }
