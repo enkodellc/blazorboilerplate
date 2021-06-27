@@ -488,7 +488,7 @@ namespace BlazorBoilerplate.Server
                 options.Cookie.IsEssential = true;
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(Convert.ToDouble(Configuration[$"{projectName}:CookieExpireTimeSpanMinutes"] ?? "60"));
+                options.ExpireTimeSpan = TimeSpan.FromDays(Convert.ToDouble(Configuration[$"{projectName}:CookieExpireTimeSpanDays"] ?? "30"));
                 options.LoginPath = Constants.Settings.LoginPath;
                 //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 // ReturnUrlParameter requires
