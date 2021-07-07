@@ -36,8 +36,10 @@ else
                 </div>
             </td>
             <td><div style="width:130px;">@UserRow.UserName</div></td>
-            <td style="white-space: nowrap">@UserRow.Email @if (UserRow.EmailConfirmed)
-                            {<MatIcon Style="vertical-align: text-bottom" Icon="check_circle"></MatIcon>}</td>
+            <td style="white-space: nowrap">
+                @UserRow.Email @if (UserRow.EmailConfirmed)
+                {<MatIcon Style="vertical-align: text-bottom" Icon="check_circle"></MatIcon>}
+            </td>
             <td>
                 @if (@UserRow.UserRoles != null)
                     {<MatChipSet>
@@ -49,7 +51,7 @@ else
             </td>
         </MatTableRow>
     </MatTable>
-    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
+    <MatPaginator PageSize="@pageSize" Page="@(async e => await OnPage(e.PageIndex, e.PageSize))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
 }
 
 <MatDialog @bind-IsOpen="@createUserDialogOpen">
@@ -142,5 +144,5 @@ else
 </MatDialog>
 
 @code {
-   
+
 }

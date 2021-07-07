@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspectInjector" Version="2.5.0" />
-    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.7" />
+    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.8" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.0.3" />
@@ -59,6 +59,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Infrastructure\BlazorBoilerplate.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Shared\BlazorBoilerplate.UI.Base\BlazorBoilerplate.UI.Base.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
     <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material\BlazorBoilerplate.Theme.Material.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Storage\BlazorBoilerplate.Storage.csproj" />

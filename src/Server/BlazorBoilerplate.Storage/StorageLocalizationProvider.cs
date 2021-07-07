@@ -93,7 +93,7 @@ namespace BlazorBoilerplate.Storage
                 await ImportTextCatalog(localizationDbContext, textCatalog);
         }
 
-        public async Task ImportTextCatalog(LocalizationDbContext localizationDbContext, POCatalog textCatalog)
+        public static async Task ImportTextCatalog(LocalizationDbContext localizationDbContext, POCatalog textCatalog)
         {
             if (textCatalog == null || textCatalog.Count == 0)
                 throw new DomainException("File empty");
@@ -116,14 +116,14 @@ namespace BlazorBoilerplate.Storage
 
             foreach (var item in textCatalog)
             {
-                if (!string.IsNullOrWhiteSpace(item.First()))
+                if (!string.IsNullOrWhiteSpace(item[0]))
                 {
                     var localizationRecord = new LocalizationRecord()
                     {
                         Culture = textCatalog.GetCultureName(),
                         MsgId = item.Key.Id,
                         MsgIdPlural = item.Key.PluralId,
-                        Translation = item.First(),
+                        Translation = item[0],
                         ContextId = item.Key.ContextId ?? nameof(Global)
                     };
 

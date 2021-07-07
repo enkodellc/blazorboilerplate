@@ -124,8 +124,10 @@ namespace BlazorBoilerplate.Server.Controllers
             }
             catch (Exception ex)
             {
-                var errors = new List<EFEntityError>();
-                errors.Add(new EFEntityError(null, null, ex.GetBaseException().Message, null));
+                var errors = new List<EFEntityError>
+                {
+                    new EFEntityError(null, null, ex.GetBaseException().Message, null)
+                };
                 throw new EntityErrorsException(errors);
             }
         }
@@ -165,36 +167,34 @@ namespace BlazorBoilerplate.Server.Controllers
 
             var parser = new POParser();
 
-            using (var stream = new MemoryStream())
+            using var stream = new MemoryStream();
+            await uploadedFile.CopyToAsync(stream);
+
+            stream.Position = 0;
+
+            string text;
+
+            using (StreamReader reader = new(stream, Encoding.UTF8))
             {
-                await uploadedFile.CopyToAsync(stream);
+                text = reader.ReadToEnd().Trim('\0');
+            }
 
-                stream.Position = 0;
+            var result = parser.Parse(text);
 
-                string text;
+            if (result.Success)
+            {
+                if (string.IsNullOrWhiteSpace(result.Catalog.Language))
+                    result.Catalog.Language = Path.GetFileNameWithoutExtension(uploadedFile.FileName);
 
-                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                {
-                    text = reader.ReadToEnd().Trim('\0');
-                }
+                await StorageLocalizationProvider.ImportTextCatalog(persistenceManager.Context, result.Catalog);
 
-                var result = parser.Parse(text);
+                logger.LogInformation($"File {uploadedFile.FileName} uploaded by {User.Identity.Name} and imported successfully");
 
-                if (result.Success)
-                {
-                    if (string.IsNullOrWhiteSpace(result.Catalog.Language))
-                        result.Catalog.Language = Path.GetFileNameWithoutExtension(uploadedFile.FileName);
-
-                    await ((StorageLocalizationProvider)localizationProvider).ImportTextCatalog(persistenceManager.Context, result.Catalog);
-
-                    logger.LogInformation($"File {uploadedFile.FileName} uploaded by {User.Identity.Name} and imported successfully");
-
-                    return new ApiResponse(Status200OK);
-                }
-                else
-                {
-                    return new ApiResponse(Status400BadRequest, L["File not valid"]);
-                }
+                return new ApiResponse(Status200OK);
+            }
+            else
+            {
+                return new ApiResponse(Status400BadRequest, L["File not valid"]);
             }
         }
     }

@@ -1,10 +1,8 @@
-﻿@page "/admin/apilog"
+﻿@inherits ApiLogViewerPage
+@page "/admin/apilog"
 
 @attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
-@inject IApiClient apiClient
-@inject IViewNotifier viewNotifier
-@inject IStringLocalizer<Global> L
 
 <TopSection>
     <Breadcrumbs>
@@ -49,46 +47,9 @@ else
             <td>@context.Path</td>
         </MatTableRow>
     </MatTable>
-    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
+    <MatPaginator PageSize="@pageSize" Page="@(async e => await OnPage(e.PageIndex, e.PageSize))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
 }
 
 
 @code {
-    List<ApiLogItem> apiLogItems;
-
-    private int pageSize { get; set; } = 10;
-    private int pageIndex { get; set; } = 0;
-    private int totalItemsCount { get; set; } = 0;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
-    }
-
-    async Task OnPage(MatPaginatorPageEvent e)
-    {
-        pageSize = e.PageSize;
-        pageIndex = e.PageIndex;
-
-        await LoadData();
-    }
-
-    protected async Task LoadData()
-    {
-        try
-        {
-            var result = await apiClient.GetApiLogs(null, pageSize, pageIndex * pageSize);
-
-            apiLogItems = new List<ApiLogItem>(result);
-            totalItemsCount = (int)result.InlineCount.Value;
-            viewNotifier.Show(L["One item found", Plural.From("{0} items found", totalItemsCount)], ViewNotifierType.Success, L["Operation Successful"]);
-
-        }
-        catch (Exception ex)
-        {
-            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
-        }
-
-        await InvokeAsync(StateHasChanged);
-    }
 }

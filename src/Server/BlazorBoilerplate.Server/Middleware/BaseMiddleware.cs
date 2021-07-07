@@ -56,9 +56,9 @@ namespace BlazorBoilerplate.Server.Middleware
                 userMsg = msg = L["UnauthorizedAccess"];
                 code = Status401Unauthorized;
             }
-            else if (exception is DomainException)
+            else if (exception is DomainException exception1)
             {
-                userMsg = msg = ((DomainException)exception).Description;
+                userMsg = msg = exception1.Description;
             }
 
             _logger.LogError($"Api Exception: {msg}");

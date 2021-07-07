@@ -35,12 +35,14 @@ namespace BlazorBoilerplate.Shared.Services
 
                 QueryResult<LocalizationRecord> result;
 
-                if (response is QueryResult<LocalizationRecord>)
-                    result = (QueryResult<LocalizationRecord>)response;
+                if (response is QueryResult<LocalizationRecord> result1)
+                    result = result1;
                 else
                 {
-                    result = new QueryResult<LocalizationRecord>();
-                    result.Results = response;
+                    result = new QueryResult<LocalizationRecord>
+                    {
+                        Results = response
+                    };
                 }
 
                 return result;
@@ -71,12 +73,14 @@ namespace BlazorBoilerplate.Shared.Services
 
                 QueryResult<LocalizationRecordKey> result;
 
-                if (response is QueryResult<LocalizationRecordKey>)
-                    result = (QueryResult<LocalizationRecordKey>)response;
+                if (response is QueryResult<LocalizationRecordKey> result1)
+                    result = result1;
                 else
                 {
-                    result = new QueryResult<LocalizationRecordKey>();
-                    result.Results = response;
+                    result = new QueryResult<LocalizationRecordKey>
+                    {
+                        Results = response
+                    };
                 }
 
                 return result;

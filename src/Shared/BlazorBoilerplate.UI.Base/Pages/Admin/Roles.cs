@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
+namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
     public class RolesPage : ComponentBase
     {
@@ -60,7 +60,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
         protected bool isUpsertRoleDialogOpen = false;
         protected bool isInsertOperation;
-        protected List<PermissionSelection> permissionsSelections = new List<PermissionSelection>();
+        protected List<PermissionSelection> permissionsSelections = new();
 
         protected string labelUpsertDialogTitle;
         protected string labelUpsertDialogOkButton;
@@ -128,7 +128,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
                     return;
                 }
 
-                RoleDto request = new RoleDto
+                RoleDto request = new()
                 {
                     Name = currentRoleName,
                     Permissions = permissionsSelections.Where(i => i.IsSelected).Select(i => i.Name).ToList()

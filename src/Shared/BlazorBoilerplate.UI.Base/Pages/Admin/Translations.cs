@@ -2,9 +2,7 @@
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
-using Blazored.TextEditor;
 using Karambolo.Common.Localization;
-using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using ObjectCloner.Extensions;
@@ -15,9 +13,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
+namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
-    public class TranslationsPage : ComponentBase
+    public abstract class TranslationsPage : ComponentBase
     {
         [Inject] protected NavigationManager navigationManager { get; set; }
         [Inject] IViewNotifier viewNotifier { get; set; }
@@ -52,18 +50,16 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
         protected PluralTranslation newPlural { get; set; } = new PluralTranslation();
 
-        protected BlazoredTextEditor HtmlEditor;
-
         protected override async Task OnInitializedAsync()
         {
             await LoadKeys();
             await LoadPluralFormRules();
         }
 
-        protected async Task OnPage(MatPaginatorPageEvent e)
+        protected async Task OnPage(int index, int size)
         {
-            pageSize = e.PageSize;
-            pageIndex = e.PageIndex;
+            pageSize = size;
+            pageIndex = index;
 
             await LoadKeys();
         }
@@ -111,7 +107,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
                     LocalizationCultures.Clear();
 
-                    LocalizationCultures.AddRange(BlazorBoilerplate.Shared.Localizer.Settings.SupportedCultures
+                    LocalizationCultures.AddRange(Shared.Localizer.Settings.SupportedCultures
                         .Where(i => !localizationRecords.Any(l => l.Culture == i)));
 
                     if (LocalizationCultures.Count > 0)
@@ -207,10 +203,13 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             newPlural = new PluralTranslation();
             isPluralDialogOpen = true;
         }
+
+        protected abstract void SetHTML(string html);
+        protected abstract Task<string> GetHTML();
         protected void OpenEditAsHtmlDialog(LocalizationRecord record)
         {
             currentLocalizationRecord = record;
-            HtmlEditor.LoadHTMLContent(currentLocalizationRecord.Translation);
+            SetHTML(currentLocalizationRecord.Translation);
             isEditAsHtmlDialogOpen = true;
         }
         protected void OpenNewKeyDialogOpen()
@@ -266,7 +265,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             newPlural.LocalizationRecord = currentLocalizationRecord;
             localizationApiClient.AddEntity(newPlural);
 
-            if (currentLocalizationRecord.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture
+            if (currentLocalizationRecord.Culture == Shared.Localizer.Settings.NeutralCulture
                 && newPlural.Index == 1)
                 foreach (var record in localizationRecords)
                     record.MsgIdPlural = newPlural.Translation;
@@ -277,7 +276,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
         protected async Task<bool> SavePluralChanges()
         {
-            var msgIdPlural = localizationRecords.Single(i => i.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture)
+            var msgIdPlural = localizationRecords.Single(i => i.Culture == Shared.Localizer.Settings.NeutralCulture)
                 .PluralTranslations.Single(i => i.Index == 1).Translation;
 
             foreach (var record in localizationRecords)
@@ -296,7 +295,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
         protected async Task SaveLocalizationRecordAsHTML()
         {
-            currentLocalizationRecord.Translation = await HtmlEditor.GetHTML();
+            currentLocalizationRecord.Translation = await GetHTML();
 
             isEditAsHtmlDialogOpen = false;
         }
@@ -334,7 +333,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             }
         }
 
-        protected async Task Upload(IMatFileUploadEntry[] files)
+        protected async Task Upload(IEnumerable<IFileUploadEntry> files)
         {
             foreach (var file in files)
             {

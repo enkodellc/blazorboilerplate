@@ -1,10 +1,6 @@
-﻿@page "/identityserver/error"
+﻿@inherits IdentityErrorPage
+@page "/identityserver/error"
 
-@inject NavigationManager navigationManager
-@inject HttpClient Http
-@inject AuthenticationStateProvider authStateProvider
-@inject IStringLocalizer<Global> L
-@inject IViewNotifier viewNotifier
 <MatCard>
     <div class="logo" style="padding: 50px;">
         <img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" /><br />BlazorBoilerplate
@@ -17,30 +13,5 @@
 </MatCard>
 
 @code {
-
-    public string Description { get; set; }
-
-    string errorText;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (navigationManager.TryGetQueryString<string>("errorId", out string errorId))
-        {
-            if (!string.IsNullOrEmpty(errorId))
-            {
-                var apiResponse = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<ErrorMessage>>($"api/IdentityServer/GetError?errorId={errorId}");
-                if (apiResponse.IsSuccessStatusCode)
-                {
-                    errorText = apiResponse.Result.Error;
-                    Description = apiResponse.Result.ErrorDescription;
-                }
-                else
-                {
-                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error);
-                }
-            }
-        }
-    }
 
 }

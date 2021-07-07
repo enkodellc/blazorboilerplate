@@ -3,7 +3,6 @@ using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
-using BlazorBoilerplate.Theme.Material.Admin.Shared.Layouts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
@@ -12,10 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin.Settings
+namespace BlazorBoilerplate.UI.Base.Pages.Admin.Settings
 {
     [Authorize(Policies.IsAdmin)]
-    [Layout(typeof(AdminLayout))]
     public abstract class SettingsBase : ComponentBase
     {
         protected Dictionary<SettingKey, TenantSetting> settings;

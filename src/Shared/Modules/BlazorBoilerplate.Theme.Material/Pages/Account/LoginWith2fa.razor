@@ -1,13 +1,7 @@
+@inherits LoginWith2faPage
 @page "/account/loginwith2fa"
 
 @layout LoginLayout
-@inject NavigationManager navigationManager
-@inject AuthenticationStateProvider authStateProvider
-@inject IViewNotifier viewNotifier
-@inject AppState appState
-@inject NavigationManager NavigationManager
-@inject IJSRuntime js
-@inject IStringLocalizer<Global> L
 
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
@@ -74,100 +68,5 @@
 @code {
 
     private MatTextField<string> CodeInput;
-
-    string navigateTo = null;
-    IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
-    bool forgotAuthenticatorToggle = false;
-    bool RedirectInProgress = false;
-    static bool LoginSuccess = false;
-    LoginWith2faInputModel loginViewModel { get; set; } = new LoginWith2faInputModel();
-    LoginWithRecoveryCodeInputModel forgotAuthenticatorInputModel { get; set; } = new LoginWithRecoveryCodeInputModel();
-
-    string ReturnUrl;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (navigationManager.TryGetQueryString<string>("ReturnUrl", out string url))
-            ReturnUrl = url;
-
-        var user = (await authenticationStateTask).User;
-
-        if (user.Identity.IsAuthenticated || LoginSuccess)
-            RedirectInProgress = true;
-        else
-            identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
-
-        LoginSuccess = false;
-    }
-
-    [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask { get; set; }
-
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (navigationManager.IsWebAssembly())
-        {
-            var user = (await authenticationStateTask).User;
-
-            if (user.Identity.IsAuthenticated && navigateTo != null)
-                navigationManager.NavigateTo(navigateTo);
-        }
-    }
-
-    async Task SubmitLogin()
-    {
-        try
-        {
-            loginViewModel.ReturnUrl = ReturnUrl;
-            var response = await identityAuthenticationStateProvider.LoginWith2fa(loginViewModel);
-
-            await PostLoginProcess(response);
-        }
-        catch (Exception ex)
-        {
-            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["LoginFailed"]);
-        }
-    }
-
-    async Task ForgotAuthenticator()
-    {
-        try
-        {
-            forgotAuthenticatorInputModel.ReturnUrl = ReturnUrl;
-            var response = await identityAuthenticationStateProvider.LoginWithRecoveryCode(forgotAuthenticatorInputModel);
-
-            await PostLoginProcess(response);
-        }
-        catch (Exception ex)
-        {
-            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["LoginFailed"]);
-        }
-    }
-
-    async Task PostLoginProcess(ApiResponseDto response)
-    {
-        if (response.IsSuccessStatusCode)
-        {
-            if (navigationManager.IsWebAssembly())
-            {
-                if (string.IsNullOrEmpty(ReturnUrl))
-                {
-                    var userProfile = await appState.GetUserProfile();
-
-                    navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
-                }
-                else
-                    navigateTo = ReturnUrl;
-
-                navigationManager.NavigateTo(navigateTo);
-            }
-            else
-                RedirectInProgress = true;
-
-            LoginSuccess = true;
-        }
-        else
-            viewNotifier.Show(response.Message, ViewNotifierType.Error, L["LoginFailed"]);
-    }
+    
 }

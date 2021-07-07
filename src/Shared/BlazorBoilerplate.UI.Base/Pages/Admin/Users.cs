@@ -6,7 +6,6 @@ using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
 using Breeze.Sharp;
 using Karambolo.Common.Localization;
-using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Localization;
@@ -15,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
+namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
     public class UsersPage : ComponentBase
     {
@@ -61,10 +60,10 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
             await LoadRoles();
         }
 
-        protected async Task OnPage(MatPaginatorPageEvent e)
+        protected async Task OnPage(int index, int size)
         {
-            pageSize = e.PageSize;
-            pageIndex = e.PageIndex;
+            pageSize = size;
+            pageIndex = index;
 
             await LoadUsers();
         }

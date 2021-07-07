@@ -1,13 +1,8 @@
-﻿@page "/account/confirmemail"
+﻿@inherits ConfirmEmailPage
+@page "/account/confirmemail"
 @page "/account/confirmemail/{UserId}"
-@using BlazorBoilerplate.Shared.Models.Account
 
 @layout LoginLayout
-@inject NavigationManager navigationManager
-@inject HttpClient Http
-@inject AuthenticationStateProvider authStateProvider
-@inject IStringLocalizer<Global> L
-@inject IViewNotifier viewNotifier
 
 @if (string.IsNullOrEmpty(UserId))
 {
@@ -42,48 +37,4 @@ else
 }
 
 @code {
-    ConfirmEmailViewModel confirmEmailViewModel { get; set; } = new ConfirmEmailViewModel();
-    bool disableConfirmButton = false;
-
-    [Parameter]
-    public string UserId { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        // Blazor does not have query string accessible parameters yet so a hack is needed. Token is too long for path parameter
-        var absoluteUrl = navigationManager.Uri;
-        var token = absoluteUrl.Substring(absoluteUrl.IndexOf("?token=") + 7);
-
-        if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(token))
-        {
-            disableConfirmButton = true;
-            confirmEmailViewModel = new ConfirmEmailViewModel
-            {
-                Token = token,
-                UserId = this.UserId
-            };
-            await SendConfirmation();
-        }
-    }
-
-    async Task SendConfirmation()
-    {
-        try
-        {
-            var apiResponse = await ((IdentityAuthenticationStateProvider)authStateProvider).ConfirmEmail(confirmEmailViewModel);
-
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
-
-                navigationManager.NavigateTo("/account/login");
-            }
-            else
-                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error);
-        }
-        catch (Exception ex)
-        {
-            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["EmailVerificationFailed"]);
-        }
-    }
 }

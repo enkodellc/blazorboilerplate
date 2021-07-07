@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
+    <ProjectReference Include="..\..\BlazorBoilerplate.UI.Base\BlazorBoilerplate.UI.Base.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

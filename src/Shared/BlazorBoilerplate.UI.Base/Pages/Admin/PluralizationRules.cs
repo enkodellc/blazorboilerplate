@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
+namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
     public class PluralizationRulesPage : ComponentBase
     {
@@ -38,7 +38,7 @@ namespace BlazorBoilerplate.Theme.Material.Admin.Pages.Admin
 
                 LocalizationCultures.Clear();
 
-                LocalizationCultures.AddRange(BlazorBoilerplate.Shared.Localizer.Settings.SupportedCultures
+                LocalizationCultures.AddRange(Shared.Localizer.Settings.SupportedCultures
                     .Where(i => !PluralFormRules.Any(l => l.Language == i)));
 
                 viewNotifier.Show(L["One item found", Plural.From("{0} items found", PluralFormRules.Count)], ViewNotifierType.Success, L["Operation Successful"]);

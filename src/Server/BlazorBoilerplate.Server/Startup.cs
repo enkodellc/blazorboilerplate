@@ -225,7 +225,7 @@ namespace BlazorBoilerplate.Server
                             var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration["HostingOnAzure:AzureKeyVault:KeyVaultUri"]), credential: new DefaultAzureCredential());
                             var secretClient = new SecretClient(vaultUri: new Uri(Configuration["HostingOnAzure:AzureKeyVault:KeyVaultUri"]), credential: new DefaultAzureCredential());
                             KeyVaultCertificateWithPolicy certificateWithPolicy = certificateClient.GetCertificateAsync(Configuration["HostingOnAzure:AzureKeyVault:CertificateName"]).GetAwaiter().GetResult(); // retrieves latest version of certificate
-                            KeyVaultSecretIdentifier secretIdentifier = new KeyVaultSecretIdentifier(certificateWithPolicy.SecretId);
+                            KeyVaultSecretIdentifier secretIdentifier = new(certificateWithPolicy.SecretId);
                             KeyVaultSecret secret = secretClient.GetSecretAsync(secretIdentifier.Name, secretIdentifier.Version).GetAwaiter().GetResult();
                             byte[] privateKeyBytes = Convert.FromBase64String(secret.Value);
 

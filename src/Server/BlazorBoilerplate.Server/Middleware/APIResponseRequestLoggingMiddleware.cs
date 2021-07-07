@@ -33,7 +33,7 @@ namespace BlazorBoilerplate.Server.Middleware
         private IServiceScopeFactory _scopeFactory;
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
         private readonly bool _enableAPILogging;
-        private List<string> _ignorePaths;
+        private readonly List<string> _ignorePaths;
 
         public APIResponseRequestLoggingMiddleware(RequestDelegate next,
             IConfiguration configuration,
@@ -64,76 +64,74 @@ namespace BlazorBoilerplate.Server.Middleware
                     var formattedRequest = await FormatRequest(request);
                     var originalBodyStream = httpContext.Response.Body;
 
-                    using (var responseBody = new MemoryStream())
+                    using var responseBody = new MemoryStream();
+                    try
                     {
-                        try
+                        string responseBodyContent = null;
+
+                        var response = httpContext.Response;
+
+                        if (new string[] { "/api/localization", "/api/data", "/api/externalauth" }.Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
+                            await _next.Invoke(httpContext);
+                        else
                         {
-                            string responseBodyContent = null;
+                            response.Body = responseBody;
 
-                            var response = httpContext.Response;
+                            await _next.Invoke(httpContext);
 
-                            if (new string[] { "/api/localization", "/api/data", "/api/externalauth" }.Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
-                                await _next.Invoke(httpContext);
+                            //wrap response in ApiResponse
+                            if (httpContext.Response.StatusCode == Status200OK)
+                            {
+                                responseBodyContent = await FormatResponse(response);
+                                await HandleSuccessRequestAsync(httpContext, responseBodyContent, Status200OK);
+                            }
                             else
-                            {
-                                response.Body = responseBody;
-
-                                await _next.Invoke(httpContext);
-
-                                //wrap response in ApiResponse
-                                if (httpContext.Response.StatusCode == Status200OK)
-                                {
-                                    responseBodyContent = await FormatResponse(response);
-                                    await HandleSuccessRequestAsync(httpContext, responseBodyContent, Status200OK);
-                                }
-                                else
-                                    await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
-                            }
-
-
-                            stopWatch.Stop();
-
-                            #region Log Request / Response
-                            //Search the Ignore paths from appsettings to ignore the loggin of certian api paths
-                            if (_enableAPILogging && _ignorePaths.All(e => !request.Path.StartsWithSegments(new PathString(e.ToLower()))))
-                            {
-                                try
-                                {
-                                    await responseBody.CopyToAsync(originalBodyStream);
-
-                                    //User id = "sub" y default
-                                    ApplicationUser user = httpContext.User.Identity.IsAuthenticated
-                                            ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value)
-                                            : null;
-
-                                    await SafeLog(requestTime,
-                                        stopWatch.ElapsedMilliseconds,
-                                        response.StatusCode,
-                                        request.Method,
-                                        request.Path,
-                                        request.QueryString.ToString(),
-                                        formattedRequest,
-                                        responseBodyContent,
-                                        httpContext.Connection.RemoteIpAddress.ToString(),
-                                        user);
-                                }
-                                catch (Exception ex)
-                                {
-                                    _logger.LogWarning("An Inner Middleware exception occurred on SafeLog: " + ex.Message);
-                                }
-                            }
-                            #endregion
+                                await HandleNotSuccessRequestAsync(httpContext, httpContext.Response.StatusCode);
                         }
-                        catch (Exception ex)
+
+
+                        stopWatch.Stop();
+
+                        #region Log Request / Response
+                        //Search the Ignore paths from appsettings to ignore the loggin of certian api paths
+                        if (_enableAPILogging && _ignorePaths.All(e => !request.Path.StartsWithSegments(new PathString(e.ToLower()))))
                         {
-                            _logger.LogWarning("An Inner Middleware exception occurred: " + ex.Message);
-                            await HandleExceptionAsync(httpContext, ex);
+                            try
+                            {
+                                await responseBody.CopyToAsync(originalBodyStream);
+
+                                //User id = "sub" y default
+                                ApplicationUser user = httpContext.User.Identity.IsAuthenticated
+                                        ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value)
+                                        : null;
+
+                                await SafeLog(requestTime,
+                                    stopWatch.ElapsedMilliseconds,
+                                    response.StatusCode,
+                                    request.Method,
+                                    request.Path,
+                                    request.QueryString.ToString(),
+                                    formattedRequest,
+                                    responseBodyContent,
+                                    httpContext.Connection.RemoteIpAddress.ToString(),
+                                    user);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogWarning("An Inner Middleware exception occurred on SafeLog: " + ex.Message);
+                            }
                         }
-                        finally
-                        {
-                            responseBody.Seek(0, SeekOrigin.Begin);
-                            await responseBody.CopyToAsync(originalBodyStream);
-                        }
+                        #endregion
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning("An Inner Middleware exception occurred: " + ex.Message);
+                        await HandleExceptionAsync(httpContext, ex);
+                    }
+                    finally
+                    {
+                        responseBody.Seek(0, SeekOrigin.Begin);
+                        await responseBody.CopyToAsync(originalBodyStream);
                     }
                 }
             }
@@ -153,7 +151,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
         private Task HandleNotSuccessRequestAsync(HttpContext httpContext, int code)
         {
-            ApiResponse apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(code));
+            ApiResponse apiResponse = new(code, ResponseMessage.GetDescription(code));
             httpContext.Response.StatusCode = code;
 
             return RewriteResponseAsApiResponse(httpContext, apiResponse);
@@ -161,7 +159,6 @@ namespace BlazorBoilerplate.Server.Middleware
 
         private Task HandleSuccessRequestAsync(HttpContext httpContext, object body, int code)
         {
-            string jsonString = string.Empty;
             var bodyText = !body.ToString().IsValidJson() ? ConvertToJSONString(body) : body.ToString();
 
             ApiResponse apiResponse = null;
@@ -191,7 +188,7 @@ namespace BlazorBoilerplate.Server.Middleware
             return RewriteResponseAsApiResponse(httpContext, apiResponse);
         }
 
-        private async Task<string> FormatRequest(HttpRequest request)
+        private static async Task<string> FormatRequest(HttpRequest request)
         {
             request.EnableBuffering();
 
@@ -203,7 +200,7 @@ namespace BlazorBoilerplate.Server.Middleware
             return $"{request.Method} {request.Scheme} {request.Host}{request.Path} {request.QueryString} {bodyAsText}";
         }
 
-        private async Task<string> FormatResponse(HttpResponse response)
+        private static async Task<string> FormatResponse(HttpResponse response)
         {
             response.Body.Seek(0, SeekOrigin.Begin);
             var plainBodyText = await new StreamReader(response.Body).ReadToEndAsync();
@@ -223,17 +220,17 @@ namespace BlazorBoilerplate.Server.Middleware
         //    }
         //}
 
-        private string ConvertToJSONString(object rawJSON)
+        private static string ConvertToJSONString(object rawJSON)
         {
             return JsonConvert.SerializeObject(rawJSON, JSONSettings());
         }
 
-        private bool IsSwagger(HttpContext context)
+        private static bool IsSwagger(HttpContext context)
         {
             return context.Request.Path.StartsWithSegments("/swagger");
         }
 
-        private JsonSerializerSettings JSONSettings()
+        private static JsonSerializerSettings JSONSettings()
         {
             return new JsonSerializerSettings
             {
@@ -273,26 +270,24 @@ namespace BlazorBoilerplate.Server.Middleware
                 queryString = $"(Truncated to 200 chars) {queryString.Substring(0, 200)}";
 
 
-            using (var scope = _scopeFactory.CreateScope())
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            dbContext.ApiLogs.Add(new ApiLogItem
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                RequestTime = requestTime,
+                ResponseMillis = responseMillis,
+                StatusCode = statusCode,
+                Method = method,
+                Path = path,
+                QueryString = queryString,
+                RequestBody = requestBody,
+                ResponseBody = responseBody ?? String.Empty,
+                IPAddress = ipAddress,
+                ApplicationUserId = user?.Id
+            });
 
-                dbContext.ApiLogs.Add(new ApiLogItem
-                {
-                    RequestTime = requestTime,
-                    ResponseMillis = responseMillis,
-                    StatusCode = statusCode,
-                    Method = method,
-                    Path = path,
-                    QueryString = queryString,
-                    RequestBody = requestBody,
-                    ResponseBody = responseBody ?? String.Empty,
-                    IPAddress = ipAddress,
-                    ApplicationUserId = user?.Id
-                });
-
-                await dbContext.SaveChangesAsync();
-            }
+            await dbContext.SaveChangesAsync();
         }
 
         private Task ClearCacheHeaders(object state)

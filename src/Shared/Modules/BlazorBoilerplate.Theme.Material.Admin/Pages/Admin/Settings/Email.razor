@@ -1,6 +1,6 @@
-﻿@page "/admin/settings/email"
-@inherits SettingsBase
-@using BlazorBoilerplate.Shared.Dto.Email
+﻿@inherits EmailPage
+@page "/admin/settings/email"
+@layout AdminLayout
 
 <TopSection>
     <Breadcrumbs>
@@ -109,32 +109,4 @@ else
 }
 
 @code {
-    bool isSendEmailDialogOpen = false;
-    EmailDto email { get; set; } = new EmailDto();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadSettings("EmailConfiguration_");
-    }
-
-    async Task SendTestEmail()
-    {
-        try
-        {
-            ApiResponseDto apiResponse = await apiClient.SendTestEmail(email);
-
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
-            }
-            else
-            {
-                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
-            }
-        }
-        catch (Exception ex)
-        {
-            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["Operation Failed"]);
-        }
-    }
 }

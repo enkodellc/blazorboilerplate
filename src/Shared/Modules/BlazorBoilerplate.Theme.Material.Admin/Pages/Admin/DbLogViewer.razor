@@ -1,12 +1,8 @@
-﻿@page "/admin/dblog"
+﻿@inherits DbLogViewerPage
+@page "/admin/dblog"
 
 @attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
-@inject IApiClient apiClient
-@inject IViewNotifier viewNotifier
-@inject IStringLocalizer<Global> L
-
-@using System.Linq.Expressions;
 
 <TopSection>
     <Breadcrumbs>
@@ -61,51 +57,8 @@ else
             </td>
         </MatTableRow>
     </MatTable>
-    <MatPaginator PageSize="@pageSize" Page="@(async a=> await OnPage(a))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
+    <MatPaginator PageSize="@pageSize" Page="@(async e => await OnPage(e.PageIndex, e.PageSize))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
 }
 
 @code {
-    List<DbLog> dbLogItems;
-    string[] DebugLevels = { string.Empty, "Debug", "Information", "Warning", "Error" };
-    string DebugLevel = string.Empty;
-    private int pageSize { get; set; } = 10;
-    private int pageIndex { get; set; } = 0;
-    private int totalItemsCount { get; set; } = 0;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
-    }
-
-    async Task OnPage(MatPaginatorPageEvent e)
-    {
-        pageSize = e.PageSize;
-        pageIndex = e.PageIndex;
-
-        await LoadData(DebugLevel);
-    }
-
-    protected async Task LoadData(string debugLevel = "")
-    {
-        try
-        {
-            DebugLevel = debugLevel;
-            Expression<Func<DbLog, bool>> predicate = null;
-
-            if (debugLevel != string.Empty)
-                predicate = (i => i.Level == debugLevel);
-
-            var result = await apiClient.GetLogs(predicate, pageSize, pageIndex * pageSize);
-
-            dbLogItems = new List<DbLog>(result);
-            totalItemsCount = (int)result.InlineCount.Value;
-            viewNotifier.Show(L["One item found", Plural.From("{0} items found", totalItemsCount)], ViewNotifierType.Success, L["Operation Successful"]);
-        }
-        catch (Exception ex)
-        {
-            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
-        }
-
-        await InvokeAsync(StateHasChanged);
-    }
 }
