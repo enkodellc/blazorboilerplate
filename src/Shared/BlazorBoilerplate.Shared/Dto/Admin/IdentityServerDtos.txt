@@ -1,0 +1,12 @@
+﻿
+
+//-> ApiResourceDto.cs
+
+//-> ClientDto.cs
+
+//-> IdentityResourceDto.cs
+// Generated helper templates
+// Generated items
+// BlazorBoilerplate.Shared\Dto\Admin\ApiResourceDto.cs
+// BlazorBoilerplate.Shared\Dto\Admin\IdentityResourceDto.cs
+// BlazorBoilerplate.Shared\Dto\Admin\ClientDto.cs

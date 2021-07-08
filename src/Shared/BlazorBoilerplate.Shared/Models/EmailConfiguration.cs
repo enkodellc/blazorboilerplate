@@ -1,4 +1,6 @@
-﻿namespace BlazorBoilerplate.Shared.Models
+﻿using System.Security.Authentication;
+
+namespace BlazorBoilerplate.Shared.Models
 {
     public class EmailConfiguration
     {
@@ -7,6 +9,9 @@
         public string SmtpUsername { get; set; }
         public string SmtpPassword { get; set; }
         public bool SmtpUseSSL { get; set; }
+#pragma warning disable CS0618 // Type or member is obsolete
+        public SslProtocols SmtpSslProtocol { get; set; } = SslProtocols.Default;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         public string FromName { get; set; }
         public string FromAddress { get; set; }

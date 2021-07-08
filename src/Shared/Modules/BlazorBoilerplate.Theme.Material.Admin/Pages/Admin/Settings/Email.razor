@@ -46,6 +46,10 @@ else
             <div class="form-group">
                 <MatSlideToggle @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool" Label="SSL"></MatSlideToggle>
             </div>
+            @if (@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool)
+            {<div class="form-group">
+                <MatSelectItem @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpSslProtocol].Value" Items="@sslProtocols" Label="SSL Protocol"></MatSelectItem>
+            </div>}
             <MatDivider></MatDivider>
             <MatH5>@L["IncomingEmail"]</MatH5>
             <MatH5>POP3</MatH5>

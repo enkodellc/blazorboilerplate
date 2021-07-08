@@ -1,6 +1,10 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin.Settings
@@ -9,6 +13,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin.Settings
     {
         protected bool isSendEmailDialogOpen = false;
         protected EmailDto email { get; set; } = new();
+        protected string[] sslProtocols = ((SslProtocols[])Enum.GetValues(typeof(SslProtocols))).Select(i => i.ToString()).ToArray();
 
         protected override async Task OnInitializedAsync()
         {

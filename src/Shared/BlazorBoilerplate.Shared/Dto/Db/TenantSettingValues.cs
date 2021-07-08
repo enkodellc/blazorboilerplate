@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Constants;
 using System;
 using System.Collections.Generic;
+using System.Security.Authentication;
 
 namespace BlazorBoilerplate.Shared.Dto.Db
 {
@@ -12,7 +13,7 @@ namespace BlazorBoilerplate.Shared.Dto.Db
     public static class TenantSettingValues
     {
         public static readonly Dictionary<SettingKey, Tuple<string, SettingType>> Default =
-                new Dictionary<SettingKey, Tuple<string, SettingType>>()
+                new()
                 {
                     { SettingKey.MainConfiguration_Runtime,         new Tuple<string, SettingType>(BlazorRuntime.Server.ToString(), SettingType.String) },
 
@@ -21,6 +22,8 @@ namespace BlazorBoilerplate.Shared.Dto.Db
                     { SettingKey.EmailConfiguration_SmtpUsername,   new Tuple<string, SettingType>("email@domain.com", SettingType.String) },
                     { SettingKey.EmailConfiguration_SmtpPassword,   new Tuple<string, SettingType>("PASSWORD", SettingType.String) },
                     { SettingKey.EmailConfiguration_SmtpUseSSL,     new Tuple<string, SettingType>("true", SettingType.Boolean) },
+                    { SettingKey.EmailConfiguration_SmtpSslProtocol,new Tuple<string, SettingType>(SslProtocols.Tls13.ToString(), SettingType.String) },
+
                     { SettingKey.EmailConfiguration_FromName,       new Tuple<string, SettingType>("BlazorBoilerplate Team", SettingType.String) },
                     { SettingKey.EmailConfiguration_FromAddress,    new Tuple<string, SettingType>("email@domain.com", SettingType.String) },
                     { SettingKey.EmailConfiguration_ReplyToAddress, new Tuple<string, SettingType>("email@domain.com", SettingType.String) },
@@ -29,6 +32,7 @@ namespace BlazorBoilerplate.Shared.Dto.Db
                     { SettingKey.EmailConfiguration_PopUsername,    new Tuple<string, SettingType>("email@domain.com", SettingType.String) },
                     { SettingKey.EmailConfiguration_PopPassword,    new Tuple<string, SettingType>("PASSWORD", SettingType.String) },
                     { SettingKey.EmailConfiguration_PopUseSSL,      new Tuple<string, SettingType>("true", SettingType.Boolean) },
+
                     { SettingKey.EmailConfiguration_ImapServer,     new Tuple<string, SettingType>("imap.gmail.com", SettingType.String) },
                     { SettingKey.EmailConfiguration_ImapPort,       new Tuple<string, SettingType>("993", SettingType.Int) },
                     { SettingKey.EmailConfiguration_ImapUsername,   new Tuple<string, SettingType>("email@domain.com", SettingType.String) },

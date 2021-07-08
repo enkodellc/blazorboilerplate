@@ -34,11 +34,11 @@ namespace BlazorBoilerplate.Shared.Dto.Admin
             get => JoinLines(UserClaims);
             set => UserClaims = SplitLines(value);
         }
-        private ICollection<string> SplitLines(string value)
+        private static ICollection<string> SplitLines(string value)
         {
             return Regex.Split(value, @"\s+|;|,").Where(i => i != string.Empty).ToArray();
         }
-        private string JoinLines(IEnumerable<string> value)
+        private static string JoinLines(IEnumerable<string> value)
         {
             return string.Join('\n', value);
         }

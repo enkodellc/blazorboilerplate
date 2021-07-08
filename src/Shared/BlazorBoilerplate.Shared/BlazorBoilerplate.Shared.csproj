@@ -26,17 +26,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Dto\Admin\ResourceDtoCustomUserClaims.tt">
-      <LastGenOutput>ResourceDtoCustomUserClaims.txt</LastGenOutput>
+      <LastGenOutput>IdentityServerDtos.txt</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="Dto\Admin\IdentityServerDtos.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ResourceDtoCustomUserClaims.txt</LastGenOutput>
+      <LastGenOutput>IdentityServerDtos.txt</LastGenOutput>
     </None>
-    <None Update="Dto\Admin\ResourceDtoCustomUserClaims.txt">
+    <None Update="Dto\Admin\IdentityServerDtos.txt">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>ResourceDtoCustomUserClaims.tt</DependentUpon>
+      <DependentUpon>IdentityServerDtos.tt</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>

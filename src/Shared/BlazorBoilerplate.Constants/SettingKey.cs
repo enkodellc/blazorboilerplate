@@ -10,6 +10,7 @@
         EmailConfiguration_SmtpUsername,
         EmailConfiguration_SmtpPassword,
         EmailConfiguration_SmtpUseSSL,
+        EmailConfiguration_SmtpSslProtocol,
 
         EmailConfiguration_FromName,
         EmailConfiguration_FromAddress,
