@@ -3,6 +3,7 @@ using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.Shared.Models;
 using Humanizer;
 using IdentityModel;
 using IdentityServer4.Models;
@@ -63,20 +64,13 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
         #region OpenUpsertApiResourceDialog
 
-        protected class Selection
-        {
-            public bool IsSelected { get; set; }
-            public string Name { get; set; }
-            public string Value { get; set; }
-        };
-
         protected bool isUpsertApiResourceDialogOpen = false;
         bool isInsertOperation;
 
         protected string labelUpsertDialogTitle;
         protected string labelUpsertDialogOkButton;
-        protected List<Selection> jwtClaimSelections = new();
-        protected List<Selection> tokenSigningAlgorithmsSelections = new();
+        protected List<SelectItem<string>> jwtClaimSelections = new();
+        protected List<SelectItem<string>> tokenSigningAlgorithmsSelections = new();
 
         //See https://identityserver4.readthedocs.io/en/latest/topics/crypto.html
         readonly string[] signingAlgorithms = new string[] { "RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" };
@@ -108,25 +102,23 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                 foreach (var info in typeof(JwtClaimTypes).GetFields().Where(x => x.IsStatic && x.IsLiteral))
                 {
-                    jwtClaimSelections.Add(new Selection
+                    jwtClaimSelections.Add(new SelectItem<string>
                     {
-                        Name = $"{info.Name.Humanize(LetterCasing.Title)} ({info.GetValue(info)})",
-                        Value = info.GetValue(info).ToString(),
-                        IsSelected = currentApiResource.UserClaims.Contains(info.GetValue(info))
+                        DisplayValue = $"{info.Name.Humanize(LetterCasing.Title)} ({info.GetValue(info)})",
+                        Id = info.GetValue(info).ToString(),
+                        Selected = currentApiResource.UserClaims.Contains(info.GetValue(info))
                     });
                 }
 
                 tokenSigningAlgorithmsSelections.Clear();
 
                 foreach (var sa in signingAlgorithms)
-                {
-                    tokenSigningAlgorithmsSelections.Add(new Selection
+                    tokenSigningAlgorithmsSelections.Add(new SelectItem<string>
                     {
-                        Name = sa,
-                        Value = sa,
-                        IsSelected = currentApiResource.AllowedAccessTokenSigningAlgorithms.Contains(sa)
+                        DisplayValue = sa,
+                        Id = sa,
+                        Selected = currentApiResource.AllowedAccessTokenSigningAlgorithms.Contains(sa)
                     });
-                }
 
                 currentApiResource.CustomUserClaims = currentApiResource.GetCustomUserClaims().ToList();
 
@@ -167,8 +159,8 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                 if (isUpsertApiResourceDialogOpen)
                 {
-                    currentApiResource.UserClaims = jwtClaimSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
-                    currentApiResource.AllowedAccessTokenSigningAlgorithms = tokenSigningAlgorithmsSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
+                    currentApiResource.UserClaims = jwtClaimSelections.Where(i => i.Selected).Select(i => i.Id).ToList();
+                    currentApiResource.AllowedAccessTokenSigningAlgorithms = tokenSigningAlgorithmsSelections.Where(i => i.Selected).Select(i => i.Id).ToList();
                     ((List<string>)currentApiResource.UserClaims).AddRange(currentApiResource.CustomUserClaims);
                 }
 

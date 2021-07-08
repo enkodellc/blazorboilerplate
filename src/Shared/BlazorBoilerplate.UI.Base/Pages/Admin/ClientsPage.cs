@@ -3,6 +3,7 @@ using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.Shared.Models;
 using Humanizer;
 using IdentityModel;
 using IdentityServer4.Models;
@@ -65,24 +66,16 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
         #endregion
 
         #region OpenUpsertClientDialog
-
-        protected class Selection
-        {
-            public bool IsSelected { get; set; }
-            public string Name { get; set; }
-            public string Value { get; set; }
-        };
-
         protected bool isUpsertClientDialogOpen = false;
         bool isInsertOperation;
 
         protected string labelUpsertDialogTitle;
         protected string labelUpsertDialogOkButton;
 
-        protected List<Selection> grantTypeSelections = new();
-        protected List<Selection> standardScopeSelections = new();
-        protected List<Selection> apiScopeSelections = new();
-        protected List<Selection> tokenSigningAlgorithmsSelections = new();
+        protected List<SelectItem<string>> grantTypeSelections = new();
+        protected List<SelectItem<string>> standardScopeSelections = new();
+        protected List<SelectItem<string>> apiScopeSelections = new();
+        protected List<SelectItem<string>> tokenSigningAlgorithmsSelections = new();
 
         //See https://identityserver4.readthedocs.io/en/latest/topics/crypto.html
         readonly string[] signingAlgorithms = new string[] { "RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" };
@@ -98,11 +91,11 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                     foreach (var item in t.Result.Result)
                     {
-                        standardScopeSelections.Add(new Selection
+                        standardScopeSelections.Add(new SelectItem<string>
                         {
-                            Name = $"{item.DisplayName} ({item.Name})",
-                            Value = item.Name,
-                            IsSelected = currentClient.AllowedScopes.Contains(item.Name)
+                            DisplayValue = $"{item.DisplayName} ({item.Name})",
+                            Id = item.Name,
+                            Selected = currentClient.AllowedScopes.Contains(item.Name)
                         });
                     }
                 });
@@ -112,11 +105,11 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                     foreach (var item in t.Result.Result)
                     {
-                        apiScopeSelections.Add(new Selection
+                        apiScopeSelections.Add(new SelectItem<string>
                         {
-                            Name = $"{item.DisplayName} ({item.Name})",
-                            Value = item.Name,
-                            IsSelected = currentClient.AllowedScopes.Contains(item.Name)
+                            DisplayValue = $"{item.DisplayName} ({item.Name})",
+                            Id = item.Name,
+                            Selected = currentClient.AllowedScopes.Contains(item.Name)
                         });
                     }
                 });
@@ -143,25 +136,23 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                 foreach (var info in typeof(GrantType).GetFields().Where(x => x.IsStatic && x.IsLiteral))
                 {
-                    grantTypeSelections.Add(new Selection
+                    grantTypeSelections.Add(new SelectItem<string>
                     {
-                        Name = $"{info.Name.Humanize(LetterCasing.Title)} ({info.GetValue(info)})",
-                        Value = info.GetValue(info).ToString(),
-                        IsSelected = currentClient.AllowedGrantTypes.Contains(info.GetValue(info))
+                        DisplayValue = $"{info.Name.Humanize(LetterCasing.Title)} ({info.GetValue(info)})",
+                        Id = info.GetValue(info).ToString(),
+                        Selected = currentClient.AllowedGrantTypes.Contains(info.GetValue(info))
                     });
                 }
 
                 tokenSigningAlgorithmsSelections.Clear();
 
                 foreach (var sa in signingAlgorithms)
-                {
-                    tokenSigningAlgorithmsSelections.Add(new Selection
+                    tokenSigningAlgorithmsSelections.Add(new SelectItem<string>
                     {
-                        Name = sa,
-                        Value = sa,
-                        IsSelected = currentClient.AllowedIdentityTokenSigningAlgorithms.Contains(sa)
+                        DisplayValue = sa,
+                        Id = sa,
+                        Selected = currentClient.AllowedIdentityTokenSigningAlgorithms.Contains(sa)
                     });
-                }
 
                 await Task.WhenAll(getIdentityResourcesTask, getApiResourcesTask);
 
@@ -202,10 +193,10 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                 if (isUpsertClientDialogOpen)
                 {
-                    currentClient.AllowedGrantTypes = grantTypeSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
-                    currentClient.AllowedIdentityTokenSigningAlgorithms = tokenSigningAlgorithmsSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
-                    currentClient.AllowedScopes = standardScopeSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
-                    ((List<string>)currentClient.AllowedScopes).AddRange(apiScopeSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList());
+                    currentClient.AllowedGrantTypes = grantTypeSelections.Where(i => i.Selected).Select(i => i.Id).ToList();
+                    currentClient.AllowedIdentityTokenSigningAlgorithms = tokenSigningAlgorithmsSelections.Where(i => i.Selected).Select(i => i.Id).ToList();
+                    currentClient.AllowedScopes = standardScopeSelections.Where(i => i.Selected).Select(i => i.Id).ToList();
+                    ((List<string>)currentClient.AllowedScopes).AddRange(apiScopeSelections.Where(i => i.Selected).Select(i => i.Id).ToList());
                 }
 
                 ApiResponseDto apiResponse;

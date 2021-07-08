@@ -62,8 +62,8 @@ else
                 <th>@L["Allow"]</th>
             </MatTableHeader>
             <MatTableRow>
-                <td>@context.Name</td>
-                <td><MatCheckbox TValue="bool" @bind-Value="@context.IsSelected"></MatCheckbox></td>
+                <td>@context.DisplayValue</td>
+                <td><MatCheckbox TValue="bool" @bind-Value="@context.Selected"></MatCheckbox></td>
             </MatTableRow>
         </MatTable>
     </MatDialogContent>

@@ -67,14 +67,6 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
         #endregion
 
         #region OpenUpsertTenantDialog
-
-        protected class Selection
-        {
-            public bool IsSelected { get; set; }
-            public string Name { get; set; }
-            public string Value { get; set; }
-        };
-
         protected bool isUpsertTenantDialogOpen = false;
         bool isInsertOperation;
 

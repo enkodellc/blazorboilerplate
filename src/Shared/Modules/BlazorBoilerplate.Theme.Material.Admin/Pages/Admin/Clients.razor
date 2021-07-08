@@ -126,8 +126,8 @@ else
                             <th>Allow</th>
                         </MatTableHeader>
                         <MatTableRow Context="GrantTypeRow">
-                            <td>@GrantTypeRow.Name</td>
-                            <td><MatCheckbox TValue="bool" @bind-Value="@GrantTypeRow.IsSelected"></MatCheckbox></td>
+                            <td>@GrantTypeRow.DisplayValue</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@GrantTypeRow.Selected"></MatCheckbox></td>
                         </MatTableRow>
                     </MatTable>
                     <MatSlideToggle @bind-Value="@currentClient.RequirePkce" Label="Proof Key for Code Exchange (PKCE)"></MatSlideToggle>
@@ -139,8 +139,8 @@ else
                             <th>Allow</th>
                         </MatTableHeader>
                         <MatTableRow Context="StandardScopeRow">
-                            <td>@StandardScopeRow.Name</td>
-                            <td><MatCheckbox TValue="bool" @bind-Value="@StandardScopeRow.IsSelected"></MatCheckbox></td>
+                            <td>@StandardScopeRow.DisplayValue</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@StandardScopeRow.Selected"></MatCheckbox></td>
                         </MatTableRow>
                     </MatTable>
                 </MatTab>
@@ -151,8 +151,8 @@ else
                             <th>Allow</th>
                         </MatTableHeader>
                         <MatTableRow Context="ApiScopeRow">
-                            <td>@ApiScopeRow.Name</td>
-                            <td><MatCheckbox TValue="bool" @bind-Value="@ApiScopeRow.IsSelected"></MatCheckbox></td>
+                            <td>@ApiScopeRow.DisplayValue</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@ApiScopeRow.Selected"></MatCheckbox></td>
                         </MatTableRow>
                     </MatTable>
                 </MatTab>
@@ -236,8 +236,8 @@ else
                             <th>Allow</th>
                         </MatTableHeader>
                         <MatTableRow Context="TokenSigningAlgorithmsRow">
-                            <td>@TokenSigningAlgorithmsRow.Name</td>
-                            <td><MatCheckbox TValue="bool" @bind-Value="@TokenSigningAlgorithmsRow.IsSelected"></MatCheckbox></td>
+                            <td>@TokenSigningAlgorithmsRow.DisplayValue</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@TokenSigningAlgorithmsRow.Selected"></MatCheckbox></td>
                         </MatTableRow>
                     </MatTable>
                 </MatTab>

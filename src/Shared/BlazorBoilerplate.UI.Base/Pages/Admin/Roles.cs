@@ -3,6 +3,7 @@ using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using System;
@@ -60,16 +61,10 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
         protected bool isUpsertRoleDialogOpen = false;
         protected bool isInsertOperation;
-        protected List<PermissionSelection> permissionsSelections = new();
+        protected List<SelectItem<string>> permissionsSelections = new();
 
         protected string labelUpsertDialogTitle;
         protected string labelUpsertDialogOkButton;
-
-        public class PermissionSelection
-        {
-            public bool IsSelected { get; set; }
-            public string Name { get; set; }
-        };
 
         protected async Task OpenUpsertRoleDialog(string roleName = "")
         {
@@ -104,10 +99,11 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
 
                 foreach (var name in response.Result)
-                    permissionsSelections.Add(new PermissionSelection
+                    permissionsSelections.Add(new SelectItem<string>
                     {
-                        Name = name,
-                        IsSelected = role != null && role.Permissions.Contains(name)
+                        Id = name,
+                        DisplayValue = name,
+                        Selected = role != null && role.Permissions.Contains(name)
                     });
 
                 isUpsertRoleDialogOpen = true;
@@ -131,7 +127,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
                 RoleDto request = new()
                 {
                     Name = currentRoleName,
-                    Permissions = permissionsSelections.Where(i => i.IsSelected).Select(i => i.Name).ToList()
+                    Permissions = permissionsSelections.Where(i => i.Selected).Select(i => i.Id).ToList()
                 };
 
                 ApiResponseDto apiResponse;

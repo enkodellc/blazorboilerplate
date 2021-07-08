@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
 using Breeze.Sharp;
@@ -41,17 +42,10 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
         protected bool disableChangePasswordButton = false;
 
         protected List<ApplicationUser> users { get; set; }
-        protected List<RoleSelection> roleSelections { get; set; } = new List<RoleSelection>();
+        protected List<SelectItem<Guid>> roleSelections { get; set; } = new();
         protected ApplicationUser currentUser { get; set; } = new ApplicationUser();
         protected RegisterViewModel newUserViewModel { get; set; } = new RegisterViewModel();
         protected ChangePasswordViewModel changePasswordViewModel { get; set; } = new ChangePasswordViewModel();
-
-        protected class RoleSelection
-        {
-            public Guid RoleId { get; set; }
-            public bool IsSelected { get; set; }
-            public string Name { get; set; }
-        };
 
         protected override async Task OnInitializedAsync()
         {
@@ -90,11 +84,11 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
             {
                 var result = await apiClient.GetRoles();
 
-                roleSelections = result.Select(i => new RoleSelection
+                roleSelections = result.Select(i => new SelectItem<Guid>
                 {
-                    RoleId = i.Id,
-                    Name = i.Name,
-                    IsSelected = false
+                    Id = i.Id,
+                    DisplayValue = i.Name,
+                    Selected = false
                 }).ToList();
 
             }
@@ -109,7 +103,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
             currentUser = user;
 
             foreach (var role in roleSelections)
-                role.IsSelected = user.UserRoles.Any(i => i.RoleId == role.RoleId);
+                role.Selected = user.UserRoles.Any(i => i.RoleId == role.Id);
 
             editDialogOpen = true;
         }
@@ -129,10 +123,10 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
             deleteUserDialogOpen = true;
         }
 
-        protected void UpdateUserRole(RoleSelection roleSelectionItem)
+        protected void UpdateUserRole(SelectItem<Guid> roleSelectionItem)
         {
-            if (currentUser.UserName.ToLower() != DefaultUserNames.Administrator || roleSelectionItem.Name != DefaultRoleNames.Administrator)
-                roleSelectionItem.IsSelected = !roleSelectionItem.IsSelected;
+            if (currentUser.UserName.ToLower() != DefaultUserNames.Administrator || roleSelectionItem.DisplayValue != DefaultRoleNames.Administrator)
+                roleSelectionItem.Selected = !roleSelectionItem.Selected;
         }
 
         protected void CancelChanges()
@@ -153,7 +147,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
                     FirstName = currentUser.FirstName,
                     LastName = currentUser.LastName,
                     Email = currentUser.Email,
-                    Roles = roleSelections.Where(i => i.IsSelected).Select(i => i.Name).ToList()
+                    Roles = roleSelections.Where(i => i.Selected).Select(i => i.DisplayValue).ToList()
                 });
 
                 if (apiResponse.IsSuccessStatusCode)

@@ -3,6 +3,7 @@ using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.Shared.Models;
 using Humanizer;
 using IdentityModel;
 using IdentityServer4.Models;
@@ -62,22 +63,12 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
         #endregion
 
         #region OpenUpsertIdentityResourceDialog
-
-        protected class Selection
-        {
-            public bool IsSelected { get; set; }
-            public string Name { get; set; }
-            public string Value { get; set; }
-        };
-
         protected bool isUpsertIdentityResourceDialogOpen = false;
         bool isInsertOperation;
 
         protected string labelUpsertDialogTitle;
         protected string labelUpsertDialogOkButton;
-        protected List<Selection> jwtClaimSelections = new();
-
-
+        protected List<SelectItem<string>> jwtClaimSelections = new();
         protected void OpenUpsertIdentityResourceDialog(IdentityResourceDto identityResource = null)
         {
             try
@@ -104,11 +95,11 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                 foreach (var info in typeof(JwtClaimTypes).GetFields().Where(x => x.IsStatic && x.IsLiteral))
                 {
-                    jwtClaimSelections.Add(new Selection
+                    jwtClaimSelections.Add(new SelectItem<string>
                     {
-                        Name = $"{info.Name.Humanize(LetterCasing.Title)} ({info.GetValue(info)})",
-                        Value = info.GetValue(info).ToString(),
-                        IsSelected = currentIdentityResource.UserClaims.Contains(info.GetValue(info))
+                        DisplayValue = $"{info.Name.Humanize(LetterCasing.Title)} ({info.GetValue(info)})",
+                        Id = info.GetValue(info).ToString(),
+                        Selected = currentIdentityResource.UserClaims.Contains(info.GetValue(info))
                     });
                 }
 
@@ -151,7 +142,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                 if (isUpsertIdentityResourceDialogOpen)
                 {
-                    currentIdentityResource.UserClaims = jwtClaimSelections.Where(i => i.IsSelected).Select(i => i.Value).ToList();
+                    currentIdentityResource.UserClaims = jwtClaimSelections.Where(i => i.Selected).Select(i => i.Id).ToList();
                     ((List<string>)currentIdentityResource.UserClaims).AddRange(currentIdentityResource.CustomUserClaims);
                 }
 

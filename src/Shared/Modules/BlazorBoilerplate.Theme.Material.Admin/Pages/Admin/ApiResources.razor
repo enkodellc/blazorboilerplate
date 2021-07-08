@@ -99,8 +99,8 @@ else
                             <th>Allow</th>
                         </MatTableHeader>
                         <MatTableRow Context="TokenSigningAlgorithmsRow">
-                            <td>@TokenSigningAlgorithmsRow.Name</td>
-                            <td><MatCheckbox TValue="bool" @bind-Value="@TokenSigningAlgorithmsRow.IsSelected"></MatCheckbox></td>
+                            <td>@TokenSigningAlgorithmsRow.DisplayValue</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@TokenSigningAlgorithmsRow.Selected"></MatCheckbox></td>
                         </MatTableRow>
                     </MatTable>
                 </MatTab>
@@ -136,8 +136,8 @@ else
                             <th>Required</th>
                         </MatTableHeader>
                         <MatTableRow Context="JwtClaimRow">
-                            <td>@JwtClaimRow.Name</td>
-                            <td><MatCheckbox TValue="bool" @bind-Value="@JwtClaimRow.IsSelected"></MatCheckbox></td>
+                            <td>@JwtClaimRow.DisplayValue</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@JwtClaimRow.Selected"></MatCheckbox></td>
                         </MatTableRow>
                     </MatTable>
                 </MatTab>

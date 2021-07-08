@@ -96,9 +96,9 @@ else
                     <MatTextField @bind-Value="@currentUser.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
                 </div>
                 <MatChipSet>
-                    @foreach (var role in roleSelections.OrderBy(x => x.Name))
+                    @foreach (var role in roleSelections.OrderBy(x => x.DisplayValue))
                     {
-                        <MatChip Label="@role.Name" LeadingIcon="@((role.IsSelected) ? "done" : "")" @onclick="@(()=>UpdateUserRole(role))" />
+                        <MatChip Label="@role.DisplayValue" LeadingIcon="@((role.Selected) ? "done" : "")" @onclick="@(()=>UpdateUserRole(role))" />
                     }
                 </MatChipSet>
             </fieldset>
