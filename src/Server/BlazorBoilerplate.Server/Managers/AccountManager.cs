@@ -136,7 +136,7 @@ namespace BlazorBoilerplate.Server.Managers
             var email = _emailFactory.BuildForgotPasswordEmail(user.UserName, callbackUrl, token);
             email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
 
-            var response = await _emailManager.SendEmailAsync(email);
+            var response = await _emailManager.QueueEmail(email, EmailType.Password);
 
             if (response.IsSuccessStatusCode)
                 _logger.LogInformation($"Reset Password Successful Email Sent: {user.Email}");
@@ -452,12 +452,13 @@ namespace BlazorBoilerplate.Server.Managers
             }
 
             var result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
+
             if (result.Succeeded)
             {
                 var email = _emailFactory.BuildPasswordResetEmail(user.UserName);
                 email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
 
-                var response = await _emailManager.SendEmailAsync(email);
+                var response = await _emailManager.QueueEmail(email, EmailType.Password);
 
                 if (response.IsSuccessStatusCode)
                     _logger.LogInformation($"Reset Password Successful Email to {user.Email}");
@@ -681,53 +682,48 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (_userManager.Options.SignIn.RequireConfirmedEmail)
             {
-                try
-                {
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", baseUrl, user.Id, token);
+                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", baseUrl, user.Id, token);
 
-                    var email = _emailFactory.BuildNewUserConfirmationEmail(user.FullName, user.UserName, callbackUrl);
-                    email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
+                var email = _emailFactory.BuildNewUserConfirmationEmail(user.FullName, user.UserName, callbackUrl);
+                email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
 
-                    _logger.LogInformation("New user created: {0}", user);
-                    await _emailManager.SendEmailAsync(email);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"New user email failed: {ex.GetBaseException().Message}");
-                }
+                _logger.LogInformation("New user created: {0}", user);
+                var response = await _emailManager.QueueEmail(email, EmailType.Confirmation);
+
+                if (!response.IsSuccessStatusCode)
+                    _logger.LogError($"New user email failed: {response.Message}");
 
                 return new ApiResponse(Status200OK, "Create User Success");
             }
-
-            try
+            else
             {
                 var email = _emailFactory.BuildNewUserEmail(user.FullName, user.UserName, user.Email, parameters.Password);
                 email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
 
                 _logger.LogInformation("New user created: {0}", user);
-                await _emailManager.SendEmailAsync(email);
+
+                var response = await _emailManager.SendEmail(email);
+
+                if (!response.IsSuccessStatusCode)
+                    _logger.LogError($"New user email failed: {response.Message}");
+
+                var userViewModel = new UserViewModel
+                {
+                    UserId = user.Id,
+                    IsAuthenticated = false,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+
+                if (defaultRoleExists)
+                    userViewModel.Roles = new List<string> { DefaultRoleNames.User };
+
+                return new ApiResponse(Status200OK, L["User {0} created", userViewModel.UserName], userViewModel);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"New user email failed: {ex.GetBaseException().Message}");
-            }
-
-            var userViewModel = new UserViewModel
-            {
-                UserId = user.Id,
-                IsAuthenticated = false,
-                UserName = user.UserName,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName
-            };
-
-            if (defaultRoleExists)
-                userViewModel.Roles = new List<string> { DefaultRoleNames.User };
-
-            return new ApiResponse(Status200OK, L["User {0} created", userViewModel.UserName], userViewModel);
         }
         public async Task<ApiResponse> Delete(string id)
         {
@@ -753,6 +749,7 @@ namespace BlazorBoilerplate.Server.Managers
             UserViewModel userViewModel = authenticatedUser != null && authenticatedUser.Identity.IsAuthenticated
                 ? new UserViewModel { UserName = authenticatedUser.Identity.Name, IsAuthenticated = true }
                 : LoggedOutUser;
+
             return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
         }
 
@@ -896,16 +893,12 @@ namespace BlazorBoilerplate.Server.Managers
 
             emailMessage.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
 
-            try
-            {
-                await _emailManager.SendEmailAsync(emailMessage);
+            var response = requireConfirmEmail ? await _emailManager.QueueEmail(emailMessage, EmailType.Confirmation) : await _emailManager.SendEmail(emailMessage);
 
+            if (response.IsSuccessStatusCode)
                 _logger.LogInformation($"New user email sent to {user.Email}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("New user email failed: Body: {0}, Error: {1}", emailMessage.Body, ex.GetBaseException().Message);
-            }
+            else
+                _logger.LogError("New user email failed: Body: {0}, Error: {1}", emailMessage.Body, response.Message);
 
             return user;
         }

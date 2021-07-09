@@ -83,7 +83,6 @@ namespace BlazorBoilerplate.Server
             _environment = env;
             _enableAPIDoc = configuration.GetSection("BlazorBoilerplate:Api:Doc:Enabled").Get<bool>();
         }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ILocalizationProvider, StorageLocalizationProvider>();
@@ -442,7 +441,6 @@ namespace BlazorBoilerplate.Server
 
             services.Configure<IdentityOptions>(options =>
             {
-                // Password settings
                 options.Password.RequireDigit = RequireDigit;
                 options.Password.RequiredLength = RequiredLength;
                 options.Password.RequireNonAlphanumeric = RequireNonAlphanumeric;
@@ -450,12 +448,10 @@ namespace BlazorBoilerplate.Server
                 options.Password.RequireLowercase = RequireLowercase;
                 //options.Password.RequiredUniqueChars = 6;
 
-                // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
                 options.Lockout.MaxFailedAccessAttempts = 10;
                 options.Lockout.AllowedForNewUsers = true;
 
-                // Require Confirmed Email User settings
                 if (Convert.ToBoolean(Configuration[$"{projectName}:RequireConfirmedEmail"] ?? "false"))
                 {
                     options.User.RequireUniqueEmail = true;
@@ -668,8 +664,6 @@ namespace BlazorBoilerplate.Server
                     Log.Logger.Debug($"\n\tService: {service.ServiceType.FullName}\n\tLifetime: {service.Lifetime}\n\tInstance: {service.ImplementationType?.FullName}");
             }
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRequestLocalization();
@@ -742,6 +736,8 @@ namespace BlazorBoilerplate.Server
                 // new SignalR endpoint routing setup
                 endpoints.MapHub<Hubs.ChatHub>("/chathub");
             });
+
+            Program.Sync.Release();
         }
 
 #pragma warning disable CS1998 

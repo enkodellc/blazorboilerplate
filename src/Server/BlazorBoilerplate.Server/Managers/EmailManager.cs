@@ -1,19 +1,24 @@
-﻿using BlazorBoilerplate.Infrastructure.Server;
+﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.Storage;
 using MailKit.Net.Imap;
 using MailKit.Net.Pop3;
 using MailKit.Net.Smtp;
 using MailKit.Search;
 using Microsoft.Extensions.Logging;
 using MimeKit;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -24,12 +29,20 @@ namespace BlazorBoilerplate.Server.Managers
     {
         private readonly EmailConfiguration _emailConfiguration;
         private readonly IEmailFactory _emailFactory;
+        private readonly ApplicationDbContext _dbContext;
         private readonly ILogger<EmailManager> _logger;
 
-        public EmailManager(ITenantSettings<EmailConfiguration> emailConfiguration, IEmailFactory emailFactory, ILogger<EmailManager> logger)
+        public static SemaphoreSlim QueueSync { get; private set; } = new SemaphoreSlim(0, 1);
+
+        public EmailManager(
+            ITenantSettings<EmailConfiguration> emailConfiguration,
+            IEmailFactory emailFactory,
+            ApplicationDbContext dbContext,
+            ILogger<EmailManager> logger)
         {
             _emailConfiguration = emailConfiguration.Value;
             _emailFactory = emailFactory;
+            _dbContext = dbContext;
             _logger = logger;
         }
 
@@ -39,7 +52,7 @@ namespace BlazorBoilerplate.Server.Managers
             EmailMessageDto email = _emailFactory.BuildTestEmail(parameters.ToName);
             email.ToAddresses.Add(new EmailAddressDto(parameters.ToName, parameters.ToAddress));
 
-            return await SendEmailAsync(email);
+            return parameters.Queued ? await QueueEmail(email, EmailType.Test) : await SendEmail(email);
         }
 
         public Task<ApiResponse> Receive()
@@ -130,17 +143,38 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, null, emails);
         }
 
-        public async Task<ApiResponse> SendEmailAsync(EmailMessageDto emailMessage)
+        public async Task<ApiResponse> QueueEmail(EmailMessageDto emailMessage, EmailType emailType)
+        {
+            try
+            {
+                _dbContext.QueuedEmails.Add(new QueuedEmail() { Email = JsonConvert.SerializeObject(emailMessage), EmailType = emailType });
+
+                await _dbContext.SaveChangesAsync();
+
+                QueueSync.Release();
+
+                var msg = $"Email to {string.Join(" - ", emailMessage.ToAddresses.Select(i => i.Address))} queued";
+
+                _logger.LogInformation(msg);
+
+                return new ApiResponse(Status200OK, msg);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"QueueEmail failed {ex.GetBaseException().Message} {ex.StackTrace}");
+
+                return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);
+            }
+        }
+
+        public async Task<ApiResponse> SendEmail(EmailMessageDto emailMessage)
         {
             try
             {
                 var message = new MimeMessage();
 
-                // Set From Address it was not set
                 if (emailMessage.FromAddresses.Count == 0)
-                {
                     emailMessage.FromAddresses.Add(new EmailAddressDto(_emailConfiguration.FromName, _emailConfiguration.FromAddress));
-                }
 
                 message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                 message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
@@ -184,7 +218,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
             catch (Exception ex)
             {
-                _logger.LogError("SendEmailAsync failed ({0}:{1} SSL:{2}): {3} {4}",
+                _logger.LogError("SendEmail failed ({0}:{1} SSL:{2}): {3} {4}",
                     _emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, _emailConfiguration.SmtpUseSSL, ex.GetBaseException().Message, ex.StackTrace);
 
                 return new ApiResponse(Status500InternalServerError, ex.GetBaseException().Message);

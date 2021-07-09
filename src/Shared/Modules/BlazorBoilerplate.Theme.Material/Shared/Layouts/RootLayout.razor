@@ -13,5 +13,9 @@
         Update();
     }
 
-    public void Update() => StateHasChanged();
+    public void Update()
+    {
+        if (topSection != null)
+            StateHasChanged();
+    }
 }

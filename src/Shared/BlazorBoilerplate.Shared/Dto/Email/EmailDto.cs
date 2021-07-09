@@ -33,5 +33,7 @@
         public string Body { get; set; }
 
         public string TemplateName { get; set; } = "Test";
+
+        public bool Queued { get; set; }
     }
 }

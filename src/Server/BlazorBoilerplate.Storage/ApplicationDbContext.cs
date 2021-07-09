@@ -21,12 +21,12 @@ namespace BlazorBoilerplate.Storage
     public class ApplicationDbContext : MultiTenantIdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, ApplicationUserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>, IMultiTenantDbContext
     {
         public DbSet<TenantSetting> TenantSettings { get; set; }
-
         public DbSet<ApiLogItem> ApiLogs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<QueuedEmail> QueuedEmails { get; set; }
         public DbSet<Todo> Todos { get; set; }
         public DbSet<Message> Messages { get; set; }
-        private IUserSession _userSession { get; set; }
+        private IUserSession UserSession { get; set; }
         public DbSet<DbLog> Logs { get; set; }
 
         /* We define a default value for TenantInfo. This is a hack. FinBuckle does not provide any method to init TenantInfo or define a default value when seeding the database (in DatabaseInitializer, HttpContext is not yet initialized). */
@@ -35,7 +35,7 @@ namespace BlazorBoilerplate.Storage
         {
             TenantNotSetMode = TenantNotSetMode.Overwrite;
             TenantMismatchMode = TenantMismatchMode.Overwrite;
-            _userSession = userSession;
+            UserSession = userSession;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -68,6 +68,11 @@ namespace BlazorBoilerplate.Storage
                     .WithMany(e => e.ApiLogItems)
                     .HasForeignKey(e => e.ApplicationUserId)
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<QueuedEmail>(b =>
+            {
+                b.Property(b => b.CreatedOn).HasDefaultValueSql("getdate()");
             });
 
             modelBuilder.ShadowProperties();
@@ -106,13 +111,13 @@ namespace BlazorBoilerplate.Storage
 
         public override int SaveChanges()
         {
-            ChangeTracker.SetShadowProperties(_userSession);
+            ChangeTracker.SetShadowProperties(UserSession);
             return base.SaveChanges();
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            ChangeTracker.SetShadowProperties(_userSession);
+            ChangeTracker.SetShadowProperties(UserSession);
             return await base.SaveChangesAsync(true, cancellationToken);
         }
     }

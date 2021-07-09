@@ -102,6 +102,9 @@ else
                     <div class="form-group">
                         <MatTextField @bind-Value="@email.ToAddress" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
                     </div>
+                    <div class="form-group">
+                        <MatSlideToggle @bind-Value="@email.Queued" Label=@L["Queued"]></MatSlideToggle>
+                    </div>
                 </fieldset>
             </EditForm>
         </MatDialogContent>
