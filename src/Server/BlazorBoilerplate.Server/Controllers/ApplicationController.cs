@@ -72,7 +72,6 @@ namespace BlazorBoilerplate.Server.Controllers
             return persistenceManager.GetEntities<Todo>()
                 .Include(i => i.CreatedBy)
                 .Include(i => i.ModifiedBy)
-                .IgnoreQueryFilters()
                 .Where(i =>
                 (filter.From == null || i.CreatedOn >= filter.From) && (filter.To == null || i.CreatedOn <= filter.To) &&
                 (filter.CreatedById == null || i.CreatedById == filter.CreatedById) &&
@@ -87,7 +86,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             filter.CreatedById = null;
 
-            return Todos(filter).Where(i => i.CreatedById != null).Select(i => i.CreatedBy).Distinct();
+            return Todos(filter).Where(i => i.CreatedBy != null).Select(i => i.CreatedBy).Distinct();
         }
 
         [AllowAnonymous]
@@ -96,7 +95,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             filter.ModifiedById = null;
 
-            return Todos(filter).Where(i => i.ModifiedById != null).Select(i => i.ModifiedBy).Distinct();
+            return Todos(filter).Where(i => i.ModifiedBy != null).Select(i => i.ModifiedBy).Distinct();
         }
 
         [HttpGet]
@@ -131,6 +130,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 {
                     new EFEntityError(null, null, ex.GetBaseException().Message, null)
                 };
+
                 throw new EntityErrorsException(errors);
             }
         }
