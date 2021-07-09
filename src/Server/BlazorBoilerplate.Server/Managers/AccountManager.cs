@@ -44,7 +44,6 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IEmailFactory _emailFactory;
         private readonly IEmailManager _emailManager;
         private readonly IClientStore _clientStore;
-        private readonly IConfiguration _configuration;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly UrlEncoder _urlEncoder;
@@ -77,7 +76,6 @@ namespace BlazorBoilerplate.Server.Managers
             _emailFactory = emailFactory;
             _emailManager = emailManager;
             _clientStore = clientStore;
-            _configuration = configuration;
             _interaction = interaction;
             _schemeProvider = schemeProvider;
             _urlEncoder = urlEncoder;
@@ -430,14 +428,10 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> Register(RegisterViewModel parameters)
         {
-            var requireConfirmEmail = Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false");
+            await RegisterNewUserAsync(parameters.UserName, parameters.Email, parameters.Password, _userManager.Options.SignIn.RequireConfirmedEmail);
 
-            await RegisterNewUserAsync(parameters.UserName, parameters.Email, parameters.Password, requireConfirmEmail);
-
-            if (requireConfirmEmail)
-            {
+            if (_userManager.Options.SignIn.RequireConfirmedEmail)
                 return new ApiResponse(Status200OK, L["Operation Successful"]);
-            }
             else
             {
                 return await Login(new LoginInputModel
@@ -663,7 +657,7 @@ namespace BlazorBoilerplate.Server.Managers
             };
 
             var result = await _userManager.CreateAsync(user, parameters.Password);
-            
+
             if (!result.Succeeded)
             {
                 var msg = string.Join(",", result.Errors.Select(i => i.Description));
@@ -685,7 +679,7 @@ namespace BlazorBoilerplate.Server.Managers
             if (defaultRoleExists)
                 await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
 
-            if (Convert.ToBoolean(_configuration["BlazorBoilerplate:RequireConfirmedEmail"] ?? "false"))
+            if (_userManager.Options.SignIn.RequireConfirmedEmail)
             {
                 try
                 {

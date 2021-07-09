@@ -25,7 +25,7 @@ namespace BlazorBoilerplate.Server.Controllers
         private const string AuthSchemes =
             "Identity.Application" + "," + IdentityServerAuthenticationDefaults.AuthenticationScheme; //Cookie + Token authentication
 
-        private ApplicationPersistenceManager persistenceManager;
+        private readonly ApplicationPersistenceManager persistenceManager;
         public ApplicationController(ApplicationPersistenceManager persistenceManager)
         {
             this.persistenceManager = persistenceManager;
@@ -127,8 +127,10 @@ namespace BlazorBoilerplate.Server.Controllers
             }
             catch (Exception ex)
             {
-                var errors = new List<EFEntityError>();
-                errors.Add(new EFEntityError(null, null, ex.GetBaseException().Message, null));
+                var errors = new List<EFEntityError>
+                {
+                    new EFEntityError(null, null, ex.GetBaseException().Message, null)
+                };
                 throw new EntityErrorsException(errors);
             }
         }
