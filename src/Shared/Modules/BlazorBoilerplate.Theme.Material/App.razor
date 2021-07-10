@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.WebAssembly.Services
 @inject LazyAssemblyLoader assemblyLoader
+@inject NavigationManager navigationManager
 @inject IStringLocalizer<Global> L
 
 <Router AppAssembly="typeof(App).Assembly" AdditionalAssemblies="ModuleProvider.AssembliesWithPages" OnNavigateAsync="@OnNavigateAsync">
@@ -38,12 +39,13 @@
 {
     private async Task OnNavigateAsync(NavigationContext args)
     {
-        if (args.Path.Equals("admin", StringComparison.OrdinalIgnoreCase))
-        {
-            var assemblies = await assemblyLoader.LoadAssembliesAsync(
-                new List<string>() { "BlazorBoilerplate.Theme.Material.Admin.dll", "Blazored.TextEditor.dll" });
+        if (navigationManager.IsWebAssembly())
+            if (args.Path.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                var assemblies = await assemblyLoader.LoadAssembliesAsync(
+                    new List<string>() { "BlazorBoilerplate.Theme.Material.Admin.dll", "Blazored.TextEditor.dll" });
 
-            ModuleProvider.AddModules(assemblies);
-        }
+                ModuleProvider.AddModules(assemblies);
+            }
     }
 }
