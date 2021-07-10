@@ -57,13 +57,6 @@
     bool _navMinified = false;
     public string bbDrawerClass = "";
 
-    private void CallLogin()
-    {
-        var returnUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
-
-        navigationManager.NavigateTo($"{BlazorBoilerplate.Constants.Settings.LoginPath}/{returnUrl}", forceLoad: false);
-    }
-
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
@@ -95,7 +88,7 @@
             bbDrawerClass = "closed";
         }
 
-        this.StateHasChanged();
+        StateHasChanged();
     }
 
     void NavLock()
@@ -123,6 +116,6 @@
         }
 
         _navMenuOpened = true;
-        this.StateHasChanged();
+        StateHasChanged();
     }
 }
