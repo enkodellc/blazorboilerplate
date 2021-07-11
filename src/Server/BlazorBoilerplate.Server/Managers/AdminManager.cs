@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
+using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Shared.Dto.Admin;
+using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Storage;
 using Finbuckle.MultiTenant;
@@ -20,8 +22,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using BlazorBoilerplate.Infrastructure.Storage.Permissions;
-using BlazorBoilerplate.Constants;
 
 namespace BlazorBoilerplate.Server.Managers
 {

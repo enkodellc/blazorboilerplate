@@ -1,8 +1,8 @@
-﻿using BlazorBoilerplate.Theme.Material.Shared.Layouts;
+﻿using BlazorBoilerplate.UI.Base.Shared.Layouts;
 using Microsoft.AspNetCore.Components;
 using System;
 
-namespace BlazorBoilerplate.Theme.Material.Shared.Components
+namespace BlazorBoilerplate.UI.Base.Shared.Components
 {
     public partial class TopSection : ComponentBase, IDisposable
     {

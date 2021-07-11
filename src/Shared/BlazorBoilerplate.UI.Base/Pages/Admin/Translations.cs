@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using static BlazorBoilerplate.Shared.Localizer.Settings;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
@@ -107,7 +108,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                     LocalizationCultures.Clear();
 
-                    LocalizationCultures.AddRange(Shared.Localizer.Settings.SupportedCultures
+                    LocalizationCultures.AddRange(SupportedCultures
                         .Where(i => !localizationRecords.Any(l => l.Culture == i)));
 
                     if (LocalizationCultures.Count > 0)
@@ -265,7 +266,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
             newPlural.LocalizationRecord = currentLocalizationRecord;
             localizationApiClient.AddEntity(newPlural);
 
-            if (currentLocalizationRecord.Culture == Shared.Localizer.Settings.NeutralCulture
+            if (currentLocalizationRecord.Culture == NeutralCulture
                 && newPlural.Index == 1)
                 foreach (var record in localizationRecords)
                     record.MsgIdPlural = newPlural.Translation;
@@ -276,7 +277,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
         protected async Task<bool> SavePluralChanges()
         {
-            var msgIdPlural = localizationRecords.Single(i => i.Culture == Shared.Localizer.Settings.NeutralCulture)
+            var msgIdPlural = localizationRecords.Single(i => i.Culture == NeutralCulture)
                 .PluralTranslations.Single(i => i.Index == 1).Translation;
 
             foreach (var record in localizationRecords)
