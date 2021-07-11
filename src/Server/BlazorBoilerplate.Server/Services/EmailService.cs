@@ -29,18 +29,16 @@ namespace BlazorBoilerplate.Server.Services
         {
             try
             {
-                await Program.Sync.WaitAsync(stoppingToken);
-
-                using var scope = _scopeFactory.CreateScope();
-                var emailManager = scope.ServiceProvider.GetRequiredService<IEmailManager>();
+                await Program.Sync.WaitAsync(stoppingToken);                
 
                 _logger.LogInformation($"EmailService starting...");
 
                 do
                 {
-                    using var scopeDb = _scopeFactory.CreateScope();
+                    using var scope = _scopeFactory.CreateScope();
                     {
-                        var dbContext = scopeDb.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                        var emailManager = scope.ServiceProvider.GetRequiredService<IEmailManager>();
 
                         foreach (var email in dbContext.QueuedEmails.Where(i => i.SentOn == null).OrderBy(i => i.CreatedOn))
                         {
