@@ -9,7 +9,7 @@
     <PackageReference Include="Breeze.Persistence.EFCore" Version="5.0.5" />
     <PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="6.2.0" />
     <PackageReference Include="Finbuckle.MultiTenant.EntityFrameworkCore" Version="6.2.0" />
-    <PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" Version="4.0.0" />
+    <PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" Version="5.0.0" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="4.1.2" />
     <PackageReference Include="Karambolo.PO" Version="1.7.0" />
