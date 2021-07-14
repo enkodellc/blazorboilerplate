@@ -31,17 +31,17 @@
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
     <PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.2.0" />
     <PackageReference Include="Breeze.AspNetCore.NetCore" Version="5.0.5" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="10.2.3" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.0" />
     <PackageReference Include="FormatWith" Version="3.0.1" />
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.1.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.7">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -54,7 +54,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="MailKit" Version="2.13.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.8" />
   </ItemGroup>
 
   <ItemGroup>
