@@ -5,11 +5,12 @@
 @inject IStringLocalizer<Global> L
 
 <Router AppAssembly="typeof(App).Assembly" AdditionalAssemblies="ModuleProvider.AssembliesWithPages" OnNavigateAsync="@OnNavigateAsync">
-    <Navigating>
-        <LoadingBackground ShowLogoBox="true">
-            <label>@L["Loading"]</label>
-        </LoadingBackground>
-    </Navigating>
+    @*see https://github.com/dotnet/aspnetcore/issues/25731
+            <Navigating>
+            <LoadingBackground ShowLogoBox="true">
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        </Navigating>*@
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
             <Authorizing>
