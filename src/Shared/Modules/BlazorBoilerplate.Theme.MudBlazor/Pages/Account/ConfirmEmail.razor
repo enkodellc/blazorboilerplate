@@ -6,7 +6,7 @@
 
 @if (string.IsNullOrEmpty(UserId))
 {
-    <MatCard>
+    <MudCard>
         <div class="logo">
             <img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" /><br />BlazorBoilerplate
             <br />
@@ -17,17 +17,17 @@
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@confirmEmailViewModel.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MudTextField @bind-Value="@confirmEmailViewModel.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
                 </div>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@confirmEmailViewModel.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MudTextField @bind-Value="@confirmEmailViewModel.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
                 </div>
                 <div class="form-group d-flex justify-content-end">
-                    <MatButton Type="submit" Raised="true" Disabled="@disableConfirmButton">@L["Send Confirmation"]</MatButton>
+                    <MudButton Type="submit" Raised="true" Disabled="@disableConfirmButton">@L["Send Confirmation"]</MudButton>
                 </div>
             </fieldset>
         </EditForm>
-    </MatCard>
+    </MudCard>
 }
 else
 {

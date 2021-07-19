@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager navigationManager
 @inject IJSRuntime js
 
-<MudSelect Class="selectCulture" @bind-Value="CurrentCulture">
+<MudSelect Class="selectCulture" Value="CurrentCulture" ValueChanged="(string i) => OnCultureChanged(i)">
     @foreach (var item in BlazorBoilerplate.Shared.Localizer.Settings.SupportedCulturesWithName)
     {
         <MudSelectItem Value="@item.Item2">@item.Item1</MudSelectItem>

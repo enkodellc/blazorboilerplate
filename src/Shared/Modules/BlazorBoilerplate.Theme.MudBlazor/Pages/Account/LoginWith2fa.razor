@@ -18,9 +18,9 @@
         }
         else
         {
-            <MatCard>
+            <MudCard>
                 <div class="hidden-mdc-down">
-                    <MatIconButton Icon="home" Class="float-left" Link="/" />
+                    <MudIconButton Icon="home" Class="float-left" Link="/" />
                 </div>
                 <div class="logo">
                     <a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
@@ -32,16 +32,16 @@
                     <ValidationSummary />
                     <fieldset>
                         <div class="form-group">
-                            <MatTextField @ref="CodeInput" @bind-Value="@loginViewModel.TwoFactorCode" Label=@L["Code"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="1"></MatTextField>
+                            <MudTextField @ref="CodeInput" @bind-Value="@loginViewModel.TwoFactorCode" Label=@L["Code"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="1"></MudTextField>
                             <AutoFocus Control=@(() => CodeInput.InputRef) />
                         </div>
                         <div class="form-group">
-                            <MatButton class="float-right" Type="submit" Raised="true" tabindex="2">@L["Login"]</MatButton>
-                            <MatCheckbox @bind-Value="@loginViewModel.RememberMachine" class="filled-in chk-col-blue">@L["RememberBrowser"]</MatCheckbox>
+                            <MudButton class="float-right" Type="submit" Raised="true" tabindex="2">@L["Login"]</MudButton>
+                            <MudCheckBox @bind-Checked="@loginViewModel.RememberMachine" class="filled-in chk-col-blue">@L["RememberBrowser"]</MudCheckBox>
                         </div>
                     </fieldset>
                 </EditForm>
-            </MatCard>
+            </MudCard>
             <MatAccordion>
                 <MatExpansionPanel @bind-Expanded="@forgotAuthenticatorToggle">
                     <MatExpansionPanelSummary>
@@ -53,10 +53,10 @@
                             <FluentValidationValidator />
                             <ValidationSummary />
                             <div class="form-group">
-                                <MatTextField @bind-Value="@forgotAuthenticatorInputModel.RecoveryCode" Label=@L["RecoveryCode"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                                <MudTextField @bind-Value="@forgotAuthenticatorInputModel.RecoveryCode" Label=@L["RecoveryCode"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MudTextField>
                             </div>
                             <div class="form-group">
-                                <MatButton class="float-right" Type="submit" Raised="true">@L["Login"]</MatButton>
+                                <MudButton class="float-right" Type="submit" Raised="true">@L["Login"]</MudButton>
                             </div>
                         </EditForm>
                     </MatExpansionPanelDetails>
@@ -67,6 +67,6 @@
 </AuthorizeView>
 @code {
 
-    private MatTextField<string> CodeInput;
+    private MudTextField CodeInput;
     
 }
