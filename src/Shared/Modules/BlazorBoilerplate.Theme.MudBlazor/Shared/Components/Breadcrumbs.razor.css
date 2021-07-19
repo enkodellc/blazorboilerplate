@@ -1,0 +1,24 @@
+﻿ul.breadcrumb {
+    padding: 10px 16px;
+    list-style: none;
+    background-color: #eee;
+}
+
+    /* Add a slash symbol (/) before/behind each list item */
+    ul.breadcrumb li + li:before {
+        padding: 8px;
+        content: "›";
+    }
+
+    ul.breadcrumb li,
+    ul.breadcrumb li a {
+        text-transform: uppercase;
+        text-shadow: none;
+        font-size: 13px;
+        text-decoration: none;
+        display: inline;
+    }
+
+        ul.breadcrumb li a:hover {
+            text-decoration: underline;
+        }

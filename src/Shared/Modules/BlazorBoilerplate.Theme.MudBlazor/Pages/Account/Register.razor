@@ -1,0 +1,44 @@
+﻿@inherits RegisterPage
+@page "/account/register"
+
+@layout LoginLayout
+
+<MatCard>
+    <div class="hidden-mdc-down">
+        <MatIconButton Icon="home" Class="float-left" Link="/" />
+    </div>
+    <div class="logo">
+        <img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" /><br />BlazorBoilerplate
+        <br />
+        <h4>@L["Registration"]</h4>
+    </div>
+    <EditForm Model="@registerViewModel" OnValidSubmit="@RegisterUser">
+        <FluentValidationValidator />
+        <ValidationSummary />
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@registerViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@registerViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@registerViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@registerViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+            </div>
+            <div class="form-group d-flex justify-content-end">
+                <MatButton Type="submit" Raised="true">@L["Register"]</MatButton>
+            </div>
+            <hr />
+            <NavLink href="account/login">
+                <h6 class="font-weight-normal text-center">@L["AlreadyRegistered"]</h6>
+            </NavLink>
+        </fieldset>
+    </EditForm>
+</MatCard>
+
+@code {
+    
+}

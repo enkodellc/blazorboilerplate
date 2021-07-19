@@ -1,0 +1,56 @@
+﻿@inherits RootLayout
+@inject NavigationManager navigationManager
+@inject AppState appState
+@inject IStringLocalizer<Global> L
+
+<CascadingValue Value="this">
+    <MudLayout>
+        <MudAppBar>
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <TopRightBarSection></TopRightBarSection>
+        </MudAppBar>
+        <MudDrawer @bind-Opened="@_navMenuOpened">
+            <MudDrawerHeader>
+                <div class="drawer-logo">
+                    <img alt="@appState.AppName" class="logo-img" src="_content/BlazorBoilerplate.Theme.Material/images/logo-dark.svg" title="@appState.AppName">
+                    <a class="miniHover" href="/">@appState.AppName</a>
+                </div>
+                <UserProfile />
+            </MudDrawerHeader>
+            <NavMenu />
+            <DrawerFooter></DrawerFooter>
+        </MudDrawer>
+        <MudMainContent>
+            @TopSection
+            @Body
+            <MudScrollToTop TopOffset="400" Style="z-index:2000;">
+                <MudFab Icon="@Icons.Material.Filled.KeyboardArrowUp" Color="Color.Primary" />
+            </MudScrollToTop>
+            <Footer></Footer>
+        </MudMainContent>
+    </MudLayout>
+</CascadingValue>
+
+@code {
+    bool _navMenuOpened = true;
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var profile = await appState.GetUserProfile();
+
+            _navMenuOpened = profile.IsNavOpen;
+        }
+    }
+
+    void DrawerToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+    }
+}

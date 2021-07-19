@@ -1,0 +1,31 @@
+﻿.login-container ::deep.mdc-card {
+    padding: 40px 30px;
+    width: 500px;
+}
+
+.login-container ::deep.mat-accordion {
+    width: 500px;
+}
+
+.login-container {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    align-content: center;
+    margin: 5% auto 0;
+}
+
+.login-body {
+    flex-direction: column;
+    margin: 0 auto;
+    position: relative;
+}
+
+    .login-body ::deep.mat-accordion .mat-expansion-panel__header {
+        flex-basis: 80%;
+    }
+
+    .login-body ::deep.mat-expansion-panel {
+        background-color: #f4f4f4 !important;
+    }

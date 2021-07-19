@@ -1,0 +1,40 @@
+﻿@inherits ConfirmEmailPage
+@page "/account/confirmemail"
+@page "/account/confirmemail/{UserId}"
+
+@layout LoginLayout
+
+@if (string.IsNullOrEmpty(UserId))
+{
+    <MatCard>
+        <div class="logo">
+            <img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" /><br />BlazorBoilerplate
+            <br />
+            <h4>@L["Confirm Email"]</h4>
+        </div>
+        <EditForm Model="@confirmEmailViewModel" OnValidSubmit="@SendConfirmation">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@confirmEmailViewModel.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@confirmEmailViewModel.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group d-flex justify-content-end">
+                    <MatButton Type="submit" Raised="true" Disabled="@disableConfirmButton">@L["Send Confirmation"]</MatButton>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatCard>
+}
+else
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Email confirmation in progress"]</label>
+    </LoadingBackground>
+}
+
+@code {
+}

@@ -1,0 +1,10 @@
+@inherits DynamicComponentContainer
+<MudNavMenu>
+    @foreach (var component in components)
+    {
+        @CreateDynamicComponent(component);
+    }
+</MudNavMenu>
+@code {
+
+}

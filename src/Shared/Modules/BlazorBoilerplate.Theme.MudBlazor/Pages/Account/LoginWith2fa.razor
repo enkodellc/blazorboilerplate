@@ -1,0 +1,72 @@
+@inherits LoginWith2faPage
+@page "/account/loginwith2fa"
+
+@layout LoginLayout
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <LoadingBackground ShowLogoBox="true">
+            <label>@L["Loading"]</label>
+        </LoadingBackground>
+    </Authorized>
+    <NotAuthorized>
+        @if (RedirectInProgress)
+        {
+            <LoadingBackground ShowLogoBox="true">
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        }
+        else
+        {
+            <MatCard>
+                <div class="hidden-mdc-down">
+                    <MatIconButton Icon="home" Class="float-left" Link="/" />
+                </div>
+                <div class="logo">
+                    <a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
+                    <br />
+                    <h4>@L["Log in"]</h4>
+                </div>
+                <EditForm Model="@loginViewModel" OnValidSubmit="@SubmitLogin">
+                    <FluentValidationValidator />
+                    <ValidationSummary />
+                    <fieldset>
+                        <div class="form-group">
+                            <MatTextField @ref="CodeInput" @bind-Value="@loginViewModel.TwoFactorCode" Label=@L["Code"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="1"></MatTextField>
+                            <AutoFocus Control=@(() => CodeInput.InputRef) />
+                        </div>
+                        <div class="form-group">
+                            <MatButton class="float-right" Type="submit" Raised="true" tabindex="2">@L["Login"]</MatButton>
+                            <MatCheckbox @bind-Value="@loginViewModel.RememberMachine" class="filled-in chk-col-blue">@L["RememberBrowser"]</MatCheckbox>
+                        </div>
+                    </fieldset>
+                </EditForm>
+            </MatCard>
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="@forgotAuthenticatorToggle">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>@L["ForgotAuthenticator"]</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <EditForm Model="@forgotAuthenticatorInputModel" OnValidSubmit="@ForgotAuthenticator">
+                            <FluentValidationValidator />
+                            <ValidationSummary />
+                            <div class="form-group">
+                                <MatTextField @bind-Value="@forgotAuthenticatorInputModel.RecoveryCode" Label=@L["RecoveryCode"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                            </div>
+                            <div class="form-group">
+                                <MatButton class="float-right" Type="submit" Raised="true">@L["Login"]</MatButton>
+                            </div>
+                        </EditForm>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+        }
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+
+    private MatTextField<string> CodeInput;
+    
+}
