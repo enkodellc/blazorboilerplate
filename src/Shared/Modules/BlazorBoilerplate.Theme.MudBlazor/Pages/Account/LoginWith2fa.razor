@@ -32,8 +32,7 @@
                     <ValidationSummary />
                     <fieldset>
                         <div class="form-group">
-                            <MudTextField @ref="CodeInput" @bind-Value="@loginViewModel.TwoFactorCode" Label=@L["Code"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="1"></MudTextField>
-                            <AutoFocus Control=@(() => CodeInput.InputRef) />
+                            <MudTextField AutoFocus="true" @bind-Value="@loginViewModel.TwoFactorCode" Label=@L["Code"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" InputType="InputType.Password" tabindex="1"></MudTextField>                            
                         </div>
                         <div class="form-group">
                             <MudButton class="float-right" Type="submit" Raised="true" tabindex="2">@L["Login"]</MudButton>
@@ -42,31 +41,28 @@
                     </fieldset>
                 </EditForm>
             </MudCard>
-            <MatAccordion>
-                <MatExpansionPanel @bind-Expanded="@forgotAuthenticatorToggle">
-                    <MatExpansionPanelSummary>
-                        <MatExpansionPanelHeader>@L["ForgotAuthenticator"]</MatExpansionPanelHeader>
-                        <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
-                    </MatExpansionPanelSummary>
-                    <MatExpansionPanelDetails>
+            <MudExpansionPanels>
+                <MudExpansionPanel @bind-Expanded="@forgotAuthenticatorToggle">
+                    <TitleContent>
+                        @L["ForgotAuthenticator"]
+                    </TitleContent>
+                    <ChildContent>
                         <EditForm Model="@forgotAuthenticatorInputModel" OnValidSubmit="@ForgotAuthenticator">
                             <FluentValidationValidator />
                             <ValidationSummary />
                             <div class="form-group">
-                                <MudTextField @bind-Value="@forgotAuthenticatorInputModel.RecoveryCode" Label=@L["RecoveryCode"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MudTextField>
+                                <MudTextField @bind-Value="@forgotAuthenticatorInputModel.RecoveryCode" Label=@L["RecoveryCode"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" InputType="InputType.Password"></MudTextField>
                             </div>
                             <div class="form-group">
                                 <MudButton class="float-right" Type="submit" Raised="true">@L["Login"]</MudButton>
                             </div>
                         </EditForm>
-                    </MatExpansionPanelDetails>
-                </MatExpansionPanel>
-            </MatAccordion>
+                    </ChildContent>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
         }
     </NotAuthorized>
 </AuthorizeView>
 @code {
-
-    private MudTextField<string> CodeInput;
     
 }

@@ -17,16 +17,16 @@
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MudTextField @bind-Value="@registerViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
+                <MudTextField @bind-Value="@registerViewModel.UserName" Label=@L["UserName"] AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
             </div>
             <div class="form-group">
-                <MudTextField @bind-Value="@registerViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
+                <MudTextField @bind-Value="@registerViewModel.Email" Label=@L["Email"] AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
             </div>
             <div class="form-group">
-                <MudTextField @bind-Value="@registerViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MudTextField>
+                <MudTextField @bind-Value="@registerViewModel.Password" Label=@L["Password"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" InputType="InputType.Password"></MudTextField>
             </div>
             <div class="form-group">
-                <MudTextField @bind-Value="@registerViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MudTextField>
+                <MudTextField @bind-Value="@registerViewModel.PasswordConfirm" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" InputType="InputType.Password"></MudTextField>
             </div>
             <div class="form-group d-flex justify-content-end">
                 <MudButton Type="submit" Raised="true">@L["Register"]</MudButton>
@@ -40,5 +40,5 @@
 </MudCard>
 
 @code {
-    
+
 }

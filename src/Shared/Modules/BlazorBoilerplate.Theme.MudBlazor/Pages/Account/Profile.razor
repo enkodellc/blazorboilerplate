@@ -26,10 +26,10 @@ else
         <ValidationSummary />
         <fieldset>
             <div class="form-group">
-                <MudTextField @bind-Value="@userViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MudTextField>
+                <MudTextField @bind-Value="@userViewModel.UserName" Label=@L["UserName"] AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" ReadOnly="true"></MudTextField>
             </div>
             <div class="form-group">
-                <MudTextField @bind-Value="@userViewModel.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
+                <MudTextField @bind-Value="@userViewModel.Email" Label="Email" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
             </div>
             <div class="form-group">
                 <MudTextField @bind-Value="@userViewModel.FirstName" Label=@L["FirstName"] FullWidth="true"></MudTextField>
@@ -42,7 +42,7 @@ else
                 <MudChipSet>
                     @foreach (var role in userViewModel.Roles)
                     {
-                        <MudChip Label="@role"></MudChip>
+                        <MudChip Text="@role"></MudChip>
                     }
                 </MudChipSet>
             </div>
@@ -65,7 +65,7 @@ else
                 <MudChipSet>
                     @foreach (var rcode in userViewModel.RecoveryCodes)
                     {
-                        <MudChip Label="@rcode"></MudChip>
+                        <MudChip Text="@rcode"></MudChip>
                     }
                 </MudChipSet>
             </div>
@@ -93,30 +93,30 @@ else
         <MudButton OnClick="@EnableAuthenticator">@L["VerifyCode"]</MudButton>
     }
 
-    <MatDialog @bind-IsOpen="@updatePasswordDialogOpen">
-        <MatDialogTitle>Password Update for @userViewModel.UserName</MatDialogTitle>
-        <MatDialogContent>
+    <MudDialog @bind-IsVisible="@updatePasswordDialogOpen">
+        <TitleContent>Password Update for @userViewModel.UserName</TitleContent>
+        <DialogContent>
             <EditForm Model="@updatePasswordViewModel" OnValidSubmit="@UpdatePassword">
                 <FluentValidationValidator />
                 <ValidationSummary />
                 <fieldset>
                     <div class="form-group">
-                        <MudTextField @bind-Value="@updatePasswordViewModel.CurrentPassword" Label=@L["CurrentPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MudTextField>
+                        <MudTextField @bind-Value="@updatePasswordViewModel.CurrentPassword" Label=@L["CurrentPassword"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" InputType="InputType.Password"></MudTextField>
                     </div>
                     <div class="form-group">
-                        <MudTextField @bind-Value="@updatePasswordViewModel.NewPassword" Label=@L["NewPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MudTextField>
+                        <MudTextField @bind-Value="@updatePasswordViewModel.NewPassword" Label=@L["NewPassword"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" InputType="InputType.Password"></MudTextField>
                     </div>
                     <div class="form-group">
-                        <MudTextField @bind-Value="@updatePasswordViewModel.NewPasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MudTextField>
+                        <MudTextField @bind-Value="@updatePasswordViewModel.NewPasswordConfirm" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" InputType="InputType.Password"></MudTextField>
                     </div>
                 </fieldset>
             </EditForm>
-        </MatDialogContent>
-        <MatDialogActions>
+        </DialogContent>
+        <DialogActions>
             <MudButton OnClick="@(e => { updatePasswordDialogOpen = false; })">@L["Cancel"]</MudButton>
             <MudButton OnClick="@UpdatePassword">@L["Update Password"]</MudButton>
-        </MatDialogActions>
-    </MatDialog>
+        </DialogActions>
+    </MudDialog>
 
 }
 @code {

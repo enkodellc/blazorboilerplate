@@ -17,10 +17,10 @@
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MudTextField @bind-Value="@confirmEmailViewModel.UserId" Label="UserId" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
+                    <MudTextField @bind-Value="@confirmEmailViewModel.UserId" Label="UserId" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
                 </div>
                 <div class="form-group">
-                    <MudTextField @bind-Value="@confirmEmailViewModel.Token" Label="Token" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
+                    <MudTextField @bind-Value="@confirmEmailViewModel.Token" Label="Token" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
                 </div>
                 <div class="form-group d-flex justify-content-end">
                     <MudButton Type="submit" Raised="true" Disabled="@disableConfirmButton">@L["Send Confirmation"]</MudButton>

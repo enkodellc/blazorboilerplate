@@ -26,11 +26,10 @@
                     <ValidationSummary />
                     <fieldset>
                         <div class="form-group">
-                            <MudTextField @ref="UserNameInput" @bind-Value="@loginViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MudTextField>
-                            <AutoFocus Control=@(() => UserNameInput.InputRef) />
+                            <MudTextField AutoFocus="true" @bind-Value="@loginViewModel.UserName" Label=@L["UserName"] AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" tabindex="1"></MudTextField>
                         </div>
                         <div class="form-group">
-                            <MudTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="2"></MudTextField>
+                            <MudTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" InputType="InputType.Password" tabindex="2"></MudTextField>
                         </div>
                         <div class="form-group">
                             <MudButton class="float-right" Type="submit" Raised="true" tabindex="3">@L["Login"]</MudButton>
@@ -44,26 +43,25 @@
                     <MudButton class="float-left" OnClick="@Register" Raised="true">@L["Sign up"]</MudButton>
                 </div>
             </MudCard>
-            <MatAccordion>
-                <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
-                    <MatExpansionPanelSummary>
-                        <MatExpansionPanelHeader>@L["Forgot your password?"]</MatExpansionPanelHeader>
-                        <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
-                    </MatExpansionPanelSummary>
-                    <MatExpansionPanelDetails>
+            <MudExpansionPanels>
+                <MudExpansionPanel @bind-Expanded="@forgotPasswordToggle">
+                    <TitleContent>
+                        @L["Forgot your password?"]
+                    </TitleContent>
+                    <ChildContent>
                         <EditForm Model="@forgotPasswordViewModel" OnValidSubmit="@ForgotPassword">
                             <FluentValidationValidator />
                             <ValidationSummary />
                             <div class="form-group">
-                                <MudTextField @bind-Value="@forgotPasswordViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
+                                <MudTextField @bind-Value="@forgotPasswordViewModel.Email" Label=@L["Email"] AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
                             </div>
                             <div class="form-group">
                                 <MudButton class="float-right" Type="submit" Raised="true">@L["Submit"]</MudButton>
                             </div>
                         </EditForm>
-                    </MatExpansionPanelDetails>
-                </MatExpansionPanel>
-            </MatAccordion>
+                    </ChildContent>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
             @if (loginViewModel.VisibleExternalProviders.Any())
             {
                 <br />
@@ -116,6 +114,5 @@
     </NotAuthorized>
 </AuthorizeView>
 @code {
-    private MudTextField<string> UserNameInput;
 
 }
