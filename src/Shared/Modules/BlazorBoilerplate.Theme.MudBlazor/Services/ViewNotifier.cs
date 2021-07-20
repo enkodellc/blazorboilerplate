@@ -1,7 +1,7 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using MudBlazor;
 
-namespace BlazorBoilerplate.Theme.MudBlazor.Services
+namespace BlazorBoilerplate.Theme.Material.Services
 {
     public class ViewNotifier : IViewNotifier
     {

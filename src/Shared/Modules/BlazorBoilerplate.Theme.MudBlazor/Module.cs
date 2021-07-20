@@ -1,6 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Theme.MudBlazor.Services;
-using BlazorBoilerplate.Theme.MudBlazor.TagHelpers;
+using BlazorBoilerplate.Theme.Material.Services;
+using BlazorBoilerplate.Theme.Material.TagHelpers;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +9,7 @@ using MudBlazor.Services;
 using System.Net.Http;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
-namespace BlazorBoilerplate.Theme.MudBlazor
+namespace BlazorBoilerplate.Theme.Material
 {
     public class Module : IModule, ITheme
     {

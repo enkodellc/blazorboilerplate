@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
 
-namespace BlazorBoilerplate.Theme.MudBlazor.Shared.Components
+namespace BlazorBoilerplate.Theme.Material.Shared.Components
 {
     public partial class Breadcrumb : ComponentBase, IDisposable
     {

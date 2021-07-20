@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using System.Collections.Generic;
 
-namespace BlazorBoilerplate.Theme.MudBlazor.Shared.Components
+namespace BlazorBoilerplate.Theme.Material.Shared.Components
 {
     public partial class Breadcrumbs : ComponentBase
     {

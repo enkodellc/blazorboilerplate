@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Theme.MudBlazor.Services
+namespace BlazorBoilerplate.Theme.Material.Services
 {
     public class FileUploadEntry : IFileUploadEntry
     {

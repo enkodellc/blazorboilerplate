@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace BlazorBoilerplate.Theme.MudBlazor.TagHelpers
+namespace BlazorBoilerplate.Theme.Material.TagHelpers
 {
     public class AppTagHelperComponent : TagHelperComponent
     {

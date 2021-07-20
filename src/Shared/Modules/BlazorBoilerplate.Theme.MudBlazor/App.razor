@@ -48,7 +48,7 @@
             if (args.Path.Equals("admin", StringComparison.OrdinalIgnoreCase))
             {
                 var assemblies = await assemblyLoader.LoadAssembliesAsync(
-                    new List<string>() { "BlazorBoilerplate.Theme.MudBlazor.Admin.dll", "Blazored.TextEditor.dll" });
+                    new List<string>() { "BlazorBoilerplate.Theme.Material.Admin.dll", "Blazored.TextEditor.dll" });
 
                 ModuleProvider.AddModules(assemblies);
             }
