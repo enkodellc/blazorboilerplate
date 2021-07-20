@@ -1,0 +1,87 @@
+@using Microsoft.AspNetCore.Components;
+@inherits DynamicComponentContainer
+@inject NavigationManager navigationManager
+@inject HttpClient Http
+@inject IStringLocalizer<Global> L
+
+<MudNavMenu Class="app-sidebar">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">
+        <span class="miniHover">Frontend</span>
+    </MudNavLink>
+
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.BarChart">
+        <span class="miniHover">@L["Dashboard"]</span>
+    </MudNavLink>
+    <MudNavGroup Title="@L["Settings"]">
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/settings").AbsoluteUri" Icon="@Icons.Filled.SettingsApplications">
+            <span class="miniHover">@L["Settings"]</span>
+        </MudNavLink>
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/settings/email").AbsoluteUri" Icon="@Icons.Filled.Email">
+            <span class="miniHover">@L["Email"]</span>
+        </MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="@L["Localization"]" Icon="@Icons.Filled.Public">
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/translations").AbsoluteUri" Icon="@Icons.Filled.Translate">
+            <span class="miniHover">@L["Translations"]</span>
+        </MudNavLink>
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/pluralizationrules").AbsoluteUri" Icon="@Icons.Filled.Group">
+            <span class="miniHover">@L["Pluralization rules"]</span>
+        </MudNavLink>
+    </MudNavGroup>
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri" Icon="@Icons.Filled.SupervisorAccount">
+        <span class="miniHover">@L["Users"]</span>
+    </MudNavLink>
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri" Icon="@Icons.Filled.SupervisorAccount">
+        <span class="miniHover">@L["Roles"]</span>
+    </MudNavLink>
+    @if (tenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)
+    {
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/multitenancy").AbsoluteUri" Icon="@Icons.Filled.AccountBalance">
+            <span class="miniHover">@L["MultiTenancy"]</span>
+        </MudNavLink>
+    }
+    <MudNavGroup Title="IdentityServer4">
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/clients").AbsoluteUri" Icon="@Icons.Filled.Devices">
+            <span class="miniHover">@L["OpenIdClients"]</span>
+        </MudNavLink>
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/identityResources").AbsoluteUri" Icon="@Icons.Outlined.Person">
+            <span class="miniHover">@L["IdentityResources"]</span>
+        </MudNavLink>
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/apiResources").AbsoluteUri" Icon="@Icons.Filled.Cloud">
+            <span class="miniHover">@L["ApiResources"]</span>
+        </MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="@L["AppAdminNavMonitoring"]">
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/apilog").AbsoluteUri" Icon="@Icons.Filled.ChangeHistory">
+            <span class="miniHover">@L["AppAdminNavApiAuditLog"]</span>
+        </MudNavLink>
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/dblog").AbsoluteUri" Icon="@Icons.Filled.Notes">
+            <span class="miniHover">@L["AppAdminNavDBLoggingView"]</span>
+        </MudNavLink>
+    </MudNavGroup>
+    @foreach (var component in components)
+    {
+        @CreateDynamicComponent(component);
+    }
+</MudNavMenu>
+
+@code {
+    TenantDto tenant = new TenantDto();
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var apiResponse = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<TenantDto>>("api/admin/tenant");
+            if (apiResponse.StatusCode == Status200OK)
+            {
+                tenant = apiResponse.Result;
+            }
+        }
+    }
+}

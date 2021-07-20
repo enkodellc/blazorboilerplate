@@ -1,0 +1,138 @@
+@inherits IdentityResourcesPage
+@page "/admin/identityResources"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminidentityResources"] />
+    </Breadcrumbs>
+</TopSection>
+
+<h1>@L["IdentityResources"]</h1>
+<p>Identity Resources Management.</p>
+
+@if (identityResources == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MudTable Class="mat-elevation-z5" Items="@identityResources" Striped="true">
+        <HeaderContent>
+            <th><MudButton Icon="add" Label=@L["New Identity Resource"] OnClick="@(() => OpenUpsertIdentityResourceDialog())"></MudButton></th>
+            <th>@L["Name"]</th>
+            <th>Enabled</th>
+            <th>Display Name</th>
+            <th>Description</th>
+            <th>Required</th>
+            <th>Emphasize</th>
+            <th>Show in discovery document</th>
+            <th>User Claims</th>
+        </HeaderContent>
+        <RowTemplate Context="IdentityResourceRow">
+            <td>
+                <div style="width:155px;">
+                    <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenUpsertIdentityResourceDialog(IdentityResourceRow))"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteIdentityResourceDialog(IdentityResourceRow))"></MudIconButton>
+                </div>
+            </td>
+            <td><div style="min-width:130px;">@IdentityResourceRow.Name</div></td>
+            <td><MudSwitch @bind-Checked="@IdentityResourceRow.Enabled" ValueChanged="@((item) => UpdateEnabled(IdentityResourceRow))"></MudSwitch></td>
+            <td><div style="min-width:130px;">@IdentityResourceRow.DisplayName</div></td>
+            <td><div style="min-width:130px;">@IdentityResourceRow.Description</div></td>
+            <td><MudSwitch @bind-Checked="@IdentityResourceRow.Required" Disabled="true"></MudSwitch></td>
+            <td><MudSwitch @bind-Checked="@IdentityResourceRow.Emphasize" Disabled="true"></MudSwitch></td>
+            <td><MudSwitch @bind-Checked="@IdentityResourceRow.ShowInDiscoveryDocument" Disabled="true"></MudSwitch></td>
+            <td>
+                <MudChipSet>
+                    @foreach (var userClaim in IdentityResourceRow.UserClaims)
+                        {
+                        <MudChip Text="@userClaim"></MudChip>
+                        }
+                </MudChipSet>
+            </td>
+        </RowTemplate>
+    </MudTable>
+}
+
+<MudDialog @bind-IsVisible="@isUpsertIdentityResourceDialogOpen">
+    <TitleContent>
+        @labelUpsertDialogTitle
+    </TitleContent>
+    <DialogContent>
+        <EditForm Model="@currentIdentityResource">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <MudTabs>
+                <MudTabPanel Text="Main">
+                    <fieldset>
+                        <div class="form-group">
+                            <MudTextField @bind-Value="@currentIdentityResource.Name" Disabled="@isCurrentIdentityContextIdReadOnly" Label="Id" Icon="description" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
+                        </div>
+                        <div class="form-group">
+                            <MudSwitch @bind-Checked="@currentIdentityResource.Enabled" Label="Enabled"></MudSwitch>
+                        </div>
+                        <div class="form-group">
+                            <MudTextField @bind-Value="@currentIdentityResource.DisplayName" Label="Display Name" Icon="description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+                        </div>
+                        <div class="form-group">
+                            <MudTextField @bind-Value="@currentIdentityResource.Description" Label="Description" Icon="description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+                        </div>
+                        <div class="form-group">
+                            <MudSwitch @bind-Checked="@currentIdentityResource.Required" Label="Required"></MudSwitch>
+                        </div>
+                        <div class="form-group">
+                            <MudSwitch @bind-Checked="@currentIdentityResource.Emphasize" Label="Emphasize in consent screen"></MudSwitch>
+                        </div>
+                        <div class="form-group">
+                            <MudSwitch @bind-Checked="@currentIdentityResource.ShowInDiscoveryDocument" Label="Show in discovery document"></MudSwitch>
+                        </div>
+                    </fieldset>
+                </MudTabPanel>
+                <MudTabPanel Text="User Claims">
+                    <fieldset>
+                        <div class="form-group" style="margin-top:16px;">
+                            <div class="form-group">
+                                <MudTextField @bind-Value="@currentIdentityResource.CustomUserClaimsText" Label="Custom User Claims" TextArea="true" FullWidth="true" Required="false"></MudTextField>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <MudDivider />
+                    <h3 class="mat-subtitle1">Jwt Claims</h3>
+                    <MudTable Items="@jwtClaimSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
+                        <HeaderContent>
+                            <th>@L["Name"]</th>
+                            <th>Required</th>
+                        </HeaderContent>
+                        <RowTemplate Context="JwtClaimRow">
+                            <td>@JwtClaimRow.DisplayValue</td>
+                            <td><MudCheckBox @bind-Checked="@JwtClaimRow.Selected"></MudCheckBox></td>
+                        </RowTemplate>
+                    </MudTable>
+                </MudTabPanel>
+            </MudTabs>
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@CancelChanges">@L["Cancel"]</MudButton>
+        <MudButton OnClick="@UpsertIdentityResource">@labelUpsertDialogOkButton</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-IsVisible="@isDeleteIdentityResourceDialogOpen" Style="z-index:100">
+    <TitleContent><MudIcon Icon="@Icons.Filled.Warning"></MudIcon> @L["Confirm Delete"]</TitleContent>
+    <DialogContent>
+        @L["Are you sure you want to delete {0}?", currentIdentityResource.Name]
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(e => { isDeleteIdentityResourceDialogOpen = false; })">@L["Cancel"]</MudButton>
+        <MudButton OnClick="@DeleteIdentityResourceAsync">@L["Delete"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+}

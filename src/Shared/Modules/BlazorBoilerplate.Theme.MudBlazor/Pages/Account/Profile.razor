@@ -14,11 +14,11 @@ else
         <MudButton Type="submit" form="mainForm" Raised="true">@L["Save"]</MudButton>
         @if (userViewModel.HasPassword)
         {
-            <MudButton Icon="rotate_right" OnClick="@(() => OpenUpdatePasswordDialog())" Label=@L["Change Password"] Raised="true" Style="margin-left: 10px"></MudButton>
+            <MudButton Icon="@Icons.Filled.RotateRight" OnClick="@(() => OpenUpdatePasswordDialog())" Label=@L["Change Password"] Raised="true" Style="margin-left: 10px"></MudButton>
         }
         @if (userViewModel.HasAuthenticator)
         {
-            <MudButton Icon="rotate_right" OnClick="@(() => DisableAuthenticator())" Label=@L["ResetAuthenticator"] Raised="true" Style="margin-left: 10px"></MudButton>
+            <MudButton Icon="@Icons.Filled.RotateRight" OnClick="@(() => DisableAuthenticator())" Label=@L["ResetAuthenticator"] Raised="true" Style="margin-left: 10px"></MudButton>
         }
     </div>
     <EditForm id="mainForm" Model="@userViewModel" OnValidSubmit="@UpdateUser">

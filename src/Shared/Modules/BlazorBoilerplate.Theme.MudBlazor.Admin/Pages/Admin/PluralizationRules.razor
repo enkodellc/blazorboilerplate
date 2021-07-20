@@ -1,0 +1,53 @@
+﻿@inherits PluralizationRulesPage
+@page "/admin/pluralizationrules"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<h1>@L["Pluralization rules"]</h1>
+
+@if (PluralFormRules == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MudTable Items="@PluralFormRules" Class="mat-elevation-z5" Striped="true" ShowPaging="false" PageSize="50">
+        <HeaderContent>
+            <th></th>
+            <th>@L["Culture"]</th>
+            <th>@L["Count"]</th>
+            <th>@L["Selector"]</th>
+        </HeaderContent>
+        <RowTemplate Context="row">
+            <td>
+                <div>
+                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDelete(row))"></MudIconButton>
+                </div>
+            </td>
+            <td>@row.Language</td>
+            <td><MudTextField @bind-Value="@row.Count" FullWidth="true" Required="true"></MudTextField></td>
+            <td><MudTextField @bind-Value="@row.Selector" FullWidth="true" Required="true"></MudTextField></td>
+        </RowTemplate>
+    </MudTable>
+    @if (LocalizationCultures.Count > 0)
+    {<EditForm Model="@newPluralFormRule" OnValidSubmit="@SaveNewPluralFormRule">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatSelectItem @bind-Value="@newPluralFormRule.Language" Items="@LocalizationCultures" Label=@L["Culture"]></MatSelectItem>
+                    <MudTextField @bind-Value="@newPluralFormRule.Count" Label=@L["Count"] FullWidth="true" Required="true"></MudTextField>
+                    <MudTextField @bind-Value="@newPluralFormRule.Selector" Label=@L["Selector"] FullWidth="true" Required="true"></MudTextField>
+                    <MudButton Type="submit" Raised="true">@L["Add"]</MudButton>
+                </div>
+            </fieldset>
+        </EditForm>}
+    <MudButton OnClick="@CancelChanges" Raised="true">@L["Cancel"]</MudButton>
+    <MudButton OnClick="@SaveChanges" Raised="true">@L["Save"]</MudButton>
+}
+
+@code {
+
+}
