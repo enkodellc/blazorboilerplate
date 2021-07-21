@@ -1,0 +1,16 @@
+﻿@implements IDynamicComponent
+
+<DonateButton />
+<MudTooltip Text="Github Repository">
+    <MudIconButton Link="https://github.com/enkodellc/blazorboilerplate"><i class="fa fa-github" aria-hidden="true"></i></MudIconButton>
+</MudTooltip>
+<MudTooltip Text="Admin">
+    <MudIconButton Link="/admin"><i class="fa fa-gear" aria-hidden="true"></i></MudIconButton>
+</MudTooltip>
+<SelectCulture />
+<Login />
+
+@code {
+    public int Order { get => 1; }
+    public string IntoComponent { get => "TopRightBarSection"; }
+}

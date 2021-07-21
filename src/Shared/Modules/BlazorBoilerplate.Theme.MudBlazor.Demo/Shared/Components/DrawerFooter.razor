@@ -1,0 +1,11 @@
+﻿@implements IDynamicComponent
+@inject IStringLocalizer<Global> L
+
+<MudTooltip Text="Help">
+    <MudButton Icon="help" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">@L["AppHelpAndSupport"]</span></MudButton>
+</MudTooltip>
+
+@code {
+    public int Order { get => 1; }
+    public string IntoComponent { get => "DrawerFooter"; }
+}

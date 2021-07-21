@@ -1,0 +1,41 @@
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+@using Microsoft.AspNetCore.Components.Forms
+
+<EditForm Model="@messageDto" OnValidSubmit="@DeleteMessage">
+    <MudListItem>
+        <MudListItemText Class="@messageDto.CSS" Style="width: 100%;">
+            <MudListItemPrimaryText>
+                @messageDto.UserName
+            </MudListItemPrimaryText>
+            <MudListItemSecondaryText>
+                @messageDto.Text
+            </MudListItemSecondaryText>
+        </MudListItemText>
+        <MudIconButton Icon="delete"
+                       Type="submit"
+                       Style="float: right;">
+        </MudIconButton>
+    </MudListItem>
+    <MudDivider />
+</EditForm>
+
+@code
+{    
+    MessageDto messageDto { get; set; }
+
+    [Parameter]
+    public Func<MessageDto, Task> Delete { get; set; }
+
+    [Parameter]
+    public MessageDto message { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        messageDto = message;
+    }
+
+    async Task DeleteMessage()
+    {
+        await Delete(messageDto);
+    }
+}

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+	<RootNamespace>BlazorBoilerplate.Theme.Material.Demo</RootNamespace>
+    <Title>BlazorBoilerplate Demo UI</Title>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorBoilerplate.Theme.MudBlazor\BlazorBoilerplate.Theme.MudBlazor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)Server\BlazorBoilerplate.Server\Modules\" />
+  </Target>
+</Project>
