@@ -33,26 +33,26 @@
 
 <EditForm Model="filter">
     <div class="input-group input-daterange d-flex align-items-center">
-        <InputDate disabled="@busy" @bind-Value="filter.From" class="form-control" placeholder="Da" />
-        <InputDate disabled="@busy" @bind-Value="filter.To" class="form-control" placeholder="A" />
+        <MudDatePicker Disabled="@busy" @bind-Date="filter.From" class="form-control" placeholder="Da" />
+        <MudDatePicker Disabled="@busy" @bind-Date="filter.To" class="form-control" placeholder="A" />
     </div>
 </EditForm>
 <div class="row">
     <div class="col-sm-3 col-xs-6">
         <div class="form-group">
             <label for="Creators">Creators</label>
-            <MatSelectValue Id="Creators" Disabled="@busy" @bind-Value="@filter.CreatedById" Items="@Creators" ValueSelector=@(i => i.Id) FullWidth="true"></MatSelectValue>
+            <MudSelect Id="Creators" Disabled="@busy" @bind-Value="@filter.CreatedById" Items="@Creators" ValueSelector=@(i => i.Id) FullWidth="true"></MudSelect>
         </div>
     </div>
     <div class="col-sm-3 col-xs-6">
         <div class="form-group">
             <label for="Editors">Editors</label>
-            <MatSelectValue Id="Editors" Disabled="@busy" @bind-Value="@filter.ModifiedById" Items="@Editors" ValueSelector=@(i => i.Id) FullWidth="true"></MatSelectValue>
+            <MudSelect Id="Editors" Disabled="@busy" @bind-Value="@filter.ModifiedById" Items="@Editors" ValueSelector=@(i => i.Id) FullWidth="true"></MudSelect>
         </div>
     </div>
     <div class="col-sm-3 col-xs-6">
         <div class="form-group">
-            <MudCheckBox @bind-Checked="@filter.IsCompleted" Indeterminate="true">Is Completed</MudCheckBox>
+            <MudCheckBox @bind-Checked="@filter.IsCompleted">Is Completed</MudCheckBox>
             <MudButton OnClick="@(_ =>
                                  {
                                      filter.IsCompleted = null;
@@ -68,7 +68,7 @@
 
 <div class="row" style="font-weight:bold;background-color:#ddd;padding:5px">
     <div class="col-2">
-        <MudButton Icon="playlist_add" Label="New Todo" OnClick="@((e) => OpenDialog())" Raised="true"></MudButton>
+        <MudButton Icon="@Icons.Filled.PlaylistAdd" Label="New Todo" OnClick="@((e) => OpenDialog())" Raised="true"></MudButton>
     </div>
     <div class="col-2">Todo</div>
     <div class="col-2">Completed</div>
@@ -80,7 +80,7 @@
     <Virtualize @ref="asyncVirtualize" Context="item" ItemsProvider="LoadToDos" ItemSize="48" OverscanCount="10">
         <ItemContent>
             <div class="row row-todo" @key="item.Id">
-                <div class="col-2"><MudIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(item))"></MudIconButton></div>
+                <div class="col-2"><MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteDialog(item))"></MudIconButton></div>
                 <div class="col-2">@item.Title</div>
                 <div class="col-2"><MudCheckBox class="filled-in chk-col-blue" T="bool" Value="@item.IsCompleted" ValueChanged="@(() => Update(item))"></MudCheckBox></div>
                 <div class="col-2">@item.CreatedOn</div>
@@ -103,7 +103,7 @@
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MudTextField @bind-Value="@currentTodo.Title" Label="Title" Icon="title" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
+                    <MudTextField @bind-Value="@currentTodo.Title" Label="Title" Icon="@Icons.Filled.Title" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
                 </div>
                 <div class="form-group">
                     <MudCheckBox @bind-Checked="@currentTodo.IsCompleted" Label="Completed"></MudCheckBox>
@@ -118,7 +118,7 @@
 </MudDialog>
 
 <MudDialog @bind-IsVisible="@deleteDialogOpen" Style="z-index:100">
-    <TitleContent><MudIcon Icon="warning"></MudIcon> @L["Confirm Delete"]</TitleContent>
+    <TitleContent><MudIcon Icon="@Icons.Filled.Warning"></MudIcon> @L["Confirm Delete"]</TitleContent>
     <DialogContent>
         @L["Are you sure you want to delete {0}?", currentTodo.Title]
     </DialogContent>

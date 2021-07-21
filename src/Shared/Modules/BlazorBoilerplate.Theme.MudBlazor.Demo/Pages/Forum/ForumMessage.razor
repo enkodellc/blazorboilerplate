@@ -3,15 +3,10 @@
 
 <EditForm Model="@messageDto" OnValidSubmit="@DeleteMessage">
     <MudListItem>
-        <MudListItemText Class="@messageDto.CSS" Style="width: 100%;">
-            <MudListItemPrimaryText>
-                @messageDto.UserName
-            </MudListItemPrimaryText>
-            <MudListItemSecondaryText>
-                @messageDto.Text
-            </MudListItemSecondaryText>
-        </MudListItemText>
-        <MudIconButton Icon="delete"
+        @messageDto.UserName
+
+        @messageDto.Text
+        <MudIconButton Icon="@Icons.Filled.Delete"
                        Type="submit"
                        Style="float: right;">
         </MudIconButton>
@@ -20,7 +15,7 @@
 </EditForm>
 
 @code
-{    
+{
     MessageDto messageDto { get; set; }
 
     [Parameter]
