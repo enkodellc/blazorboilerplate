@@ -12,7 +12,7 @@
     <ValidationSummary />
     <fieldset>
         <div class="form-group">
-            <MudTextField @bind-Value="@emailParameters.ToAddress" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
+            <MudTextField @bind-Value="@emailParameters.ToAddress" Label="Email" Icon="mail_outline" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
         </div>
         <div class="form-group d-flex justify-content-end">
             <MudButton Type="submit" Raised="true">Send Test Template Email</MudButton>

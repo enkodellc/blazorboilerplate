@@ -3,55 +3,40 @@
 @inject IStringLocalizer<Global> L
 @implements IDynamicComponent
 
-<MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
-    <MatIcon>home</MatIcon> <span class="miniHover">@L["AppNavHome"]</span>
-</MatNavItem>
+<MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">
+    <span class="miniHover">@L["AppNavHome"]</span>
+</MudNavLink>
 
-<MatNavItem Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri">
-    <MatIcon>list_alt</MatIcon> <span class="miniHover">@L["TodoNav"]</span>
-</MatNavItem>
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri" Icon="@Icons.Filled.ListAlt">
+    <span class="miniHover">@L["TodoNav"]</span>
+</MudNavLink>
 
-<MatNavSubMenu>
-    <MatNavSubMenuHeader>
-        <MatNavItem AllowSelection="false">
-            <MatIcon>stars</MatIcon><span class="miniHover"> @L["AppNavFeatures"]</span>
-        </MatNavItem>
-    </MatNavSubMenuHeader>
-    <MatNavSubMenuList>
-        <MatNavItem Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri">
-            <MatIcon>touch_app</MatIcon> <span class="miniHover">@L["AppNavDragAndDrop"]</span>
-        </MatNavItem>
-    </MatNavSubMenuList>
-</MatNavSubMenu>
+<MudNavGroup Title="@L["AppNavFeatures"]" Icon="@Icons.Filled.Stars">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri" Icon="@Icons.Filled.TouchApp">
+        <span class="miniHover">@L["AppNavDragAndDrop"]</span>
+    </MudNavLink>
+</MudNavGroup>
 
-<MatNavItem Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-    <MatIcon>bar_chart</MatIcon> <span class="miniHover">@L["Dashboard"]</span>
-</MatNavItem>
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.BarChart">
+    <span class="miniHover">@L["Dashboard"]</span>
+</MudNavLink>
 
-<MatNavSubMenu>
-    <MatNavSubMenuHeader>
-        <MatNavItem AllowSelection="false" Disabled="@(!IsLoggedIn)">
-            <MatIcon>mail_outline</MatIcon>
-            <span class="miniHover"> @L["AppNavEmail"]</span>
-        </MatNavItem>
-    </MatNavSubMenuHeader>
-    <MatNavSubMenuList>
-        <MatNavItem Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>inbox</MatIcon> <span class="miniHover">@L["AppNavReadEmail"]</span>
-        </MatNavItem>
-        <MatNavItem Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-            <MatIcon>send</MatIcon> <span class="miniHover">@L["AppNavSendEmail"]</span>
-        </MatNavItem>
-    </MatNavSubMenuList>
-</MatNavSubMenu>
+<MudNavGroup Title="@L["AppNavEmail"]" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.MailOutline">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.Inbox">
+        <span class="miniHover">@L["AppNavReadEmail"]</span>
+    </MudNavLink>
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.Send">
+        <span class="miniHover">@L["AppNavSendEmail"]</span>
+    </MudNavLink>
+</MudNavGroup>
 
-<MatNavItem Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)">
-    <MatIcon>forum</MatIcon> <span class="miniHover">@L["AppNavForum"]</span>
-</MatNavItem>
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.Forum">
+    <span class="miniHover">@L["AppNavForum"]</span>
+</MudNavLink>
 
-<MatNavItem Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri">
-    <MatIcon>attach_money</MatIcon> <span class="miniHover">@L["AppNavSponsors"]</span>
-</MatNavItem>
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri" Icon="@Icons.Filled.AttachMoney">
+    <span class="miniHover">@L["AppNavSponsors"]</span>
+</MudNavLink>
 
 @code {
 

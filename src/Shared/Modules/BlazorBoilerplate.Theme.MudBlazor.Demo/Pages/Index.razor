@@ -89,10 +89,10 @@
     .Net WebForms project. Please take the time to Star, Contribute or Donate to support my efforts to continue to drive the project, especially if you use it in production.
 </p>
 
-<MatSnackbar @bind-IsOpen="@lazySnackbarIsOpen">
+<MatSnackbar @bind-IsVisible="@lazySnackbarIsOpen">
     <MatSnackbarContent>If you like BlazorBoilerplate, please put a <a href="https://github.com/enkodellc/blazorboilerplate" target="_blank">star on GitHub</a>.</MatSnackbarContent>
     <MatSnackbarActions>
-        <MudIconButton Icon="@MatIconNames.Stars" Link="https://github.com/enkodellc/blazorboilerplate" style="color: white !important;" target="_blank"></MudIconButton>
+        <MudIconButton Icon="@MudIconNames.Stars" Link="https://github.com/enkodellc/blazorboilerplate" style="color: white !important;" target="_blank"></MudIconButton>
     </MatSnackbarActions>
 </MatSnackbar>
 

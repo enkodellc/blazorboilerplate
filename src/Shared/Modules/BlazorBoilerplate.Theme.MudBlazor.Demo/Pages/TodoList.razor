@@ -52,7 +52,7 @@
     </div>
     <div class="col-sm-3 col-xs-6">
         <div class="form-group">
-            <MatCheckbox @bind-Value="@filter.IsCompleted" Indeterminate="true">Is Completed</MatCheckbox>
+            <MudCheckBox @bind-Checked="@filter.IsCompleted" Indeterminate="true">Is Completed</MudCheckBox>
             <MudButton OnClick="@(_ =>
                                  {
                                      filter.IsCompleted = null;
@@ -82,7 +82,7 @@
             <div class="row row-todo" @key="item.Id">
                 <div class="col-2"><MudIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(item))"></MudIconButton></div>
                 <div class="col-2">@item.Title</div>
-                <div class="col-2"><MatCheckbox class="filled-in chk-col-blue" TValue="bool" Value="@item.IsCompleted" ValueChanged="@(() => Update(item))"></MatCheckbox></div>
+                <div class="col-2"><MudCheckBox class="filled-in chk-col-blue" T="bool" Value="@item.IsCompleted" ValueChanged="@(() => Update(item))"></MudCheckBox></div>
                 <div class="col-2">@item.CreatedOn</div>
                 <div class="col-2">@item.CreatedBy?.UserName</div>
                 <div class="col-2">@item.ModifiedBy?.UserName</div>
@@ -95,38 +95,38 @@
 </div>
 
 @if (currentTodo != null)
-{<MatDialog @bind-IsOpen="@dialogIsOpen">
-    <MatDialogTitle>Create Todo</MatDialogTitle>
-    <MatDialogContent>
+{<MudDialog @bind-IsVisible="@dialogIsOpen">
+    <TitleContent>Create Todo</TitleContent>
+    <DialogContent>
         <EditForm id="newTodoForm" Model="@currentTodo" OnValidSubmit="@NewEntity">
             <FluentValidationValidator />
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MudTextField @bind-Value="@currentTodo.Title" Label="Title" Icon="title" IconTrailing="true" FullWidth="true" Required="true"></MudTextField>
+                    <MudTextField @bind-Value="@currentTodo.Title" Label="Title" Icon="title" Adornment="Adornment.End" FullWidth="true" Required="true"></MudTextField>
                 </div>
                 <div class="form-group">
-                    <MatCheckbox @bind-Value="@currentTodo.IsCompleted" Label="Completed"></MatCheckbox>
+                    <MudCheckBox @bind-Checked="@currentTodo.IsCompleted" Label="Completed"></MudCheckBox>
                 </div>
             </fieldset>
         </EditForm>
-    </MatDialogContent>
-    <MatDialogActions>
+    </DialogContent>
+    <DialogActions>
         <MudButton OnClick="@(e => { dialogIsOpen = false; })">@L["Cancel"]</MudButton>
         <MudButton Type="submit" form="newTodoForm" Raised="true">Create Todo</MudButton>
-    </MatDialogActions>
-</MatDialog>
+    </DialogActions>
+</MudDialog>
 
-<MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
-    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
-    <MatDialogContent>
+<MudDialog @bind-IsVisible="@deleteDialogOpen" Style="z-index:100">
+    <TitleContent><MudIcon Icon="warning"></MudIcon> @L["Confirm Delete"]</TitleContent>
+    <DialogContent>
         @L["Are you sure you want to delete {0}?", currentTodo.Title]
-    </MatDialogContent>
-    <MatDialogActions>
+    </DialogContent>
+    <DialogActions>
         <MudButton OnClick="@(e => { deleteDialogOpen = false; })">@L["Cancel"]</MudButton>
         <MudButton OnClick="@Delete">@L["Delete"]</MudButton>
-    </MatDialogActions>
-</MatDialog>
+    </DialogActions>
+</MudDialog>
 }
 
 @code {
