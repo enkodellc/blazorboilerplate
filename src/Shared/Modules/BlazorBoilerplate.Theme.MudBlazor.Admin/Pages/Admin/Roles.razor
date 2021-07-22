@@ -20,28 +20,32 @@
 }
 else
 {
-    <MudTable Class="mat-elevation-z5" Items="@roles" Striped="true" PageSize="@pageSize" ShowPaging="false">
+    <MudTable Items="@roles" Virtualize="true" Hover="@hover" RowsPerPage="@rows" Dense="@dense" Striped="@striped" FixedHeader="@fixhdr" Height="@(fixhdr?"1080px":"")" Filter="new Func<RoleDto,bool>(FilterFunc)">
+        <ToolBarContent>
+            <MudIconButton @onclick="@(() => OpenUpsertRoleDialog())" Label=@L["New Role"] Icon="@Icons.Filled.Add" Color="Color.Success" Size="Size.Small" />            
+        </ToolBarContent>
         <HeaderContent>
-            <th><MudButton Icon="add" Label=@L["New Role"] OnClick="@(() => OpenUpsertRoleDialog())"></MudButton></th>
-            <th>@L["Name"]</th>
-            <th>@L["Permissions"]</th>
+            <MudTh>Actions</MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<RoleDto, object>(x=>x.Name)">@L["Name"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<RoleDto, object>(x=>x.FormattedPermissions)">@L["Permissions"]</MudTableSortLabel></MudTh>
         </HeaderContent>
+        
         <RowTemplate Context="RoleRow">
-            <td>
-                <div style="width:155px;">
-                    <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)"></MudIconButton>
-                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)"></MudIconButton>
-                </div>
-            </td>
-            <td><div style="width:130px;">@RoleRow.Name</div></td>
-            <td>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)"></MudIconButton>
+                <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)"></MudIconButton>
+            </MudTd>
+            <MudTd DataLabel="Name">@RoleRow.Name</MudTd>
+            <MudTd DataLabel="Permission">@RoleRow.FormattedPermissions
                 <MudChipSet>
                     @foreach (var permission in @RoleRow.Permissions)
                         {
                         <MudChip Text="@permission"></MudChip>
                         }
                 </MudChipSet>
-            </td>
+            </MudTd>
+            
+           
         </RowTemplate>
     </MudTable>
 }
@@ -85,5 +89,29 @@ else
 </MudDialog>
 
 @code {
+    private bool dense = true;
+    private bool hover = true;
+    private bool _hide = true;
+    private bool striped = true;
+    private bool fixhdr = true;
+    public bool _loading { get; set; }
+    private int rows = 100;
+    string snackMsg = "";
+    private string searchString = "";
 
+    private bool FilterFunc(RoleDto element)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name != null && element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.FormattedPermissions != null && element.FormattedPermissions.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+    private void MoreRows(MouseEventArgs e)
+    {
+        if (rows == 16) { rows = 26; } else { rows = 16; }
+    }
 }
