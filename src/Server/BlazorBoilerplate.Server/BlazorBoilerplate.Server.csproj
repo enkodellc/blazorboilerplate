@@ -47,7 +47,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.12.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.12.1" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.2.0-dev-00272" />
