@@ -1,0 +1,292 @@
+﻿@inherits TranslationsPage
+@page "/admin/translations"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+@using Blazored.TextEditor
+
+<PageTitle>@L["Translations"]</PageTitle>
+
+@if (localizationRecordKeys == null)
+{
+    <LoadingBackground>
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MudGrid Class="my-4">
+        <MudItem xs="12" sm="4" md="2">
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder=@L["Search"] Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />
+        </MudItem>
+    </MudGrid>
+
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<LocalizationRecordKey>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" Class="mb-4"
+              SelectedItemChanged="async (LocalizationRecordKey key) => await LoadLocalizationRecords((LocalizationRecordKey)key)" @ref="table">
+        <ToolBarContent>
+            <MudButton StartIcon="@Icons.Filled.Add" OnClick="@OpenNewKeyDialogOpen" Variant="Variant.Filled" Color="Color.Primary" Class="ma-2">@L["NewTranslation"]</MudButton>
+            <MudButton OnClick="@ReloadTranslations" Class="ma-2">@L["ReloadTranslations"]</MudButton>
+            <MudButton OnClick="@(e => { navigationManager.NavigateTo("/api/localization/export", true); })" Class="ma-2">@L["Export"]</MudButton>
+            <InputFile id="fileInput" OnChange="UploadFiles" hidden multiple accept=".po" />
+            <MudButton HtmlTag="label"
+                       StartIcon="@Icons.Filled.CloudUpload"
+                       Class="ma-2"
+                       for="fileInput">
+                @L["Import PO file"]
+            </MudButton>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh></MudTh>
+            <MudTh>@L["MsgId"]</MudTh>
+            <MudTh>@L["ContextId"]</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="keyRow">
+            <MudTd>
+                <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenEditDialog(keyRow))" />
+                <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteDialog(keyRow))" />
+            </MudTd>
+            <MudTd>@keyRow.MsgId</MudTd>
+            <MudTd>@keyRow.ContextId</MudTd>
+        </RowTemplate>
+        <ChildRowContent Context="keyRow">
+            <MudTr>
+                <td colspan="3">
+                    @if (keyRow.LocalizationRecords != null)
+                        {
+                        <MudTable Items="@keyRow.LocalizationRecords" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" Class="ma-4">
+                            <HeaderContent>
+                                <MudTh></MudTh>
+                                <MudTh>@L["Culture"]</MudTh>
+                                <MudTh style="width: 100%;">@L["Translation"]</MudTh>
+                                <MudTh></MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="row">
+                                <MudTd>
+                                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => DeleteLocalizationRecord(row))" Disabled="@(row.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture)"></MudIconButton>
+                                </MudTd>
+                                <MudTd><b>@row.Culture</b></MudTd>
+                                <MudTd>
+                                    <MudTextField @bind-Value="@row.Translation" Lines="5" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+                                </MudTd>
+                                <MudTd>
+                                    <div>
+                                        <MudButton Style="margin-bottom: 5px; white-space: nowrap" Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(() => OpenEditAsHtmlDialog(row))">@L["Edit as HTML"]</MudButton>
+                                        <MudButton Variant="@(row.PluralTranslations.Count == 0 ? Variant.Outlined : Variant.Filled)" Color="Color.Primary" OnClick="@(() => OpenPluralDialog(row))">@L["Plural"]</MudButton>
+                                    </div>
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+
+                        @if (LocalizationCultures.Count > 0)
+                            {
+                            <MudCard Class="ma-4">
+                                <MudCardContent>
+                                    <EditForm Model="@newLocalizationRecord" OnValidSubmit="@SaveNewLocalizationRecord">
+                                        <FluentValidationValidator />
+                                        <ValidationSummary />
+                                        <MudSelect @bind-Value="@newLocalizationRecord.Culture" Label=@L["Culture"] AdornmentIcon="@Icons.Material.Filled.Public" AdornmentColor="Color.Primary">
+                                            @foreach (var item in LocalizationCultures)
+                                                {
+                                                <MudSelectItem Value="@item">@item</MudSelectItem>
+                                                }
+                                        </MudSelect>
+                                        <MudTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" Lines="5" Class="mb-4"></MudTextField>
+                                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">@L["Add"]</MudButton>
+                                        <MudButton OnClick="@(() => OpenEditAsHtmlDialog(newLocalizationRecord))" Variant="Variant.Filled" Color="Color.Secondary">@L["Edit as HTML"]</MudButton>
+                                    </EditForm>
+                                </MudCardContent>
+                                <MudCardActions>
+                                    <MudButton OnClick="@CancelChanges">@L["Cancel"]</MudButton>
+                                    <MudButton OnClick="@SaveChanges" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
+                                </MudCardActions>
+                            </MudCard>
+                            }
+                        }
+                </td>
+            </MudTr>
+        </ChildRowContent>
+        <PagerContent>
+            <MudTablePager RowsPerPageString=@L["Rows per page"] />
+        </PagerContent>
+    </MudTable>
+
+    <MudDialog @bind-IsVisible="@isEditDialogOpen">
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
+                @L["Edit {0}", currentKey]
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudTextField @bind-Value="@newKey.ContextId" Label=@L["ContextId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+            <MudTextField @bind-Value="@newKey.MsgId" Label=@L["MsgId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="@(e => { isEditDialogOpen = false; })">@L["Cancel"]</MudButton>
+            <MudButton OnClick="@(()=>EditLocalizationRecordKey())" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+    <MudDialog @bind-IsVisible="@isDeleteDialogOpen">
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />
+                @L["Confirm Delete"]
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            @L["Are you sure you want to delete {0}?", currentKey]
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="@(e => { isDeleteDialogOpen = false; })">@L["Cancel"]</MudButton>
+            <MudButton OnClick="@(()=>DeleteLocalizationRecordKey(currentKey))" Variant="Variant.Filled" Color="Color.Error">@L["Delete"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+    <MudDialog @bind-IsVisible="@isNewKeyDialogOpen">
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
+                @L["NewTranslation"]
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <EditForm id="newKeyForm" Model="@newLocalizationRecord" OnValidSubmit="@SaveNewKey">
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <MudTextField @bind-Value="@newLocalizationRecord.ContextId" Label=@L["ContextId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                <MudTextField @bind-Value="@newLocalizationRecord.MsgId" Label=@L["MsgId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                <MudTextField @bind-Value="@newLocalizationRecord.Culture" Label=@L["Culture"] AdornmentIcon="@Icons.Filled.Public" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] Disabled="true"></MudTextField>
+
+                <MudTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" Required="true" RequiredError=@L["Required"] Lines="5" Style="resize: both"></MudTextField>
+            </EditForm>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="@CancelChanges">@L["Cancel"]</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" form="newKeyForm" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+    <MudDialog @bind-IsVisible="@isPluralDialogOpen">
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
+                @L["Plural"]
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudTable Items="@currentLocalizationRecord.PluralTranslations" Striped="true">
+                <HeaderContent>
+                    <MudTh></MudTh>
+                    <MudTh>@L["Index"]</MudTh>
+                    <MudTh>@L["Translation"]</MudTh>
+                </HeaderContent>
+                <RowTemplate Context="row">
+                    <MudTd>
+                        <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => DeletePluralTranslation(row))" />
+                    </MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="@row.Index" Lines="5" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+                    </MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="@row.Translation" Lines="5" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+            @if (PluralFormRules[currentLocalizationRecord.Culture].Count > currentLocalizationRecord.PluralTranslations.Count)
+            {<EditForm Model="@newPlural" OnValidSubmit="@SaveNewPlural">
+                    <FluentValidationValidator />
+                    <ValidationSummary />
+                    <MudTextField @bind-Value="@newPlural.Index" Label=@L["Index"] FullWidth="true"></MudTextField>
+                    <MudTextField @bind-Value="@newPlural.Translation" Label=@L["Translation"] FullWidth="true" Lines="5"></MudTextField>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="my-2">@L["Add"]</MudButton>
+                </EditForm>}
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="@CancelPluralChanges">@L["Cancel"]</MudButton>
+            <MudButton OnClick="@SavePluralChanges" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+    @if (currentLocalizationRecord != null)
+    {<MudDialog Id="editashtmldialog" @bind-IsVisible="@isEditAsHtmlDialogOpen">
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
+                    @L["Edit as HTML"]
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <BlazoredTextEditor @ref="@HtmlEditor">
+                    <ToolbarContent>
+                        <select class="ql-header">
+                            <option selected=""></option>
+                            <option value="1"></option>
+                            <option value="2"></option>
+                            <option value="3"></option>
+                            <option value="4"></option>
+                            <option value="5"></option>
+                        </select>
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                        <button class="ql-strike"></button>
+                        <select class="ql-color"></select>
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                        <select class="ql-align">
+                            <option selected=""></option>
+                            <option value="center"></option>
+                            <option value="right"></option>
+                            <option value="justify"></option>
+                        </select>
+                        <button class="ql-link"></button>
+                    </ToolbarContent>
+                    <EditorContent>
+                    </EditorContent>
+                </BlazoredTextEditor>
+            </DialogContent>
+            <DialogActions>
+                <MudButton OnClick="@(e => { isEditAsHtmlDialogOpen = false; })">@L["Cancel"]</MudButton>
+                <MudButton OnClick="@(() => SaveLocalizationRecordAsHTML())" Variant="Variant.Filled" Color="Color.Primary">@L["Confirm"]</MudButton>
+            </DialogActions>
+        </MudDialog>}
+}
+
+@code {
+    BlazoredTextEditor HtmlEditor;
+    private MudTable<LocalizationRecordKey> table;
+
+    protected override void SetHTML(string html)
+    {
+        HtmlEditor.LoadHTMLContent(html);
+    }
+
+    protected override Task<string> GetHTML() => HtmlEditor.GetHTML();
+
+    private async Task UploadFiles(InputFileChangeEventArgs e)
+    {
+        await Upload(e.GetMultipleFiles().Select(e => new FileUploadEntry(e)));
+    }
+
+    private async Task<TableData<LocalizationRecordKey>> ServerReload(TableState state)
+    {
+        await OnPage(state.Page, state.PageSize);
+
+        return new TableData<LocalizationRecordKey>() { TotalItems = totalItemsCount, Items = localizationRecordKeys };
+    }
+
+    private void OnSearch(string text)
+    {
+        filter = text;
+        table.ReloadServerData();
+    }
+
+    protected override async Task Reload()
+    {
+        await table.ReloadServerData();
+    }
+}

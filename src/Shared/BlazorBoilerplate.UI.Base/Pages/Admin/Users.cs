@@ -61,6 +61,11 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
             await LoadUsers();
         }
+
+        protected virtual async Task Reload()
+        {
+            await LoadUsers();
+        }
         protected async Task LoadUsers()
         {
             try
@@ -153,7 +158,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
-                    await LoadUsers();
+                    await Reload();
                     editDialogOpen = false;
                 }
                 else
@@ -179,7 +184,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
-                    await LoadUsers();
+                    await Reload();
                     newUserViewModel = new RegisterViewModel();
                     createUserDialogOpen = false;
                 }
@@ -229,7 +234,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
                 await apiClient.SaveChanges();
                 viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
                 deleteUserDialogOpen = false;
-                await LoadUsers();
+                await Reload();
             }
             catch (Exception ex)
             {

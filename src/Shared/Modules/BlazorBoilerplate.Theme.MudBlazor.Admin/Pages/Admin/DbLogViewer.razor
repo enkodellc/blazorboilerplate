@@ -1,0 +1,83 @@
+﻿@inherits DbLogViewerPage
+@page "/admin/dblog"
+
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadmindblog"] />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>Db Log Viewer</PageTitle>
+<p>
+    Paginated viewing and fetching of system logs from the database.
+</p>
+
+@if (dbLogItems == null)
+{
+    <LoadingBackground>
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MudGrid Class="my-4">
+        <MudItem xs="12" sm="4" md="2">
+            <MudSelect Value="DebugLevel" ValueChanged="(string i) => OnFilter(i)" Clearable="true">
+                @foreach (var item in DebugLevels)
+                {
+                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                }
+            </MudSelect></MudItem>
+    </MudGrid>
+    
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<DbLog>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" @ref="table">
+        <HeaderContent>
+            <MudTh>Timestamp</MudTh>
+            <MudTh>Logging Level</MudTh>
+            <MudTh>Log Message</MudTh>
+            <MudTh>Exception</MudTh>
+            <MudTh>Recorded Properties</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd><span style="font-size:small">@context.TimeStamp.ToString()</span></MudTd>
+            <MudTd><span style="font-size:small">@context.Level</span></MudTd>
+            <MudTd><span style="font-size:small">@context.Message</span></MudTd>
+            <MudTd><span style="font-size:small">@context.Exception?.ToString()</span></MudTd>
+            <MudTd>
+                @if (context.LogProperties?.Any() ?? false)
+                    {
+                    <ul>
+                        @foreach (var propertyPair in context.LogProperties)
+                            {
+                            <li style="font-size:small">@($"{propertyPair.Key}:  {propertyPair.Value}")</li>
+                            }
+                    </ul>
+                    }
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager RowsPerPageString=@L["Rows per page"] />
+        </PagerContent>
+    </MudTable>
+}
+
+@code {
+    private MudTable<DbLog> table;
+
+    private async Task<TableData<DbLog>> ServerReload(TableState state)
+    {
+        await OnPage(state.Page, state.PageSize);
+
+        return new TableData<DbLog>() { TotalItems = totalItemsCount, Items = dbLogItems };
+    }
+
+    private void OnFilter(string debugLevel)
+    {
+        DebugLevel = debugLevel;
+        table.ReloadServerData();
+    }
+}

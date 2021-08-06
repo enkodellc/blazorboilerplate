@@ -18,7 +18,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
         [Inject] protected IStringLocalizer<Global> L { get; set; }
 
         protected List<DbLog> dbLogItems;
-        protected string[] DebugLevels = { string.Empty, "Debug", "Information", "Warning", "Error" };
+        protected string[] DebugLevels = { "Debug", "Information", "Warning", "Error" };
         protected string DebugLevel = string.Empty;
         protected int pageSize { get; set; } = 10;
         protected int pageIndex { get; set; } = 0;
@@ -44,8 +44,8 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
                 DebugLevel = debugLevel;
                 Expression<Func<DbLog, bool>> predicate = null;
 
-                if (debugLevel != string.Empty)
-                    predicate = (i => i.Level == debugLevel);
+                if (!string.IsNullOrWhiteSpace(debugLevel))
+                    predicate = i => i.Level == debugLevel;
 
                 var result = await apiClient.GetLogs(predicate, pageSize, pageIndex * pageSize);
 

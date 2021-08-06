@@ -1,0 +1,106 @@
+﻿@inherits EmailPage
+@page "/admin/settings/email"
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Link="/admin/settings" Title=@L["BreadCrumbadminsettings"] />
+        <Breadcrumb Title=@L["BreadCrumbadminsettingsemail"] />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>@L["EmailSettings"]</PageTitle>
+
+@if (settings == null)
+{
+    <LoadingBackground>
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <EditForm Model="@settings">
+        <FluentValidationValidator />
+        <ValidationSummary />
+        <MudText Typo="Typo.h4">@L["OutgoingEmail"]</MudText>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromAddress].Value" Label="@L["SenderEmail"]" AdornmentIcon="@Icons.Filled.AlternateEmail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromName].Value" Label="@L["SenderName"]" AdornmentIcon="@Icons.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpServer].Value" Label="@L["SmtpServer"]" AdornmentIcon="@Icons.Filled.Dns" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpUsername].Value" Label="@L["UserName"]" AdornmentIcon="@Icons.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudSwitch @bind-Checked="@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
+
+        @if (@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool)
+        {
+            <MudSelect @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpSslProtocol].Value" Label="SSL Protocol">
+                @foreach (var item in sslProtocols)
+                        {
+                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                        }
+            </MudSelect>
+        }
+        <MudDivider Class="my-4" />
+        <MudText Typo="Typo.h4">@L["IncomingEmail"]</MudText>
+        <MudText Typo="Typo.h4">POP3</MudText>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopServer].Value" Label="@L["PopServer"]" AdornmentIcon="@Icons.Filled.Dns" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopUsername].Value" Label="@L["UserName"]" AdornmentIcon="@Icons.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudSwitch @bind-Checked="@settings[SettingKey.EmailConfiguration_PopUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
+
+        <MudDivider Class="my-4" />
+        <MudText Typo="Typo.h4">IMAP</MudText>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapServer].Value" Label="@L["ImapServer"]" AdornmentIcon="@Icons.Filled.Dns" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapUsername].Value" Label="@L["UserName"]" AdornmentIcon="@Icons.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudSwitch @bind-Checked="@settings[SettingKey.EmailConfiguration_ImapUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
+    </EditForm>
+
+    <MudButton OnClick="@(()=>apiClient.CancelChanges())">@L["Cancel"]</MudButton>
+    <MudButton OnClick="@SaveChanges" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
+    <MudButton OnClick="@(e => { isSendEmailDialogOpen = true; })">@L["Send test email"]</MudButton>
+
+    <MudDialog @bind-IsVisible="@isSendEmailDialogOpen">
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.Send" Class="mr-3 mb-n1" />
+                @L["Send test email"]
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <EditForm id="emailForm" Model="@email" OnValidSubmit="@SendTestEmail">
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <MudTextField @bind-Value="@email.ToAddress" Label=@L["Email"] AdornmentIcon="@Icons.Outlined.Email" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                <MudSwitch @bind-Checked="@email.Queued" Label=@L["Queued"] Color="Color.Primary" />
+            </EditForm>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="@(e => { isSendEmailDialogOpen = false; })">@L["Cancel"]</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" form="emailForm" Variant="Variant.Filled" Color="Color.Primary">@L["Send"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+@code {
+}

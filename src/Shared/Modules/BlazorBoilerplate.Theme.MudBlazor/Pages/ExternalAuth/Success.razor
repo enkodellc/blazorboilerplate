@@ -1,0 +1,24 @@
+﻿@page "/externalauth/success"
+
+@attribute [Authorize]
+@inject AppState appState
+@inject NavigationManager navigationManager
+@inject HttpClient Http
+@inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Global> L
+@inject IViewNotifier viewNotifier
+<MudCard>
+    <div class="logo" style="padding: 50px;">
+        <img src=@($"{Module.ContentPath}/images/logo.svg") style="width:100px;" />
+        <br />BlazorBoilerplate
+        <br />
+        <h4>External authentication success</h4>
+        <MudButton Link="/">Home</MudButton>
+    </div>
+</MudCard>
+
+@code {
+
+
+
+}

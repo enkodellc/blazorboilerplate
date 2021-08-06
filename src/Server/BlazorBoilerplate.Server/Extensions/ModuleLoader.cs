@@ -13,7 +13,7 @@ namespace BlazorBoilerplate.Server.Extensions
         {
             var assemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
 
-            assemblyPath = Path.Combine(@$"{assemblyPath}","Modules");
+            assemblyPath = Path.Combine(@$"{assemblyPath}","Themes/MudBlazor");
 
             List<Assembly> allAssemblies = new();
 

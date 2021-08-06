@@ -1,0 +1,36 @@
+﻿@page "/forum"
+@inherits ForumPageModel
+@inject IStringLocalizer<Global> L
+
+<PageTitle>Forum</PageTitle>
+
+<p class="my-4">This forum page uses SignalR and persists in a database.</p>
+
+<AuthorizeView Context="AuthorizeContext">
+    <NotAuthorized>
+        <MudAlert Severity="Severity.Warning">
+            <a href="@BlazorBoilerplate.Constants.Settings.LoginPath">Log in</a> to post a message.
+        </MudAlert>
+    </NotAuthorized>
+    <Authorized>
+        <ForumMessageCreateForm Send="Send" />
+
+        <MudList Clickable="true">
+            @if (Messages == null || Messages.Count == 0)
+            {
+                <MudListItem>
+                    <MudSkeleton />
+                </MudListItem>
+            }
+            else
+            {
+                @foreach (var message in Messages)
+                {
+                    <MudListItem>
+                        <ForumMessage Delete="Delete" Message="@message" />
+                    </MudListItem>
+                }
+            }
+        </MudList>
+    </Authorized>
+</AuthorizeView>

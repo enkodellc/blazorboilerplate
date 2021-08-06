@@ -1,0 +1,61 @@
+@using Microsoft.AspNetCore.Components;
+@inject NavigationManager navigationManager
+@inject IStringLocalizer<Global> L
+@implements IDynamicComponent
+
+<MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">
+    @L["AppNavHome"]
+</MudNavLink>
+
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri" Icon="@Icons.Filled.ListAlt">
+    @L["TodoNav"]
+</MudNavLink>
+
+<MudNavGroup Title="@L["AppNavFeatures"]" Icon="@Icons.Filled.Stars">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri" Icon="@Icons.Filled.TouchApp">
+        @L["AppNavDragAndDrop"]
+    </MudNavLink>
+</MudNavGroup>
+
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.BarChart">
+    @L["Dashboard"]
+</MudNavLink>
+
+<MudNavGroup Title="@L["AppNavEmail"]" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.MailOutline">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.Inbox">
+        @L["AppNavReadEmail"]
+    </MudNavLink>
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.Send">
+        @L["AppNavSendEmail"]
+    </MudNavLink>
+</MudNavGroup>
+
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.Forum">
+    @L["AppNavForum"]
+</MudNavLink>
+
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri" Icon="@Icons.Filled.AttachMoney">
+    @L["AppNavSponsors"]
+</MudNavLink>
+
+@code {
+
+    public int Order { get => 1; }
+    public string IntoComponent { get => "NavMenu"; }
+
+    public bool IsLoggedIn = false;
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        IsLoggedIn = false;
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            IsLoggedIn = true;
+        }
+    }
+}

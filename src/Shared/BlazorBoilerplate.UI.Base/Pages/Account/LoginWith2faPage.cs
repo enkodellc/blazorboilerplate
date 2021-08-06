@@ -36,7 +36,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
 
         protected override async Task OnInitializedAsync()
         {
-            if (navigationManager.TryGetQueryString<string>("ReturnUrl", out string url))
+            if (navigationManager.TryGetQueryString("ReturnUrl", out string url))
                 ReturnUrl = url;
 
             var user = (await authenticationStateTask).User;

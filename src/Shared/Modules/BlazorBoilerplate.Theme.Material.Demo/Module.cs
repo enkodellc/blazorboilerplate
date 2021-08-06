@@ -1,7 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Theme.Material.Demo.Shared.Components;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Theme.Material.Demo

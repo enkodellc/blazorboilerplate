@@ -24,9 +24,6 @@
 }
 else
 {
-    <div class="row" style="margin-left: 0;">
-        <RefreshTimer ElapsedEvent="@(async (_, __) => await LoadData(DebugLevel))" />
-    </div>
     <MatSelectValue Value="DebugLevel" Items="@DebugLevels"
                     ValueSelector=@(i => i)
                     ValueChanged="(string i) => LoadData(i)">

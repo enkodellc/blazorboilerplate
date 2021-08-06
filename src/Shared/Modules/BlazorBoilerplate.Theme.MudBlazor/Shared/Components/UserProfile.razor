@@ -1,0 +1,50 @@
+﻿@using BlazorBoilerplate.Shared.Models.Account
+@using Microsoft.AspNetCore.Components
+@inject AuthenticationStateProvider authStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        <div class="drawer-profile">
+            <div class="triangle-container">
+                <div class="triangles">
+                </div>
+            </div>
+            <MudIconButton Icon="@Icons.Filled.AccountCircle" Link="/account/profile" />
+            @if (userViewModel == null)
+            {
+                <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+            }
+            else
+            {
+                <span><b><a href="/account/profile">@userViewModel.UserName</a></b></span>
+                <Login />
+            }
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="drawer-profile">
+            <div class="triangle-container">
+                <div class="triangles">
+                </div>
+            </div>
+            <Login ShowLogInLabel="true" />
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    UserViewModel userViewModel;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        userViewModel = null;
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+            userViewModel = await ((IdentityAuthenticationStateProvider)authStateProvider).GetUserViewModel();
+    }
+}

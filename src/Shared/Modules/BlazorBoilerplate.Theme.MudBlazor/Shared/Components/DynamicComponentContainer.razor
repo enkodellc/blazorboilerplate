@@ -1,0 +1,17 @@
+﻿@using Microsoft.Extensions.DependencyInjection
+@inherits OwningComponentBase
+@functions {
+    protected RenderFragment CreateDynamicComponent(IDynamicComponent component) => builder =>
+    {
+        builder.OpenComponent(0, component.GetType());
+        builder.CloseComponent();
+    };
+}
+@code {
+    protected IEnumerable<IDynamicComponent> components { get; set; }
+
+    protected override void OnInitialized()
+    {
+        components = ScopedServices.GetServices<IDynamicComponent>().Where(i => i.IntoComponent == GetType().Name).OrderBy(i => i.Order);
+    }
+}

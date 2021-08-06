@@ -14,7 +14,7 @@ namespace BlazorBoilerplate.Shared.Models
                 if (prop.PropertyType == typeof(DateTime?))
                 {
                     var dt = (DateTime?)prop.GetValue(this);
-                    parameters.Add(prop.Name, dt == null ? null : dt.Value.ToString("s"));
+                    parameters.Add(prop.Name, dt?.ToString("s"));
                 }
                 else
                     parameters.Add(prop.Name, prop.GetValue(this));

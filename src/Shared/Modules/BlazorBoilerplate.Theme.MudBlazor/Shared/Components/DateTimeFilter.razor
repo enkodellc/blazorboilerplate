@@ -1,0 +1,98 @@
+﻿@inject IStringLocalizer<Global> L
+
+<MudGrid>
+    <MudItem xs="12" sm="6" Class="d-flex align-items-center">
+        <MudDatePicker Disabled="@Busy" @bind-Date="Filter.From" Label=@L["From"] Class="mr-2" @ref="_fromDatePicker">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => { _fromDatePicker.Clear(); _fromTimePicker.Clear(); })">@L["Cancel"]</MudButton>
+                <MudButton OnClick="@(() => _fromDatePicker.Close(false))">@L["Close"]</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(() => _fromDatePicker.Close())">Ok</MudButton>
+            </PickerActions>
+        </MudDatePicker>
+        <MudTimePicker @ref="_fromTimePicker" Disabled="@(Busy || Filter.From == null)" @bind-Time="fromTime" InputIcon="@Icons.Material.Filled.AccessTime">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _fromTimePicker.Clear())">@L["Cancel"]</MudButton>
+                <MudButton OnClick="@(() => _fromTimePicker.Close(false))">@L["Close"]</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(() => _fromTimePicker.Close())">Ok</MudButton>
+            </PickerActions>
+        </MudTimePicker>
+    </MudItem>
+    <MudItem xs="12" sm="6" Class="d-flex align-items-center">
+        <MudDatePicker Disabled="@Busy" @bind-Date="Filter.To" Label=@L["To"] Class="mr-2" @ref="_toDatePicker">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => { _toDatePicker.Clear(); _toTimePicker.Clear(); })">@L["Cancel"]</MudButton>
+                <MudButton OnClick="@(() => _toDatePicker.Close(false))">@L["Close"]</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(() => _toDatePicker.Close())">Ok</MudButton>
+            </PickerActions>
+        </MudDatePicker>
+        <MudTimePicker @ref="_toTimePicker" Disabled="@(Busy || Filter.To == null)" @bind-Time="toTime" InputIcon="@Icons.Material.Filled.AccessTime">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _toTimePicker.Clear())">@L["Cancel"]</MudButton>
+                <MudButton OnClick="@(() => _toTimePicker.Close(false))">@L["Close"]</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(() => _toTimePicker.Close())">Ok</MudButton>
+            </PickerActions>
+        </MudTimePicker>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public IDateTimeFilter Filter { get; set; }
+
+    [Parameter]
+    public bool Busy { get; set; }
+
+    private MudDatePicker _fromDatePicker;
+    private MudDatePicker _toDatePicker;
+    MudTimePicker _fromTimePicker;
+    MudTimePicker _toTimePicker;
+
+    private TimeSpan? _fromTime;
+    private TimeSpan? fromTime
+    {
+        get => _fromTime;
+        set
+        {
+            if (Filter.From.HasValue)
+            {
+                var date = Filter.From.Value;
+
+                if (value != null)
+                {
+                    Filter.From = new DateTime(date.Year, date.Month, date.Day, value.Value.Hours, value.Value.Minutes, 0);
+                }
+                else
+                    Filter.From = new DateTime(date.Year, date.Month, date.Day);
+
+                _fromTime = value;
+            }
+            else
+                _fromTime = null;
+        }
+    }
+
+    private TimeSpan? _toTime;
+    private TimeSpan? toTime
+    {
+        get => _toTime;
+        set
+        {
+            if (Filter.To.HasValue)
+            {
+                var date = Filter.To.Value;
+
+                if (value != null)
+                {
+                    Filter.To = new DateTime(date.Year, date.Month, date.Day, value.Value.Hours, value.Value.Minutes, 0).AddMinutes(1);
+                }
+                else
+                    Filter.To = new DateTime(date.Year, date.Month, date.Day);
+
+                _toTime = value;
+            }
+            else
+                _toTime = null;
+        }
+    }
+
+}

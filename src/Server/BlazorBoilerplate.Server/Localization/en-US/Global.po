@@ -419,7 +419,7 @@ msgid "AppHoverNavToggle"
 msgstr "Toggle Navigation Bar"
 
 msgid "AppName"
-msgstr "Blazer Boilerplate"
+msgstr "Blazor Boilerplate"
 
 msgid "AppNavDashboard"
 msgstr "Dashboard"

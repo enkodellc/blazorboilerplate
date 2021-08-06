@@ -1,0 +1,42 @@
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+@using Microsoft.AspNetCore.Components.Forms
+
+@if (Creating)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <EditForm OnValidSubmit="CreateMessage" Model="@messageDto">
+        <MudCard>
+            <MudCardContent>
+                <MudTextField FullWidth="true" Placeholder="Type your message" @bind-Value="@messageDto.Text" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Style="float: right">Send</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+}
+
+@code
+{
+    MessageDto messageDto { get; set; } = new MessageDto();
+
+    [Parameter]
+    public Func<MessageDto, Task> Send { get; set; }
+
+    bool IsOpened { get; set; }
+
+    bool Creating { get; set; } = false;
+
+    async Task CreateMessage()
+    {
+        Creating = true;
+        StateHasChanged();
+        await Send(messageDto);
+        messageDto.Text = string.Empty;
+        Creating = false;
+        StateHasChanged();
+    }
+}

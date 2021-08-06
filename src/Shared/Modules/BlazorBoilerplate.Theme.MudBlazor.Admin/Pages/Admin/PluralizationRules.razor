@@ -1,0 +1,54 @@
+﻿@inherits PluralizationRulesPage
+@page "/admin/pluralizationrules"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<PageTitle>@L["Pluralization rules"]</PageTitle>
+
+@if (PluralFormRules == null)
+{
+    <LoadingBackground>
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MudTable Items="@PluralFormRules" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" Class="my-4">
+        <ToolBarContent>
+            <MudButton OnClick="@CancelChanges" Class="ma-2">@L["Cancel"]</MudButton>
+            <MudButton OnClick="@SaveChanges" Variant="Variant.Filled" Color="Color.Primary" Class="ma-2">@L["Save"]</MudButton>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh></MudTh>
+            <MudTh>@L["Culture"]</MudTh>
+            <MudTh>@L["Count"]</MudTh>
+            <MudTh>@L["Selector"]</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="row">
+            <MudTd>
+                <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDelete(row))"></MudIconButton>
+            </MudTd>
+            <MudTd>@row.Language</MudTd>
+            <MudTd><MudTextField @bind-Value="@row.Count" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField></MudTd>
+            <MudTd><MudTextField @bind-Value="@row.Selector" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField></MudTd>
+        </RowTemplate>
+    </MudTable>
+    @if (LocalizationCultures.Count > 0)
+    {<EditForm Model="@newPluralFormRule" OnValidSubmit="@SaveNewPluralFormRule">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <MudSelect @bind-Value="@newPluralFormRule.Language" Label=@L["Culture"] AdornmentIcon="@Icons.Material.Filled.Public" AdornmentColor="Color.Primary">
+                @foreach (var item in LocalizationCultures)
+                        {
+                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                        }
+            </MudSelect>
+            <MudTextField @bind-Value="@newPluralFormRule.Count" Label=@L["Count"] FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+            <MudTextField @bind-Value="@newPluralFormRule.Selector" Label=@L["Selector"] FullWidth="true" Required="true" RequiredError=@L["Required"] Class="mb-4"></MudTextField>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">@L["Add"]</MudButton>
+        </EditForm>}
+}
+
+@code {
+
+}
