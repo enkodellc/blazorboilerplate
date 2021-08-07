@@ -362,6 +362,7 @@ healthchecksdb
 
 /src/Server/BlazorBoilerplate.Server/Keys
 /src/Server/BlazorBoilerplate.Server/Modules
+/src/Server/BlazorBoilerplate.Server/Themes
 /src/Server/BlazorBoilerplate.Server/Properties/PublishProfiles
 /src/Server/BlazorBoilerplate.Server/Properties/ServiceDependencies
 !/src/Server/BlazorBoilerplate.Server/Properties/PublishProfiles/Release-win-x64.pubxml
