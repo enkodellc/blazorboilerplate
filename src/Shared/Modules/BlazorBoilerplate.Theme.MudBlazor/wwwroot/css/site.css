@@ -9,7 +9,7 @@ html, body {
     top: 0;
     bottom: 0;
     z-index: -1;
-    background-color: #5D2E8F;
+    background-color: var(--mud-palette-appbar-background);
 }
 
 .triangles {
@@ -75,7 +75,7 @@ html, body {
 }
 
 .mud-drawer-header {
-    background-color: #5D2E8F;
+    background-color: var(--mud-palette-appbar-background);
     padding-bottom: 0;
     padding-top: 0;
 }
@@ -84,7 +84,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #5D2E8F;
+    background-color: var(--mud-palette-appbar-background);
     height: 64px;
     color: #fff;
 }
