@@ -18,8 +18,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         [MaxLength(64)]
         public string LastName { get; set; }
 
-        [MaxLength(64)]
-        public string FullName { get; set; }
+        public string FullName => $"{FirstName} {LastName}";
 
         [JsonIgnore]
         public override string PasswordHash { get; set; }

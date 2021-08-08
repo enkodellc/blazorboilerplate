@@ -279,7 +279,6 @@ namespace BlazorBoilerplate.Storage
                     UserName = userName,
                     Email = email,
                     PhoneNumber = phoneNumber,
-                    FullName = fullName,
                     FirstName = firstName,
                     LastName = lastName,
                     EmailConfirmed = true
