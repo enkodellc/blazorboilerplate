@@ -409,7 +409,7 @@ msgid "AppHoverNavToggle"
 msgstr "Esconda a Barra de Navigação"
 
 msgid "AppName"
-msgstr "Blazer Boilerplate"
+msgstr "Blazor Boilerplate"
 
 msgid "AppNavHome"
 msgstr "Homepage"
