@@ -675,11 +675,6 @@ namespace BlazorBoilerplate.Server.Managers
                     }).Result;
             }
 
-            var defaultRoleExists = await _roleManager.RoleExistsAsync(DefaultRoleNames.User);
-
-            if (defaultRoleExists)
-                await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
-
             if (_userManager.Options.SignIn.RequireConfirmedEmail)
             {
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
@@ -718,9 +713,6 @@ namespace BlazorBoilerplate.Server.Managers
                     FirstName = user.FirstName,
                     LastName = user.LastName
                 };
-
-                if (defaultRoleExists)
-                    userViewModel.Roles = new List<string> { DefaultRoleNames.User };
 
                 return new ApiResponse(Status200OK, L["User {0} created", userViewModel.UserName], userViewModel);
             }
@@ -870,9 +862,6 @@ namespace BlazorBoilerplate.Server.Managers
                     new Claim(JwtClaimTypes.Email, user.Email),
                     new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean)
                 });
-
-            if (await _roleManager.RoleExistsAsync(DefaultRoleNames.User))
-                await _userManager.AddToRoleAsync(user, DefaultRoleNames.User);
 
             _logger.LogInformation("New user registered: {0}", user);
 
