@@ -436,6 +436,7 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<EntityPermissions>();
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
+            services.AddTransient<IAuthorizationHandler, EmailVerifiedHandler>();
             services.AddTransient<IAuthorizationHandler, PermissionRequirementHandler>();
             #endregion
 
