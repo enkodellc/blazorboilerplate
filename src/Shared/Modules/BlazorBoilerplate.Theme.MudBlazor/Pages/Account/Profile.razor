@@ -98,7 +98,7 @@ else
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="@(e => { updatePasswordDialogOpen = false; })">@L["Cancel"]</MudButton>
-            <MudButton OnClick="@UpdatePassword">@L["Update Password"]</MudButton>
+            <MudButton OnClick="@UpdatePassword" Variant="Variant.Filled" Color="Color.Primary">@L["Update Password"]</MudButton>
         </DialogActions>
     </MudDialog>
 
