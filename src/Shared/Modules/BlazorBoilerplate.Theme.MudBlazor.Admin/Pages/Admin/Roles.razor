@@ -64,7 +64,7 @@ else
                 <MudTd><MudCheckBox @bind-Checked="@context.Selected"></MudCheckBox></MudTd>
             </RowTemplate>
             <PagerContent>
-                <MudTablePager />
+                <MudTablePager RowsPerPageString=@L["Rows per page"] />
             </PagerContent>
         </MudTable>
     </DialogContent>
