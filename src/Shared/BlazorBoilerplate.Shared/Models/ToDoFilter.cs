@@ -3,7 +3,7 @@ using System;
 
 namespace BlazorBoilerplate.Shared.Models
 {
-    public partial class ToDoFilter :QueryParameters
+    public partial class ToDoFilter : QueryParameters
     {
         [AutoNotify]
         private DateTime? _from;
