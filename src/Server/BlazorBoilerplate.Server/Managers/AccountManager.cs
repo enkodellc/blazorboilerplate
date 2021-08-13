@@ -81,7 +81,7 @@ namespace BlazorBoilerplate.Server.Managers
             _urlEncoder = urlEncoder;
             _events = events;
             L = l;
-            baseUrl = configuration["Robot:ApplicationUrl"];
+            baseUrl = configuration[$"{nameof(BlazorBoilerplate)}:ApplicationUrl"];
         }
 
         public async Task<ApiResponse> ConfirmEmail(ConfirmEmailViewModel parameters)
