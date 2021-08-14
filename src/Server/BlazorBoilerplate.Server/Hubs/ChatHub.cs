@@ -1,5 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Storage;
+using IdentityModel;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -12,9 +14,12 @@ using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Hubs
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemes)]
     public class ChatHub : Hub
     {
+        private const string AuthSchemes =
+            "Identity.Application" + "," + IdentityServerAuthenticationDefaults.AuthenticationScheme; //Cookie + Token authentication
+
         private static readonly Dictionary<string, string> userLookup = new();
 
         private readonly ApplicationDbContext _dbContext;
@@ -64,21 +69,34 @@ namespace BlazorBoilerplate.Server.Hubs
         {
             try
             {
-                var user = await _userManager.FindByNameAsync(Context.User.Identity.Name);
+                var subClaim = Context.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).SingleOrDefault();
 
                 var newMessage = new Message()
                 {
                     Text = message,
-                    UserName = user.UserName,
-                    UserID = user.Id,
                     When = DateTime.UtcNow
                 };
 
-                _dbContext.Messages.Add(newMessage);
+                if (subClaim != null)
+                {
+                    var user = await _userManager.FindByNameAsync(Context.User.Identity.Name);
 
-                await _dbContext.SaveChangesAsync();
+                    newMessage.UserName = user.UserName;
+                    newMessage.UserID = user.Id;
 
-                await Clients.All.SendAsync("ReceiveMessage", newMessage.Id, user.UserName, message);
+                    _dbContext.Messages.Add(newMessage);
+
+                    await _dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    var clientIdClaim = Context.User.Claims.Where(c => c.Type == JwtClaimTypes.ClientId).SingleOrDefault();
+
+                    if (clientIdClaim != null)
+                        newMessage.UserName = clientIdClaim.Value;
+                }
+
+                await Clients.All.SendAsync("ReceiveMessage", newMessage.Id, newMessage.UserName, message);
             }
             catch (Exception ex)
             {
