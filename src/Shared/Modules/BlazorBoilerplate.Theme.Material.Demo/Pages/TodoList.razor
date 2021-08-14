@@ -210,16 +210,25 @@
 
     private async ValueTask<ItemsProviderResult<Todo>> LoadToDos(ItemsProviderRequest request)
     {
-        var items = await apiClient.GetToDos(filter,
-            request.Count,
-            request.StartIndex);
+        try
+        {
+            var items = await apiClient.GetToDos(filter,
+                request.Count,
+                request.StartIndex);
 
-        itemCount = (int)items.InlineCount;
+            itemCount = (int)items.InlineCount;
 
-        if (request.StartIndex == 0)
-            StateHasChanged();
+            if (request.StartIndex == 0)
+                StateHasChanged();
 
-        return new ItemsProviderResult<Todo>(items, itemCount);
+            return new ItemsProviderResult<Todo>(items, itemCount);
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+
+            return new ItemsProviderResult<Todo>();
+        }
     }
 
     public async void Update(Todo todo)
