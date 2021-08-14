@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -43,10 +44,10 @@ namespace BlazorBoilerplate.IdentityServer.Test2
             var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 Address = disco.TokenEndpoint,
-                ClientId = "client",
+                ClientId = "clientToDo",
                 ClientSecret = "secret",
 
-                Scope = "api1"
+                Scope = "LocalAPI"
             });
 
             if (tokenResponse.IsError)
@@ -69,6 +70,13 @@ namespace BlazorBoilerplate.IdentityServer.Test2
                 var todos = await apiClient.GetToDos(null);
 
                 Console.WriteLine($"\ntodo found: {todos.InlineCount}");
+
+                foreach(var todo in todos.Results)
+                {
+                    apiClient.RemoveEntity(todo);
+
+                    await apiClient.SaveChanges();
+                }
             }
             catch (Exception ex)
             {
