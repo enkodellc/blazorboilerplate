@@ -35,6 +35,13 @@ namespace BlazorBoilerplate.Server.Tests.Oidc
 
             serviceProvider.GetService<ILoggerFactory>().AddSerilog(serilog);
 
+            Console.WriteLine("+-----------------------+");
+            Console.WriteLine("|  Sign in with OIDC    |");
+            Console.WriteLine("+-----------------------+");
+            Console.WriteLine("");
+            Console.WriteLine("Press any key to sign in...");
+            Console.ReadKey();
+
             await Login();
         }
 
@@ -53,8 +60,8 @@ namespace BlazorBoilerplate.Server.Tests.Oidc
                 Scope = "openid profile IdentityServerApi",
                 FilterClaims = false,
                 Browser = browser,
-                Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode,
-                ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
+                IdentityTokenValidator = new JwtHandlerIdentityTokenValidator(),
+                RefreshTokenInnerHttpHandler = new HttpClientHandler()
             };
 
             options.Policy.Discovery.ValidateIssuerName = false;
@@ -93,14 +100,14 @@ namespace BlazorBoilerplate.Server.Tests.Oidc
             var currentAccessToken = result.AccessToken;
             var currentRefreshToken = result.RefreshToken;
 
-            var menu = "  x...exit  c...call api   ";
+            var menu = "\npress x to exit \npress c to call api GetUserProfile\n";
 
             if (currentRefreshToken != null)
-                menu += "r...refresh token   ";
+                menu += "press r to refresh token\n";
 
             while (true)
             {
-                Console.WriteLine("\n\n");
+                Console.WriteLine("\n");
 
                 Console.Write(menu);
                 var key = Console.ReadKey();
@@ -110,6 +117,7 @@ namespace BlazorBoilerplate.Server.Tests.Oidc
                 if (key.Key == ConsoleKey.R)
                 {
                     var refreshResult = await _oidcClient.RefreshTokenAsync(currentRefreshToken);
+
                     if (refreshResult.IsError)
                     {
                         Console.WriteLine($"Error: {refreshResult.Error}");
@@ -137,14 +145,12 @@ namespace BlazorBoilerplate.Server.Tests.Oidc
             {
                 var profile = await apiClient.GetUserProfile();
 
-                Console.WriteLine($"profile: {profile}");
+                Console.WriteLine($"\nuserId profile: {profile.UserId}");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-
-
         }
     }
 }
