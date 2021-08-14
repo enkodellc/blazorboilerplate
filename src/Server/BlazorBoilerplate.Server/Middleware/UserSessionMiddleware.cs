@@ -25,11 +25,16 @@ namespace BlazorBoilerplate.Server.Middleware
                 //First setup the userSession, then call next midleware
                 if (httpContext.User.Identity.IsAuthenticated)
                 {
-                    userSession.UserId = new Guid(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value);
-                    userSession.UserName = httpContext.User.Identity.Name;
-                    
-                    userSession.Roles = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Role).Select(c => c.Value).ToList();
-                    userSession.ExposedClaims = httpContext.User.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList();
+                    var subClaim = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).SingleOrDefault();
+
+                    if (subClaim != null)
+                    {
+                        userSession.UserId = new Guid(subClaim.Value);
+                        userSession.UserName = httpContext.User.Identity.Name;
+
+                        userSession.Roles = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Role).Select(c => c.Value).ToList();
+                        userSession.ExposedClaims = httpContext.User.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList();
+                    }
                 }
 
                 // Call the next delegate/middleware in the pipeline
