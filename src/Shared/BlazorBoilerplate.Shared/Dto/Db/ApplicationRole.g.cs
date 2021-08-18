@@ -11,12 +11,6 @@ namespace BlazorBoilerplate.Shared.Dto.Db
 {
     public partial class ApplicationRole : BaseEntity, IApplicationRole
     {
-        public String TenantId
-        {
-            get { return GetValue<String>(); }
-            set { SetValue(value); }
-        }
-
         ICollection<IApplicationUserRole> IApplicationRole.UserRoles { get => UserRoles.Select(i => (IApplicationUserRole)i).ToList(); }
 
         public NavigationSet<ApplicationUserRole> UserRoles

@@ -8,17 +8,11 @@ namespace BlazorBoilerplate.Shared.DataInterfaces
 {
     public interface IApplicationUser
     {
-        string TenantId { get; set; }
-
         String FirstName { get; set; }
 
         String LastName { get; set; }
 
         String FullName { get; set; }
-
-        String PasswordHash { get; set; }
-
-        String SecurityStamp { get; set; }
 
         ICollection<IApplicationUserRole> UserRoles { get; }
 

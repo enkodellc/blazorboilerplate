@@ -43,6 +43,8 @@ namespace BlazorBoilerplate.Shared.Services
 
             entityManager.MetadataStore.NamingConvention = new NamingConvention().WithServerClientNamespaceMapping(dic);
 
+            entityManager.MetadataStore.AllowedMetadataMismatchTypes = MetadataMismatchTypes.MissingCLRDataProperty;
+
             entityManager.FetchMetadata().ContinueWith(t =>
             {
                 if (t.IsFaulted)

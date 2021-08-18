@@ -21,21 +21,7 @@ namespace BlazorBoilerplate.EntityGenerator
                 var iProperties = new StringBuilder();
                 var properties = new StringBuilder();
 
-                if (type.GetCustomAttribute(typeof(MultiTenantAttribute)) != null && !type.GetProperties().Any(p => p.Name == "TenantId"))
-                {
-                    iProperties.Append(@"
-        string TenantId { get; set; }
-");
-                    properties.Append(@"
-        public String TenantId
-        {
-            get { return GetValue<String>(); }
-            set { SetValue(value); }
-        }
-");
-                }
-
-                foreach (var prop in type.GetProperties())
+                foreach (var prop in type.GetProperties().Where(p => !p.GetCustomAttributes().Any(a => a.GetType().Name == "JsonIgnoreAttribute")))
                 {
                     var propertyType = prop.PropertyType;
                     var setter = @"

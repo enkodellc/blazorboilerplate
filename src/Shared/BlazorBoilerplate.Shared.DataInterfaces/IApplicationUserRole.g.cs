@@ -8,8 +8,6 @@ namespace BlazorBoilerplate.Shared.DataInterfaces
 {
     public interface IApplicationUserRole
     {
-        string TenantId { get; set; }
-
         IApplicationUser User { get; set; }
 
         IApplicationRole Role { get; set; }

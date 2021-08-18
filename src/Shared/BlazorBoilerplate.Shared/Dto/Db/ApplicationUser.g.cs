@@ -11,12 +11,6 @@ namespace BlazorBoilerplate.Shared.Dto.Db
 {
     public partial class ApplicationUser : BaseEntity, IApplicationUser
     {
-        public String TenantId
-        {
-            get { return GetValue<String>(); }
-            set { SetValue(value); }
-        }
-
         public String FirstName
         {
             get { return GetValue<String>(); }
@@ -30,18 +24,6 @@ namespace BlazorBoilerplate.Shared.Dto.Db
         }
 
         public String FullName
-        {
-            get { return GetValue<String>(); }
-            set { SetValue(value); }
-        }
-
-        public String PasswordHash
-        {
-            get { return GetValue<String>(); }
-            set { SetValue(value); }
-        }
-
-        public String SecurityStamp
         {
             get { return GetValue<String>(); }
             set { SetValue(value); }
