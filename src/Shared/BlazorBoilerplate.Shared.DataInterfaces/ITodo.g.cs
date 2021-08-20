@@ -26,7 +26,5 @@ namespace BlazorBoilerplate.Shared.DataInterfaces
 
         Guid? ModifiedById { get; set; }
 
-        bool IsDeleted { get; set; }
-
     }
 }

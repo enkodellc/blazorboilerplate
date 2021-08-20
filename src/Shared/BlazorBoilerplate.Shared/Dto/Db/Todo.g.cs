@@ -69,11 +69,5 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             set { SetValue(value); }
         }
 
-        public bool IsDeleted
-        {
-            get { return GetValue<bool>(); }
-            set { SetValue(value); }
-        }
-
     }
 }
