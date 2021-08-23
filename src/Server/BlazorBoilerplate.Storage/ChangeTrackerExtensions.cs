@@ -3,6 +3,8 @@ using BlazorBoilerplate.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -17,9 +19,8 @@ namespace BlazorBoilerplate.Storage
             if (userSession.UserId != Guid.Empty)
                 userId = userSession.UserId;
 
-            foreach (EntityEntry entry in changeTracker.Entries())
+            foreach (EntityEntry entry in changeTracker.Entries().Where(e => e.State != EntityState.Unchanged))
             {
-                //Auditable Entity Model
                 if (entry.Entity is IAuditable)
                 {
                     if (entry.State == EntityState.Added)
@@ -39,7 +40,6 @@ namespace BlazorBoilerplate.Storage
                     }
                 }
 
-                //Soft Delete Entity Model
                 if (entry.State == EntityState.Deleted && entry.Entity is ISoftDelete)
                 {
                     entry.State = EntityState.Modified;

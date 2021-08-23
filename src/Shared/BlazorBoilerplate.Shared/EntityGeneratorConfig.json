@@ -1,0 +1,5 @@
+{
+  "EntitiesPath": "..\\BlazorBoilerplate.Infrastructure.Storage\\DataModels\\",
+  "GenEntities": true,
+  "EntityWithInterface": true
+}

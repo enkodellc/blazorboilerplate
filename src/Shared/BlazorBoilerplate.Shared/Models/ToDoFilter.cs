@@ -1,4 +1,4 @@
-﻿using AutoNotify;
+﻿using SourceGenerators;
 using System;
 
 namespace BlazorBoilerplate.Shared.Models
