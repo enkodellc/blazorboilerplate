@@ -20,12 +20,6 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 
         public string FullName => $"{FirstName} {LastName}";
 
-        [JsonIgnore]
-        public override string PasswordHash { get; set; }
-
-        [JsonIgnore]
-        public override string SecurityStamp { get; set; }
-
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 
         public ICollection<ApiLogItem> ApiLogItems { get; set; }
