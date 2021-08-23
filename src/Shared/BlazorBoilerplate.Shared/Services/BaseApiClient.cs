@@ -52,6 +52,23 @@ namespace BlazorBoilerplate.Shared.Services
             });
         }
 
+        protected static Expression<Func<T, object>> GenerateExpression<T>(string propertyName)
+        {
+            if (string.IsNullOrWhiteSpace(propertyName))
+                return null;
+            else
+            {
+                var param = Expression.Parameter(typeof(T), "i");
+
+                Expression body = param;
+
+                foreach (var member in propertyName.Split('.'))
+                    body = Expression.PropertyOrField(body, member);
+
+                return Expression.Lambda<Func<T, object>>(Expression.Convert(body, typeof(object)), param);
+            }
+        }
+
         public void ClearEntitiesCache()
         {
             entityManager.Clear();
@@ -144,6 +161,25 @@ namespace BlazorBoilerplate.Shared.Services
 
                 throw;
             }
+        }
+
+        public async Task<QueryResult<T>> GetItemsByFilter<T>(
+            string from,
+            string orderByDefaultField,
+            string filter = null,
+            string orderBy = null,
+            string orderByDescending = null,
+            int? take = null, int? skip = null)
+        {
+            if (orderBy == null)
+                orderBy = orderByDefaultField;
+
+            Dictionary<string, object> parameters = null;
+
+            if (!string.IsNullOrWhiteSpace(filter))
+                parameters = new() { { "filter", filter } };
+
+            return await GetItems<T>(from, null, GenerateExpression<T>(orderBy), GenerateExpression<T>(orderByDescending), take, skip, parameters);
         }
     }
 }
