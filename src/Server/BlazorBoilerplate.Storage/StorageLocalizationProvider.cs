@@ -73,7 +73,7 @@ namespace BlazorBoilerplate.Storage
 
                     return p;
                 },
-                Noop<POParser>.Action);
+                CachedDelegates.Noop<POParser>.Action);
 
             TextCatalogs = textCatalogs
                 .GroupBy(it => it.Culture, it => (it.FileName, it.Catalog))
