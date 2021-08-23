@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspectInjector" Version="2.5.0" />
+    <PackageReference Include="AspectInjector" Version="2.6.0" />
     <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.10" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.1" />
