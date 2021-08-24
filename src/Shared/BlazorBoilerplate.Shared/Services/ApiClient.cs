@@ -48,15 +48,15 @@ namespace BlazorBoilerplate.Shared.Services
         }
         public async Task<QueryResult<Todo>> GetToDos(ToDoFilter filter, int? take = null, int? skip = null)
         {
-            return await GetItems<Todo>(from: "Todos", orderByDescending: i => i.CreatedOn, take: take, skip: skip, parameters: filter.ToDictionary());
+            return await GetItems<Todo>(from: "Todos", orderByDescending: i => i.CreatedOn, take: take, skip: skip, parameters: filter?.ToDictionary());
         }
         public async Task<QueryResult<ApplicationUser>> GetTodoCreators(ToDoFilter filter)
         {
-            return await GetItems<ApplicationUser>(from: "TodoCreators", orderBy: i => i.UserName, parameters: filter.ToDictionary());
+            return await GetItems<ApplicationUser>(from: "TodoCreators", orderBy: i => i.UserName, parameters: filter?.ToDictionary());
         }
         public async Task<QueryResult<ApplicationUser>> GetTodoEditors(ToDoFilter filter)
         {
-            return await GetItems<ApplicationUser>(from: "TodoEditors", orderBy: i => i.UserName, parameters: filter.ToDictionary());
+            return await GetItems<ApplicationUser>(from: "TodoEditors", orderBy: i => i.UserName, parameters: filter?.ToDictionary());
         }
         public async Task<ApiResponseDto> SendTestEmail(EmailDto email)
         {

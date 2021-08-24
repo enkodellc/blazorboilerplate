@@ -1,736 +1,1107 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-10-29 09:31+0100\n"
-"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
-"Language-Team: English\n"
-"Language: en_US\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en-US\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: BlazorBoilerplate\n"
 
+msgctxt "EmailFactory"
+msgid "TestEmail.template"
+msgstr ""
+"<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" "
+"src=\"{baseUrl}/images/logo.png\" alt=\"Blazor "
+"Boilerplate\"/> Blazor Boilerplate   </h1>   <p>Hello {user},</p>   <p>     "
+"This is a <strong>TEST</strong> email. If you are using BlazorBoilerplate "
+"please <a href=\"https://github.com/enkodellc/blazorboilerplate\">star the "
+"repo on Github</a>.     We are looking for more contributors to grow the "
+"project. There are several areas of improvement needed and if you are using "
+"the repo in your project please submit your PR's or suggestions.   </p>   <p> "
+"    Join our <a href=\"https://gitter.im/blazorboilerplate/community\">chat "
+"on Gitter</a> to disucss future project features, timelines and to get "
+"involved.   </p>   <p>The email was on {testDate}.</p>   <p>     <br />   "
+"</p>   <p>Regards,</p>   <p>BlazorBoilerplate Email Template</p> </div>"
+
+msgctxt "EmailFactory"
+msgid "PlainTextTestEmail.template"
+msgstr ""
+"Hello, This email was sent using the plain text test email template. The test "
+"was on {date}.  Regards, Blazor BoilerplateTemplate"
+
+msgctxt "EmailFactory"
+msgid "PasswordReset.template"
+msgstr ""
+"<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" "
+"src=\"{baseUrl}/images/logo.png\" alt=\"Blazor "
+"Boilerplate\"/> BlazorBoilerplate   </h1>   <h3>Dear {userName},</h3>   "
+"<p>Your password has been successfully reset, you can now login with your new "
+"password.</p>   <br/>   <div>     Cheers!   </div> </div>"
+
+msgctxt "EmailFactory"
+msgid "NewUserNotificationEmail.template"
+msgstr ""
+"<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" "
+"src=\"{baseUrl}/images/logo.png\" alt=\"Blazor "
+"Boilerplate\"/> BlazorBoilerplate   </h1>   <p>Hello {name},</p>   <p>     A "
+"new user has been added as a new user to <a "
+"href=\"{baseUrl}\" "
+"target=\"_blank\">blazorboilerplate.com</a>   </p>   <p>     Created by "
+"{creator}<br/>     Company: {company}<br/>     Roles: {roles}<br/>     Name: "
+"{name}<br/>     User Name: {userName}<br/>>     Email: {email}<br/>   </p>   "
+"<p>     <br />   </p>   <p>Regards,</p>   <p>BlazorBoilerplate Team</p> </div>"
+
+msgctxt "EmailFactory"
+msgid "NewUserEmail.template"
+msgstr ""
+"<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" "
+"src=\"{baseUrl}/images/logo.png\" alt=\"Blazor "
+"Boilerplate\"/> BlazorBoilerplate   </h1>   <p>Hello {fullName},</p>   <p>    "
+" You have been added as a new user to <a "
+"href=\"{baseUrl}\" "
+"target=\"_blank\">{baseUrl}</a> Below are your new "
+"credentials.   </p>   <p>     User Name: {userName}<br />     Email: "
+"{email}<br />     Password: {password}   </p>   <ul>     <li>       Please "
+"save this email to refer to your login credentials.     </li>     <li>       "
+"You can log in using the <a "
+"href=\"{baseUrl}/account/login\">link provided here.</a>  "
+"   </li>   </ul>   <p>     <br />   </p>   <p>Thank you, and welcome aboard "
+"the BlazorBoilerplate</p> </div>"
+
+msgctxt "EmailFactory"
+msgid "NewUserConfirmationEmail.template"
+msgstr ""
+"<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" "
+"src=\"{baseUrl}/images/logo.png\" alt=\"Blazor "
+"Boilerplate\"/> BlazorBoilerplate   </h1>   <p>Hello {userName},</p>   <p>    "
+" Please confirm your account by: <a href='{callbackUrl}'>clicking this "
+"link.</a>   </p>   <p>     <strong>UserId:</strong> {userId}<br />     "
+"<strong>Token:</strong> {token}<br/>   </p>   <p>Thank you, and welcome to "
+"the BlazorBoilerplate</p> </div>"
+
+msgctxt "EmailFactory"
+msgid "ForgotPassword.template"
+msgstr ""
+"<div>   <h1>     <img style=\"width:100px; vertical-align: middle;\" "
+"src=\"{baseUrl}/images/logo.png\" alt=\"Blazor "
+"Boilerplate\"/> BlazorBoilerplate   </h1>   <h3>Dear {name},</h3>   <p>     "
+"You requested for a password reset, kindly use this <a "
+"href=\"{callbackUrl}\">link</a> to reset your password.   </p>   <br/>   "
+"<p>Cheers!</p>  </div>"
+
+msgctxt "EmailFactory"
+msgid "TestEmail.subject"
+msgstr "Hello {0} from BlazorBoilerplate Team"
+
+msgctxt "EmailFactory"
+msgid "PlainTextTestEmail.subject"
+msgstr "Hello {0} from BlazorBoilerplate Team"
+
+msgctxt "EmailFactory"
+msgid "PasswordReset.subject"
+msgstr "BlazorBoilerplate Password Reset for {0}"
+
+msgctxt "EmailFactory"
+msgid "NewUserNotificationEmail.subject"
+msgstr "A new user '{0}' has registered on BlazorBoilerplate"
+
+msgctxt "EmailFactory"
+msgid "NewUserEmail.subject"
+msgstr "Welcome {0} to BlazorBoilerplate"
+
+msgctxt "EmailFactory"
+msgid "NewUserConfirmationEmail.subject"
+msgstr "Welcome {0} to BlazorBoilerplate"
+
+msgctxt "EmailFactory"
+msgid "ForgotPassword.subject"
+msgstr "BlazorBoilerplate Forgot Password Reset for {0}"
+
+msgctxt "Global"
 msgid "CreateApiResourcePermission"
 msgstr "Create a new API resource"
 
+msgctxt "Global"
 msgid "CreateClientPermission"
 msgstr "Create a new client"
 
+msgctxt "Global"
 msgid "CreateRolePermission"
 msgstr "Create a new role"
 
+msgctxt "Global"
 msgid "CreateUserPermission"
 msgstr "Create a new user"
 
+msgctxt "Global"
 msgid "DeleteApiResourcePermission"
 msgstr "Delete any API resource"
 
+msgctxt "Global"
 msgid "DeleteClientPermission"
 msgstr "Delete any client"
 
+msgctxt "Global"
 msgid "DeleteRolePermission"
 msgstr "Delete any role"
 
+msgctxt "Global"
 msgid "DeleteUserPermission"
 msgstr "Delete any user"
 
+msgctxt "Global"
 msgid "ReadApiResourcePermission"
 msgstr "Read API resources data"
 
+msgctxt "Global"
 msgid "ReadClientPermission"
 msgstr "Read clients data"
 
+msgctxt "Global"
 msgid "ReadRolePermission"
 msgstr "Read roles data (permissions, etc.\")"
 
+msgctxt "Global"
 msgid "ReadUserPermission"
 msgstr "Read users data (Names, Emails, Phone Numbers, etc.)"
 
+msgctxt "Global"
 msgid "UpdateApiResourcePermission"
 msgstr "Edit existing API resources"
 
+msgctxt "Global"
 msgid "UpdateClientPermission"
 msgstr "Edit existing clients"
 
+msgctxt "Global"
 msgid "UpdateRolePermission"
 msgstr "Edit existing roles"
 
+msgctxt "Global"
 msgid "UpdateUserPermission"
 msgstr "Edit existing users"
 
+msgctxt "Global"
 msgid "CreateIdentityResourcePermission"
 msgstr "Create a new identity resource"
 
+msgctxt "Global"
 msgid "ReadIdentityResourcePermission"
 msgstr "Read identity resources data"
 
+msgctxt "Global"
 msgid "UpdateIdentityResourcePermission"
 msgstr "Edit existing identity resource"
 
+msgctxt "Global"
 msgid "DeleteIdentityResourcePermission"
 msgstr "Delete any identity resource"
 
+msgctxt "Global"
 msgid "Delete"
 msgstr "Delete"
 
+msgctxt "Global"
 msgid "Cancel"
 msgstr "Cancel"
 
+msgctxt "Global"
 msgid "Users"
 msgstr "Users"
 
+msgctxt "Global"
 msgid "Roles"
 msgstr "Roles"
 
+msgctxt "Global"
 msgid "ApiResources"
 msgstr "OpenID API resources"
 
+msgctxt "Global"
 msgid "IdentityResources"
 msgstr "OpenID Identity Resources"
 
+msgctxt "Global"
 msgid "OpenIdClients"
 msgstr "OpenID Clients"
 
+msgctxt "Global"
 msgid "Dashboard"
 msgstr "Dashboard"
 
+msgctxt "Global"
 msgid "Loading"
 msgstr "Loading in progress..."
 
+msgctxt "Global"
 msgid "New Client"
 msgstr "New Client"
 
+msgctxt "Global"
 msgid "New User"
 msgstr "New User"
 
+msgctxt "Global"
 msgid "New Role"
 msgstr "New Role"
 
+msgctxt "Global"
 msgid "New API Resource"
 msgstr "New API Resource"
 
+msgctxt "Global"
 msgid "New Identity Resource"
 msgstr "New Identity Resource"
 
+msgctxt "Global"
 msgid "{0} users fetched"
 msgstr "{0} users fetched"
 
+msgctxt "Global"
 msgid "Operation Successful"
 msgstr "Operation Successful"
 
+msgctxt "Global"
 msgid "Operation Failed"
 msgstr "Operation Failed"
 
+msgctxt "Global"
 msgid "{0} roles fetched"
 msgstr "{0} roles fetched"
 
+msgctxt "Global"
 msgid "{0} clients fetched"
 msgstr "{0} clients fetched"
 
+msgctxt "Global"
 msgid "{0} identity resources fetched"
 msgstr "{0} identity resources fetched"
 
+msgctxt "Global"
 msgid "{0} API resources fetched"
 msgstr "{0} API resources fetched"
 
+msgctxt "Global"
 msgid "Create"
 msgstr "Create"
 
+msgctxt "Global"
 msgid "Update"
 msgstr "Update"
 
+msgctxt "Global"
 msgid "Edit {0}"
 msgstr "Edit '{0}'"
 
+msgctxt "Global"
 msgid "Permissions list fetched"
 msgstr "Permissions list fetched"
 
+msgctxt "Global"
 msgid "Role {0} created"
 msgstr "Role {0} created"
 
+msgctxt "Global"
 msgid "Role {0} already exists"
 msgstr "Role {0} already exists"
 
+msgctxt "Global"
 msgid "The role {0} doesn't exist"
 msgstr "The role {0} doesn't exist"
 
+msgctxt "Global"
 msgid "Role {0} deleted"
 msgstr "Role {0} deleted"
 
+msgctxt "Global"
 msgid "RoleInUseWarning"
 msgstr "This role {0} is still used by a user, you cannot delete it"
 
+msgctxt "Global"
 msgid "Client {0} created"
 msgstr "Client {0} created"
 
+msgctxt "Global"
 msgid "The client {0} doesn't exist"
 msgstr "The client {0} doesn't exist"
 
+msgctxt "Global"
 msgid "Client {0} updated"
 msgstr "Client {0} updated"
 
+msgctxt "Global"
 msgid "Client {0} deleted"
 msgstr "Client {0} deleted"
 
+msgctxt "Global"
 msgid "Role {0} updated"
 msgstr "Role {0} updated"
 
+msgctxt "Global"
 msgid "Identity Resource {0} created"
 msgstr "Identity Resource {0} created"
 
+msgctxt "Global"
 msgid "Identity Resource {0} updated"
 msgstr "Identity Resource {0} updated"
 
+msgctxt "Global"
 msgid "Identity Resource {0} deleted"
 msgstr "Identity Resource {0} deleted"
 
+msgctxt "Global"
 msgid "API Resource {0} created"
 msgstr "API Resource {0} created"
 
+msgctxt "Global"
 msgid "API Resource {0} updated"
 msgstr "API Resource {0} updated"
 
+msgctxt "Global"
 msgid "API Resource {0} deleted"
 msgstr "API Resource {0} deleted"
 
+msgctxt "Global"
 msgid "The API resource {0} doesn't exist"
 msgstr "The API resource {0} doesn't exist"
 
+msgctxt "Global"
 msgid "The Identity resource {0} doesn't exist"
 msgstr "The Identity resource {0} doesn't exist"
 
+msgctxt "Global"
 msgid "UserName"
 msgstr "User Name"
 
+msgctxt "Global"
 msgid "Login"
 msgstr "Login"
 
+msgctxt "Global"
 msgid "Sign in with"
 msgstr "Sign in with"
 
+msgctxt "Global"
 msgid "Sign up"
 msgstr "Sign up"
 
+msgctxt "Global"
 msgid "Keep me logged in"
 msgstr "Keep me logged in"
 
+msgctxt "Global"
 msgid "Log in"
 msgstr "Log in"
 
+msgctxt "Global"
 msgid "Forgot your password?"
 msgstr "Forgot your password?"
 
+msgctxt "Global"
 msgid "Submit"
 msgstr "Submit"
 
+msgctxt "Global"
 msgid "LoginFailed"
 msgstr "Login Attempt Failed"
 
+msgctxt "Global"
 msgid "ResetPasswordFailed"
 msgstr "Reset Password Attempt Failed"
 
+msgctxt "Global"
 msgid "ForgotPasswordEmailSent"
 msgstr "Forgot Password Email Sent"
 
+msgctxt "Global"
 msgid "Confirm Email"
 msgstr "Confirm Email"
 
+msgctxt "Global"
 msgid "Send Confirmation"
 msgstr "Send Confirmation"
 
+msgctxt "Global"
 msgid "EmailVerificationFailed"
 msgstr "Email Verification Failed"
 
+msgctxt "Global"
 msgid "EmailVerificationSuccessful"
 msgstr "Email Verification Successful"
 
+msgctxt "Global"
 msgid "ResetPasswordSuccessful"
 msgstr "Reset Password Successful"
 
+msgctxt "Global"
 msgid "Password Reset"
 msgstr "Password Reset"
 
+msgctxt "Global"
 msgid "Password Confirmation"
 msgstr "Password Confirmation"
 
+msgctxt "Global"
 msgid "Reset Password"
 msgstr "Reset Password"
 
+msgctxt "Global"
 msgid "UserCreationFailed"
 msgstr "User Creation Failed"
 
+msgctxt "Global"
 msgid "UserCreationSuccessful"
 msgstr "User Creation Successful"
 
+msgctxt "Global"
 msgid "Registration"
 msgstr "Registration"
 
+msgctxt "Global"
 msgid "PasswordConfirmationFailed"
 msgstr "The password and confirmation password do not match."
 
+msgctxt "Global"
 msgid "ConfirmPassword"
 msgstr "Confirm password"
 
+msgctxt "Global"
 msgid "ErrorInvalidLength"
 msgstr "The {0} must be at least {2} and at max {1} characters long."
 
+msgctxt "Global"
 msgid "SpacesNotPermitted"
 msgstr "Spaces are not permitted."
 
+msgctxt "Global"
 msgid "Role"
 msgstr "Role"
 
+msgctxt "Global"
 msgid "Name"
 msgstr "Name"
 
+msgctxt "Global"
 msgid "AlreadyRegistered"
 msgstr "Already registered?"
 
+msgctxt "Global"
 msgid "Register"
 msgstr "Register"
 
+msgctxt "Global"
 msgid "InvalidData"
 msgstr "Inserted data are not valid."
 
+msgctxt "Global"
 msgid "The user {0} doesn't exist"
 msgstr "The user {0} doesn't exist"
 
+msgctxt "Global"
 msgid "The user doesn't exist"
 msgstr "The user doesn't exist"
 
+msgctxt "Global"
 msgid "User {0} created"
 msgstr "User {0} created"
 
+msgctxt "Global"
 msgid "Confirm Delete"
 msgstr "Confirm Delete"
 
+msgctxt "Global"
 msgid "Logout"
 msgstr "Logout"
 
+msgctxt "Global"
 msgid "Tenants"
 msgstr "Tenants"
 
+msgctxt "Global"
 msgid "Tenant"
 msgstr "Tenant"
 
+msgctxt "Global"
 msgid "MultiTenancy"
 msgstr "Multi-tenancy"
 
+msgctxt "Global"
 msgid "{0} tenants fetched"
 msgstr "{0} tenants fetched"
 
+msgctxt "Global"
 msgid "Tenant {0} created"
 msgstr "Tenant {0} created"
 
+msgctxt "Global"
 msgid "The tenant {0} doesn't exist"
 msgstr "The tenant {0} doesn't exist"
 
+msgctxt "Global"
 msgid "Tenant {0} updated"
 msgstr "Tenant {0} updated"
 
+msgctxt "Global"
 msgid "Tenant {0} deleted"
 msgstr "Tenant {0} deleted"
 
+msgctxt "Global"
 msgid "Role {0} cannot be deleted"
 msgstr "Role {0} cannot be deleted"
 
+msgctxt "Global"
 msgid "Tenant {0} cannot be deleted"
 msgstr "Tenant {0} cannot be deleted"
 
+msgctxt "Global"
 msgid "Role {0} cannot be edited"
 msgstr "Role {0} cannot be edited"
 
+msgctxt "Global"
 msgid "AuthenticationRequired"
 msgstr "Authentication required"
 
+msgctxt "Global"
 msgid "LoginRequired"
 msgstr "Please login first"
 
+msgctxt "Global"
 msgid "Operation not allowed"
 msgstr "Operation not allowed"
 
+msgctxt "Global"
 msgid "NotAuthorizedTo"
 msgstr "You are not authorized to perform the operation"
 
+msgctxt "Global"
 msgid "PleaseWait"
 msgstr "Please wait..."
 
+msgctxt "Global"
 msgid "Settings"
 msgstr "Settings"
 
+msgctxt "Global"
 msgid "EmailSettings"
 msgstr "Email settings"
 
+msgctxt "Global"
 msgid "OutgoingEmail"
 msgstr "Outgoing email"
 
+msgctxt "Global"
 msgid "IncomingEmail"
 msgstr "Incoming email"
 
+msgctxt "Global"
 msgid "SmtpServer"
 msgstr "SMTP server"
 
+msgctxt "Global"
 msgid "PopServer"
 msgstr "POP3 server"
 
+msgctxt "Global"
 msgid "Save"
 msgstr "Save"
 
+msgctxt "Global"
 msgid "Port"
 msgstr "Port"
 
+msgctxt "Global"
 msgid "ImapServer"
 msgstr "IMAP server"
 
+msgctxt "Global"
 msgid "SenderEmail"
 msgstr "Sender email"
 
+msgctxt "Global"
 msgid "SenderName"
 msgstr "Sender name"
 
+msgctxt "Global"
 msgid "MainSettings"
 msgstr "Main settings"
 
+msgctxt "Global"
 msgid "AppAdminNavApiAuditLog"
 msgstr "Api Audit Log"
 
+msgctxt "Global"
 msgid "AppAdminNavDBLoggingView"
 msgstr "DB Logging Viewer"
 
+msgctxt "Global"
 msgid "AppAdminNavFrontEnd"
 msgstr "FrontEnd"
 
+msgctxt "Global"
 msgid "AppAdminNavMonitoring"
 msgstr "Monitoring"
 
+msgctxt "Global"
 msgid "AppHelpAndSupport"
 msgstr "Help & Support"
 
+msgctxt "Global"
 msgid "AppHoverAdmin"
 msgstr "Administration"
 
+msgctxt "Global"
 msgid "AppHoverNavMinimize"
 msgstr "Minimize Navigation Bar"
 
+msgctxt "Global"
 msgid "AppHoverNavToggle"
 msgstr "Toggle Navigation Bar"
 
+msgctxt "Global"
 msgid "AppName"
 msgstr "Blazor Boilerplate"
 
+msgctxt "Global"
 msgid "AppNavDashboard"
 msgstr "Dashboard"
 
+msgctxt "Global"
 msgid "AppNavDragAndDrop"
 msgstr "Drag and Drop"
 
+msgctxt "Global"
 msgid "AppNavEmail"
 msgstr "Email"
 
+msgctxt "Global"
 msgid "AppNavFeatures"
 msgstr "Features"
 
+msgctxt "Global"
 msgid "AppNavForum"
 msgstr "Forum"
 
+msgctxt "Global"
 msgid "AppNavHome"
 msgstr "Homepage"
 
+msgctxt "Global"
 msgid "AppNavReadEmail"
 msgstr "Read Email"
 
+msgctxt "Global"
 msgid "AppNavScreenshots"
 msgstr "Screenshots"
 
+msgctxt "Global"
 msgid "AppNavSendEmail"
 msgstr "Send Email"
 
+msgctxt "Global"
 msgid "AppNavSponsors"
 msgstr "Sponsors"
 
+msgctxt "Global"
 msgid "AppShortName"
 msgstr "BlazorBP"
 
+msgctxt "Global"
 msgid "BreadCrumbadmin"
 msgstr "Admin"
 
+msgctxt "Global"
 msgid "BreadCrumbadminapiResources"
 msgstr "API Resources"
 
+msgctxt "Global"
 msgid "BreadCrumbadminapilog"
 msgstr "API Audit Log"
 
+msgctxt "Global"
 msgid "BreadCrumbadminclients"
 msgstr "Clients"
 
+msgctxt "Global"
 msgid "BreadCrumbadmindblog"
 msgstr "Application Log"
 
+msgctxt "Global"
 msgid "BreadCrumbadminidentityResources"
 msgstr "Identity Resources"
 
+msgctxt "Global"
 msgid "BreadCrumbadminmultitenancy"
 msgstr "Tenant Manager"
 
+msgctxt "Global"
 msgid "BreadCrumbadminroles"
 msgstr "Roles Manager"
 
+msgctxt "Global"
 msgid "BreadCrumbadminsettings"
 msgstr "Settings"
 
+msgctxt "Global"
 msgid "BreadCrumbadminsettingsemail"
 msgstr "Email Configurations"
 
+msgctxt "Global"
 msgid "BreadCrumbadminusers"
 msgstr "Users"
 
+msgctxt "Global"
 msgid "BreadCrumbdashboard"
 msgstr "Dashboard"
 
+msgctxt "Global"
 msgid "BreadCrumbdrag_and_drop"
 msgstr "Drag and Drop"
 
+msgctxt "Global"
 msgid "BreadCrumbemail"
 msgstr "Send Email"
 
+msgctxt "Global"
 msgid "BreadCrumbemail_view"
 msgstr "Read Email"
 
+msgctxt "Global"
 msgid "BreadCrumbforum"
 msgstr "Forum"
 
+msgctxt "Global"
 msgid "BreadCrumbHome"
 msgstr "Home"
 
+msgctxt "Global"
 msgid "BreadCrumbscreenshots"
 msgstr "Screenshots"
 
+msgctxt "Global"
 msgid "BreadCrumbsponsors"
 msgstr "Sponsors"
 
+msgctxt "Global"
 msgid "BreadCrumbtodo_list"
 msgstr "ToDo"
 
+msgctxt "Global"
 msgid "TodoNav"
 msgstr "ToDo List"
 
+msgctxt "Global"
 msgid "CurrentPassword"
 msgstr "Current password"
 
+msgctxt "Global"
 msgid "NewPassword"
 msgstr "New password"
 
+msgctxt "Global"
 msgid "Update Password"
 msgstr "Update password"
 
+msgctxt "Global"
 msgid "UpdatePasswordSuccessful"
 msgstr "Update Password Successful"
 
+msgctxt "Global"
 msgid "UpdatePasswordFailed"
 msgstr "Update Password Failed"
 
+msgctxt "Global"
 msgid "FirstName"
 msgstr "First name"
 
+msgctxt "Global"
 msgid "LastName"
 msgstr "Last name"
 
+msgctxt "Global"
 msgid "Change Password"
 msgstr "Change Password"
 
+msgctxt "Global"
 msgid "User Profile"
 msgstr "User Profile"
 
+msgctxt "Global"
 msgid "RememberBrowser"
 msgstr "Remember browser"
 
+msgctxt "Global"
 msgid "ForgotAuthenticator"
 msgstr "Forgot your authenticator?"
 
+msgctxt "Global"
 msgid "RecoveryCode"
 msgstr "Recovery code"
 
+msgctxt "Global"
 msgid "LockedUser"
 msgstr "User is locked out"
 
+msgctxt "Global"
 msgid "EmailNotConfirmed"
 msgstr "Email not confirmed"
 
+msgctxt "Global"
 msgid "Code"
 msgstr "Code"
 
+msgctxt "Global"
 msgid "TwoFactorAuthentication"
 msgstr "Two Factor Authentication"
 
+msgctxt "Global"
 msgid "BrowserRemembered"
 msgstr "Browser remembered"
 
+msgctxt "Global"
 msgid "RecoveryCodesLeft"
 msgstr "Recovery codes left"
 
+msgctxt "Global"
 msgid "AuthenticatorCode"
 msgstr "Authenticator code"
 
+msgctxt "Global"
 msgid "VerificationCode"
 msgstr "Verification Code"
 
+msgctxt "Global"
 msgid "VerificationCodeInvalid"
 msgstr "Verification code is invalid"
 
+msgctxt "Global"
 msgid "ResetAuthenticator"
 msgstr "Reset Authenticator"
 
+msgctxt "Global"
 msgid "EmailInvalid"
 msgstr "The {0} field is not a valid e-mail address."
 
+msgctxt "Global"
 msgid "FieldRequired"
 msgstr "The {0} field is mandatory."
 
+msgctxt "Global"
 msgid "ConcurrencyFailure"
 msgstr "Optimistic concurrency failure, object has been modified."
 
+msgctxt "Global"
 msgid "DefaultError"
 msgstr "An unknown failure has occurred."
 
+msgctxt "Global"
 msgid "DuplicateEmail"
 msgstr "Email '{0}' is already taken."
 
+msgctxt "Global"
 msgid "DuplicateRoleName"
 msgstr "Role name '{0}' is already taken."
 
+msgctxt "Global"
 msgid "DuplicateUserName"
 msgstr "User Name '{0}' is already taken."
 
+msgctxt "Global"
 msgid "InvalidEmail"
 msgstr "Email '{0}' is invalid."
 
+msgctxt "Global"
 msgid "InvalidRoleName"
 msgstr "Role name '{0}' is invalid."
 
+msgctxt "Global"
 msgid "InvalidToken"
 msgstr "Invalid token."
 
+msgctxt "Global"
 msgid "InvalidUserName"
 msgstr "User name '{0}' is invalid, can only contain letters or digits."
 
+msgctxt "Global"
 msgid "LoginAlreadyAssociated"
 msgstr "A user with this login already exists."
 
+msgctxt "Global"
 msgid "PasswordMismatch"
 msgstr "Incorrect password."
 
+msgctxt "Global"
 msgid "PasswordRequiresDigit"
 msgstr "Passwords must have at least one digit ('0'-'9')."
 
+msgctxt "Global"
 msgid "PasswordRequiresLower"
 msgstr "Passwords must have at least one lowercase ('a'-'z')."
 
+msgctxt "Global"
 msgid "PasswordRequiresNonAlphanumeric"
 msgstr "Passwords must have at least one non alphanumeric character."
 
+msgctxt "Global"
 msgid "PasswordRequiresUpper"
 msgstr "Passwords must have at least one uppercase ('A'-'Z')."
 
+msgctxt "Global"
 msgid "PasswordTooShort"
 msgstr "Passwords must be at least {0} characters."
 
+msgctxt "Global"
 msgid "UserAlreadyHasPassword"
 msgstr "User already has a password set."
 
+msgctxt "Global"
 msgid "UserAlreadyInRole"
 msgstr "User already in role '{0}'."
 
+msgctxt "Global"
 msgid "UserLockoutNotEnabled"
 msgstr "Lockout is not enabled for this user."
 
+msgctxt "Global"
 msgid "UserNotInRole"
 msgstr "User is not in role '{0}'."
 
+msgctxt "Global"
 msgid "UnauthorizedAccess"
 msgstr "Unauthorized access"
 
+msgctxt "Global"
 msgid "Permissions"
 msgstr "Permissions"
 
+msgctxt "Global"
 msgid "Allow"
 msgstr "Allow"
 
+msgctxt "Global"
 msgid "Are you sure you want to delete {0}?"
 msgstr "Are you sure you want to delete '{0}'?"
 
+msgctxt "Global"
 msgid "Change password for {0}"
 msgstr "Change password for {0}"
 
+msgctxt "Global"
 msgid "ItemsDeleted"
 msgstr "{0} items deleted."
 
+msgctxt "Global"
 msgid "Translations"
 msgstr "Translations"
 
+msgctxt "Global"
 msgid "Culture"
 msgstr "Culture"
 
+msgctxt "Global"
 msgid "NewTranslation"
 msgstr "New translation"
 
+msgctxt "Global"
 msgid "Translation"
 msgstr "Translation"
 
+msgctxt "Global"
 msgid "Key"
 msgstr "Key"
 
+msgctxt "Global"
 msgid "VerifyCode"
 msgstr "Verify code"
 
+msgctxt "Global"
 msgid "Add"
 msgstr "Add"
 
+msgctxt "Global"
 msgid "ReloadTranslations"
 msgstr "Reload translations"
 
+msgctxt "Global"
 msgid "One item found"
 msgid_plural "{0} items found"
 msgstr[0] "One item found"
 msgstr[1] "{0} items found"
 
+msgctxt "Global"
 msgid "Export"
 msgstr "Export"
 
+msgctxt "Global"
 msgid "Import PO file"
 msgstr "Import PO file"
 
+msgctxt "Global"
 msgid "File not selected"
 msgstr "File not selected"
 
+msgctxt "Global"
 msgid "File not valid"
 msgstr "File not valid"
 
+msgctxt "Global"
 msgid "File empty"
 msgstr "File empty"
 
+msgctxt "Global"
 msgid "PO File without a valid language"
 msgstr "PO File without a valid language"
 
+msgctxt "Global"
 msgid "Only PO files"
 msgstr "Only PO files"
 
+msgctxt "Global"
 msgid "Plural"
 msgstr "Plural"
 
+msgctxt "Global"
 msgid "Index"
 msgstr "Index"
 
+msgctxt "Global"
 msgid "Count"
 msgstr "Count"
 
+msgctxt "Global"
 msgid "Selector"
 msgstr "Selector"
 
+msgctxt "Global"
 msgid "Localization"
 msgstr "Localization"
 
+msgctxt "Global"
 msgid "Pluralization rules"
 msgstr "Pluralization rules"
+
+msgctxt "Global"
+msgid "Edit as HTML"
+msgstr "Edit as HTML"
+
+msgctxt "Global"
+msgid "From"
+msgstr "From"
+
+msgctxt "Global"
+msgid "To"
+msgstr "To"
+
+msgctxt "Global"
+msgid "Close"
+msgstr "Close"
+
+msgctxt "Global"
+msgid "Required"
+msgstr "Mandatory field "
+
+msgctxt "Global"
+msgid "Rows per page"
+msgstr "Rows per page"
+
+msgctxt "Global"
+msgid "Send test email"
+msgstr "Send test email"

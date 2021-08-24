@@ -99,8 +99,7 @@ namespace BlazorBoilerplate.Storage
         {
             if ((await _userManager.FindByNameAsync(DefaultUserNames.User)) == null)
             {
-                await EnsureRoleAsync(DefaultRoleNames.User, "Default user", new string[] { });
-                await CreateUserAsync(DefaultUserNames.User, "user123", DefaultRoleNames.User, "Blazor", "User Blazor", "user@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.User });
+                await CreateUserAsync(DefaultUserNames.User, "user123", "User", "Blazor", "user@blazorboilerplate.com", "+1 (123) 456-7890", null);
             }
 
             if (_tenantStoreDbContext.TenantInfo.Count() < 2)
@@ -220,8 +219,8 @@ namespace BlazorBoilerplate.Storage
 
         public async Task EnsureAdminIdentitiesAsync()
         {
-            await EnsureRoleAsync(DefaultRoleNames.Administrator, "Default administrator", _entityPermissions.GetAllPermissionValues());
-            await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", DefaultRoleNames.Administrator, "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
+            await EnsureRoleAsync(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
+            await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
 
             ApplicationRole adminRole = await _roleManager.FindByNameAsync(DefaultRoleNames.Administrator);
             var AllClaims = _entityPermissions.GetAllPermissionValues().Distinct();
@@ -241,18 +240,18 @@ namespace BlazorBoilerplate.Storage
             _logger.LogInformation("Inbuilt account generation completed");
         }
 
-        private async Task EnsureRoleAsync(string roleName, string description, string[] claims)
+        private async Task EnsureRoleAsync(string roleName, string[] claims)
         {
             if ((await _roleManager.FindByNameAsync(roleName)) == null)
             {
                 if (claims == null)
-                    claims = new string[] { };
+                    claims = Array.Empty<string>();
 
                 string[] invalidClaims = claims.Where(c => _entityPermissions.GetPermissionByValue(c) == null).ToArray();
                 if (invalidClaims.Any())
                     throw new Exception("The following claim types are invalid: " + string.Join(", ", invalidClaims));
 
-                ApplicationRole applicationRole = new ApplicationRole(roleName);
+                ApplicationRole applicationRole = new(roleName);
 
                 var result = await _roleManager.CreateAsync(applicationRole);
 
@@ -268,7 +267,7 @@ namespace BlazorBoilerplate.Storage
             }
         }
 
-        private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string firstName, string fullName, string lastName, string email, string phoneNumber, string[] roles)
+        private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string firstName, string lastName, string email, string phoneNumber, string[] roles)
         {
             var applicationUser = _userManager.FindByNameAsync(userName).Result;
 
@@ -285,6 +284,7 @@ namespace BlazorBoilerplate.Storage
                 };
 
                 var result = _userManager.CreateAsync(applicationUser, password).Result;
+
                 if (!result.Succeeded)
                     throw new Exception(result.Errors.First().Description);
 
@@ -297,29 +297,36 @@ namespace BlazorBoilerplate.Storage
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber)
                     }).Result;
 
-                //add claims version of roles
-                foreach (var role in roles.Distinct())
-                {
-                    await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", ClaimValues.trueString));
-                }
-
-                ApplicationUser user = await _userManager.FindByNameAsync(applicationUser.UserName);
-
-                try
-                {
-                    result = await _userManager.AddToRolesAsync(user, roles.Distinct());
-                }
-                catch
-                {
-                    await _userManager.DeleteAsync(user);
-                    throw;
-                }
-
                 if (!result.Succeeded)
+                    throw new Exception(result.Errors.First().Description);
+
+                //add claims version of roles
+                if (roles != null)
                 {
-                    await _userManager.DeleteAsync(user);
+                    foreach (var role in roles.Distinct())
+                    {
+                        await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", ClaimValues.trueString));
+                    }
+
+                    ApplicationUser user = await _userManager.FindByNameAsync(applicationUser.UserName);
+
+                    try
+                    {
+                        result = await _userManager.AddToRolesAsync(user, roles.Distinct());
+                    }
+                    catch
+                    {
+                        await _userManager.DeleteAsync(user);
+                        throw;
+                    }
+
+                    if (!result.Succeeded)
+                    {
+                        await _userManager.DeleteAsync(user);
+                    }
                 }
             }
+
             return applicationUser;
         }
     }

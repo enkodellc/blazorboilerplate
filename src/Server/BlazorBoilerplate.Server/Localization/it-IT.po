@@ -1,738 +1,959 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-10-30 17:49+0100\n"
-"Last-Translator: Giovanni <EMAIL@ADDRESS>\n"
-"Language-Team: English\n"
-"Language: it_IT\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: it-IT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: BlazorBoilerplate\n"
 
+msgctxt "Global"
 msgid "CreateApiResourcePermission"
 msgstr "Crea una nuova risorsa API OpenID"
 
+msgctxt "Global"
 msgid "CreateClientPermission"
 msgstr "Crea un nuovo client OpenID"
 
+msgctxt "Global"
 msgid "CreateRolePermission"
 msgstr "Crea un nuovo ruolo"
 
+msgctxt "Global"
 msgid "CreateUserPermission"
 msgstr "Crea un nuovo utente"
 
+msgctxt "Global"
 msgid "DeleteApiResourcePermission"
 msgstr "Elimina una risorsa API OpenID"
 
+msgctxt "Global"
 msgid "DeleteClientPermission"
 msgstr "Elimina un client OpenID"
 
+msgctxt "Global"
 msgid "DeleteRolePermission"
 msgstr "Elimina un ruolo"
 
+msgctxt "Global"
 msgid "DeleteUserPermission"
 msgstr "Elimina un utente"
 
+msgctxt "Global"
 msgid "ReadApiResourcePermission"
 msgstr "Legge i dati di una risorsa API OpenID"
 
+msgctxt "Global"
 msgid "ReadClientPermission"
 msgstr "Legge i dati di un client OpenID"
 
+msgctxt "Global"
 msgid "ReadRolePermission"
 msgstr "Legge i dati di un ruolo (permessi, ecc.)"
 
+msgctxt "Global"
 msgid "ReadUserPermission"
 msgstr "Legge i dati di un utente (nome, email, telefono, ecc.)"
 
+msgctxt "Global"
 msgid "UpdateApiResourcePermission"
 msgstr "Modifica una risorsa API OpenID"
 
+msgctxt "Global"
 msgid "UpdateClientPermission"
 msgstr "Modifica un client OpenID"
 
+msgctxt "Global"
 msgid "UpdateRolePermission"
 msgstr "Modifica un ruolo"
 
+msgctxt "Global"
 msgid "UpdateUserPermission"
 msgstr "Modifica un utente"
 
+msgctxt "Global"
 msgid "CreateIdentityResourcePermission"
 msgstr "Crea una nuova risorsa identità OpenID"
 
+msgctxt "Global"
 msgid "ReadIdentityResourcePermission"
 msgstr "Legge i dati di una risorsa identità OpenID"
 
+msgctxt "Global"
 msgid "UpdateIdentityResourcePermission"
 msgstr "Modifica una risorsa identità OpenID"
 
+msgctxt "Global"
 msgid "DeleteIdentityResourcePermission"
 msgstr "Elimina una risorsa identità OpenID"
 
+msgctxt "Global"
 msgid "Delete"
 msgstr "Elimina"
 
+msgctxt "Global"
 msgid "Cancel"
 msgstr "Annulla"
 
+msgctxt "Global"
 msgid "Users"
 msgstr "Utenti"
 
+msgctxt "Global"
 msgid "Roles"
 msgstr "Ruoli"
 
+msgctxt "Global"
 msgid "ApiResources"
 msgstr "Risorse API OpenID"
 
+msgctxt "Global"
 msgid "IdentityResources"
 msgstr "Risorse Identità OpenID"
 
+msgctxt "Global"
 msgid "OpenIdClients"
 msgstr "Client OpenID"
 
+msgctxt "Global"
 msgid "Dashboard"
 msgstr "Cruscotto"
 
+msgctxt "Global"
 msgid "Loading"
 msgstr "Caricamento in corso..."
 
+msgctxt "Global"
 msgid "New Client"
 msgstr "Nuovo Client"
 
+msgctxt "Global"
 msgid "New User"
 msgstr "Nuovo Utente"
 
+msgctxt "Global"
 msgid "New Role"
 msgstr "Nuovo Ruolo"
 
+msgctxt "Global"
 msgid "New API Resource"
 msgstr "Nuova Risorsa API"
 
+msgctxt "Global"
 msgid "New Identity Resource"
 msgstr "Nuova Risorsa Identità"
 
+msgctxt "Global"
 msgid "{0} users fetched"
 msgstr "Recuperati {0} utenti"
 
+msgctxt "Global"
 msgid "Operation Successful"
 msgstr "Operazione riuscita"
 
+msgctxt "Global"
 msgid "Operation Failed"
 msgstr "Operazione fallita"
 
+msgctxt "Global"
 msgid "{0} roles fetched"
 msgstr "Recuperati {0} ruoli"
 
+msgctxt "Global"
 msgid "{0} clients fetched"
 msgstr "Recuperati {0} client"
 
+msgctxt "Global"
 msgid "{0} identity resources fetched"
 msgstr "Recuperate {0} risorse identità"
 
+msgctxt "Global"
 msgid "{0} API resources fetched"
 msgstr "Recuperate {0} risorse API"
 
+msgctxt "Global"
 msgid "Create"
 msgstr "Crea"
 
+msgctxt "Global"
 msgid "Update"
 msgstr "Aggiorna"
 
+msgctxt "Global"
 msgid "Edit {0}"
 msgstr "Aggiorna '{0}'"
 
+msgctxt "Global"
 msgid "Permissions list fetched"
 msgstr "Recuperato elenco permessi"
 
+msgctxt "Global"
 msgid "Role {0} created"
 msgstr "Creato ruolo {0}"
 
+msgctxt "Global"
 msgid "Role {0} already exists"
 msgstr "Il ruolo {0} esiste già"
 
+msgctxt "Global"
 msgid "The role {0} doesn't exist"
 msgstr "Il ruolo {0} non esiste"
 
+msgctxt "Global"
 msgid "Role {0} deleted"
 msgstr "Ruolo {0} eliminato"
 
+msgctxt "Global"
 msgid "RoleInUseWarning"
 msgstr "Il ruolo {0} è in uso da un utente e non può essere eliminato"
 
+msgctxt "Global"
 msgid "Client {0} created"
 msgstr "Creato client {0}"
 
+msgctxt "Global"
 msgid "The client {0} doesn't exist"
 msgstr "Il client {0} non esiste"
 
+msgctxt "Global"
 msgid "Client {0} updated"
 msgstr "Client {0} aggiornato"
 
+msgctxt "Global"
 msgid "Client {0} deleted"
 msgstr "Client {0} eliminato"
 
+msgctxt "Global"
 msgid "Role {0} updated"
 msgstr "Ruolo {0} aggiornato"
 
+msgctxt "Global"
 msgid "Identity Resource {0} created"
 msgstr "Creata risorsa identità {0}"
 
+msgctxt "Global"
 msgid "Identity Resource {0} updated"
 msgstr "Risorsa identità {0} aggiornata"
 
+msgctxt "Global"
 msgid "Identity Resource {0} deleted"
 msgstr "Risorsa identità {0} eliminata"
 
+msgctxt "Global"
 msgid "API Resource {0} created"
 msgstr "Creata risorsa API  {0}"
 
+msgctxt "Global"
 msgid "API Resource {0} updated"
 msgstr "Risorsa API {0} aggiornata"
 
+msgctxt "Global"
 msgid "API Resource {0} deleted"
 msgstr "Risorsa API {0} eliminata"
 
+msgctxt "Global"
 msgid "The API resource {0} doesn't exist"
 msgstr "La risorsa API {0} non esiste"
 
+msgctxt "Global"
 msgid "The Identity resource {0} doesn't exist"
 msgstr "La risorsa identità {0} non esiste"
 
+msgctxt "Global"
 msgid "UserName"
 msgstr "Nome utente"
 
+msgctxt "Global"
 msgid "Login"
 msgstr "Accedi"
 
+msgctxt "Global"
 msgid "Sign in with"
 msgstr "Accedi con"
 
+msgctxt "Global"
 msgid "Sign up"
 msgstr "Registrati"
 
+msgctxt "Global"
 msgid "Keep me logged in"
 msgstr "Resta connesso"
 
+msgctxt "Global"
 msgid "Log in"
 msgstr "Accesso"
 
+msgctxt "Global"
 msgid "Forgot your password?"
 msgstr "Password dimenticata?"
 
+msgctxt "Global"
 msgid "Submit"
 msgstr "Invia"
 
+msgctxt "Global"
 msgid "LoginFailed"
 msgstr "Accesso fallito"
 
+msgctxt "Global"
 msgid "ResetPasswordFailed"
 msgstr "Reimpostazione password fallita"
 
+msgctxt "Global"
 msgid "ForgotPasswordEmailSent"
 msgstr "Email reimpostazione password inviata"
 
+msgctxt "Global"
 msgid "Confirm Email"
 msgstr "Conferma Email"
 
+msgctxt "Global"
 msgid "Send Confirmation"
 msgstr "Invia conferma"
 
+msgctxt "Global"
 msgid "EmailVerificationFailed"
 msgstr "Verifica email fallita"
 
+msgctxt "Global"
 msgid "EmailVerificationSuccessful"
 msgstr "Verifica email riuscita"
 
+msgctxt "Global"
 msgid "ResetPasswordSuccessful"
 msgstr "Reimpostazione password riuscita"
 
+msgctxt "Global"
 msgid "Password Reset"
 msgstr "Reimpostazione password"
 
+msgctxt "Global"
 msgid "Password Confirmation"
 msgstr "Conferma password"
 
+msgctxt "Global"
 msgid "Reset Password"
 msgstr "Reimposta password"
 
+msgctxt "Global"
 msgid "UserCreationFailed"
 msgstr "Creazione utente fallita"
 
+msgctxt "Global"
 msgid "UserCreationSuccessful"
 msgstr "Creazione utente riuscita"
 
+msgctxt "Global"
 msgid "Registration"
 msgstr "Registrazione"
 
+msgctxt "Global"
 msgid "PasswordConfirmationFailed"
 msgstr "La password e la password di conferma non corrispondono."
 
+msgctxt "Global"
 msgid "ConfirmPassword"
 msgstr "Conferma password"
 
+msgctxt "Global"
 msgid "ErrorInvalidLength"
 msgstr "Il campo {0} deve avere almeno {2} caratteri ed al massimo {1}."
 
+msgctxt "Global"
 msgid "SpacesNotPermitted"
 msgstr "Gli spazi non sono consentiti."
 
+msgctxt "Global"
 msgid "Role"
 msgstr "Ruolo"
 
+msgctxt "Global"
 msgid "Name"
 msgstr "Nome"
 
+msgctxt "Global"
 msgid "AlreadyRegistered"
 msgstr "Già registrato?"
 
+msgctxt "Global"
 msgid "Register"
 msgstr "Registrati"
 
+msgctxt "Global"
 msgid "InvalidData"
 msgstr "I dati inseriti non sono validi."
 
+msgctxt "Global"
 msgid "The user {0} doesn't exist"
 msgstr "L'utente {0} non esiste"
 
+msgctxt "Global"
 msgid "The user doesn't exist"
 msgstr "L'utente non esiste"
 
+msgctxt "Global"
 msgid "User {0} created"
 msgstr "Creato utente {0}"
 
+msgctxt "Global"
 msgid "Confirm Delete"
 msgstr "Conferma eliminazione"
 
+msgctxt "Global"
 msgid "Logout"
 msgstr "Disconnetti"
 
+msgctxt "Global"
 msgid "Tenants"
 msgstr "Siti in comproprietà"
 
+msgctxt "Global"
 msgid "Tenant"
 msgstr "Sito in comproprietà"
 
+msgctxt "Global"
 msgid "MultiTenancy"
 msgstr "Siti in comproprietà"
 
+msgctxt "Global"
 msgid "{0} tenants fetched"
 msgstr "Recuperati {0} siti in comproprietà"
 
+msgctxt "Global"
 msgid "Tenant {0} created"
 msgstr "Creato sito in comproprietà {0}"
 
+msgctxt "Global"
 msgid "The tenant {0} doesn't exist"
 msgstr "Il sito in comproprietà {0} non esiste"
 
+msgctxt "Global"
 msgid "Tenant {0} updated"
 msgstr "Sito in comproprietà {0} aggiornato"
 
+msgctxt "Global"
 msgid "Tenant {0} deleted"
 msgstr "Sito in comproprietà {0} eliminato"
 
+msgctxt "Global"
 msgid "Role {0} cannot be deleted"
 msgstr "Il ruolo {0} non può essere eliminato"
 
+msgctxt "Global"
 msgid "Tenant {0} cannot be deleted"
 msgstr "Il sito {0} non può essere eliminato"
 
+msgctxt "Global"
 msgid "Role {0} cannot be edited"
 msgstr "Il ruolo {0} non può essere modificato"
 
+msgctxt "Global"
 msgid "AuthenticationRequired"
 msgstr "Richiesta autenticazione"
 
+msgctxt "Global"
 msgid "LoginRequired"
 msgstr "Si prega di effettuare l'accesso"
 
+msgctxt "Global"
 msgid "Operation not allowed"
 msgstr "Operazione non consentita"
 
+msgctxt "Global"
 msgid "NotAuthorizedTo"
 msgstr "Non sei autorizzato ad effettuare l'operazione"
 
+msgctxt "Global"
 msgid "PleaseWait"
 msgstr "Attendere prego..."
 
+msgctxt "Global"
 msgid "Settings"
 msgstr "Impostazioni"
 
+msgctxt "Global"
 msgid "EmailSettings"
 msgstr "Impostazioni Email"
 
+msgctxt "Global"
 msgid "OutgoingEmail"
 msgstr "Posta in uscita"
 
+msgctxt "Global"
 msgid "IncomingEmail"
 msgstr "Posta in arrivo"
 
+msgctxt "Global"
 msgid "SmtpServer"
 msgstr "Server SMTP"
 
+msgctxt "Global"
 msgid "PopServer"
 msgstr "Server POP3"
 
+msgctxt "Global"
 msgid "Save"
 msgstr "Salva"
 
+msgctxt "Global"
 msgid "Port"
 msgstr "Porta"
 
+msgctxt "Global"
 msgid "ImapServer"
 msgstr "Server IMAP"
 
+msgctxt "Global"
 msgid "SenderEmail"
 msgstr "Email mittente"
 
+msgctxt "Global"
 msgid "SenderName"
 msgstr "Nome mittente"
 
+msgctxt "Global"
 msgid "MainSettings"
 msgstr "Impostazioni principali"
 
+msgctxt "Global"
 msgid "AppAdminNavApiAuditLog"
 msgstr "Log di controllo utilizzo API"
 
+msgctxt "Global"
 msgid "AppAdminNavDBLoggingView"
 msgstr "Log"
 
-msgid "AppAdminNavFrontEnd"
-msgstr ""
-
+msgctxt "Global"
 msgid "AppAdminNavMonitoring"
 msgstr "Monitoraggio"
 
+msgctxt "Global"
 msgid "AppHelpAndSupport"
 msgstr "Aiuto e supporto"
 
+msgctxt "Global"
 msgid "AppHoverAdmin"
 msgstr "Amministrazione"
 
+msgctxt "Global"
 msgid "AppHoverNavMinimize"
 msgstr "Minimizza barra di navigazione"
 
+msgctxt "Global"
 msgid "AppHoverNavToggle"
 msgstr "Commuta barra di navigazione"
 
-msgid "AppName"
-msgstr ""
-
+msgctxt "Global"
 msgid "AppNavDashboard"
 msgstr "Cruscotto"
 
-msgid "AppNavDragAndDrop"
-msgstr ""
-
-msgid "AppNavEmail"
-msgstr ""
-
+msgctxt "Global"
 msgid "AppNavFeatures"
 msgstr "Caratteristiche"
 
-msgid "AppNavForum"
-msgstr ""
-
-msgid "AppNavHome"
-msgstr ""
-
+msgctxt "Global"
 msgid "AppNavReadEmail"
 msgstr "Leggi email"
 
-msgid "AppNavScreenshots"
-msgstr ""
-
+msgctxt "Global"
 msgid "AppNavSendEmail"
 msgstr "Invia email"
 
+msgctxt "Global"
 msgid "AppNavSponsors"
 msgstr "Sponsor"
 
-msgid "AppShortName"
-msgstr ""
-
+msgctxt "Global"
 msgid "BreadCrumbadmin"
 msgstr "Amministrazione"
 
+msgctxt "Global"
 msgid "BreadCrumbadminapiResources"
 msgstr "Risorse API OpenID"
 
+msgctxt "Global"
 msgid "BreadCrumbadminapilog"
 msgstr "Log di controllo utilizzo API"
 
+msgctxt "Global"
 msgid "BreadCrumbadminclients"
 msgstr "Client OpenID"
 
+msgctxt "Global"
 msgid "BreadCrumbadmindblog"
 msgstr "Log applicativo"
 
+msgctxt "Global"
 msgid "BreadCrumbadminidentityResources"
 msgstr "Risorse Identità OpenID"
 
+msgctxt "Global"
 msgid "BreadCrumbadminmultitenancy"
 msgstr "Gestione siti in comproprietà"
 
+msgctxt "Global"
 msgid "BreadCrumbadminroles"
 msgstr "Gestione ruoli"
 
+msgctxt "Global"
 msgid "BreadCrumbadminsettings"
 msgstr "Impostazioni"
 
+msgctxt "Global"
 msgid "BreadCrumbadminsettingsemail"
 msgstr "Configurazione Email"
 
+msgctxt "Global"
 msgid "BreadCrumbadminusers"
 msgstr "Utenti"
 
+msgctxt "Global"
 msgid "BreadCrumbdashboard"
 msgstr "Cruscotto"
 
-msgid "BreadCrumbdrag_and_drop"
-msgstr ""
-
+msgctxt "Global"
 msgid "BreadCrumbemail"
 msgstr "Invia email"
 
+msgctxt "Global"
 msgid "BreadCrumbemail_view"
 msgstr "Leggi email"
 
+msgctxt "Global"
 msgid "BreadCrumbforum"
 msgstr "Forum"
 
+msgctxt "Global"
 msgid "BreadCrumbHome"
 msgstr "Home"
 
-msgid "BreadCrumbscreenshots"
-msgstr ""
-
+msgctxt "Global"
 msgid "BreadCrumbsponsors"
 msgstr "Sponsor"
 
+msgctxt "Global"
 msgid "BreadCrumbtodo_list"
 msgstr "Lista ToDo"
 
+msgctxt "Global"
 msgid "TodoNav"
 msgstr "Lista ToDo"
 
+msgctxt "Global"
 msgid "CurrentPassword"
 msgstr "Password corrente"
 
+msgctxt "Global"
 msgid "NewPassword"
 msgstr "Nuova password"
 
+msgctxt "Global"
 msgid "Update Password"
 msgstr "Aggiorna password"
 
+msgctxt "Global"
 msgid "UpdatePasswordSuccessful"
 msgstr "Aggiornamento password riuscito"
 
+msgctxt "Global"
 msgid "UpdatePasswordFailed"
 msgstr "Aggiornamento password fallito"
 
+msgctxt "Global"
 msgid "FirstName"
 msgstr "Nome"
 
+msgctxt "Global"
 msgid "LastName"
 msgstr "Cognome"
 
+msgctxt "Global"
 msgid "Change Password"
 msgstr "Cambia password"
 
+msgctxt "Global"
 msgid "User Profile"
 msgstr "Profilo utente"
 
+msgctxt "Global"
 msgid "RememberBrowser"
 msgstr "Ricorda questo browser"
 
+msgctxt "Global"
 msgid "ForgotAuthenticator"
 msgstr "Hai dimenticato la tua app authenticator?"
 
+msgctxt "Global"
 msgid "RecoveryCode"
 msgstr "Codice di ripristino"
 
+msgctxt "Global"
 msgid "LockedUser"
 msgstr "L'utente è bloccato"
 
+msgctxt "Global"
 msgid "EmailNotConfirmed"
 msgstr "Email non verificata"
 
+msgctxt "Global"
 msgid "Code"
 msgstr "Codice"
 
+msgctxt "Global"
 msgid "TwoFactorAuthentication"
 msgstr "Autenticazione a due fattori"
 
+msgctxt "Global"
 msgid "BrowserRemembered"
 msgstr "Browser memorizzato"
 
+msgctxt "Global"
 msgid "RecoveryCodesLeft"
 msgstr "Codici di ripristino rimasti"
 
+msgctxt "Global"
 msgid "AuthenticatorCode"
 msgstr "Codice authenticator"
 
+msgctxt "Global"
 msgid "VerificationCode"
 msgstr "codice di verifica"
 
+msgctxt "Global"
 msgid "VerificationCodeInvalid"
 msgstr "Il codice di verifica non è valido"
 
+msgctxt "Global"
 msgid "ResetAuthenticator"
 msgstr "Resetta authenticator app"
 
+msgctxt "Global"
 msgid "EmailInvalid"
 msgstr "Il campo {0} non è un indirizzo email valido."
 
+msgctxt "Global"
 msgid "FieldRequired"
 msgstr "Il campo {0} è obbligatorio."
 
+msgctxt "Global"
 msgid "ConcurrencyFailure"
 msgstr "C'è già una modifica in corso."
 
+msgctxt "Global"
 msgid "DefaultError"
 msgstr "Errore sconosciuto."
 
+msgctxt "Global"
 msgid "DuplicateEmail"
 msgstr "L'email '{0}' è già in uso."
 
+msgctxt "Global"
 msgid "DuplicateRoleName"
 msgstr "Il nome di ruolo '{0}' è già in uso."
 
+msgctxt "Global"
 msgid "DuplicateUserName"
 msgstr "Il nome utente '{0}' è già in uso."
 
+msgctxt "Global"
 msgid "InvalidEmail"
 msgstr "L'email '{0}' non è valido."
 
+msgctxt "Global"
 msgid "InvalidRoleName"
 msgstr "Il nome di ruolo '{0}' non è valido."
 
+msgctxt "Global"
 msgid "InvalidToken"
 msgstr "Token non valido."
 
+msgctxt "Global"
 msgid "InvalidUserName"
 msgstr ""
 "Il nome utente '{0}' non è valido. Deve contenere solo lettere o numeri."
 
+msgctxt "Global"
 msgid "LoginAlreadyAssociated"
 msgstr "Un utente con questo login esiste già."
 
+msgctxt "Global"
 msgid "PasswordMismatch"
 msgstr "Password non corretta."
 
+msgctxt "Global"
 msgid "PasswordRequiresDigit"
 msgstr "Le password devono contenere almeno una numero."
 
+msgctxt "Global"
 msgid "PasswordRequiresLower"
 msgstr "Le password devono contenere almeno una lettera minuscola."
 
+msgctxt "Global"
 msgid "PasswordRequiresNonAlphanumeric"
 msgstr ""
-"Le password devono contenere almeno un carattere che non sia lettera o "
-"numero."
+"Le password devono contenere almeno un carattere che non sia lettera o numero."
 
+msgctxt "Global"
 msgid "PasswordRequiresUpper"
 msgstr "Le password devono contenere almeno una lettera maiuscola."
 
+msgctxt "Global"
 msgid "PasswordTooShort"
 msgstr "Le password devono avere almeno {0} caratteri."
 
+msgctxt "Global"
 msgid "UserAlreadyHasPassword"
 msgstr "L'utente ha già la password impostata."
 
+msgctxt "Global"
 msgid "UserAlreadyInRole"
 msgstr "L'utente è già nel ruolo '{0}'."
 
+msgctxt "Global"
 msgid "UserLockoutNotEnabled"
 msgstr "Il blocco utente non è abilitato."
 
+msgctxt "Global"
 msgid "UserNotInRole"
 msgstr "L'utente non è nel ruolo '{0}'."
 
+msgctxt "Global"
 msgid "UnauthorizedAccess"
 msgstr "Accesso non autorizzato"
 
+msgctxt "Global"
 msgid "Permissions"
 msgstr "Permessi"
 
+msgctxt "Global"
 msgid "Allow"
 msgstr "Consenti"
 
+msgctxt "Global"
 msgid "Are you sure you want to delete {0}?"
 msgstr "Vuoi eliminare '{0}'?"
 
+msgctxt "Global"
 msgid "Change password for {0}"
 msgstr "Cambia password per {0}"
 
+msgctxt "Global"
 msgid "ItemsDeleted"
 msgstr "{0} elementi sono stati eliminati."
 
+msgctxt "Global"
 msgid "Translations"
 msgstr "Traduzioni"
 
+msgctxt "Global"
 msgid "Culture"
 msgstr "Cultura"
 
+msgctxt "Global"
 msgid "NewTranslation"
 msgstr "Nuova traduzione"
 
+msgctxt "Global"
 msgid "Translation"
 msgstr "Traduzione"
 
+msgctxt "Global"
 msgid "Key"
 msgstr "Chiave"
 
+msgctxt "Global"
 msgid "VerifyCode"
 msgstr "Verifica codice"
 
+msgctxt "Global"
 msgid "Add"
 msgstr "Aggiungi"
 
+msgctxt "Global"
 msgid "ReloadTranslations"
 msgstr "Ricarica traduzioni"
 
+msgctxt "Global"
 msgid "One item found"
 msgid_plural "{0} items found"
 msgstr[0] "Trovato un elemento"
 msgstr[1] "{0} elementi trovati"
 
+msgctxt "Global"
 msgid "Export"
 msgstr "Esporta"
 
+msgctxt "Global"
 msgid "Import PO file"
 msgstr "Importa file PO"
 
+msgctxt "Global"
 msgid "File not selected"
 msgstr "File non selezionato"
 
+msgctxt "Global"
 msgid "File not valid"
 msgstr "File non valido"
 
+msgctxt "Global"
 msgid "File empty"
 msgstr "File vuoto"
 
+msgctxt "Global"
 msgid "PO File without a valid language"
 msgstr "File PO senza un linguaggio valido"
 
+msgctxt "Global"
 msgid "Only PO files"
 msgstr "Solo file PO"
 
+msgctxt "Global"
 msgid "Plural"
 msgstr "Plurale"
 
+msgctxt "Global"
 msgid "Index"
 msgstr "Indice"
 
+msgctxt "Global"
 msgid "Count"
 msgstr "Conteggio"
 
+msgctxt "Global"
 msgid "Selector"
 msgstr "Selettore"
 
+msgctxt "Global"
 msgid "Localization"
 msgstr "Localizzazione"
 
+msgctxt "Global"
 msgid "Pluralization rules"
 msgstr "Regole di pluralizzazione"
+
+msgctxt "Global"
+msgid "Edit as HTML"
+msgstr "Modifica come HTML"
+
+msgctxt "Global"
+msgid "From"
+msgstr "Da"
+
+msgctxt "Global"
+msgid "To"
+msgstr "A"
+
+msgctxt "Global"
+msgid "Close"
+msgstr "Chiudi"
+
+msgctxt "Global"
+msgid "Required"
+msgstr "Campo obbligatorio"
+
+msgctxt "Global"
+msgid "Rows per page"
+msgstr "Righe per pagina"
+
+msgctxt "Global"
+msgid "Send test email"
+msgstr "Invia email di test"

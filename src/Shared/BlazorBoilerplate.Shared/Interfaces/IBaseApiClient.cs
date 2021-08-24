@@ -14,5 +14,13 @@ namespace BlazorBoilerplate.Shared.Interfaces
         void CancelChanges();
 
         Task SaveChanges();
+
+        Task<QueryResult<T>> GetItemsByFilter<T>(
+            string from,
+            string orderByDefaultField,
+            string filter = null,
+            string orderBy = null,
+            string orderByDescending = null,
+            int? take = null, int? skip = null);
     }
 }

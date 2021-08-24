@@ -312,7 +312,7 @@ namespace BlazorBoilerplate.Server
                         // If the request is for our hub...
                         var path = context.HttpContext.Request.Path;
                         if (!string.IsNullOrEmpty(accessToken) &&
-                            (path.StartsWithSegments("/chathub")))
+                            path.StartsWithSegments(Constants.HubPaths.Chat))
                         {
                             // Read the token out of the query string
                             context.Token = accessToken;
@@ -436,6 +436,7 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<EntityPermissions>();
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
+            services.AddTransient<IAuthorizationHandler, EmailVerifiedHandler>();
             services.AddTransient<IAuthorizationHandler, PermissionRequirementHandler>();
             #endregion
 
@@ -689,7 +690,7 @@ namespace BlazorBoilerplate.Server
             app.UseRouting();
 
             app.UseIdentityServer();
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseMultiTenant();
@@ -734,7 +735,7 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapFallbackToPage("/_Index");
 
                 // new SignalR endpoint routing setup
-                endpoints.MapHub<Hubs.ChatHub>("/chathub");
+                endpoints.MapHub<Hubs.ChatHub>(Constants.HubPaths.Chat);
             });
 
             Program.Sync.Release();

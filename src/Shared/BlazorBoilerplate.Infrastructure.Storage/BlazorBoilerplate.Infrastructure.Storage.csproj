@@ -6,8 +6,8 @@
   
   <ItemGroup>
     <PackageReference Include="Finbuckle.MultiTenant" Version="6.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.9" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,5 +34,9 @@
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;$(DevEnvDir)devenv&quot; &quot;$(SolutionPath)&quot; /Rebuild $(configuration) /project &quot;$(SolutionDir)Shared\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj&quot;" />
+  </Target>
 
 </Project>

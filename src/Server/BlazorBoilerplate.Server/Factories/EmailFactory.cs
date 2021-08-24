@@ -14,7 +14,7 @@ namespace BlazorBoilerplate.Server.Factories
         public EmailFactory(IStringLocalizer<EmailFactory> l, IConfiguration configuration)
         {
             L = l;
-            baseUrl = configuration["Robot:ApplicationUrl"];
+            baseUrl = configuration[$"{nameof(BlazorBoilerplate)}:ApplicationUrl"];
         }
 
         public EmailMessageDto BuildTestEmail(string recipient)

@@ -2,13 +2,9 @@
 
 Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to run both WebAssembly (Core-Hosted) and Server-Side Blazor with a .NET 5.0 Server. Default mode for BB is Server Side. To switch to Webassembly log in as Admin and go to settings. [Read more here](https://blazor-boilerplate.readthedocs.io/en/latest/features/dual_mode_blazor.html)
 
-## Blazor Web Developer Opportunity
-Enkode, the originator of Blazor Boilerplate is actively looking for an individual to help write code that is built off of the Blazor Boilerplate platform. It is a part-time position, salary based off of experience. I am willing to help mentor beginners. Interested persons email: [info@blazorboilerplate.com](info@blazorboilerplate.com).  
-
 ## Repository Notes
 - Read the news below to stay up to date on the repo. We will try to keep the latest major changes on a different branch and have the more stable / tested version on the master branch.
-- Development Branch is the latest dev code for future release.
-- Fluxor - Branched from version 0.6.0 with an example with [Blazor Fluxor](https://github.com/enkodellc/blazorboilerplate/tree/blazorfluxor) *Note: not maintained
+- MudBlazor Branch is a branch for testing MudBlazor vs MatBlazor.
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)

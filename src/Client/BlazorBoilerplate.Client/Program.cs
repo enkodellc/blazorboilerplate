@@ -46,6 +46,7 @@ namespace BlazorBoilerplate.Client
             builder.Services.AddAuthorizationCore();
             builder.Services.AddSingleton<IAuthorizationPolicyProvider, SharedAuthorizationPolicyProvider>();
             builder.Services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
+            builder.Services.AddTransient<IAuthorizationHandler, EmailVerifiedHandler>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 
             builder.Services.AddScoped<ILocalizationApiClient, LocalizationApiClient>();

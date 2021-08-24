@@ -1,16 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="5.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="5.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.9" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\BlazorBoilerplate.Constants\BlazorBoilerplate.Constants.csproj" />
-  </ItemGroup>
-
 </Project>
