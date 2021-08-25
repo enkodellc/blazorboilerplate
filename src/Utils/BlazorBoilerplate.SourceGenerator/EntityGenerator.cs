@@ -146,9 +146,9 @@ namespace BlazorBoilerplate.SourceGenerator
                 var setter = @"
             set { SetValue(value); }";
 
-                string propertyTypeName = propertyType.Name;
+                string propertyTypeName = propertyType != null ? propertyType.Name : ((IArrayTypeSymbol)((IArrayTypeSymbol)property.Type).OriginalDefinition).ElementType.Name + "[]";
 
-                if (propertyType.IsGenericType)
+                if (propertyType?.IsGenericType == true)
                 {
                     propertyTypeName = GetFirstGenericTypeName(pds, property);
 
