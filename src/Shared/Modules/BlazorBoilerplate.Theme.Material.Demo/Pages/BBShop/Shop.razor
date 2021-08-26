@@ -1,0 +1,68 @@
+﻿@page "/shop"
+
+@inject ICategoryClient categoryClient
+@inject IViewNotifier viewNotifier
+@inject IStringLocalizer<Global> L
+
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Title="Your Shop" />
+    </Breadcrumbs>
+</TopSection>
+
+
+
+<div class="row">
+
+    <MatNavMenu>
+        <MatNavItem Disabled="true" Title="Item 2">Item 2</MatNavItem>
+        <MatNavSubMenu @bind-Expanded="@navSubMenuOpenState">
+            <MatNavSubMenuHeader>
+                <MatNavItem AllowSelection="false"><MatIcon Icon="all_inbox"></MatIcon>&nbsp; Item 3 - Expanded: @navSubMenuOpenState</MatNavItem>
+            </MatNavSubMenuHeader>
+            <MatNavSubMenuList>
+                <MatNavItem Href="#">Item 3.A&nbsp; <MatIcon Icon="backup"></MatIcon></MatNavItem>
+                <MatNavItem>Item 3.B&nbsp; <MatIcon Icon="build"></MatIcon></MatNavItem>
+                <MatNavItem>Item 3.C&nbsp; <MatIcon Icon="explore"></MatIcon></MatNavItem>
+            </MatNavSubMenuList>
+        </MatNavSubMenu>
+        <MatNavItem><MatIcon Icon="grade"></MatIcon>&nbsp; Item 4 </MatNavItem>
+        <MatDivider></MatDivider>
+        <MatNavItem><MatIcon Icon="face"></MatIcon>&nbsp; Item 5</MatNavItem>
+        <MatNavSubMenu>
+            <MatNavSubMenuHeader>
+                <MatNavItem AllowSelection="false"><MatIcon Icon="explore"></MatIcon>&nbsp; Item 6</MatNavItem>
+            </MatNavSubMenuHeader>
+            <MatNavSubMenuList>
+                <MatNavItem Disabled="true" Href="#">Item 6.A</MatNavItem>
+                <MatNavItem>Item 6.B</MatNavItem>
+                <MatNavItem>Item 6.C</MatNavItem>
+
+            </MatNavSubMenuList>
+        </MatNavSubMenu>
+    </MatNavMenu>
+
+
+</div>
+
+
+@code {
+
+    bool navSubMenuOpenState;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadCategories();
+    }
+
+    List<BlazorBoilerplate.Shared.Dto.BBShop.Categories> categories = new List<BlazorBoilerplate.Shared.Dto.BBShop.Categories>();
+
+    async Task LoadCategories()
+    {
+        var result = await categoryClient.LoadCategories();
+        categories = new List<BlazorBoilerplate.Shared.Dto.BBShop.Categories>(result);
+        //StateHasChanged();
+    }
+
+}

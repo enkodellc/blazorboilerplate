@@ -65,6 +65,8 @@ using System.Threading.Tasks;
 using static IdentityServer4.IdentityServerConstants;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Components.WebAssembly.Services;
+using BlazorBoilerplate.Shared.Interfaces.BBShop;
+using BlazorBoilerplate.Shared.Services.BBShop;
 
 namespace BlazorBoilerplate.Server
 {
@@ -643,6 +645,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddScoped<ILocalizationApiClient, LocalizationApiClient>();
             services.AddScoped<IApiClient, ApiClient>();
+            services.AddScoped<ICategoryClient, CategoryClient>();
 
             // Authentication providers
             Log.Logger.Debug("Removing AuthenticationStateProvider...");

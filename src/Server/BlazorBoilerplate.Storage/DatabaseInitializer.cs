@@ -138,7 +138,7 @@ namespace BlazorBoilerplate.Storage
                             {
                                 IsCompleted = false,
                                 Title = $"Buy {rnd.Next(2, 5)} {fruits[rnd.Next(fruits.Length)]}",
-                                CreatedById = users[rnd.Next(users.Length)].Id
+                                //CreatedById = users[rnd.Next(users.Length)].Id
                             }
                     );
             }

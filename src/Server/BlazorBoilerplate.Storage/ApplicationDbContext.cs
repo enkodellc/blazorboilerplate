@@ -25,6 +25,8 @@ namespace BlazorBoilerplate.Storage
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<QueuedEmail> QueuedEmails { get; set; }
         public DbSet<Todo> Todos { get; set; }
+
+        public DbSet<Categories> Categories { get; set; }
         public DbSet<Message> Messages { get; set; }
         private IUserSession UserSession { get; set; }
         public DbSet<DbLog> Logs { get; set; }
