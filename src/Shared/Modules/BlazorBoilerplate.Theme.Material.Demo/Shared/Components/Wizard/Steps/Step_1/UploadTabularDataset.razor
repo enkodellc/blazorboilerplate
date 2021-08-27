@@ -1,0 +1,72 @@
+﻿@inject IStringLocalizer<Global> L
+@using System
+@using System.IO;
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+
+
+<MatDialog @bind-IsOpen="IsOpen">
+    <MatDialogTitle>Upload new dataset</MatDialogTitle>
+    <MatDialogContent>
+        <MatFileUpload OnChange="@FilesReady" Label="Click or drag & drop a dataset"></MatFileUpload>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@Close">Close</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnUploadCompletedCallback { get; set; }
+
+    private async Task Close()
+    {
+        IsOpen = false;
+        await IsOpenChanged.InvokeAsync(IsOpen);
+    }
+
+    private async Task FilesReady(IMatFileUploadEntry[] files)
+    {
+        try
+        {
+            ApiResponseDto apiResponse = new ApiResponseDto();
+            FileUploadRequestDto fileUpload;
+            foreach (var file in files)
+            {
+                //Only one file can always be read
+                using (var stream = new MemoryStream())
+                {
+                    await file.WriteToStreamAsync(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    using (var reader = new StreamReader(stream))
+                    {
+                        var content = await reader.ReadToEndAsync();
+                        fileUpload = new FileUploadRequestDto(file.Name, content);
+                        apiResponse = await apiClient.UploadDataset(fileUpload);
+                    }
+                }
+            }
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                await OnUploadCompletedCallback.InvokeAsync();
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+            await Close();
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+}

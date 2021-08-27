@@ -6,6 +6,10 @@ using Breeze.Sharp;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using BlazorBoilerplate.Shared.Dto.Dataset;
+using BlazorBoilerplate.Shared.Dto.Ontology;
+using BlazorBoilerplate.Shared.Dto.AutoML;
+using BlazorBoilerplate.Shared.Dto.Session;
 
 namespace BlazorBoilerplate.Shared.Interfaces
 {
@@ -25,5 +29,15 @@ namespace BlazorBoilerplate.Shared.Interfaces
         Task<QueryResult<ApplicationUser>> GetTodoEditors(ToDoFilter filter);
 
         Task<ApiResponseDto> SendTestEmail(EmailDto email);
+
+        Task<ApiResponseDto> GetModel(GetAutoMlModelRequestDto automl);
+        Task<ApiResponseDto> GetDatasets();
+        Task<ApiResponseDto> GetDataset(GetDatasetRequestDto name);
+        Task<ApiResponseDto> GetTasks(GetTasksRequestDto dataset);
+        Task<ApiResponseDto> GetTabularDatasetColumnNames(GetTabularDatasetColumnNamesRequestDto dataset);
+        Task<ApiResponseDto> StartAutoML(StartAutoMLRequestDto automl);
+        Task<ApiResponseDto> UploadDataset(FileUploadRequestDto file);
+        Task<ApiResponseDto> GetSessions(GetSessionsRequestDto sessions);
+        Task<ApiResponseDto> GetSession(GetSessionRequestDto sessions);
     }
 }

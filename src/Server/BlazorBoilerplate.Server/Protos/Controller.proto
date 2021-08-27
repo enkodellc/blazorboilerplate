@@ -1,0 +1,148 @@
+syntax = "proto3";
+option csharp_namespace = "BlazorBoilerplate.Server";
+
+service ControllerService {
+	rpc GetAutoMlModel(GetAutoMlModelRequest) returns (GetAutoMlModelResponse) {}
+	rpc GetDatasets(GetDatasetsRequest) returns (GetDatasetsResponse) {}
+	rpc GetDataset(GetDatasetRequest) returns (GetDatasetResponse) {}
+	rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
+	rpc GetSessionStatus(GetSessionStatusRequest) returns (GetSessionStatusResponse) {}
+	rpc GetTabularDatasetColumnNames(GetTabularDatasetColumnNamesRequest) returns (GetTabularDatasetColumnNamesResponse) {}
+	rpc GetTasks(GetTasksRequest) returns (GetTasksResponse) {}
+	rpc UploadDatasetFile(UploadDatasetFileRequest) returns (UploadDatasetFileResponse) {}
+	rpc StartAutoMLprocess(StartAutoMLprocessRequest) returns (StartAutoMLprocessResponse) {}
+}
+
+message GetDatasetsRequest {
+	DatasetType type = 1;
+}
+
+message GetDatasetsResponse {
+	repeated Dataset dataset = 1;
+}
+
+message Dataset {
+	string fileName = 1;
+	string type = 2;
+}
+
+message GetDatasetRequest {
+	string name = 1;
+}
+
+message GetDatasetResponse {
+	repeated TableColumn columns = 1;
+}
+
+message TableColumn {
+	string name = 1;
+	DataType type = 2;
+	repeated string fistEntries = 3;
+}
+
+enum DataType {
+	DATATYPE_UNKNOW = 0;
+	DATATYPE_STRING = 1;
+	DATATYPE_INT = 2;
+	DATATYPE_FLOAT = 3;
+	DATATYPE_CATEGORY = 4;
+	DATATYPE_BOOLEAN = 5;
+	DATATYPE_DATETIME = 6;
+}
+
+message GetTabularDatasetColumnNamesRequest {
+	string datasetName = 1;
+}
+
+message GetTabularDatasetColumnNamesResponse {
+	repeated string columnNames = 1;
+}
+
+message GetTasksRequest {
+	string datasetName = 1;
+}
+
+message GetTasksResponse {
+	repeated string tasks = 1;
+}
+
+message GetSessionsRequest {
+	string user = 1;
+}
+
+message GetSessionsResponse {
+	repeated string sessionIds = 1;
+}
+
+message GetSessionStatusRequest {
+	string id = 1;
+}
+
+message GetSessionStatusResponse {
+	SessionStatus status = 1;
+	repeated AutoMLStatus automls = 2;
+}
+
+message AutoMLStatus {
+	string name = 1;
+	SessionStatus status = 2;
+	repeated string messages = 3;
+}
+
+message GetAutoMlModelRequest {
+	string sessionId = 1;
+	string autoMl = 2;
+}
+
+message GetAutoMlModelResponse {
+	string name = 1;
+	bytes file = 2;
+}
+
+message UploadDatasetFileRequest {
+	bytes content = 1;
+	string name = 2;
+}
+
+message UploadDatasetFileResponse {
+	uint32 returnCode = 1;
+}
+
+message StartAutoMLprocessRequest {
+	string dataset = 1;
+	MachineLearningTask task = 2;
+	AutoMLConfigurationTabularData tabularConfig = 3;
+}
+
+message AutoMLConfigurationTabularData {
+	string target = 1;
+}
+
+message StartAutoMLprocessResponse {
+	ControllerReturnCode result = 1;
+	string sessionId = 2;
+}
+
+enum DatasetType {
+	DATASET_TYPE_UNKNOWN = 0;
+	DATASET_TYPE_TABULARY_DATA = 1;
+}
+
+enum ControllerReturnCode {
+	CONTROLLER_RETURN_CODE_UNKNOWN = 0;
+	CONTROLLER_RETURN_CODE_SUCCESS = 1;
+	CONTROLLER_RETURN_CODE_STATUS_UPDATE = 2;
+	CONTROLLER_RETURN_CODE_ERROR = 100;
+}
+
+enum MachineLearningTask {
+	MACHINE_LEARNING_TASK_UNKNOWN = 0;
+	MACHINE_LEARNING_TASK_TABULAR_CLASSIFICATION = 1;
+	MACHINE_LEARNING_TASK_TABULAR_REGRESSION = 2;
+}
+
+enum SessionStatus {
+	SESSION_STATUS_UNKNOWN = 0;
+	SESSION_STATUS_BUSY = 1;
+	SESSION_STATUS_COMPLETED = 2;
+}

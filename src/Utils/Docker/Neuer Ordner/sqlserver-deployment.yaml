@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe
+      convert -f docker-compose.yml
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: sqlserver
+  name: sqlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: sqlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe
+          convert -f docker-compose.yml
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: sqlserver
+    spec:
+      containers:
+      - env:
+        - name: ACCEPT_EULA
+          value: Y
+        - name: SA_PASSWORD
+          value: yourVeryStrong(!)Password
+        image: mcr.microsoft.com/mssql/server
+        imagePullPolicy: ""
+        name: sqlserver
+        ports:
+        - containerPort: 1433
+        resources:
+          limits:
+            cpu: "1"
+            memory: "2097152e3"
+        volumeMounts:
+        - mountPath: /var/opt/mssql
+          name: dbdata
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: dbdata
+        persistentVolumeClaim:
+          claimName: dbdata
+status: {}

@@ -65,6 +65,7 @@ using System.Threading.Tasks;
 using static IdentityServer4.IdentityServerConstants;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Components.WebAssembly.Services;
+using Grpc.Net.Client;
 
 namespace BlazorBoilerplate.Server
 {
@@ -113,6 +114,26 @@ namespace BlazorBoilerplate.Server
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
+            string grpcEndpoint = "https://localhost:50101";
+            if (_environment.IsDevelopment())
+            {
+                string endpoint = Configuration["CONTROLLER_SERVICE_HOST"];
+                string port = Configuration["CONTROLLER_SERVICE_PORT"];
+                grpcEndpoint = $"https://{endpoint}:{port}";
+            }
+            //GRPC CONTROLLER FACTORY 
+            services.AddGrpcClient<ControllerService.ControllerServiceClient>(o =>
+            {
+                o.Address = new Uri(grpcEndpoint);
+            })
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    var httpHandler = new HttpClientHandler();
+                    httpHandler.ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                    return httpHandler;
+                });
+
 
             var authAuthority = Configuration[$"{projectName}:IS4ApplicationUrl"].TrimEnd('/');
 
@@ -585,10 +606,16 @@ namespace BlazorBoilerplate.Server
 
             services.AddTransient<IEmailFactory, EmailFactory>();
 
+            services.AddTransient<IAutoMlManager, AutoMlManager>();
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAdminManager, AdminManager>();
             services.AddTransient<IEmailManager, EmailManager>();
+            services.AddTransient<IDatasetManager, DatasetManager>();
+            services.AddTransient<IOntologyManager, OntologyManager>();
+            services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<IExternalAuthManager, ExternalAuthManager>();
+
+
 
             #region Automapper
             //Automapper to map DTO to Models https://www.c-sharpcorner.com/UploadFile/1492b1/crud-operations-using-automapper-in-mvc-application/

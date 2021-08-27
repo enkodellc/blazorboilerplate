@@ -1,0 +1,49 @@
+﻿@inject IStringLocalizer<Global> L
+@using System
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+
+<MatTable Items="@DatasetResponse" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="DatasetSelectionChangedEvent">
+    <MatTableHeader>
+        <th>Name</th>
+        <th>Type</th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>@context.Name</td>
+        <td>@context.Type</td>
+    </MatTableRow>
+</MatTable>
+
+@code {
+    [Parameter]
+    public List<GetDatasetsResponseDto> DatasetResponse { get; set; }
+
+    [Parameter]
+    public StartAutoMLRequestDto SelectedDataset { get; set; }
+
+    [Parameter]
+    public EventCallback<StartAutoMLRequestDto> SelectedDatasetChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    private async void DatasetSelectionChangedEvent(object row)
+    {
+        if (row == null)
+        {
+            SelectedDataset.DatasetName = null;
+            SelectedDataset.DatasetType = null;
+        }
+        else
+        {
+            SelectedDataset.DatasetName = ((GetDatasetsResponseDto)row).Name;
+            SelectedDataset.DatasetType = ((GetDatasetsResponseDto)row).Type;
+        }
+        await SelectedDatasetChanged.InvokeAsync(SelectedDataset);
+    }
+
+
+
+}

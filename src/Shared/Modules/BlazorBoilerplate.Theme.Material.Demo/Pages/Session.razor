@@ -1,0 +1,46 @@
+﻿@page "/sessions"
+@inject IStringLocalizer<Global> L
+@using System
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+@attribute [Authorize]
+
+@if (_sessions != null)
+{
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        @foreach (var session in _sessions.SessionIds)
+            {
+        <div class="mat-layout-grid-cell">
+            <SessionCard SessionId="@session"></SessionCard>
+        </div>
+            }
+    </div>
+</div>
+}
+
+@code {
+    private GetSessionsResponseDto _sessions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = apiResponse = await apiClient.GetSessions(new GetSessionsRequestDto { User = "" });
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                _sessions = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionsResponseDto>(apiResponse.Result.ToString());
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+}

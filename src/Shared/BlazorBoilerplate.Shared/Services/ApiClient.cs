@@ -1,10 +1,15 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.AutoML;
+using BlazorBoilerplate.Shared.Dto.Dataset;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Dto.Email;
+using BlazorBoilerplate.Shared.Dto.Ontology;
+using BlazorBoilerplate.Shared.Dto.Session;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
 using Breeze.Sharp;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -61,6 +66,50 @@ namespace BlazorBoilerplate.Shared.Services
         public async Task<ApiResponseDto> SendTestEmail(EmailDto email)
         {
             return await httpClient.PostJsonAsync<ApiResponseDto>("api/Email/SendTestEmail", email);
+        }
+
+        public async Task<ApiResponseDto> GetDatasets()
+        {
+            return await httpClient.GetJsonAsync<ApiResponseDto>("api/Dataset/GetDatasets");
+        }
+        public async Task<ApiResponseDto> GetDataset(GetDatasetRequestDto name)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Dataset/GetDataset", name);
+        }
+
+        public async Task<ApiResponseDto> UploadDataset(FileUploadRequestDto file)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Dataset/Upload", file);
+        }
+
+        public async Task<ApiResponseDto> GetTasks(GetTasksRequestDto dataset)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Ontology/GetTasks", dataset);
+        }
+
+        public async Task<ApiResponseDto> GetTabularDatasetColumnNames(GetTabularDatasetColumnNamesRequestDto dataset)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Dataset/GetTabularDatasetColumnNames", dataset);
+        }
+
+        public async Task<ApiResponseDto> StartAutoML(StartAutoMLRequestDto automl)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/AutoMl/StartAuto", automl);
+        }
+
+        public async Task<ApiResponseDto> GetSessions(GetSessionsRequestDto sessions)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Session/GetSessions", sessions);
+        }
+
+        public async Task<ApiResponseDto> GetSession(GetSessionRequestDto sessions)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Session/GetSession", sessions);
+        }
+
+        public async Task<ApiResponseDto> GetModel(GetAutoMlModelRequestDto automl)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/AutoMl/GetAutoMlModel", automl);
         }
     }
 }

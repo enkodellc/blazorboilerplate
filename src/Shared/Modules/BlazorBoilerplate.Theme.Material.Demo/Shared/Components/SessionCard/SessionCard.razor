@@ -1,0 +1,120 @@
+﻿@inject IStringLocalizer<Global> L
+@using System
+@using System.Threading;
+@using System.IO;
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+@inject IJSRuntime JSRuntime
+
+@if (_session != null)
+{
+    <MatCard Style="max-width: 500px;">
+        <div class="demo-mat-card-content">
+            <MatHeadline6 Style="margin: 0px;">
+                Session @SessionId
+            </MatHeadline6>
+            @if (_session.Status == 1)
+            {
+                <MatProgressBar Indeterminate="true"></MatProgressBar>
+            }
+            <MatTabGroup @bind-ActiveIndex="_autoMlIndex">
+                @foreach (var automl in _session.AutoMls)
+                {
+                    <MatTab Label="@automl.Name">
+                        <div style="padding: 5px; border: 1px solid white;">
+                            <MatList Style=" min-height: 2rem; max-height: 30rem; overflow-y: auto;">
+                                @foreach (var item in automl.Messages)
+                                {
+                                    <MatListItem>
+                                        @item
+                                    </MatListItem>
+                                }
+                            </MatList>
+                        </div>
+                    </MatTab>
+                }
+            </MatTabGroup>
+        </div>
+        <MatCardActionIcons>
+            <MatIconButton Icon="@MatIconNames.Cloud_download" OnClick="@DownloadOutputAsync"></MatIconButton>
+        </MatCardActionIcons>
+    </MatCard>
+}
+
+
+@code {
+    public IEnumerable<string> items2 = Enumerable.Range(0, 200).Select(i => i.ToString()).ToArray();
+    System.Threading.Timer timer;
+    private GetSessionResponseDto _session = null;
+    private int _autoMlIndex = 0;
+
+    [Parameter]
+    public string SessionId { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        LoadSessionAsync();
+    }
+
+    private async void LoadSessionAsync()
+    {
+        try
+        {
+            while (true)
+            {
+                ApiResponseDto apiResponse = apiResponse = await apiClient.GetSession(new GetSessionRequestDto { SessionId = SessionId });
+
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    _session = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionResponseDto>(apiResponse.Result.ToString());
+                    StateHasChanged();
+                    if (_session.Status == 2)
+                    {
+                        break;
+                    }
+                    Thread.Sleep(5000);
+                }
+                else
+                {
+                    viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+                    break;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+
+    private async void DownloadOutputAsync()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = apiResponse = await apiClient.GetModel(new GetAutoMlModelRequestDto { SessionId = SessionId, AutoMl = _session.AutoMls[_autoMlIndex].Name });
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                GetAutoMlModelRespomseDto file = Newtonsoft.Json.JsonConvert.DeserializeObject<GetAutoMlModelRespomseDto>(apiResponse.Result.ToString());
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+                await JSRuntime.InvokeVoidAsync(
+                    "downloadFromByteArray",
+                     new
+                     {
+                         ByteArray = file.Content,
+                         FileName = file.Name,
+                         ContentType = "application/octet-stream"
+                     });
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+}

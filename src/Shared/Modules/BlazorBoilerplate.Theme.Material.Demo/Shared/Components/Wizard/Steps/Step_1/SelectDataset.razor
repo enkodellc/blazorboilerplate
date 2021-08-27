@@ -1,0 +1,70 @@
+﻿@inject IStringLocalizer<Global> L
+@using System
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+
+<MatTabGroup>
+    <MatTab Label="Tabular data">
+        <MatButton TrailingIcon="add" OnClick="@(e => { _isTabularUploadOpen = true; })">Upload</MatButton>
+        <DatasetTable DatasetResponse="_datasets" @bind-SelectedDataset="_selectedDataset"></DatasetTable>
+    </MatTab>
+    <MatTab Label="Image data">
+    </MatTab>
+</MatTabGroup>
+
+<UploadTabularDataset @bind-IsOpen="_isTabularUploadOpen" OnUploadCompletedCallback="LoadDatasets"></UploadTabularDataset>
+
+@code {
+    private StartAutoMLRequestDto _selectedDataset
+    {
+        get => SelectedDataset;
+        set
+        {
+            SelectedDatasetChanged.InvokeAsync(value);
+            CheckForNextStepCallback.InvokeAsync();
+        }
+    }
+    [Parameter]
+    public StartAutoMLRequestDto SelectedDataset { get; set; }
+    [Parameter]
+    public EventCallback<StartAutoMLRequestDto> SelectedDatasetChanged { get; set; }
+
+    /// <summary>
+    /// Trigger to start examination for IsNextStepApproved in Parent
+    /// </summary>
+    [Parameter]
+    public EventCallback CheckForNextStepCallback { get; set; }
+
+    private List<GetDatasetsResponseDto> _datasets;
+    private bool _isTabularUploadOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDatasets();
+        _selectedDataset.DatasetName = null;
+    }
+
+    private async Task LoadDatasets()
+    {
+        try
+        {
+            _datasets = new List<GetDatasetsResponseDto>();
+            ApiResponseDto apiResponse = await apiClient.GetDatasets();
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                _datasets = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GetDatasetsResponseDto>>(apiResponse.Result.ToString());
+                StateHasChanged();
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+}
