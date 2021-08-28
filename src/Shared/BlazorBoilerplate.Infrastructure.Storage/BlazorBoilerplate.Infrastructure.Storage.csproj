@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   
   <ItemGroup>
@@ -36,7 +37,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&quot;$(DevEnvDir)devenv&quot; &quot;$(SolutionPath)&quot; /Rebuild $(configuration) /project &quot;$(SolutionDir)Shared\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj&quot;" />
+    <Exec Command="dotnet build &quot;$(SolutionDir)Shared\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj&quot;" />
   </Target>
 
 </Project>
