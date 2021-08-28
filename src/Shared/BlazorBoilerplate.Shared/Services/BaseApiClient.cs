@@ -185,7 +185,7 @@ namespace BlazorBoilerplate.Shared.Services
             string orderByDescending = null,
             int? take = null, int? skip = null)
         {
-            if (orderBy == null)
+            if (orderBy == null && orderByDescending == null)
                 orderBy = orderByDefaultField;
 
             Dictionary<string, object> parameters = null;
