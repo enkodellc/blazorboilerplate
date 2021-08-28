@@ -79,6 +79,20 @@ namespace BlazorBoilerplate.Shared.Services
             entityManager.RejectChanges();
         }
 
+        public event EventHandler<EntityChangedEventArgs> EntityChanged
+        {
+            add
+            {
+                entityManager.EntityChanged += value;
+
+            }
+            remove
+            {
+                entityManager.EntityChanged -= value;
+
+            }
+        }
+
         public async Task SaveChanges()
         {
             try
