@@ -1,4 +1,5 @@
 ﻿using Breeze.Sharp;
+using System;
 using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Interfaces
@@ -12,6 +13,8 @@ namespace BlazorBoilerplate.Shared.Interfaces
         void ClearEntitiesCache();
 
         void CancelChanges();
+
+        event EventHandler<EntityChangedEventArgs> EntityChanged;
 
         Task SaveChanges();
 

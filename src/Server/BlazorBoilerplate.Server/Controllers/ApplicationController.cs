@@ -48,28 +48,28 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpGet]
         public IQueryable<TenantSetting> TenantSettings()
         {
-            return persistenceManager.GetEntities<TenantSetting>();
+            return persistenceManager.GetEntities<TenantSetting>().AsNoTracking();
         }
 
         [HttpGet]
         [Authorize(Policies.IsAdmin)]
         public IQueryable<ApplicationUser> Users()
         {
-            return persistenceManager.GetEntities<ApplicationUser>().Include(i => i.UserRoles).ThenInclude(i => i.Role).OrderBy(i => i.UserName);
+            return persistenceManager.GetEntities<ApplicationUser>().AsNoTracking().Include(i => i.UserRoles).ThenInclude(i => i.Role).OrderBy(i => i.UserName);
         }
 
         [HttpGet]
         [Authorize(Policies.IsAdmin)]
         public IQueryable<ApplicationRole> Roles()
         {
-            return persistenceManager.GetEntities<ApplicationRole>().OrderBy(i => i.Name);
+            return persistenceManager.GetEntities<ApplicationRole>().AsNoTracking().OrderBy(i => i.Name);
         }
 
         [AllowAnonymous]
         [HttpGet]
         public IQueryable<Todo> Todos([FromQuery] ToDoFilter filter)
         {
-            return persistenceManager.GetEntities<Todo>()
+            return persistenceManager.GetEntities<Todo>().AsNoTracking()
                 .Include(i => i.CreatedBy)
                 .Include(i => i.ModifiedBy)
                 .Where(i =>
@@ -86,7 +86,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             filter.CreatedById = null;
 
-            return Todos(filter).Where(i => i.CreatedBy != null).Select(i => i.CreatedBy).Distinct();
+            return Todos(filter).Where(i => i.CreatedBy != null).Select(i => i.CreatedBy).Distinct().AsNoTracking();
         }
 
         [AllowAnonymous]
@@ -95,7 +95,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             filter.ModifiedById = null;
 
-            return Todos(filter).Where(i => i.ModifiedBy != null).Select(i => i.ModifiedBy).Distinct();
+            return Todos(filter).Where(i => i.ModifiedBy != null).Select(i => i.ModifiedBy).Distinct().AsNoTracking();
         }
 
         [HttpGet]
