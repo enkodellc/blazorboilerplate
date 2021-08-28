@@ -65,14 +65,14 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpGet]
         public IQueryable<PluralFormRule> PluralFormRules()
         {
-            return persistenceManager.GetEntities<PluralFormRule>();
+            return persistenceManager.GetEntities<PluralFormRule>().AsNoTracking();
         }
 
         [AllowAnonymous]
         [HttpGet]
         public IQueryable<LocalizationRecord> LocalizationRecords(string contextId, string msgId)
         {
-            return persistenceManager.GetEntities<LocalizationRecord>()
+            return persistenceManager.GetEntities<LocalizationRecord>().AsNoTracking()
                 .Where(i => (contextId == null || i.ContextId == contextId) && (msgId == null || i.MsgId == msgId))
                 .Include(i => i.PluralTranslations)
                 .OrderBy(i => i.Culture == Settings.NeutralCulture ? 0 : 1).ThenBy(i => i.Culture);
@@ -81,7 +81,7 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpGet]
         public IQueryable<LocalizationRecordKey> LocalizationRecordKeys(string contextId, string filter)
         {
-            return persistenceManager.GetEntities<LocalizationRecord>()
+            return persistenceManager.GetEntities<LocalizationRecord>().AsNoTracking()
                 .Where(i => (contextId == null || i.ContextId == contextId) && (filter == null || i.MsgId.ToLower().Contains(filter.ToLower()) || i.Translation.ToLower().Contains(filter.ToLower())))
                 .OrderBy(i => i.ContextId).ThenBy(i => i.MsgId)
                 .Select(i => new LocalizationRecordKey() { MsgId = i.MsgId, ContextId = i.ContextId })
