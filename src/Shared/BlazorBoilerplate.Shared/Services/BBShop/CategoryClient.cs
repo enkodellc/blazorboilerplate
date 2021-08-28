@@ -1,5 +1,6 @@
-﻿using BlazorBoilerplate.Shared.Dto.BBShop;
-using BlazorBoilerplate.Shared.Interfaces.BBShop;
+﻿using BlazorBoilerplate.Shared.Interfaces.BBShop;
+using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Db;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -23,12 +24,13 @@ namespace BlazorBoilerplate.Shared.Services.BBShop
             : base(httpClient, logger, "api/shop/")
         { }
 
-        public async Task<Breeze.Sharp.QueryResult<Categories>> LoadCategories()
+        
+        public async Task<Breeze.Sharp.QueryResult<Categories>> LoadCategories(int? take = null, int? skip = null)
         {
             return await GetItems<Categories>(from: "Categories"
                 , orderByDescending: null
-                , take: 0
-                , skip: int.MaxValue
+                , take: take
+                , skip: skip
                 , parameters: null);
         }
     }

@@ -175,6 +175,37 @@ namespace BlazorBoilerplate.Storage
             );
             }
 
+            //add category for shopping
+            if (!_context.Categories.Any())
+            {
+                _context.Categories.AddRange(
+                    new Categories
+                    {
+                        Name = "Furniture",
+                        Icon = "weekend",
+                        Url = "/shop/categories/furniture",
+                        CreatedById = user.Id,
+                        CreatedOn = DateTime.Now
+                    },
+                    new Categories
+                    {
+                        Name = "Fun",
+                        Icon = "extension",
+                        Url = "/shop/categories/fun",
+                        CreatedById = user.Id,
+                        CreatedOn = DateTime.Now
+                    },
+                    new Categories
+                    {
+                        Name = "Kitchen",
+                        Icon = "kitchen",
+                        Url = "/shop/categories/kitchen",
+                        CreatedById = user.Id,
+                        CreatedOn = DateTime.Now
+                    }
+                );
+            }
+
             _context.SaveChanges();
         }
 

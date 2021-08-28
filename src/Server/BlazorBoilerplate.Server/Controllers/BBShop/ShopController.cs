@@ -40,7 +40,10 @@ namespace BlazorBoilerplate.Server.Controllers
         [AllowAnonymous]
         public IQueryable<Categories> Categories()
         {
-            return persistenceManager.GetEntities<Categories>().AsNoTracking();
+            return persistenceManager.GetEntities<Categories>()
+                .Include(i => i.CreatedBy)
+                .Include(i => i.ModifiedBy)
+                .OrderByDescending(i => i.CreatedOn);
         }
 
         [AllowAnonymous]

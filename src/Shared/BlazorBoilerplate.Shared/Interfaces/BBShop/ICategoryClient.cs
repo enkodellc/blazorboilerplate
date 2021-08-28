@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Shared.Dto.BBShop;
+﻿using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Db;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace BlazorBoilerplate.Shared.Interfaces.BBShop
 {
     public interface ICategoryClient
     {
-        Task<Breeze.Sharp.QueryResult<Categories>> LoadCategories();
+        Task<Breeze.Sharp.QueryResult<Categories>> LoadCategories(int? take = null, int? skip = null);
     }
 }

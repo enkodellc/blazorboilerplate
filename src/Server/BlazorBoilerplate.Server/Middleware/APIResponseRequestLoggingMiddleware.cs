@@ -34,6 +34,7 @@ namespace BlazorBoilerplate.Server.Middleware
         private readonly Func<object, Task> _clearCacheHeadersDelegate;
         private readonly bool _enableAPILogging;
         private readonly List<string> _ignorePaths;
+        private readonly List<string> _allowedPaths;
 
         public APIResponseRequestLoggingMiddleware(RequestDelegate next,
             IConfiguration configuration,
@@ -43,6 +44,7 @@ namespace BlazorBoilerplate.Server.Middleware
             _enableAPILogging = configuration.GetSection("BlazorBoilerplate:Api:Logging:Enabled").Get<bool>();
             _clearCacheHeadersDelegate = ClearCacheHeaders;
             _ignorePaths = configuration.GetSection("BlazorBoilerplate:Api:Logging:IgnorePaths").Get<List<string>>() ?? new List<string>();
+            _allowedPaths = new string[] { "/api/localization", "/api/data", "/api/shop", "/api/externalauth" }.ToList();
         }
 
         public async Task Invoke(HttpContext httpContext, IServiceScopeFactory scopeFactory, UserManager<ApplicationUser> userManager)
@@ -71,7 +73,7 @@ namespace BlazorBoilerplate.Server.Middleware
 
                         var response = httpContext.Response;
 
-                        if (new string[] { "/api/localization", "/api/data", "/api/externalauth" }.Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
+                        if (_allowedPaths.Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
                             await _next.Invoke(httpContext);
                         else
                         {
