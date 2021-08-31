@@ -101,8 +101,13 @@ namespace BlazorBoilerplate.Shared.Services
             }
             catch (SaveException ex)
             {
-                var msg = ex.EntityErrors.First().ErrorMessage;
+                var msg = ex.EntityErrors.FirstOrDefault()?.ErrorMessage;
+
+                if (msg == null)
+                    msg = ex.ValidationErrors.FirstOrDefault()?.Message;
+
                 logger.LogWarning("SaveChanges: {0}", msg);
+
                 throw new Exception(msg);
             }
             catch (Exception ex)
