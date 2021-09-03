@@ -22,7 +22,7 @@
     <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.11" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.1" />
-    <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.0.3" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.1.0" />
     <PackageReference Include="Azure.Identity" Version="1.4.1" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
     <PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.2.0" />
