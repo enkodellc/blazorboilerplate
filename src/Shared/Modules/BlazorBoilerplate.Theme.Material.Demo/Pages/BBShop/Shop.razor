@@ -1,215 +1,189 @@
 ﻿@page "/shop"
 
-@inject ICategoryClient categoryClient
+@inject IShopClient shopClient
 @inject IViewNotifier viewNotifier
 @inject IStringLocalizer<Global> L
 
 
-    <style>
-        .demo-mat-card {
-            max-width: 300px;
-        }
+<style>
+    .product-card {
+        max-width: 300px;
+        height: 450px
+    }
 
-        .demo-mat-card-content {
-            padding: 1.5rem;
-        }
+    .product-card-content {
+        padding: 2.0rem;
+    }
 
-        .demo-mat-card-clean-margin {
-            margin: 0px;
-        }
-    </style>
-
-    <TopSection>
-        <Breadcrumbs>
-            <Breadcrumb Title="Your Shop" />
-        </Breadcrumbs>
-    </TopSection>
+    .product-card-clean-margin {
+        margin: 0px;
+    }
+</style>
 
 
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Title="Your Shop" />
+    </Breadcrumbs>
+</TopSection>
 
 
-    <div class="mat-layout-grid">
-        <div class="mat-layout-grid-inner">
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2">
-                <div class="mat-elevation-z8" style="padding: 0.5em">
-                    <MatNavMenu>
 
-                        @foreach (var category in categories)
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2">
+            <div class="mat-elevation-z8" style="padding: 0.5em">
+                <MatNavMenu>
+
+                    @foreach (var category in categories)
+                    {
+                        <MatNavItem Href="@category.Url"><MatIcon Icon="@category.Icon"></MatIcon>&nbsp; @category.Name</MatNavItem>
+                        <MatDivider Padded="true"></MatDivider>
+                    }
+
+                </MatNavMenu>
+            </div>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+            <div class="mat-elevation-z8" style="padding: 0.5em">
+                <div class="mat-layout-grid mat-layout-grid-align-left">
+                    <div class="mat-layout-grid-inner">
+
+                        <!-- product -->
+                        @foreach (var product in products)
                         {
-                            <MatNavItem Href="@category.Url"><MatIcon Icon="@category.Icon"></MatIcon>&nbsp; @category.Name</MatNavItem>
-                            <MatDivider Padded="true"></MatDivider>
+                            <div class="mat-layout-grid-cell">
+                                <MatCard class="product-card">
+                                    <MatCardContent>
+                                        <MatCardMedia Wide="true" ImageUrl="@product.Image"></MatCardMedia>
+                                        <div class="product-card-content">
+                                            <MatHeadline6 class="product-card-clean-margin">
+                                                @product.Title
+                                            </MatHeadline6>
+                                            <MatSubtitle2 class="product-card-clean-margin">
+                                                <span class="">Price : <span style="color: #17ce17">13</span> $</span>
+
+                                            </MatSubtitle2>
+                                            @*<MatSubtitle2 class="product-card-clean-margin">
+                                                    Shop: lazarus
+                                                </MatSubtitle2>*@
+                                        </div>
+
+                                        <MatBody2 class="product-card-content product-card-clean-margin">
+                                            <div class="floating-product-desc">
+                                                <span>@product.Description</span>
+                                            </div>
+                                        </MatBody2>
+                                    </MatCardContent>
+                                    <MatCardActions>
+                                        <MatCardActionButtons>
+                                            <MatIconButton Icon="visibility"></MatIconButton>
+                                            <MatIconButton Icon="add_shopping_cart" ToggleIcon="remove_shopping_cart" @bind-Toggled="@cardToggled">
+                                            </MatIconButton>
+                                        </MatCardActionButtons>
+                                        <MatIconButton Icon="favorite_border" ToggleIcon="favorite" @bind-Toggled="@favoriteToggled">
+                                        </MatIconButton>
+                                    </MatCardActions>
+                                </MatCard>
+                            </div>
                         }
 
-                    </MatNavMenu>
+                    </div>
                 </div>
+
             </div>
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <div class="mat-elevation-z8" style="padding: 0.5em">
-                    <div class="mat-layout-grid mat-layout-grid-align-left">
-                        <div class="mat-layout-grid-inner">
-                            <!-- 1 -->
-                            <div class="mat-layout-grid-cell">
-                                <MatCard class="demo-mat-card">
-                                    <MatCardContent>
-                                        <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg"></MatCardMedia>
-                                        <div class="demo-mat-card-content">
-                                            <MatHeadline6 class="demo-mat-card-clean-margin">
-                                                Our Changing Planet
-                                            </MatHeadline6>
-                                            <MatSubtitle2 class="demo-mat-card-clean-margin">
-                                                by Kurt Wagner
-                                            </MatSubtitle2>
-                                        </div>
+            <div class="my-2" />
+            <div class="mat-elevation-z8" style="padding: 0.5em">
+                <MatPaginator Length="100" PageSize="@pageSize" Page="@OnPage"></MatPaginator>
+            </div>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2">
+            <div class="mat-elevation-z1" style="padding: 0.5em">
+                <div class="cart-block">
+                    <div class="contentbox-header">
+                        <h4>CART SUMMARY</h4>
+                    </div>                            
+                    <div class="contentbox-body">
+                        <div >
+                            <div>
+                                <div>
+                                    <span>Subtotal</span>
+                                    <span>
+                                        127,12 TL
+                                    </span>
+                                </div>
+                                <div>
+                                    <span>TAX</span>
+                                    <span>
+                                        22.88 $
+                                    </span>
+                                </div>
+                                <div>
+                                    <span>Tax Inclusive Amount</span>
+                                    <span>
+                                        150.00 $
+                                    </span>
+                                </div>
+                                <div>
+                                    <span>Total</span>
+                                    <span>
+                                        <span>
+                                            150.00 $
+                                        </span>
+                                    </span>
+                                </div>
 
-                                        <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
-                                            Visit ten places on our planet that are undergoing the biggest changes today.
-                                        </MatBody2>
-                                    </MatCardContent>
-                                    <MatCardActions>
-                                        <MatCardActionButtons>
-                                            <MatButton>Show Detail</MatButton>
-                                            <MatButton>Add To Card</MatButton>
-                                        </MatCardActionButtons>
-
-                                    </MatCardActions>
-                                </MatCard>
                             </div>
-
-                            <!-- 2 -->
-                            <div class="mat-layout-grid-cell">
-                                <MatCard class="demo-mat-card">
-                                    <MatCardContent>
-                                        <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg"></MatCardMedia>
-                                        <div class="demo-mat-card-content">
-                                            <MatHeadline6 class="demo-mat-card-clean-margin">
-                                                Our Changing Planet
-                                            </MatHeadline6>
-                                            <MatSubtitle2 class="demo-mat-card-clean-margin">
-                                                by Kurt Wagner
-                                            </MatSubtitle2>
-                                        </div>
-
-                                        <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
-                                            Visit ten places on our planet that are undergoing the biggest changes today.
-                                        </MatBody2>
-                                    </MatCardContent>
-                                    <MatCardActions>
-                                        <MatCardActionButtons>
-                                            <MatButton>Show Detail</MatButton>
-                                            <MatButton>Add To Card</MatButton>
-                                        </MatCardActionButtons>
-
-                                    </MatCardActions>
-                                </MatCard>
-                            </div>
-
-                            <!-- 3 -->
-                            <div class="mat-layout-grid-cell">
-                                <MatCard class="demo-mat-card">
-                                    <MatCardContent>
-                                        <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg"></MatCardMedia>
-                                        <div class="demo-mat-card-content">
-                                            <MatHeadline6 class="demo-mat-card-clean-margin">
-                                                Our Changing Planet
-                                            </MatHeadline6>
-                                            <MatSubtitle2 class="demo-mat-card-clean-margin">
-                                                by Kurt Wagner
-                                            </MatSubtitle2>
-                                        </div>
-
-                                        <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
-                                            Visit ten places on our planet that are undergoing the biggest changes today.
-                                        </MatBody2>
-                                    </MatCardContent>
-                                    <MatCardActions>
-                                        <MatCardActionButtons>
-                                            <MatButton>Show Detail</MatButton>
-                                            <MatButton>Add To Card</MatButton>
-                                        </MatCardActionButtons>
-
-                                    </MatCardActions>
-                                </MatCard>
-                            </div>
-
-                            <!-- 4 -->
-                            <div class="mat-layout-grid-cell">
-                                <MatCard class="demo-mat-card">
-                                    <MatCardContent>
-                                        <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg"></MatCardMedia>
-                                        <div class="demo-mat-card-content">
-                                            <MatHeadline6 class="demo-mat-card-clean-margin">
-                                                Our Changing Planet
-                                            </MatHeadline6>
-                                            <MatSubtitle2 class="demo-mat-card-clean-margin">
-                                                by Kurt Wagner
-                                            </MatSubtitle2>
-                                        </div>
-
-                                        <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
-                                            Visit ten places on our planet that are undergoing the biggest changes today.
-                                        </MatBody2>
-                                    </MatCardContent>
-                                    <MatCardActions>
-                                        <MatCardActionButtons>
-                                            <MatButton>Show Detail</MatButton>
-                                            <MatButton>Add To Card</MatButton>
-                                        </MatCardActionButtons>
-
-                                    </MatCardActions>
-                                </MatCard>
-                            </div>
-
-                            <!-- 5 -->
-                            <div class="mat-layout-grid-cell">
-                                <MatCard class="demo-mat-card">
-                                    <MatCardContent>
-                                        <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg"></MatCardMedia>
-                                        <div class="demo-mat-card-content">
-                                            <MatHeadline6 class="demo-mat-card-clean-margin">
-                                                Our Changing Planet
-                                            </MatHeadline6>
-                                            <MatSubtitle2 class="demo-mat-card-clean-margin">
-                                                by Kurt Wagner
-                                            </MatSubtitle2>
-                                        </div>
-
-                                        <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
-                                            Visit ten places on our planet that are undergoing the biggest changes today.
-                                        </MatBody2>
-                                    </MatCardContent>
-                                    <MatCardActions>
-                                        <MatCardActionButtons>
-                                            <MatButton>Show Detail</MatButton>
-                                            <MatButton>Add To Card</MatButton>
-                                        </MatCardActionButtons>
-
-                                    </MatCardActions>
-                                </MatCard>
+                            <div class="form-group">
+                                <a class="btn btn-block btn-primary">
+                                    COMPLETE THE SHOPPING
+                                </a>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
-    @code {
+@code {
 
-        List<Categories> categories = new List<Categories>();
-        bool navSubMenuOpenState;
+    int pageSize = 25;
+    int pageIndex = 0;
+    bool cardToggled;
+    bool favoriteToggled;
 
-        protected override async Task OnParametersSetAsync()
-        {
-            await LoadCategories();
-        }
+    List<Product> products = new List<Product>();
+    List<Categories> categories = new List<Categories>();
 
-        async Task LoadCategories()
-        {
-            var result = await categoryClient.LoadCategories();
-            categories = new List<Categories>(result);
-            //StateHasChanged();
-        }
+    bool navSubMenuOpenState;
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadCategories();
+        await LoadProducts();
     }
+
+    void OnPage(MatPaginatorPageEvent e)
+    {
+        pageSize = e.PageSize;
+        pageIndex = e.PageIndex;
+    }
+
+    async Task LoadCategories()
+    {
+        var result = await shopClient.LoadCategories();
+        categories = new List<Categories>(result);
+        //StateHasChanged();
+    }
+
+    async Task LoadProducts()
+    {
+        var result = await shopClient.LoadProducts();
+        products = new List<Product>(result);
+        //StateHasChanged();
+    }
+
+}

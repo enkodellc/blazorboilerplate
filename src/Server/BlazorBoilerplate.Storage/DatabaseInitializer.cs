@@ -175,6 +175,7 @@ namespace BlazorBoilerplate.Storage
             );
             }
 
+            #region BB shopping
             //add category for shopping
             if (!_context.Categories.Any())
             {
@@ -205,6 +206,58 @@ namespace BlazorBoilerplate.Storage
                     }
                 );
             }
+
+
+            //add category for shopping
+            if (!_context.Products.Any())
+            {
+                _context.Products.AddRange(
+                    new Product
+                    {
+                       Title = "The Hitchhiker's Guide to the Galaxy",
+                       Description  = "The Hitchhiker's Guide to the Galaxy (sometimes referred to as HG2G, HHGTTG, H2G2, or tHGttG) is a comedy science fiction series created by Douglas Adams.",
+                       Image= "https://upload.wikimedia.org/wikipedia/en/b/bd/H2G2_UK_front_cover.jpg",
+                       ViewCount = 0
+                    },
+                    new Product
+                    {
+                        Title = "Ready Player One",
+                        Description = "Ready Player One is a 2011 science fiction novel, and the debut novel of American author Ernest Cline. The story, set in a dystopia in 2045, follows protagonist Wade Watts on his search for an Easter egg in a worldwide virtual reality game, the discovery of which would lead him to inherit the game creator's fortune.",
+                        Image = "https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg",
+                        ViewCount = 0
+                    },
+                     new Product
+                     {
+                         Title = "Nineteen Eighty-Four",
+                         Description = "Nineteen Eighty-Four: A Novel, often published as 1984, is a dystopian social science fiction novel by English novelist George Orwell. It was published on 8 June 1949 by Secker & Warburg as Orwell's ninth and final book completed in his lifetime.",
+                         Image = "https://upload.wikimedia.org/wikipedia/commons/c/c3/1984first.jpg",
+                         ViewCount = 0
+                     },
+                     new Product
+                     {
+                         Title = "Pentax Spotmatic",
+                         Description = "The Pentax Spotmatic refers to a family of 35mm single-lens reflex cameras manufactured by the Asahi Optical Co. Ltd., later known as Pentax Corporation, between 1964 and 1976.",
+                         Image = "https://upload.wikimedia.org/wikipedia/commons/e/e9/Honeywell-Pentax-Spotmatic.jpg",
+                         ViewCount = 0
+                     },
+                     new Product
+                     {
+                         Title = "Xbox",
+                         Description = "The Xbox is a home video game console and the first installment in the Xbox series of video game consoles manufactured by Microsoft.",
+                         Image = "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
+                         ViewCount = 0
+                     },
+                      new Product
+                      {
+                          Title = "Super Nintendo Entertainment System",
+                          Description = "The Super Nintendo Entertainment System (SNES), also known as the Super NES or Super Nintendo, is a 16-bit home video game console developed by Nintendo that was released in 1990 in Japan and South Korea.",
+                          Image = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Nintendo-Super-Famicom-Set-FL.jpg",
+                          ViewCount = 0
+                      }
+                );
+            }
+
+            #endregion
 
             _context.SaveChanges();
         }

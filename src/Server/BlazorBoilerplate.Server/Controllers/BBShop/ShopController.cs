@@ -46,6 +46,16 @@ namespace BlazorBoilerplate.Server.Controllers
                 .OrderByDescending(i => i.CreatedOn);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IQueryable<Product> Products()
+        {
+            return persistenceManager.GetEntities<Product>()
+                                     .Include(i => i.CreatedBy)
+                                     .Include(i => i.ModifiedBy)
+                                    .OrderByDescending(i => i.Title);
+        }
+
         [AllowAnonymous]
         [HttpPost]
         public SaveResult SaveChanges([FromBody] JObject saveBundle)

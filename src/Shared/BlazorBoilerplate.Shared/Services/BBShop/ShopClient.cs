@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Services.BBShop
 {
-    public class CategoryClient : BaseApiClient, ICategoryClient
+    public class ShopClient : BaseApiClient, IShopClient
     {
         /// <summary>
         /// this client uses breeze.sharp for entity management therefore
@@ -20,18 +20,32 @@ namespace BlazorBoilerplate.Shared.Services.BBShop
         /// </summary>
         /// <param name="httpClient"></param>
         /// <param name="logger"></param>
-        public CategoryClient(HttpClient httpClient, ILogger<CategoryClient> logger) 
+        public ShopClient(HttpClient httpClient, ILogger<ShopClient> logger) 
             : base(httpClient, logger, "api/shop/")
         { }
 
-        
+        #region categories
         public async Task<Breeze.Sharp.QueryResult<Categories>> LoadCategories(int? take = null, int? skip = null)
         {
             return await GetItems<Categories>(from: "Categories"
-                , orderByDescending: null
-                , take: take
-                , skip: skip
-                , parameters: null);
+                                            , orderByDescending: null
+                                            , take: take
+                                            , skip: skip
+                                            , parameters: null);
         }
+        #endregion
+
+        #region products
+        public async Task<Breeze.Sharp.QueryResult<Product>> LoadProducts(int? take = null, int? skip = null)
+        {
+            return await GetItems<Product>(from: "Products"
+                                            , orderByDescending: null
+                                            , take: take
+                                            , skip: skip
+                                            , parameters: null);
+        }
+        #endregion
+
+
     }
 }

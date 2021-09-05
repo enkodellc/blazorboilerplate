@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Interfaces.BBShop
 {
-    public interface ICategoryClient
+    public interface IShopClient
     {
         Task<Breeze.Sharp.QueryResult<Categories>> LoadCategories(int? take = null, int? skip = null);
+
+        Task<Breeze.Sharp.QueryResult<Product>> LoadProducts(int? take = null, int? skip = null);
     }
 }

@@ -645,7 +645,7 @@ namespace BlazorBoilerplate.Server
 
             services.AddScoped<ILocalizationApiClient, LocalizationApiClient>();
             services.AddScoped<IApiClient, ApiClient>();
-            services.AddScoped<ICategoryClient, CategoryClient>();
+            services.AddScoped<IShopClient, ShopClient>();
 
             // Authentication providers
             Log.Logger.Debug("Removing AuthenticationStateProvider...");
