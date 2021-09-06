@@ -3,8 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+	  <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Finbuckle.MultiTenant" Version="6.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.9" />

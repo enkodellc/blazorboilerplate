@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Title>BlazorBoilerplate Shared</Title>
+	  <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Blazored.FluentValidation" Version="2.0.1" />
