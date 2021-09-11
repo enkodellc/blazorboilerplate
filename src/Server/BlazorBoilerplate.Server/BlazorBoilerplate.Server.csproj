@@ -8,15 +8,6 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>$(SolutionDir)/Utils/Docker/docker-compose.dcproj</DockerComposeProjectPath>
     <UserSecretsId>dccf98cd-91ea-4e92-b852-ad056fc2b6bf</UserSecretsId>
-	  <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
@@ -94,7 +85,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AdminController.tt</DependentUpon>
     </Compile>
-  </ItemGroup>
+  </ItemGroup>   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildingInsideVisualStudio)' == 'true'">
     <Exec Command="if exist &quot;$(ProjectDir)Logs\*.*&quot; del &quot;$(ProjectDir)Logs\*.*&quot; /q" />
   </Target>

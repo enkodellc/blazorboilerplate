@@ -2,10 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-	  <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 
-
+  
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
