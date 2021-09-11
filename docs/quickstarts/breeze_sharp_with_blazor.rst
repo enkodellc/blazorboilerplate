@@ -91,7 +91,7 @@ You can find the package in https://www.nuget.org/packages/Breeze.Sharp.Standard
 .. _ApplicationController: https://github.com/enkodellc/blazorboilerplate/blob/master/src/Server/BlazorBoilerplate.Server/Controllers/ApplicationController.cs
 .. _EFPersistenceManager: http://breeze.github.io/doc-net/ef-efpersistencemanager-core.html
 .. _ApplicationPersistenceManager: https://github.com/enkodellc/blazorboilerplate/blob/master/src/Server/BlazorBoilerplate.Storage/ApplicationPersistenceManager.cs
-.. _EF entities: https://github.com/enkodellc/blazorboilerplate/tree/master/src/Shared/BlazorBoilerplate.Infrastructure/Storage/DataModels
+.. _EF entities: https://github.com/enkodellc/blazorboilerplate/tree/master/src/Shared/BlazorBoilerplate.Infrastructure.Storage/DataModels
 .. _Permissions attribute: https://github.com/enkodellc/blazorboilerplate/blob/master/src/Shared/BlazorBoilerplate.Infrastructure/AuthorizationDefinitions/PermissionsAttribute.cs
 .. _CRUD Actions flag enum: https://github.com/enkodellc/blazorboilerplate/blob/master/src/Shared/BlazorBoilerplate.Infrastructure/AuthorizationDefinitions/Actions.cs
 .. _Breeze.Sharp: http://breeze.github.io/doc-cs/
