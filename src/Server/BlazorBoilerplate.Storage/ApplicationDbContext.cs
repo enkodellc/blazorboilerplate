@@ -77,7 +77,7 @@ namespace BlazorBoilerplate.Storage
 
             modelBuilder.ShadowProperties();
 
-            modelBuilder.Entity<TenantSetting>().IsMultiTenant().ToTable("TenantSettings").HasKey(i => new { i.TenantId, i.Key }); ;
+            modelBuilder.Entity<TenantSetting>().ToTable("TenantSettings").HasKey(i => new { i.TenantId, i.Key }); ;
 
             modelBuilder.Entity<Message>().ToTable("Messages");
 
