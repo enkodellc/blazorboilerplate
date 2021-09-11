@@ -89,3 +89,4 @@ Cons
    features/dual_mode_blazor
    features/multitenancy
    features/identityserver
+   features/source_generators
