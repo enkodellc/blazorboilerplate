@@ -23,8 +23,8 @@ Blazor is a web framework designed to run in the browser on a WebAssembly-based 
 
 # Live demo
 - [Blazor Boilerplate - CSB/WASM](https://blazorboilerplate.com) - Kick the tires.  *Note Firewall does block some foreign IP addresses. Swagger UI to view the server API [https://blazorboilerplate.com/swagger/index.html](https://blazorboilerplate.com/swagger/index.html).
-- [Demo for Development Branch - Blazor Server Side Tenant](https://blazor-server.quarella.net/)
-- [Demo for Development Branch - Blazor WebAssembly Tenant](https://blazor-wasm.quarella.net/)
+- [Demo for MudBlazor Branch - Blazor Server Side Tenant](https://blazor-server.quarella.net/)
+- [Demo for MudBlazor Branch - Blazor WebAssembly Tenant](https://blazor-wasm.quarella.net/)
 
 ## Prerequisites
 Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/core/blazor)
