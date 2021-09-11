@@ -1,11 +1,13 @@
 ﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.Storage.Permissions;
+using Finbuckle.MultiTenant;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     [Permissions(Actions.CRUD)]
+    [MultiTenant]
     public partial class TenantSetting
     {
         [Column(TypeName = "nvarchar(64)")]
