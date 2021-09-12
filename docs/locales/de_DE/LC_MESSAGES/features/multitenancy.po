@@ -33,7 +33,7 @@ msgid "The host strategy is used:"
 msgstr ""
 
 #: ../../features/multitenancy.rst:16 53fd03318593415c858c997209e55baf
-msgid "Setup Visual Studio and Windows for multiple bindinds"
+msgid "Setup Visual Studio and Windows for multiple bindings"
 msgstr ""
 
 #: ../../features/multitenancy.rst:18 9e9b4de3fd0844b789be7b0232328028
