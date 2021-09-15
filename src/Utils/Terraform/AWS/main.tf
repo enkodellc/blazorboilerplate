@@ -189,7 +189,7 @@ resource "aws_eip" "one" {
 
 resource "aws_instance" "web-server-instance" {
   ami           = "ami-0ca5c3bd5a268e7db"
-  instance_type = "t2.micro"
+  instance_type = "t2.small"
   availability_zone = "us-west-2a"
   key_name = var.aws_key_name
 
