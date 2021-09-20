@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="MatBlazor" Version="2.8.0" />
-    <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="12.1.0" />
+    <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="13.1.1" />
   </ItemGroup>
 
   <ItemGroup>
