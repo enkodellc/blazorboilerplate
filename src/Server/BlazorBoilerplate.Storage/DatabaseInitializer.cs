@@ -99,7 +99,7 @@ namespace BlazorBoilerplate.Storage
         {
             if ((await _userManager.FindByNameAsync(DefaultUserNames.User)) == null)
             {
-                await CreateUserAsync(DefaultUserNames.User, "user123", "User", "Blazor", "user@blazorboilerplate.com", "+1 (123) 456-7890", null);
+                await CreateUserAsync(DefaultUserNames.User, "user123", "User", "Blazor", "user@blazorboilerplate.com", "+1 (123) 456-7890");
             }
 
             if (_tenantStoreDbContext.TenantInfo.Count() < 2)
@@ -267,7 +267,7 @@ namespace BlazorBoilerplate.Storage
             }
         }
 
-        private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string firstName, string lastName, string email, string phoneNumber, string[] roles)
+        private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string firstName, string lastName, string email, string phoneNumber, string[] roles = null)
         {
             var applicationUser = _userManager.FindByNameAsync(userName).Result;
 

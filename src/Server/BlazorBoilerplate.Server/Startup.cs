@@ -65,6 +65,8 @@ using System.Threading.Tasks;
 using static IdentityServer4.IdentityServerConstants;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Components.WebAssembly.Services;
+using BlazorBoilerplate.Server.Providers;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BlazorBoilerplate.Server
 {
@@ -548,6 +550,7 @@ namespace BlazorBoilerplate.Server
             });
 
             services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, UserIdProvider>();
 
             if (_enableAPIDoc)
                 services.AddOpenApiDocument(document =>

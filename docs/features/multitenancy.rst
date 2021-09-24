@@ -12,7 +12,7 @@ The host strategy is used:
                .WithEFCoreStore<TenantStoreDbContext>()
                .WithFallbackStrategy(Settings.DefaultTenantId);
 
-Setup Visual Studio and Windows for multiple bindinds
+Setup Visual Studio and Windows for multiple bindings
 -----------------------------------------------------
 
 Open \\src\\.vs\\BlazorBoilerplate\config\\\ **applicationhost.config** and

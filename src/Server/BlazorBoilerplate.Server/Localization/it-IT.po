@@ -957,3 +957,27 @@ msgstr "Righe per pagina"
 msgctxt "Global"
 msgid "Send test email"
 msgstr "Invia email di test"
+
+msgctxt "Global"
+msgid "Search"
+msgstr "Cerca"
+
+msgctxt "Global"
+msgid "This address does not exist"
+msgstr "Questo indirizzo non esiste"
+
+msgctxt "Global"
+msgid "Operation not performed"
+msgstr "Operazione non effettuata"
+
+msgctxt "Global"
+msgid "No result found."
+msgstr "Nessun risultato trovato."
+
+msgctxt "Global"
+msgid "Please enter a minimum of 2 characters to perform a search."
+msgstr "Si prega di inserire almeno 2 lettere per effettuare la ricerca."
+
+msgctxt "Global"
+msgid "Data not available."
+msgstr "Dati non disponibili."

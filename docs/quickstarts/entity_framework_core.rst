@@ -1,6 +1,8 @@
 Entity Framework Core
 =====================
 
+Getting started with EF Core (code first) reading this `tutorial <https://docs.microsoft.com/en-us/ef/core/get-started/overview/first-app>`_.
+
 Migrations
 ----------
 You can perform Entity Framework Core migrations directly from Visual Studio with `Package Manager Console <https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell>`_
@@ -90,10 +92,10 @@ but this is not the right solution, if you want expose these properties on the m
 
 A solution is using `Source Generator`_.
 `AuditableGenerator`_ generates for every class implementing **IAuditable** the above properties.
-Remember all classes implementing **IAuditable** have to be **partial**.
+Remember all classes to be extended by Source Generator have to be **partial**.
 
 
 
 .. _Shadow Properties: https://docs.microsoft.com/en-us/ef/core/modeling/shadow-properties
 .. _Source Generator: https://devblogs.microsoft.com/dotnet/introducing-c-source-generators
-.. _AuditableGenerator: https://github.com/enkodellc/blazorboilerplate/blob/development/src/Utils/BlazorBoilerplate.SourceGenerator/AuditableGenerator.cs
+.. _AuditableGenerator: https://github.com/enkodellc/blazorboilerplate/blob/master/src/Utils/BlazorBoilerplate.SourceGenerator/AuditableGenerator.cs

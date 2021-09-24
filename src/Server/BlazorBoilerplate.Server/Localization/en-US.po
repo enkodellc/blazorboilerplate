@@ -1105,3 +1105,27 @@ msgstr "Rows per page"
 msgctxt "Global"
 msgid "Send test email"
 msgstr "Send test email"
+
+msgctxt "Global"
+msgid "Search"
+msgstr "Search"
+
+msgctxt "Global"
+msgid "This address does not exist"
+msgstr "This address does not exist"
+
+msgctxt "Global"
+msgid "Operation not performed"
+msgstr "Operation not performed"
+
+msgctxt "Global"
+msgid "No result found."
+msgstr "No result found."
+
+msgctxt "Global"
+msgid "Please enter a minimum of 2 characters to perform a search."
+msgstr "Please enter a minimum of 2 characters to perform a search."
+
+msgctxt "Global"
+msgid "Data not available."
+msgstr "Data not available."
