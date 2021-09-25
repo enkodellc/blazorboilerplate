@@ -30,7 +30,9 @@
     </Found>
     <NotFound>
         <CascadingAuthenticationState>
-            <PageNotFound />
+            <LayoutView Layout="typeof(MainLayout)">
+                <PageNotFound />
+            </LayoutView>
         </CascadingAuthenticationState>
     </NotFound>
 </Router>
