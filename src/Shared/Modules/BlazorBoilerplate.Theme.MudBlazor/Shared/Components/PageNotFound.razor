@@ -1,6 +1,6 @@
-﻿<LayoutView Layout="typeof(MainLayout)">
-    <LoadingBackground>
-            <h1>Page not found</h1>
-            <label>Please check the URL or</label><br />
-    </LoadingBackground>
-</LayoutView>
+﻿@inject IStringLocalizer<Global> L
+
+<LoadingBackground>
+    <h1>Page not found</h1>
+    <label>@L["This address does not exist"]</label>
+</LoadingBackground>
