@@ -1,0 +1,81 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Shared\Components_bak\**" />
+		<Compile Remove="Shared\Layouts_bak\**" />
+		<Content Remove="Shared\Components_bak\**" />
+		<Content Remove="Shared\Layouts_bak\**" />
+		<EmbeddedResource Remove="Shared\Components_bak\**" />
+		<EmbeddedResource Remove="Shared\Layouts_bak\**" />
+		<None Remove="Shared\Components_bak\**" />
+		<None Remove="Shared\Layouts_bak\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="ComponentBase.cs" />
+		<Compile Remove="Pages\Account\ConfirmEmail.razor.cs" />
+		<Compile Remove="Pages\Account\Login.razor.cs" />
+		<Compile Remove="Pages\Account\LoginWith2fa.razor.cs" />
+		<Compile Remove="Pages\Account\Profile.razor.cs" />
+		<Compile Remove="Pages\Account\Register.razor.cs" />
+		<Compile Remove="Pages\Account\ResetPassword.razor.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Removed by Chris / Undo if it breaks soemthing -->
+		<Content Remove="C:\Users\Christopher\.nuget\packages\matblazor\2.8.0\contentFiles\any\netstandard2.1\Properties\launchSettings.json" />
+		<Content Remove="Shared\Components\_ValidationScriptsPartial.cshtml" />
+		<Content Remove="Shared\Layouts\NavMenu.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Shared\Layouts\MainLayout.razor.bak" />
+		<None Remove="Shared\Layouts\MainLayout.razor.css" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Shared\Layouts\MainLayout.razor.css">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="Pages\Utility\Faq.razor" />
+		<None Include="Pages\Utility\WasmLoading.razor" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Syncfusion.Blazor.Core" Version="19.2.0.44" />
+		<PackageReference Include="Syncfusion.Blazor.Schedule" Version="19.2.0.44" />
+		<!--
+		&gt; PackageReference Include="Syncfusion.Blazor.Core" Version="19.2.0.48" &lt;
+		&gt; PackageReference Include="Syncfusion.Blazor.Schedule" Version="19.2.0.48" &lt;
+
+-->
+		<PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="12.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\..\MudBlazor\src\MudBlazor\MudBlazor.csproj" />
+		<ProjectReference Include="..\..\SSDCPortal.Shared\SSDCPortal.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="MudBlazor.ThemeManager">
+	    <HintPath>..\..\..\..\..\MudThemeManager\MudBlazor.ThemeManager\bin\Debug\net5.0\MudBlazor.ThemeManager.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Styles\" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)Server\SSDCPortal.Server\Modules\" />
+	</Target>
+</Project>

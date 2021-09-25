@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_currentTheme" />
+@*<MudSnackbarProvider />*@
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 100vh;">
+    <div class="d-flex flex-column mud-width-full">
+        <MudPaper Elevation="25" Class="pa-8" Width="100%" MaxWidth="500px">
+            <MudIcon Icon="@Icons.Rounded.PanoramaFishEye" Size="Size.Large" Style="width:100px; height:100px;" />
+            <MudButton>Click Me</MudButton>
+            @Body
+        </MudPaper>
+        <MudAlert Severity="Severity.Info" Class="mt-8 mud-width-full" Style="max-width: 500px;" Elevation="25">No authentication is required, click sign in.</MudAlert>
+    </div>
+</MudContainer>
+
+@code {
+    private MudTheme _currentTheme = new SSDCAdminDashboard();
+}

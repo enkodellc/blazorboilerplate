@@ -1,0 +1,44 @@
+﻿.mud-thememanager-button {
+    position: fixed;
+    top: 40%;
+    right: 311px;
+    box-shadow: 1px 1px 18px #5E5A6A;
+    color: #FFFFFF;
+    background-color: #009824;
+    cursor: pointer;
+}
+
+.mud-thememanager-button-spin {
+    animation-name: spin;
+    animation-duration: 5000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.mud-thememanager-color-picker .mud-paper, .mud-input {
+    color: #FFFFFF;
+    background-color: #424242;
+}
+
+.mud-thememanager-color-picker .mud-icon-button {
+    color: #00000089;
+}
+
+.mud-themedrawer {
+    color: rgba(0,0,0, 1);
+    background-color:rgba(0,0,0,.4);
+}
+
+#appbarLogo {
+    height: 37px;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

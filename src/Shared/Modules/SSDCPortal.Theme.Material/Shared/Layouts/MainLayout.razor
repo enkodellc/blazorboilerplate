@@ -1,0 +1,239 @@
+@using System.Reflection
+@inherits LayoutComponentBase
+@inject AppState appState
+
+
+<MudThemeProvider Theme="_themeManager.Theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+
+    <MudAppBar Elevation="_themeManager.AppBarElevation">
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <img id="appbarLogo" src="_content/SSDCPortal.Theme.Material/images/logo.png" alt="logo"/>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.MdAndUp">
+            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudText Typo="Typo.h6" Class="ml-4">Admin Dashboard</MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+            <MudText Typo="Typo.subtitle2">Admin Dashboard</MudText>
+        </MudHidden>
+        <MudTooltip Text="Toggle light/dark theme">
+            <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => DarkMode())"/>
+        </MudTooltip>
+        <MudAppBarSpacer/>
+        @*
+            <div class="px-2">
+
+            
+
+            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/slicksys/MudBlazor/" Target="_blank"/>
+        </div>
+        <MudAppBarSpacer/>*@
+        <!--Select Language/Culture -->
+        <SelectCulture></SelectCulture>
+        <!--BreadCrumbs/Horiz Menu Items -->
+        <MudMenu Icon="@Icons.Material.Outlined.Widgets" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
+            <MudMenuItem Link="https://slicksysdev.com/">SSDC</MudMenuItem>
+            <MudMenuItem Link="https://christopherlane.net">Engineer</MudMenuItem>
+        </MudMenu>
+
+        <!--  -->
+        <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
+            <ActivatorContent>
+                <MudAvatar Image="images/ssdc.png"/>
+            </ActivatorContent>
+            <ChildContent>
+                <PersonCard Class="mt-n2"/>
+                <MudDivider Class="mb-2"/>
+                <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="/account/myaccount"/>
+                <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="/server/logout"/>
+            </ChildContent>
+        </MudMenu>
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="_themeManager.DrawerElevation" ClipMode="_themeManager.DrawerClipMode">
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudToolBar DisableGutters="false">
+                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3"/>
+                <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
+                <MudToolBarSpacer/>
+
+
+                <MudButton Variant="Variant.Text" Link="https://slicksysdev.com/" Style="color: #594AE2;">Main Layout</MudButton>
+                <MudButton Variant="Variant.Text" Link="https://slicksysdev.com/" Style="color: #594AE2;">SSDC</MudButton>
+                <MudButton Variant="Variant.Text" Link="https://slicksysdev.com/" Style="color: #424242;" Class="mr-3">Line Of Business Software</MudButton>
+            </MudToolBar>
+        </MudHidden>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+
+            @Body
+        </MudContainer>
+    </MudMainContent>
+
+    <MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))"/>
+    <MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme"/>
+
+</MudLayout>
+
+@code {
+
+    bool _navMenuOpened = true;
+    bool _navMinified = false;
+    public string bbDrawerClass = string.Empty;
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
+    private MudTheme _currentTheme = new SSDCAdminDashboard();
+
+    public bool _drawerOpen = true;
+    public bool _themeManagerOpen = false;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    void OpenThemeManager(bool value)
+    {
+        _themeManagerOpen = value;
+    }
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+{
+        new BreadcrumbItem("Personal", href: "/Personal"),
+        new BreadcrumbItem("Dashboard", href: "/Dashboard"),
+    };
+
+    void UpdateTheme(ThemeManagerTheme value)
+    {
+        _themeManager = value;
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        _themeManager.Theme = new SSDCAdminDashboard();
+        _themeManager.DrawerClipMode = DrawerClipMode.Always;
+        _themeManager.FontFamily = "Montserrat";
+        _themeManager.DefaultBorderRadius = 3;
+         _themeManager.AppBarElevation = 4;
+         _themeManager.DrawerElevation = 25;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var profile = await appState.GetUserProfile();
+
+            _navMenuOpened = profile.IsNavOpen;
+            _navMinified = profile.IsNavMinified;
+        }
+      
+    }
+
+    void NavToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+
+        if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+        else
+        {
+            bbDrawerClass = "closed";
+        }
+
+        StateHasChanged();
+    }
+
+    void NavLock()
+    {
+        //Todo Lock Nav
+    }
+
+    void NavMinify()
+    {
+        _navMinified = !_navMinified;
+
+        if (!_navMenuOpened)
+        {
+            _navMinified = true;
+        }
+
+        if (_navMinified)
+        {
+            bbDrawerClass = "mini";
+            _navMenuOpened = true;
+        }
+        else if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+
+        _navMenuOpened = true;
+
+        StateHasChanged();
+    }
+
+    private void DarkMode()
+    {
+        if (_currentTheme == _defaultTheme)
+        {
+            _currentTheme = _darkTheme;
+        }
+        else
+        {
+            _currentTheme = _defaultTheme;
+        }
+    }
+
+    //  private MudTheme _currentTheme = new();
+    private readonly MudTheme _defaultTheme = new() { Palette = new Palette() { Black = "#272c34" } };
+
+    private readonly MudTheme _darkTheme = new()
+    {
+        Palette = new Palette()
+        {
+            Primary = "#776be7",
+            Black = "#27272f",
+            Background = "#32333d",
+            BackgroundGrey = "#27272f",
+            Surface = "#373740",
+            DrawerBackground = "#27272f",
+            DrawerText = "rgba(255,255,255, 0.50)",
+            DrawerIcon = "rgba(255,255,255, 0.50)",
+            AppbarBackground = "#27272f",
+            AppbarText = "rgba(255,255,255, 0.70)",
+            TextPrimary = "rgba(255,255,255, 0.70)",
+            TextSecondary = "rgba(255,255,255, 0.50)",
+            ActionDefault = "#adadb1",
+            ActionDisabled = "rgba(255,255,255, 0.26)",
+            ActionDisabledBackground = "rgba(255,255,255, 0.12)",
+            Divider = "rgba(255,255,255, 0.12)",
+            DividerLight = "rgba(255,255,255, 0.06)",
+            TableLines = "rgba(255,255,255, 0.12)",
+            LinesDefault = "rgba(255,255,255, 0.12)",
+            LinesInputs = "rgba(255,255,255, 0.3)",
+            TextDisabled = "rgba(255,255,255, 0.2)",
+            Info = "#3299ff",
+            Success = "#0bba83",
+            Warning = "#ffa800",
+            Error = "#f64e62",
+            Dark = "#27272f"
+        }
+    };
+}

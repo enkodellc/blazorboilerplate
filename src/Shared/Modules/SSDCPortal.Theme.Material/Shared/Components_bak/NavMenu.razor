@@ -1,0 +1,13 @@
+@inherits DynamicComponentContainer
+<MatNavMenu Multi="true" Class="app-sidebar">
+    <h1>wrap each menu item componets </h1>
+    @foreach (var component in components)
+    {
+        @CreateDynamicComponent(component);
+    }
+    
+    <h2> end wrap components</h2>
+</MatNavMenu>
+@code {
+
+}

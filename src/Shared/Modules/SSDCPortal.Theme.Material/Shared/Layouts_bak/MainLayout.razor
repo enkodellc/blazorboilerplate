@@ -1,0 +1,104 @@
+﻿@inherits LayoutComponentBase
+<MudThemeProvider Theme="_themeManager.Theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="4">
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" />
+            <LoginDisplay />
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.MdAndUp">
+            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <h2>mudicon</h2>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudText Typo="Typo.h6" Class="ml-4">Admin Dashboard</MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+            <MudText Typo="Typo.subtitle2">Admin Dashboard</MudText>
+        </MudHidden>
+        <MudAppBarSpacer />
+        <MudMenu Icon="@Icons.Material.Outlined.Alarm" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
+            <MudMenuItem>English</MudMenuItem>
+            <MudMenuItem>Swedish</MudMenuItem>
+            <MudMenuItem>Old Norse</MudMenuItem>
+        </MudMenu>
+        <MudMenu Icon="@Icons.Material.Outlined.Widgets" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
+            <MudMenuItem Link="https://slicksysdev.com/">SSDC</MudMenuItem>
+            <MudMenuItem Link="https://christopherlane.net">Engineer</MudMenuItem>
+        </MudMenu>
+        <!--  -->
+        <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
+            <ActivatorContent>
+                <MudAvatar Image="images/ssdc.png" />
+            </ActivatorContent>
+            <ChildContent>
+                <PersonCard Class="mt-n2" />
+                <MudDivider Class="mb-2" />
+                <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="/personal/account" />
+                <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="/pages/authentication/login" />
+            </ChildContent>
+        </MudMenu>
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="_themeManager.DrawerClipMode">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudToolBar DisableGutters="true">
+                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
+                <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
+                <MudToolBarSpacer />
+                <MudButton Variant="Variant.Text" Link="https://slicksysdev.com/" Style="color:#594AE2;">SSDC</MudButton>
+                <MudButton Variant="Variant.Text" Link="https://slicksysdev.com/" Style="color:#424242;" Class="mr-3">Line Of Business Software</MudButton>
+            </MudToolBar>
+        </MudHidden>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+            
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))" />
+<MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme" />
+
+
+@code {
+    private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
+
+    public bool _drawerOpen = true;
+    public bool _themeManagerOpen = false;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    void OpenThemeManager(bool value)
+    {
+        _themeManagerOpen = value;
+    }
+
+    void UpdateTheme(ThemeManagerTheme value)
+    {
+        _themeManager = value;
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        _themeManager.Theme = new SSDCAdminDashboard();
+        _themeManager.DrawerClipMode = DrawerClipMode.Always;
+        _themeManager.FontFamily = "Montserrat";
+        _themeManager.DefaultBorderRadius = 3;
+    }
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+{
+        new BreadcrumbItem("Personal", href: "/"),
+        new BreadcrumbItem("Dashboard", href: "/"),
+    };
+}

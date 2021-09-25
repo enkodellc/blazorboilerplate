@@ -1,0 +1,1096 @@
+﻿@page "/scheduler"
+@inherits SchedulerBase
+@using Syncfusion.Blazor.Schedule
+@using Syncfusion.Blazor.Navigations
+@using SSDCPortal.Theme.Material.Demo.Models
+@using S = SSDCPortal.Theme.Material.Demo.Models
+
+<div class="control-section">
+    <div class="content-wrapper">
+        <div class="schedule-container e-droppable">
+            <div class="title-container">
+                <h1 class="title-text">Grooming Appointments</h1>
+            </div>
+            <SfSchedule TValue="ScheduleData.GroomingData" @ref="ScheduleRef" Width="100%" Height="650px" CssClass="schedule-drag-drop" @bind-SelectedDate="@CurrentDate">
+                <ScheduleEvents TValue="ScheduleData.GroomingData" OnActionBegin="OnActionBegin"></ScheduleEvents>
+                <ScheduleGroup EnableCompactView="true" Resources="@Resources"></ScheduleGroup>
+                <ScheduleResources>
+                    <ScheduleResource TItem="ResourceData" TValue="int"
+                                      DataSource="@Departments"
+                                      Field="DepartmentID"
+                                      Title="Department"
+                                      Name="Departments"
+                                      TextField="Text"
+                                      IdField="Id"
+                                      ColorField="Color">
+                    </ScheduleResource>
+                    <ScheduleResource TItem="ResourceData" TValue="int" DataSource="@Consultants" Field="ConsultantID" Title="Consultant" Name="Consultants" TextField="Text" IdField="Id" ColorField="Color" GroupIDField="GroupId" AllowMultiple="false"></ScheduleResource>
+                </ScheduleResources>
+                <ScheduleViews>
+                    @*<ScheduleView MaxEventsPerRow="1" Option="View.TimelineDay"></ScheduleView>
+                    <ScheduleView MaxEventsPerRow="1" Option="View.TimelineMonth"></ScheduleView>*@
+                    
+                    <ScheduleView Option="View.Day"></ScheduleView>
+                    <ScheduleView Option="View.Week"></ScheduleView>
+                    <ScheduleView Option="View.WorkWeek"></ScheduleView>
+                    <ScheduleView Option="View.Month"></ScheduleView>
+                    <ScheduleView Option="View.Agenda"></ScheduleView>
+                </ScheduleViews>
+                <ScheduleWorkHours Highlight="true" Start="08:00" End="18:00"></ScheduleWorkHours>
+                <ScheduleEventSettings DataSource="@DataSource">
+                    <ScheduleField>
+                        <FieldSubject Name="Name" Title="Patient Name"></FieldSubject>
+                        <FieldStartTime Name="StartTime" Title="From"></FieldStartTime>
+                        <FieldEndTime Name="EndTime" Title="To"></FieldEndTime>
+                        <FieldDescription Name="Description" Title="Reason"></FieldDescription>
+                    </ScheduleField>
+                </ScheduleEventSettings>
+            </SfSchedule>
+        </div>
+        <div class="treeview-container">
+            <div class="title-container">
+                <h2 class="title-text">Waiting List</h2>
+            </div>
+            <SfTreeView TValue="ScheduleData.GroomingData" @ref="TreeViewRef" AllowDragAndDrop="true" CssClass="treeview-external-drag" DropArea=".content-wrapper">
+                <TreeViewEvents TValue="ScheduleData.GroomingData" OnNodeDragStop="OnTreeViewDragStop"></TreeViewEvents>
+                <TreeViewFieldsSettings DataSource="@TreeViewData" Id="Id" Text="Name"></TreeViewFieldsSettings>
+                <TreeViewTemplates TValue="ScheduleData.GroomingData">
+                    <NodeTemplate>
+                        <div id="waiting">
+                            <div id="waitdetails">
+                                <div id="waitlist">@((context as ScheduleData.GroomingData).Name)</div>
+                                <div id="waitcategory">@((context as ScheduleData.GroomingData).DepartmentName) - @((context as ScheduleData.GroomingData).Description)</div>
+                            </div>
+                        </div>
+                    </NodeTemplate>
+                </TreeViewTemplates>
+            </SfTreeView>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private DateTime CurrentDate = new DateTime(2020, 1, 6);
+    SfSchedule<ScheduleData.GroomingData> ScheduleRef;
+    SfTreeView<ScheduleData.GroomingData> TreeViewRef;
+    public List<ScheduleData.GroomingData> DataSource = new ScheduleData().GetGroomingData();
+    public List<ScheduleData.GroomingData> TreeViewData = new ScheduleData().GetWaitingListData();
+    public string[] Resources = new string[] { "Departments", "Consultants" };
+    public ScheduleData.GroomingData DraggedItem { get; set; }
+
+    private List<ResourceData> Departments { get; set; } = new List<ResourceData>
+    {
+        new ResourceData { Text = "GROOMING", Id = 1, Color = "#bbdc00" },
+        new ResourceData { Text = "BATHING", Id = 2, Color = "#9e5fff" }
+    };
+
+    private List<ResourceData> Consultants { get; set; } = new List<ResourceData>
+    {
+        new ResourceData { Text = "Alice", Id = 1, GroupId = 1, Color = "#bbdc00", Designation = "Groomer" },
+        new ResourceData { Text = "Nancy", Id = 2, GroupId = 2, Color = "#9e5fff", Designation = "Bather" },
+        new ResourceData { Text = "Robert", Id = 3, GroupId = 1, Color = "#bbdc00", Designation = "Groomer" },
+        new ResourceData { Text = "Robson", Id = 4, GroupId = 2, Color = "#9e5fff", Designation = "Bather" },
+        new ResourceData { Text = "Laura", Id = 5, GroupId = 1, Color = "#bbdc00", Designation = "Groomer" },
+        new ResourceData { Text = "Margaret", Id = 6, GroupId = 2, Color = "#9e5fff", Designation = "Bather" }
+    };
+
+    public class ResourceData
+    {
+        public string Text { get; set; }
+        public int Id { get; set; }
+        public int GroupId { get; set; }
+        public string Color { get; set; }
+        public string Designation { get; set; }
+    }
+
+public async void OnTreeViewDragStop(DragAndDropEventArgs args)
+{
+    args.Cancel = true;
+    CellClickEventArgs cellData = await ScheduleRef.GetTargetCell((int)args.Left, (int)args.Top);
+    if (cellData != null)
+    {
+        var resourceDetails = ScheduleRef.GetResourceByIndex(cellData.GroupIndex);
+        Random rnd = new Random();
+        int Id = rnd.Next(1000);
+        ScheduleData.GroomingData TreeData = TreeViewData.Where(data => data.Id.ToString() == args.DraggedNodeData.Id).First();
+        ScheduleData.GroomingData eventData = new ScheduleData.GroomingData
+        {
+            Id = Id,
+            Name = TreeData.Name,
+            StartTime = cellData.StartTime,
+            EndTime = cellData.EndTime,
+            IsAllDay = cellData.IsAllDay,
+            ConsultantID = resourceDetails.GroupData.ConsultantID,
+            DepartmentID = resourceDetails.GroupData.DepartmentID,
+            Description = TreeData.Description,
+            DepartmentName = TreeData.DepartmentName
+        };
+        await ScheduleRef.OpenEditor(eventData, CurrentAction.Add);
+        DraggedItem = TreeData;
+    }
+}
+public void OnActionBegin(ActionEventArgs<ScheduleData.GroomingData> args)
+{
+    if (args.ActionType == ActionType.EventCreate && DraggedItem != null)
+    {
+        TreeViewData.Remove(DraggedItem);
+        DraggedItem = null;
+    }
+}
+
+
+
+
+
+public class ScheduleData
+{
+    public class GroomingData : AppointmentData
+    {
+        public string Name { get; set; }
+        public int DepartmentID { get; set; }
+        public int ConsultantID { get; set; }
+        public string DepartmentName { get; set; }
+    }
+    public List<AppointmentData> GetScheduleData()
+    {
+        List<AppointmentData> appData = new List<AppointmentData>();
+        appData.Add(new AppointmentData
+        {
+            Id = 1,
+            Subject = "Explosion of Betelgeuse Star",
+            Location = "Space Centre USA",
+            StartTime = new DateTime(2020, 1, 5, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 5, 11, 0, 0),
+            CategoryColor = "#1aaa55"
+        });
+        appData.Add(new AppointmentData
+        {
+            Id = 2,
+            Subject = "Thule Air Crash Report",
+            Location = "Newyork City",
+            StartTime = new DateTime(2020, 1, 6, 12, 0, 0),
+            EndTime = new DateTime(2020, 1, 6, 14, 0, 0),
+            CategoryColor = "#357cd2"
+        });
+
+        return appData;
+    }
+    public List<ContextEventsData> GetContextEventData()
+    {
+        List<ContextEventsData> appData = new List<ContextEventsData>();
+        appData.Add(new ContextEventsData
+        {
+            Id = 1,
+            Subject = "Explosion of Betelgeuse Star",
+            Location = "Space Centre USA",
+            StartTime = new DateTime(2020, 1, 5, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 5, 11, 0, 0),
+            CategoryColor = "#1aaa55"
+        });
+        appData.Add(new ContextEventsData
+        {
+            Id = 2,
+            Subject = "Thule Air Crash Report",
+            Location = "Newyork City",
+            StartTime = new DateTime(2020, 1, 6, 12, 0, 0),
+            EndTime = new DateTime(2020, 1, 6, 14, 0, 0),
+            CategoryColor = "#357cd2"
+        });
+
+        return appData;
+    }
+    public List<AppointmentData> GetZooEventData()
+    {
+        List<AppointmentData> zooEventData = new List<AppointmentData>();
+        zooEventData.Add(new AppointmentData
+        {
+            Id = 1,
+            Subject = "Story Time for Kids",
+            StartTime = new DateTime(2020, 1, 12, 10, 0, 0),
+            EndTime = new DateTime(2020, 1, 12, 11, 30, 0),
+            CategoryColor = "#1aaa55"
+        });
+        zooEventData.Add(new AppointmentData
+        {
+            Id = 2,
+            Subject = "Camping with Turtles",
+            StartTime = new DateTime(2020, 1, 13, 12, 0, 0),
+            EndTime = new DateTime(2020, 1, 13, 14, 0, 0),
+            CategoryColor = "#357cd2"
+        });
+
+        return zooEventData;
+    }
+    public List<ReadonlyEventsData> GetReadonlyEventsData()
+    {
+        DateTime dateNow = DateTime.Now;
+        DateTime dateNow1 = DateTime.Now.AddDays(-2);
+        DateTime dateNow2 = DateTime.Now.AddDays(-1);
+        DateTime dateNow3 = DateTime.Now.AddDays(1);
+        DateTime dateNow4 = DateTime.Now.AddDays(2);
+        List<ReadonlyEventsData> readonlyEventsData = new List<ReadonlyEventsData>();
+        readonlyEventsData.Add(new ReadonlyEventsData
+        {
+            Id = 1,
+            Subject = "Project Workflow Analysis",
+            StartTime = new DateTime(dateNow1.Year, dateNow1.Month, dateNow1.Day, dateNow1.AddHours(2).Hour, 0, 0),
+            EndTime = new DateTime(dateNow1.Year, dateNow1.Month, dateNow1.Day, dateNow1.AddHours(4).Hour, 0, 0),
+            IsReadonly = true
+        });
+        readonlyEventsData.Add(new ReadonlyEventsData
+        {
+            Id = 2,
+            Subject = "Project Requirement Planning",
+            StartTime = new DateTime(dateNow2.Year, dateNow2.Month, dateNow2.Day, dateNow2.AddHours(2).Hour, 0, 0),
+            EndTime = new DateTime(dateNow2.Year, dateNow2.Month, dateNow2.Day, dateNow2.AddHours(4).Hour, 0, 0),
+            IsReadonly = true
+        });
+        readonlyEventsData.Add(new ReadonlyEventsData
+        {
+            Id = 3,
+            Subject = "Meeting with Developers",
+            StartTime = new DateTime(dateNow2.Year, dateNow2.Month, dateNow2.Day, dateNow2.AddHours(-3).Hour, 0, 0),
+            EndTime = new DateTime(dateNow2.Year, dateNow2.Month, dateNow2.Day, dateNow2.AddHours(-1).Hour, 0, 0),
+            IsReadonly = true
+        });
+
+        return readonlyEventsData;
+    }
+    public List<S.ResourceData> GetResourceData()
+    {
+        List<S.ResourceData> resourceData = new List<S.ResourceData>();
+        resourceData.Add(new S.ResourceData
+        {
+            Id = 1,
+            Subject = "Workflow Analysis",
+            StartTime = new DateTime(2020, 1, 5, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 5, 12, 0, 0),
+            IsAllDay = false,
+            ProjectId = 1,
+            TaskId = 2
+        });
+        resourceData.Add(new S.ResourceData
+        {
+            Id = 2,
+            Subject = "Requirement planning",
+            StartTime = new DateTime(2020, 1, 5, 12, 30, 0),
+            EndTime = new DateTime(2020, 1, 5, 14, 45, 0),
+            IsAllDay = false,
+            ProjectId = 1,
+            TaskId = 1
+        });
+        resourceData.Add(new S.ResourceData
+        {
+            Id = 3,
+            Subject = "Quality Analysis",
+            StartTime = new DateTime(2020, 1, 6, 10, 0, 0),
+            EndTime = new DateTime(2020, 1, 6, 12, 30, 0),
+            IsAllDay = false,
+            ProjectId = 1,
+            TaskId = 1
+        });
+
+        return resourceData;
+    }
+    public List<ResourceConferenceData> GetResourceConferenceData()
+    {
+        List<ResourceConferenceData> resourceConferenceData = new List<ResourceConferenceData>();
+        resourceConferenceData.Add(new ResourceConferenceData
+        {
+            Id = 1,
+            Subject = "Burning Man",
+            StartTime = new DateTime(2020, 1, 3, 15, 0, 0),
+            EndTime = new DateTime(2020, 1, 3, 17, 0, 0),
+            ConferenceId = new int[] { 1, 2, 3 }
+        });
+        resourceConferenceData.Add(new ResourceConferenceData
+        {
+            Id = 2,
+            Subject = "Data-Driven Economy",
+            StartTime = new DateTime(2020, 1, 4, 12, 0, 0),
+            EndTime = new DateTime(2020, 1, 4, 14, 0, 0),
+            ConferenceId = new int[] { 1, 2 }
+        });
+        resourceConferenceData.Add(new ResourceConferenceData
+        {
+            Id = 3,
+            Subject = "Techweek",
+            StartTime = new DateTime(2020, 1, 4, 15, 0, 0),
+            EndTime = new DateTime(2020, 1, 4, 17, 0, 0),
+            ConferenceId = new int[] { 2, 3 }
+        });
+
+        return resourceConferenceData;
+    }
+    public List<ResourceTeamData> GetResourceTeamData()
+    {
+        List<ResourceTeamData> resourceTeamData = new List<ResourceTeamData>();
+        resourceTeamData.Add(new ResourceTeamData
+        {
+            Id = 1,
+            Subject = "Developers Meeting",
+            StartTime = new DateTime(2020, 1, 3, 10, 0, 0),
+            EndTime = new DateTime(2020, 1, 3, 11, 0, 0),
+            RecurrenceRule = "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR",
+            ProjectId = 1,
+            CategoryId = 1
+        });
+        resourceTeamData.Add(new ResourceTeamData
+        {
+            Id = 2,
+            Subject = "Test report Validation",
+            StartTime = new DateTime(2020, 1, 4, 10, 30, 0),
+            EndTime = new DateTime(2020, 1, 4, 13, 0, 0),
+            RecurrenceRule = "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE,FR",
+            ProjectId = 1,
+            CategoryId = 2
+        });
+        resourceTeamData.Add(new ResourceTeamData
+        {
+            Id = 3,
+            Subject = "Requirement planning",
+            StartTime = new DateTime(2020, 1, 6, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 6, 10, 45, 0),
+            RecurrenceRule = "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR",
+            ProjectId = 2,
+            CategoryId = 1
+        });
+        resourceTeamData.Add(new ResourceTeamData
+        {
+            Id = 4,
+            Subject = "Bug Automation",
+            StartTime = new DateTime(2020, 1, 4, 11, 0, 0),
+            EndTime = new DateTime(2020, 1, 4, 13, 0, 0),
+            RecurrenceRule = "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE,FR",
+            ProjectId = 2,
+            CategoryId = 2
+        });
+
+        return resourceTeamData;
+    }
+    public List<RoomData> GetRoomData()
+    {
+        List<RoomData> roomData = new List<RoomData>();
+        roomData.Add(new RoomData
+        {
+            Id = 1,
+            Subject = "Board Meeting",
+            Description = "Meeting to discuss business goal of 2020.",
+            StartTime = new DateTime(2019, 12, 30, 9, 0, 0),
+            EndTime = new DateTime(2019, 12, 30, 11, 0, 0),
+            RoomId = 1
+        });
+        roomData.Add(new RoomData
+        {
+            Id = 2,
+            Subject = "Training session on JSP",
+            Description = "Knowledge sharing on JSP topics.",
+            StartTime = new DateTime(2019, 12, 30, 15, 0, 0),
+            EndTime = new DateTime(2019, 12, 30, 17, 0, 0),
+            RoomId = 5
+        });
+        roomData.Add(new RoomData
+        {
+            Id = 3,
+            Subject = "Sprint Planning with Team members",
+            Description = "Planning tasks for sprint.",
+            StartTime = new DateTime(2019, 12, 30, 9, 30, 0),
+            EndTime = new DateTime(2019, 12, 30, 11, 0, 0),
+            RoomId = 3
+        });
+
+        return roomData;
+    }
+    public List<RoomData> GetRoomsData()
+    {
+        List<RoomData> roomData = new List<RoomData>();
+        roomData.Add(new RoomData
+        {
+            Id = 1,
+            Subject = "Board Meeting",
+            Description = "Meeting to discuss business goal of 2020.",
+            StartTime = new DateTime(2020, 1, 5, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 5, 11, 0, 0),
+            RoomId = 10
+        });
+        roomData.Add(new RoomData
+        {
+            Id = 2,
+            Subject = "Training session on JSP",
+            Description = "Knowledge sharing on JSP topics.",
+            StartTime = new DateTime(2020, 1, 7, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 7, 11, 0, 0),
+            RoomId = 8
+        });
+        roomData.Add(new RoomData
+        {
+            Id = 3,
+            Subject = "Sprint Planning with Team members",
+            Description = "Planning tasks for sprint.",
+            StartTime = new DateTime(2020, 1, 9, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 9, 11, 0, 0),
+            RoomId = 3
+        });
+
+        return roomData;
+    }
+    public List<GroomingData> GetGroomingData()
+    {
+        List<GroomingData> groomingData = new List<GroomingData>();
+
+        groomingData.Add(new GroomingData
+        {
+            Id = 10,
+            Name = "David",
+            StartTime = new DateTime(2020, 1, 6, 9, 0, 0),
+            EndTime = new DateTime(2020, 1, 6, 10, 0, 0),
+            Description = "Health Checkup",
+            DepartmentID = 1,
+            ConsultantID = 1,
+            DepartmentName = "GENERAL"
+        });
+        groomingData.Add(new GroomingData
+        {
+            Id = 11,
+            Name = "John",
+            StartTime = new DateTime(2020, 1, 6, 10, 30, 0),
+            EndTime = new DateTime(2020, 1, 6, 11, 30, 0),
+            Description = "Tooth Erosion",
+            DepartmentID = 2,
+            ConsultantID = 2,
+            DepartmentName = "DENTAL"
+        });
+
+        return groomingData;
+    }
+    public List<GroomingData> GetWaitingListData()
+    {
+        List<GroomingData> waitingData = new List<GroomingData>();
+        waitingData.Add(new GroomingData
+        {
+            Id = 1,
+            Name = "Steven",
+            StartTime = new DateTime(2020, 1, 3, 7, 30, 0),
+            EndTime = new DateTime(2020, 1, 3, 9, 30, 0),
+            Description = "Consulting",
+            DepartmentName = "GENERAL"
+        });
+        waitingData.Add(new GroomingData
+        {
+            Id = 2,
+            Name = "Milan",
+            StartTime = new DateTime(2020, 1, 4, 8, 30, 0),
+            EndTime = new DateTime(2020, 1, 4, 10, 30, 0),
+            Description = "Bad Breath",
+            DepartmentName = "DENTAL"
+        });
+        waitingData.Add(new GroomingData
+        {
+            Id = 3,
+            Name = "Laura",
+            StartTime = new DateTime(2020, 1, 4, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 4, 10, 30, 0),
+            Description = "Extraction",
+            DepartmentName = "GENERAL"
+        });
+
+        return waitingData;
+    }
+    public List<AppointmentData> GetHeaderRowData()
+    {
+        List<AppointmentData> headerRowData = new List<AppointmentData>();
+
+        return headerRowData;
+    }
+    public List<BlockData> GetBlockData()
+    {
+        List<BlockData> blockData = new List<BlockData>();
+        blockData.Add(new BlockData
+        {
+            Id = 1,
+            Subject = "Not Available",
+            StartTime = new DateTime(2020, 1, 1, 10, 0, 0),
+            EndTime = new DateTime(2020, 1, 1, 12, 0, 0),
+            IsAllDay = false,
+            IsBlock = true,
+            EmployeeId = 1
+        });
+        blockData.Add(new BlockData
+        {
+            Id = 2,
+            Subject = "Not Available",
+            StartTime = new DateTime(2020, 1, 1, 16, 0, 0),
+            EndTime = new DateTime(2020, 1, 1, 20, 0, 0),
+            IsAllDay = false,
+            IsBlock = true,
+            EmployeeId = 2
+        });
+        blockData.Add(new BlockData
+        {
+            Id = 3,
+            Subject = "Not Available",
+            StartTime = new DateTime(2020, 1, 1, 12, 0, 0),
+            EndTime = new DateTime(2020, 1, 1, 14, 0, 0),
+            IsAllDay = false,
+            IsBlock = true,
+            EmployeeId = 3
+        });
+
+        return blockData;
+    }
+    public List<AppointmentData> GetRecurrenceData()
+    {
+        List<AppointmentData> recurrenceData = new List<AppointmentData>();
+        recurrenceData.Add(new AppointmentData
+        {
+            Id = 1,
+            Subject = "Project demo meeting with Andrew",
+            Location = "Office",
+            StartTime = new DateTime(2020, 1, 8, 12, 0, 0),
+            EndTime = new DateTime(2020, 1, 8, 13, 0, 0),
+            RecurrenceRule = "FREQ=WEEKLY;INTERVAL=2;BYDAY=MO;COUNT=10",
+            CategoryColor = "#1aaa55",
+            Description = "Project demo meeting with Andrew regarding timeline"
+        });
+        recurrenceData.Add(new AppointmentData
+        {
+            Id = 2,
+            Subject = "Scrum Meeting",
+            Location = "Office",
+            StartTime = new DateTime(2020, 1, 6, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 6, 10, 30, 0),
+            RecurrenceRule = "FREQ=DAILY;INTERVAL=1;COUNT=10",
+            CategoryColor = "#357cd2",
+            Description = "Weekly work status"
+        });
+
+        return recurrenceData;
+    }
+    public List<FifaEventsData> GetFifaEventsData()
+    {
+        List<FifaEventsData> fifaEventsData = new List<FifaEventsData>();
+        fifaEventsData.Add(new FifaEventsData
+        {
+            Id = 1,
+            Subject = "RUSSIA vs SAUDI ARABIA",
+            Description = "Group A",
+            StartTime = new DateTime(2020, 1, 16, 15, 0, 0),
+            EndTime = new DateTime(2020, 1, 16, 17, 0, 0),
+            StartTimezone = "Europe/Moscow",
+            EndTimezone = "Europe/Moscow",
+            City = "Moscow",
+            CategoryColor = "#1aaa55",
+            GroupId = 1
+        });
+        fifaEventsData.Add(new FifaEventsData
+        {
+            Id = 2,
+            Subject = "EGYPT vs URUGUAY",
+            Description = "Group A",
+            StartTime = new DateTime(2020, 1, 17, 12, 0, 0),
+            EndTime = new DateTime(2020, 1, 17, 14, 0, 0),
+            StartTimezone = "Asia/Yekaterinburg",
+            EndTimezone = "Asia/Yekaterinburg",
+            City = "Ekaterinburg",
+            CategoryColor = "#1aaa55",
+            GroupId = 1
+        });
+        fifaEventsData.Add(new FifaEventsData
+        {
+            Id = 3,
+            Subject = "MOROCCO vs IR IRAN",
+            Description = "Group B",
+            StartTime = new DateTime(2020, 1, 17, 15, 0, 0),
+            EndTime = new DateTime(2020, 1, 17, 17, 0, 0),
+            StartTimezone = "Europe/Moscow",
+            EndTimezone = "Europe/Moscow",
+            City = "Saint Petersburg",
+            CategoryColor = "#357cd2",
+            GroupId = 2
+        });
+
+        return fifaEventsData;
+    }
+    public List<DoctorsEventData> GetDoctorsEventData()
+    {
+        List<DoctorsEventData> doctorsEventData = new List<DoctorsEventData>();
+        doctorsEventData.Add(new DoctorsEventData
+        {
+            Id = 1,
+            Subject = "Surgery - Andrew",
+            EventType = "Confirmed",
+            StartTime = new DateTime(2020, 1, 13, 9, 0, 0, 0),
+            EndTime = new DateTime(2020, 1, 13, 10, 0, 0)
+        });
+        doctorsEventData.Add(new DoctorsEventData
+        {
+            Id = 2,
+            Subject = "Consulting - John",
+            EventType = "Confirmed",
+            StartTime = new DateTime(2020, 1, 13, 10, 0, 0),
+            EndTime = new DateTime(2020, 1, 13, 11, 30, 0)
+        });
+
+        return doctorsEventData;
+    }
+    public List<WebinarData> GetWebinarData()
+    {
+        List<WebinarData> webinarData = new List<WebinarData>();
+        webinarData.Add(new WebinarData
+        {
+            Id = 1,
+            Subject = "Environment Day",
+            Tags = "Eco day, Forest conserving, Earth & its resources",
+            Description = "A day that creates awareness to promote the healthy planet and reduce the air pollution crisis on nature earth.",
+            StartTime = new DateTime(2020, 1, 13, 9, 0, 0),
+            EndTime = new DateTime(2020, 1, 13, 14, 0, 0),
+            ImageName = "environment-day",
+            PrimaryColor = "#1aaa55",
+            SecondaryColor = "#47bb76"
+        });
+        webinarData.Add(new WebinarData
+        {
+            Id = 2,
+            Subject = "Health Day",
+            Tags = "Reduce mental stress, Follow good food habits",
+            Description = "A day that raises awareness on different health issues. It marks the anniversary of the foundation of WHO.",
+            StartTime = new DateTime(2020, 1, 14, 9, 0, 0),
+            EndTime = new DateTime(2020, 1, 14, 14, 0, 0),
+            ImageName = "health-day",
+            PrimaryColor = "#357cd2",
+            SecondaryColor = "#5d96db"
+        });
+
+        return webinarData;
+    }
+    public List<EventsData> GetEventsData()
+    {
+        List<EventsData> eventsData = new List<EventsData>();
+        eventsData.Add(new EventsData
+        {
+            Id = 1,
+            Subject = "Server Maintenance",
+            StartTime = new DateTime(2020, 1, 12, 10, 0, 0),
+            EndTime = new DateTime(2020, 1, 12, 11, 30, 0),
+            EventType = "maintenance",
+            City = "Seattle",
+            CategoryColor = "#1aaa55"
+        });
+        eventsData.Add(new EventsData
+        {
+            Id = 2,
+            Subject = "Art & Painting Gallery",
+            StartTime = new DateTime(2020, 1, 13, 12, 0, 0),
+            EndTime = new DateTime(2020, 1, 13, 14, 0, 0),
+            EventType = "public-event",
+            City = "Costa Rica",
+            CategoryColor = "#357cd2"
+        });
+
+        return eventsData;
+    }
+    public List<AppointmentData> GetEmployeeEventData()
+    {
+        List<AppointmentData> employeeEventData = new List<AppointmentData>();
+        employeeEventData.Add(new AppointmentData
+        {
+            Id = 1,
+            Subject = "Project Workflow Analysis",
+            StartTime = new DateTime(2020, 1, 13, 9, 0, 0),
+            EndTime = new DateTime(2020, 1, 13, 11, 0, 0),
+            CategoryColor = "#1aaa55"
+        });
+        employeeEventData.Add(new AppointmentData
+        {
+            Id = 2,
+            Subject = "Project Requirement Planning",
+            StartTime = new DateTime(2020, 1, 14, 11, 30, 0),
+            EndTime = new DateTime(2020, 1, 14, 14, 0, 0),
+            CategoryColor = "#357cd2"
+        });
+        employeeEventData.Add(new AppointmentData
+        {
+            Id = 3,
+            Subject = "Quality Analysis",
+            StartTime = new DateTime(2020, 1, 15, 9, 30, 0),
+            EndTime = new DateTime(2020, 1, 15, 11, 0, 0),
+            CategoryColor = "#7fa900"
+        });
+
+        return employeeEventData;
+    }
+    public List<ResourceEventsData> GetHolidayData()
+    {
+        List<ResourceEventsData> holidayData = new List<ResourceEventsData>();
+        holidayData.Add(new ResourceEventsData
+        {
+            Id = 401,
+            Subject = "Global Family Day",
+            StartTime = new DateTime(2020, 1, 1),
+            EndTime = new DateTime(2020, 1, 2),
+            IsAllDay = true,
+            CalendarId = 4
+        });
+        holidayData.Add(new ResourceEventsData
+        {
+            Id = 402,
+            Subject = "World Braille Day",
+            StartTime = new DateTime(2020, 1, 4),
+            EndTime = new DateTime(2020, 1, 5),
+            IsAllDay = true,
+            CalendarId = 4
+        });
+
+        return holidayData;
+    }
+    public List<ResourceEventsData> GetBirthdayData()
+    {
+        List<ResourceEventsData> birthdayData = new List<ResourceEventsData>();
+        birthdayData.Add(new ResourceEventsData
+        {
+            Id = 301,
+            Subject = "Gladys Spellman",
+            StartTime = new DateTime(2020, 3, 1),
+            EndTime = new DateTime(2020, 3, 2),
+            IsAllDay = true,
+            CalendarId = 3
+        });
+        birthdayData.Add(new ResourceEventsData
+        {
+            Id = 302,
+            Subject = "Susanna Salter",
+            StartTime = new DateTime(2020, 3, 2),
+            EndTime = new DateTime(2020, 3, 3),
+            IsAllDay = true,
+            CalendarId = 3
+        });
+
+        return birthdayData;
+    }
+    public List<ResourceEventsData> GetCompanyData()
+    {
+        List<ResourceEventsData> companyData = new List<ResourceEventsData>();
+        companyData.Add(new ResourceEventsData
+        {
+            Id = 201,
+            Subject = "Conference meeting",
+            StartTime = new DateTime(2020, 3, 1),
+            EndTime = new DateTime(2020, 3, 2),
+            IsAllDay = true,
+            CalendarId = 2
+        });
+        companyData.Add(new ResourceEventsData
+        {
+            Id = 202,
+            Subject = "Product discussion",
+            StartTime = new DateTime(2020, 3, 4),
+            EndTime = new DateTime(2020, 3, 5),
+            IsAllDay = true,
+            CalendarId = 2
+        });
+
+        return companyData;
+    }
+    public List<ResourceEventsData> GetPersonalData()
+    {
+        List<ResourceEventsData> personalData = new List<ResourceEventsData>();
+        personalData.Add(new ResourceEventsData
+        {
+            Id = 101,
+            Subject = "Father Birthday",
+            StartTime = new DateTime(2020, 3, 1),
+            EndTime = new DateTime(2020, 3, 2),
+            IsAllDay = true,
+            CalendarId = 1
+        });
+        personalData.Add(new ResourceEventsData
+        {
+            Id = 102,
+            Subject = "Engagement day",
+            StartTime = new DateTime(2020, 3, 4),
+            EndTime = new DateTime(2020, 3, 5),
+            IsAllDay = true,
+            CalendarId = 1
+        });
+        return personalData;
+    }
+    public List<DoctorData> GetDoctorData()
+    {
+        List<DoctorData> doctorData = new List<DoctorData>();
+        doctorData.Add(new DoctorData
+        {
+            Id = 1,
+            Subject = "Echocardiogram",
+            StartTime = new DateTime(2020, 3, 2, 9, 30, 0),
+            EndTime = new DateTime(2020, 3, 2, 11, 30, 0),
+            IsAllDay = false,
+            DoctorId = 1
+        });
+        doctorData.Add(new DoctorData
+        {
+            Id = 2,
+            Subject = "Lumbar punctures",
+            StartTime = new DateTime(2020, 3, 2, 9, 30, 0),
+            EndTime = new DateTime(2020, 3, 2, 10, 45, 0),
+            IsAllDay = false,
+            DoctorId = 2
+        });
+
+        return doctorData;
+    }
+    public List<ResourceSampleData> GetResourceSampleData()
+    {
+        List<ResourceSampleData> data = new List<ResourceSampleData>();
+        data.Add(new ResourceSampleData
+        {
+            Id = 1,
+            Subject = "Burning Man",
+            StartTime = new DateTime(2020, 5, 29, 15, 0, 0),
+            EndTime = new DateTime(2020, 5, 29, 17, 0, 0),
+            OwnerId = 1
+        });
+        data.Add(new ResourceSampleData
+        {
+            Id = 2,
+            Subject = "Marketing Forum",
+            StartTime = new DateTime(2020, 5, 31, 10, 0, 0),
+            EndTime = new DateTime(2020, 5, 31, 11, 30, 0),
+            OwnerId = 2
+        });
+        data.Add(new ResourceSampleData
+        {
+            Id = 3,
+            Subject = "Business Factory",
+            StartTime = new DateTime(2020, 5, 31, 13, 30, 0),
+            EndTime = new DateTime(2020, 5, 31, 15, 0, 0),
+            OwnerId = 3
+        });
+
+        return data;
+    }
+
+}
+
+}
+<style>
+    /* custom code start*/
+    .content-wrapper {
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+    .e-device-hover {
+        background-color: #e0e0e0 !important;
+    }
+
+    .schedule-container {
+        padding-right: 10px;
+        width: 100%;
+    }
+
+    .title-container {
+        padding-bottom: 10px;
+    }
+
+    .title-text {
+        font-size: 18px;
+        margin: 0px;
+        font-weight: bold;
+        text-align: center;
+    }
+    /* custom code end*/
+    .treeview-external-drag #waiting {
+        height: 100%;
+        padding: 0;
+    }
+
+    .treeview-external-drag #waitid {
+        float: left;
+        width: 13%;
+        text-align: center;
+        line-height: 30px;
+        font-size: 13px;
+        font-family: "Segoe UI";
+        color: #f9920b;
+        overflow: hidden;
+        margin: 9px 0;
+        padding: 0 2px 0 0;
+    }
+
+    .treeview-external-drag #waitdetails {
+        width: 95%;
+        float: left;
+        height: 100%;
+        padding: 0;
+    }
+
+    .treeview-external-drag #waitlist {
+        width: 100%;
+        height: 50%;
+        font-weight: bold;
+        font-family: "Segoe UI";
+        font-size: 12px;
+        color: #545554;
+        padding: 5px 0 0 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .highcontrast #waitlist {
+        color: white;
+    }
+
+    .highcontrast .e-drag-item #waitlist {
+        color: black !important;
+    }
+
+    .treeview-external-drag #waitcategory {
+        height: 50%;
+        font-family: "Segoe UI";
+        font-size: 10px;
+        color: #545554;
+        opacity: 0.6;
+        padding-left: 10px;
+        padding-top: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .highcontrast #waitcategory {
+        color: white;
+    }
+
+    .highcontrast .e-drag-item #waitcategory {
+        color: black !important;
+    }
+
+    .treeview-external-drag .e-list-text,
+    .e-bigger .treeview-external-drag .e-list-text {
+        background: white;
+        border: 0.5px solid #E1E7EC;
+        height: 50px;
+        line-height: 15px;
+        padding: 0 5px;
+        width: 220px;
+    }
+
+    .highcontrast .treeview-external-drag .e-list-text,
+    .highcontrast .e-bigger .treeview-external-drag .e-list-text {
+        background: none;
+    }
+
+    .treeview-external-drag .e-list-parent,
+    .e-bigger .treeview-external-drag .e-list-parent {
+        height: 100%;
+        padding: 0 2px;
+    }
+
+    .treeview-external-drag .e-list-item,
+    .e-bigger .treeview-external-drag .e-list-item {
+        height: 100%;
+        padding: 0 0 5px 0;
+    }
+
+    .treeview-external-drag .e-fullrow,
+    .e-bigger .treeview-external-drag .e-fullrow {
+        height: 55px;
+    }
+
+    .treeview-external-drag .e-list-item.e-hover > .e-fullrow,
+    .treeview-external-drag .e-list-item.e-active > .e-fullrow,
+    .treeview-external-drag .e-list-item.e-active.e-hover > .e-fullrow,
+    .e-bigger .treeview-external-drag .e-list-item.e-hover > .e-fullrow,
+    .e-bigger .treeview-external-drag .e-list-item.e-active > .e-fullrow,
+    .e-bigger .treeview-external-drag .e-list-item.e-active.e-hover > .e-fullrow {
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none !important;
+    }
+
+    .treeview-external-drag .e-text-content,
+    .e-bigger .treeview-external-drag .e-text-content {
+        padding: 0;
+    }
+
+    .e-drag-item.e-treeview.treeview-external-drag,
+    .e-bigger .e-drag-item.e-treeview.treeview-external-drag {
+        padding: 0 !important;
+    }
+
+    .e-schedule.schedule-drag-drop .e-timeline-view .e-resource-left-td,
+    .e-schedule.schedule-drag-drop .e-timeline-month-view .e-resource-left-td {
+        width: 160px;
+    }
+
+    .e-schedule.schedule-drag-drop .e-resource-cells.e-parent-node .specialist-category {
+        padding-left: 30px
+    }
+
+    .e-schedule.e-rtl.schedule-drag-drop .e-resource-cells.e-parent-node .specialist-category {
+        padding-right: 30px
+    }
+
+    .e-schedule.schedule-drag-drop .e-resource-cells.e-child-node .specialist-category,
+    .e-schedule.schedule-drag-drop .e-resource-cells.e-child-node .specialist-name {
+        padding: 5px
+    }
+
+    .e-schedule.schedule-drag-drop .e-resource-cells.e-parent-node .specialist-name {
+        padding: 0 10px
+    }
+
+    .e-schedule.schedule-drag-drop .e-resource-cells.e-child-node .specialist-category .specialist-image {
+        width: 45px;
+        height: 40px;
+        float: left;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .e-schedule.schedule-drag-drop .specialist-name {
+        font-size: 13px;
+    }
+
+    .e-schedule.schedule-drag-drop .specialist-designation {
+        font-size: 10px;
+    }
+
+    .e-schedule-dialog .e-all-day-time-zone-row,
+    .e-schedule-dialog .e-location-container,
+    .e-bigger .e-schedule-dialog .e-all-day-time-zone-row,
+    .e-bigger .e-schedule-dialog .e-location-container {
+        display: none;
+    }
+
+    .e-schedule-dialog .e-subject-container,
+    .e-bigger .e-schedule-dialog .e-subject-container {
+        padding-right: 0;
+        width: 100%;
+    }
+
+    .e-schedule-dialog.e-rtl .e-subject-container,
+    .e-bigger .e-schedule-dialog.e-rtl .e-subject-container {
+        padding-left: 0;
+    }
+
+    @@media (max-width: 550px) {
+        /* custom code start*/
+        .content-wrapper {
+            display: block;
+        }
+
+        .schedule-container {
+            padding-bottom: 10px
+        }
+        /* custom code end*/
+        .treeview-external-drag.e-treeview,
+        .e-bigger .treeview-external-drag.e-treeview {
+            width: 225px;
+        }
+
+            .e-bigger .treeview-external-drag.e-treeview.e-drag-item {
+                position: relative !important;
+            }
+    }
+</style>

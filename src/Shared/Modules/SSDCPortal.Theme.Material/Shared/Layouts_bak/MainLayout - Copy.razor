@@ -1,0 +1,97 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject AppState appState
+@inject IStringLocalizer<Global> L
+
+<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
+    <MatDrawer @bind-Opened="@_navMenuOpened">
+        <header class="drawer-header">
+            <div class="drawer-logo">
+                <img alt="@appState.AppName" class="logo-img" src="_content/SSDCPortal.Theme.Material/images/logo-dark.svg" title="@appState.AppName">
+                <a class="miniHover" href="/">@appState.AppName</a>
+            </div>
+            <UserProfile />
+        </header>
+        <h2>Navmenu begins here </h2>
+        <NavMenu />
+        <h2>Navmenu ends here </h2>
+        
+        <DrawerFooter></DrawerFooter>
+    </MatDrawer>
+    <MatDrawerContent>
+                <h2>This is the main layout in the root material module</h2>
+                <Breadcrumbs RootLinkTitle="@appState.BreadCrumbHome"></Breadcrumbs>
+                
+                <section class="container-fluid" style="flex: 1;">
+                    @Body
+                </section>
+                <Footer></Footer>
+    </MatDrawerContent>
+</MatDrawerContainer>
+
+@code {
+    bool _navMenuOpened = true;
+    bool _navMinified = false;
+    public string bbDrawerClass = string.Empty;
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var profile = await appState.GetUserProfile();
+
+            _navMenuOpened = profile.IsNavOpen;
+            _navMinified = profile.IsNavMinified;
+        }
+    }
+
+    void NavToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+
+        if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+        else
+        {
+            bbDrawerClass = "closed";
+        }
+
+        StateHasChanged();
+    }
+
+    void NavLock()
+    {
+        //Todo Lock Nav
+    }
+
+    void NavMinify()
+    {
+        _navMinified = !_navMinified;
+
+        if (!_navMenuOpened)
+        {
+            _navMinified = true;
+        }
+
+        if (_navMinified)
+        {
+            bbDrawerClass = "mini";
+            _navMenuOpened = true;
+        }
+        else if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+
+        _navMenuOpened = true;
+
+        StateHasChanged();
+    }
+}

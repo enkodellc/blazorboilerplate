@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Title>SSDCPortal Shared</Title>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Blazored.FluentValidation" Version="2.0.0" />
+    <PackageReference Include="Breeze.Sharp" Version="0.9.11" />
+    <PackageReference Include="Humanizer" Version="2.8.26" />
+    <PackageReference Include="IdentityServer4.Storage" Version="4.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="ObjectCloner.Extensions" Version="2.0.1" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SSDCPortal.Constants\SSDCPortal.Constants.csproj" />
+    <ProjectReference Include="..\SSDCPortal.Infrastructure.AuthorizationDefinitions\SSDCPortal.Infrastructure.AuthorizationDefinitions.csproj" />
+    <ProjectReference Include="..\SSDCPortal.Shared.DataInterfaces\SSDCPortal.Shared.DataInterfaces.csproj" />
+    <ProjectReference Include="..\SSDCPortal.Shared.Localizer\SSDCPortal.Shared.Localizer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Dto\Admin\ResourceDtoCustomUserClaims.tt">
+      <LastGenOutput>ResourceDtoCustomUserClaims.txt</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Dto\Admin\IdentityServerDtos.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ResourceDtoCustomUserClaims.txt</LastGenOutput>
+    </None>
+    <None Update="Dto\Admin\ResourceDtoCustomUserClaims.txt">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResourceDtoCustomUserClaims.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <!--<ItemGroup>
+    <Folder Include="Dto\Appointments\" />
+  </ItemGroup>-->
+</Project>

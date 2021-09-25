@@ -1,0 +1,266 @@
+@page "/account/login"
+@using InputType = MudBlazor.InputType
+@layout LoginLayout
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider authStateProvider
+@inject IViewNotifier viewNotifier
+@inject AppState appState
+@inject IJSRuntime js
+@inject IStringLocalizer<Global> L
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <LoadingBackground ShowLogoBox="true">
+            <label>@L["Loading"]</label>
+        </LoadingBackground>
+    </Authorized>
+    <NotAuthorized>
+        @if (loginViewModel.EnableLocalLogin)
+        {
+            <EditForm Model="@loginViewModel" OnValidSubmit="@SubmitLogin">
+                <FluentValidationValidator />
+                <ValidationSummary />
+
+                <MudText Typo="Typo.h4" GutterBottom="true">Sign In</MudText>
+                <!-- username/email -->
+                <MudTextField T="string" @bind-Value="@loginViewModel.UserName" Label="E-mail" Variant="Variant.Outlined" Class="my-6"></MudTextField>
+                <!-- password -->
+                <MudTextField @bind-Value="@loginViewModel.Password" Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput" 
+                               Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+
+                <!-- remember me?/forgot pwd? -->
+                <div Class="d-flex justify-space-between align-center">
+
+                    @if (loginViewModel.AllowRememberLogin)
+                    {
+                        <MudCheckBox  @bind-Checked="@loginViewModel.RememberMe" T="bool" Label=@L["Keep me logged in."] Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
+                    }
+                    
+                    <MudLink Href="/account/forgotpassword">Forgot pwd?</MudLink>
+
+                </div>
+                <!-- Submit -->
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" ButtonType="ButtonType.Submit" FullWidth="true">@L["Submit"]</MudButton>
+
+                <br />
+                <br />
+                <!-- Register Link -->
+                <MudText>Don't have an account?</MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large" OnClick="@Register" FullWidth="true">@L["Sign up"]</MudButton>
+
+            </EditForm>
+            
+            <div style="display: none">
+                <div Class="d-flex justify-space-between align-center"></div>
+
+                <!-- Forgot Password Code -->
+                <EditForm Model="@forgotPasswordViewModel" OnValidSubmit="@ForgotPassword">
+                    <FluentValidationValidator />
+                    <ValidationSummary />
+                    <div class="form-group">
+
+                        <br />
+                        <br />
+                        <!-- Register Link -->
+                        <MudText>Forgot Password</MudText>
+                        <MudTextField @bind-Value="@forgotPasswordViewModel.Email" 
+                                       Label=@L["Email"] FullWidth="true" Required="true" 
+                                       Variant="Variant.Outlined" Class="my-6"
+                                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Mail" />
+
+                    </div>
+                    <div class="form-group">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" ButtonType="ButtonType.Submit" FullWidth="true">@L["Submit"]</MudButton>
+                    </div>
+                </EditForm>
+            </div>
+                <!-- End Forgot Password Code -->
+                <div Class="d-flex justify-space-between align-center">
+                </div>
+
+                <span>start loginViewModel.VisibleExternalProviders</span>
+                @if (loginViewModel.VisibleExternalProviders.Any())
+                {
+                    <!-- If Local Login is enabled -->
+                    @if (!loginViewModel.EnableLocalLogin)
+                    {
+                        <MudIconButton Icon="home" Class="float-left" Link="/" />
+                    }
+
+                    @if (!loginViewModel.EnableLocalLogin)
+                    {
+                        <a href="/" title="@appState.AppName Home">
+                            <img src="_content/SSDCPortal.Theme.Material/images/ssdc.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName
+                        </a><br />
+                    }
+
+                    <h4>@L["Sign in with"]</h4>
+
+                    <div style="text-align: center">
+                        @foreach (var provider in loginViewModel.VisibleExternalProviders)
+                        {
+                            @switch (provider.AuthenticationScheme)
+                            {
+                                case "Google":
+                                case "Facebook":
+                                    <div class="form-group">
+                                        <MudButton Style="min-width: 140px;" OnClick="@(() => SignInWith(provider))" Raised="true"><img height="18" src="/images/@(provider.AuthenticationScheme.ToLower()).svg" /></MudButton>
+                                    </div>
+                                    break;
+                                case "Twitter":
+                                case "Microsoft":
+                                case "Apple":
+                                    <div class="form-group">
+                                        <MudButton Style="min-width: 140px;" OnClick="@(() => SignInWith(provider))" Raised="true"><img height="18" src="/images/@(provider.AuthenticationScheme.ToLower()).svg" />&nbsp;@provider.DisplayName</MudButton>
+                                    </div>
+                                    break;
+                                default:
+                                    <div class="form-group">
+                                        <MudButton Style="min-width: 140px;" OnClick="@(() => SignInWith(provider))" Raised="true" Label="@provider.DisplayName" />
+                                    </div>
+                                    break;
+                            }
+                        }
+                    </div>
+                }
+
+                @if (!loginViewModel.EnableLocalLogin && !loginViewModel.VisibleExternalProviders.Any())
+                {
+                    <div class="alert alert-warning">
+                        <strong>Invalid login request</strong>
+                        There are no login schemes configured for this client.
+                    </div>
+                }
+          
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+    private MudTextField<string> UserNameInput;
+    bool PasswordVisibility;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+    string navigateTo = null;
+    IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
+    bool forgotPasswordToggle = false;
+    LoginViewModel loginViewModel { get; set; } = new LoginViewModel();
+    ForgotPasswordViewModel forgotPasswordViewModel { get; set; } = new ForgotPasswordViewModel();
+    string ReturnUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (navigationManager.TryGetQueryString<string>("ReturnUrl", out string url))
+            ReturnUrl = url;
+
+        var user = (await authenticationStateTask).User;
+        if (user.Identity.IsAuthenticated)
+            navigationManager.NavigateTo(ReturnUrl ?? "/");
+        else
+        {
+            identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
+            var apiResponse = await identityAuthenticationStateProvider.BuildLoginViewModel(ReturnUrl);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                loginViewModel = apiResponse.Result;
+                if (loginViewModel.IsExternalLoginOnly)
+                {
+                    if (!string.IsNullOrEmpty(ReturnUrl))
+                        ReturnUrl = Uri.EscapeDataString(ReturnUrl);
+                    // we only have one option for logging in and it's an external provider
+                    navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
+                }
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["LoginFailed"]);
+            }
+
+        }
+    }
+    void SignInWith(ExternalProvider provider)
+    {
+        if (!string.IsNullOrEmpty(ReturnUrl))
+            ReturnUrl = Uri.EscapeDataString(ReturnUrl);
+
+        navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{provider.AuthenticationScheme}/{ReturnUrl}", true);
+    }
+
+    void Register() { navigationManager.NavigateTo("/account/register"); }
+
+    async Task SubmitLogin()
+    {
+        try
+        {
+            loginViewModel.ReturnUrl = ReturnUrl;
+            var response = await identityAuthenticationStateProvider.Login(loginViewModel);
+            if (response.IsSuccessStatusCode)
+            {
+                if (navigationManager.IsWebAssembly())
+                {
+                    if (response.Result?.RequiresTwoFactor == true)
+                    {
+                        var par = string.IsNullOrEmpty(ReturnUrl) ? string.Empty : $"?returnurl={Uri.EscapeDataString(ReturnUrl)}";
+                        navigationManager.NavigateTo($"{SSDCPortal.Constants.Settings.LoginWith2faPath}{par}", true);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(ReturnUrl))
+                        {
+                            var userProfile = await appState.GetUserProfile();
+
+                            navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                        }
+                        else
+                            navigateTo = ReturnUrl;
+
+
+                        navigationManager.NavigateTo(navigateTo);
+                    }
+                }
+            }
+            else
+            {
+                viewNotifier.Show(response.Message, ViewNotifierType.Error, L["LoginFailed"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["LoginFailed"]);
+        }
+    }
+    async Task ForgotPassword()
+    {
+        try
+        {
+            await identityAuthenticationStateProvider.ForgotPassword(forgotPasswordViewModel);
+            viewNotifier.Show(L["ForgotPasswordEmailSent"], ViewNotifierType.Success);
+            forgotPasswordViewModel.Email = string.Empty;
+            forgotPasswordToggle = false;
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, L["ResetPasswordFailed"]);
+        }
+    }
+
+    void TogglePasswordVisibility()
+    {
+        @if (PasswordVisibility)
+        {
+            PasswordVisibility = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            PasswordVisibility = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+}

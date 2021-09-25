@@ -17,8 +17,14 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<<<<<<< Updated upstream:src/Server/BlazorBoilerplate.Server/Pages/_Index.cshtml
     <meta name="author" content="Enkodellc / Keith Fimreite, Giovanni Quarella">
     <meta name="description" content="Blazor Boilerplate & Starter Kit - A real world Example ">
+=======
+    <title>SSDC Business Management Portal</title>
+    <meta name="author" content="Chrisotopher Lane / Slicksys Development Corp">
+    <meta name="description" content="Line of business solution for personal service providers">
+>>>>>>> Stashed changes:src/Server/SSDCPortal.Server/Pages/_Host.cshtml
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
@@ -30,8 +36,15 @@
         <title>BlazorBoilerplate Starter Kit (WASM)</title>
     }
     <base href="~/" />
+<<<<<<< Updated upstream:src/Server/BlazorBoilerplate.Server/Pages/_Index.cshtml
     <link href="manifest.json" rel="manifest" />
     <link href="_content/BlazorBoilerplate.Theme.Material/BlazorBoilerplate.Theme.Material.bundle.scp.css" rel="stylesheet">
+=======
+    <link href="site.webmanifest" rel="manifest" />
+    <link href="SSDCPortal.Server.styles.css" rel="stylesheet">
+    <link href="StylesheetSSDCPortal.Theme.Material.bundle.scp.css" rel="stylesheet">
+    
+>>>>>>> Stashed changes:src/Server/SSDCPortal.Server/Pages/_Host.cshtml
 </head>
 <body>
     @{
@@ -82,6 +95,21 @@
     else
     {
         <script src="_framework/blazor.webassembly.js"></script>
+<<<<<<< Updated upstream:src/Server/BlazorBoilerplate.Server/Pages/_Index.cshtml
     }
+=======
+}
+
+
+
+
+    <script src="js/interop.js"></script>
+    <!-- https://docs.microsoft.com/en-us/aspnet/core/blazor/progressive-web-app -->
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+
+<!-- Maybe consider using this template...
+    https://seantheme.com/color-admin/admin/transparent/email_inbox.html -->
+
+>>>>>>> Stashed changes:src/Server/SSDCPortal.Server/Pages/_Host.cshtml
 </body>
 </html>
