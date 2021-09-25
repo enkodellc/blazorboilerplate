@@ -76,8 +76,9 @@
     <div class="col-2">Created by</div>
     <div class="col-2">Modified by</div>
 </div>
-<div style="height:480px;overflow-y:auto;overflow-x:hidden;margin:0 -15px">
-    <Virtualize @ref="asyncVirtualize" Context="item" ItemsProvider="LoadToDos" ItemSize="48" OverscanCount="10">
+
+<div style="flex-grow: 1; flex-basis: 0; min-height: 0; height: 332px; overflow-y: auto; overflow-x: hidden; margin: 0 -15px ">
+    <Virtualize @ref="asyncVirtualize" Context="item" ItemsProvider="LoadToDos" ItemSize="50">
         <ItemContent>
             <div class="row row-todo" @key="item.Id">
                 <div class="col-2"><MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(item))"></MatIconButton></div>
@@ -94,39 +95,40 @@
     </Virtualize>
 </div>
 
+
 @if (currentTodo != null)
 {<MatDialog @bind-IsOpen="@dialogIsOpen">
-    <MatDialogTitle>Create Todo</MatDialogTitle>
-    <MatDialogContent>
-        <EditForm id="newTodoForm" Model="@currentTodo" OnValidSubmit="@NewEntity">
-            <FluentValidationValidator />
-            <ValidationSummary />
-            <fieldset>
-                <div class="form-group">
-                    <MatTextField @bind-Value="@currentTodo.Title" Label="Title" Icon="title" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-                </div>
-                <div class="form-group">
-                    <MatCheckbox @bind-Value="@currentTodo.IsCompleted" Label="Completed"></MatCheckbox>
-                </div>
-            </fieldset>
-        </EditForm>
-    </MatDialogContent>
-    <MatDialogActions>
-        <MatButton OnClick="@(e => { dialogIsOpen = false; })">@L["Cancel"]</MatButton>
-        <MatButton Type="submit" form="newTodoForm" Raised="true">Create Todo</MatButton>
-    </MatDialogActions>
-</MatDialog>
+        <MatDialogTitle>Create Todo</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm id="newTodoForm" Model="@currentTodo" OnValidSubmit="@NewEntity">
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <fieldset>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@currentTodo.Title" Label="Title" Icon="title" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatCheckbox @bind-Value="@currentTodo.IsCompleted" Label="Completed"></MatCheckbox>
+                    </div>
+                </fieldset>
+            </EditForm>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { dialogIsOpen = false; })">@L["Cancel"]</MatButton>
+            <MatButton Type="submit" form="newTodoForm" Raised="true">Create Todo</MatButton>
+        </MatDialogActions>
+    </MatDialog>
 
-<MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
-    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
-    <MatDialogContent>
-        @L["Are you sure you want to delete {0}?", currentTodo.Title]
-    </MatDialogContent>
-    <MatDialogActions>
-        <MatButton OnClick="@(e => { deleteDialogOpen = false; })">@L["Cancel"]</MatButton>
-        <MatButton OnClick="@Delete">@L["Delete"]</MatButton>
-    </MatDialogActions>
-</MatDialog>
+    <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+        <MatDialogContent>
+            @L["Are you sure you want to delete {0}?", currentTodo.Title]
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { deleteDialogOpen = false; })">@L["Cancel"]</MatButton>
+            <MatButton OnClick="@Delete">@L["Delete"]</MatButton>
+        </MatDialogActions>
+    </MatDialog>
 }
 
 @code {
@@ -218,8 +220,8 @@
 
             itemCount = (int)items.InlineCount;
 
-            if (request.StartIndex == 0)
-                StateHasChanged();
+            //if (request.StartIndex == 0)
+            StateHasChanged();
 
             return new ItemsProviderResult<Todo>(items, itemCount);
         }
