@@ -47,15 +47,18 @@ namespace BlazorBoilerplate.Shared.Services
 
             entityManager.FetchMetadata().ContinueWith(t =>
             {
-                var message = t.Exception.GetBaseException().ToString();
+                if (t.IsFaulted)
+                {
+                    var message = t.Exception.GetBaseException().ToString();
 
-                var breezeException = t.Exception.GetBaseException().InnerException as DataServiceRequestException;
+                    var breezeException = t.Exception.GetBaseException().InnerException as DataServiceRequestException;
 
-                if (breezeException != null)
-                    message = breezeException.Message;
+                    if (breezeException != null)
+                        message = breezeException.Message;
 
-                if (breezeException?.HttpResponse.StatusCode != System.Net.HttpStatusCode.Unauthorized)
-                    logger.LogError("BaseApiClient.FetchMetadata: {0}", message);
+                    if (breezeException?.HttpResponse.StatusCode != System.Net.HttpStatusCode.Unauthorized)
+                        logger.LogError("BaseApiClient.FetchMetadata: {0}", message);
+                }
             });
         }
 
