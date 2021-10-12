@@ -12,10 +12,10 @@ namespace BlazorBoilerplate.Shared.Models.Account.Validators
             var options = ruleBuilder
                 .NotEmpty().WithMessage(l["PasswordEmpty"])
                 .MinimumLength(PasswordPolicy.RequiredLength).WithMessage(l["PasswordTooShort", PasswordPolicy.RequiredLength])
-                .Matches("[A-Z]").When(p => PasswordPolicy.RequireUppercase).WithMessage(l["PasswordRequiresUpper"])
-                .Matches("[a-z]").When(p => PasswordPolicy.RequireLowercase).WithMessage(l["PasswordRequiresLower"])
-                .Matches("[0-9]").When(p => PasswordPolicy.RequireDigit).WithMessage(l["PasswordRequiresDigit"])
-                .Matches("[^a-zA-Z0-9]").When(p => PasswordPolicy.RequireNonAlphanumeric).WithMessage(l["PasswordRequiresNonAlphanumeric"]);
+                .Matches("[A-Z]").When(p => PasswordPolicy.RequireUppercase, ApplyConditionTo.CurrentValidator).WithMessage(l["PasswordRequiresUpper"])
+                .Matches("[a-z]").When(p => PasswordPolicy.RequireLowercase, ApplyConditionTo.CurrentValidator).WithMessage(l["PasswordRequiresLower"])
+                .Matches("[0-9]").When(p => PasswordPolicy.RequireDigit, ApplyConditionTo.CurrentValidator).WithMessage(l["PasswordRequiresDigit"])
+                .Matches("[^a-zA-Z0-9]").When(p => PasswordPolicy.RequireNonAlphanumeric, ApplyConditionTo.CurrentValidator).WithMessage(l["PasswordRequiresNonAlphanumeric"]);
 
             return options;
         }
