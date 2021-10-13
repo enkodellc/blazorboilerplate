@@ -1129,3 +1129,48 @@ msgstr "Please enter a minimum of 2 characters to perform a search."
 msgctxt "Global"
 msgid "Data not available."
 msgstr "Data not available."
+
+msgctxt "Global"
+msgid "Company"
+msgstr "Company"
+
+msgctxt "Global"
+msgid "Address"
+msgstr "Address"
+
+msgctxt "Global"
+msgid "City"
+msgstr "City"
+
+msgctxt "Global"
+msgid "Province"
+msgstr "Province"
+
+msgctxt "Global"
+msgid "Country"
+msgstr "Country"
+
+msgctxt "Global"
+msgid "ZipCode"
+msgstr "Zip Code"
+
+msgctxt "Global"
+msgid "PhoneNumber"
+msgstr "Phone number"
+
+msgctxt "Global"
+msgid "VatIn"
+msgstr "VAT"
+
+msgctxt "Global"
+msgid "EnableAuthenticatorInstructions"
+msgstr ""
+"<p>"
+"Download a two-factor authenticator app like Microsoft Authenticator or Google Authenticator."
+"</p>"
+"<p>Scan the QR Code or enter this key <kbd>{0}</kbd> into your two factor authenticator app. Spaces and casing do not matter.</p>"
+"<img src=\"{1}\" style=\"width: 200px\" />"
+"<p>"
+"Once you have scanned the QR code or input the key above, your two factor authentication app will provide you "
+"with a unique code. Enter the code in the confirmation box below and confirm."
+"</p>"

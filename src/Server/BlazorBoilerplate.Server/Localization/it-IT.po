@@ -981,3 +981,48 @@ msgstr "Si prega di inserire almeno 2 lettere per effettuare la ricerca."
 msgctxt "Global"
 msgid "Data not available."
 msgstr "Dati non disponibili."
+
+msgctxt "Global"
+msgid "Company"
+msgstr "Azienda"
+
+msgctxt "Global"
+msgid "Address"
+msgstr "Indirizzo"
+
+msgctxt "Global"
+msgid "City"
+msgstr "Città"
+
+msgctxt "Global"
+msgid "Province"
+msgstr "Provincia"
+
+msgctxt "Global"
+msgid "Country"
+msgstr "Nazione"
+
+msgctxt "Global"
+msgid "ZipCode"
+msgstr "CAP"
+
+msgctxt "Global"
+msgid "PhoneNumber"
+msgstr "Telefono"
+
+msgctxt "Global"
+msgid "VatIn"
+msgstr "Partita IVA"
+
+msgctxt "Global"
+msgid "EnableAuthenticatorInstructions"
+msgstr ""
+"<p>"
+"Scarica un'app per l'autenticazione a due fattori come Microsoft Authenticator o Google Authenticator."
+"</p>"
+"<p>Inquadra il QR Code o inserisci questa chiave <kbd>{0}</kbd> nella tua app. Spazi e maiuscole non contano.</p>"
+"<img src=\"{1}\" style=\"width: 200px\" />"
+"<p>"
+"Una volta inquadrato il QR code o inserita la chiave suddetta, la tua app ti fornirà "
+"un codice da inserire nella casella sottostante. Inseriscilo e conferma."
+"</p>"
