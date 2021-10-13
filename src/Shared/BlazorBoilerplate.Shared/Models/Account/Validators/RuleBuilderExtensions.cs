@@ -10,7 +10,7 @@ namespace BlazorBoilerplate.Shared.Models.Account.Validators
         public static IRuleBuilderOptions<T, string> Password<T>(this IRuleBuilder<T, string> ruleBuilder, IStringLocalizer<Global> l)
         {
             var options = ruleBuilder
-                .NotEmpty().WithMessage(l["PasswordEmpty"])
+                .NotEmpty().WithName(l["Password"])
                 .MinimumLength(PasswordPolicy.RequiredLength).WithMessage(l["PasswordTooShort", PasswordPolicy.RequiredLength])
                 .Matches("[A-Z]").When(p => PasswordPolicy.RequireUppercase, ApplyConditionTo.CurrentValidator).WithMessage(l["PasswordRequiresUpper"])
                 .Matches("[a-z]").When(p => PasswordPolicy.RequireLowercase, ApplyConditionTo.CurrentValidator).WithMessage(l["PasswordRequiresLower"])
