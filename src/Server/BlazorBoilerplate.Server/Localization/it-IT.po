@@ -355,6 +355,10 @@ msgid "ConfirmPassword"
 msgstr "Conferma password"
 
 msgctxt "Global"
+msgid "ConfirmNewPassword"
+msgstr "Conferma la nuova password"
+
+msgctxt "Global"
 msgid "ErrorInvalidLength"
 msgstr "Il campo {0} deve avere almeno {2} caratteri ed al massimo {1}."
 

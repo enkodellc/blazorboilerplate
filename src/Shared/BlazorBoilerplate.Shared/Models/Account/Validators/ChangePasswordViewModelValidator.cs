@@ -12,10 +12,18 @@ namespace BlazorBoilerplate.Shared.Models.Account.Validators
             RuleFor(p => p.UserId)
                 .NotEmpty();
 
-            RuleFor(p => p.Password).Password(L);
+            RuleFor(p => p.Password).Password(L).WithName(L["NewPassword"]);
 
             RuleFor(p => p.PasswordConfirm)
-                .Equal(p => p.Password).WithMessage(x => L["PasswordConfirmationFailed"]).WithName(L["ConfirmPassword"]);
+                .Equal(p => p.Password).WithMessage(x => L["PasswordConfirmationFailed"]).WithName(L["ConfirmNewPassword"]);
+        }
+    }
+
+    public class ChangePasswordViewModelValidator : ChangePasswordViewModelValidator<ChangePasswordViewModel>
+    {
+        public ChangePasswordViewModelValidator(IStringLocalizer<Global> l) : base(l)
+        {
+
         }
     }
 }

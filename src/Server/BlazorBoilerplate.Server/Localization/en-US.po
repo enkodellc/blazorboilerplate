@@ -465,6 +465,10 @@ msgid "ConfirmPassword"
 msgstr "Confirm password"
 
 msgctxt "Global"
+msgid "ConfirmNewPassword"
+msgstr "Confirm new password"
+
+msgctxt "Global"
 msgid "ErrorInvalidLength"
 msgstr "The {0} must be at least {2} and at max {1} characters long."
 
