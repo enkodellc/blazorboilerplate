@@ -38,9 +38,9 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.0" />
     <PackageReference Include="FormatWith" Version="3.0.1" />
     <PackageReference Include="Google.Protobuf" Version="3.17.3" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.38.0" />
-    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.38.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.38.1">
+    <PackageReference Include="Grpc.Net.Client" Version="2.39.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.39.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.39.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

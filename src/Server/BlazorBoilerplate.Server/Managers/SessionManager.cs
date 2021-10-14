@@ -10,6 +10,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
 {
+    /// <summary>
+    /// Manages all RPC calls related to the AutoML sessions
+    /// </summary>
     public class SessionManager : ISessionManager
     {
         private readonly ApplicationDbContext _dbContext;
@@ -19,7 +22,11 @@ namespace BlazorBoilerplate.Server.Managers
             _dbContext = dbContext;
             _client = client;
         }
-
+        /// <summary>
+        /// Get informations about a specific session
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
         public async Task<ApiResponse> GetSession(GetSessionRequestDto session)
         {
             GetSessionStatusRequest request = new GetSessionStatusRequest();
@@ -47,7 +54,11 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
         }
-
+        /// <summary>
+        /// retrieve all session ids
+        /// </summary>
+        /// <param name="dataset"></param>
+        /// <returns></returns>
         public async Task<ApiResponse> GetSessions(GetSessionsRequestDto dataset)
         {
             GetSessionsRequest request = new GetSessionsRequest();

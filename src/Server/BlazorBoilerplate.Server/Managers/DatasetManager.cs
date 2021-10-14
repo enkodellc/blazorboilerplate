@@ -16,6 +16,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
 {
+    /// <summary>
+    /// Manages all RPC calls related to datasets
+    /// </summary>
     public class DatasetManager : IDatasetManager
     {
         private readonly ApplicationDbContext _dbContext;
@@ -28,7 +31,11 @@ namespace BlazorBoilerplate.Server.Managers
             _client = client;
             Console.WriteLine("Dataset Manager Created");
         }
-
+        /// <summary>
+        /// Retrive a concrete Dataset
+        /// </summary>
+        /// <param name="dataset"></param>
+        /// <returns></returns>
         public async Task<ApiResponse> GetDataset(GetDatasetRequestDto dataset)
         {
             List<GetDatasetResponseDto> response = new List<GetDatasetResponseDto>();
@@ -55,14 +62,17 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Get a list of all Datasets
+        /// </summary>
+        /// <returns></returns>
         public async Task<ApiResponse> GetDatasets()
         {
             List<GetDatasetsResponseDto> response = new List<GetDatasetsResponseDto>();
             GetDatasetsRequest getDatasetsRequest = new GetDatasetsRequest();
             try
             {
-                getDatasetsRequest.Type = DatasetType.TabularyData;
+                getDatasetsRequest.Type = DatasetType.TabularData;
                 var reply = _client.GetDatasets(getDatasetsRequest);
                 foreach (Dataset item in reply.Dataset)
                 {
@@ -78,7 +88,11 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Helper function, get all column names of a structured data dataset
+        /// </summary>
+        /// <param name="dataset"></param>
+        /// <returns></returns>
         public async Task<ApiResponse> GetTabularDatasetColumnNames(GetTabularDatasetColumnNamesRequestDto dataset)
         {
             GetTabularDatasetColumnNamesResponseDto response = new GetTabularDatasetColumnNamesResponseDto();
@@ -97,18 +111,13 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Upload a new dataset, currently only CSV are supported
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public async Task<ApiResponse> Upload(FileUploadRequestDto file)
         {
-            //var httpHandler = new HttpClientHandler();
-            // Return `true` to allow certificates that are untrusted/invalid
-            //httpHandler.ServerCertificateCustomValidationCallback =
-            //    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-            //var channel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
-            //Channel channel = new Channel("127.0.0.1:50052", ChannelCredentials.Insecure);
-            //using var channel = GrpcChannel.ForAddress("https://localhost:5001",
-            //    new GrpcChannelOptions { HttpHandler = httpHandler });
-            //var client = new ControllerService.ControllerServiceClient(channel);
             UploadDatasetFileRequest request = new UploadDatasetFileRequest();
             request.Name = file.FileName;
             request.Content = Google.Protobuf.ByteString.CopyFromUtf8(file.Content);

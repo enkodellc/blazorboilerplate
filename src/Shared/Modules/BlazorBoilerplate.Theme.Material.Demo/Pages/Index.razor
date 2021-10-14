@@ -54,7 +54,7 @@
     private StartAutoMLRequestDto _automlRequest;
     private StartAutoMLResponseDto _autoMltask;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         _automlRequest = new StartAutoMLRequestDto();
     }

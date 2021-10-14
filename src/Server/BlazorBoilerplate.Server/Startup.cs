@@ -66,6 +66,7 @@ using static IdentityServer4.IdentityServerConstants;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Components.WebAssembly.Services;
 using Grpc.Net.Client;
+using BlazorBoilerplate.Server.Services;
 
 namespace BlazorBoilerplate.Server
 {
@@ -114,13 +115,13 @@ namespace BlazorBoilerplate.Server
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
-            string grpcEndpoint = "https://localhost:50101";
-            if (_environment.IsDevelopment())
-            {
-                string endpoint = Configuration["CONTROLLER_SERVICE_HOST"];
-                string port = Configuration["CONTROLLER_SERVICE_PORT"];
-                grpcEndpoint = $"https://{endpoint}:{port}";
-            }
+            string grpcEndpoint = "https://localhost:5001";
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /////KUBERNETES ENV VARIABLE
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////
+            string endpoint = Configuration["CONTROLLER_SERVICE_HOST"];
+            string port = Configuration["CONTROLLER_SERVICE_PORT"];
+            //grpcEndpoint = $"https://{endpoint}:{port}";
             //GRPC CONTROLLER FACTORY 
             services.AddGrpcClient<ControllerService.ControllerServiceClient>(o =>
             {
@@ -614,7 +615,6 @@ namespace BlazorBoilerplate.Server
             services.AddTransient<IOntologyManager, OntologyManager>();
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<IExternalAuthManager, ExternalAuthManager>();
-
 
 
             #region Automapper

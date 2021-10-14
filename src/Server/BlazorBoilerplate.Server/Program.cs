@@ -48,6 +48,7 @@ namespace BlazorBoilerplate.Server
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {
+                webBuilder.UseStaticWebAssets();
                 webBuilder.UseConfiguration(new ConfigurationBuilder()
                     .AddCommandLine(args)
                     .Build());

@@ -1,10 +1,11 @@
 ﻿@inject IStringLocalizer<Global> L
 @using System
-@using System.Threading;
+@using System.Timers
 @using System.IO;
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 @inject IJSRuntime JSRuntime
+@implements IDisposable
 
 @if (_session != null)
 {
@@ -20,18 +21,29 @@
             <MatTabGroup @bind-ActiveIndex="_autoMlIndex">
                 @foreach (var automl in _session.AutoMls)
                 {
-                    <MatTab Label="@automl.Name">
-                        <div style="padding: 5px; border: 1px solid white;">
-                            <MatList Style=" min-height: 2rem; max-height: 30rem; overflow-y: auto;">
-                                @foreach (var item in automl.Messages)
-                                {
-                                    <MatListItem>
-                                        @item
-                                    </MatListItem>
-                                }
-                            </MatList>
-                        </div>
-                    </MatTab>
+                <MatTab Label="@automl.Name">
+                    @switch (automl.Status)
+                    {
+                        case 1:
+                        case 2:
+                            <div style="padding: 5px; border: 1px solid white;">
+                                <MatList Style=" min-height: 2rem; max-height: 30rem; overflow-y: auto;">
+                                    @foreach (var item in automl.Messages)
+                                    {
+                                        <MatListItem>
+                                            @item
+                                        </MatListItem>
+                                    }
+                                </MatList>
+                            </div>
+                            break;
+                        case 3:
+                            <p>ERROR WHILE RUNNING</p>
+                            break;
+                        default:
+                            break;
+                    }
+                </MatTab>
                 }
             </MatTabGroup>
         </div>
@@ -44,7 +56,7 @@
 
 @code {
     public IEnumerable<string> items2 = Enumerable.Range(0, 200).Select(i => i.ToString()).ToArray();
-    System.Threading.Timer timer;
+    private Timer _timer;
     private GetSessionResponseDto _session = null;
     private int _autoMlIndex = 0;
 
@@ -54,44 +66,62 @@
 
     protected override void OnInitialized()
     {
-        LoadSessionAsync();
+        LoadSession(null, null);
+        _timer = new Timer()
+        {
+            AutoReset = true,
+            Enabled = true,
+            Interval = 5000
+        };
+        _timer.Elapsed += LoadSession;
     }
 
-    private async void LoadSessionAsync()
+    private async void LoadSession(object sender, ElapsedEventArgs e)
     {
-        try
+        await InvokeAsync(async () =>
         {
-            while (true)
+            try
             {
                 ApiResponseDto apiResponse = apiResponse = await apiClient.GetSession(new GetSessionRequestDto { SessionId = SessionId });
 
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     _session = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionResponseDto>(apiResponse.Result.ToString());
-                    StateHasChanged();
-                    if (_session.Status == 2)
+                    if (_session.Status != 1)
                     {
-                        break;
+                        _timer.Elapsed -= LoadSession;
                     }
-                    Thread.Sleep(5000);
+
+                    StateHasChanged();
                 }
                 else
                 {
                     viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
-                    break;
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
-        }
+            catch (Exception ex)
+            {
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+                _timer.Elapsed -= LoadSession;
+            }
+        });
+    }
+
+    public void Dispose()
+    {
+        _timer.Elapsed -= LoadSession;
+        _timer?.Dispose();
     }
 
     private async void DownloadOutputAsync()
     {
         try
         {
+            if (_session.AutoMls[_autoMlIndex].Status != 2)
+            {
+                viewNotifier.Show("Download unavailable", ViewNotifierType.Error, L["Operation Failed"]);
+                return;
+            }
             ApiResponseDto apiResponse = apiResponse = await apiClient.GetModel(new GetAutoMlModelRequestDto { SessionId = SessionId, AutoMl = _session.AutoMls[_autoMlIndex].Name });
 
             if (apiResponse.IsSuccessStatusCode)

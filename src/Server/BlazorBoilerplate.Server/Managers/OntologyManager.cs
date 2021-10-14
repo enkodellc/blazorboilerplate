@@ -10,6 +10,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
 {
+    /// <summary>
+    /// Manages all RPC calls which are connected to requests for knowledge from the Ontologie
+    /// </summary>
     public class OntologyManager : IOntologyManager
     {
         private readonly ApplicationDbContext _dbContext;
@@ -19,6 +22,11 @@ namespace BlazorBoilerplate.Server.Managers
             _dbContext = dbContext;
             _client = client;
         }
+        /// <summary>
+        /// Query for all supports tasks
+        /// </summary>
+        /// <param name="dataset"></param>
+        /// <returns></returns>
         public async Task<ApiResponse> GetTasks(GetTasksRequestDto dataset)
         {
             GetTasksRequest request = new GetTasksRequest();

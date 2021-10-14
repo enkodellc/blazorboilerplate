@@ -13,6 +13,9 @@ using Google.Protobuf;
 
 namespace BlazorBoilerplate.Server.Managers
 {
+    /// <summary>
+    /// Manages all RPC calls related to AutoMl process
+    /// </summary>
     public class AutoMlManager : IAutoMlManager
     {
         private readonly ApplicationDbContext _dbContext;
@@ -22,7 +25,11 @@ namespace BlazorBoilerplate.Server.Managers
             _dbContext = dbContext;
             _client = client;
         }
-
+        /// <summary>
+        /// Get the result model from a specific AutoML
+        /// </summary>
+        /// <param name="autoMl"></param>
+        /// <returns></returns>
         public async Task<ApiResponse> GetModel(GetAutoMlModelRequestDto autoMl)
         {
             GetAutoMlModelRespomseDto response = new GetAutoMlModelRespomseDto();
@@ -43,7 +50,11 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Start the OMAML process to search for a model
+        /// </summary>
+        /// <param name="autoMl"></param>
+        /// <returns></returns>
         public async Task<ApiResponse> Start(StartAutoMLRequestDto autoMl)
         {
             StartAutoMLResponseDto response = new StartAutoMLResponseDto();
@@ -71,6 +82,11 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
         }
+        /// <summary>
+        /// Convert AutoML task to enum equivalent
+        /// </summary>
+        /// <param name="autoMl"></param>
+        /// <returns></returns>
         private MachineLearningTask GetMachineLearningTask(StartAutoMLRequestDto autoMl)
         {
             switch (autoMl.DatasetType)
@@ -89,6 +105,12 @@ namespace BlazorBoilerplate.Server.Managers
                     return MachineLearningTask.Unknown;
             }
         }
+        /// <summary>
+        /// retrive the Tabular data configuration accordingly to correct template
+        /// Needed since a correct conversion requires explicit knowledge of the JSON structure
+        /// </summary>
+        /// <param name="autoMl"></param>
+        /// <returns></returns>
         private AutoMLConfigurationTabularData GetTabularDataConfiguration(StartAutoMLRequestDto autoMl)
         {
             switch (autoMl.DatasetType)

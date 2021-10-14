@@ -13,6 +13,17 @@ service ControllerService {
 	rpc StartAutoMLprocess(StartAutoMLprocessRequest) returns (StartAutoMLprocessResponse) {}
 }
 
+
+message GetAutoMlModelRequest {
+	string sessionId = 1;
+	string autoMl = 2;
+}
+
+message GetAutoMlModelResponse {
+	string name = 1;
+	bytes file = 2;
+}
+
 message GetDatasetsRequest {
 	DatasetType type = 1;
 }
@@ -89,23 +100,13 @@ message AutoMLStatus {
 	repeated string messages = 3;
 }
 
-message GetAutoMlModelRequest {
-	string sessionId = 1;
-	string autoMl = 2;
-}
-
-message GetAutoMlModelResponse {
-	string name = 1;
-	bytes file = 2;
-}
-
 message UploadDatasetFileRequest {
 	bytes content = 1;
 	string name = 2;
 }
 
 message UploadDatasetFileResponse {
-	uint32 returnCode = 1;
+	int32 returnCode = 1;
 }
 
 message StartAutoMLprocessRequest {
@@ -125,7 +126,7 @@ message StartAutoMLprocessResponse {
 
 enum DatasetType {
 	DATASET_TYPE_UNKNOWN = 0;
-	DATASET_TYPE_TABULARY_DATA = 1;
+	DATASET_TYPE_TABULAR_DATA = 1;
 }
 
 enum ControllerReturnCode {
@@ -145,4 +146,5 @@ enum SessionStatus {
 	SESSION_STATUS_UNKNOWN = 0;
 	SESSION_STATUS_BUSY = 1;
 	SESSION_STATUS_COMPLETED = 2;
+	SESSION_STATUS_FAILED = 3;
 }
