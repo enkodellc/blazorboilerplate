@@ -2,6 +2,10 @@
 
 Using the Blazorboilerplate template as a base. Documentation about the structure of the entire boilerplate can be found [HERE](https://blazor-boilerplate.readthedocs.io/en/latest/index.html).
 
+# OMA-ML section
+
+![](https://github.com/hochschule-darmstadt/MetaAutoML-Controller/blob/main/docs/images/frontend-overview.png)
+
 # Worked on sections
 
 Project sections which are relevant for OMA-ML
