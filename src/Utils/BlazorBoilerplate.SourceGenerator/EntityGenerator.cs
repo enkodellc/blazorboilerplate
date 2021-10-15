@@ -285,7 +285,7 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             var jsonString = File.ReadAllText(configFile.Path);
             var config = JsonConvert.DeserializeObject<EntityGeneratorConfig>(jsonString);
 
-            config.EntitiesPath = Path.Combine(Path.GetDirectoryName(configFile.Path), config.EntitiesPath);
+            config.EntitiesPath = CrossPlatform.PathCombine(Path.GetDirectoryName(configFile.Path), config.EntitiesPath.Split("\\".ToCharArray()));
 
             return config;
         }
