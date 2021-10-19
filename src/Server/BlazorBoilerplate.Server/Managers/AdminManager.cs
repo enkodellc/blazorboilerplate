@@ -6,6 +6,7 @@ using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using BlazorBoilerplate.Server.Aop;
+using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
@@ -134,7 +135,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (!result.Succeeded)
             {
-                var msg = string.Join(",", result.Errors.Select(i => i.Description));
+                var msg = result.GetErrors();
                 _logger.LogWarning($"Error while creating role {roleDto.Name}: {msg}");
                 return new ApiResponse(Status400BadRequest, msg);
             }

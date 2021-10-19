@@ -1,6 +1,7 @@
 using IdentityModel;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -31,6 +32,10 @@ namespace BlazorBoilerplate.Server.Extensions
                 return user.Claims.SingleOrDefault(c => c.Type == JwtClaimTypes.ClientId)?.Value;
             else
                 return null;
+        }
+        public static string GetErrors(this IdentityResult result)
+        {
+            return string.Join("\n", result.Errors.Select(i => i.Description));
         }
     }
 }
