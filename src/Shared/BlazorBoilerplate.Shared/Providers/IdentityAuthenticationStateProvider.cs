@@ -129,18 +129,13 @@ namespace BlazorBoilerplate.Shared.Providers
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var identity = new ClaimsIdentity();
-            try
+
+            var userViewModel = await GetUserViewModel();
+
+            if (userViewModel.IsAuthenticated)
             {
-                var userViewModel = await GetUserViewModel();
-                if (userViewModel.IsAuthenticated)
-                {
-                    var claims = new[] { new Claim(ClaimTypes.Name, userViewModel.UserName) }.Concat(userViewModel.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
-                    identity = new ClaimsIdentity(claims, "Server authentication", "name", "role");
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine("Request failed:" + ex.ToString());
+                var claims = new[] { new Claim(ClaimTypes.Name, userViewModel.UserName) }.Concat(userViewModel.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
+                identity = new ClaimsIdentity(claims, "Server authentication", "name", "role");
             }
 
             return new AuthenticationState(new ClaimsPrincipal(identity));
