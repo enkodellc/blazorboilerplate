@@ -109,7 +109,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
                     }
                 }
                 else
-                    viewNotifier.Show(response.Message, ViewNotifierType.Error, L["LoginFailed"]);
+                    viewNotifier.Show(response.Message, ViewNotifierType.Error);
             }
             catch (Exception ex)
             {
