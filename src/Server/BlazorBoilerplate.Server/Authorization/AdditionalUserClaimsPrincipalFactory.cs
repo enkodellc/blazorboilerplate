@@ -1,4 +1,6 @@
-﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
@@ -50,11 +52,11 @@ namespace BlazorBoilerplate.Server.Authorization
             //https://docs.microsoft.com/it-it/aspnet/core/security/authentication/mfa
             if (user.TwoFactorEnabled)
             {
-                identity.AddClaim(new Claim("amr", "mfa"));
+                identity.AddClaim(new Claim(JwtClaimTypes.AuthenticationMethod, ClaimValues.AuthenticationMethodMFA));
             }
             else
             {
-                identity.AddClaim(new Claim("amr", "pwd"));
+                identity.AddClaim(new Claim(JwtClaimTypes.AuthenticationMethod, ClaimValues.AuthenticationMethodPwd));
             }
 
             return principal;         

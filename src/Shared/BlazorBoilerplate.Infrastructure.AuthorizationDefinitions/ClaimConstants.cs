@@ -10,5 +10,8 @@
     {
         public static string trueString = "true";
         public static string falseString = "false";
+
+        public static string AuthenticationMethodMFA = "mfa";
+        public static string AuthenticationMethodPwd = "pwd";
     }
 }
