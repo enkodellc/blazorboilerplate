@@ -7,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +39,7 @@ namespace BlazorBoilerplate.Server.Services
                         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                         var emailManager = scope.ServiceProvider.GetRequiredService<IEmailManager>();
 
-                        foreach (var email in dbContext.QueuedEmails.Where(i => i.SentOn == null).OrderBy(i => i.CreatedOn))
+                        foreach (var email in dbContext.QueuedEmails.Where(i => i.SentOn == null).OrderBy(i => i.CreatedOn).ToArray())
                         {
                             var response = await emailManager.SendEmail(JsonConvert.DeserializeObject<EmailMessageDto>(email.Email));
 
