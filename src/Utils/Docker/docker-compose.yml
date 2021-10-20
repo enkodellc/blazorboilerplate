@@ -5,6 +5,7 @@ services:
     build:
       context: ../../../
       dockerfile: ./src/Utils/Docker/Dockerfile
+    #image: localhost:32000/blazorboilerplate:v1.1
     ports:
       - 53415:80
       - 53443:443

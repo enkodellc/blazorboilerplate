@@ -1,0 +1,167 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: blazorboilerplate
+  name: blazorboilerplate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: blazorboilerplate
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file docker-compose.yml convert
+        kompose.version: 1.24.0 (4a2a0458)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: blazorboilerplate
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              value: Admin123
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+              value: aspnetapp.pfx
+            - name: ASPNETCORE_URLS
+              value: https://+:443;http://+80
+            - name: BlazorBoilerplate__ApplicationUrl
+              value: blazorboilerplate
+            - name: BlazorBoilerplate__CertificatePassword
+              value: Admin123
+            - name: BlazorBoilerplate__IS4ApplicationUrl
+              value: blazorboilerplate
+            - name: BlazorBoilerplate__UseSqlServer
+              value: "true"
+            - name: ConnectionStrings__DefaultConnection
+              value: Server=sqlserver;Database=blazor_boilerplate;Trusted_Connection=True;MultipleActiveResultSets=true;User=sa;Password=yourVeryStrong(!)Password;Integrated Security=false
+            - name: Serilog__MinimumLevel__Default
+              value: Debug
+          image: localhost:32000/blazorboilerplate:v1.1
+          imagePullPolicy: "Always"
+          name: blazorboilerplate
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: blazorboilerplate
+  name: blazorboilerplate
+spec:
+  type: NodePort
+  ports:
+    - name: "53415"
+      port: 53415
+      targetPort: 80
+      nodePort: 30880
+    - name: "53443"
+      port: 53443
+      targetPort: 443
+      nodePort: 30883
+  selector:
+    io.kompose.service: blazorboilerplate
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: dbdata
+  name: dbdata
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: sqlserver
+  name: sqlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: sqlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file docker-compose.yml convert
+        kompose.version: 1.24.0 (4a2a0458)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: sqlserver
+    spec:
+      containers:
+        - env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              value: yourVeryStrong(!)Password
+          image: mcr.microsoft.com/mssql/server
+          name: sqlserver
+          ports:
+            - containerPort: 1433
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/opt/mssql
+              name: dbdata
+      restartPolicy: Always
+      volumes:
+        - name: dbdata
+          persistentVolumeClaim:
+            claimName: dbdata
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: sqlserver
+  name: sqlserver
+spec:
+  type: NodePort
+  ports:
+    - name: "1433"
+      port: 1433
+      targetPort: 1433
+      nodePort: 31433
+  selector:
+    io.kompose.service: sqlserver
+status:
+  loadBalancer: {}
