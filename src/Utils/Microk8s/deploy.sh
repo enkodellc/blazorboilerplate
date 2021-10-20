@@ -19,11 +19,8 @@ sudo snap install microk8s --channel=latest/edge --classic
 sudo usermod -a -G microk8s $USER
 sudo chown -f -R $USER ~/.kube
 
-group=microk8s
-
-if [ $(id -gn) != $group ]; then
-  exec sg $group "$0 $*"
-fi
+/usr/bin/newgrp microk8s <<EONG
+EONG
 
 microk8s enable registry
 microk8s enable dns
