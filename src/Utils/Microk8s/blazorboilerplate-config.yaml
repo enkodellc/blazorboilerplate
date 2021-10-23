@@ -1,0 +1,22 @@
+apiVersion: v1
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  ASPNETCORE_Kestrel__Certificates__Default__Password: Admin123
+  ASPNETCORE_Kestrel__Certificates__Default__Path: aspnetapp.pfx
+  ASPNETCORE_URLS: https://+:443;http://+80
+  BlazorBoilerplate__ApplicationUrl: blazorboilerplate
+  BlazorBoilerplate__CertificatePassword: Admin123
+  BlazorBoilerplate__IS4ApplicationUrl: blazorboilerplate
+  BlazorBoilerplate__UseSqlServer: "true"
+  ConnectionStrings__DefaultConnection: Server=sqlserver;Database=blazor_boilerplate;Trusted_Connection=True;MultipleActiveResultSets=true;User=sa;Password=yourVeryStrong(!)Password;Integrated Security=false
+  Serilog__MinimumLevel__Default: Debug
+  ACCEPT_EULA: "Y"
+  SA_PASSWORD: yourVeryStrong(!)Password
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2021-10-23T21:34:15Z"
+  name: blazorboilerplate-config
+  namespace: default
+  resourceVersion: "1393076"
+  selfLink: /api/v1/namespaces/default/configmaps/blazorboilerplate-config
+  uid: de0b04a2-4aed-4e28-ab50-c5fe9382682d

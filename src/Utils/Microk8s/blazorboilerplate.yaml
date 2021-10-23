@@ -26,26 +26,56 @@ spec:
     spec:
       containers:
         - env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: Development
-            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
-              value: Admin123
-            - name: ASPNETCORE_Kestrel__Certificates__Default__Path
-              value: aspnetapp.pfx
-            - name: ASPNETCORE_URLS
-              value: https://+:443;http://+80
-            - name: BlazorBoilerplate__ApplicationUrl
-              value: blazorboilerplate
-            - name: BlazorBoilerplate__CertificatePassword
-              value: Admin123
-            - name: BlazorBoilerplate__IS4ApplicationUrl
-              value: blazorboilerplate
-            - name: BlazorBoilerplate__UseSqlServer
-              value: "true"
-            - name: ConnectionStrings__DefaultConnection
-              value: Server=sqlserver;Database=blazor_boilerplate;Trusted_Connection=True;MultipleActiveResultSets=true;User=sa;Password=yourVeryStrong(!)Password;Integrated Security=false
-            - name: Serilog__MinimumLevel__Default
-              value: Debug
+          - name: ASPNETCORE_ENVIRONMENT
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: ASPNETCORE_ENVIRONMENT
+          - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: ASPNETCORE_Kestrel__Certificates__Default__Password
+          - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: ASPNETCORE_Kestrel__Certificates__Default__Path
+          - name: ASPNETCORE_URLS
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: ASPNETCORE_URLS
+          - name: BlazorBoilerplate__ApplicationUrl
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: BlazorBoilerplate__ApplicationUrl
+          - name: BlazorBoilerplate__CertificatePassword
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: BlazorBoilerplate__CertificatePassword
+          - name: BlazorBoilerplate__IS4ApplicationUrl
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: BlazorBoilerplate__IS4ApplicationUrl
+          - name: BlazorBoilerplate__UseSqlServer
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: BlazorBoilerplate__UseSqlServer
+          - name: ConnectionStrings__DefaultConnection
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: ConnectionStrings__DefaultConnection
+          - name: Serilog__MinimumLevel__Default
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: Serilog__MinimumLevel__Default
           image: localhost:32000/blazorboilerplate:v1.1
           imagePullPolicy: "Always"
           name: blazorboilerplate
@@ -125,10 +155,16 @@ spec:
     spec:
       containers:
         - env:
-            - name: ACCEPT_EULA
-              value: "Y"
-            - name: SA_PASSWORD
-              value: yourVeryStrong(!)Password
+          - name: ACCEPT_EULA
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: ACCEPT_EULA
+          - name: SA_PASSWORD
+            valueFrom:
+              configMapKeyRef: 
+                name: blazorboilerplate-config
+                key: SA_PASSWORD
           image: mcr.microsoft.com/mssql/server
           name: sqlserver
           ports:
