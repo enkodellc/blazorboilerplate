@@ -10,13 +10,7 @@ data:
   BlazorBoilerplate__UseSqlServer: "true"
   ConnectionStrings__DefaultConnection: Server=sqlserver;Database=blazor_boilerplate;Trusted_Connection=True;MultipleActiveResultSets=true;User=sa;Password=yourVeryStrong(!)Password;Integrated Security=false
   Serilog__MinimumLevel__Default: Debug
-  ACCEPT_EULA: "Y"
-  SA_PASSWORD: yourVeryStrong(!)Password
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2021-10-23T21:34:15Z"
   name: blazorboilerplate-config
   namespace: default
-  resourceVersion: "1393076"
-  selfLink: /api/v1/namespaces/default/configmaps/blazorboilerplate-config
-  uid: de0b04a2-4aed-4e28-ab50-c5fe9382682d
