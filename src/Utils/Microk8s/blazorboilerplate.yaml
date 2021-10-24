@@ -25,64 +25,16 @@ spec:
         io.kompose.service: blazorboilerplate
     spec:
       containers:
-        - env:
-          - name: ASPNETCORE_ENVIRONMENT
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: ASPNETCORE_ENVIRONMENT
-          - name: ASPNETCORE_Kestrel__Certificates__Default__Password
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: ASPNETCORE_Kestrel__Certificates__Default__Password
-          - name: ASPNETCORE_Kestrel__Certificates__Default__Path
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: ASPNETCORE_Kestrel__Certificates__Default__Path
-          - name: ASPNETCORE_URLS
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: ASPNETCORE_URLS
-          - name: BlazorBoilerplate__ApplicationUrl
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: BlazorBoilerplate__ApplicationUrl
-          - name: BlazorBoilerplate__CertificatePassword
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: BlazorBoilerplate__CertificatePassword
-          - name: BlazorBoilerplate__IS4ApplicationUrl
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: BlazorBoilerplate__IS4ApplicationUrl
-          - name: BlazorBoilerplate__UseSqlServer
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: BlazorBoilerplate__UseSqlServer
-          - name: ConnectionStrings__DefaultConnection
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: ConnectionStrings__DefaultConnection
-          - name: Serilog__MinimumLevel__Default
-            valueFrom:
-              configMapKeyRef: 
-                name: blazorboilerplate-config
-                key: Serilog__MinimumLevel__Default
-          image: localhost:32000/blazorboilerplate:v1.1
-          imagePullPolicy: "Always"
-          name: blazorboilerplate
-          ports:
-            - containerPort: 80
-            - containerPort: 443
-          resources: {}
+      - image: localhost:32000/blazorboilerplate:v1.0
+        imagePullPolicy: "Always"
+        name: blazorboilerplate
+        ports:
+          - containerPort: 80
+          - containerPort: 443
+        resources: {}
+        envFrom:
+          - configMapRef:
+              name: blazorboilerplate-config
       restartPolicy: Always
 status: {}
 ---
