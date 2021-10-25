@@ -25,6 +25,10 @@ Blazorboilerplate suggest to use Dto (Data Transfer Objects) for any object move
     - Dto: all Dto are saved here
     - Services: the ApiClient can be found here, requires expansion for new API calls
 
+# Dockerfiles location
+
+MetaAutoML-Frontend/src/Utils/Docker/
+
 # Important notes
 
 All pages require login using the default user, this is to provide a future login protection:
