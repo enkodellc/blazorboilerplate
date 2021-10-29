@@ -1,15 +1,28 @@
 syntax = "proto3";
 option csharp_namespace = "BlazorBoilerplate.Server";
 
+/*includes all gRPC functions available for the client frontend*/
 service ControllerService {
+
+	/*return the generated model as a .zip for one AutoML by its session id*/
 	rpc GetAutoMlModel(GetAutoMlModelRequest) returns (GetAutoMlModelResponse) {}
+	/*return a list of AutoML solutions compatible with the current configuration*/
+	rpc GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequest) returns (GetCompatibleAutoMlSolutionsResponse) {}
+	/*return all datasets of a specific type*/
 	rpc GetDatasets(GetDatasetsRequest) returns (GetDatasetsResponse) {}
+	/*return the content of a specific dataset. The result is a collection of TableColumns containing the datatype of a column, its name, and the first entries of the column*/
 	rpc GetDataset(GetDatasetRequest) returns (GetDatasetResponse) {}
+	/*return a list of all sessions the controller has knowledge of*/
 	rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
+	/*return the status of a specific session. The result is a session status and a list of the automl output and its status*/
 	rpc GetSessionStatus(GetSessionStatusRequest) returns (GetSessionStatusResponse) {}
+	/*return all the column names of a tabular dataset*/
 	rpc GetTabularDatasetColumnNames(GetTabularDatasetColumnNamesRequest) returns (GetTabularDatasetColumnNamesResponse) {}
+	/*return all supported AutoML tasks*/
 	rpc GetTasks(GetTasksRequest) returns (GetTasksResponse) {}
+	/*upload a new dataset file as bytes to the controller repository*/
 	rpc UploadDatasetFile(UploadDatasetFileRequest) returns (UploadDatasetFileResponse) {}
+	/*start a new AutoML run, using the provided configuration*/
 	rpc StartAutoMLprocess(StartAutoMLprocessRequest) returns (StartAutoMLprocessResponse) {}
 }
 
@@ -22,6 +35,14 @@ message GetAutoMlModelRequest {
 message GetAutoMlModelResponse {
 	string name = 1;
 	bytes file = 2;
+}
+
+message GetCompatibleAutoMlSolutionsRequest {
+	map<string, string> configuration = 1;
+}
+
+message GetCompatibleAutoMlSolutionsResponse {
+	repeated string AutoMlSolutions = 1;
 }
 
 message GetDatasetsRequest {
