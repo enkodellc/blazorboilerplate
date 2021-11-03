@@ -19,15 +19,15 @@
 
   <ItemGroup>
     <PackageReference Include="AspectInjector" Version="2.6.0" />
-    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.16" />
+    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.18" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.1.0" />
-    <PackageReference Include="Azure.Identity" Version="1.4.1" />
+    <PackageReference Include="Azure.Identity" Version="1.5.0" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
     <PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.2.0" />
     <PackageReference Include="Breeze.AspNetCore.NetCore" Version="5.0.5" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.3" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4" />
     <PackageReference Include="FormatWith" Version="3.0.1" />
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
