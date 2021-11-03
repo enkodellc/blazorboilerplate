@@ -1,0 +1,16 @@
+﻿@inject HttpClient Http
+<AuthorizeView>
+    <span>Current Tenant: @tenant.Name</span>
+</AuthorizeView>
+@code {
+    TenantDto tenant = new TenantDto();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var apiResponse = await Http.GetNewtonsoftJsonAsync<ApiResponseDto<TenantDto>>("api/admin/tenant");
+        if (apiResponse.StatusCode == Status200OK)
+        {
+            tenant = apiResponse.Result;
+        }
+    }
+}

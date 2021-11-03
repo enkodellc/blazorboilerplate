@@ -83,9 +83,10 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             return persistenceManager.GetEntities<LocalizationRecord>().AsNoTracking()
                 .Where(i => (contextId == null || i.ContextId == contextId) && (filter == null || i.MsgId.ToLower().Contains(filter.ToLower()) || i.Translation.ToLower().Contains(filter.ToLower())))
-                .OrderBy(i => i.ContextId).ThenBy(i => i.MsgId)
                 .Select(i => new LocalizationRecordKey() { MsgId = i.MsgId, ContextId = i.ContextId })
-                .Distinct(i => new LocalizationRecordKey() { MsgId = i.MsgId, ContextId = i.ContextId }).AsQueryable();
+                .Distinct(i => new LocalizationRecordKey() { MsgId = i.MsgId, ContextId = i.ContextId })
+                .OrderBy(i => i.ContextId).ThenBy(i => i.MsgId)
+                .AsQueryable();
         }
 
         [HttpPost]

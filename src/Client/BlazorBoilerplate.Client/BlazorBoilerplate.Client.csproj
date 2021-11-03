@@ -17,12 +17,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.UI.Base\BlazorBoilerplate.UI.Base.csproj" />
-    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Admin\BlazorBoilerplate.Theme.Material.Admin.csproj" />
-    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Material.Demo\BlazorBoilerplate.Theme.Material.Demo.csproj" />
+    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor.Admin\BlazorBoilerplate.Theme.MudBlazor.Admin.csproj" />
+    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor.Demo\BlazorBoilerplate.Theme.MudBlazor.Demo.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <BlazorWebAssemblyLazyLoad Include="BlazorBoilerplate.Theme.Material.Admin.dll" />
+    <BlazorWebAssemblyLazyLoad Include="BlazorBoilerplate.Theme.MudBlazor.Admin.dll" />
     <BlazorWebAssemblyLazyLoad Include="Blazored.TextEditor.dll" />
   </ItemGroup>
 

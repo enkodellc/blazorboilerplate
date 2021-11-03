@@ -1,0 +1,309 @@
+﻿@page "/todo_list"
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+@inject IStringLocalizer<Global> L
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Title="Todo List" />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>Todo List - CRUD</PageTitle>
+<p class="my-3">
+    This Todo List demonstrates fetching data from the server and CRUD for Blazor with <a href="http://breeze.github.io" target="_blank">Breeze</a> to make API design easy.
+    <br />Check out the <a href="https://github.com/enkodellc/blazorboilerplate" target="_blank">repository to view the source.</a>
+    <br />If you find this helpful please contribute or <DonateButton /> to support further development.
+    <br /><b>Delete is Protected to Admin users only</b>.
+</p>
+
+<DateTimeFilter Busy="@busy" Filter="@filter" />
+
+<MudGrid>
+    <MudItem xs="6" sm="3">
+        <MudSelect Disabled="@busy" @bind-Value="@filter.CreatedById" FullWidth="true" Label="Creators">
+            @foreach (var user in Creators)
+            {
+                <MudSelectItem Value="@user.Id">@user.DisplayValue</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="6" sm="3">
+        <MudSelect Disabled="@busy" @bind-Value="@filter.ModifiedById" FullWidth="true" Label="Editors">
+            @foreach (var user in Editors)
+            {
+                <MudSelectItem Value="@user.Id">@user.DisplayValue</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="6" sm="3">
+        <MudCheckBox @bind-Checked="@filter.IsCompleted" Size="Size.Large" TriState="true">Is Completed</MudCheckBox>
+    </MudItem>
+    <MudItem xs="6" sm="3">
+
+    </MudItem>
+</MudGrid>
+
+@{
+#if DEBUG
+    {
+        <div style="margin: 20px; font-weight: bold; font-size: 18px">Total item Count: @itemCount - Start index: @startIndex - Page size: @pageSize</div>
+    }
+#else
+{
+<div style="margin: 20px; font-weight: bold; font-size: 18px">Total item Count: @itemCount</div>
+    }
+#endif
+}
+
+<MudGrid Style="font-weight:bold;background-color:#ddd;margin:0" Class="align-center">
+    <MudItem xs="2">
+        <MudButton StartIcon="@Icons.Filled.PlaylistAdd" OnClick="@((e) => OpenDialog())" Variant="Variant.Filled" Color="Color.Primary">New Todo</MudButton>
+    </MudItem>
+    <MudItem xs="2">Todo</MudItem>
+    <MudItem xs="2">Completed</MudItem>
+    <MudItem xs="2">Created on</MudItem>
+    <MudItem xs="2">Created by</MudItem>
+    <MudItem xs="2">Modified by</MudItem>
+</MudGrid>
+<div style="height:360px;overflow-y:auto;overflow-x:hidden;width:calc(100% + 24px);">
+    <Virtualize @ref="asyncVirtualize" Context="item" ItemsProvider="LoadToDos" ItemSize="72" OverscanCount="20">
+        <ItemContent>
+            <MudGrid Class="align-center" @key="item.Id" Style="border-bottom: 1px solid #eee;">
+                <MudItem xs="2"><MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteDialog(item))"></MudIconButton></MudItem>
+                <MudItem xs="2">@item.Title</MudItem>
+                <MudItem xs="2"><MudCheckBox Checked="@item.IsCompleted" CheckedChanged="@((bool i) => Update(item))"></MudCheckBox></MudItem>
+                <MudItem xs="2">@item.CreatedOn</MudItem>
+                <MudItem xs="2">@item.CreatedBy?.UserName</MudItem>
+                <MudItem xs="2">@item.ModifiedBy?.UserName</MudItem>
+            </MudGrid>
+        </ItemContent>
+        <Placeholder>
+            <div style="border-bottom: 1px solid #eee;">
+                <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+            </div>
+        </Placeholder>
+    </Virtualize>
+</div>
+
+@if (currentTodo != null)
+{<MudDialog @bind-IsVisible="@dialogIsOpen">
+     <TitleContent>
+         <MudText Typo="Typo.h6">
+             <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
+             Create Todo
+         </MudText>
+     </TitleContent>
+        <DialogContent>
+            <EditForm id="newTodoForm" Model="@currentTodo" OnValidSubmit="@NewEntity">
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <MudTextField @bind-Value="@currentTodo.Title" Label="Title" AdornmentIcon="@Icons.Filled.Title" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                <MudCheckBox @bind-Checked="@currentTodo.IsCompleted" Label="Completed"></MudCheckBox>
+            </EditForm>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="@(e => { dialogIsOpen = false; })">@L["Cancel"]</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" form="newTodoForm" Variant="Variant.Filled" Color="Color.Primary">Create Todo</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+    <MudDialog @bind-IsVisible="@deleteDialogOpen" Style="z-index:100">
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />
+                @L["Confirm Delete"]
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            @L["Are you sure you want to delete {0}?", currentTodo.Title]
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="@(e => { deleteDialogOpen = false; })">@L["Cancel"]</MudButton>
+            <MudButton OnClick="@Delete" Variant="Variant.Filled" Color="Color.Error">@L["Delete"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+@code {
+    private ToDoFilter filter = new();
+    private Virtualize<Todo> asyncVirtualize;
+
+    private List<SelectItem<Guid?>> Creators = new();
+    private List<SelectItem<Guid?>> Editors = new();
+
+    private bool busy;
+    private bool deleteDialogOpen = false;
+    private bool dialogIsOpen = false;
+
+    private int itemCount;
+
+
+#if DEBUG
+    private int startIndex;
+    private int pageSize;
+#endif
+
+    private Todo currentTodo = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFilters();
+
+        filter.PropertyChanged += FilterPropertyChanged;
+    }
+
+    private async void FilterPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        busy = true;
+
+        await LoadFilters(e.PropertyName);
+
+        apiClient.ClearEntitiesCache();
+        await asyncVirtualize.RefreshDataAsync();
+
+        busy = false;
+
+        StateHasChanged();
+    }
+
+    private async Task LoadFilters(string propertyName = null)
+    {
+        var tasks = new Dictionary<string, Task>();
+
+        if (propertyName != nameof(filter.CreatedById))
+            tasks.Add("GetTodoCreators", apiClient.GetTodoCreators(filter));
+
+        if (propertyName != nameof(filter.ModifiedById))
+            tasks.Add("GetTodoEditors", apiClient.GetTodoEditors(filter));
+
+        await Task.WhenAll(tasks.Values.ToArray());
+
+        foreach (var task in tasks)
+        {
+            if (task.Key == "GetTodoCreators")
+            {
+                var t = (Task<QueryResult<ApplicationUser>>)task.Value;
+
+                if (!t.IsFaulted)
+                {
+                    Creators = t.Result.Select(i => new SelectItem<Guid?> { Id = i.Id, DisplayValue = i.UserName }).ToList();
+
+                    Creators.Insert(0, new SelectItem<Guid?> { Id = null, DisplayValue = "-" });
+                }
+                else
+                    viewNotifier.Show(t.Exception.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+            else if (task.Key == "GetTodoEditors")
+            {
+                var t = (Task<QueryResult<ApplicationUser>>)task.Value;
+
+                if (!t.IsFaulted)
+                {
+                    Editors = t.Result.Select(i => new SelectItem<Guid?> { Id = i.Id, DisplayValue = i.UserName }).ToList();
+
+                    Editors.Insert(0, new SelectItem<Guid?> { Id = null, DisplayValue = "-" });
+                }
+                else
+                    viewNotifier.Show(t.Exception.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+        }
+    }
+
+    private async ValueTask<ItemsProviderResult<Todo>> LoadToDos(ItemsProviderRequest request)
+    {
+#if DEBUG
+        startIndex = request.StartIndex;
+        pageSize = request.Count;
+#endif
+
+        var items = await apiClient.GetToDos(filter,
+        request.Count,
+        request.StartIndex);
+
+        itemCount = (int)items.InlineCount;
+
+        if (request.StartIndex == 0)
+            StateHasChanged();
+
+#if DEBUG
+        StateHasChanged();
+#endif
+
+        return new ItemsProviderResult<Todo>(items, itemCount);
+    }
+
+    public async void Update(Todo todo)
+    {
+        try
+        {
+            todo.IsCompleted = !todo.IsCompleted;
+
+            await apiClient.SaveChanges();
+
+            viewNotifier.Show($"{todo.Title} updated", ViewNotifierType.Success, L["Operation Successful"]);
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+
+    public async Task Delete()
+    {
+        try
+        {
+            apiClient.RemoveEntity(currentTodo);
+            await apiClient.SaveChanges();
+
+            apiClient.ClearEntitiesCache();
+            await asyncVirtualize.RefreshDataAsync();
+
+            viewNotifier.Show($"{currentTodo.Title} deleted", ViewNotifierType.Success, L["Operation Successful"]);
+        }
+        catch (Exception ex)
+        {
+            apiClient.CancelChanges();
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+
+        currentTodo = new Todo();
+
+        deleteDialogOpen = false;
+    }
+
+    public void OpenDialog()
+    {
+        currentTodo = new Todo();
+        dialogIsOpen = true;
+    }
+
+    public void OpenDeleteDialog(Todo todo)
+    {
+        currentTodo = todo;
+        deleteDialogOpen = true;
+    }
+
+    public async Task NewEntity()
+    {
+        dialogIsOpen = false;
+
+        try
+        {
+            apiClient.AddEntity(currentTodo);
+
+            await apiClient.SaveChanges();
+
+            apiClient.ClearEntitiesCache();
+            await asyncVirtualize.RefreshDataAsync();
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            apiClient.CancelChanges();
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+}

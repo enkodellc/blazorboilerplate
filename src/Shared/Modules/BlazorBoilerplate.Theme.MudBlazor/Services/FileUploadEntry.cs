@@ -1,0 +1,26 @@
+﻿using BlazorBoilerplate.Shared.Interfaces;
+using Microsoft.AspNetCore.Components.Forms;
+using System.IO;
+using System.Threading.Tasks;
+
+namespace BlazorBoilerplate.Theme.Material.Services
+{
+    public class FileUploadEntry : IFileUploadEntry
+    {
+        private readonly IBrowserFile fileUploadEntry;
+        public FileUploadEntry(IBrowserFile fileUploadEntry)
+        {
+            this.fileUploadEntry = fileUploadEntry;
+        }
+        public string Name => fileUploadEntry.Name;
+
+        public async Task WriteToStreamAsync(Stream stream)
+        {
+            var buffer = new byte[fileUploadEntry.Size];
+
+            await fileUploadEntry.OpenReadStream().ReadAsync(buffer);
+
+            await stream.WriteAsync(buffer);
+        }
+    }
+}

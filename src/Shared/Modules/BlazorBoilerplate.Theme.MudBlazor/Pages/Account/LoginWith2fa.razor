@@ -1,0 +1,72 @@
+@inherits LoginWith2faPage
+@page "/account/loginwith2fa"
+
+@layout LoginLayout
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <LoadingBackground>
+            <label>@L["Loading"]</label>
+        </LoadingBackground>
+    </Authorized>
+    <NotAuthorized>
+        @if (RedirectInProgress)
+        {
+            <LoadingBackground>
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        }
+        else
+        {
+
+            <EditForm Model="@loginViewModel" OnValidSubmit="@SubmitLogin">
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudIconButton Icon="@Icons.Filled.Home" Class="ml-auto" Link="/" />
+                            <div class="logo">
+                                <a href="/" title="@appState.AppName Home"><img src=@($"{Module.ContentPath}/images/logo.svg") style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
+                                <br />
+                            </div>
+                            <MudText Typo="Typo.h5" Align="Align.Center">@L["Log in"]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <FluentValidationValidator />
+                        <ValidationSummary />
+                        <MudTextField AutoFocus="true" @bind-Value="@loginViewModel.TwoFactorCode" Label=@L["Code"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+
+                        <MudCheckBox @bind-Checked="@loginViewModel.RememberMachine" Class="ml-n2">@L["RememberBrowser"]</MudCheckBox>
+                        
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@L["Login"]</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </EditForm>
+
+            <MudExpansionPanels Elevation="2" Class="my-4">
+                <MudExpansionPanel @bind-Expanded="@forgotAuthenticatorToggle">
+                    <TitleContent>
+                        <MudText Typo="Typo.h6">
+                            <MudIcon Icon="@Icons.Material.Filled.Lock" Class="mr-3 mb-n1" />
+                            @L["ForgotAuthenticator"]
+                        </MudText>
+                    </TitleContent>
+                    <ChildContent>
+                        <EditForm Model="@forgotAuthenticatorInputModel" OnValidSubmit="@ForgotAuthenticator">
+                            <FluentValidationValidator />
+                            <ValidationSummary />
+                            <MudTextField @bind-Value="@forgotAuthenticatorInputModel.RecoveryCode" Label=@L["RecoveryCode"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="my-4" Style="float: right">@L["Login"]</MudButton>
+                        </EditForm>
+                    </ChildContent>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        }
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+
+}

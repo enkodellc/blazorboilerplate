@@ -1,0 +1,26 @@
+﻿@inject NavigationManager navigationManager
+@inject IJSRuntime js
+
+<MudSelect Class="selectCulture" Value="CurrentCulture" ValueChanged="(string i) => OnCultureChanged(i)">
+    @foreach (var item in BlazorBoilerplate.Shared.Localizer.Settings.SupportedCulturesWithName)
+    {
+        <MudSelectItem Value="@item.Item2">@item.Item1</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    private string CurrentCulture { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CurrentCulture = CultureInfo.CurrentCulture.Name;
+
+        await base.OnInitializedAsync();
+    }
+
+    public void OnCultureChanged(string culture)
+    {
+        var uri = new Uri(navigationManager.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+        navigationManager.NavigateTo($"/Culture/SetCulture?culture={Uri.EscapeDataString(culture)}&redirectUri={Uri.EscapeDataString(uri)}", forceLoad: true);
+    }
+}

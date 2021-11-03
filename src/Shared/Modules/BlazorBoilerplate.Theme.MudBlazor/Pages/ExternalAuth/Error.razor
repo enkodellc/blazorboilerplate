@@ -1,0 +1,18 @@
+﻿@inherits ErrorPage
+@page "/externalauth/error/{ErrorEnumValue}"
+@page "/externalauth/error/{ErrorEnumValue}/{Description}"
+
+<MudCard>
+    <div class="logo" style="padding: 50px;">
+        <img src=@($"{Module.ContentPath}/images/logo.svg") style="width:100px;" /><br />BlazorBoilerplate
+        <br />
+        <h4>External authentication error</h4>
+        <h4>@errorText</h4>
+        <h5>@Description</h5>
+        <MudButton Link="/">Home</MudButton>
+    </div>
+</MudCard>
+
+@code {
+
+}

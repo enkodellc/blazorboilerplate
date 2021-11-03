@@ -1,0 +1,69 @@
+﻿@inherits ApiLogViewerPage
+@page "/admin/apilog"
+
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminapilog"] />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>Blazor / .NET Core Middleware Audit Log</PageTitle>
+<p class="my-4">
+    This is an example of the .NET Core Middleware that logs all API calls into the database. We filter out "api/account" calls for Login / Logout / GetUser to keep it somewhat reasonable.
+    This code can be easily modified to fit your needs. I think this is a great feature for you to track your user interactions and errors. For instance, if Bob logged in and filled out a form with
+    erroneous data, it will log the error as well as the request data. Then you could easily look through this audit log and recreate his actions. Afterwards, you could add additional validation or handle the
+    input in an appropriate manner.
+</p>
+
+@if (apiLogItems == null)
+{
+    <LoadingBackground>
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<ApiLogItem>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" @ref="table">
+        <HeaderContent>
+            <MudTh><div style="width:175px;"><MudFab Icon="@Icons.Filled.Refresh" OnClick="@(() => Reload())" DisableElevation="true" Size="Size.Small" /> Date / Time</div></MudTh>
+            <MudTh>Http Code</MudTh>
+            <MudTh>IP Address</MudTh>
+            <MudTh>Method</MudTh>
+            <MudTh>Response Time</MudTh>
+            <MudTh><div style="width:175px;">UserId</div></MudTh>
+            <MudTh>Path</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.RequestTime</MudTd>
+            <MudTd>@context.StatusCode</MudTd>
+            <MudTd><span style="font-size:small">@context.IPAddress</span></MudTd>
+            <MudTd>@context.Method</MudTd>
+            <MudTd>@context.ResponseMillis</MudTd>
+            <MudTd>@context.ApplicationUserId</MudTd>
+            <MudTd>@context.Path</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager RowsPerPageString=@L["Rows per page"] />
+        </PagerContent>
+    </MudTable>
+}
+
+@code {
+    private MudTable<ApiLogItem> table;
+
+    private async Task<TableData<ApiLogItem>> ServerReload(TableState state)
+    {
+        await OnPage(state.Page, state.PageSize);
+
+        return new TableData<ApiLogItem>() { TotalItems = totalItemsCount, Items = apiLogItems };
+    }
+
+    private void Reload()
+    {
+        table.ReloadServerData();
+    }
+}

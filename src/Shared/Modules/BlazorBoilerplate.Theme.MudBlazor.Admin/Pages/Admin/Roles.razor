@@ -1,0 +1,95 @@
+@inherits RolesPage
+@page "/admin/roles"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminroles"] />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>@L["Roles"]</PageTitle>
+
+@if (roles == null)
+{
+    <LoadingBackground>
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MudTable Items="@roles" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+        <HeaderContent>
+            <MudTh><MudButton StartIcon="@Icons.Filled.Add" OnClick="@(() => OpenUpsertRoleDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Role"]</MudButton></MudTh>
+            <MudTh>@L["Name"]</MudTh>
+            <MudTh>@L["Permissions"]</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="RoleRow">
+            <MudTd>
+                <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)" />
+                <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)" />
+            </MudTd>
+            <MudTd><div style="width:130px;">@RoleRow.Name</div></MudTd>
+            <MudTd>
+                <MudChipSet>
+                    @foreach (var permission in @RoleRow.Permissions)
+                        {
+                        <MudChip Text="@permission"></MudChip>
+                        }
+                </MudChipSet>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+<MudDialog @bind-IsVisible="@isUpsertRoleDialogOpen">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
+            @labelUpsertDialogTitle
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@currentRoleName" Disabled="@isCurrentRoleReadOnly" Label="Role Name" AdornmentIcon="@Icons.Filled.Add" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+        <MudTable Items="@permissionsSelections" Class="mt-4">
+            <HeaderContent>
+                <MudTh>@L["Permissions"]</MudTh>
+                <MudTh>@L["Allow"]</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.DisplayValue</MudTd>
+                <MudTd><MudCheckBox @bind-Checked="@context.Selected"></MudCheckBox></MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(e => { isUpsertRoleDialogOpen = false; })">@L["Cancel"]</MudButton>
+        <MudButton OnClick="@UpsertRole" Variant="Variant.Filled" Color="Color.Primary">@labelUpsertDialogOkButton</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-IsVisible="@isDeleteRoleDialogOpen" Style="z-index:100">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />
+            @L["Confirm Delete"]
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        @L["Are you sure you want to delete {0}?", currentRoleName]
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(e => { isDeleteRoleDialogOpen = false; })">@L["Cancel"]</MudButton>
+        <MudButton OnClick="@DeleteRoleAsync" Variant="Variant.Filled" Color="Color.Error">@L["Delete"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+}

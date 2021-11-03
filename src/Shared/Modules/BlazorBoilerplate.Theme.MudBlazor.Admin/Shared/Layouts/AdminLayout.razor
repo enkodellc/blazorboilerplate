@@ -1,0 +1,66 @@
+﻿@inherits RootLayout
+@inject NavigationManager navigationManager
+@inject AppState appState
+@inject IStringLocalizer<Global> L
+@attribute [Authorize(Policies.IsAdmin)]
+
+<CascadingValue Value="this">
+    <MudLayout>
+        <MudAppBar Elevation="2">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudSpacer />
+            <div class="d-none d-md-flex align-center">
+                <SelectCulture />
+            </div>
+        </MudAppBar>
+        <MudDrawer @bind-Open="@_navMenuOpened" Elevation="2">
+            <MudDrawerHeader>
+                <div class="drawer-logo">
+                    <img alt="@appState.AppName" class="logo-img" src="_content/BlazorBoilerplate.Theme.MudBlazor/images/logo-dark.svg" title="@appState.AppName">
+                    <a href="/">@appState.AppName</a>
+                </div>
+            </MudDrawerHeader>
+            <UserProfile />
+            <AdminNavMenu />
+        </MudDrawer>
+        <MudMainContent Style="min-height: 100vh; display: flex; flex-direction: column">
+            <MudContainer MaxWidth="MaxWidth.False" Style="flex: 1">
+                @TopSection
+                @Body
+            </MudContainer>
+            <footer class="page-footer">
+                <TenantInfo />
+            </footer>
+        </MudMainContent>
+        <MudScrollToTop TopOffset="400" Style="z-index:2000;">
+            <MudFab Icon="@Icons.Material.Filled.KeyboardArrowUp" Color="Color.Primary" />
+        </MudScrollToTop>
+    </MudLayout>
+</CascadingValue>
+
+@code {
+    bool _navMenuOpened = true;
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var profile = await appState.GetUserProfile();
+
+            if (profile == null)
+                profile = new BlazorBoilerplate.Shared.Dto.Db.UserProfile();
+
+            _navMenuOpened = profile.IsNavOpen;
+        }
+    }
+
+    private void DrawerToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+    }
+}

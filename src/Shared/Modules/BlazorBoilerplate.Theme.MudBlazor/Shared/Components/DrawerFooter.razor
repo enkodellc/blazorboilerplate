@@ -1,0 +1,10 @@
+﻿@inherits DynamicComponentContainer
+<footer class="drawer-footer">
+    @foreach (var component in components)
+    {
+        @CreateDynamicComponent(component);
+    }
+</footer>
+@code {
+
+}

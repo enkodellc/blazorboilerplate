@@ -1,0 +1,98 @@
+﻿@inherits MultiTenancyPage
+@page "/admin/multitenancy"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminmultitenancy"] />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>@L["Tenants"]</PageTitle>
+
+@if (tenants == null)
+{
+    <LoadingBackground>
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MudTable Items="@tenants" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+        <HeaderContent>
+            <MudTh><MudButton StartIcon="@Icons.Filled.Add" OnClick="@(() => OpenUpsertTenantDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Tenant"]</MudButton></MudTh>
+            <MudTh>Id</MudTh>
+            <MudTh>Identifier</MudTh>
+            <MudTh>@L["Name"]</MudTh>
+            <MudTh>ConnectionString</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="TenantRow">
+            <MudTd>
+                <div style="width:155px;">
+                    <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenUpsertTenantDialog(TenantRow))"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteTenantDialog(TenantRow))" Disabled="@(TenantRow.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)"></MudIconButton>
+                </div>
+            </MudTd>
+            <MudTd><div style="min-width:130px;">@TenantRow.Id</div></MudTd>
+            <MudTd>
+                <div style="min-width:130px; white-space:nowrap;">
+                    @TenantRow.Identifier
+                    @if (TenantRow.Id != BlazorBoilerplate.Constants.Settings.DefaultTenantId)
+                        {
+                        <MudIconButton Link="@GetTenantUri(TenantRow)" Target="_blank" Icon="@Icons.Filled.Link" />
+                        }
+                </div>
+            </MudTd>
+            <MudTd><div style="min-width:130px;">@TenantRow.Name</div></MudTd>
+            <MudTd><div style="min-width:130px;">@TenantRow.ConnectionString</div></MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+<MudDialog @bind-IsVisible="@isUpsertTenantDialogOpen">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
+            @labelUpsertDialogTitle
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <EditForm Model="@currentTenant">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <MudTextField @bind-Value="@currentTenant.Id" Disabled="@isCurrentTenantKeyReadOnly" Label="Id" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+            <MudTextField @bind-Value="@currentTenant.Identifier" Disabled="@(currentTenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)" Label="Identifier" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+            <MudTextField @bind-Value="@currentTenant.Name" Label=@L["Name"] AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+            <MudTextField @bind-Value="@currentTenant.ConnectionString" Label="ConnectionString" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Lines="5"></MudTextField>
+
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@CancelChanges">@L["Cancel"]</MudButton>
+        <MudButton OnClick="@UpsertTenant" Variant="Variant.Filled" Color="Color.Primary">@labelUpsertDialogOkButton</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-IsVisible="@isDeleteTenantDialogOpen" Style="z-index:100">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />
+            @L["Confirm Delete"]
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        Are you sure you want to delete the Tenant "@currentTenant.Name" ?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(e => { isDeleteTenantDialogOpen = false; })">@L["Cancel"]</MudButton>
+        <MudButton OnClick="@DeleteTenantAsync" Variant="Variant.Filled" Color="Color.Error">@L["Delete"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+}

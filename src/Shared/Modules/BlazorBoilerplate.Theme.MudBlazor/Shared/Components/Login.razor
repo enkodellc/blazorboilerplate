@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Components
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider authStateProvider
+@inject AppState appState
+@inject IStringLocalizer<Global> L
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <MudTooltip Text="@L["Logout"]" Placement="Placement.End">
+            <MudButton StartIcon="@Icons.Filled.ExitToApp" Color="Color.Inherit" OnClick="LogoutClick" Style="min-width: auto; padding-right:0">
+                @if (ShowLogOutLabel)
+                {@L["Logout"]}
+            </MudButton>
+        </MudTooltip>
+    </Authorized>
+    <NotAuthorized>
+        <MudTooltip Text="@L["Login"]" Placement="Placement.End">
+            <MudButton StartIcon="@Icons.Filled.AccountBox" Color="Color.Inherit" Link="@BlazorBoilerplate.Constants.Settings.LoginPath">
+                @if (ShowLogInLabel)
+                {@L["Login"]}
+            </MudButton>
+        </MudTooltip>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public bool ShowLogOutLabel { get; set; }
+
+    [Parameter]
+    public bool ShowLogInLabel { get; set; }
+
+    async Task LogoutClick()
+    {
+        appState.ClearUserProfile();
+        await ((IdentityAuthenticationStateProvider)authStateProvider).Logout();
+    }
+}

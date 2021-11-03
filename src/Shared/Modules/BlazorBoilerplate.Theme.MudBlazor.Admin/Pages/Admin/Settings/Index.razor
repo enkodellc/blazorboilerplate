@@ -1,0 +1,38 @@
+﻿@inherits IndexPage
+@page "/admin/settings"
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminsettings"] />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>@L["MainSettings"]</PageTitle>
+
+@if (settings == null)
+{
+    <LoadingBackground>
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <EditForm Model="@settings" class="mb-4">
+        <FluentValidationValidator />
+        <ValidationSummary />
+        <MudSelect @bind-Value="@settings[SettingKey.MainConfiguration_Runtime].Value" Label="@L["Blazor Runtime"]">
+            @foreach (var item in BlazorRuntimes)
+                {
+                <MudSelectItem Value="@item">@item</MudSelectItem>
+                }
+        </MudSelect>
+    </EditForm>
+
+    <MudButton OnClick="@(()=>apiClient.CancelChanges())">@L["Cancel"]</MudButton>
+    <MudButton OnClick="@SaveChanges" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
+}
+
+@code {
+}

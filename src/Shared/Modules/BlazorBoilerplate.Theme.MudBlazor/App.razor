@@ -1,0 +1,68 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.WebAssembly.Services
+@inject LazyAssemblyLoader assemblyLoader
+@inject NavigationManager navigationManager
+@inject IStringLocalizer<Global> L
+
+
+<MudThemeProvider Theme="@mudTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<Router AppAssembly="typeof(App).Assembly" AdditionalAssemblies="ModuleProvider.AssembliesWithPages" OnNavigateAsync="@OnNavigateAsync">
+    @*see https://github.com/dotnet/aspnetcore/issues/25731
+            <Navigating>
+            <LoadingBackground>
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        </Navigating>*@
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
+            <Authorizing>
+                <AuthorizingInProgress />
+            </Authorizing>
+            <NotAuthorized>
+                @if (!context.User.Identity.IsAuthenticated)
+                {
+                    <RedirectToLogin />
+                }
+                else
+                {
+                    <UserNotAuthorized />
+                }
+            </NotAuthorized>
+        </AuthorizeRouteView>
+    </Found>
+    <NotFound>
+        <CascadingAuthenticationState>
+            <LayoutView Layout="typeof(MainLayout)">
+                <PageNotFound />
+            </LayoutView>
+        </CascadingAuthenticationState>
+    </NotFound>
+</Router>
+
+@code
+{
+    MudTheme mudTheme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            Primary = "#5D2E8F",
+            //Surface = "#f5f5f5",
+            AppbarBackground = "#5D2E8F",
+        }
+    };
+
+    private async Task OnNavigateAsync(NavigationContext args)
+    {
+        if (navigationManager.IsWebAssembly())
+            if (args.Path.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                var assemblies = await assemblyLoader.LoadAssembliesAsync(
+                    new List<string>() { "BlazorBoilerplate.Theme.MudBlazor.Admin.dll", "Blazored.TextEditor.dll" });
+
+                ModuleProvider.AddModules(assemblies);
+            }
+    }
+}

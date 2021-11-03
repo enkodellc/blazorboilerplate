@@ -1,0 +1,33 @@
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+<div class="jobs-container">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter]
+    public List<ReportPeriodDto> ReportPeriods { get; set; }
+
+    [Parameter] 
+    public RenderFragment ChildContent { get; set; }
+    
+    [Parameter]
+    public EventCallback<ReportPeriodDto> OnReportPeriodUpdated { get; set; }
+
+    public ReportPeriodDto Payload { get; set; }
+
+    public DateTime PivotDate = DateTime.MinValue;
+
+    public async Task UpdateReportPeriodAsync(bool isBenchmark, bool isComparison)
+    {
+        var task = ReportPeriods.SingleOrDefault(x => x.Id == Payload.Id);
+
+        if (task != null)
+        {
+            task.IsBenchmark = isBenchmark;
+            task.IsComparison = isComparison;
+            await OnReportPeriodUpdated.InvokeAsync(Payload);
+        }
+    }
+}

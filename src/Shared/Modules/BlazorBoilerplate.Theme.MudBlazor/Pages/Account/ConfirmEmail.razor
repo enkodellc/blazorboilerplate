@@ -1,0 +1,44 @@
+﻿@inherits ConfirmEmailPage
+@page "/account/confirmemail"
+@page "/account/confirmemail/{UserId}"
+
+@layout LoginLayout
+
+@if (string.IsNullOrEmpty(UserId))
+{
+
+    <EditForm Model="@confirmEmailViewModel" OnValidSubmit="@SendConfirmation">
+        <MudCard Elevation="2" Class="pa-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudIconButton Icon="@Icons.Filled.Home" Class="ml-auto" Link="/" />
+                    <div class="logo">
+                        <a href="/" title="@appState.AppName Home"><img src=@($"{Module.ContentPath}/images/logo.svg") style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
+                        <br />
+                    </div>
+                    <MudText Typo="Typo.h5" Align="Align.Center">@L["Confirm Email"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <MudTextField @bind-Value="@confirmEmailViewModel.UserId" Label="UserId" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                <MudTextField @bind-Value="@confirmEmailViewModel.Token" Label="Token" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>                
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Disabled="@disableConfirmButton" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@L["Send Confirmation"]</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+
+}
+else
+{
+    <LoadingBackground>
+        <label>@L["Email confirmation in progress"]</label>
+    </LoadingBackground>
+}
+
+@code {
+}

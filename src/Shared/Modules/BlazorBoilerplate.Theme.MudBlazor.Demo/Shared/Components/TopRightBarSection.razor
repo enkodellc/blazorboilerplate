@@ -1,0 +1,29 @@
+﻿@implements IDynamicComponent
+
+<div class="d-none d-md-flex align-center">
+    <DonateButton />
+    <MudTooltip Text="Github Repository">
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/enkodellc/blazorboilerplate" Target="_blank" />
+    </MudTooltip>
+    <MudTooltip Text="Admin">
+        <MudIconButton Icon="@Icons.Filled.Settings" Color="Color.Inherit" Link="/admin" />
+    </MudTooltip>
+    <SelectCulture />
+</div>
+<MudMenu Icon="@Icons.Filled.MoreVert" Color="Color.Inherit" Dense="true" Direction="Direction.Right" OffsetY="true" Class="d-md-none">
+    <div class="px-2">
+        <DonateButton />
+        <MudTooltip Text="Github Repository">
+            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/enkodellc/blazorboilerplate" Target="_blank" />
+        </MudTooltip>
+        <MudTooltip Text="Admin">
+            <MudIconButton Icon="@Icons.Filled.Settings" Color="Color.Inherit" Link="/admin" />
+        </MudTooltip>
+    </div>
+    <SelectCulture />
+</MudMenu>
+
+@code {
+    public int Order { get => 1; }
+    public string IntoComponent { get => "TopRightBarSection"; }
+}

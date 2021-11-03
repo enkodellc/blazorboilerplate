@@ -1,0 +1,11 @@
+﻿.drawer-profile {
+    clip-path: inset(0);
+    padding: 16px;
+    border-bottom: solid 1px #777;
+    color: #fff;
+    font-size: 12px;
+}
+
+    .drawer-profile a, .drawer-profile ::deep.mud-icon-button-label {
+        color: #fff;
+    }

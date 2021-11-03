@@ -1,0 +1,109 @@
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+<div class="job-status">
+    <h3>
+        @if (IsBenchmark)
+        {
+            @("Benchmark Periods (" + ReportPeriods.Count() + ")");
+        }
+        else if (IsComparison)
+        {
+            @("Comparison Periods (" + ReportPeriods.Count() + ")");
+        }
+        else
+        {
+            @("Report Periods (" + ReportPeriods.Count() + ")");
+        }
+    </h3>
+
+    <ul class="dropzone @dropClass" ondragover="event.preventDefault();"
+        @ondrop="HandleDrop"
+        @ondragenter="HandleDragEnter"
+        @ondragleave="HandleDragLeave">
+
+        @foreach (var reportPeriod in ReportPeriods)
+        {
+            <ReportPeriod ReportPeriodDto="reportPeriod" />
+        }
+    </ul>
+</div>
+
+@code {
+
+    [CascadingParameter] ReportPeriodsContainer Container { get; set; }
+    [Parameter] public bool IsBenchmark { get; set; }
+    [Parameter] public bool IsComparison { get; set; }
+
+    List<ReportPeriodDto> ReportPeriods = new List<ReportPeriodDto>();
+    string dropClass = "";
+
+    protected override void OnParametersSet()
+    {
+        ReportPeriods.Clear();
+        ReportPeriods.AddRange(Container.ReportPeriods.Where(x => x.IsBenchmark == IsBenchmark && x.IsComparison == IsComparison));
+        UpdatePivotDate();
+    }
+
+    private void HandleDragEnter()
+    {
+        if (IsBenchmark == Container.Payload.IsBenchmark && IsComparison == Container.Payload.IsComparison) return;
+
+
+        if (Container.PivotDate == DateTime.MinValue)
+        {
+            dropClass = "can-drop";
+        }
+        else if (IsBenchmark && Container.Payload.StartDate.AddDays(-1) > Container.PivotDate)
+        {
+            dropClass = "no-drop";
+        }
+        else if (IsComparison && Container.Payload.EndDate.AddDays(1) < Container.PivotDate)
+        {
+            dropClass = "no-drop";
+        }
+        else
+        {
+            dropClass = "can-drop";
+        }
+    }
+
+    private void HandleDragLeave()
+    {
+        dropClass = "";
+    }
+
+    private async Task HandleDrop()
+    {
+        dropClass = "";
+        if (IsBenchmark == Container.Payload.IsBenchmark && IsComparison == Container.Payload.IsComparison) return;
+
+        if (Container.PivotDate != DateTime.MinValue &&
+            ( (IsBenchmark && Container.Payload.StartDate.AddDays(-1) > Container.PivotDate) || 
+              (IsComparison && Container.Payload.EndDate.AddDays(1) < Container.PivotDate) ))
+        {
+            return;
+        }
+
+        await Container.UpdateReportPeriodAsync(IsBenchmark, IsComparison);
+        UpdatePivotDate();
+    }
+
+    protected void UpdatePivotDate()
+    {
+        if (IsBenchmark)
+        {
+            var rps = ReportPeriods.Where(x => x.IsBenchmark == true).OrderBy(x => x.StartDate);
+            if (rps.Any())
+            {
+                Container.PivotDate = rps.First().EndDate;
+            }
+        }
+        else if (IsComparison)
+        {
+            var rps = ReportPeriods.Where(x => x.IsComparison == true).OrderBy(x => x.StartDate);
+            if (rps.Any())
+            {
+                Container.PivotDate = rps.First().StartDate;
+            }
+        }
+    }
+}
