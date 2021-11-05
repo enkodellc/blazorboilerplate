@@ -39,5 +39,7 @@ namespace BlazorBoilerplate.Shared.Interfaces
         Task<ApiResponseDto> UploadDataset(FileUploadRequestDto file);
         Task<ApiResponseDto> GetSessions(GetSessionsRequestDto sessions);
         Task<ApiResponseDto> GetSession(GetSessionRequestDto sessions);
+
+        Task<ApiResponseDto> GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequestDto request);
     }
 }

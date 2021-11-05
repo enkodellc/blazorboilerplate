@@ -31,6 +31,15 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpPost]
         [ProducesResponseType(Status200OK)]
         [ProducesResponseType(Status400BadRequest)]
+        [ProducesResponseType(Status404NotFound)]   
+        public async Task<ApiResponse> GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequestDto request)
+            => ModelState.IsValid ?
+                await _ontologyManager.GetCompatibleAutoMlSolutions(request) :
+                new ApiResponse(Status400BadRequest, L["InvalidData"]);
+
+        [HttpPost]
+        [ProducesResponseType(Status200OK)]
+        [ProducesResponseType(Status400BadRequest)]
         [ProducesResponseType(Status404NotFound)]
         public async Task<ApiResponse> GetTasks(GetTasksRequestDto dataset)
             => ModelState.IsValid ?

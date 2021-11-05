@@ -22,6 +22,26 @@ namespace BlazorBoilerplate.Server.Managers
             _dbContext = dbContext;
             _client = client;
         }
+
+        public async Task<ApiResponse> GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequestDto request)
+        {
+            //why here is not dto ?
+            GetCompatibleAutoMlSolutionsRequest requestGrpc = new GetCompatibleAutoMlSolutionsRequest();
+            GetCompatibleAutoMlSolutionsResponseDto response = new GetCompatibleAutoMlSolutionsResponseDto();
+            try
+            {
+                requestGrpc.Configuration.Add(request.Configuration);
+                var reply = _client.GetCompatibleAutoMlSolutions(requestGrpc);
+                response.AutoMlSolutions = reply.AutoMlSolutions.ToList();
+                return new ApiResponse(Status200OK, null, response);
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse(Status404NotFound, ex.Message);
+            }
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Query for all supports tasks
         /// </summary>
