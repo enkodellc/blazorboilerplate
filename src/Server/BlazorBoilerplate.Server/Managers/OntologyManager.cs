@@ -39,7 +39,6 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
-            throw new NotImplementedException();
         }
 
         /// <summary>
