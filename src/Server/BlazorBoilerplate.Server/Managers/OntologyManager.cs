@@ -25,7 +25,7 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequestDto request)
         {
-            //why here is not dto ?
+            // call grpc method
             GetCompatibleAutoMlSolutionsRequest requestGrpc = new GetCompatibleAutoMlSolutionsRequest();
             GetCompatibleAutoMlSolutionsResponseDto response = new GetCompatibleAutoMlSolutionsResponseDto();
             try

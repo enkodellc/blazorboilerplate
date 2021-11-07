@@ -114,7 +114,7 @@ namespace BlazorBoilerplate.Shared.Services
 
         public async Task<ApiResponseDto> GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequestDto request)
         {
-            return await httpClient.PostJsonAsync<ApiResponseDto>("api/AutoMl/GetCompatibleAutoMlSolutions", request);
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Ontology/GetCompatibleAutoMlSolutions", request);
         }
 
 

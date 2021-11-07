@@ -21,10 +21,19 @@
                     }
                 }
             </MatChipSet>
+
             @if (_columnNames != null)
             {
                 <MatSelectItem Items="@_columnNames.ColumnNames" TValue="string" ValueChanged="@OnTargetChanged"></MatSelectItem>
             }
+            <MatChipSet Filter="true">
+                <MatChip Label="Wedges" IsCheckable="true"></MatChip>
+                <MatChip Label="Fries" IsCheckable="true"></MatChip>
+                <MatChip Label="Baby carrots" IsCheckable="true"></MatChip>
+                <MatChip Label="Roasted veggies" IsCheckable="true"></MatChip>
+                <MatChip Label="Salad" IsCheckable="true"></MatChip>
+                <MatChip Label="Cheese" IsCheckable="true"></MatChip>
+            </MatChipSet>
         </MatExpansionPanelDetails>
     </MatExpansionPanel>
     <MatExpansionPanel>
@@ -51,6 +60,7 @@
 
 @code {
     private GetTasksResponseDto _tasks;
+    private GetCompatibleAutoMlSolutionsResponseDto _compatibleAutoMl;
     private GetTabularDatasetColumnNamesResponseDto _columnNames;
     [Parameter]
     public StartAutoMLRequestDto AutoMLRequest { get; set; }
@@ -112,6 +122,22 @@
                 _columnNames = Newtonsoft.Json.JsonConvert.DeserializeObject<GetTabularDatasetColumnNamesResponseDto>(apiResponse.Result.ToString());
                 StateHasChanged();
                 viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+            _compatibleAutoMl = new GetCompatibleAutoMlSolutionsResponseDto();
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            dictionary.Add("task","classification");
+            GetCompatibleAutoMlSolutionsRequestDto compatibleAutoMlRequest = new GetCompatibleAutoMlSolutionsRequestDto { Configuration = dictionary };
+            ApiResponseDto apiResponse2 = await apiClient.GetCompatibleAutoMlSolutions(compatibleAutoMlRequest);
+
+            if (apiResponse2.IsSuccessStatusCode)
+            {
+                _compatibleAutoMl = Newtonsoft.Json.JsonConvert.DeserializeObject<GetCompatibleAutoMlSolutionsResponseDto>(apiResponse.Result.ToString());
+                StateHasChanged();
+                viewNotifier.Show(apiResponse2.Message, ViewNotifierType.Success, L["Operation Successful"]);
             }
             else
             {
