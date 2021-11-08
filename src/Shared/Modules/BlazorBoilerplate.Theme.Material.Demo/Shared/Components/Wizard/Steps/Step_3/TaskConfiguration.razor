@@ -13,13 +13,6 @@
         <MatExpansionPanelDetails>
             <p>Select the Machine Learning task AutoML should perform:</p>
             <MatChipSet Choice="true" SelectedChipChanged="@OnChipChanged">
-                @if (_tasks.Tasks != null)
-                {
-                    @foreach (var item in _tasks.Tasks)
-                    {
-                        <MatChip Label="@item"></MatChip>
-                    }
-                }
             </MatChipSet>
 
             @if (_columnNames != null)
@@ -43,13 +36,7 @@
         </MatExpansionPanelSummary>
         <MatExpansionPanelDetails>
             <MatChipSet Choice="true" SelectedChipChanged="@OnChipChanged">
-                @if (_tasks.Tasks != null)
-                {
-                    @foreach (var item in _tasks.Tasks)
-                    {
-                        <MatChip Label="@item"></MatChip>
-                    }
-                }
+
             </MatChipSet>
         </MatExpansionPanelDetails>
     </MatExpansionPanel>
@@ -59,7 +46,7 @@
 <h4>Optional</h4>
 
 @code {
-    private GetTasksResponseDto _tasks;
+    //private GetTasksResponseDto _tasks;
     private GetCompatibleAutoMlSolutionsResponseDto _compatibleAutoMl;
     private GetTabularDatasetColumnNamesResponseDto _columnNames;
     [Parameter]
@@ -101,22 +88,9 @@
     {
         try
         {
-            _tasks = new GetTasksResponseDto();
-            GetTasksRequestDto taskRequest = new GetTasksRequestDto { Dataset = AutoMLRequest.DatasetName };
-            ApiResponseDto apiResponse = await apiClient.GetTasks(taskRequest);
 
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                _tasks = Newtonsoft.Json.JsonConvert.DeserializeObject<GetTasksResponseDto>(apiResponse.Result.ToString());
-                StateHasChanged();
-                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
-            }
-            else
-            {
-                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
-            }
             GetTabularDatasetColumnNamesRequestDto columnRequest = new GetTabularDatasetColumnNamesRequestDto { DatasetName = AutoMLRequest.DatasetName };
-            apiResponse = await apiClient.GetTabularDatasetColumnNames(columnRequest);
+            ApiResponseDto apiResponse = await apiClient.GetTabularDatasetColumnNames(columnRequest);
             if (apiResponse.IsSuccessStatusCode)
             {
                 _columnNames = Newtonsoft.Json.JsonConvert.DeserializeObject<GetTabularDatasetColumnNamesResponseDto>(apiResponse.Result.ToString());
@@ -131,13 +105,13 @@
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
             dictionary.Add("task","classification");
             GetCompatibleAutoMlSolutionsRequestDto compatibleAutoMlRequest = new GetCompatibleAutoMlSolutionsRequestDto { Configuration = dictionary };
-            ApiResponseDto apiResponse2 = await apiClient.GetCompatibleAutoMlSolutions(compatibleAutoMlRequest);
+            apiResponse = await apiClient.GetCompatibleAutoMlSolutions(compatibleAutoMlRequest);
 
-            if (apiResponse2.IsSuccessStatusCode)
+            if (apiResponse.IsSuccessStatusCode)
             {
                 _compatibleAutoMl = Newtonsoft.Json.JsonConvert.DeserializeObject<GetCompatibleAutoMlSolutionsResponseDto>(apiResponse.Result.ToString());
                 StateHasChanged();
-                viewNotifier.Show(apiResponse2.Message, ViewNotifierType.Success, L["Operation Successful"]);
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
             }
             else
             {
