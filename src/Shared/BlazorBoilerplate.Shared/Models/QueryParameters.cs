@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BlazorBoilerplate.Shared.Models
 {
@@ -21,6 +22,16 @@ namespace BlazorBoilerplate.Shared.Models
             }
 
             return parameters;
+        }
+
+        public string ToQuery()
+        {
+            var queryOption = new List<string>();
+
+            foreach (var i in ToDictionary().Where(p => p.Value != null))
+                queryOption.Add($"{i.Key}={i.Value}");
+
+            return string.Join('&', queryOption);
         }
     }
 }
