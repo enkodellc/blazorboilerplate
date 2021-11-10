@@ -41,26 +41,20 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        /// <summary>
-        /// Query for all supports tasks
-        /// </summary>
-        /// <param name="dataset"></param>
-        /// <returns></returns>
-        public async Task<ApiResponse> GetTasks(GetTasksRequestDto dataset)
+        public async Task<ApiResponse> GetSupportedMlLibraries(GetSupportedMlLibrariesRequestDto task)
         {
-            GetTasksRequest request = new GetTasksRequest();
-            GetTasksResponseDto response = new GetTasksResponseDto();
+            // call grpc method
+            GetSupportedMlLibrariesRequest requestGrpc = new GetSupportedMlLibrariesRequest();
+            GetSupportedMlLibrariesResponseDto response = new GetSupportedMlLibrariesResponseDto();
             try
             {
-                request.DatasetName = dataset.Dataset;
-                var reply = _client.GetTasks(request);
-                response.Tasks = reply.Tasks.ToList();
+                requestGrpc.Task = task.Task;
+                var reply = _client.GetSupportedMlLibraries(requestGrpc);
+                response.MlLibraries = reply.MlLibraries.ToList();
                 return new ApiResponse(Status200OK, null, response);
-
             }
             catch (Exception ex)
             {
-
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
         }

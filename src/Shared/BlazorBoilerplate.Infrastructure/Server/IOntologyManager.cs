@@ -10,8 +10,8 @@ namespace BlazorBoilerplate.Infrastructure.Server
 {
     public interface IOntologyManager
     {
-        Task<ApiResponse> GetTasks(GetTasksRequestDto dataset);
 
         Task<ApiResponse> GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequestDto request);
+        Task<ApiResponse> GetSupportedMlLibraries(GetSupportedMlLibrariesRequestDto task);
     }
 }
