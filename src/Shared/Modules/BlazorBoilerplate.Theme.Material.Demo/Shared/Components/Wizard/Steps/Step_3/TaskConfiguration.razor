@@ -13,7 +13,7 @@
         <MatExpansionPanelDetails>
             <p>Select the Machine Learning task AutoML should perform:</p>
             <MatChipSet Filter="true" SelectedChipChanged="@OnChipChanged">
-                @if (_compatibleAutoMl != null)
+                @if (_compatibleAutoMl.AutoMlSolutions.Count != 0)
                 {
                     @foreach (var item in _compatibleAutoMl.AutoMlSolutions)
                     {
@@ -26,14 +26,6 @@
             {
                 <MatSelectItem Items="@_columnNames.ColumnNames" TValue="string" ValueChanged="@OnTargetChanged"></MatSelectItem>
             }
-            <MatChipSet Filter="true">
-                <MatChip Label="Wedges" IsCheckable="true"></MatChip>
-                <MatChip Label="Fries" IsCheckable="true"></MatChip>
-                <MatChip Label="Baby carrots" IsCheckable="true"></MatChip>
-                <MatChip Label="Roasted veggies" IsCheckable="true"></MatChip>
-                <MatChip Label="Salad" IsCheckable="true"></MatChip>
-                <MatChip Label="Cheese" IsCheckable="true"></MatChip>
-            </MatChipSet>
         </MatExpansionPanelDetails>
     </MatExpansionPanel>
     <MatExpansionPanel>
@@ -116,8 +108,9 @@
             }
             _compatibleAutoMl = new GetCompatibleAutoMlSolutionsResponseDto();
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
-            dictionary.Add("task","classification");
-            dictionary.Add("dummy", "regression");
+            // binary later change to tabular .
+            dictionary.Add("task", "binary classification");
+            dictionary.Add("model", "regression");
             GetCompatibleAutoMlSolutionsRequestDto compatibleAutoMlRequest = new GetCompatibleAutoMlSolutionsRequestDto { Configuration = dictionary };
             apiResponse = await apiClient.GetCompatibleAutoMlSolutions(compatibleAutoMlRequest);
 
