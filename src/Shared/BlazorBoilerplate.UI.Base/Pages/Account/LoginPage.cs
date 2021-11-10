@@ -98,7 +98,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
                             {
                                 var userProfile = await appState.GetUserProfile();
 
-                                navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                                navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/");
                             }
                             else
                                 navigateTo = ReturnUrl;
