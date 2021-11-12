@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="5.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
