@@ -9,8 +9,8 @@ using Breeze.AspNetCore;
 using Breeze.Persistence;
 using Breeze.Persistence.EFCore;
 using Breeze.Sharp.Core;
-using IdentityServer4.AccessTokenValidation;
 using Karambolo.PO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +37,7 @@ namespace BlazorBoilerplate.Server.Controllers
     public class LocalizationController : Controller
     {
         private const string AuthSchemes =
-            "Identity.Application" + "," + IdentityServerAuthenticationDefaults.AuthenticationScheme; //Cookie + Token authentication
+            "Identity.Application" + "," + JwtBearerDefaults.AuthenticationScheme; //Cookie + Token authentication
 
         private readonly LocalizationPersistenceManager persistenceManager;
         private readonly ILocalizationProvider localizationProvider;

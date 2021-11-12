@@ -1,10 +1,9 @@
 using AutoMapper;
 using Azure.Core;
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Azure.Security.KeyVault.Certificates;
+using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
-using static BlazorBoilerplate.Constants.PasswordPolicy;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Storage;
@@ -15,6 +14,7 @@ using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Server.Factories;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
+using BlazorBoilerplate.Server.Providers;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
@@ -28,7 +28,6 @@ using Breeze.AspNetCore;
 using Breeze.Core;
 using FluentValidation.AspNetCore;
 using IdentityServer4;
-using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -38,12 +37,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization; //ServerSideBlazor
+using Microsoft.AspNetCore.Components.WebAssembly.Services;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,11 +63,10 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using static BlazorBoilerplate.Constants.PasswordPolicy;
+using static IdentityModel.JwtClaimTypes;
 using static IdentityServer4.IdentityServerConstants;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using Microsoft.AspNetCore.Components.WebAssembly.Services;
-using BlazorBoilerplate.Server.Providers;
-using Microsoft.AspNetCore.SignalR;
 
 namespace BlazorBoilerplate.Server
 {
@@ -243,9 +243,9 @@ namespace BlazorBoilerplate.Server
                 if (Convert.ToBoolean(Configuration[$"{projectName}:UseLocalCertStore"]) == true)
                 {
                     var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
-                    
+
                     var storeLocation = StoreLocation.LocalMachine;
-                    
+
                     dynamic storeName = "WebHosting";
 
                     if (OperatingSystem.IsLinux())
@@ -295,16 +295,14 @@ namespace BlazorBoilerplate.Server
                 }
             }
 
-            var authBuilder = services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddIdentityServerAuthentication(options =>
+            var authBuilder = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
                 options.Authority = authAuthority;
-                options.SupportedTokens = SupportedTokens.Jwt;
                 options.RequireHttpsMetadata = _environment.IsProduction();
-                options.ApiName = IdentityServerConfig.LocalApiName;
+                options.Audience = IdentityServerConfig.LocalApiName;
+                options.TokenValidationParameters.ValidTypes = new[] { JwtTypes.AccessToken };
+
                 options.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
@@ -619,7 +617,7 @@ namespace BlazorBoilerplate.Server
                 var navigationManager = s.GetRequiredService<NavigationManager>();
                 var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
                 var cookies = httpContextAccessor.HttpContext.Request.Cookies;
-                var httpClientHandler = new HttpClientHandler(){ UseCookies = false };
+                var httpClientHandler = new HttpClientHandler() { UseCookies = false };
                 if (_environment.IsDevelopment())
                 {
                     // Return 'true' to allow certificates that are untrusted/invalid
