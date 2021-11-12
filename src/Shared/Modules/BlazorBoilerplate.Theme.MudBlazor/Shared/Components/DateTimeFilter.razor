@@ -1,8 +1,10 @@
 ﻿@inject IStringLocalizer<Global> L
+@using System.ComponentModel
+@implements IDisposable
 
-<MudGrid>
-    <MudItem xs="12" sm="6" Class="d-flex align-items-center">
-        <MudDatePicker Disabled="@Busy" @bind-Date="Filter.From" Label=@L["From"] Class="mr-2" @ref="_fromDatePicker">
+<MudGrid Spacing="0">
+    <MudItem xs="12" sm="6" Class="d-flex align-center justify-center mud-width-full px-8">
+        <MudDatePicker Disabled="@Busy" @bind-Date="fromDate" Label=@L["From"] Class="mr-2" @ref="_fromDatePicker">
             <PickerActions>
                 <MudButton Class="mr-auto align-self-start" OnClick="@(() => { _fromDatePicker.Clear(); _fromTimePicker.Clear(); })">@L["Cancel"]</MudButton>
                 <MudButton OnClick="@(() => _fromDatePicker.Close(false))">@L["Close"]</MudButton>
@@ -17,8 +19,8 @@
             </PickerActions>
         </MudTimePicker>
     </MudItem>
-    <MudItem xs="12" sm="6" Class="d-flex align-items-center">
-        <MudDatePicker Disabled="@Busy" @bind-Date="Filter.To" Label=@L["To"] Class="mr-2" @ref="_toDatePicker">
+    <MudItem xs="12" sm="6" Class="d-flex align-center justify-center mud-width-full px-8">
+        <MudDatePicker Disabled="@Busy" @bind-Date="toDate" Label=@L["To"] Class="mr-2" @ref="_toDatePicker">
             <PickerActions>
                 <MudButton Class="mr-auto align-self-start" OnClick="@(() => { _toDatePicker.Clear(); _toTimePicker.Clear(); })">@L["Cancel"]</MudButton>
                 <MudButton OnClick="@(() => _toDatePicker.Close(false))">@L["Close"]</MudButton>
@@ -44,8 +46,54 @@
 
     private MudDatePicker _fromDatePicker;
     private MudDatePicker _toDatePicker;
-    MudTimePicker _fromTimePicker;
-    MudTimePicker _toTimePicker;
+    private MudTimePicker _fromTimePicker;
+    private MudTimePicker _toTimePicker;
+
+    private DateTime? _fromDate;
+    private DateTime? fromDate
+    {
+        get => _fromDate;
+        set
+        {
+            var date = Filter.From ?? DateTime.MinValue;
+
+            Filter.PropertyChanged -= FilterPropertyChanged;
+
+            if (value != null)
+            {
+                Filter.From = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, date.Hour, date.Minute, 0);
+            }
+            else
+                Filter.From = null;
+
+            Filter.PropertyChanged += FilterPropertyChanged;
+
+            _fromDate = value;
+        }
+    }
+
+    private DateTime? _toDate;
+    private DateTime? toDate
+    {
+        get => _toDate;
+        set
+        {
+            var date = Filter.To ?? DateTime.MinValue;
+
+            Filter.PropertyChanged -= FilterPropertyChanged;
+
+            if (value != null)
+            {
+                Filter.To = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, date.Hour, date.Minute, 0).AddMinutes(1);
+            }
+            else
+                Filter.To = null;
+
+            Filter.PropertyChanged += FilterPropertyChanged;
+
+            _toDate = value;
+        }
+    }
 
     private TimeSpan? _fromTime;
     private TimeSpan? fromTime
@@ -57,12 +105,16 @@
             {
                 var date = Filter.From.Value;
 
+                Filter.PropertyChanged -= FilterPropertyChanged;
+
                 if (value != null)
                 {
                     Filter.From = new DateTime(date.Year, date.Month, date.Day, value.Value.Hours, value.Value.Minutes, 0);
                 }
                 else
                     Filter.From = new DateTime(date.Year, date.Month, date.Day);
+
+                Filter.PropertyChanged += FilterPropertyChanged;
 
                 _fromTime = value;
             }
@@ -81,12 +133,16 @@
             {
                 var date = Filter.To.Value;
 
+                Filter.PropertyChanged -= FilterPropertyChanged;
+
                 if (value != null)
                 {
                     Filter.To = new DateTime(date.Year, date.Month, date.Day, value.Value.Hours, value.Value.Minutes, 0).AddMinutes(1);
                 }
                 else
                     Filter.To = new DateTime(date.Year, date.Month, date.Day);
+
+                Filter.PropertyChanged += FilterPropertyChanged;
 
                 _toTime = value;
             }
@@ -95,4 +151,33 @@
         }
     }
 
+    protected override void OnInitialized()
+    {
+        Filter.PropertyChanged += FilterPropertyChanged;
+
+        fromDate = Filter.From;
+        fromTime = Filter.From?.TimeOfDay;
+
+        toDate = Filter.To;
+        toTime = Filter.To?.TimeOfDay;
+    }
+
+    private void FilterPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(Filter.From))
+        {
+            fromDate = Filter.From;
+            fromTime = Filter.From?.TimeOfDay;
+        }
+        else if (e.PropertyName == nameof(Filter.To))
+        {
+            toDate = Filter.To;
+            toTime = Filter.To?.TimeOfDay;
+        }
+    }
+
+    public void Dispose()
+    {
+        Filter.PropertyChanged -= FilterPropertyChanged;
+    }
 }
