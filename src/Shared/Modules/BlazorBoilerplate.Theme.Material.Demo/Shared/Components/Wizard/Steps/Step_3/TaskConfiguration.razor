@@ -135,7 +135,6 @@
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
             // binary later change to tabular .
             dictionary.Add("task", "tabular classification");
-            dictionary.Add("dummy", "regression");
             GetCompatibleAutoMlSolutionsRequestDto compatibleAutoMlRequest = new GetCompatibleAutoMlSolutionsRequestDto { Configuration = dictionary };
             apiResponse = await apiClient.GetCompatibleAutoMlSolutions(compatibleAutoMlRequest);
 
