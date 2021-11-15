@@ -13,17 +13,25 @@ namespace BlazorBoilerplate.Server.Extensions
         {
             var assemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
 
-            assemblyPath = Path.Combine(@$"{assemblyPath}","Themes/MudBlazor");
+            var assemblyThemePath = Path.Combine(@$"{assemblyPath}", "Themes/MudBlazor");
 
             List<Assembly> allAssemblies = new();
 
-            if (Directory.Exists(assemblyPath))
+            if (Directory.Exists(assemblyThemePath))
             {
-                foreach (var dll in Directory.GetFiles(assemblyPath, "*.dll"))
+                foreach (var dll in Directory.GetFiles(assemblyThemePath, "*.dll"))
                     allAssemblies.Add(AssemblyLoadContext.Default.LoadFromStream(new MemoryStream(File.ReadAllBytes(dll))));
-
-                ModuleProvider.Init(allAssemblies);
             }
+
+            var assemblyModulesPath = Path.Combine(@$"{assemblyPath}", "Modules");
+
+            if (Directory.Exists(assemblyModulesPath))
+            {
+                foreach (var dll in Directory.GetFiles(assemblyModulesPath, "*.dll"))
+                    allAssemblies.Add(AssemblyLoadContext.Default.LoadFromStream(new MemoryStream(File.ReadAllBytes(dll))));
+            }
+
+            ModuleProvider.Init(allAssemblies);
         }
 
         public static IServiceCollection AddModules(this IServiceCollection services)
