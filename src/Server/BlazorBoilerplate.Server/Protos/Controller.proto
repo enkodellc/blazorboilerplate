@@ -91,6 +91,7 @@ enum DataType {
 	DATATYPE_CATEGORY = 4;
 	DATATYPE_BOOLEAN = 5;
 	DATATYPE_DATETIME = 6;
+	DATATYPE_IGNORE = 7;
 }
 
 message GetTabularDatasetColumnNamesRequest {
@@ -145,10 +146,12 @@ message StartAutoMLprocessRequest {
 	string dataset = 1;
 	MachineLearningTask task = 2;
 	AutoMLConfigurationTabularData tabularConfig = 3;
+	int32 timeBudget = 4;
 }
 
 message AutoMLConfigurationTabularData {
 	string target = 1;
+	map<string, DataType> features = 2;
 }
 
 message StartAutoMLprocessResponse {
