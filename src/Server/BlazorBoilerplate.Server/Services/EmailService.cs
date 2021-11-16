@@ -61,7 +61,8 @@ namespace BlazorBoilerplate.Server.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"EmailService: ExecuteAsync {ex.GetBaseException()}");
+                if (ex is not OperationCanceledException)
+                    _logger.LogError($"EmailService: ExecuteAsync {ex.GetBaseException()}");
             }
         }
     }
