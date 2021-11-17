@@ -13,9 +13,8 @@ namespace BlazorBoilerplate.UI.Base.Shared.Components
         public RenderFragment ChildContent { get; set; }
 
         protected override void OnInitialized()
-        {
-            if (RootLayout != null) 
-                RootLayout.SetTopSection(this);
+        { 
+            RootLayout?.SetTopSection(this);
 
             base.OnInitialized();
         }
@@ -23,10 +22,10 @@ namespace BlazorBoilerplate.UI.Base.Shared.Components
         protected override bool ShouldRender()
         {
             var shouldRender = base.ShouldRender();
-            if (shouldRender && RootLayout != null)
-            {
-                RootLayout.Update();
-            }
+            
+            if (shouldRender)
+                RootLayout?.Update();
+            
             return base.ShouldRender();
         }
 
