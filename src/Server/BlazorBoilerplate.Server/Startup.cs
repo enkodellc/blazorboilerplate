@@ -538,6 +538,8 @@ namespace BlazorBoilerplate.Server
 
             services.AddServerSideBlazor().AddCircuitOptions(o =>
             {
+                o.DetailedErrors = Convert.ToBoolean(Configuration[$"{projectName}:DetailedErrors"] ?? bool.FalseString);
+
                 if (_environment.IsDevelopment())
                 {
                     o.DetailedErrors = true;
