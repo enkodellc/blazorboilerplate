@@ -7,8 +7,12 @@
     @L["AppNavHome"]
 </MudNavLink>
 
-<MudNavLink Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri" Icon="@Icons.Filled.ListAlt">
-    @L["TodoNav"]
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("todos-virtualtable").AbsoluteUri" Icon="@Icons.Filled.ListAlt">
+    @L["TodoNav"] Virtual Table
+</MudNavLink>
+
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("todos-paging").AbsoluteUri" Icon="@Icons.Filled.ListAlt">
+    @L["TodoNav"] Paging
 </MudNavLink>
 
 <MudNavGroup Title="@L["AppNavFeatures"]" Icon="@Icons.Filled.Stars">

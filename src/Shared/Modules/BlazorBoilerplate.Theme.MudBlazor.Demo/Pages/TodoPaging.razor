@@ -1,0 +1,72 @@
+﻿@inherits TodoPagingBasePage
+@page "/todos-paging"
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Title="Todo List" />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>Todo List - Server Side Filtering, Sorting and Pagination example</PageTitle>
+
+<DateTimeFilter Busy="isBusy" Filter="todoFilter" />
+
+<MudGrid Spacing="0" Class="my-4">
+    <MudItem xs="6" sm="3" Class="px-8">
+        <MudSelect Disabled="@isBusy" @bind-Value="@todoFilter.CreatedById" FullWidth="true" Label="Creators">
+            @foreach (var user in Creators)
+            {
+                <MudSelectItem Value="@user.Id">@user.DisplayValue</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="6" sm="3" Class="px-8">
+        <MudSelect Disabled="@isBusy" @bind-Value="@todoFilter.ModifiedById" FullWidth="true" Label="Editors">
+            @foreach (var user in Editors)
+            {
+                <MudSelectItem Value="@user.Id">@user.DisplayValue</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="6" sm="3" Class="px-8">
+        <MudCheckBox @bind-Checked="@todoFilter.IsCompleted" Size="Size.Large" TriState="true">Is Completed</MudCheckBox>
+    </MudItem>
+    <MudItem xs="6" sm="3" Class="px-8">
+
+    </MudItem>
+</MudGrid>
+
+<MudGrid Spacing="0" Class="my-4">
+    <MudItem xs="10" sm="4" Class="d-flex align-center justify-center mud-width-full px-8">
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder=@L["Search"] Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />
+    </MudItem>
+</MudGrid>
+
+<div class="d-flex flex-wrap mb-4 mx-4">
+    <MudFab Icon="@Icons.Filled.Refresh" OnClick="@(() => Reload())" Size="Size.Medium" Class="ma-2" />
+</div>
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<Todo>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Class="rounded-0 pa-2" Elevation="0"
+          Loading="@isBusy" LoadingProgressColor="Color.Info" @ref="table">
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="Title" T="Todo">@L["Name"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="IsCompleted" T="Todo">@L["Completed"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="CreatedOn" T="Todo">@L["CreatedOn"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="CreatedBy.UserName" T="Todo">@L["CreatedBy"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="ModifiedBy.UserName" T="Todo">@L["ModifiedBy"]</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate Context="row">
+        <MudTd DataLabel="@L["Name"]">@row.Title</MudTd>
+        <MudTd DataLabel="@L["Completed"]"><MudSwitch Checked="@row.IsCompleted" Color="Color.Primary" Disabled="true" CheckedChanged="@((bool i) => Update(row))" /></MudTd>
+        <MudTd DataLabel="@L["CreatedOn"]">@row.CreatedOn</MudTd>
+        <MudTd DataLabel="@L["CreatedBy"]">@row.CreatedBy?.UserName</MudTd>
+        <MudTd DataLabel="@L["ModifiedBy"]">@row.ModifiedBy?.UserName</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager RowsPerPageString=@L["Rows per page"] />
+    </PagerContent>
+</MudTable>
+
+@code {
+
+}

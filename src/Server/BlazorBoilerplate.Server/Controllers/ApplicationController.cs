@@ -76,7 +76,8 @@ namespace BlazorBoilerplate.Server.Controllers
                 (filter.From == null || i.CreatedOn >= filter.From) && (filter.To == null || i.CreatedOn <= filter.To) &&
                 (filter.CreatedById == null || i.CreatedById == filter.CreatedById) &&
                 (filter.ModifiedById == null || i.ModifiedById == filter.ModifiedById) &&
-                (filter.IsCompleted == null || i.IsCompleted == filter.IsCompleted))
+                (filter.IsCompleted == null || i.IsCompleted == filter.IsCompleted) &&
+                (filter.Query == null || i.Title.ToLower().Contains(filter.Query.ToLower())))
                 .OrderByDescending(i => i.CreatedOn);
         }
 

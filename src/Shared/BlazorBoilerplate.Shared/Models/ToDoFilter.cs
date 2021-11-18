@@ -20,5 +20,8 @@ namespace BlazorBoilerplate.Shared.Models
 
         [AutoNotify]
         private bool? _isCompleted;
+
+        [AutoNotify]
+        private string _query;
     }
 }

@@ -140,7 +140,7 @@ namespace BlazorBoilerplate.Shared.Services
         {
             entity.EntityAspect.Delete();
         }
-        protected async Task<QueryResult<T>> GetItems<T>(string from,
+        public async Task<QueryResult<T>> GetItems<T>(string from,
             Expression<Func<T, bool>> predicate = null,
             Expression<Func<T, object>> orderBy = null,
             Expression<Func<T, object>> orderByDescending = null,
@@ -198,17 +198,16 @@ namespace BlazorBoilerplate.Shared.Services
             string filter = null,
             string orderBy = null,
             string orderByDescending = null,
-            int? take = null, int? skip = null)
+            int? take = null, int? skip = null,
+            Dictionary<string, object> parameters = null)
         {
             if (orderBy == null && orderByDescending == null)
                 orderBy = orderByDefaultField;
 
-            Dictionary<string, object> parameters = null;
-
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(filter) && parameters == null)
                 parameters = new() { { "filter", filter } };
 
-            return await GetItems<T>(from, null, GenerateExpression<T>(orderBy), GenerateExpression<T>(orderByDescending), take, skip, parameters);
+            return await GetItems(from, null, GenerateExpression<T>(orderBy), GenerateExpression<T>(orderByDescending), take, skip, parameters);
         }
     }
 }
