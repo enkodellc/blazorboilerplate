@@ -52,6 +52,11 @@
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.12" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.6" />
+    <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Infrastructure\BlazorBoilerplate.Infrastructure.csproj" />
