@@ -45,5 +45,14 @@ namespace BlazorBoilerplate.Server.Controllers
             => ModelState.IsValid ?
             await _ontologyManager.GetSupportedMlLibraries(task) :
             new ApiResponse(Status400BadRequest, L["InvalidData"]);
+
+        [HttpPost]
+        [ProducesResponseType(Status200OK)]
+        [ProducesResponseType(Status400BadRequest)]
+        [ProducesResponseType(Status404NotFound)]
+        public async Task<ApiResponse> GetDatasetCompatibleTasks(GetDatasetCompatibleTasksRequestDto datasetName)
+            => ModelState.IsValid ?
+            await _ontologyManager.GetDatasetCompatibleTasks(datasetName) :
+            new ApiResponse(Status400BadRequest, L["InvalidData"]);
     }
 }

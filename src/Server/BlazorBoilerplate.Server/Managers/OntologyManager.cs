@@ -58,5 +58,22 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
         }
+        public async Task<ApiResponse> GetDatasetCompatibleTasks(GetDatasetCompatibleTasksRequestDto datasetName)
+        {
+            // call grpc method
+            GetDatasetCompatibleTasksRequest requestGrpc = new GetDatasetCompatibleTasksRequest();
+            GetDatasetCompatibleTasksResponseDto response = new GetDatasetCompatibleTasksResponseDto();
+            try
+            {
+                requestGrpc.DatasetName = datasetName.DatasetName;
+                var reply = _client.GetDatasetCompatibleTasks(requestGrpc);
+                response.Tasks = reply.Tasks.ToList();
+                return new ApiResponse(Status200OK, null, response);
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse(Status404NotFound, ex.Message);
+            }
+        }
     }
 }

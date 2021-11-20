@@ -42,5 +42,6 @@ namespace BlazorBoilerplate.Shared.Interfaces
 
         Task<ApiResponseDto> GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequestDto request);
         Task<ApiResponseDto> GetSupportedMlLibraries(GetSupportedMlLibrariesRequestDto task);
+        Task<ApiResponseDto> GetDatasetCompatibleTasks(GetDatasetCompatibleTasksRequestDto datasetName);
     }
 }

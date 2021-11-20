@@ -121,5 +121,10 @@ namespace BlazorBoilerplate.Shared.Services
         {
             return await httpClient.PostJsonAsync<ApiResponseDto>("api/Ontology/GetSupportedMlLibraries", task);
         }
+
+        public async Task<ApiResponseDto> GetDatasetCompatibleTasks(GetDatasetCompatibleTasksRequestDto datasetName)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Ontology/GetDatasetCompatibleTasks", datasetName);
+        }
     }
 }
