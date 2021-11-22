@@ -14,6 +14,7 @@ namespace BlazorBoilerplate.Shared.Dto.AutoML
         public string Task { get; set; }
         public object Configuration { get; set; }
 
+        public int Time { get; set; }
         public StartAutoMLRequestDto()
         {
 

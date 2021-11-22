@@ -16,10 +16,12 @@ service ControllerService {
 	rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
 	/*return the status of a specific session. The result is a session status and a list of the automl output and its status*/
 	rpc GetSessionStatus(GetSessionStatusRequest) returns (GetSessionStatusResponse) {}
+	/*return all supported machine learning libraries for a specific task (by searching supported AutoML)*/
+	rpc GetSupportedMlLibraries(GetSupportedMlLibrariesRequest) returns (GetSupportedMlLibrariesResponse) {}
 	/*return all the column names of a tabular dataset*/
 	rpc GetTabularDatasetColumnNames(GetTabularDatasetColumnNamesRequest) returns (GetTabularDatasetColumnNamesResponse) {}
 	/*return all supported AutoML tasks*/
-	rpc GetTasks(GetTasksRequest) returns (GetTasksResponse) {}
+	rpc GetDatasetCompatibleTasks(GetDatasetCompatibleTasksRequest) returns (GetDatasetCompatibleTasksResponse) {}
 	/*upload a new dataset file as bytes to the controller repository*/
 	rpc UploadDatasetFile(UploadDatasetFileRequest) returns (UploadDatasetFileResponse) {}
 	/*start a new AutoML run, using the provided configuration*/
@@ -44,6 +46,15 @@ message GetCompatibleAutoMlSolutionsRequest {
 message GetCompatibleAutoMlSolutionsResponse {
 	repeated string AutoMlSolutions = 1;
 }
+
+message GetDatasetCompatibleTasksRequest {
+	string datasetName = 1;
+}
+
+message GetDatasetCompatibleTasksResponse {
+	repeated string tasks = 1;
+}
+
 
 message GetDatasetsRequest {
 	DatasetType type = 1;
@@ -80,6 +91,7 @@ enum DataType {
 	DATATYPE_CATEGORY = 4;
 	DATATYPE_BOOLEAN = 5;
 	DATATYPE_DATETIME = 6;
+	DATATYPE_IGNORE = 7;
 }
 
 message GetTabularDatasetColumnNamesRequest {
@@ -88,14 +100,6 @@ message GetTabularDatasetColumnNamesRequest {
 
 message GetTabularDatasetColumnNamesResponse {
 	repeated string columnNames = 1;
-}
-
-message GetTasksRequest {
-	string datasetName = 1;
-}
-
-message GetTasksResponse {
-	repeated string tasks = 1;
 }
 
 message GetSessionsRequest {
@@ -113,6 +117,14 @@ message GetSessionStatusRequest {
 message GetSessionStatusResponse {
 	SessionStatus status = 1;
 	repeated AutoMLStatus automls = 2;
+}
+
+message GetSupportedMlLibrariesRequest {
+	string task = 1;
+}
+
+message GetSupportedMlLibrariesResponse {
+	repeated string MlLibraries = 1;
 }
 
 message AutoMLStatus {
@@ -134,10 +146,12 @@ message StartAutoMLprocessRequest {
 	string dataset = 1;
 	MachineLearningTask task = 2;
 	AutoMLConfigurationTabularData tabularConfig = 3;
+	int32 timeBudget = 4;
 }
 
 message AutoMLConfigurationTabularData {
 	string target = 1;
+	map<string, DataType> features = 2;
 }
 
 message StartAutoMLprocessResponse {

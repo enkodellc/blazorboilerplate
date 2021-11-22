@@ -64,6 +64,7 @@ namespace BlazorBoilerplate.Server.Managers
                 getDatasetRequest.Dataset = autoMl.DatasetName;
                 getDatasetRequest.Task = GetMachineLearningTask(autoMl);
                 getDatasetRequest.TabularConfig = GetTabularDataConfiguration(autoMl);
+                getDatasetRequest.TimeBudget = autoMl.Time; /// maybe not good here, consider to refactoring
                 var reply = _client.StartAutoMLprocess(getDatasetRequest);
                 if (reply.Result == ControllerReturnCode.Success)
                 {
