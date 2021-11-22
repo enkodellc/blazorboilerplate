@@ -3,11 +3,9 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 
-<h3>DisplayTabularDataset</h3>
-
 @if (_datasets != null)
 {
-    <table class="table-responsive table-striped table-borderede">
+    <table class="table-responsive table-striped">
         <thead>
             <tr>
                 @foreach (var item in _datasets)
