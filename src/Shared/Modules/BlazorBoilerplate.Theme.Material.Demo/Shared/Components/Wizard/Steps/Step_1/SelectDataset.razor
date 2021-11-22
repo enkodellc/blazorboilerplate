@@ -3,14 +3,33 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 
-<MatTabGroup>
-    <MatTab Label="Tabular data">
-        <MatButton TrailingIcon="add" OnClick="@(e => { _isTabularUploadOpen = true; })">Upload</MatButton>
-        <DatasetTable DatasetResponse="_datasets" @bind-SelectedDataset="_selectedDataset"></DatasetTable>
-    </MatTab>
-    <MatTab Label="Image data">
-    </MatTab>
-</MatTabGroup>
+<div style="display:flex; flex-direction:row; align-items:center">
+    <MatSelect Label="Pick a data type" @bind-Value="dataTypeValue">
+        <MatOptionString Value="tab">Tabular data</MatOptionString>
+        <MatOptionString Value="image">Image data</MatOptionString>
+    </MatSelect>
+    <MatButton TrailingIcon="add" OnClick="@(e => { _isTabularUploadOpen = true; })">Upload</MatButton>
+</div>
+
+@*<MatChipSet Choice="true" @bind-SelectedChip="selectedChip">
+    <MatChip Id="tab" Label="Tabular data"></MatChip>
+    <MatChip Id="image" Label="Image Data"></MatChip>
+</MatChipSet>
+<MatButton TrailingIcon="add" OnClick="@(e => { _isTabularUploadOpen = true; })">Upload</MatButton>*@
+
+@if (dataTypeValue == "tab")
+{
+<DatasetTable DatasetResponse="_datasets" @bind-SelectedDataset="_selectedDataset"></DatasetTable>
+}
+
+@*<MatTabGroup>
+        <MatTab Label="Tabular data">
+            <MatButton TrailingIcon="add" OnClick="@(e => { _isTabularUploadOpen = true; })">Upload</MatButton>
+            <DatasetTable DatasetResponse="_datasets" @bind-SelectedDataset="_selectedDataset"></DatasetTable>
+        </MatTab>
+        <MatTab Label="Image data">
+        </MatTab>
+    </MatTabGroup>*@
 
 <UploadTabularDataset @bind-IsOpen="_isTabularUploadOpen" OnUploadCompletedCallback="LoadDatasets"></UploadTabularDataset>
 
@@ -37,6 +56,7 @@
 
     private List<GetDatasetsResponseDto> _datasets;
     private bool _isTabularUploadOpen = false;
+    private string dataTypeValue = "tab";
 
     protected override async Task OnInitializedAsync()
     {
