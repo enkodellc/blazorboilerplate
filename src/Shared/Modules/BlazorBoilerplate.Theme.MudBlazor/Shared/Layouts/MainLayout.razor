@@ -46,9 +46,7 @@
 
         if (user.Identity.IsAuthenticated)
         {
-            var profile = await appState.GetUserProfile();
-
-            _navMenuOpened = profile.IsNavOpen;
+            _navMenuOpened = appState.IsNavOpen;
         }
     }
 
