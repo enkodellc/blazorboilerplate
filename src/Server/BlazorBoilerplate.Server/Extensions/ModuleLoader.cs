@@ -11,7 +11,7 @@ namespace BlazorBoilerplate.Server.Extensions
     {
         static ModuleLoader()
         {
-            var assemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly()?.Location);
 
             var assemblyThemePath = Path.Combine(@$"{assemblyPath}", "Themes/MudBlazor");
 

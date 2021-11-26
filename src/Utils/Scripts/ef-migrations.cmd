@@ -1,5 +1,5 @@
 rem dotnet tool install -g dotnet-ef
-dotnet tool update -g dotnet-ef
+rem dotnet tool update -g dotnet-ef
 
 rem Microsoft.EntityFrameworkCore.Design package must be preset in the following project
 cd ..\..\Server\BlazorBoilerplate.Storage
