@@ -28,8 +28,18 @@
         }
     </div>
     <div style="display:flex; flex-direction:row; justify-content:left">
-        <div style="display: flex; align-items: center; padding-right: 1% ">Please select Time (Optional):</div>
-        <input type="number" @bind="@AutoMLRequest.Time" />
+        <div style="display: flex; align-items: center; padding-right: 1% ">Please select time limit (Optional):</div>
+        @if (AutoMLRequest.RuntimeConstraints != null)
+        {
+            <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Runtime_limit" />
+        }
+    </div>
+    <div style="display:flex; flex-direction:row; justify-content:left">
+        <div style="display: flex; align-items: center; padding-right: 1% ">Please select number of iterations (Optional):</div>
+        @if (AutoMLRequest.RuntimeConstraints != null)
+        {
+            <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Max_iter" />
+        }
     </div>
 </div>
 
@@ -78,23 +88,25 @@
     protected override async void OnInitialized()
     {
         await LoadData();
-        AutoMLRequest.Configuration = new AutoMLTabularDataConfiguration();
-        AutoMLRequest.Time = 5;
-        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures = new Dictionary<string, string>();
+
+        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target = new AutoMLTarget();
+        AutoMLRequest.RuntimeConstraints = new AutoMLRuntimeConstraints();
+        AutoMLRequest.RuntimeConstraints.Runtime_limit = 5;
+        AutoMLRequest.RuntimeConstraints.Max_iter = 5;
     }
     private async void OnChipMLLibChanged(MatChip newChip)
     {
-
-        //((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures.Add("MLLib",newChip.Label);
+        // TODO later, wait backend team
         UpdateParent();
     }
     private async void OnChipAutoMLSolutionChanged(MatChip newChip)
     {
-        //((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures.Add("AutoMLSolution", newChip.Label);
+        // TODO later, wait backend team
         UpdateParent();
     }
     private async void OnChipChanged(MatChip newChip)
     {
+        // TODO fix 2 times called bug (it effects perfomance)
         AutoMLRequest.Task = newChip.Label;
         try
         {
@@ -137,7 +149,15 @@
 
     private async void OnTargetChanged(string value)
     {
-        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target = value;
+        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target.Target = value;
+        foreach (KeyValuePair<string, Server.DataType> kvp in ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures)
+        {
+            if (kvp.Key == value)
+            {
+                ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target.Type = kvp.Value;
+                break;
+            }
+        }
         UpdateParent();
     }
 

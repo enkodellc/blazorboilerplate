@@ -146,12 +146,23 @@ message StartAutoMLprocessRequest {
 	string dataset = 1;
 	MachineLearningTask task = 2;
 	AutoMLConfigurationTabularData tabularConfig = 3;
-	int32 timeBudget = 4;
+	repeated string requiredAutoMLs = 4;
+	AutoMLRuntimeConstraints runtimeConstraints = 5;
+	map<string, string> fileConfiguration = 6;
 }
 
+message AutoMLRuntimeConstraints {
+    int32 runtime_limit = 1;
+    int32 max_iter = 2;
+}
 message AutoMLConfigurationTabularData {
-	string target = 1;
+	AutoMLTarget target = 1;
 	map<string, DataType> features = 2;
+}
+
+message AutoMLTarget {
+    string target = 1;
+    DataType type = 2;
 }
 
 message StartAutoMLprocessResponse {

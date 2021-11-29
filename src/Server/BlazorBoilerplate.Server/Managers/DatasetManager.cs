@@ -49,7 +49,7 @@ namespace BlazorBoilerplate.Server.Managers
                     response.Add(new GetDatasetResponseDto
                     {
                         Name = item.Name,
-                        Type = (ColumnType)item.Type,
+                        Type = (Server.DataType)item.Type,
                         FirstEntries = item.FistEntries.ToList()
                     });
                 }
