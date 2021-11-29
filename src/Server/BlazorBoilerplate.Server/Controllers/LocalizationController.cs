@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Infrastructure.Server.Models;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Shared.Dto;
@@ -109,6 +110,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policies.IsAdmin)]
         public ApiResponse ReloadTranslations()
         {
             localizationProvider.Init(persistenceManager.Context.LocalizationRecords.Include(i => i.PluralTranslations), persistenceManager.Context.PluralFormRules, true);
@@ -134,6 +136,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policies.IsAdmin)]
         [Produces(MediaTypeNames.Application.Zip)]
         public IActionResult Export()
         {
@@ -147,10 +150,29 @@ namespace BlazorBoilerplate.Server.Controllers
                 {
                     foreach (var textCatalog in localizationProvider.TextCatalogs)
                     {
-                        var zipEntry = archive.CreateEntry($"{textCatalog.Key}.po");
+                        var entries = Enumerable.AsEnumerable<IPOEntry>(textCatalog.Value);
 
-                        using var entryStream = zipEntry.Open();
-                        generator.Generate(entryStream, textCatalog.Value);
+                        var contextIds = entries.Select(i => i.Key.ContextId).Distinct();
+
+                        foreach (var contextId in contextIds)
+                        {
+                            var filteredCatalog = new POCatalog(entries.Where(entry => entry.Key.ContextId == contextId))
+                            {
+                                Encoding = textCatalog.Value.Encoding,
+                                PluralFormCount = textCatalog.Value.PluralFormCount,
+                                PluralFormSelector = textCatalog.Value.PluralFormSelector,
+                                Language = textCatalog.Value.Language,
+                                Headers = new Dictionary<string, string>
+                                {
+                                    { "X-Generator", "BlazorBoilerplate" },
+                                }
+                            };
+
+                            var zipEntry = archive.CreateEntry($"{contextId}-{textCatalog.Key}.po");
+
+                            using var entryStream = zipEntry.Open();
+                            generator.Generate(entryStream, filteredCatalog);
+                        }
                     }
                 }
 
@@ -161,6 +183,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policies.IsAdmin)]
         public async Task<ApiResponse> Upload(IFormFile uploadedFile)
         {
             if (uploadedFile == null || uploadedFile.Length == 0)
