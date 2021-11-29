@@ -58,14 +58,19 @@ namespace BlazorBoilerplate.Server.Managers
         public async Task<ApiResponse> Start(StartAutoMLRequestDto autoMl)
         {
             StartAutoMLResponseDto response = new StartAutoMLResponseDto();
-            StartAutoMLprocessRequest getDatasetRequest = new StartAutoMLprocessRequest();
+            StartAutoMLprocessRequest startAutoMLrequest = new StartAutoMLprocessRequest();
             try
             {
-                getDatasetRequest.Dataset = autoMl.DatasetName;
-                getDatasetRequest.Task = GetMachineLearningTask(autoMl);
-                getDatasetRequest.TabularConfig = GetTabularDataConfiguration(autoMl);
-                getDatasetRequest.TimeBudget = autoMl.Time; /// maybe not good here, consider to refactoring
-                var reply = _client.StartAutoMLprocess(getDatasetRequest);
+                startAutoMLrequest.Dataset = autoMl.DatasetName;
+                startAutoMLrequest.Task = GetMachineLearningTask(autoMl);
+                startAutoMLrequest.TabularConfig = GetTabularDataConfiguration(autoMl);
+                // TODO consider to refactor
+                startAutoMLrequest.RuntimeConstraints = new AutoMLRuntimeConstraints
+                {
+                    MaxIter = autoMl.RuntimeConstraints.Max_iter,
+                    RuntimeLimit = autoMl.RuntimeConstraints.Runtime_limit
+                };
+                var reply = _client.StartAutoMLprocess(startAutoMLrequest);
                 if (reply.Result == ControllerReturnCode.Success)
                 {
                     response.SessionId = reply.SessionId;
@@ -118,8 +123,10 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 case "TABULAR":
                     AutoMLConfigurationTabularData conf = new AutoMLConfigurationTabularData();
+                    conf.Target = new AutoMLTarget();
                     autoMl.Configuration = ((JObject)autoMl.Configuration).ToObject<AutoMLTabularDataConfiguration>();
-                    conf.Target = ((AutoMLTabularDataConfiguration)autoMl.Configuration).Target;
+                    conf.Target.Target = ((AutoMLTabularDataConfiguration)autoMl.Configuration).Target.Target;
+                    conf.Target.Type = ((AutoMLTabularDataConfiguration)autoMl.Configuration).Target.Type;
                     return conf;
                 default:
                     return null;

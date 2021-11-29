@@ -10,7 +10,7 @@ namespace BlazorBoilerplate.Shared.Dto.Dataset
     public class GetDatasetResponseDto
     {
         public string Name { get; set; }
-        public ColumnType Type { get; set; }
+        public Server.DataType Type { get; set; }
         public List<string> FirstEntries { get; set; }
     }
 }

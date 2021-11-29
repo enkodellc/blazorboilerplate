@@ -33,7 +33,16 @@
             }
 
             <p>Please select Time (Optinal):</p>
-            <input type="number" @bind="@AutoMLRequest.Time" />
+            @if (AutoMLRequest.RuntimeConstraints != null)
+            {
+                <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Runtime_limit" />
+            }
+            <p>Please select number of Iterations (Optinal):</p>
+            @if (AutoMLRequest.RuntimeConstraints != null)
+            {
+                <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Max_iter" />
+            }
+
         </MatExpansionPanelDetails>
     </MatExpansionPanel>
     <MatExpansionPanel>
@@ -89,23 +98,26 @@
     protected override async void OnInitialized()
     {
         await LoadData();
-        AutoMLRequest.Configuration = new AutoMLTabularDataConfiguration();
-        AutoMLRequest.Time = 5;
-        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures = new Dictionary<string, string>();
+
+        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target = new AutoMLTarget();
+        AutoMLRequest.RuntimeConstraints = new AutoMLRuntimeConstraints();
+        AutoMLRequest.RuntimeConstraints.Runtime_limit = 5;
+        AutoMLRequest.RuntimeConstraints.Max_iter = 5;
     }
     private async void OnChipMLLibChanged(MatChip newChip)
     {
-        
-        //((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures.Add("MLLib",newChip.Label);
+
+        // TODO later, wait backend team
         UpdateParent();
     }
     private async void OnChipAutoMLSolutionChanged(MatChip newChip)
     {
-        //((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures.Add("AutoMLSolution", newChip.Label);
+        // TODO later, wait backend team
         UpdateParent();
     }
     private async void OnChipChanged(MatChip newChip)
     {
+        // TODO fix 2 times called bug (it effects perfomance)
         AutoMLRequest.Task = newChip.Label;
         try {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
@@ -147,7 +159,15 @@
 
     private async void OnTargetChanged(string value)
     {
-        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target = value;
+        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target.Target = value;
+        foreach (KeyValuePair<string, Server.DataType> kvp in ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures)
+        {
+            if (kvp.Key == value)
+            {
+                ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target.Type = kvp.Value;
+                break;
+            }
+        }
         UpdateParent();
     }
 

@@ -8,8 +8,8 @@ namespace BlazorBoilerplate.Shared.Dto.AutoML
 {
     public class AutoMLTabularDataConfiguration : IAutoMLConfiguration
     {
-        public string Target { get; set; }
-        public Dictionary<string, string> Feartures { get; set; }
+        public AutoML.AutoMLTarget Target { get; set; }
+        public Dictionary<string,Server.DataType> Feartures { get; set; }
         public string GetSummary()
         {
             throw new NotImplementedException();

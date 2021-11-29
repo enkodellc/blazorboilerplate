@@ -90,7 +90,8 @@
         {
             return false;
         }
-        if (string.IsNullOrEmpty(((AutoMLTabularDataConfiguration)_automlRequest.Configuration).Target))
+        // TODO refactor
+        if (string.IsNullOrEmpty(((AutoMLTabularDataConfiguration)_automlRequest.Configuration).Target.Target))
         {
             return false;
         }
