@@ -25,6 +25,7 @@ else
               SelectedItemChanged="async (LocalizationRecordKey key) => await LoadLocalizationRecords((LocalizationRecordKey)key)" @ref="table">
         <ToolBarContent>
             <MudButton StartIcon="@Icons.Filled.Add" OnClick="@OpenNewKeyDialogOpen" Variant="Variant.Filled" Color="Color.Primary" Class="ma-2">@L["NewTranslation"]</MudButton>
+            <MudButton OnClick="@SaveChanges" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
             <MudButton OnClick="@ReloadTranslations" Class="ma-2">@L["ReloadTranslations"]</MudButton>
             <MudButton OnClick="@(e => { navigationManager.NavigateTo("/api/localization/export", true); })" Class="ma-2">@L["Export"]</MudButton>
             <InputFile id="fileInput" OnChange="UploadFiles" hidden multiple accept=".po" />
