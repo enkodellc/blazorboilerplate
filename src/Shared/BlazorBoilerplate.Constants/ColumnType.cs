@@ -14,6 +14,7 @@ namespace BlazorBoilerplate.Constants
         Float = 3,
         Category = 4,
         Boolean = 5,
-        Datetime = 6
+        Datetime = 6,
+        Ignore = 7
     }
 }
