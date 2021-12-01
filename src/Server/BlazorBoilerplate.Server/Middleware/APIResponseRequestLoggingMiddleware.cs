@@ -179,7 +179,7 @@ namespace BlazorBoilerplate.Server.Middleware
                     apiResponse.StatusCode = code;
 
                 if ((apiResponse.Result == null) && string.IsNullOrEmpty(apiResponse.Message))
-                    apiResponse = new ApiResponse(code, ResponseMessage.GetDescription(code), bodyContent, null);
+                    apiResponse = new ApiResponse(apiResponse.StatusCode, ResponseMessage.GetDescription(code), bodyContent, null);
 
             }
             else
