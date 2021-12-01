@@ -68,11 +68,11 @@
                 StateHasChanged();
                 // add feature for manipulating and steps3
                 AutoMLRequest.Configuration = new AutoMLTabularDataConfiguration();
-                ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures = new Dictionary<string, BlazorBoilerplate.Server.DataType>();
+                ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features = new Dictionary<string, BlazorBoilerplate.Server.DataType>();
                 for (int i = 0; i < (_datasets).Count; i++ )
                 {
-         
-                    ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures.Add(_datasets[i].Name,_datasets[i].Type );
+
+                    ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features.Add(_datasets[i].Name,_datasets[i].Type );
                 }
                 await CheckForNextStepCallback.InvokeAsync(); //We can just move to the next step if required
                 viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);

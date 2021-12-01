@@ -160,7 +160,7 @@
     private async void OnTargetChanged(string value)
     {
         ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target.Target = value;
-        foreach (KeyValuePair<string, Server.DataType> kvp in ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Feartures)
+        foreach (KeyValuePair<string, Server.DataType> kvp in ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features)
         {
             if (kvp.Key == value)
             {
