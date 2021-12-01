@@ -3,80 +3,70 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 
-<h3>Configuration</h3>
-
-<MatAccordion>
-    <MatExpansionPanel>
-        <MatExpansionPanelSummary>
-            <MatExpansionPanelHeader>Required</MatExpansionPanelHeader>
-        </MatExpansionPanelSummary>
-        <MatExpansionPanelDetails>
-            <p>Please select the Machine Learning task AutoML should perform:</p>
-            <MatChipSet Choice="true" SelectedChipChanged="@OnChipChanged">
-                @if (_tasks != null)
+<div id="required" style="display:flex; flex-direction:column; gap: 10px">
+    <div style="display:flex; flex-direction:row; justify-content:left">
+        <div style="display: flex; align-items: center; padding-right: 1%">Please select the Machine Learning task AutoML should perform:</div>
+        <MatChipSet Choice="true" SelectedChipChanged="@OnChipChanged">
+            @if (_tasks != null)
+            {
+                @if (_tasks.Tasks != null)
                 {
-                    @if (_tasks.Tasks != null)
-                    {
-                        @foreach (var item in _tasks.Tasks)
-                        {
-                            <MatChip Label="@item"></MatChip>
-                        }
-                    }
-
-                }
-            </MatChipSet>
-
-            <p>Please select Target column:</p>
-            @if (_columnNames != null)
-            {
-                <MatSelectItem Items="@_columnNames.ColumnNames" TValue="string" ValueChanged="@OnTargetChanged"></MatSelectItem>
-            }
-
-            <p>Please select Time (Optinal):</p>
-            @if (AutoMLRequest.RuntimeConstraints != null)
-            {
-                <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Runtime_limit" />
-            }
-            <p>Please select number of Iterations (Optinal):</p>
-            @if (AutoMLRequest.RuntimeConstraints != null)
-            {
-                <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Max_iter" />
-            }
-
-        </MatExpansionPanelDetails>
-    </MatExpansionPanel>
-    <MatExpansionPanel>
-        <MatExpansionPanelSummary>
-            <MatExpansionPanelHeader>Optional</MatExpansionPanelHeader>
-            <MatExpansionPanelSubHeader>For experts</MatExpansionPanelSubHeader>
-        </MatExpansionPanelSummary>
-        <MatExpansionPanelDetails>
-            <MatChipSet Choice="true" SelectedChipChanged="@OnChipAutoMLSolutionChanged">
-                @if (_compatibleAutoMl != null && _compatibleAutoMl.AutoMlSolutions.Count != 0)
-                {
-                    <p>Now, Please select ML solution :</p>
-                    @foreach (var item in _compatibleAutoMl.AutoMlSolutions)
+                    @foreach (var item in _tasks.Tasks)
                     {
                         <MatChip Label="@item"></MatChip>
                     }
                 }
-            </MatChipSet>
-            <MatChipSet Choice="true" SelectedChipChanged="@OnChipAutoMLSolutionChanged">
-                @if (_supportedMlLibraries != null && _supportedMlLibraries.MlLibraries.Count != 0)
-                {
-                    <p>Now, Please select ML lib :</p>
-                    @foreach (var item in _supportedMlLibraries.MlLibraries)
-                    {
-                        <MatChip Label="@item"></MatChip>
-                    }
-                }
-            </MatChipSet>
-        </MatExpansionPanelDetails>
-    </MatExpansionPanel>
-</MatAccordion>
 
+            }
+        </MatChipSet>
+    </div>
+    <div style="display:flex; flex-direction:row; justify-content:left">
+        <div style="display: flex; align-items: center; padding-right: 1% ">Please select Target column:</div>
+        @if (_columnNames != null)
+        {
+            <MatSelectItem Items="@_columnNames.ColumnNames" TValue="string" ValueChanged="@OnTargetChanged"></MatSelectItem>
+        }
+    </div>
+    <div style="display:flex; flex-direction:row; justify-content:left">
+        <div style="display: flex; align-items: center; padding-right: 1% ">Please select time limit (Optional):</div>
+        @if (AutoMLRequest.RuntimeConstraints != null)
+        {
+            <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Runtime_limit" />
+        }
+    </div>
+    <div style="display:flex; flex-direction:row; justify-content:left">
+        <div style="display: flex; align-items: center; padding-right: 1% ">Please select number of iterations (Optional):</div>
+        @if (AutoMLRequest.RuntimeConstraints != null)
+        {
+            <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Max_iter" />
+        }
+    </div>
+</div>
 
-<h4>Optional</h4>
+<MatDivider style="padding: 1%"></MatDivider>
+
+<h4 style="padding-top: 1%">Advanced</h4>
+
+<MatChipSet Choice="true" SelectedChipChanged="@OnChipAutoMLSolutionChanged">
+    @if (_compatibleAutoMl != null && _compatibleAutoMl.AutoMlSolutions.Count != 0)
+    {
+        <p>Please select ML Solution :</p>
+        @foreach (var item in _compatibleAutoMl.AutoMlSolutions)
+        {
+            <MatChip Label="@item"></MatChip>
+        }
+    }
+</MatChipSet>
+<MatChipSet Choice="true" SelectedChipChanged="@OnChipAutoMLSolutionChanged">
+    @if (_supportedMlLibraries != null && _supportedMlLibraries.MlLibraries.Count != 0)
+    {
+        <p>Please select ML Lib :</p>
+        @foreach (var item in _supportedMlLibraries.MlLibraries)
+        {
+            <MatChip Label="@item"></MatChip>
+        }
+    }
+</MatChipSet>
 
 @code {
     private GetDatasetCompatibleTasksResponseDto _tasks;
@@ -106,7 +96,6 @@
     }
     private async void OnChipMLLibChanged(MatChip newChip)
     {
-
         // TODO later, wait backend team
         UpdateParent();
     }
@@ -119,9 +108,10 @@
     {
         // TODO fix 2 times called bug (it effects perfomance)
         AutoMLRequest.Task = newChip.Label;
-        try {
+        try
+        {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
-            dictionary.Add("task",AutoMLRequest.Task);
+            dictionary.Add("task", AutoMLRequest.Task);
             GetCompatibleAutoMlSolutionsRequestDto compatibleAutoMlRequest = new GetCompatibleAutoMlSolutionsRequestDto { Configuration = dictionary };
             ApiResponseDto apiResponse = await apiClient.GetCompatibleAutoMlSolutions(compatibleAutoMlRequest);
 
