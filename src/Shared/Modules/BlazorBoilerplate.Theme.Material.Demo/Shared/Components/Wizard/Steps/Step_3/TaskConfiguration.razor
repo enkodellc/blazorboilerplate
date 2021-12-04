@@ -47,23 +47,23 @@
 
 <h4 style="padding-top: 1%">Advanced</h4>
 
-<MatChipSet Choice="true" SelectedChipChanged="@OnChipAutoMLSolutionChanged">
+<MatChipSet Filter="true" SelectedChipsChanged="OnChipAutoMLSolutionChanged">
     @if (_compatibleAutoMl != null && _compatibleAutoMl.AutoMlSolutions.Count != 0)
     {
         <p>Please select ML Solution :</p>
         @foreach (var item in _compatibleAutoMl.AutoMlSolutions)
         {
-            <MatChip Label="@item"></MatChip>
+            <MatChip Label="@item"  IsCheckable="true" ></MatChip>
         }
     }
 </MatChipSet>
-<MatChipSet Choice="true" SelectedChipChanged="@OnChipAutoMLSolutionChanged">
+<MatChipSet Filter="true" SelectedChipsChanged="OnChipMLLibChanged">
     @if (_supportedMlLibraries != null && _supportedMlLibraries.MlLibraries.Count != 0)
     {
         <p>Please select ML Lib :</p>
         @foreach (var item in _supportedMlLibraries.MlLibraries)
         {
-            <MatChip Label="@item"></MatChip>
+            <MatChip Label="@item" IsCheckable="true"></MatChip>
         }
     }
 </MatChipSet>
@@ -73,7 +73,7 @@
     private GetCompatibleAutoMlSolutionsResponseDto _compatibleAutoMl;
     private GetTabularDatasetColumnNamesResponseDto _columnNames;
     private GetSupportedMlLibrariesResponseDto _supportedMlLibraries;
-
+    private MatChip[] selectedChips = null;
     [Parameter]
     public StartAutoMLRequestDto AutoMLRequest { get; set; }
 
@@ -94,14 +94,19 @@
         AutoMLRequest.RuntimeConstraints.Runtime_limit = 5;
         AutoMLRequest.RuntimeConstraints.Max_iter = 5;
     }
-    private async void OnChipMLLibChanged(MatChip newChip)
+    private async void OnChipMLLibChanged(MatChip[] newChip)
     {
         // TODO later, wait backend team
         UpdateParent();
     }
-    private async void OnChipAutoMLSolutionChanged(MatChip newChip)
+    private async void OnChipAutoMLSolutionChanged(MatChip[] newChips)
     {
-        // TODO later, wait backend team
+        
+        AutoMLRequest.RequiredAutoMLs = new List<string>();
+        foreach (var chip in newChips)
+        {
+            AutoMLRequest.RequiredAutoMLs.Add(chip.Label);
+        }
         UpdateParent();
     }
     private async void OnChipChanged(MatChip newChip)
