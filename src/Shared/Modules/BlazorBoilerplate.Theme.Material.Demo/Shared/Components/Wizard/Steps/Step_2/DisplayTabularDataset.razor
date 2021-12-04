@@ -20,7 +20,8 @@
                 {
                     <td>
                         <MatSelect TValue="int" Value="@((int) col.Type)">
-                            @foreach (int val in Enum.GetValues(typeof(ColumnType)))
+                            <MatOption TValue="int" Value="@((int)col.Type)">@Enum.GetName(typeof(ColumnType), (int)col.Type)</MatOption>
+                            @foreach (int val in col.ConvertibleTypes)
                             {
                                 <MatOption TValue="int" Value="@((int) val)">@Enum.GetName(typeof(ColumnType), val)</MatOption>
                             }
