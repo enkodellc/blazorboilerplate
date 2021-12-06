@@ -31,14 +31,20 @@
         <div style="display: flex; align-items: center; padding-right: 1% ">Please select time limit (Optional):</div>
         @if (AutoMLRequest.RuntimeConstraints != null)
         {
-            <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Runtime_limit" />
+            <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Runtime_limit
+                                   DecimalPlaces=0>
+            </MatNumericUpDownField>
+            @*<input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Runtime_limit" />*@
         }
     </div>
     <div style="display:flex; flex-direction:row; justify-content:left">
         <div style="display: flex; align-items: center; padding-right: 1% ">Please select number of iterations (Optional):</div>
         @if (AutoMLRequest.RuntimeConstraints != null)
         {
-            <input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Max_iter" />
+            <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Max_iter
+                                   DecimalPlaces=0>
+            </MatNumericUpDownField>
+            @*<input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Max_iter" />*@
         }
     </div>
 </div>
