@@ -50,7 +50,7 @@ done
 echo "Start the deployment?" #causes a delay between delete and deploy
 select yn in "Yes" "No"; do
     case $yn in
-        Yes ) microk8s.kubectl apply -f blazorboilerplate.yaml; break;;
+        Yes ) microk8s.kubectl apply -f blazorboilerplate.yaml; microk8s.kubectl apply -f blazorboilerplate-config.yaml; microk8s.kubectl apply -f sqlserver-config.yaml; break;;
         No ) exit;;
     esac
 done
