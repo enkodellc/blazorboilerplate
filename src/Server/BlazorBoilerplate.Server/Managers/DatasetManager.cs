@@ -50,8 +50,9 @@ namespace BlazorBoilerplate.Server.Managers
                     {
                         Name = item.Name,
                         Type = (Server.DataType)item.Type,
-                        FirstEntries = item.FistEntries.ToList()
-                    });
+                        ConvertibleTypes = item.ConvertibleTypes.ToList(),
+                        FirstEntries = item.FirstEntries.ToList()
+                    }) ;
                 }
                 return new ApiResponse(Status200OK, null, response);
 
