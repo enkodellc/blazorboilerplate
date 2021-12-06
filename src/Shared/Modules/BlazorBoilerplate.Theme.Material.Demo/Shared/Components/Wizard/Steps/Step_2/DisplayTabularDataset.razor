@@ -3,8 +3,15 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 
+@{
+    // var visibleItems = GetVisibleItems();
+    // var renderedItems = GetRenderedItems(_datasets);
+    // var scrollResult = VirtualScrollHelper.GetResult(renderedItems, 52, 56, StickyHeader);
+}
+
 @if (_datasets != null)
 {
+    var renderedItems = GetRenderedItems(_datasets);
     <table class="table-responsive table-striped">
         <thead>
             <tr>
@@ -29,7 +36,7 @@
                     </td>
                 }
             </tr>
-            @for (int i = 0; i < _datasets[0].FirstEntries.Count; i++)
+            @for (int i = StartIndex; i < SizeOffset; i++)
             {
                 <tr>
                     @foreach (var column in _datasets)
@@ -42,6 +49,10 @@
     </table>
 }
 
+@if (Paginator && _datasets != null)
+{
+    <MatPaginator PageSizeOptions="@PageSizeOptions" PageSize="@PageSize" PageLabel="@PageLabel" Length="@_datasets[0].FirstEntries.Count" Page="@OnPageHandler"></MatPaginator>
+}
 
 
 
@@ -70,11 +81,12 @@
                 // add feature for manipulating and steps3
                 AutoMLRequest.Configuration = new AutoMLTabularDataConfiguration();
                 ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features = new Dictionary<string, BlazorBoilerplate.Server.DataType>();
-                for (int i = 0; i < (_datasets).Count; i++ )
+                for (int i = 0; i < (_datasets).Count; i++)
                 {
 
-                    ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features.Add(_datasets[i].Name,_datasets[i].Type );
+                    ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features.Add(_datasets[i].Name, _datasets[i].Type);
                 }
+                OnPageHandler(new MatPaginatorPageEvent { Length = _datasets[0].FirstEntries.Count, PageIndex = 0, PageSize = 10 }); 
                 await CheckForNextStepCallback.InvokeAsync(); //We can just move to the next step if required
                 viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
             }
@@ -87,5 +99,89 @@
         {
             viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
+    }
+
+    [Parameter]
+    public bool Paginator { get; set; } = true;
+
+    [Parameter]
+    public IReadOnlyList<MatPageSizeOption> PageSizeOptions { get; set; } =
+        BaseMatPaginator.DefaultPageSizeOptions;
+
+    [Parameter]
+    public int PageSize { get; set; } = 10;
+
+    [Parameter]
+    public int PageIndex { get; set; } = 0;
+
+    [Parameter]
+    public int StartIndex { get; set; }
+    [Parameter]
+    public int SizeOffset { get; set; }
+
+    [Parameter]
+    public string PageLabel { get; set; } = BaseMatPaginator.PageLabelDefault;
+
+    protected void OnPageHandler(MatPaginatorPageEvent e)
+    {
+        PageSize = e.PageSize;
+        PageIndex = e.PageIndex;
+
+        StartIndex = PageIndex * PageSize;
+        SizeOffset = StartIndex + PageSize;
+
+        if (PageSize > _datasets[0].FirstEntries.Count)
+        {
+            StartIndex = 0;
+            SizeOffset = _datasets[0].FirstEntries.Count;
+        } else if (SizeOffset > _datasets[0].FirstEntries.Count)
+        {
+            SizeOffset = _datasets[0].FirstEntries.Count;
+        }
+
+        this.StateHasChanged();
+    }
+
+    protected IEnumerable<GetDatasetResponseDto> GetRenderedItems(IEnumerable<GetDatasetResponseDto> visibleItems)
+    {
+        var e = visibleItems;
+
+        if (Paginator)
+        {
+            var pageSize = PageSize;
+            var pageIndex = PageIndex;
+            var skipItems = pageSize > 0 && pageIndex > 0 ? pageSize * pageIndex : 0;
+            var takeItems = pageSize > 0 ? pageSize : 0;
+
+
+            if (e is IQueryable<GetDatasetResponseDto> q)
+            {
+                if (skipItems > 0)
+                {
+                    q = q.Skip(skipItems);
+                }
+
+                if (takeItems > 0)
+                {
+                    q = q.Take(takeItems);
+                }
+
+                e = q.AsEnumerable();
+            }
+            else
+            {
+                if (skipItems > 0)
+                {
+                    e = e.Skip(skipItems);
+                }
+
+                if (takeItems > 0)
+                {
+                    e = e.Take(takeItems);
+                }
+            }
+        }
+
+        return e;
     }
 }
