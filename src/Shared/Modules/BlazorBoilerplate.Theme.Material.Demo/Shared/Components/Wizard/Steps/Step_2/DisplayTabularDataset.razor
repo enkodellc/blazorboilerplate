@@ -12,6 +12,7 @@
 @if (_datasets != null)
 {
     var renderedItems = GetRenderedItems(_datasets);
+    <button class="btn btn-success" @onclick="ChangeValue">Synchronize data types</button>
     <table class="table-responsive table-striped">
         <thead>
             <tr>
@@ -23,10 +24,10 @@
         </thead>
         <tbody>
             <tr>
-                @foreach (var col in _datasets)
+                @foreach (var (col, index) in _datasets.Select((v, i) => (v, i)))
                 {
                     <td>
-                        <MatSelect TValue="int" Value="@((int) col.Type)">
+                        <MatSelect TValue="int" @bind-Value="@(_dataTypeList[index])">
                             <MatOption TValue="int" Value="@((int)col.Type)">@Enum.GetName(typeof(ColumnType), (int)col.Type)</MatOption>
                             @foreach (int val in col.ConvertibleTypes)
                             {
@@ -62,12 +63,22 @@
     [Parameter]
     public StartAutoMLRequestDto AutoMLRequest { get; set; }
     private List<GetDatasetResponseDto> _datasets;
+    // store all data type as list so we can bind in to our value onpurpose
+    // i have to do that because i cant bind value to _dataset[i].type
+    private List<int> _dataTypeList;
     /// <summary>
     /// Trigger to start examination for IsNextStepApproved in Parent
     /// </summary>
     [Parameter]
     public EventCallback CheckForNextStepCallback { get; set; }
-
+    // function call to synchronize changed column typed
+    public async void ChangeValue()
+    {
+        for (int i = 0; i < (_dataTypeList).Count; i++)
+        {
+            ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features[_datasets[i].Name] = (Server.DataType)_dataTypeList[i];
+        }
+    }
     protected override async void OnInitialized()
     {
         try
@@ -77,16 +88,17 @@
             if (apiResponse.IsSuccessStatusCode)
             {
                 _datasets = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GetDatasetResponseDto>>(apiResponse.Result.ToString());
-                StateHasChanged();
+                _dataTypeList = new List<int>();
                 // add feature for manipulating and steps3
                 AutoMLRequest.Configuration = new AutoMLTabularDataConfiguration();
                 ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features = new Dictionary<string, BlazorBoilerplate.Server.DataType>();
                 for (int i = 0; i < (_datasets).Count; i++)
                 {
-
+                    _dataTypeList.Add((int)_datasets[i].Type);
                     ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features.Add(_datasets[i].Name, _datasets[i].Type);
                 }
-                OnPageHandler(new MatPaginatorPageEvent { Length = _datasets[0].FirstEntries.Count, PageIndex = 0, PageSize = 10 }); 
+                StateHasChanged();
+                OnPageHandler(new MatPaginatorPageEvent { Length = _datasets[0].FirstEntries.Count, PageIndex = 0, PageSize = 10 });
                 await CheckForNextStepCallback.InvokeAsync(); //We can just move to the next step if required
                 viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
             }
@@ -134,7 +146,8 @@
         {
             StartIndex = 0;
             SizeOffset = _datasets[0].FirstEntries.Count;
-        } else if (SizeOffset > _datasets[0].FirstEntries.Count)
+        }
+        else if (SizeOffset > _datasets[0].FirstEntries.Count)
         {
             SizeOffset = _datasets[0].FirstEntries.Count;
         }
