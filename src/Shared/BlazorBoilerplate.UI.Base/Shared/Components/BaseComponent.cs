@@ -21,6 +21,7 @@ namespace BlazorBoilerplate.UI.Base.Shared.Components
         public virtual void Dispose()
         {
             apiClient.CancelChanges();
+            apiClient.ClearEntitiesCache();
         }
     }
 }
