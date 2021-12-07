@@ -17,4 +17,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)Server\BlazorBoilerplate.Server\Themes\MatBlazor\" />
   </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="del &quot;$(SolutionDir)Server\BlazorBoilerplate.Server\Modules\*Theme*.dll&quot;" />
+  </Target>
 </Project>
