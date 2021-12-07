@@ -20,62 +20,83 @@
             }
         </MatChipSet>
     </div>
-    <div style="display:flex; flex-direction:row; justify-content:left">
-        <div style="display: flex; align-items: center; padding-right: 1% ">Please select Target column:</div>
-        @if (_columnNames != null)
-        {
-            <MatSelectItem Items="@_columnNames.ColumnNames" TValue="string" ValueChanged="@OnTargetChanged"></MatSelectItem>
-        }
-    </div>
-    <div style="display:flex; flex-direction:row; justify-content:left">
-        <div style="display: flex; align-items: center; padding-right: 1% ">Please select time limit (Optional):</div>
-        @if (AutoMLRequest.RuntimeConstraints != null)
-        {
-            <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Runtime_limit
-                                   DecimalPlaces=0>
-            </MatNumericUpDownField>
-            @*<input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Runtime_limit" />*@
-        }
-    </div>
-    <div style="display:flex; flex-direction:row; justify-content:left">
-        <div style="display: flex; align-items: center; padding-right: 1% ">Please select number of iterations (Optional):</div>
-        @if (AutoMLRequest.RuntimeConstraints != null)
-        {
-            <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Max_iter
-                                   DecimalPlaces=0>
-            </MatNumericUpDownField>
-            @*<input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Max_iter" />*@
-        }
-    </div>
+    @* only show advanced option if a task was selected *@
+    @if (lastCheckedChip.Label != "testLabel")
+    {
+        <div style="display:flex; flex-direction:row; justify-content:left">
+            <div style="display: flex; align-items: center; padding-right: 1% ">Please select Target column:</div>
+            @if (_columnNames != null)
+            {
+                <MatSelectItem Items="@_columnNames.ColumnNames" TValue="string" ValueChanged="@OnTargetChanged"></MatSelectItem>
+            }
+        </div>
+        <div style="display:flex; flex-direction:row; justify-content:left">
+            <div style="display: flex; align-items: center; padding-right: 1% ">Please select time limit (Optional):</div>
+            @if (AutoMLRequest.RuntimeConstraints != null)
+            {
+                <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Runtime_limit
+                                       DecimalPlaces=0>
+                </MatNumericUpDownField>
+                @*<input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Runtime_limit" />*@
+            }
+        </div>
+        <div style="display:flex; flex-direction:row; justify-content:left">
+            <div style="display: flex; align-items: center; padding-right: 1% ">Please select number of iterations (Optional):</div>
+            @if (AutoMLRequest.RuntimeConstraints != null)
+            {
+                <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Max_iter
+                                       DecimalPlaces=0>
+                </MatNumericUpDownField>
+                @*<input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Max_iter" />*@
+            }
+        </div>
+    }
 </div>
 
-<MatDivider style="padding: 1%"></MatDivider>
+@*<MatDivider style="padding: 1%"></MatDivider>
 
-<h4 style="padding-top: 1%">Advanced</h4>
+    <h4 style="padding-top: 1%">Advanced</h4>*@
 
-<MatChipSet Filter="true" SelectedChipsChanged="OnChipMLLibChanged">
-    @if (_supportedMlLibraries != null && _supportedMlLibraries.MlLibraries.Count != 0)
-    {
-        <p>Please select ML Lib :</p>
-        @foreach (var item in _supportedMlLibraries.MlLibraries)
-        {
-            <MatChip Label="@item" IsCheckable="true"></MatChip>
-        }
-    }
-</MatChipSet>
+@* only show advanced option if a task was selected *@
+@if (lastCheckedChip.Label != "testLabel")
+{
+    <MatAccordion>
+        <MatExpansionPanel @bind-Expanded="@advancedOptionsSelected">
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader>Advanced Settings</MatExpansionPanelHeader>
+                <MatExpansionPanelSubHeader>
+                    Currently I am @(advancedOptionsSelected ? "selected" : "not selected")
+                </MatExpansionPanelSubHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                <MatChipSet Filter="true" SelectedChipsChanged="OnChipMLLibChanged">
+                    @if (_supportedMlLibraries != null && _supportedMlLibraries.MlLibraries.Count != 0)
+                    {
+                        <p>Please select ML Lib :</p>
+                        @foreach (var item in _supportedMlLibraries.MlLibraries)
+                        {
+                            <MatChip Label="@item" IsCheckable="true"></MatChip>
+                        }
+                    }
+                </MatChipSet>
 
-@* add algorithms here *@
+                @* add algorithms here *@
 
-<MatChipSet Filter="true" SelectedChipsChanged="OnChipAutoMLSolutionChanged">
-    @if (_compatibleAutoMl != null && _compatibleAutoMl.AutoMlSolutions.Count != 0)
-    {
-        <p>Please select ML Solution :</p>
-        @foreach (var item in _compatibleAutoMl.AutoMlSolutions)
-        {
-            <MatChip Label="@item" IsCheckable="true"></MatChip>
-        }
-    }
-</MatChipSet>
+                <MatChipSet Filter="true" SelectedChipsChanged="OnChipAutoMLSolutionChanged">
+                    @if (_compatibleAutoMl != null && _compatibleAutoMl.AutoMlSolutions.Count != 0)
+                    {
+                        <p>Please select ML Solution :</p>
+                        @foreach (var item in _compatibleAutoMl.AutoMlSolutions)
+                        {
+                            <MatChip Label="@item" IsCheckable="true"></MatChip>
+                        }
+                    }
+                </MatChipSet>
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+
+    </MatAccordion>
+}
 
 @code {
     private GetDatasetCompatibleTasksResponseDto _tasks;
@@ -84,6 +105,7 @@
     private GetSupportedMlLibrariesResponseDto _supportedMlLibraries;
     private MatChip[] selectedChips = null;
     private MatChip lastCheckedChip = new MatChip { Label = "testLabel" };
+    private bool advancedOptionsSelected = false;
     [Parameter]
     public StartAutoMLRequestDto AutoMLRequest { get; set; }
 
@@ -123,7 +145,7 @@
     {
         // TODO fix 2 times called bug (it effects perfomance)
         if (lastCheckedChip.Label == newChip.Label)
-        { 
+        {
             return;
         }
         lastCheckedChip = newChip;
