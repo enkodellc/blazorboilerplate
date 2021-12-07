@@ -35,7 +35,7 @@
             @if (AutoMLRequest.RuntimeConstraints != null)
             {
                 <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Runtime_limit
-                                       DecimalPlaces=0>
+                                       DecimalPlaces=0 Minimum=0>
                 </MatNumericUpDownField>
                 @*<input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Runtime_limit" />*@
             }
@@ -45,7 +45,7 @@
             @if (AutoMLRequest.RuntimeConstraints != null)
             {
                 <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Max_iter
-                                       DecimalPlaces=0>
+                                       DecimalPlaces=0 Minimum=0>
                 </MatNumericUpDownField>
                 @*<input type="number" @bind="@AutoMLRequest.RuntimeConstraints.Max_iter" />*@
             }
