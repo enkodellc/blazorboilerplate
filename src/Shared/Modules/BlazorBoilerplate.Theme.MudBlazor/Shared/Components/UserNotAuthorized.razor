@@ -1,6 +1,14 @@
-﻿<LoadingBackground>
-    <div>
-        <label>You are not authorized to access this page.</label>
-    </div>
-</LoadingBackground>
+﻿@inject IStringLocalizer<Global> L
+
+@*<AuthorizeView Policy=@Policies.TwoFactorEnabled>
+    <Authorized></Authorized>
+    <NotAuthorized>
+        <MudAlert Severity="Severity.Error" Class="ma-8" Variant="Variant.Filled">@L["EnableTwoFactorAuthentication"]</MudAlert>
+    </NotAuthorized>
+</AuthorizeView>*@
+
+<div class="loading-container">
+    <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Primary" Style="font-size: 7em" />
+    <h1>@L["You are not authorized to access this page"]</h1>
+</div>
 

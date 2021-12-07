@@ -1,6 +1,6 @@
 ﻿@inject IStringLocalizer<Global> L
 
-<LoadingBackground>
-    <h1>Page not found</h1>
-    <label>@L["This address does not exist"]</label>
-</LoadingBackground>
+<div class="loading-container">
+    <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Primary" Style="font-size: 7em" />
+    <h1>@L["This address does not exist"]</h1>
+</div>

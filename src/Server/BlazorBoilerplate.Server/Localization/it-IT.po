@@ -1030,3 +1030,7 @@ msgstr ""
 "Una volta inquadrato il QR code o inserita la chiave suddetta, la tua app ti fornirà "
 "un codice da inserire nella casella sottostante. Inseriscilo e conferma."
 "</p>"
+
+msgctxt "Global"
+msgid "You are not authorized to access this page"
+msgstr "Accesso non autorizzato"
