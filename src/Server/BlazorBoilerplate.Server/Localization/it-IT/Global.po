@@ -418,7 +418,7 @@ msgid "AppHoverNavToggle"
 msgstr "Commuta barra di navigazione"
 
 msgid "AppName"
-msgstr ""
+msgstr "OMA-ML"
 
 msgid "AppNavDashboard"
 msgstr "Cruscotto"
