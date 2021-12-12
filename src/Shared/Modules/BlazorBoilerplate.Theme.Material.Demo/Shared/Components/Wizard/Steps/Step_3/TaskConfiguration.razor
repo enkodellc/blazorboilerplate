@@ -114,7 +114,7 @@
 
         ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target = new AutoMLTarget();
         AutoMLRequest.RuntimeConstraints = new AutoMLRuntimeConstraints();
-        AutoMLRequest.RuntimeConstraints.Runtime_limit = 5;
+        AutoMLRequest.RuntimeConstraints.Runtime_limit = 30;
         AutoMLRequest.RuntimeConstraints.Max_iter = 5;
     }
     private async void OnChipMLLibChanged(MatChip[] newChip)
