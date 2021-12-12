@@ -113,6 +113,7 @@
         await LoadData();
 
         ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target = new AutoMLTarget();
+        AutoMLRequest.RequiredAutoMLs = new List<string>();
         AutoMLRequest.RuntimeConstraints = new AutoMLRuntimeConstraints();
         AutoMLRequest.RuntimeConstraints.Runtime_limit = 30;
         AutoMLRequest.RuntimeConstraints.Max_iter = 5;
