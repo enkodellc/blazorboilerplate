@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: omaml
+  name: sqlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: sqlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: sqlserver
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - cai-omaml-main
+      containers:
+      - env:
+        - name: "ACCEPT_EULA"
+          value: "Y"
+        - name: "SA_PASSWORD"
+          value: "yourVeryStrong(!)Password"
+        image: mcr.microsoft.com/mssql/server
+        imagePullPolicy: ""
+        name: sqlserver
+        ports:
+        - containerPort: 1433
+        resources:
+          limits:
+            cpu: "1"
+            memory: "2097152e3"
+        volumeMounts:
+        - mountPath: /var/opt/mssql/data
+          name: dbdata-pvc
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: dbdata-pvc
+        persistentVolumeClaim:
+          claimName: dbdata-pvc
