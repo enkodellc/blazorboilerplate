@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Dto.Ontology
 {
-    public class GetTasksRequestDto
+    public class GetCompatibleAutoMlSolutionsResponseDto
     {
-        public string Dataset { get; set; }
+        public List<string> AutoMlSolutions { get; set; } // cause repeated
     }
 }

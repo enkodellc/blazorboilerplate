@@ -22,26 +22,56 @@ namespace BlazorBoilerplate.Server.Managers
             _dbContext = dbContext;
             _client = client;
         }
-        /// <summary>
-        /// Query for all supports tasks
-        /// </summary>
-        /// <param name="dataset"></param>
-        /// <returns></returns>
-        public async Task<ApiResponse> GetTasks(GetTasksRequestDto dataset)
+
+        public async Task<ApiResponse> GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequestDto request)
         {
-            GetTasksRequest request = new GetTasksRequest();
-            GetTasksResponseDto response = new GetTasksResponseDto();
+            // call grpc method
+            GetCompatibleAutoMlSolutionsRequest requestGrpc = new GetCompatibleAutoMlSolutionsRequest();
+            GetCompatibleAutoMlSolutionsResponseDto response = new GetCompatibleAutoMlSolutionsResponseDto();
             try
             {
-                request.DatasetName = dataset.Dataset;
-                var reply = _client.GetTasks(request);
-                response.Tasks = reply.Tasks.ToList();
+                requestGrpc.Configuration.Add(request.Configuration);
+                var reply = _client.GetCompatibleAutoMlSolutions(requestGrpc);
+                response.AutoMlSolutions = reply.AutoMlSolutions.ToList();
                 return new ApiResponse(Status200OK, null, response);
-
             }
             catch (Exception ex)
             {
+                return new ApiResponse(Status404NotFound, ex.Message);
+            }
+        }
 
+        public async Task<ApiResponse> GetSupportedMlLibraries(GetSupportedMlLibrariesRequestDto task)
+        {
+            // call grpc method
+            GetSupportedMlLibrariesRequest requestGrpc = new GetSupportedMlLibrariesRequest();
+            GetSupportedMlLibrariesResponseDto response = new GetSupportedMlLibrariesResponseDto();
+            try
+            {
+                requestGrpc.Task = task.Task;
+                var reply = _client.GetSupportedMlLibraries(requestGrpc);
+                response.MlLibraries = reply.MlLibraries.ToList();
+                return new ApiResponse(Status200OK, null, response);
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse(Status404NotFound, ex.Message);
+            }
+        }
+        public async Task<ApiResponse> GetDatasetCompatibleTasks(GetDatasetCompatibleTasksRequestDto datasetName)
+        {
+            // call grpc method
+            GetDatasetCompatibleTasksRequest requestGrpc = new GetDatasetCompatibleTasksRequest();
+            GetDatasetCompatibleTasksResponseDto response = new GetDatasetCompatibleTasksResponseDto();
+            try
+            {
+                requestGrpc.DatasetName = datasetName.DatasetName;
+                var reply = _client.GetDatasetCompatibleTasks(requestGrpc);
+                response.Tasks = reply.Tasks.ToList();
+                return new ApiResponse(Status200OK, null, response);
+            }
+            catch (Exception ex)
+            {
                 return new ApiResponse(Status404NotFound, ex.Message);
             }
         }

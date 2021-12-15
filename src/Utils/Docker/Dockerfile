@@ -4,7 +4,6 @@ EXPOSE 443
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
-WORKDIR /
 COPY . .
 RUN dotnet restore "src/Server/BlazorBoilerplate.Server/BlazorBoilerplate.Server.csproj"
 WORKDIR "/src/Server/BlazorBoilerplate.Server"
@@ -21,4 +20,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY --from=publish /app/publish/aspnetapp.pfx ./AuthSample.pfx
+COPY --from=build /app-data .
 ENTRYPOINT ["dotnet", "BlazorBoilerplate.Server.dll"]

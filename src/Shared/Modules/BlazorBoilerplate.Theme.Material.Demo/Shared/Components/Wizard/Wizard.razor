@@ -3,36 +3,50 @@
 @inject IStringLocalizer<Global> L
 
 <CascadingValue Value="this">
+
+    <h1>Start new Run</h1>
+    <div style="display:flex; flex-direction:column">
+        <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <div>
+                @if (ActiveStepIx == 0)
+                {
+                    <h2>Step @(ActiveStepIx + 1): Select data</h2>
+                }
+                else if (ActiveStepIx == 1)
+                {
+                    <h2>Step @(ActiveStepIx + 1): View and edit data</h2>
+                }
+                else if (ActiveStepIx == 2)
+                {
+                    <h2>Step @(ActiveStepIx + 1): Configuration</h2>
+                }
+            </div>
+            <div>
+                <button class="btn btn-primary btn-lg" type="button"
+                        disabled="@(ActiveStepIx == 0)" @onclick="GoBack">
+                    Previous
+                </button>
+                @if (IsLastStep == true)
+                {
+                    <button class="btn btn-primary btn-lg" type="submit" @onclick="OnSubmit">
+                        Submit
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-primary btn-lg" type="button" @onclick="GoNext">
+                        Next
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
     <div id="@Id">
-        <ul class="nav nav-pills nav-justified">
-            @foreach (var step in Steps)
-            {
-                <li id="step-@(StepsIndex(step) + 1)" class="nav-item">
-                    <!-- <a class="nav-link @((ActiveStep == step) ? "active" : "")" href="javascript: void(0)" @onclick="@(e=> SetActive(step))">@step.Name</a> -->
-                    <a class="nav-link @((ActiveStep == step) ? "active" : "")" href="javascript: void(0)">@step.Name</a>
-                </li>
-            }
-        </ul>
         <div id="container-fluid">
             @ChildContent
         </div>
     </div>
-    <button class="btn btn-primary btn-lg" type="button"
-            disabled="@(ActiveStepIx == 0)" @onclick="GoBack">
-        Previous
-    </button>
-    @if (IsLastStep == true)
-    {
-        <button class="btn btn-primary btn-lg" type="submit" @onclick="OnSubmit">
-            Submit
-        </button>
-    }
-    else
-    {
-        <button class="btn btn-primary btn-lg" type="button" @onclick="GoNext">
-            Next
-        </button>
-    }
 </CascadingValue>
 
 @code {

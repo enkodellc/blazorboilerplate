@@ -1,0 +1,203 @@
+syntax = "proto3";
+option csharp_namespace = "BlazorBoilerplate.Server";
+
+/*includes all gRPC functions available for the client frontend*/
+service ControllerService {
+
+  /*return the generated model as a .zip for one AutoML by its session id*/
+  rpc GetAutoMlModel(GetAutoMlModelRequest) returns (GetAutoMlModelResponse) {}
+  /*return a list of AutoML solutions compatible with the current configuration*/
+  rpc GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequest) returns (GetCompatibleAutoMlSolutionsResponse) {}
+  /*return all datasets of a specific type*/
+  rpc GetDatasets(GetDatasetsRequest) returns (GetDatasetsResponse) {}
+  /*
+    returns details of a specified dataset.
+    The result is a list of TableColumns containing:
+    name: the name of the dataset
+    datatype: the datatype of the column
+    firstEntries: the first couple of rows of the dataset
+   */
+  rpc GetDataset(GetDatasetRequest) returns (GetDatasetResponse) {}
+  /*return a list of all sessions the controller has knowledge of*/
+  rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
+  /*return the status of a specific session. The result is a session status and a list of the automl output and its status*/
+  rpc GetSessionStatus(GetSessionStatusRequest) returns (GetSessionStatusResponse) {}
+  /*return all supported machine learning libraries for a specific task (by searching supported AutoML)*/
+  rpc GetSupportedMlLibraries(GetSupportedMlLibrariesRequest) returns (GetSupportedMlLibrariesResponse) {}
+  /*return all the column names of a tabular dataset*/
+  rpc GetTabularDatasetColumnNames(GetTabularDatasetColumnNamesRequest) returns (GetTabularDatasetColumnNamesResponse) {}
+  /*return all supported AutoML tasks*/
+  rpc GetDatasetCompatibleTasks(GetDatasetCompatibleTasksRequest) returns (GetDatasetCompatibleTasksResponse) {}
+  /*upload a new dataset file as bytes to the controller repository*/
+  rpc UploadDatasetFile(UploadDatasetFileRequest) returns (UploadDatasetFileResponse) {}
+  /*start a new AutoML run, using the provided configuration*/
+  rpc StartAutoMLprocess(StartAutoMLprocessRequest) returns (StartAutoMLprocessResponse) {}
+}
+
+
+message GetAutoMlModelRequest {
+  string sessionId = 1;
+  string autoMl = 2;
+}
+
+message GetAutoMlModelResponse {
+  string name = 1;
+  bytes file = 2;
+}
+
+message GetCompatibleAutoMlSolutionsRequest {
+  map<string, string> configuration = 1;
+}
+
+message GetCompatibleAutoMlSolutionsResponse {
+  repeated string AutoMlSolutions = 1;
+}
+
+message GetDatasetCompatibleTasksRequest {
+  string datasetName = 1;
+}
+
+message GetDatasetCompatibleTasksResponse {
+  repeated string tasks = 1;
+}
+
+
+message GetDatasetsRequest {
+  DatasetType type = 1;
+}
+
+message GetDatasetsResponse {
+  repeated Dataset dataset = 1;
+}
+
+message Dataset {
+  string fileName = 1;
+  string type = 2;
+}
+
+message GetDatasetRequest {
+  string name = 1;
+}
+
+message GetDatasetResponse {
+  repeated TableColumn columns = 1;
+}
+
+message TableColumn {
+  string name = 1;
+  DataType type = 2;
+  repeated DataType convertibleTypes = 3; // types that this column can be converted to
+  repeated string firstEntries = 4;
+}
+
+enum DataType {
+  DATATYPE_UNKNOW = 0;
+  DATATYPE_STRING = 1;
+  DATATYPE_INT = 2;
+  DATATYPE_FLOAT = 3;
+  DATATYPE_CATEGORY = 4;
+  DATATYPE_BOOLEAN = 5;
+  DATATYPE_DATETIME = 6;
+  DATATYPE_IGNORE = 7;
+}
+
+message GetTabularDatasetColumnNamesRequest {
+  string datasetName = 1;
+}
+
+message GetTabularDatasetColumnNamesResponse {
+  repeated string columnNames = 1;
+}
+
+message GetSessionsRequest {
+  string user = 1;
+}
+
+message GetSessionsResponse {
+  repeated string sessionIds = 1;
+}
+
+message GetSessionStatusRequest {
+  string id = 1;
+}
+
+message GetSessionStatusResponse {
+  SessionStatus status = 1;
+  repeated AutoMLStatus automls = 2;
+}
+
+message GetSupportedMlLibrariesRequest {
+  string task = 1;
+}
+
+message GetSupportedMlLibrariesResponse {
+  repeated string MlLibraries = 1;
+}
+
+message AutoMLStatus {
+  string name = 1;
+  SessionStatus status = 2;
+  repeated string messages = 3;
+}
+
+message UploadDatasetFileRequest {
+  bytes content = 1;
+  string name = 2;
+}
+
+message UploadDatasetFileResponse {
+  int32 returnCode = 1;
+}
+
+message StartAutoMLprocessRequest {
+  string dataset = 1;
+  MachineLearningTask task = 2;
+  AutoMLConfigurationTabularData tabularConfig = 3;
+  repeated string requiredAutoMLs = 4;
+  AutoMLRuntimeConstraints runtimeConstraints = 5;
+  map<string, string> fileConfiguration = 6;
+}
+
+message AutoMLRuntimeConstraints {
+  int32 runtime_limit = 1;
+  int32 max_iter = 2;
+}
+message AutoMLConfigurationTabularData {
+  AutoMLTarget target = 1;
+  map<string, DataType> features = 2;
+}
+
+message AutoMLTarget {
+  string target = 1;
+  DataType type = 2;
+}
+
+message StartAutoMLprocessResponse {
+  ControllerReturnCode result = 1;
+  string sessionId = 2;
+}
+
+enum DatasetType {
+  DATASET_TYPE_UNKNOWN = 0;
+  DATASET_TYPE_TABULAR_DATA = 1;
+}
+
+enum ControllerReturnCode {
+  CONTROLLER_RETURN_CODE_UNKNOWN = 0;
+  CONTROLLER_RETURN_CODE_SUCCESS = 1;
+  CONTROLLER_RETURN_CODE_STATUS_UPDATE = 2;
+  CONTROLLER_RETURN_CODE_ERROR = 100;
+}
+
+enum MachineLearningTask {
+  MACHINE_LEARNING_TASK_UNKNOWN = 0;
+  MACHINE_LEARNING_TASK_TABULAR_CLASSIFICATION = 1;
+  MACHINE_LEARNING_TASK_TABULAR_REGRESSION = 2;
+}
+
+enum SessionStatus {
+  SESSION_STATUS_UNKNOWN = 0;
+  SESSION_STATUS_BUSY = 1;
+  SESSION_STATUS_COMPLETED = 2;
+  SESSION_STATUS_FAILED = 3;
+}

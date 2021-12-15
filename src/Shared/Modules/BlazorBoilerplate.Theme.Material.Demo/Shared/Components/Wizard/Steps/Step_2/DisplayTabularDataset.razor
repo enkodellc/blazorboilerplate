@@ -3,11 +3,17 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 
-<h3>DisplayTabularDataset</h3>
+@{
+    // var visibleItems = GetVisibleItems();
+    // var renderedItems = GetRenderedItems(_datasets);
+    // var scrollResult = VirtualScrollHelper.GetResult(renderedItems, 52, 56, StickyHeader);
+}
 
 @if (_datasets != null)
 {
-    <table class="table-responsive table-striped table-borderede">
+    var renderedItems = GetRenderedItems(_datasets);
+    <button class="btn btn-success" @onclick="ChangeValue">Synchronize data types</button>
+    <table class="table-responsive table-striped">
         <thead>
             <tr>
                 @foreach (var item in _datasets)
@@ -18,11 +24,12 @@
         </thead>
         <tbody>
             <tr>
-                @foreach (var col in _datasets)
+                @foreach (var (col, index) in _datasets.Select((v, i) => (v, i)))
                 {
                     <td>
-                        <MatSelect TValue="int" Value="@((int) col.Type)">
-                            @foreach (int val in Enum.GetValues(typeof(ColumnType)))
+                        <MatSelect TValue="int" @bind-Value="@(_dataTypeList[index])">
+                            <MatOption TValue="int" Value="@((int)col.Type)">@Enum.GetName(typeof(ColumnType), (int)col.Type)</MatOption>
+                            @foreach (int val in col.ConvertibleTypes)
                             {
                                 <MatOption TValue="int" Value="@((int) val)">@Enum.GetName(typeof(ColumnType), val)</MatOption>
                             }
@@ -30,7 +37,7 @@
                     </td>
                 }
             </tr>
-            @for (int i = 0; i < _datasets[0].FirstEntries.Count; i++)
+            @for (int i = StartIndex; i < SizeOffset; i++)
             {
                 <tr>
                     @foreach (var column in _datasets)
@@ -43,7 +50,10 @@
     </table>
 }
 
-
+@if (Paginator && _datasets != null)
+{
+    <MatPaginator PageSizeOptions="@PageSizeOptions" PageSize="@PageSize" PageLabel="@PageLabel" Length="@_datasets[0].FirstEntries.Count" Page="@OnPageHandler"></MatPaginator>
+}
 
 
 
@@ -53,12 +63,22 @@
     [Parameter]
     public StartAutoMLRequestDto AutoMLRequest { get; set; }
     private List<GetDatasetResponseDto> _datasets;
+    // store all data type as list so we can bind in to our value onpurpose
+    // i have to do that because i cant bind value to _dataset[i].type
+    private List<int> _dataTypeList;
     /// <summary>
     /// Trigger to start examination for IsNextStepApproved in Parent
     /// </summary>
     [Parameter]
     public EventCallback CheckForNextStepCallback { get; set; }
-
+    // function call to synchronize changed column typed
+    public async void ChangeValue()
+    {
+        for (int i = 0; i < (_dataTypeList).Count; i++)
+        {
+            ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features[_datasets[i].Name] = (Server.DataType)_dataTypeList[i];
+        }
+    }
     protected override async void OnInitialized()
     {
         try
@@ -68,7 +88,17 @@
             if (apiResponse.IsSuccessStatusCode)
             {
                 _datasets = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GetDatasetResponseDto>>(apiResponse.Result.ToString());
+                _dataTypeList = new List<int>();
+                // add feature for manipulating and steps3
+                AutoMLRequest.Configuration = new AutoMLTabularDataConfiguration();
+                ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features = new Dictionary<string, BlazorBoilerplate.Server.DataType>();
+                for (int i = 0; i < (_datasets).Count; i++)
+                {
+                    _dataTypeList.Add((int)_datasets[i].Type);
+                    ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features.Add(_datasets[i].Name, _datasets[i].Type);
+                }
                 StateHasChanged();
+                OnPageHandler(new MatPaginatorPageEvent { Length = _datasets[0].FirstEntries.Count, PageIndex = 0, PageSize = 10 });
                 await CheckForNextStepCallback.InvokeAsync(); //We can just move to the next step if required
                 viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
             }
@@ -81,5 +111,90 @@
         {
             viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
+    }
+
+    [Parameter]
+    public bool Paginator { get; set; } = true;
+
+    [Parameter]
+    public IReadOnlyList<MatPageSizeOption> PageSizeOptions { get; set; } =
+        BaseMatPaginator.DefaultPageSizeOptions;
+
+    [Parameter]
+    public int PageSize { get; set; } = 10;
+
+    [Parameter]
+    public int PageIndex { get; set; } = 0;
+
+    [Parameter]
+    public int StartIndex { get; set; }
+    [Parameter]
+    public int SizeOffset { get; set; }
+
+    [Parameter]
+    public string PageLabel { get; set; } = BaseMatPaginator.PageLabelDefault;
+
+    protected void OnPageHandler(MatPaginatorPageEvent e)
+    {
+        PageSize = e.PageSize;
+        PageIndex = e.PageIndex;
+
+        StartIndex = PageIndex * PageSize;
+        SizeOffset = StartIndex + PageSize;
+
+        if (PageSize > _datasets[0].FirstEntries.Count)
+        {
+            StartIndex = 0;
+            SizeOffset = _datasets[0].FirstEntries.Count;
+        }
+        else if (SizeOffset > _datasets[0].FirstEntries.Count)
+        {
+            SizeOffset = _datasets[0].FirstEntries.Count;
+        }
+
+        this.StateHasChanged();
+    }
+
+    protected IEnumerable<GetDatasetResponseDto> GetRenderedItems(IEnumerable<GetDatasetResponseDto> visibleItems)
+    {
+        var e = visibleItems;
+
+        if (Paginator)
+        {
+            var pageSize = PageSize;
+            var pageIndex = PageIndex;
+            var skipItems = pageSize > 0 && pageIndex > 0 ? pageSize * pageIndex : 0;
+            var takeItems = pageSize > 0 ? pageSize : 0;
+
+
+            if (e is IQueryable<GetDatasetResponseDto> q)
+            {
+                if (skipItems > 0)
+                {
+                    q = q.Skip(skipItems);
+                }
+
+                if (takeItems > 0)
+                {
+                    q = q.Take(takeItems);
+                }
+
+                e = q.AsEnumerable();
+            }
+            else
+            {
+                if (skipItems > 0)
+                {
+                    e = e.Skip(skipItems);
+                }
+
+                if (takeItems > 0)
+                {
+                    e = e.Take(takeItems);
+                }
+            }
+        }
+
+        return e;
     }
 }

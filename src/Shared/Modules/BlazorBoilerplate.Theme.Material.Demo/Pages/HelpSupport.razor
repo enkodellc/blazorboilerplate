@@ -1,0 +1,27 @@
+﻿@page "/help"
+@inject IStringLocalizer<Global> L
+@using System
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+@inject NavigationManager NavManager
+@attribute [Authorize]
+
+<h1>Instructions and Support</h1>
+
+<div style="display: flex; flex-direction: row; justify-content: left; gap: 10px">
+    <h4>An Ontology-Based Concept for Meta AutoML</h4>
+    <a href="//link.springer.com/chapter/10.1007/978-3-030-79150-6_10" style="display: flex; align-items: center">view full paper</a>
+</div>
+<div style="display:flex; flex-direction:column">
+    <h5>Abstract</h5>
+    <p style="width:50%">
+        Automated machine learning (AutoML) supports ML engineers and data scientists by automating tasks like model selection and hyperparameter optimization. A number of AutoML solutions have been developed, open-source and commercial. We propose a concept called OMA-ML (Ontology-based Meta AutoML) that combines the strengths of existing AutoML solutions by integrating them (meta AutoML).
+        <br />
+        OMA-ML is based on a ML ontology that guides the meta AutoML process. It supports multiple user groups, with and without programming skills. By combining the strengths of AutoML solutions, it supports any number of ML tasks and ML libraries.
+    </p>
+</div>
+
+@code {
+
+}
+

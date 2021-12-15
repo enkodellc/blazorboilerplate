@@ -120,7 +120,7 @@ namespace BlazorBoilerplate.Storage
                     ApplicationUser = user,
                     Count = 2,
                     IsNavOpen = true,
-                    LastPageVisited = "/dashboard",
+                    LastPageVisited = "/",
                     IsNavMinified = false,
                     LastUpdatedDate = DateTime.Now
                 });

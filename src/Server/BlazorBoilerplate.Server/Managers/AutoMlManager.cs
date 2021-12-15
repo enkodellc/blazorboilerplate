@@ -58,13 +58,24 @@ namespace BlazorBoilerplate.Server.Managers
         public async Task<ApiResponse> Start(StartAutoMLRequestDto autoMl)
         {
             StartAutoMLResponseDto response = new StartAutoMLResponseDto();
-            StartAutoMLprocessRequest getDatasetRequest = new StartAutoMLprocessRequest();
+            StartAutoMLprocessRequest startAutoMLrequest = new StartAutoMLprocessRequest();
             try
             {
-                getDatasetRequest.Dataset = autoMl.DatasetName;
-                getDatasetRequest.Task = GetMachineLearningTask(autoMl);
-                getDatasetRequest.TabularConfig = GetTabularDataConfiguration(autoMl);
-                var reply = _client.StartAutoMLprocess(getDatasetRequest);
+                startAutoMLrequest.Dataset = autoMl.DatasetName;
+        
+                foreach (var i in autoMl.RequiredAutoMLs)
+                {
+                    startAutoMLrequest.RequiredAutoMLs.Add(i);
+                }
+                startAutoMLrequest.Task = GetMachineLearningTask(autoMl);
+                startAutoMLrequest.TabularConfig = GetTabularDataConfiguration(autoMl);
+                // TODO consider to refactor
+                startAutoMLrequest.RuntimeConstraints = new AutoMLRuntimeConstraints
+                {
+                    MaxIter = autoMl.RuntimeConstraints.Max_iter,
+                    RuntimeLimit = autoMl.RuntimeConstraints.Runtime_limit
+                };
+                var reply = _client.StartAutoMLprocess(startAutoMLrequest);
                 if (reply.Result == ControllerReturnCode.Success)
                 {
                     response.SessionId = reply.SessionId;
@@ -94,9 +105,9 @@ namespace BlazorBoilerplate.Server.Managers
                 case "TABULAR":
                     switch (autoMl.Task)
                     {
-                        case "classification":
+                        case "tabular classification":
                             return MachineLearningTask.TabularClassification;
-                        case "regression":
+                        case "tabular regression":
                             return MachineLearningTask.TabularRegression;
                         default:
                             return MachineLearningTask.Unknown;
@@ -117,8 +128,10 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 case "TABULAR":
                     AutoMLConfigurationTabularData conf = new AutoMLConfigurationTabularData();
-                    autoMl.Configuration = ((JObject)autoMl.Configuration).ToObject<AutoMLTabularDataConfiguration>();
-                    conf.Target = ((AutoMLTabularDataConfiguration)autoMl.Configuration).Target;
+                    conf.Target = new AutoMLTarget();
+                    conf.Target.Target = ((AutoMLTabularDataConfiguration)autoMl.Configuration).Target.Target;
+                    conf.Target.Type = ((AutoMLTabularDataConfiguration)autoMl.Configuration).Target.Type;
+                    conf.Features.Add(((AutoMLTabularDataConfiguration)autoMl.Configuration).Features);
                     return conf;
                 default:
                     return null;

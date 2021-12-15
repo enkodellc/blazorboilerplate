@@ -115,13 +115,23 @@ namespace BlazorBoilerplate.Server
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
-            string grpcEndpoint = "https://localhost:5001";
+
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /////KUBERNETES ENV VARIABLE
+            /////ENV VARIABLE
             ///////////////////////////////////////////////////////////////////////////////////////////////////////
-            string endpoint = Configuration["CONTROLLER_SERVICE_HOST"];
-            string port = Configuration["CONTROLLER_SERVICE_PORT"];
-            //grpcEndpoint = $"https://{endpoint}:{port}";
+            string endpoint = Environment.GetEnvironmentVariable("CONTROLLER_SERVICE_HOST");
+            string port = Environment.GetEnvironmentVariable("CONTROLLER_SERVICE_PORT");
+            string grpcEndpoint = $"https://{endpoint}:{port}";
+            if (endpoint == null || port == null)
+            {
+                // fix minor bug, frontend cannot debug locally
+                // throw new Exception("provide a grpc endpoint where to connect to the controller as an environment variable as CONTROLLER_SERVER_ADDRESS=<address>");   
+                endpoint = Configuration["CONTROLLER_SERVICE_HOST"];
+                port = Configuration["CONTROLLER_SERVICE_PORT"];
+                grpcEndpoint = "https://localhost:5001";
+            }
+               
             //GRPC CONTROLLER FACTORY 
             services.AddGrpcClient<ControllerService.ControllerServiceClient>(o =>
             {

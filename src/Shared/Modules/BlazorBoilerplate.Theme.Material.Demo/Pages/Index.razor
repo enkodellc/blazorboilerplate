@@ -6,11 +6,6 @@
 @inject NavigationManager NavManager
 @attribute [Authorize]
 
-<h1><img src="_content/BlazorBoilerplate.Theme.Material/images/logo-title.png" alt="Loading" title="BlazorBoilerplate" style="max-width: 100%;" /></h1>
-
-<p>Welcome to the Blazor Boilerplate app / starter template.</p>
-
-
 <Wizard Id="Test" @bind-ActiveStepIx="_wizardActiveStep" @bind-IsNextStepApproved="_isNextStepApproved" OnSubmit="@OnWizzardCompleted">
     <WizardStep Name="1">
         <div class="row">
@@ -95,7 +90,8 @@
         {
             return false;
         }
-        if (string.IsNullOrEmpty(((AutoMLTabularDataConfiguration)_automlRequest.Configuration).Target))
+        // TODO refactor
+        if (string.IsNullOrEmpty(((AutoMLTabularDataConfiguration)_automlRequest.Configuration).Target.Target))
         {
             return false;
         }

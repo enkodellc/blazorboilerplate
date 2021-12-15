@@ -12,8 +12,9 @@ namespace BlazorBoilerplate.Shared.Dto.AutoML
         public string DatasetName { get; set; }
         public string DatasetType { get; set; }
         public string Task { get; set; }
-        public object Configuration { get; set; }
-
+        public AutoMLTabularDataConfiguration Configuration { get; set; }
+        public List<String> RequiredAutoMLs { get; set; }
+        public AutoMLRuntimeConstraints RuntimeConstraints { get; set; }
         public StartAutoMLRequestDto()
         {
 

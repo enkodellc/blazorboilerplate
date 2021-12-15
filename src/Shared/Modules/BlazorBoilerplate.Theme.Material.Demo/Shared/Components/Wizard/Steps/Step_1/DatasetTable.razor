@@ -3,14 +3,14 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 
-<MatTable Items="@DatasetResponse" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="DatasetSelectionChangedEvent">
+<MatTable Items="@DatasetResponse" style="width:stretch" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="DatasetSelectionChangedEvent">
     <MatTableHeader>
-        <th>Name</th>
         <th>Type</th>
+        <th>Name</th>
     </MatTableHeader>
     <MatTableRow>
-        <td>@context.Name</td>
         <td>@context.Type</td>
+        <td>@context.Name</td>
     </MatTableRow>
 </MatTable>
 

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: omaml
+  labels:
+    io.kompose.service: sqlserver
+  name: sqlserver
+spec:
+  externalTrafficPolicy: Cluster
+  type: NodePort
+  ports:
+  - name: "1533"
+    port: 1533
+    protocol: TCP
+    targetPort: 1433
+  selector:
+    io.kompose.service: sqlserver
+status:
+  loadBalancer: {}

@@ -49,9 +49,10 @@ namespace BlazorBoilerplate.Server.Managers
                     response.Add(new GetDatasetResponseDto
                     {
                         Name = item.Name,
-                        Type = (ColumnType)item.Type,
-                        FirstEntries = item.FistEntries.ToList()
-                    });
+                        Type = (Server.DataType)item.Type,
+                        ConvertibleTypes = item.ConvertibleTypes.ToList(),
+                        FirstEntries = item.FirstEntries.ToList()
+                    }) ;
                 }
                 return new ApiResponse(Status200OK, null, response);
 

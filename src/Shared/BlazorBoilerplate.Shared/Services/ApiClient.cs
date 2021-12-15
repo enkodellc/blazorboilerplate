@@ -23,7 +23,7 @@ namespace BlazorBoilerplate.Shared.Services
     public class ApiClient : BaseApiClient, IApiClient
     {
         public ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : base(httpClient, logger)
-        {   }              
+        { }
         public async Task<UserProfile> GetUserProfile()
         {
             return (await entityManager.ExecuteQuery(new EntityQuery<UserProfile>().From("UserProfile"), CancellationToken.None)).SingleOrDefault();
@@ -82,7 +82,7 @@ namespace BlazorBoilerplate.Shared.Services
             return await httpClient.PostJsonAsync<ApiResponseDto>("api/Dataset/Upload", file);
         }
 
-        public async Task<ApiResponseDto> GetTasks(GetTasksRequestDto dataset)
+        public async Task<ApiResponseDto> GetTasks(GetSupportedMlLibrariesRequestDto dataset)
         {
             return await httpClient.PostJsonAsync<ApiResponseDto>("api/Ontology/GetTasks", dataset);
         }
@@ -110,6 +110,21 @@ namespace BlazorBoilerplate.Shared.Services
         public async Task<ApiResponseDto> GetModel(GetAutoMlModelRequestDto automl)
         {
             return await httpClient.PostJsonAsync<ApiResponseDto>("api/AutoMl/GetAutoMlModel", automl);
+        }
+
+        public async Task<ApiResponseDto> GetCompatibleAutoMlSolutions(GetCompatibleAutoMlSolutionsRequestDto request)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Ontology/GetCompatibleAutoMlSolutions", request);
+        }
+
+        public async Task<ApiResponseDto> GetSupportedMlLibraries(GetSupportedMlLibrariesRequestDto task)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Ontology/GetSupportedMlLibraries", task);
+        }
+
+        public async Task<ApiResponseDto> GetDatasetCompatibleTasks(GetDatasetCompatibleTasksRequestDto datasetName)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/Ontology/GetDatasetCompatibleTasks", datasetName);
         }
     }
 }
