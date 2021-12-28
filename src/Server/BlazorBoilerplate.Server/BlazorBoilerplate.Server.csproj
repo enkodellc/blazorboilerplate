@@ -32,12 +32,12 @@
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.1.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.12">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -48,13 +48,13 @@
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="MailKit" Version="2.15.0" />
+    <PackageReference Include="MailKit" Version="3.0.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.13" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
-    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.6" />
+    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.9" />
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2" />
   </ItemGroup>
 
