@@ -2,72 +2,71 @@
 @page "/account/profile"
 @attribute [Authorize]
 
-<PageTitle>@L["User Profile"]</PageTitle>
+@layout MainLayout
 
-@if (userViewModel == null)
+@if (userViewModel != null)
 {
-    <LoadingBackground />
-}
-else
-{
-    <MudButton ButtonType="ButtonType.Submit" form="mainForm" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
-    @if (userViewModel.HasPassword)
-    {
-        <MudButton StartIcon="@Icons.Filled.RotateRight" OnClick="@(() => OpenUpdatePasswordDialog())" Style="margin-left: 10px">@L["Change Password"]</MudButton>
-    }
-    @if (userViewModel.HasAuthenticator)
-    {
-        <MudButton StartIcon="@Icons.Filled.RotateRight" OnClick="@(() => DisableAuthenticator())" Style="margin-left: 10px">@L["ResetAuthenticator"]</MudButton>
-    }
-
-    <EditForm id="mainForm" Model="@userViewModel" OnValidSubmit="@UpdateUser">
-        <FluentValidationValidator />
-        <ValidationSummary />
-        <MudTextField @bind-Value="@userViewModel.UserName" Label=@L["UserName"] AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] ReadOnly="true"></MudTextField>
-
-        <MudTextField @bind-Value="@userViewModel.Email" Label="Email" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
-
-        <MudTextField @bind-Value="@userViewModel.FirstName" Label=@L["FirstName"] FullWidth="true"></MudTextField>
-
-        <MudTextField @bind-Value="@userViewModel.LastName" Label=@L["LastName"] FullWidth="true"></MudTextField>
-
-        <strong>@L["Roles"]</strong><br />
-        <MudChipSet>
-            @foreach (var role in userViewModel.Roles)
-            {
-                <MudChip Text="@role"></MudChip>
-            }
-        </MudChipSet>
-    </EditForm>
-    @if (userViewModel.TwoFactorEnabled)
-    {
-        <MudSwitch @bind-Checked="@TwoFactorEnabled" Label=@L["TwoFactorAuthentication"] Color="Color.Primary" />
-
-        @if (userViewModel.BrowserRemembered)
+        <PageTitle>@L["User Profile"]</PageTitle>
+        @if (userViewModel.HasPassword)
         {
-            <MudSwitch @bind-Checked="@BrowserRemembered" Label=@L["BrowserRemembered"] Color="Color.Primary" />
+            <MudButton StartIcon="@Icons.Filled.RotateRight" OnClick="@(() => OpenUpdatePasswordDialog())" Style="margin-left: 10px">@L["Change Password"]</MudButton>
         }
-        if (userViewModel.RecoveryCodes != null)
+        @if (userViewModel.HasAuthenticator)
         {
+            <MudButton StartIcon="@Icons.Filled.RotateRight" OnClick="@(() => DisableAuthenticator())" Style="margin-left: 10px">@L["ResetAuthenticator"]</MudButton>
+        }
+
+        <EditForm id="mainForm" Model="@userViewModel" OnValidSubmit="@UpdateUser">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <MudTextField @bind-Value="@userViewModel.UserName" Label=@L["UserName"] AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] ReadOnly="true"></MudTextField>
+
+            <MudTextField @bind-Value="@userViewModel.Email" Label="Email" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+            <MudTextField @bind-Value="@userViewModel.FirstName" Label=@L["FirstName"] FullWidth="true"></MudTextField>
+
+            <MudTextField @bind-Value="@userViewModel.LastName" Label=@L["LastName"] FullWidth="true"></MudTextField>
+
+            <strong>@L["Roles"]</strong><br />
             <MudChipSet>
-                @foreach (var rcode in userViewModel.RecoveryCodes)
+                @foreach (var role in userViewModel.Roles)
                 {
-                    <MudChip Text="@rcode"></MudChip>
+                    <MudChip Text="@role"></MudChip>
                 }
             </MudChipSet>
+
+            <MudButton ButtonType="ButtonType.Submit" form="mainForm" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
+            <MudButton Link="/" form="mainForm" Variant="Variant.Filled" Color="Color.Secondary">@L["Cancel"]</MudButton>
+        </EditForm>
+        @if (userViewModel.TwoFactorEnabled)
+        {
+            <MudSwitch @bind-Checked="@TwoFactorEnabled" Label=@L["TwoFactorAuthentication"] Color="Color.Primary" />
+
+            @if (userViewModel.BrowserRemembered)
+            {
+                <MudSwitch @bind-Checked="@BrowserRemembered" Label=@L["BrowserRemembered"] Color="Color.Primary" />
+            }
+            if (userViewModel.RecoveryCodes != null)
+            {
+                <MudChipSet>
+                    @foreach (var rcode in userViewModel.RecoveryCodes)
+                    {
+                        <MudChip Text="@rcode"></MudChip>
+                    }
+                </MudChipSet>
+            }
+            else
+            {
+                <span>@L["RecoveryCodesLeft"]</span> @userViewModel.CountRecoveryCodes
+            }
         }
         else
         {
-            <span>@L["RecoveryCodesLeft"]</span> @userViewModel.CountRecoveryCodes
+            <h3>@L["TwoFactorAuthentication"]</h3>
+            @L["EnableAuthenticatorInstructions", userViewModel.SharedKey, $"https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={userViewModel.AuthenticatorUri}"].ToMarkup()
+            <MudTextField @bind-Value="@authenticatorVerificationCodeViewModel.Code" Label=@L["Code"] FullWidth="true"></MudTextField>
+            <MudButton OnClick="@EnableAuthenticator">@L["VerifyCode"]</MudButton>
         }
-    }
-    else
-    {
-        <h3>@L["TwoFactorAuthentication"]</h3>
-        @L["EnableAuthenticatorInstructions", userViewModel.SharedKey, $"https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={userViewModel.AuthenticatorUri}"].ToMarkup()
-        <MudTextField @bind-Value="@authenticatorVerificationCodeViewModel.Code" Label=@L["Code"] FullWidth="true"></MudTextField>
-        <MudButton OnClick="@EnableAuthenticator">@L["VerifyCode"]</MudButton>
-    }
 
     <MudDialog @bind-IsVisible="@updatePasswordDialogOpen">
         <TitleContent>
@@ -95,6 +94,7 @@ else
     </MudDialog>
 
 }
+
 @code {
 
 }

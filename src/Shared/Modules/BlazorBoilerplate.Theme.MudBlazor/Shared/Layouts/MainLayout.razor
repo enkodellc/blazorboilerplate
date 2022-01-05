@@ -24,7 +24,9 @@
         <MudMainContent Style="min-height: 100vh; display: flex; flex-direction: column">
             <MudContainer MaxWidth="MaxWidth.False" Style="flex: 1">
                 @TopSection
-                @Body
+                <MudPaper Class="py-4" Elevation="0">
+                    @Body
+                </MudPaper>
             </MudContainer>
             <Footer />
         </MudMainContent>
