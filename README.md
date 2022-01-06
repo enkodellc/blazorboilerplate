@@ -1,10 +1,9 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/docs/images/logo-title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
-Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to run both WebAssembly (Core-Hosted) and Server-Side Blazor with a .NET 5.0 Server. Default mode for BB is Server Side. To switch to Webassembly log in as Admin and go to settings. [Read more here](https://blazor-boilerplate.readthedocs.io/en/latest/features/dual_mode_blazor.html)
+Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to run both WebAssembly (Core-Hosted) and Server-Side Blazor with a .NET Core 6.0 Server. Default mode for BB is Server Side. To switch to Webassembly log in as Admin and go to settings. [Read more here](https://blazor-boilerplate.readthedocs.io/en/latest/features/dual_mode_blazor.html)
 
 ## Repository Notes
 - Read the news below to stay up to date on the repo. We will try to keep the latest major changes on a different branch and have the more stable / tested version on the master branch.
-- MudBlazor Branch is a branch for testing MudBlazor vs MatBlazor.
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
@@ -18,7 +17,7 @@ Blazor is a web framework designed to run in the browser on a WebAssembly-based 
 - This repository is community driven. It is not and never will be controlled by a corporation. It's success is dependent on people using it, reviewing it, offering suggestions and most importantly contributing. Please join the [gitter discussion](https://gitter.im/blazorboilerplate/community) 
 - To create a boilerplate with Blazor / Razor components that includes the most common functionality to start a real world application quickly.
 - Avoid many external components & libraries which can make it difficult to maintain, update, track down code, learn code and issues.
-- Minimal Javascript. Currently only using them for MatBlazor / Material Design. We may use components with JS in them but so far no Javascript has been written specifically for anything in the repository.
+- Minimal Javascript. Currently only using js for MudBlazor / Material Design. We may use components with JS in them but so far no Javascript has been written specifically for anything in the repository.
 
 
 # Live demo
@@ -31,12 +30,12 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- The latest [.Net 5.0 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
-- Install the Latest Visual Studio 2019 with the ASP.NET and web development workload selected.
+- The latest [.Net 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+- Install the Latest Visual Studio 2022 with the ASP.NET and web development workload selected. Ver. 3.1.0 is .net & Visual Studio 2019
 - Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef**
 
 ### How to run
-1. Install the latest **Visual Studio 2019 (v16.8 at least)**
+1. Install the latest **Visual Studio 2022 (v17.0.1 at least)**
 2. Clone or download.
 3. Review / Update appsettings.json - DefaultConnection.
 4. Open the solution in Visual Studio and press F5.
@@ -57,6 +56,7 @@ certificate on your server, performs renewal and configure your IIS Website Bind
 ### Thanks To
 - [Blazor](https://blazor.net)
 - [BlazorWithIdentity](https://github.com/stavroskasidis/BlazorWithIdentity)
+- [MudBlazor](https://github.com/MudBlazor/MudBlazor/)
 - [MatBlazor](https://github.com/SamProf/MatBlazor)
 
 ## Contributing
@@ -78,10 +78,10 @@ I have taken small solutions from other repositories and will do my best to reco
 
 ## Completed 
  - Basic Login / User Creation
- - Admin Theme using Material Design / MatBlazor
+ - Admin Theme using Material Design / MudBlazor - 12/1/2021 Switched from MatBlazor
  - Swagger UI API visualizer - [View the live API](https://blazorboilerplate.com/swagger/index.html)
  - Log Files using Serilog
- - Choose between SQL Lite File or MS SQL Database
+ - Choose between SQL Lite File or MS SQL Database or Postgres
  - Email Confirmation of Registered Users
  - Forgot Password Functionality
  - ISoftDelete Interface for Models - Allows for "trash / restore" of data **IsDeleted** property
@@ -140,6 +140,16 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - *Note that Azure isn't as up to date with their SDK as Blazor Boilerplate so you might have to use an older version
 
 ## News
+
+### 4.0.0 Net Core 6
+- MudBlazor 6
+- Nuget Package Updates
+
+### 3.1.0 MudBlazor
+- Virtual Table 
+- MudBlazor 5
+
+### 3.0.0 Net Core 5
 
 ### 2.0.0 Development is now Master  (Major Project Refactor - Thanks GioviQ) ([Documentation](https://blazor-boilerplate.readthedocs.io/en/latest/))
 - Localization Support. Thanks [GioviQ](https://github.com/GioviQ) 

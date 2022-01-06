@@ -62,3 +62,13 @@
         color: #c4cbd4;
         font-size: 11px;
     }
+
+h1, h2, h3 {
+    color: var(--mud-palette-primary-darken);
+}
+p {
+    margin-bottom: 12px;
+}
+a {
+    color: var(--mud-palette-primary-lighten);
+}
