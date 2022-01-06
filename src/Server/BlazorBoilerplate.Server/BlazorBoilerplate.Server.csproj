@@ -35,7 +35,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.13">
       <PrivateAssets>all</PrivateAssets>
