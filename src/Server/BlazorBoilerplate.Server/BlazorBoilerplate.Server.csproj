@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspectInjector" Version="2.6.1" />
-    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="5.0.18" />
+    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="6.0.2" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.1.0" />
@@ -36,7 +36,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
