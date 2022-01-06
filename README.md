@@ -143,11 +143,13 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 
 ### 4.0.0 Net Core 6
 - MudBlazor 6
+- EF 5 - Waiting on Breeze Updates
 - Nuget Package Updates
 
 ### 3.1.0 MudBlazor
 - Virtual Table 
 - MudBlazor 5
+- .net Core 6, VS 2019, Linux Friendly
 
 ### 3.0.0 Net Core 5
 
