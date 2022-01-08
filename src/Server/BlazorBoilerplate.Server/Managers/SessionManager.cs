@@ -41,10 +41,43 @@ namespace BlazorBoilerplate.Server.Managers
                     {
                         Messages = automl.Messages.ToList(),
                         Status = (int)automl.Status,
-                        Name = automl.Name
+                        Name = automl.Name,
+                        TestScore = (double) automl.TestScore,
+                        ValidationScore = (double)automl.ValidationScore,
+                        Runtime = (int)automl.Runtime
                     });
                 }
                 response.Status = (int)reply.Status;
+                response.Dataset = reply.Dataset;
+                response.Task = (BlazorBoilerplate.Server.MachineLearningTask)reply.Task;
+
+                response.Configuration = new Shared.Dto.AutoML.AutoMLTabularDataConfiguration();
+                response.Configuration.Target = new Shared.Dto.AutoML.AutoMLTarget();
+                response.Configuration.Target.Target = reply.TabularConfig.Target.Target;
+                response.Configuration.Target.Type = (BlazorBoilerplate.Server.DataType)reply.TabularConfig.Target.Type;
+
+                response.Configuration.Features = new Dictionary<string, BlazorBoilerplate.Server.DataType>();
+
+                foreach (KeyValuePair<string, BlazorBoilerplate.Server.DataType> pair in reply.TabularConfig.Features)
+                {
+
+                    response.Configuration.Features.Add(pair.Key, pair.Value);
+                }
+
+                foreach(var mllibrarie in reply.RequiredMlLibraries)
+                {
+                    response.RequiredMlLibraries.Add(mllibrarie);
+                }
+
+                foreach(var automl in reply.RequiredAutoMLs)
+                {
+                    response.RequiredAutoMLs.Add(automl);
+                }
+
+                response.RuntimeConstraints = new Shared.Dto.AutoML.AutoMLRuntimeConstraints();
+                response.RuntimeConstraints.Runtime_limit = (int)reply.RuntimeConstraints.RuntimeLimit;
+                response.RuntimeConstraints.Max_iter = (int)reply.RuntimeConstraints.MaxIter;
+
                 return new ApiResponse(Status200OK, null, response);
 
             }

@@ -11,9 +11,18 @@ namespace BlazorBoilerplate.Shared.Dto.Session
     {
         public int Status { get; set; }
         public List<AutoMLStatusDto> AutoMls { get; set; }
+        public string Dataset { get; set; }
+        public BlazorBoilerplate.Server.MachineLearningTask Task { get; set; }
+        public AutoMLTabularDataConfiguration Configuration { get; set; }
+        public List<String> RequiredMlLibraries { get; set; }
+        public List<String> RequiredAutoMLs { get; set; }
+        public AutoMLRuntimeConstraints RuntimeConstraints { get; set; }
+
         public GetSessionResponseDto()
         {
             AutoMls = new List<AutoMLStatusDto>();
+            RequiredMlLibraries = new List<String>();
+            RequiredAutoMLs = new List<String>();
         }
     }
 }

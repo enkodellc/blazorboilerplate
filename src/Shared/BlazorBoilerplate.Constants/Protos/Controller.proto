@@ -124,6 +124,12 @@ message GetSessionStatusRequest {
 message GetSessionStatusResponse {
   SessionStatus status = 1;
   repeated AutoMLStatus automls = 2;
+  string dataset = 3;
+  MachineLearningTask task = 4;
+  AutoMLConfigurationTabularData tabularConfig = 5;
+  repeated string requiredMlLibraries = 6;
+  repeated string requiredAutoMLs = 7;
+  AutoMLRuntimeConstraints runtimeConstraints = 8;
 }
 
 message GetSupportedMlLibrariesRequest {
@@ -138,6 +144,9 @@ message AutoMLStatus {
   string name = 1;
   SessionStatus status = 2;
   repeated string messages = 3;
+  float testScore = 4;
+  float validationScore = 5;
+  int32 runtime = 6;
 }
 
 message UploadDatasetFileRequest {
@@ -162,6 +171,7 @@ message AutoMLRuntimeConstraints {
   int32 runtime_limit = 1;
   int32 max_iter = 2;
 }
+
 message AutoMLConfigurationTabularData {
   AutoMLTarget target = 1;
   map<string, DataType> features = 2;
