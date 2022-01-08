@@ -5,6 +5,7 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 @inject IJSRuntime JSRuntime
+@inject BlazorBoilerplate.Shared.Services.SessionState SessionState
 @implements IDisposable
 
 @if (_session != null)
@@ -18,51 +19,54 @@
             {
                 <MatProgressBar Indeterminate="true"></MatProgressBar>
             }
-            <MatTabGroup @bind-ActiveIndex="_autoMlIndex">
                 @foreach (var automl in _session.AutoMls)
                 {
-                <MatTab Label="@automl.Name">
+                <MatCardContent Style="display:flex;flex-direction: row;justify-content: space-between;padding: 12px;" Label="@automl.Name" @onclick="(() => ChangeState(automl.Name))">
+                    <span>@automl.Name</span>
                     @switch (automl.Status)
                     {
                         case 1:
+                            <span>running</span>
+                            break;
                         case 2:
-                            <div style="padding: 5px; border: 1px solid white;">
-                                <MatList Style=" min-height: 2rem; max-height: 30rem; overflow-y: auto;">
-                                    @foreach (var item in automl.Messages)
-                                    {
-                                        <MatListItem>
-                                            @item
-                                        </MatListItem>
-                                    }
-                                </MatList>
-                            </div>
+                            <span>finished</span>
                             break;
                         case 3:
-                            <p>ERROR WHILE RUNNING</p>
+                            <span>ERROR WHILE RUNNING</span>
                             break;
                         default:
                             break;
                     }
-                </MatTab>
+                </MatCardContent>
                 }
-            </MatTabGroup>
         </div>
-        <MatCardActionIcons>
-            <MatIconButton Icon="@MatIconNames.Cloud_download" OnClick="@DownloadOutputAsync"></MatIconButton>
-        </MatCardActionIcons>
+        <MatDivider></MatDivider>
+        <div class="demo-mat-card-content">
+            <p Style="margin-bottom: 0; padding-left: 6px; padding-top: 6px;">Dataset: @_session.Dataset</p>
+            <p Style="margin-bottom: 0; padding-left: 6px;">Task: @_session.Task</p>
+            <p Style="margin-bottom: 0; padding-left: 6px; padding-bottom: 6px;">Target: @_session.Configuration.Target.Target</p>
+        </div>
     </MatCard>
 }
 
 
 @code {
-    public IEnumerable<string> items2 = Enumerable.Range(0, 200).Select(i => i.ToString()).ToArray();
     private Timer _timer;
     private GetSessionResponseDto _session = null;
-    private int _autoMlIndex = 0;
 
     [Parameter]
     public string SessionId { get; set; }
 
+    protected async void ChangeState(string automlName)
+    {
+        if(_timer!=null){
+            DisposeTimer();
+        }
+        SessionState.id = SessionId;
+        SessionState.selectedAutoML = automlName;
+        SessionState.session = _session;
+        SessionState.ChangeState();
+    }
 
     protected override void OnInitialized()
     {
@@ -89,7 +93,7 @@
                     _session = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionResponseDto>(apiResponse.Result.ToString());
                     if (_session.Status != 1)
                     {
-                        _timer.Elapsed -= LoadSession;
+                        DisposeTimer();
                     }
 
                     StateHasChanged();
@@ -107,44 +111,13 @@
         });
     }
 
-    public void Dispose()
+    public void DisposeTimer()
     {
         _timer.Elapsed -= LoadSession;
         _timer?.Dispose();
     }
 
-    private async void DownloadOutputAsync()
-    {
-        try
-        {
-            if (_session.AutoMls[_autoMlIndex].Status != 2)
-            {
-                viewNotifier.Show("Download unavailable", ViewNotifierType.Error, L["Operation Failed"]);
-                return;
-            }
-            ApiResponseDto apiResponse = apiResponse = await apiClient.GetModel(new GetAutoMlModelRequestDto { SessionId = SessionId, AutoMl = _session.AutoMls[_autoMlIndex].Name });
-
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                GetAutoMlModelRespomseDto file = Newtonsoft.Json.JsonConvert.DeserializeObject<GetAutoMlModelRespomseDto>(apiResponse.Result.ToString());
-                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
-                await JSRuntime.InvokeVoidAsync(
-                    "downloadFromByteArray",
-                     new
-                     {
-                         ByteArray = file.Content,
-                         FileName = file.Name,
-                         ContentType = "application/octet-stream"
-                     });
-            }
-            else
-            {
-                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
-            }
-        }
-        catch (Exception ex)
-        {
-            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
-        }
+    public void Dispose(){
+        DisposeTimer();
     }
 }
