@@ -59,9 +59,7 @@
 
     protected async void ChangeState(string automlName)
     {
-        if(_timer!=null){
-            DisposeTimer();
-        }
+        DisposeTimer();
         SessionState.id = SessionId;
         SessionState.selectedAutoML = automlName;
         SessionState.session = _session;
@@ -78,6 +76,24 @@
             Interval = 5000
         };
         _timer.Elapsed += LoadSession;
+        SessionState.OnChange += SwitchSelectedEventHandler;
+        Console.WriteLine("Card Timer created");
+    }
+
+    private void SwitchSelectedEventHandler()
+    {
+        if(!SessionState.selected & SessionState.session !=null){
+            if(SessionState.session.Status==1 & _timer == null){
+                _timer = new Timer()
+                {
+                    AutoReset = true,
+                    Enabled = true,
+                    Interval = 5000
+                };
+                _timer.Elapsed += LoadSession;
+                Console.WriteLine("Card Timer created");
+            }
+        }
     }
 
     private async void LoadSession(object sender, ElapsedEventArgs e)
@@ -113,8 +129,12 @@
 
     public void DisposeTimer()
     {
-        _timer.Elapsed -= LoadSession;
-        _timer?.Dispose();
+        if(_timer!=null){
+            _timer.Elapsed -= LoadSession;
+            _timer?.Dispose();
+            _timer = null;
+            Console.WriteLine("Card Timer destroyed");
+        }
     }
 
     public void Dispose(){

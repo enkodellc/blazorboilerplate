@@ -164,6 +164,7 @@
                     Interval = 5000
                 };
                 _timer.Elapsed += LoadSession;
+                Console.WriteLine("Session Timer created");
             }
         }
     }
@@ -184,7 +185,6 @@
             }
             automls.Add(new AutoML(automl.Name, status, automl.TestScore, automl.ValidationScore , automl.Runtime));
         }
-        Console.WriteLine(_autoMlIndex);
     }
 
     protected override async Task OnInitializedAsync()
@@ -223,7 +223,6 @@
                     if (SessionState.session.Status != 1)
                     {
                         DisposeTimer();
-                        Console.WriteLine("DisposeTimer");
                     }
                     PopulateTable();
                     StateHasChanged();
@@ -242,9 +241,12 @@
     }
 
     public void DisposeTimer(){
-        _timer.Elapsed -= LoadSession;
-        _timer.Enabled = false;
-        _timer?.Dispose();
+        if(_timer!=null){
+            _timer.Elapsed -= LoadSession;
+            _timer?.Dispose();
+            _timer = null;
+            Console.WriteLine("Session Timer destroyed");
+        }
     }
     public void Dispose()
     {
