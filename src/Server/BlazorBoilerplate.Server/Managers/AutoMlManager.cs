@@ -131,6 +131,8 @@ namespace BlazorBoilerplate.Server.Managers
                     conf.Target = new AutoMLTarget();
                     conf.Target.Target = ((AutoMLTabularDataConfiguration)autoMl.Configuration).Target.Target;
                     conf.Target.Type = ((AutoMLTabularDataConfiguration)autoMl.Configuration).Target.Type;
+                    // remove target from features
+                    ((AutoMLTabularDataConfiguration)autoMl.Configuration).Features.Remove(((AutoMLTabularDataConfiguration)autoMl.Configuration).Target.Target);
                     conf.Features.Add(((AutoMLTabularDataConfiguration)autoMl.Configuration).Features);
                     return conf;
                 default:
