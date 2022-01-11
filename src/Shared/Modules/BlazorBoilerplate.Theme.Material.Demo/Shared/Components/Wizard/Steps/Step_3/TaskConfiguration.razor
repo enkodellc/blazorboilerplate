@@ -116,7 +116,7 @@
         AutoMLRequest.RequiredAutoMLs = new List<string>();
         AutoMLRequest.RuntimeConstraints = new AutoMLRuntimeConstraints();
         AutoMLRequest.RuntimeConstraints.Runtime_limit = 30;
-        AutoMLRequest.RuntimeConstraints.Max_iter = 5;
+        AutoMLRequest.RuntimeConstraints.Max_iter = 0;
     }
     private async void OnChipMLLibChanged(MatChip[] newChip)
     {

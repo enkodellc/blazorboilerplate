@@ -1,26 +1,191 @@
 ﻿@page "/sessions"
 @inject IStringLocalizer<Global> L
 @using System
+@using System.Timers
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
+@inject IJSRuntime JSRuntime
+@inject BlazorBoilerplate.Shared.Services.SessionState SessionState
 @attribute [Authorize]
 
-@if (_sessions != null)
+@if (_sessions != null & SessionState.selected == false)
 {
-<div class="mat-layout-grid">
-    <div class="mat-layout-grid-inner">
-        @foreach (var session in _sessions.SessionIds)
-            {
-        <div class="mat-layout-grid-cell">
-            <SessionCard SessionId="@session"></SessionCard>
+    <div class="mat-layout-grid">
+        <div class="mat-layout-grid-inner">
+            @foreach (var session in _sessions.SessionIds)
+                {
+            <div class="mat-layout-grid-cell">
+                <SessionCard SessionId="@session"></SessionCard>
+            </div>
+                }
         </div>
-            }
     </div>
-</div>
+}
+
+@if (_sessions != null & SessionState.selected == true){
+    <MatCard>
+        <div Style="display:flex;flex-direction: row;justify-content: space-between;">
+            <MatHeadline4 Style="margin: 0px;">
+                Session @SessionState.id
+            </MatHeadline4>
+            <MatButton OnClick="@ChangeState">Session Overview</MatButton>
+        </div>
+        @if (SessionState.session.Status == 1)
+        {
+            <MatProgressBar Indeterminate="true"></MatProgressBar>
+        }
+        <MatTabGroup>
+            <MatTab Label="Overview">
+                <MatTable Items="@automls" PageSize="25" class="mat-elevation-z5" ShowPaging="false" Style="margin-bottom: 0px; margin-left: 1%; margin-right: 1%; width: 98%;">
+                    <MatTableHeader>
+                        <th>AutoML</th>
+                        <th>Status</th>
+                        <th>Test Score</th>
+                        <th>Validation Score</th>
+                        <th>Runtime</th>
+                    </MatTableHeader>
+                    <MatTableRow>
+                        <td>@context.Name</td>
+                        <td>@context.Status</td>
+                        <td>@string.Format("{0:f2}%", @context.TestScore)</td>
+                        <td>@string.Format("{0:f2}%", @context.ValidationScore)</td>
+                        <td>@context.Runtime s</td>
+                    </MatTableRow>
+                </MatTable>
+            </MatTab>
+            <MatTab Label="Output">
+                <MatTabGroup @bind-ActiveIndex="_autoMlIndex">
+                    @foreach (var automl in SessionState.session.AutoMls)
+                    {
+                    <MatTab Label="@automl.Name">
+                        @switch (automl.Status)
+                        {
+                            case 1:
+                            case 2:
+                            case 3:
+                                <div style="padding: 5px; border: 1px solid white;">
+                                    <MatList Style=" min-height: 2rem; max-height: 43rem; overflow-y: auto;">
+                                        @foreach (var item in automl.Messages)
+                                        {
+                                            <MatListItem>
+                                                @item
+                                            </MatListItem>
+                                        }
+                                    </MatList>
+                                </div>
+                                break;
+                            default:
+                                <p>STATUS UNKOWN</p>
+                                break;
+                        }
+                    </MatTab>
+                    }
+                </MatTabGroup>
+                <MatCardActionIcons>
+                    <MatIconButton Icon="@MatIconNames.Cloud_download" OnClick="@DownloadOutputAsync"></MatIconButton>
+                </MatCardActionIcons>
+            </MatTab>
+            <MatTab Label="Input">
+                <div Style="padding: 10px;">
+                    <p Style="margin-bottom: 2px;">Dataset: @SessionState.session.Dataset</p>
+                    <p Style="margin-bottom: 2px;">Task: @SessionState.session.Task</p>
+                    <p>Target: @SessionState.session.Configuration.Target.Target (@SessionState.session.Configuration.Target.Type)</p>
+                    <MatDivider></MatDivider>
+                    <p Style="margin-top: 1em; margin-bottom: 2px;">Selected MlLibraries: @(String.Join(", ", SessionState.session.RequiredMlLibraries.ToArray()))</p>
+                    <p Style="margin-bottom: 2px;">Selected AutoMLs: @(String.Join(", ", SessionState.session.RequiredAutoMLs.ToArray()))</p>
+                    <p Style="margin-top: 1em; margin-bottom: 0px;">RuntimeConstraints:</p>
+                    <p Style="margin-bottom: 0px;">&emsp;Runtime Limit: @SessionState.session.RuntimeConstraints.Runtime_limit</p>
+                    <p>&emsp;Maximum Iterations: @SessionState.session.RuntimeConstraints.Max_iter</p>
+                    <MatDivider></MatDivider>
+                    <p Style="margin-top: 1em; margin-bottom: 0px;">Feature Configuration:</p>
+                    <div style="padding: 5px; border: 1px solid white;">
+                        <MatList Style=" min-height: 2rem; max-height: 30rem; overflow-y: auto;">
+                            @foreach (KeyValuePair<string, BlazorBoilerplate.Server.DataType> pair in SessionState.session.Configuration.Features)
+                            {
+                                <MatListItem Style="height: 30px;">
+                                    @pair.Key : @pair.Value
+                                </MatListItem>
+                            }
+                        </MatList>
+                    </div>
+                </div>
+            </MatTab>
+        </MatTabGroup>
+    </MatCard>
 }
 
 @code {
     private GetSessionsResponseDto _sessions;
+    private int _autoMlIndex = 0;
+    private Timer _timer;
+
+    public class AutoML{
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public double TestScore { get; set; }
+        public double ValidationScore { get; set; }
+        public int Runtime { get; set; }
+
+        public AutoML(string name, string status, double testScore, double validationScore, int runtime){
+            Name = name;
+            Status = status;
+            TestScore = testScore;
+            ValidationScore = validationScore;
+            Runtime = runtime;
+        }
+    }
+    List<AutoML> automls = new List<AutoML>();
+
+    protected override void OnInitialized()
+    {
+        SessionState.OnChange += SwitchSelectedEventHandler;
+        SessionState.OnChange += StateHasChanged;
+    }
+
+    protected async void ChangeState()
+    {
+        if(_timer!=null){
+            DisposeTimer();
+        }
+        SessionState.ChangeState();
+        StateHasChanged();
+    }
+
+    private void SwitchSelectedEventHandler()
+    {
+        if(SessionState.selected){
+            PopulateTable();
+
+            if(SessionState.session.Status==1 & _timer == null){
+                _timer = new Timer()
+                {
+                    AutoReset = true,
+                    Enabled = true,
+                    Interval = 5000
+                };
+                _timer.Elapsed += LoadSession;
+                Console.WriteLine("Session Timer created");
+            }
+        }
+    }
+
+    private void PopulateTable(){
+        automls = new List<AutoML>();
+        foreach (AutoMLStatusDto automl in SessionState.session.AutoMls){
+            string status = "";
+            switch(automl.Status){
+                case 0: status = "Unknown";
+                        break;
+                case 1: status = "Running";
+                        break;
+                case 2: status = "Completed";
+                        break;
+                case 3: status = "Failed";
+                        break;
+            }
+            automls.Add(new AutoML(automl.Name, status, automl.TestScore, automl.ValidationScore , automl.Runtime));
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -32,6 +197,80 @@
             {
                 _sessions = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionsResponseDto>(apiResponse.Result.ToString());
                 viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+
+    private async void LoadSession(object sender, ElapsedEventArgs e)
+    {
+        await InvokeAsync(async () =>
+        {
+            try
+            {
+                ApiResponseDto apiResponse = apiResponse = await apiClient.GetSession(new GetSessionRequestDto { SessionId = SessionState.id });
+
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    SessionState.session = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionResponseDto>(apiResponse.Result.ToString());
+                    if (SessionState.session.Status != 1)
+                    {
+                        DisposeTimer();
+                    }
+                    PopulateTable();
+                    StateHasChanged();
+                }
+                else
+                {
+                    viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+                _timer.Elapsed -= LoadSession;
+            }
+        });
+    }
+
+    public void DisposeTimer(){
+        if(_timer!=null){
+            _timer.Elapsed -= LoadSession;
+            _timer?.Dispose();
+            _timer = null;
+            Console.WriteLine("Session Timer destroyed");
+        }
+    }
+    public void Dispose()
+    {
+        DisposeTimer();
+    }
+
+    private async void DownloadOutputAsync()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = apiResponse = await apiClient.GetModel(new GetAutoMlModelRequestDto { SessionId = SessionState.id, AutoMl = SessionState.session.AutoMls[_autoMlIndex].Name });
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                GetAutoMlModelRespomseDto file = Newtonsoft.Json.JsonConvert.DeserializeObject<GetAutoMlModelRespomseDto>(apiResponse.Result.ToString());
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+                await JSRuntime.InvokeVoidAsync(
+                    "downloadFromByteArray",
+                     new
+                     {
+                         ByteArray = file.Content,
+                         FileName = file.Name,
+                         ContentType = "application/octet-stream"
+                     });
             }
             else
             {
