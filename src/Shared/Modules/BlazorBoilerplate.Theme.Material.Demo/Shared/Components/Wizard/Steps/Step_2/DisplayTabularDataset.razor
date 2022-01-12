@@ -12,7 +12,6 @@
 @if (_datasets != null)
 {
     var renderedItems = GetRenderedItems(_datasets);
-    <button class="btn btn-success" @onclick="ChangeValue">Synchronize data types</button>
     <table class="table-responsive table-striped">
         <thead>
             <tr>
@@ -27,7 +26,7 @@
                 @foreach (var (col, index) in _datasets.Select((v, i) => (v, i)))
                 {
                     <td>
-                        <MatSelect TValue="int" @bind-Value="@(_dataTypeList[index])">
+                        <MatSelect TValue="int" Value="@(_dataTypeList[index])" ValueChanged="@((e) => { _dataTypeList[index] = e; ChangeValue(); })">
                             <MatOption TValue="int" Value="@((int)col.Type)">@Enum.GetName(typeof(ColumnType), (int)col.Type)</MatOption>
                             @foreach (int val in col.ConvertibleTypes)
                             {
