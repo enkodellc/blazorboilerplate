@@ -72,3 +72,8 @@ p {
 a {
     color: var(--mud-palette-primary-lighten);
 }
+
+
+.mud-overlay.mud-overlay-dialog {
+    z-index: 99;
+}
