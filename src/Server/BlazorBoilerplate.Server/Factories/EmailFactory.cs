@@ -1,9 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Shared.Dto.Email;
 using FormatWith;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
-using System;
 
 namespace BlazorBoilerplate.Server.Factories
 {

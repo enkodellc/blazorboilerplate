@@ -2,8 +2,6 @@ using IdentityModel;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Linq;
 using System.Security.Claims;
 
 namespace BlazorBoilerplate.Server.Extensions

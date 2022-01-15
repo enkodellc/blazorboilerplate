@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Title>BlazorBoilerplate Server</Title>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+	<ImplicitUsings>enable</ImplicitUsings>
     <DockerfileFile>$(SolutionDir)/Utils/Docker/Dockerfile</DockerfileFile>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>$(SolutionDir)/Utils/Docker/docker-compose.dcproj</DockerComposeProjectPath>

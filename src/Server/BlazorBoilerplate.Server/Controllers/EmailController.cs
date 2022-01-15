@@ -1,13 +1,12 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.Server.Aop;
 using BlazorBoilerplate.Shared.Dto.Email;
+using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using BlazorBoilerplate.Server.Aop;
 
 namespace BlazorBoilerplate.Server.Controllers
 {

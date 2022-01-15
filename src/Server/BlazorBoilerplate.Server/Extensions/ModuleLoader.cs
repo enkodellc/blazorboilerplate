@@ -1,7 +1,4 @@
 ﻿using BlazorBoilerplate.Shared.Providers;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 

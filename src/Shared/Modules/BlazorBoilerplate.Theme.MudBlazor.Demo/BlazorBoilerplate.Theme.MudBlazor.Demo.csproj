@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
 	<RootNamespace>BlazorBoilerplate.Theme.Material.Demo</RootNamespace>
     <Title>BlazorBoilerplate Demo UI</Title>
+	<ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
