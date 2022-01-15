@@ -68,7 +68,7 @@ else
     <DialogContent>
         <EditForm Model="@currentIdentityResource">
             <FluentValidationValidator />
-            <ValidationSummary />
+            <MudValidationSummary />
             <MudTabs Elevation="4" Rounded="true" Color="@Color.Info">
                 <MudTabPanel Text="Main">
                     <MudTextField @bind-Value="@currentIdentityResource.Name" Disabled="@isCurrentIdentityContextIdReadOnly" Label="Id" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>

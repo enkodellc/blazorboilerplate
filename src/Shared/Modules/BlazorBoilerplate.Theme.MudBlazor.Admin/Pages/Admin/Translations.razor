@@ -84,7 +84,7 @@ else
                                 <MudCardContent>
                                     <EditForm Model="@newLocalizationRecord" OnValidSubmit="@SaveNewLocalizationRecord">
                                         <FluentValidationValidator />
-                                        <ValidationSummary />
+                                        <MudValidationSummary />
                                         <MudSelect @bind-Value="@newLocalizationRecord.Culture" Label=@L["Culture"] AdornmentIcon="@Icons.Material.Filled.Public" AdornmentColor="Color.Primary">
                                             @foreach (var item in LocalizationCultures)
                                                 {
@@ -155,7 +155,7 @@ else
         <DialogContent>
             <EditForm id="newKeyForm" Model="@newLocalizationRecord" OnValidSubmit="@SaveNewKey">
                 <FluentValidationValidator />
-                <ValidationSummary />
+                <MudValidationSummary />
                 <MudTextField @bind-Value="@newLocalizationRecord.ContextId" Label=@L["ContextId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                 <MudTextField @bind-Value="@newLocalizationRecord.MsgId" Label=@L["MsgId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
@@ -200,7 +200,7 @@ else
             @if (PluralFormRules[currentLocalizationRecord.Culture].Count > currentLocalizationRecord.PluralTranslations.Count)
             {<EditForm Model="@newPlural" OnValidSubmit="@SaveNewPlural">
                     <FluentValidationValidator />
-                    <ValidationSummary />
+                    <MudValidationSummary />
                     <MudTextField @bind-Value="@newPlural.Index" Label=@L["Index"] FullWidth="true"></MudTextField>
                     <MudTextField @bind-Value="@newPlural.Translation" Label=@L["Translation"] FullWidth="true" Lines="5"></MudTextField>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="my-2">@L["Add"]</MudButton>

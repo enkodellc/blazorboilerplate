@@ -36,7 +36,7 @@ else
     @if (LocalizationCultures.Count > 0)
     {<EditForm Model="@newPluralFormRule" OnValidSubmit="@SaveNewPluralFormRule">
             <FluentValidationValidator />
-            <ValidationSummary />
+            <MudValidationSummary />
             <MudSelect @bind-Value="@newPluralFormRule.Language" Label=@L["Culture"] AdornmentIcon="@Icons.Material.Filled.Public" AdornmentColor="Color.Primary">
                 @foreach (var item in LocalizationCultures)
                         {

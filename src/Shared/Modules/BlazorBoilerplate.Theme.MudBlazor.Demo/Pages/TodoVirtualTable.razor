@@ -97,7 +97,7 @@
         <DialogContent>
             <EditForm id="newTodoForm" Model="@currentTodo" OnValidSubmit="@NewEntity">
                 <FluentValidationValidator />
-                <ValidationSummary />
+                <MudValidationSummary />
                 <MudTextField @bind-Value="@currentTodo.Title" Label="Title" AdornmentIcon="@Icons.Filled.Title" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                 <MudCheckBox @bind-Checked="@currentTodo.IsCompleted" Label="Completed"></MudCheckBox>

@@ -73,7 +73,7 @@ else
         <MudContainer Style="max-height: 300px; overflow-y: scroll">
             <EditForm Model="@currentApiResource">
                 <FluentValidationValidator />
-                <ValidationSummary />
+                <MudValidationSummary />
                 <MudTabs Elevation="4" Rounded="true" Color="@Color.Info">
                     <MudTabPanel Text="Main">
                         <MudTextField @bind-Value="@currentApiResource.Name" Disabled="@isCurrentApiContextIdReadOnly" Label="Id" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
@@ -191,7 +191,7 @@ else
     <DialogContent>
         <EditForm Model="@currentSecret">
             <FluentValidationValidator />
-            <ValidationSummary />
+            <MudValidationSummary />
             <MudTextField @bind-Value="@currentSecret.Description" Label="Description" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
 
             <MudTextField @bind-Value="@currentSecret.Value" Label="Secret" AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" Required="true" RequiredError=@L["Required"]></MudTextField>

@@ -61,7 +61,7 @@ else
     <DialogContent>
         <EditForm Model="@currentTenant">
             <FluentValidationValidator />
-            <ValidationSummary />
+            <MudValidationSummary />
             <MudTextField @bind-Value="@currentTenant.Id" Disabled="@isCurrentTenantKeyReadOnly" Label="Id" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
             <MudTextField @bind-Value="@currentTenant.Identifier" Disabled="@(currentTenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)" Label="Identifier" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>

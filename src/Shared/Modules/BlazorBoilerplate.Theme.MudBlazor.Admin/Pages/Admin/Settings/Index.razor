@@ -21,7 +21,7 @@ else
 {
     <EditForm Model="@settings" class="mb-4">
         <FluentValidationValidator />
-        <ValidationSummary />
+        <MudValidationSummary />
         <MudSelect @bind-Value="@settings[SettingKey.MainConfiguration_Runtime].Value" Label="@L["Blazor Runtime"]">
             @foreach (var item in BlazorRuntimes)
                 {

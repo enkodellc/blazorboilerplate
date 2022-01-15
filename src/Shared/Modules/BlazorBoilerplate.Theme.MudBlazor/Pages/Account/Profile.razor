@@ -18,7 +18,7 @@
 
         <EditForm id="mainForm" Model="@userViewModel" OnValidSubmit="@UpdateUser">
             <FluentValidationValidator />
-            <ValidationSummary />
+            <MudValidationSummary />
             <MudTextField @bind-Value="@userViewModel.UserName" Label=@L["UserName"] AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] ReadOnly="true"></MudTextField>
 
             <MudTextField @bind-Value="@userViewModel.Email" Label="Email" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
@@ -78,7 +78,7 @@
         <DialogContent>
             <EditForm Model="@updatePasswordViewModel" OnValidSubmit="@UpdatePassword">
                 <FluentValidationValidator />
-                <ValidationSummary />
+                <MudValidationSummary />
                 <MudTextField @bind-Value="@updatePasswordViewModel.CurrentPassword" Label=@L["CurrentPassword"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
 
                 <MudTextField @bind-Value="@updatePasswordViewModel.NewPassword" Label=@L["NewPassword"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>

@@ -22,7 +22,7 @@ else
 {
     <EditForm Model="@settings">
         <FluentValidationValidator />
-        <ValidationSummary />
+        <MudValidationSummary />
         <MudText Typo="Typo.h4">@L["OutgoingEmail"]</MudText>
         <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromAddress].Value" Label="@L["SenderEmail"]" AdornmentIcon="@Icons.Filled.AlternateEmail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
@@ -89,7 +89,7 @@ else
         <DialogContent>
             <EditForm id="emailForm" Model="@email" OnValidSubmit="@SendTestEmail">
                 <FluentValidationValidator />
-                <ValidationSummary />
+                <MudValidationSummary />
                 <MudTextField @bind-Value="@email.ToAddress" Label=@L["Email"] AdornmentIcon="@Icons.Outlined.Email" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                 <MudSwitch @bind-Checked="@email.Queued" Label=@L["Queued"] Color="Color.Primary" />

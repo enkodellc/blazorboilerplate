@@ -32,7 +32,7 @@
                         </MudCardHeader>
                         <MudCardContent>
                             <FluentValidationValidator />
-                            <ValidationSummary />
+                            <MudValidationSummary />
                             <MudTextField AutoFocus="true" @bind-Value="@loginViewModel.UserName" Label=@L["UserName"] AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                             <MudTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
@@ -58,7 +58,7 @@
                         <ChildContent>
                             <EditForm class="pa-4" Model="@forgotPasswordViewModel" OnValidSubmit="@ForgotPassword">
                                 <FluentValidationValidator />
-                                <ValidationSummary />
+                                <MudValidationSummary />
                                 <MudTextField @bind-Value="@forgotPasswordViewModel.Email" Label=@L["Email"] AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="my-4" Style="float: right">@L["Submit"]</MudButton>

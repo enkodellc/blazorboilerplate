@@ -1,0 +1,11 @@
+﻿@inherits ValidationSummaryBase
+
+
+@foreach (var message in CurrentEditContext.GetValidationMessages())
+{
+    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="ma-1">@message</MudAlert>
+}
+
+@code {
+    
+}

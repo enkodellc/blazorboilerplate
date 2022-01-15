@@ -21,7 +21,7 @@
             </MudCardHeader>
             <MudCardContent>
                 <FluentValidationValidator />
-                <ValidationSummary />
+                <MudValidationSummary />
                 <MudTextField @bind-Value="@confirmEmailViewModel.UserId" Label="UserId" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                 <MudTextField @bind-Value="@confirmEmailViewModel.Token" Label="Token" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>                

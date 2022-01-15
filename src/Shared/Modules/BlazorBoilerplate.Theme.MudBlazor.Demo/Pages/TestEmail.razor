@@ -10,7 +10,7 @@
 <p>Test out SMTP email sending with MailKit. This will send out an email using a default "Test" template.</p>
 <EditForm Model="@emailParameters" OnValidSubmit="@SendTestEmail">
     <FluentValidationValidator />
-    <ValidationSummary />
+    <MudValidationSummary />
     <MudTextField @bind-Value="@emailParameters.ToAddress" Label="Email" AdornmentIcon="@Icons.Filled.MailOutline" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Send Test Template Email</MudButton>

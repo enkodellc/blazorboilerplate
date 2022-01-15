@@ -33,7 +33,7 @@
                     </MudCardHeader>
                     <MudCardContent>
                         <FluentValidationValidator />
-                        <ValidationSummary />
+                        <MudValidationSummary />
                         <MudTextField AutoFocus="true" @bind-Value="@loginViewModel.TwoFactorCode" Label=@L["Code"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
 
                         <MudCheckBox @bind-Checked="@loginViewModel.RememberMachine" Class="ml-n2">@L["RememberBrowser"]</MudCheckBox>
@@ -56,7 +56,7 @@
                     <ChildContent>
                         <EditForm Model="@forgotAuthenticatorInputModel" OnValidSubmit="@ForgotAuthenticator">
                             <FluentValidationValidator />
-                            <ValidationSummary />
+                            <MudValidationSummary />
                             <MudTextField @bind-Value="@forgotAuthenticatorInputModel.RecoveryCode" Label=@L["RecoveryCode"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
 
                             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="my-4" Style="float: right">@L["Login"]</MudButton>
