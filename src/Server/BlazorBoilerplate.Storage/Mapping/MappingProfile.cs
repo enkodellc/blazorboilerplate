@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using AutoMapper.Configuration;
-using BlazorBoilerplate.Shared.Dto;
+﻿using AutoMapper.Configuration;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Dto.Sample;
 using Finbuckle.MultiTenant;
-using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
 using Message = BlazorBoilerplate.Infrastructure.Storage.DataModels.Message;
 
 namespace BlazorBoilerplate.Storage.Mapping
