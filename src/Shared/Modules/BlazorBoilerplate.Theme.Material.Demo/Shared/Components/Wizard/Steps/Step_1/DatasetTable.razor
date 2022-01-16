@@ -3,14 +3,25 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 
-<MatTable Items="@DatasetResponse" style="width:stretch" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="DatasetSelectionChangedEvent">
+<MatTable Items="@DatasetResponse" style="width:stretch" class="mat-elevation-z5" AllowSelection="false">
     <MatTableHeader>
         <th>Type</th>
         <th>Name</th>
+        <th>Rows</th>
+        <th>Columns</th>
+        <th>Date</th>
     </MatTableHeader>
     <MatTableRow>
         <td>@context.Type</td>
         <td>@context.Name</td>
+        <td>500</td>
+        <td>20</td>
+        <td>
+            2022-01-01
+            <MatIcon Icon="delete" Style="float: right; cursor: pointer"></MatIcon>
+            <MatIcon Icon="directions_run" Style="float:right; cursor:pointer"  @onclick="@((e) => { DatasetChanged(context); })"></MatIcon>
+        </td>
+
     </MatTableRow>
 </MatTable>
 
@@ -29,6 +40,7 @@
         base.OnInitialized();
     }
 
+    /**
     private async void DatasetSelectionChangedEvent(object row)
     {
         if (row == null)
@@ -43,7 +55,17 @@
         }
         await SelectedDatasetChanged.InvokeAsync(SelectedDataset);
     }
+    */
 
+    /// <summary>
+    /// handle click on icon run, 
+    /// </summary>
+    private async void DatasetChanged(GetDatasetsResponseDto obj)
+    {
+        SelectedDataset.DatasetName = obj.Name;
+        SelectedDataset.DatasetType = obj.Type;
+        await SelectedDatasetChanged.InvokeAsync(SelectedDataset);
+    }
 
 
 }

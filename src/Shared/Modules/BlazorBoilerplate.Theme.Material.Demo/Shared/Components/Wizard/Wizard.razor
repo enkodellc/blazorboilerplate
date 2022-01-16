@@ -44,7 +44,7 @@
 
     <div id="@Id">
         <div id="container-fluid">
-            @ChildContent
+            @ChildContent 
         </div>
     </div>
 </CascadingValue>
@@ -138,6 +138,8 @@
         }
         await ActiveStepIxChanged.InvokeAsync(ActiveStepIx);
     }
+
+  
 
     /// <summary>
     /// Populates the <see cref="ActiveStep"/> the Sets the passed in <see cref="WizardStep"/> instance as the
