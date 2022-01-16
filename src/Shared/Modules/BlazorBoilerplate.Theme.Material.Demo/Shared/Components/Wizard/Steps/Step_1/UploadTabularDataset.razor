@@ -6,8 +6,9 @@
 
 
 <MatDialog @bind-IsOpen="IsOpen">
-    <MatDialogTitle>Upload new dataset</MatDialogTitle>
+    <MatDialogTitle>Add Dataset</MatDialogTitle>
     <MatDialogContent>
+        <MatTextField @bind-Value="@FileName" Label="File Name"></MatTextField>
         <MatFileUpload OnChange="@FilesReady" Label="Click or drag & drop a dataset"></MatFileUpload>
     </MatDialogContent>
     <MatDialogActions>
@@ -18,6 +19,9 @@
 @code {
     [Parameter]
     public bool IsOpen { get; set; }
+
+    [Parameter]
+    public string FileName { get; set; }
 
     [Parameter]
     public EventCallback<bool> IsOpenChanged { get; set; }
@@ -31,6 +35,7 @@
         await IsOpenChanged.InvokeAsync(IsOpen);
     }
 
+    // TODO: do we need upload button ?
     private async Task FilesReady(IMatFileUploadEntry[] files)
     {
         try
@@ -47,7 +52,7 @@
                     using (var reader = new StreamReader(stream))
                     {
                         var content = await reader.ReadToEndAsync();
-                        fileUpload = new FileUploadRequestDto(file.Name, content);
+                        fileUpload = new FileUploadRequestDto((FileName == null || FileName == "")? file.Name : FileName, content);
                         apiResponse = await apiClient.UploadDataset(fileUpload);
                     }
                 }
