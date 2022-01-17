@@ -18,14 +18,17 @@
         <td>20</td>
         <td>
             2022-01-01
-            <MatIcon Icon="delete" Style="float: right; cursor: pointer"></MatIcon>
-            <MatIcon Icon="directions_run" Style="float:right; cursor:pointer"  @onclick="@((e) => { DatasetChanged(context); })"></MatIcon>
+            <MatSelect Icon="menu" Label="Menu" TValue="int" Value="-1" Style="float: right; cursor: pointer" @onclick="@(() => { HandleDatasetChanged(context); })">
+                <MatOption TValue="int" Value="0">Delete</MatOption>
+                <MatOption TValue="int" Value="1" @onclick="@GoNext">Run</MatOption>
+            </MatSelect>
         </td>
 
     </MatTableRow>
 </MatTable>
 
 @code {
+
     [Parameter]
     public List<GetDatasetsResponseDto> DatasetResponse { get; set; }
 
@@ -35,37 +38,26 @@
     [Parameter]
     public EventCallback<StartAutoMLRequestDto> SelectedDatasetChanged { get; set; }
 
+    [Parameter]
+    public EventCallback GoNext { get; set; }
+
+    private bool toggledValue = false;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
     }
 
-    /**
-    private async void DatasetSelectionChangedEvent(object row)
-    {
-        if (row == null)
-        {
-            SelectedDataset.DatasetName = null;
-            SelectedDataset.DatasetType = null;
-        }
-        else
-        {
-            SelectedDataset.DatasetName = ((GetDatasetsResponseDto)row).Name;
-            SelectedDataset.DatasetType = ((GetDatasetsResponseDto)row).Type;
-        }
-        await SelectedDatasetChanged.InvokeAsync(SelectedDataset);
-    }
-    */
+    // TODO: i think menu with run and delete could be pretier with just two icon (run and delete, but i got async problem with it)
 
     /// <summary>
-    /// handle click on icon run, 
+    /// handle click on icon run,
     /// </summary>
-    private async void DatasetChanged(GetDatasetsResponseDto obj)
+    private async void HandleDatasetChanged(GetDatasetsResponseDto obj)
     {
         SelectedDataset.DatasetName = obj.Name;
         SelectedDataset.DatasetType = obj.Type;
         await SelectedDatasetChanged.InvokeAsync(SelectedDataset);
     }
-
 
 }

@@ -6,7 +6,7 @@
 @inject NavigationManager NavManager
 @attribute [Authorize]
 
-<Wizard Id="Test" @bind-ActiveStepIx="_wizardActiveStep" @bind-IsNextStepApproved="_isNextStepApproved" OnSubmit="@OnWizzardCompleted">
+<Wizard Id="Test" @bind-ActiveStepIx="_wizardActiveStep" @bind-IsNextStepApproved="_isNextStepApproved" OnSubmit="@OnWizzardCompleted" @ref="childWirzard">
     <WizardStep Name="1">
         <div class="row">
             @if (isLoading)
@@ -15,7 +15,7 @@
             }
             else
             {
-                <SelectDataset @bind-SelectedDataset="_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved"></SelectDataset>
+                <SelectDataset @bind-SelectedDataset="_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved" GoNext="@ProvokeNextStep"></SelectDataset>
             }
         </div>
     </WizardStep>
@@ -42,12 +42,18 @@
 </MatDialog>
 
 @code{
+    private Wizard childWirzard;
     private bool _isNextStepApproved = false;
     private bool _isAutoMlStartedOpen = false;
     private int _wizardActiveStep = 0;
     private bool isLoading;
     private StartAutoMLRequestDto _automlRequest;
     private StartAutoMLResponseDto _autoMltask;
+
+    public void ProvokeNextStep()
+    {
+        childWirzard.GoNext();
+    }
 
     protected override void OnInitialized()
     {

@@ -18,8 +18,8 @@
 <MatButton TrailingIcon="add" OnClick="@(e => { _isTabularUploadOpen = true; })">Upload</MatButton>*@
 
 @if (dataTypeValue == "tab")
-{
-<DatasetTable DatasetResponse="_datasets" @bind-SelectedDataset="_selectedDataset"></DatasetTable>
+{ 
+<DatasetTable DatasetResponse="_datasets" @bind-SelectedDataset="_selectedDataset" GoNext="GoNext"></DatasetTable>
 }
 
 @*<MatTabGroup>
@@ -54,6 +54,9 @@
     /// </summary>
     [Parameter]
     public EventCallback CheckForNextStepCallback { get; set; }
+
+    [Parameter]
+    public EventCallback GoNext { get; set; }
 
     private List<GetDatasetsResponseDto> _datasets;
     private bool _isTabularUploadOpen = false;
