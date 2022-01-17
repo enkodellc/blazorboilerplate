@@ -1,0 +1,57 @@
+﻿@inject IStringLocalizer<Global> L
+@using System
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+
+<div class="row">
+    <MatTable Items="_models" style="width:100%" class="mat-elevation-z5" AllowSelection="true">
+        <MatTableHeader>
+            <th></th>
+            <th>AutoML solution</th>
+            <th>ML library</th>
+            <th>Model</th>
+            <th>Score</th>
+            <th>prediction time [ms]</th>
+            <th>Status</th>
+            <th></th>
+        </MatTableHeader>
+        <MatTableRow>
+            <th>award</th>
+            <th>@context.AutoMLSolution</th>
+            <th>@context.MLLibrary</th>
+            <th>@context.Model</th>
+            <th>@context.Score</th>
+            <th>@context.PredicionTime</th>
+            <th>@context.Status</th>
+            <th>menu</th>
+        </MatTableRow>
+    </MatTable>
+</div>
+
+@code {
+
+    private class ModelType
+    {
+        public string AutoMLSolution { get; set; }
+        public string MLLibrary { get; set; }
+        public string Model { get; set; }
+        public double Score { get; set; }
+        public double PredicionTime { get; set; }
+        public string Status { get; set; }
+
+        public ModelType(string solution, string library, string model, double score, double predtime, string status)
+        {
+            AutoMLSolution = solution;
+            MLLibrary = library;
+            Model = model;
+            Score = score;
+            PredicionTime = predtime;
+            Status = status;
+        }
+    }
+
+    ModelType[] _models = new[]
+{
+        new ModelType("Autokeras", "Keras", "NN", 0.9, 10, "OK"),
+    };
+}

@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/datasets/{id}"
 @inject IStringLocalizer<Global> L
 @using System
 @inject IApiClient apiClient
@@ -6,58 +6,56 @@
 @inject NavigationManager NavManager
 @attribute [Authorize]
 
-<Wizard Id="Test" @bind-ActiveStepIx="_wizardActiveStep" @bind-IsNextStepApproved="_isNextStepApproved" OnSubmit="@OnWizzardCompleted" @ref="childWirzard">
-    <WizardStep Name="1">
-        <div class="row">
-            @if (isLoading)
-            {
-                <p>Uploading...</p>
-            }
-            else
-            {
-                <SelectDataset @bind-SelectedDataset="_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved" GoNext="@ProvokeNextStep"></SelectDataset>
-            }
-        </div>
-    </WizardStep>
-    <WizardStep Name="2">
-        <div class="row">
-            <DisplayTabularDataset AutoMLRequest="@_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved"></DisplayTabularDataset>
-        </div>
-    </WizardStep>
-    <WizardStep Name="3">
-        <div class="row" style="display: block;">
-            <TaskConfiguration @bind-AutoMLRequest="_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved"></TaskConfiguration>
-        </div>
-    </WizardStep>
-</Wizard>
+<h1>@Id</h1>
 
-<MatDialog @bind-IsOpen="_isAutoMlStartedOpen">
-    <MatDialogTitle>AutoML started</MatDialogTitle>
-    <MatDialogContent>
+<MatTabGroup>
+    <MatTab Label="Train">
+        <Wizard Id="Test" @bind-ActiveStepIx="_wizardActiveStep" @bind-IsNextStepApproved="_isNextStepApproved" OnSubmit="@OnWizzardCompleted">
+            <WizardStep Name="1">
+                <div class="row">
+                    <DisplayTabularDataset AutoMLRequest="@_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved"></DisplayTabularDataset>
+                </div>
+            </WizardStep>
+            <WizardStep Name="2">
+                <div class="row" style="display: block;">
+                    <TaskConfiguration @bind-AutoMLRequest="_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved"></TaskConfiguration>
+                </div>
+            </WizardStep>
+        </Wizard>
 
-    </MatDialogContent>
-    <MatDialogActions>
-        <MatButton OnClick="@(e => { NavManager.NavigateTo("/sessions"); })">OK</MatButton>
-    </MatDialogActions>
-</MatDialog>
+        <MatDialog @bind-IsOpen="_isAutoMlStartedOpen">
+            <MatDialogTitle>AutoML started</MatDialogTitle>
+            <MatDialogContent>
+
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton OnClick="@(e => { NavManager.NavigateTo("/sessions"); })">OK</MatButton>
+            </MatDialogActions>
+        </MatDialog>
+    </MatTab>
+    <MatTab Label="Models">
+        <!-- pass id or name to models to use in onInitialized in Models component to load -->
+        <Models></Models>
+    </MatTab>
+</MatTabGroup>
 
 @code{
-    private Wizard childWirzard;
+    [Parameter]
+    public string? Id { get; set; }
+
+
+
     private bool _isNextStepApproved = false;
     private bool _isAutoMlStartedOpen = false;
     private int _wizardActiveStep = 0;
-    private bool isLoading;
     private StartAutoMLRequestDto _automlRequest;
     private StartAutoMLResponseDto _autoMltask;
-
-    public void ProvokeNextStep()
-    {
-        childWirzard.GoNext();
-    }
 
     protected override void OnInitialized()
     {
         _automlRequest = new StartAutoMLRequestDto();
+        _automlRequest.DatasetName = Id;
+        // load with id or name all relevant information
     }
 
     private void CheckIfNextStepIsApproved()
@@ -104,6 +102,7 @@
         return true;
     }
 
+
     private async Task OnWizzardCompleted()
     {
         try
@@ -126,5 +125,6 @@
             viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
+
 }
 
