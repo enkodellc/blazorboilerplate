@@ -18,10 +18,9 @@
         <td>@context.Rows</td>
         <td>@context.Columns</td>
         <td style="white-space:nowrap;">@context.Creation_date</td>
-        <td><MatSelect Icon="menu" TValue="int" Value="-1" Style="float: right; cursor: pointer" @onclick="@(() => { HandleDatasetChanged(context); })">
-                <MatOption TValue="int" Value="0">Delete</MatOption>
-                <MatOption TValue="int" Value="1" @onclick="@GoNext">Train</MatOption>
-            </MatSelect> </td>
+        <td>
+            <CustomMenuItem GoNext="GoNext" HandleClick="@(() => HandleDatasetChanged(context))"></CustomMenuItem>
+        </td>
     </MatTableRow>
 </MatTable>
 
@@ -39,14 +38,19 @@
     [Parameter]
     public EventCallback GoNext { get; set; }
 
-    private bool toggledValue = false;
+    MatButton Button;
+    BaseMatMenu Menu;
+
+    public void OnClick(MouseEventArgs e)
+    {
+        this.Menu.OpenAsync(Button.Ref);
+    }
+
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
     }
-
-    // TODO: i think menu with run and delete could be pretier with just two icon (run and delete, but i got async problem with it)
 
     /// <summary>
     /// handle click on icon run,
@@ -57,5 +61,6 @@
         SelectedDataset.DatasetType = obj.Type;
         await SelectedDatasetChanged.InvokeAsync(SelectedDataset);
     }
+
 
 }
