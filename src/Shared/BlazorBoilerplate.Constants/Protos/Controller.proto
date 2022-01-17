@@ -1,6 +1,8 @@
 syntax = "proto3";
 option csharp_namespace = "BlazorBoilerplate.Server";
 
+import "google/protobuf/timestamp.proto";
+
 /*includes all gRPC functions available for the client frontend*/
 service ControllerService {
 
@@ -73,6 +75,9 @@ message GetDatasetsResponse {
 message Dataset {
   string fileName = 1;
   string type = 2;
+  int32 columns = 3;
+  int32 rows = 4;
+  google.protobuf.Timestamp creation_date = 5;
 }
 
 message GetDatasetRequest {

@@ -10,10 +10,16 @@ namespace BlazorBoilerplate.Shared.Dto.Dataset
     {
         public string Name { get; set; }
         public string Type { get; set; }
-        public GetDatasetsResponseDto(string name, string type)
+        public int Columns { get; set; }
+        public int Rows { get; set; }
+        public DateTime Creation_date { get; set; }
+        public GetDatasetsResponseDto(string name, string type,int columns,int rows, DateTime time)
         {
             Name = name;
             Type = type;
+            Columns = columns;
+            Rows = rows;
+            Creation_date = time;
         }
     }
 }

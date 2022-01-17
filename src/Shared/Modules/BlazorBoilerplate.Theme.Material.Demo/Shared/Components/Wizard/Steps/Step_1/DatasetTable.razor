@@ -5,25 +5,23 @@
 
 <MatTable Items="@DatasetResponse" style="width:stretch" class="mat-elevation-z5" AllowSelection="false">
     <MatTableHeader>
-        <th>Type</th>
         <th>Name</th>
         <th>Rows</th>
         <th>Columns</th>
         <th>Date</th>
+        <th></th>
     </MatTableHeader>
     <MatTableRow>
-        <td>@context.Type</td>
-        <td>@context.Name</td>
-        <td>500</td>
-        <td>20</td>
         <td>
-            2022-01-01
-            <MatSelect Icon="menu" Label="Menu" TValue="int" Value="-1" Style="float: right; cursor: pointer" @onclick="@(() => { HandleDatasetChanged(context); })">
-                <MatOption TValue="int" Value="0">Delete</MatOption>
-                <MatOption TValue="int" Value="1" @onclick="@GoNext">Run</MatOption>
-            </MatSelect>
+            <a Style="cursor: pointer;" @onclick="@(() => { Console.WriteLine("Hello"); })">@context.Name</a>
         </td>
-
+        <td>@context.Rows</td>
+        <td>@context.Columns</td>
+        <td>@context.Creation_date</td>
+        <td><MatSelect Icon="menu" TValue="int" Value="-1" Style="float: right; cursor: pointer" @onclick="@(() => { HandleDatasetChanged(context); })">
+                <MatOption TValue="int" Value="0">Delete</MatOption>
+                <MatOption TValue="int" Value="1" @onclick="@GoNext">Train</MatOption>
+            </MatSelect> </td>
     </MatTableRow>
 </MatTable>
 

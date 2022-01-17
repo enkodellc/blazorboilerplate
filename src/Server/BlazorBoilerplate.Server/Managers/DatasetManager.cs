@@ -77,7 +77,7 @@ namespace BlazorBoilerplate.Server.Managers
                 var reply = _client.GetDatasets(getDatasetsRequest);
                 foreach (Dataset item in reply.Dataset)
                 {
-                    response.Add(new GetDatasetsResponseDto(item.FileName, item.Type));
+                    response.Add(new GetDatasetsResponseDto(item.FileName, item.Type, item.Columns, item.Rows,item.CreationDate.ToDateTime()));
                 }
                 return new ApiResponse(Status200OK, null, response);
 
