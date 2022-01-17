@@ -9,10 +9,23 @@
     <MatDialogTitle>Add Dataset</MatDialogTitle>
     <MatDialogContent>
         <MatTextField @bind-Value="@FileName" Label="File Name"></MatTextField>
-        <MatFileUpload OnChange="@FilesReady" Label="Click or drag & drop a dataset"></MatFileUpload>
+        @if (fileUpload == null)
+        {
+            <MatFileUpload OnChange="@FilesReady" Label="Click or drag & drop a dataset"></MatFileUpload>
+        }
+        @if (fileUpload != null)
+        {
+        <MatFileUpload OnChange="@FilesReady" Label="File uploaded. Click or drag & drop a dataset to change current file."></MatFileUpload>
+        }
+
     </MatDialogContent>
+    @if (fileUpload != null)
+    {
+        <p>Current file is @fileUpload.FileName</p>
+    }
     <MatDialogActions>
         <MatButton OnClick="@Close">Close</MatButton>
+        <MatButton OnClick="@Upload">Upload</MatButton>
     </MatDialogActions>
 </MatDialog>
 
@@ -29,19 +42,18 @@
     [Parameter]
     public EventCallback OnUploadCompletedCallback { get; set; }
 
+    private FileUploadRequestDto fileUpload;
+
     private async Task Close()
     {
         IsOpen = false;
         await IsOpenChanged.InvokeAsync(IsOpen);
     }
 
-    // TODO: do we need upload button ?
     private async Task FilesReady(IMatFileUploadEntry[] files)
     {
         try
         {
-            ApiResponseDto apiResponse = new ApiResponseDto();
-            FileUploadRequestDto fileUpload;
             foreach (var file in files)
             {
                 //Only one file can always be read
@@ -52,12 +64,24 @@
                     using (var reader = new StreamReader(stream))
                     {
                         var content = await reader.ReadToEndAsync();
-                        fileUpload = new FileUploadRequestDto((FileName == null || FileName == "")? file.Name : FileName, content);
-                        apiResponse = await apiClient.UploadDataset(fileUpload);
+                        fileUpload = new FileUploadRequestDto((FileName == null || FileName == "") ? file.Name : FileName, content);
                     }
                 }
             }
 
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+    private async Task Upload()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = new ApiResponseDto();
+            fileUpload.FileName = (FileName != null || FileName != "") ? FileName: fileUpload.FileName;
+            apiResponse = await apiClient.UploadDataset(fileUpload);
             if (apiResponse.IsSuccessStatusCode)
             {
                 await OnUploadCompletedCallback.InvokeAsync();
