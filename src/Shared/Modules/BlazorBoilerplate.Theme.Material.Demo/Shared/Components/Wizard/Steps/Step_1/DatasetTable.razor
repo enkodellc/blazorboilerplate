@@ -17,7 +17,7 @@
         </td>
         <td>@context.Rows</td>
         <td>@context.Columns</td>
-        <td style="white-space:nowrap;">@context.Creation_date</td>
+        <td style="white-space:nowrap;">@context.Creation_date.ToString("yyyy-MM-dd")</td>
         <td>
             <CustomMenuItem GoNext="GoNext" HandleClick="@(() => HandleDatasetChanged(context))"></CustomMenuItem>
         </td>
