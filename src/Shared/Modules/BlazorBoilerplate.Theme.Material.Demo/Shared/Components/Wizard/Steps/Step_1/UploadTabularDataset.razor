@@ -8,21 +8,11 @@
 <MatDialog @bind-IsOpen="IsOpen">
     <MatDialogTitle>Add Dataset</MatDialogTitle>
     <MatDialogContent>
-        <MatTextField @bind-Value="@FileName" Label="File Name"></MatTextField>
-        @if (fileUpload == null)
-        {
-            <MatFileUpload OnChange="@FilesReady" Label="Click or drag & drop a dataset"></MatFileUpload>
-        }
-        @if (fileUpload != null)
-        {
-        <MatFileUpload OnChange="@FilesReady" Label="File uploaded. Click or drag & drop a dataset to change current file."></MatFileUpload>
-        }
+        <MatTextField @bind-Value="@FileName" Label="File Name" Disabled="true"></MatTextField>
+
+        <MatFileUpload OnChange="@FilesReady" Label="Choose File"></MatFileUpload>
 
     </MatDialogContent>
-    @if (fileUpload != null)
-    {
-        <p>Current file is @fileUpload.FileName</p>
-    }
     <MatDialogActions>
         <MatButton OnClick="@Close">Close</MatButton>
         <MatButton OnClick="@Upload">Upload</MatButton>
@@ -33,8 +23,7 @@
     [Parameter]
     public bool IsOpen { get; set; }
 
-    [Parameter]
-    public string FileName { get; set; }
+    private string FileName;
 
     [Parameter]
     public EventCallback<bool> IsOpenChanged { get; set; }
@@ -64,7 +53,8 @@
                     using (var reader = new StreamReader(stream))
                     {
                         var content = await reader.ReadToEndAsync();
-                        fileUpload = new FileUploadRequestDto((FileName == null || FileName == "") ? file.Name : FileName, content);
+                        fileUpload = new FileUploadRequestDto (file.Name, content);
+                        FileName = file.Name;
                     }
                 }
             }
@@ -80,7 +70,6 @@
         try
         {
             ApiResponseDto apiResponse = new ApiResponseDto();
-            fileUpload.FileName = (FileName != null || FileName != "") ? FileName: fileUpload.FileName;
             apiResponse = await apiClient.UploadDataset(fileUpload);
             if (apiResponse.IsSuccessStatusCode)
             {
