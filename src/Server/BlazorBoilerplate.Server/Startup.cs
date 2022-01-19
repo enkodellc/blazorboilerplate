@@ -87,6 +87,11 @@ namespace BlazorBoilerplate.Server
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddGrpc(options =>
+            {
+                options.MaxReceiveMessageSize = 10 * 1024 * 1024; // 10 MB
+                options.MaxSendMessageSize = 10 * 1024 * 1024; // 10 MB
+            });
             services.AddSingleton<ILocalizationProvider, StorageLocalizationProvider>();
             services.AddTextLocalization(options =>
             {
