@@ -1,4 +1,4 @@
-﻿@page "/impressum"
+﻿@page "/imprint"
 @inject IStringLocalizer<Global> L
 @using System
 @inject IApiClient apiClient
@@ -6,7 +6,7 @@
 @inject NavigationManager NavManager
 @attribute [Authorize]
 
-<h1>Impressum (legal notice, in German)</h1>
+<h1>Impressum (legal notice/imprint, in German)</h1>
 
 <h2>Angaben gemäß § 5 TMG</h2>
 <p>
@@ -20,7 +20,7 @@
 
 <h2>Kontakt</h2>
 <p>
-    E-Mail: bernhard.humm@h-da.de
+    E-Mail: <a href="mailto:bernhard.humm@h-da.de">bernhard.humm@h-da.de</a>
 </p>
 
 <h3>Haftung für Inhalte</h3>
