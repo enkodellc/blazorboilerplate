@@ -4,14 +4,16 @@
 @inject IStringLocalizer<Global> L
 
 <CascadingValue Value="this">
-    <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
-        <MatDrawer @bind-Opened="@_navMenuOpened">
+    <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="full">
+        <MatDrawer Opened="true">
             <header class="drawer-header">
                 <div class="drawer-logo">
-                    @*<img alt="@appState.AppName" class="logo-img" src="_content/BlazorBoilerplate.Theme.Material/images/logo-dark.svg" title="@appState.AppName">*@
-                    <a class="miniHover" href="/">@appState.AppName</a>
+                    @*logo come here*@
+                    <img alt="@appState.AppName" class="logo-img" src="_content/BlazorBoilerplate.Theme.Material/images/logo-dark.svg" title="@appState.AppName">
+                    <p style="white-space: nowrap; font-size: 11px; ">
+                        Effective Machine Learning made easy
+                    </p>
                 </div>
-                <UserProfile />
             </header>
             <NavMenu />
             <DrawerFooter></DrawerFooter>
@@ -23,20 +25,6 @@
                         <MatAppBarSection>
                             <MatAppBarTitle>
                             </MatAppBarTitle>
-                            <div class="hidden-mdc-down">
-                                <MatTooltip Tooltip="@L["AppHoverNavToggle"]">
-                                    <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
-                                </MatTooltip>
-                                <MatTooltip Tooltip="@L["AppHoverNavMinimize"]">
-                                    <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
-                                </MatTooltip>
-                                @*</li>
-                                    <li>
-                                        <MatTooltip Tooltip="Lock Navigation">
-                                            <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
-                                        </MatTooltip>
-                                        </li>*@
-                            </div>
                         </MatAppBarSection>
                         <MatAppBarSection Align="@MatAppBarSectionAlign.End">
                             <TopRightBarSection></TopRightBarSection>
@@ -56,9 +44,6 @@
 </CascadingValue>
 
 @code {
-    bool _navMenuOpened = true;
-    bool _navMinified = false;
-    public string bbDrawerClass = string.Empty;
 
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -71,53 +56,8 @@
         {
             var profile = await appState.GetUserProfile();
 
-            _navMenuOpened = profile.IsNavOpen;
-            _navMinified = profile.IsNavMinified;
         }
     }
 
-    void NavToggle()
-    {
-        _navMenuOpened = !_navMenuOpened;
 
-        if (_navMenuOpened)
-        {
-            bbDrawerClass = "full";
-        }
-        else
-        {
-            bbDrawerClass = "closed";
-        }
-
-        StateHasChanged();
-    }
-
-    void NavLock()
-    {
-        //Todo Lock Nav
-    }
-
-    void NavMinify()
-    {
-        _navMinified = !_navMinified;
-
-        if (!_navMenuOpened)
-        {
-            _navMinified = true;
-        }
-
-        if (_navMinified)
-        {
-            bbDrawerClass = "mini";
-            _navMenuOpened = true;
-        }
-        else if (_navMenuOpened)
-        {
-            bbDrawerClass = "full";
-        }
-
-        _navMenuOpened = true;
-
-        StateHasChanged();
-    }
 }

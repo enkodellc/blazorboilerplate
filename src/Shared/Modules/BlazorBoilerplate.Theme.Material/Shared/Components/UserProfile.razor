@@ -4,16 +4,15 @@
 
 <AuthorizeView>
     <Authorized>
-        <div class="drawer-profile">
-            <MatIconButton Icon="account_circle" Link="/account/profile"></MatIconButton>
-            @if (userViewModel == null)
-            {
-                <div class="spinner-border spinner-border-sm" role="status"></div>
-            }
-            else
-            {
-                <span class="miniHover"><b><a href="/account/profile">@userViewModel.UserName</a></b></span>
-            }
+        <div>
+            <MatIconButton Icon="account_circle" OnClick="@OnClick"  @ref="Button" ></MatIconButton>
+            <MatMenu @ref="Menu">
+                <MatList>
+                    <MatListItem>
+                        <MatButton Link="/account/profile">Profile</MatButton></MatListItem>
+                    <MatListItem> <Login/></MatListItem>
+                </MatList>
+            </MatMenu>
         </div>
     </Authorized>
 </AuthorizeView>
@@ -24,6 +23,13 @@
     [CascadingParameter]
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
+    MatIconButton Button;
+    BaseMatMenu Menu;
+
+    public void OnClick(MouseEventArgs e)
+    {
+        this.Menu.OpenAsync(Button.Ref);
+    }
     protected override async Task OnParametersSetAsync()
     {
         userViewModel = null;

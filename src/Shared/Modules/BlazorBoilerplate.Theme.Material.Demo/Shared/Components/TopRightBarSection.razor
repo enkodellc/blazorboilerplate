@@ -1,15 +1,15 @@
 ﻿@implements IDynamicComponent
-
-<MatTooltip Tooltip="Github Repository">
-    <MatIconButton Link="https://github.com/hochschule-darmstadt/MetaAutoML-Frontend" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
-</MatTooltip>
-<MatTooltip Tooltip="Admin">
-    <MatIconButton Link="/admin" RefBack="@context"><i class="fa fa-gear" aria-hidden="true"></i></MatIconButton>
-</MatTooltip>
-<SelectCulture />
-<Login />
-
+@*
+    <MatTooltip Tooltip="Admin">
+        <MatIconButton Link="/admin" RefBack="@context"><i class="fa fa-gear" aria-hidden="true"></i></MatIconButton>
+    </MatTooltip>
+*@
+@*<SelectCulture />*@
+<UserProfile />
+<HeaderMenuButton />
 @code {
+
     public int Order { get => 1; }
     public string IntoComponent { get => "TopRightBarSection"; }
+
 }

@@ -4,9 +4,9 @@
 @implements IDynamicComponent
 
 <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
-    <MatIcon>home</MatIcon> <span class="miniHover">@L["AppNavHome"]</span>
+    <MatIcon>folder</MatIcon> <span class="miniHover">Datasets</span>
 </MatNavItem>
-
+@*TODO: remove session*@
 <MatNavItem Href="@navigationManager.ToAbsoluteUri("sessions").AbsoluteUri">
     <MatIcon>list_alt</MatIcon> <span class="miniHover">Session</span>
 </MatNavItem>
