@@ -2,6 +2,8 @@
 @using System
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
+@inject BlazorBoilerplate.Shared.Services.WizardState WizardState
+
 
 <div id="required" style="display:flex; flex-direction:column; gap: 10px">
     <div style="display:flex; flex-direction:row; justify-content:left">
@@ -35,28 +37,12 @@
             <MatExpansionPanel @bind-Expanded="@advancedOptionsSelected">
                 <MatExpansionPanelSummary>
                     <MatExpansionPanelHeader>Advanced Settings</MatExpansionPanelHeader>
-                    @*<MatExpansionPanelSubHeader>
-                            Currently I am @(advancedOptionsSelected ? "selected" : "not selected")
-                        </MatExpansionPanelSubHeader>*@
                 </MatExpansionPanelSummary>
                 <MatExpansionPanelDetails>
-                    <MatChipSet Filter="true" SelectedChipsChanged="OnChipMLLibChanged">
-                        @if (_supportedMlLibraries != null && _supportedMlLibraries.MlLibraries.Count != 0)
-                        {
-                            <p>Please select ML Lib :</p>
-                            @foreach (var item in _supportedMlLibraries.MlLibraries)
-                            {
-                                <MatChip Label="@item" IsCheckable="true"></MatChip>
-                            }
-                        }
-                    </MatChipSet>
-
-                    @* add algorithms here *@
-
                     <MatChipSet Filter="true" SelectedChipsChanged="OnChipAutoMLSolutionChanged">
                         @if (_compatibleAutoMl != null && _compatibleAutoMl.AutoMlSolutions.Count != 0)
                         {
-                            <p>Please select ML Solution :</p>
+                            <p>AutoML Solution :</p>
                             @foreach (var item in _compatibleAutoMl.AutoMlSolutions)
                             {
                                 <MatChip Label="@item" IsCheckable="true"></MatChip>
@@ -65,19 +51,19 @@
                     </MatChipSet>
 
                     <div style="display:flex; flex-direction:row; justify-content:left">
-                        <div style="display: flex; align-items: center; padding-right: 1% ">Please select time limit (Optional):</div>
-                        @if (AutoMLRequest.RuntimeConstraints != null)
+                        <div style="display: flex; align-items: center; padding-right: 1% ">Time limit(in seconds):</div>
+                        @if (WizardState.automlRequest.RuntimeConstraints != null)
                         {
-                            <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Runtime_limit
+                            <MatNumericUpDownField @bind-Value=@WizardState.automlRequest.RuntimeConstraints.Runtime_limit
                                                    DecimalPlaces=0>
                             </MatNumericUpDownField>
                         }
                     </div>
                     <div style="display:flex; flex-direction:row; justify-content:left">
-                        <div style="display: flex; align-items: center; padding-right: 1% ">Please select number of iterations (Optional):</div>
-                        @if (AutoMLRequest.RuntimeConstraints != null)
+                        <div style="display: flex; align-items: center; padding-right: 1% ">Number of iterations:</div>
+                        @if (WizardState.automlRequest.RuntimeConstraints != null)
                         {
-                            <MatNumericUpDownField @bind-Value=@AutoMLRequest.RuntimeConstraints.Max_iter
+                            <MatNumericUpDownField @bind-Value=@WizardState.automlRequest.RuntimeConstraints.Max_iter
                                                    DecimalPlaces=0>
                             </MatNumericUpDownField>
                         }
@@ -93,15 +79,10 @@
     private GetDatasetCompatibleTasksResponseDto _tasks;
     private GetCompatibleAutoMlSolutionsResponseDto _compatibleAutoMl;
     private GetTabularDatasetColumnNamesResponseDto _columnNames;
-    private GetSupportedMlLibrariesResponseDto _supportedMlLibraries;
     private MatChip[] selectedChips = null;
     private MatChip lastCheckedChip = new MatChip { Label = "testLabel" };
     private bool advancedOptionsSelected = false;
-    [Parameter]
-    public StartAutoMLRequestDto AutoMLRequest { get; set; }
 
-    [Parameter]
-    public EventCallback<StartAutoMLRequestDto> AutoMLRequestChanged { get; set; }
     /// <summary>
     /// Trigger to start examination for IsNextStepApproved in Parent
     /// </summary>
@@ -112,26 +93,20 @@
     {
         await LoadData();
 
-        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target = new AutoMLTarget();
-        AutoMLRequest.RequiredAutoMLs = new List<string>();
-        AutoMLRequest.RuntimeConstraints = new AutoMLRuntimeConstraints();
-        AutoMLRequest.RuntimeConstraints.Runtime_limit = 30;
-        AutoMLRequest.RuntimeConstraints.Max_iter = 0;
+        ((AutoMLTabularDataConfiguration)WizardState.automlRequest.Configuration).Target = new AutoMLTarget();
+        WizardState.automlRequest.RequiredAutoMLs = new List<string>();
+        WizardState.automlRequest.RuntimeConstraints = new AutoMLRuntimeConstraints();
+        WizardState.automlRequest.RuntimeConstraints.Runtime_limit = 30;
+        WizardState.automlRequest.RuntimeConstraints.Max_iter = 0;
     }
-    private async void OnChipMLLibChanged(MatChip[] newChip)
-    {
-        // TODO later, wait backend team
-        UpdateParent();
-    }
+
     private async void OnChipAutoMLSolutionChanged(MatChip[] newChips)
     {
-
-        AutoMLRequest.RequiredAutoMLs = new List<string>();
+        WizardState.automlRequest.RequiredAutoMLs = new List<string>();
         foreach (var chip in newChips)
         {
-            AutoMLRequest.RequiredAutoMLs.Add(chip.Label);
+            WizardState.automlRequest.RequiredAutoMLs.Add(chip.Label);
         }
-        UpdateParent();
     }
     private async void OnChipChanged(MatChip newChip)
     {
@@ -141,11 +116,11 @@
             return;
         }
         lastCheckedChip = newChip;
-        AutoMLRequest.Task = newChip.Label;
+        WizardState.automlRequest.Task = newChip.Label;
         try
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
-            dictionary.Add("task", AutoMLRequest.Task);
+            dictionary.Add("task", WizardState.automlRequest.Task);
             /** Configuration = dictionary is currently dummy */
             GetCompatibleAutoMlSolutionsRequestDto compatibleAutoMlRequest = new GetCompatibleAutoMlSolutionsRequestDto { Configuration = dictionary };
             ApiResponseDto apiResponse = await apiClient.GetCompatibleAutoMlSolutions(compatibleAutoMlRequest);
@@ -160,46 +135,24 @@
             {
                 viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
             }
-
-            GetSupportedMlLibrariesRequestDto supportedMlLibrariesRequest = new GetSupportedMlLibrariesRequestDto { Task = AutoMLRequest.Task };
-            apiResponse = await apiClient.GetSupportedMlLibraries(supportedMlLibrariesRequest);
-
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                _supportedMlLibraries = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSupportedMlLibrariesResponseDto>(apiResponse.Result.ToString());
-                StateHasChanged();
-                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
-            }
-            else
-            {
-                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
-            }
         }
         catch (Exception ex)
         {
             viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
-        UpdateParent();
     }
 
     private async void OnTargetChanged(string value)
     {
-        ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target.Target = value;
-        foreach (KeyValuePair<string, Server.DataType> kvp in ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Features)
+        ((AutoMLTabularDataConfiguration)WizardState.automlRequest.Configuration).Target.Target = value;
+        foreach (KeyValuePair<string, Server.DataType> kvp in ((AutoMLTabularDataConfiguration)WizardState.automlRequest.Configuration).Features)
         {
             if (kvp.Key == value)
             {
-                ((AutoMLTabularDataConfiguration)AutoMLRequest.Configuration).Target.Type = kvp.Value;
+                ((AutoMLTabularDataConfiguration)WizardState.automlRequest.Configuration).Target.Type = kvp.Value;
                 break;
             }
         }
-        UpdateParent();
-    }
-
-    private async void UpdateParent()
-    {
-        await AutoMLRequestChanged.InvokeAsync(AutoMLRequest);
-        await CheckForNextStepCallback.InvokeAsync();
     }
 
     private async Task LoadData()
@@ -207,7 +160,7 @@
         try
         {
 
-            GetTabularDatasetColumnNamesRequestDto columnRequest = new GetTabularDatasetColumnNamesRequestDto { DatasetName = AutoMLRequest.DatasetName };
+            GetTabularDatasetColumnNamesRequestDto columnRequest = new GetTabularDatasetColumnNamesRequestDto { DatasetName = WizardState.automlRequest.DatasetName };
             ApiResponseDto apiResponse = await apiClient.GetTabularDatasetColumnNames(columnRequest);
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -221,7 +174,7 @@
             }
 
             _tasks = new GetDatasetCompatibleTasksResponseDto();
-            GetDatasetCompatibleTasksRequestDto taskRequest = new GetDatasetCompatibleTasksRequestDto { DatasetName = AutoMLRequest.DatasetName };
+            GetDatasetCompatibleTasksRequestDto taskRequest = new GetDatasetCompatibleTasksRequestDto { DatasetName = WizardState.automlRequest.DatasetName };
             apiResponse = await apiClient.GetDatasetCompatibleTasks(taskRequest);
 
             if (apiResponse.IsSuccessStatusCode)

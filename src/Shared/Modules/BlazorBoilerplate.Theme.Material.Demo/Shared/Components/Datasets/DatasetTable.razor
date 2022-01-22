@@ -2,6 +2,8 @@
 @using System
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
+@inject NavigationManager NavManager
+
 
 <MatTable Items="@DatasetResponse" style="width:stretch" class="mat-elevation-z5" AllowSelection="false">
     <MatTableHeader>
@@ -19,24 +21,22 @@
         <td>@context.Columns</td>
         <td style="white-space:nowrap;">@context.Creation_date.ToString("yyyy-MM-dd")</td>
         <td>
-            <CustomMenuItem GoNext="GoNext" HandleClick="@(() => HandleDatasetChanged(context))"></CustomMenuItem>
+            <MatButton Label="Menu" Style="float: right" OnClick="@((e) => {  OnClick(e); HandleDatasetChanged(context); })" @ref="Button"></MatButton>
+            <MatMenu @ref="Menu">
+                <MatList>
+                    <MatListItem @onclick="OpenDataset">Train</MatListItem>
+                    <MatListItem>Delete</MatListItem>
+                </MatList>
+            </MatMenu>
         </td>
     </MatTableRow>
 </MatTable>
 
 @code {
-
     [Parameter]
     public List<GetDatasetsResponseDto> DatasetResponse { get; set; }
 
-    [Parameter]
-    public StartAutoMLRequestDto SelectedDataset { get; set; }
-
-    [Parameter]
-    public EventCallback<StartAutoMLRequestDto> SelectedDatasetChanged { get; set; }
-
-    [Parameter]
-    public EventCallback GoNext { get; set; }
+    public string DatasetName;
 
     MatButton Button;
     BaseMatMenu Menu;
@@ -46,21 +46,12 @@
         this.Menu.OpenAsync(Button.Ref);
     }
 
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
+    protected void OpenDataset(){
+        NavManager.NavigateTo(NavManager.ToAbsoluteUri("datasets/" + DatasetName).AbsoluteUri);
     }
 
-    /// <summary>
-    /// handle click on icon run,
-    /// </summary>
     private async void HandleDatasetChanged(GetDatasetsResponseDto obj)
     {
-        SelectedDataset.DatasetName = obj.Name;
-        SelectedDataset.DatasetType = obj.Type;
-        await SelectedDatasetChanged.InvokeAsync(SelectedDataset);
+        DatasetName = obj.Name;
     }
-
-
 }

@@ -702,6 +702,7 @@ namespace BlazorBoilerplate.Server
             }
 
             services.AddScoped<SessionState>();
+            services.AddScoped<WizardState>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

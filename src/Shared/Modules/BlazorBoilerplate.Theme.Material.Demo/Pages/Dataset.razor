@@ -4,38 +4,68 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 @inject NavigationManager NavManager
+@inject BlazorBoilerplate.Shared.Services.WizardState WizardState
 @attribute [Authorize]
 
 <h1>@Id</h1>
 
 <MatTabGroup>
     <MatTab Label="Train">
-        <Wizard Id="Test" @bind-ActiveStepIx="_wizardActiveStep" @bind-IsNextStepApproved="_isNextStepApproved" OnSubmit="@OnWizzardCompleted">
-            <WizardStep Name="1">
-                <div class="row">
-                    <DisplayTabularDataset AutoMLRequest="@_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved"></DisplayTabularDataset>
+        <div style="display:flex; flex-direction:column; margin-top: 25px;">
+            <div style="display:flex; flex-direction:row; justify-content:space-between">
+                <div>
+                    @if (ActiveStepId == 1)
+                    {
+                        <h2>Step @(ActiveStepId): Edit dataset</h2>
+                    }
+                    else
+                    {
+                        <h2>Step @(ActiveStepId): Configure</h2>
+                    }
                 </div>
-            </WizardStep>
-            <WizardStep Name="2">
-                <div class="row" style="display: block;">
-                    <TaskConfiguration @bind-AutoMLRequest="_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved"></TaskConfiguration>
+                <div>
+                @if (ActiveStepId == 1)
+                {
+                    <button class="btn btn-primary btn-lg" type="button" @onclick="GoNext">
+                        Next
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-primary btn-lg" type="button" @onclick="GoBack">
+                        Previous
+                    </button>
+                    <button class="btn btn-primary btn-lg" type="submit" @onclick="OnSubmit">
+                        Start Training
+                    </button>
+                }
                 </div>
-            </WizardStep>
-        </Wizard>
-
-        <MatDialog @bind-IsOpen="_isAutoMlStartedOpen">
+            </div>
+        </div>
+        <div>
+            <div id="container-fluid">
+                @if (ActiveStepId == 1)
+                {
+                    <DisplayTabularDataset></DisplayTabularDataset>
+                }
+                else
+                {
+                    <TaskConfiguration></TaskConfiguration>
+                }
+            </div>
+        </div>
+        <MatDialog @bind-IsOpen="AutoMLStarted">
             <MatDialogTitle>AutoML started</MatDialogTitle>
             <MatDialogContent>
 
             </MatDialogContent>
             <MatDialogActions>
-                <MatButton OnClick="@(e => { NavManager.NavigateTo("/sessions"); })">OK</MatButton>
+                <MatButton OnClick="@(e => { NavManager.NavigateTo("/datasets/" + Id + "/training/" + _automlResponse.SessionId); })">OK</MatButton>
             </MatDialogActions>
         </MatDialog>
     </MatTab>
     <MatTab Label="Models">
-        <!-- pass id or name to models to use in onInitialized in Models component to load -->
-        <Models></Models>
+        <Models DatasetId="@Id"></Models>
     </MatTab>
 </MatTabGroup>
 
@@ -43,76 +73,55 @@
     [Parameter]
     public string? Id { get; set; }
 
+    private int ActiveStepId = 1;
+    private bool AutoMLStarted = false;
 
-
-    private bool _isNextStepApproved = false;
-    private bool _isAutoMlStartedOpen = false;
-    private int _wizardActiveStep = 0;
-    private StartAutoMLRequestDto _automlRequest;
-    private StartAutoMLResponseDto _autoMltask;
+    private StartAutoMLResponseDto _automlResponse;
 
     protected override void OnInitialized()
     {
-        _automlRequest = new StartAutoMLRequestDto();
-        _automlRequest.DatasetName = Id;
-        // load with id or name all relevant information
+        WizardState.automlRequest = new StartAutoMLRequestDto();
+        WizardState.automlRequest.DatasetName = Id;
+        WizardState.automlRequest.DatasetType = "TABULAR";
     }
 
-    private void CheckIfNextStepIsApproved()
+    protected void GoBack()
     {
-        switch (_wizardActiveStep)
-        {
-            case 0:
-                if (_automlRequest.DatasetName == null)
-                {
-                    _isNextStepApproved = false;
-                }
-                else
-                {
-                    _isNextStepApproved = true;
-                }
-                break;
-            case 1:
-                //Since we have no requirements here we can move
-                _isNextStepApproved = true;
-                break;
-            case 2:
-                switch (_automlRequest.DatasetType)
-                {
-                    case "TABULAR":
-                        _isNextStepApproved = IsTabularConfigurationCompleted();
-                        break;
-                    default:
-                        break;
-                }
-                break;
+        ActiveStepId -=1;
+    }
+
+    protected void GoNext()
+    {
+        ActiveStepId +=1;
+    }
+
+    protected void OnSubmit()
+    {
+        if(IsConfigurationCompleted()){
+            OnWizzardCompleted();
+            AutoMLStarted = true;
+            StateHasChanged();
         }
     }
-    private bool IsTabularConfigurationCompleted()
+
+    // checks if required configuration is selected
+    private bool IsConfigurationCompleted()
     {
-        if (string.IsNullOrEmpty(_automlRequest.Task))
-        {
-            return false;
-        }
-        // TODO refactor
-        if (string.IsNullOrEmpty(((AutoMLTabularDataConfiguration)_automlRequest.Configuration).Target.Target))
-        {
+        if (string.IsNullOrEmpty(WizardState.automlRequest.Task) | string.IsNullOrEmpty(((AutoMLTabularDataConfiguration)WizardState.automlRequest.Configuration).Target.Target)){
             return false;
         }
         return true;
     }
 
-
     private async Task OnWizzardCompleted()
     {
         try
         {
-            ApiResponseDto apiResponse = await apiClient.StartAutoML(_automlRequest);
+            ApiResponseDto apiResponse = await apiClient.StartAutoML(WizardState.automlRequest);
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                _autoMltask = Newtonsoft.Json.JsonConvert.DeserializeObject<StartAutoMLResponseDto>(apiResponse.Result.ToString());
-                _isAutoMlStartedOpen = true;
+                _automlResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<StartAutoMLResponseDto>(apiResponse.Result.ToString());
                 viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
             }
             else

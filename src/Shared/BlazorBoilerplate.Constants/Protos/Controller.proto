@@ -14,6 +14,7 @@ service ControllerService {
   rpc GetDatasets(GetDatasetsRequest) returns (GetDatasetsResponse) {}
   /*
     returns details of a specified dataset.
+
     The result is a list of TableColumns containing:
     name: the name of the dataset
     datatype: the datatype of the column
@@ -152,6 +153,9 @@ message AutoMLStatus {
   float testScore = 4;
   float validationScore = 5;
   int32 runtime = 6;
+  float predictiontime = 7;
+  string library = 8;
+  string model = 9;
 }
 
 message UploadDatasetFileRequest {
@@ -170,13 +174,19 @@ message StartAutoMLprocessRequest {
   repeated string requiredAutoMLs = 4;
   AutoMLRuntimeConstraints runtimeConstraints = 5;
   map<string, string> fileConfiguration = 6;
+  TestConfiguration testConfig = 7;
+}
+
+message TestConfiguration {
+  float split_ratio = 1;
+  SplitMethod method = 2;
+  int32 random_state = 3;
 }
 
 message AutoMLRuntimeConstraints {
   int32 runtime_limit = 1;
   int32 max_iter = 2;
 }
-
 message AutoMLConfigurationTabularData {
   AutoMLTarget target = 1;
   map<string, DataType> features = 2;
@@ -215,4 +225,9 @@ enum SessionStatus {
   SESSION_STATUS_BUSY = 1;
   SESSION_STATUS_COMPLETED = 2;
   SESSION_STATUS_FAILED = 3;
+}
+
+enum SplitMethod {
+  SPLIT_METHOD_RANDOM = 0;
+  SPLIT_METHOD_END = 1;
 }
