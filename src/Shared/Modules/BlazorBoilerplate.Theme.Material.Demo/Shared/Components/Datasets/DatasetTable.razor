@@ -21,13 +21,7 @@
         <td>@context.Columns</td>
         <td style="white-space:nowrap;">@context.Creation_date.ToString("yyyy-MM-dd")</td>
         <td>
-            <MatButton Label="Menu" Style="float: right" OnClick="@((e) => {  OnClick(e); HandleDatasetChanged(context); })" @ref="Button"></MatButton>
-            <MatMenu @ref="Menu">
-                <MatList>
-                    <MatListItem @onclick="OpenDataset">Train</MatListItem>
-                    <MatListItem>Delete</MatListItem>
-                </MatList>
-            </MatMenu>
+            <CustomMenuItem OpenDataset="OpenDataset" HandleClick="@(() => HandleDatasetChanged(context))"></CustomMenuItem>
         </td>
     </MatTableRow>
 </MatTable>
@@ -38,13 +32,6 @@
 
     public string DatasetName;
 
-    MatButton Button;
-    BaseMatMenu Menu;
-
-    public void OnClick(MouseEventArgs e)
-    {
-        this.Menu.OpenAsync(Button.Ref);
-    }
 
     protected void OpenDataset(){
         NavManager.NavigateTo(NavManager.ToAbsoluteUri("datasets/" + DatasetName).AbsoluteUri);

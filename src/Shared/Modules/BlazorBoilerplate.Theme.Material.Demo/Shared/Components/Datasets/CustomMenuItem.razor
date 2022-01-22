@@ -1,0 +1,34 @@
+﻿@inject IStringLocalizer<Global> L
+@using System
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+
+
+<MatButton Label="Menu" Style="float: right" OnClick="@((e) => {  OnClick(e); HandleClick.InvokeAsync(); })" @ref="Button"></MatButton>
+<MatMenu @ref="Menu">
+    <MatList>
+        <MatListItem @onclick="OpenDataset">Train</MatListItem>
+        <MatListItem>Delete</MatListItem>
+    </MatList>
+</MatMenu>
+
+@code {
+    [Parameter]
+    public EventCallback HandleClick { get; set; }
+    [Parameter]
+    public EventCallback OpenDataset { get; set; }
+
+    MatButton Button;
+    BaseMatMenu Menu;
+
+
+    public void OnClick(MouseEventArgs e)
+    {
+        this.Menu.OpenAsync(Button.Ref);
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+}
