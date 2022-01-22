@@ -1,0 +1,5 @@
+Add-Migration -StartupProject "BlazorBoilerplate.Server" -Project "BlazorBoilerplate.Storage" -Name CreateLocalizationDb -Context LocalizationDbContext -Verbose -OutputDir "Migrations/LocalizationDb"
+Add-Migration -StartupProject "BlazorBoilerplate.Server" -Project "BlazorBoilerplate.Storage" -Name CreateTenantStoreDb -Context TenantStoreDbContext -Verbose -OutputDir "Migrations/TenantStoreDb"
+Add-Migration -StartupProject "BlazorBoilerplate.Server" -Project "BlazorBoilerplate.Storage" -Name CreateApplicationDb -Context ApplicationDbContext -Verbose -OutputDir "Migrations/ApplicationDb"
+Add-Migration -StartupProject "BlazorBoilerplate.Server" -Project "BlazorBoilerplate.Storage" -Name CreatePersistedGrantDb -Context PersistedGrantDbContext -Verbose -OutputDir "Migrations/PersistedGrantDb"
+Add-Migration -StartupProject "BlazorBoilerplate.Server" -Project "BlazorBoilerplate.Storage" -Name CreateConfigurationDb -Context ConfigurationDbContext -Verbose -OutputDir "Migrations/ConfigurationDb"

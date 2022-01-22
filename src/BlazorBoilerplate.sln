@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.0.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 16.0.0.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{683E9CAE-E8CE-4093-9665-58B12F12E6DB}"
 EndProject
@@ -33,6 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBoilerplate.Shared", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{75F4A495-980E-4368-8F70-A5553D58FD45}"
 	ProjectSection(SolutionItems) = preProject
+		Utils\Scripts\ef-migrations-in-vs.txt = Utils\Scripts\ef-migrations-in-vs.txt
 		Utils\Scripts\ef-migrations.cmd = Utils\Scripts\ef-migrations.cmd
 	EndProjectSection
 EndProject
