@@ -3,117 +3,41 @@
 @using System
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
-@inject NavigationManager NavManager
 @attribute [Authorize]
 
-<Wizard Id="Test" @bind-ActiveStepIx="_wizardActiveStep" @bind-IsNextStepApproved="_isNextStepApproved" OnSubmit="@OnWizzardCompleted" @ref="childWirzard">
-    <WizardStep Name="1">
-        <div class="row">
-            @if (isLoading)
-            {
-                <p>Uploading...</p>
-            }
-            else
-            {
-                <SelectDataset @bind-SelectedDataset="_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved" GoNext="@ProvokeNextStep"></SelectDataset>
-            }
-        </div>
-    </WizardStep>
-    <WizardStep Name="2">
-        <div class="row">
-            <DisplayTabularDataset AutoMLRequest="@_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved"></DisplayTabularDataset>
-        </div>
-    </WizardStep>
-    <WizardStep Name="3">
-        <div class="row" style="display: block;">
-            <TaskConfiguration @bind-AutoMLRequest="_automlRequest" CheckForNextStepCallback="@CheckIfNextStepIsApproved"></TaskConfiguration>
-        </div>
-    </WizardStep>
-</Wizard>
+@inject IStringLocalizer<Global> L
+@using System
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
 
-<MatDialog @bind-IsOpen="_isAutoMlStartedOpen">
-    <MatDialogTitle>AutoML started</MatDialogTitle>
-    <MatDialogContent>
+<div style="display:flex; flex-direction:row; align-items:center">
+    <MatButton TrailingIcon="add" OnClick="@(e => { _isTabularUploadOpen = true; })">add Dataset</MatButton>
+</div>
 
-    </MatDialogContent>
-    <MatDialogActions>
-        <MatButton OnClick="@(e => { NavManager.NavigateTo("/sessions"); })">OK</MatButton>
-    </MatDialogActions>
-</MatDialog>
+<DatasetTable DatasetResponse="_datasets"></DatasetTable>
 
-@code{
-    private Wizard childWirzard;
-    private bool _isNextStepApproved = false;
-    private bool _isAutoMlStartedOpen = false;
-    private int _wizardActiveStep = 0;
-    private bool isLoading;
-    private StartAutoMLRequestDto _automlRequest;
-    private StartAutoMLResponseDto _autoMltask;
+<UploadTabularDataset @bind-IsOpen="_isTabularUploadOpen" OnUploadCompletedCallback="LoadDatasets"></UploadTabularDataset>
 
-    public void ProvokeNextStep()
+@code {
+    private List<GetDatasetsResponseDto> _datasets;
+    private bool _isTabularUploadOpen = false;
+
+    protected override async Task OnInitializedAsync()
     {
-        childWirzard.GoNext();
+        await LoadDatasets();
     }
 
-    protected override void OnInitialized()
-    {
-        _automlRequest = new StartAutoMLRequestDto();
-    }
-
-    private void CheckIfNextStepIsApproved()
-    {
-        switch (_wizardActiveStep)
-        {
-            case 0:
-                if (_automlRequest.DatasetName == null)
-                {
-                    _isNextStepApproved = false;
-                }
-                else
-                {
-                    _isNextStepApproved = true;
-                }
-                break;
-            case 1:
-                //Since we have no requirements here we can move
-                _isNextStepApproved = true;
-                break;
-            case 2:
-                switch (_automlRequest.DatasetType)
-                {
-                    case "TABULAR":
-                        _isNextStepApproved = IsTabularConfigurationCompleted();
-                        break;
-                    default:
-                        break;
-                }
-                break;
-        }
-    }
-    private bool IsTabularConfigurationCompleted()
-    {
-        if (string.IsNullOrEmpty(_automlRequest.Task))
-        {
-            return false;
-        }
-        // TODO refactor
-        if (string.IsNullOrEmpty(((AutoMLTabularDataConfiguration)_automlRequest.Configuration).Target.Target))
-        {
-            return false;
-        }
-        return true;
-    }
-
-    private async Task OnWizzardCompleted()
+    private async Task LoadDatasets()
     {
         try
         {
-            ApiResponseDto apiResponse = await apiClient.StartAutoML(_automlRequest);
+            _datasets = new List<GetDatasetsResponseDto>();
+            ApiResponseDto apiResponse = await apiClient.GetDatasets();
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                _autoMltask = Newtonsoft.Json.JsonConvert.DeserializeObject<StartAutoMLResponseDto>(apiResponse.Result.ToString());
-                _isAutoMlStartedOpen = true;
+                _datasets = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GetDatasetsResponseDto>>(apiResponse.Result.ToString());
+                StateHasChanged();
                 viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
             }
             else
@@ -126,6 +50,5 @@
             viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
         }
     }
-
 }
 

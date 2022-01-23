@@ -1,0 +1,139 @@
+﻿@page "/datasets/{id}"
+@inject IStringLocalizer<Global> L
+@using System
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+@inject NavigationManager NavManager
+@inject BlazorBoilerplate.Shared.Services.WizardState WizardState
+@attribute [Authorize]
+
+<h1>@Id</h1>
+
+<MatTabGroup>
+    <MatTab Label="Train">
+        <div style="display:flex; flex-direction:column; margin-top: 25px;">
+            <div style="display:flex; flex-direction:row; justify-content:space-between">
+                <div>
+                    @if (ActiveStepId == 1)
+                    {
+                        <h2>Step @(ActiveStepId): Edit dataset</h2>
+                    }
+                    else
+                    {
+                        <h2>Step @(ActiveStepId): Configure</h2>
+                    }
+                </div>
+                <div>
+                @if (ActiveStepId == 1)
+                {
+                    <button class="btn btn-primary btn-lg" type="button" @onclick="GoNext">
+                        Next
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-primary btn-lg" type="button" @onclick="GoBack">
+                        Previous
+                    </button>
+                    <button class="btn btn-primary btn-lg" type="submit" @onclick="OnSubmit">
+                        Start Training
+                    </button>
+                }
+                </div>
+            </div>
+        </div>
+        <div>
+            <div id="container-fluid">
+                @if (ActiveStepId == 1)
+                {
+                    <DisplayTabularDataset></DisplayTabularDataset>
+                }
+                else
+                {
+                    <TaskConfiguration></TaskConfiguration>
+                }
+            </div>
+        </div>
+        <MatDialog @bind-IsOpen="AutoMLStarted">
+            <MatDialogTitle>AutoML started</MatDialogTitle>
+            <MatDialogContent>
+
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton OnClick="@(e => { NavManager.NavigateTo("/datasets/" + Id + "/training/" + _automlResponse.SessionId); })">OK</MatButton>
+            </MatDialogActions>
+        </MatDialog>
+    </MatTab>
+    <MatTab Label="Models">
+        <Models DatasetId="@Id"></Models>
+    </MatTab>
+</MatTabGroup>
+
+@code{
+    [Parameter]
+    public string? Id { get; set; }
+
+    private int ActiveStepId = 1;
+    private bool AutoMLStarted = false;
+
+    private StartAutoMLResponseDto _automlResponse;
+
+    protected override void OnInitialized()
+    {
+        WizardState.automlRequest = new StartAutoMLRequestDto();
+        WizardState.automlRequest.DatasetName = Id;
+        WizardState.automlRequest.DatasetType = "TABULAR";
+    }
+
+    protected void GoBack()
+    {
+        ActiveStepId -=1;
+    }
+
+    protected void GoNext()
+    {
+        ActiveStepId +=1;
+    }
+
+    protected void OnSubmit()
+    {
+        if(IsConfigurationCompleted()){
+            OnWizzardCompleted();
+            AutoMLStarted = true;
+            StateHasChanged();
+        }
+    }
+
+    // checks if required configuration is selected
+    private bool IsConfigurationCompleted()
+    {
+        if (string.IsNullOrEmpty(WizardState.automlRequest.Task) | string.IsNullOrEmpty(((AutoMLTabularDataConfiguration)WizardState.automlRequest.Configuration).Target.Target)){
+            return false;
+        }
+        return true;
+    }
+
+    private async Task OnWizzardCompleted()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = await apiClient.StartAutoML(WizardState.automlRequest);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                _automlResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<StartAutoMLResponseDto>(apiResponse.Result.ToString());
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+
+}
+

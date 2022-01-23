@@ -40,10 +40,13 @@ namespace BlazorBoilerplate.Server.Managers
                     response.AutoMls.Add(new Shared.Dto.AutoML.AutoMLStatusDto
                     {
                         Messages = automl.Messages.ToList(),
-                        Status = (int)automl.Status,
+                        Status = (int) automl.Status,
                         Name = automl.Name,
+                        Library = automl.Library,
+                        Model = automl.Model,
                         TestScore = (double) automl.TestScore,
-                        ValidationScore = (double)automl.ValidationScore,
+                        ValidationScore = (double) automl.ValidationScore,
+                        Predictiontime = (double) automl.Predictiontime,
                         Runtime = (int)automl.Runtime
                     });
                 }

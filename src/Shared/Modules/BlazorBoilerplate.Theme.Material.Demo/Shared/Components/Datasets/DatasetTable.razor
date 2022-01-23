@@ -2,6 +2,8 @@
 @using System
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
+@inject NavigationManager NavManager
+
 
 <MatTable Items="@DatasetResponse" style="width:stretch" class="mat-elevation-z5" AllowSelection="false">
     <MatTableHeader>
@@ -19,48 +21,24 @@
         <td>@context.Columns</td>
         <td style="white-space:nowrap;">@context.Creation_date.ToString("yyyy-MM-dd")</td>
         <td>
-            <CustomMenuItem GoNext="GoNext" HandleClick="@(() => HandleDatasetChanged(context))"></CustomMenuItem>
+            <DatasetMenu OpenDataset="OpenDataset" HandleClick="@(() => HandleDatasetChanged(context))"></DatasetMenu>
         </td>
     </MatTableRow>
 </MatTable>
 
 @code {
-
     [Parameter]
     public List<GetDatasetsResponseDto> DatasetResponse { get; set; }
 
-    [Parameter]
-    public StartAutoMLRequestDto SelectedDataset { get; set; }
+    public string DatasetName;
 
-    [Parameter]
-    public EventCallback<StartAutoMLRequestDto> SelectedDatasetChanged { get; set; }
 
-    [Parameter]
-    public EventCallback GoNext { get; set; }
-
-    MatButton Button;
-    BaseMatMenu Menu;
-
-    public void OnClick(MouseEventArgs e)
-    {
-        this.Menu.OpenAsync(Button.Ref);
+    protected void OpenDataset(){
+        NavManager.NavigateTo(NavManager.ToAbsoluteUri("datasets/" + DatasetName).AbsoluteUri);
     }
 
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
-
-    /// <summary>
-    /// handle click on icon run,
-    /// </summary>
     private async void HandleDatasetChanged(GetDatasetsResponseDto obj)
     {
-        SelectedDataset.DatasetName = obj.Name;
-        SelectedDataset.DatasetType = obj.Type;
-        await SelectedDatasetChanged.InvokeAsync(SelectedDataset);
+        DatasetName = obj.Name;
     }
-
-
 }

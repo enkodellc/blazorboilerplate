@@ -32,7 +32,7 @@ namespace BlazorBoilerplate.Server.Managers
         /// <returns></returns>
         public async Task<ApiResponse> GetModel(GetAutoMlModelRequestDto autoMl)
         {
-            GetAutoMlModelRespomseDto response = new GetAutoMlModelRespomseDto();
+            GetAutoMlModelResponseDto response = new GetAutoMlModelResponseDto();
             GetAutoMlModelRequest getmodelRequest = new GetAutoMlModelRequest();
             try
             {
@@ -86,6 +86,30 @@ namespace BlazorBoilerplate.Server.Managers
                     return new ApiResponse(Status400BadRequest, "Error while starting AutoML Code: " + reply.Result + "", null);
                 }
 
+            }
+            catch (Exception ex)
+            {
+
+                return new ApiResponse(Status404NotFound, ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse> TestAutoML(TestAutoMLRequestDto testAutoML)
+        {
+            TestAutoMLResponseDto response = new TestAutoMLResponseDto();
+            TestAutoMLRequest testAutoMLrequest = new TestAutoMLRequest();
+            try
+            {
+                testAutoMLrequest.TestData = testAutoML.TestData;
+                testAutoMLrequest.SessionId = testAutoML.SessionId;
+                testAutoMLrequest.AutoMlName = testAutoML.AutoMlName;
+
+                var reply = _client.TestAutoML(testAutoMLrequest);
+
+                response.Predictions.AddRange(reply.Predictions.ToList());
+                response.Score = reply.Score;
+                response.Predictiontime = reply.Predictiontime;
+                return new ApiResponse(Status200OK, null, response);
             }
             catch (Exception ex)
             {

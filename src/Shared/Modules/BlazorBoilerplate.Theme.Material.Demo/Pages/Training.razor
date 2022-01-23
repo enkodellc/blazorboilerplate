@@ -1,0 +1,161 @@
+@page "/datasets/{DatasetId}/training/{SessionId}"
+@inject IStringLocalizer<Global> L
+@using System
+@using System.Timers
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
+@inject BlazorBoilerplate.Shared.Services.SessionState SessionState
+@attribute [Authorize]
+
+<MatTabGroup>
+    <MatTab Label="Leaderboard">
+        @if (_session!=null){
+            @if (_session.Status == 1)
+            {
+                <MatProgressBar Indeterminate="true"></MatProgressBar>
+            }
+        }
+        <MatTable Items="@automls" PageSize="25" class="mat-elevation-z5" ShowPaging="false">
+            <MatTableHeader>
+                <th>AutoML</th>
+                <th>ML library</th>
+                <th>Model</th>
+                <th>Score</th>
+                <th>Prediction time[ms]</th>
+                <th>Runtime AutoML[s]</th>
+                <th>Status</th>
+                <th></th>
+            </MatTableHeader>
+            <MatTableRow>
+                <td>@context.Name</td>
+                <td>@context.Library</td>
+                <td>@context.Model</td>
+                <td>@string.Format("{0:f2}", @context.TestScore)</td>
+                <td>@string.Format("{0:f5}", @context.Predictiontime)</td>
+                <td>@context.Runtime</td>
+                <td>@context.Status</td>
+                <td>
+                    <ModelMenu OpenModel="OpenModel" HandleClick="@(() => HandleModelChanged(context))"></ModelMenu>
+                </td>
+            </MatTableRow>
+        </MatTable>
+    </MatTab>
+    <MatTab Label="Configuration">
+        <Configuration Session="@_session"></Configuration>
+    </MatTab>
+</MatTabGroup>
+
+@code {
+    [Parameter]
+    public string? DatasetId { get; set; }
+    [Parameter]
+    public string? SessionId { get; set; }
+
+    private GetSessionResponseDto _session = null;
+    private Timer _timer;
+    private String ModelName;
+
+    public class AutoML{
+        public string Name { get; set; }
+        public string Library { get; set; }
+        public string Model { get; set; }
+        public double TestScore { get; set; }
+        public double Predictiontime { get; set; }
+        public int Runtime { get; set; }
+        public string Status { get; set; }
+
+        public AutoML(string name, string library, string model, double testScore, double predictiontime, int runtime, string status){
+            Name = name;
+            Library = library;
+            Model = model;
+            TestScore = testScore;
+            Predictiontime = predictiontime;
+            Runtime = runtime;
+            Status = status;
+        }
+    }
+    List<AutoML> automls = new List<AutoML>();
+
+    protected override void OnInitialized(){
+        LoadSession(null, null);
+        _timer = new Timer()
+        {
+            AutoReset = true,
+            Enabled = true,
+            Interval = 5000
+        };
+        _timer.Elapsed += LoadSession;
+        Console.WriteLine("Session Timer created");
+    }
+
+    protected void OpenModel(){
+        NavManager.NavigateTo(NavManager.ToAbsoluteUri("datasets/" + DatasetId + "/training/" + SessionId + "/Model/" + ModelName).AbsoluteUri);
+    }
+
+    private async void HandleModelChanged(AutoML obj)
+    {
+        ModelName = obj.Name;
+    }
+
+    private void PopulateTable(){
+        automls = new List<AutoML>();
+        foreach (AutoMLStatusDto automl in _session.AutoMls){
+            string status = "";
+            switch(automl.Status){
+                case 0: status = "Unknown";
+                        break;
+                case 1: status = "Running";
+                        break;
+                case 2: status = "Completed";
+                        break;
+                case 3: status = "Failed";
+                        break;
+            }
+            automls.Add(new AutoML(automl.Name, automl.Library, automl.Model, automl.TestScore, automl.Predictiontime, automl.Runtime, status));
+        }
+        automls = automls.OrderByDescending(x => x.TestScore).ToList();
+    }
+
+    private async void LoadSession(object sender, ElapsedEventArgs e)
+    {
+        await InvokeAsync(async () =>
+        {
+            try
+            {
+                ApiResponseDto apiResponse = await apiClient.GetSession(new GetSessionRequestDto { SessionId = SessionId });
+
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    _session = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionResponseDto>(apiResponse.Result.ToString());
+                    if (_session.Status != 1)
+                    {
+                        DisposeTimer();
+                    }
+                    SessionState.session = _session;
+                    PopulateTable();
+                    StateHasChanged();
+                }
+                else
+                {
+                    viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+                _timer.Elapsed -= LoadSession;
+            }
+        });
+    }
+
+    public void DisposeTimer(){
+        if(_timer!=null){
+            _timer.Elapsed -= LoadSession;
+            _timer?.Dispose();
+            _timer = null;
+            Console.WriteLine("Session Timer destroyed");
+        }
+    }
+}

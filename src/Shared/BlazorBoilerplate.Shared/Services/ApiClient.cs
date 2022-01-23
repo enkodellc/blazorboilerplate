@@ -126,5 +126,10 @@ namespace BlazorBoilerplate.Shared.Services
         {
             return await httpClient.PostJsonAsync<ApiResponseDto>("api/Ontology/GetDatasetCompatibleTasks", datasetName);
         }
+
+        public async Task<ApiResponseDto> TestAutoML(TestAutoMLRequestDto automl)
+        {
+            return await httpClient.PostJsonAsync<ApiResponseDto>("api/AutoMl/TestAutoML", automl);
+        }
     }
 }

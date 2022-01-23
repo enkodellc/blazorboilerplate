@@ -23,10 +23,11 @@
     [Parameter]
     public bool IsOpen { get; set; }
 
-    private string FileName;
-
     [Parameter]
     public EventCallback<bool> IsOpenChanged { get; set; }
+
+    private string FileName;
+
 
     [Parameter]
     public EventCallback OnUploadCompletedCallback { get; set; }

@@ -3,10 +3,11 @@
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 
+
 <MatButton Label="Menu" Style="float: right" OnClick="@((e) => {  OnClick(e); HandleClick.InvokeAsync(); })" @ref="Button"></MatButton>
 <MatMenu @ref="Menu">
     <MatList>
-        <MatListItem @onclick="@GoNext">Train</MatListItem>
+        <MatListItem @onclick="OpenDataset">Train</MatListItem>
         <MatListItem>Delete</MatListItem>
     </MatList>
 </MatMenu>
@@ -14,9 +15,8 @@
 @code {
     [Parameter]
     public EventCallback HandleClick { get; set; }
-
     [Parameter]
-    public EventCallback GoNext { get; set; }
+    public EventCallback OpenDataset { get; set; }
 
     MatButton Button;
     BaseMatMenu Menu;
@@ -32,4 +32,3 @@
         base.OnInitialized();
     }
 }
-

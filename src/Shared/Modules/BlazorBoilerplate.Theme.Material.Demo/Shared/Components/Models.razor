@@ -1,0 +1,165 @@
+﻿@inject IStringLocalizer<Global> L
+@using System
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
+@inject BlazorBoilerplate.Shared.Services.SessionState SessionState
+
+
+<div class="row">
+    <MatTable Items="@automls" PageSize="25" class="mat-elevation-z5" ShowPaging="false">
+        <MatTableHeader>
+            <th>Training</th>
+            <th>AutoML</th>
+            <th>ML library</th>
+            <th>Model</th>
+            <th>Score</th>
+            <th>Prediction time[ms]</th>
+            <th>Runtime AutoML[s]</th>
+            <th>Status</th>
+            <th></th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>
+                <a href="@NavManager.ToAbsoluteUri("datasets/" + context.Name + "/training/" + context.Id).AbsoluteUri" Style="cursor: pointer;">@context.Id</a>
+            </td>
+            <td>@context.Name</td>
+            <td>@context.Library</td>
+            <td>@context.Model</td>
+            <td>@string.Format("{0:f3}", @context.TestScore)</td>
+            <td>@string.Format("{0:f5}", @context.Predictiontime)</td>
+            <td>@context.Runtime</td>
+            <td>@context.Status</td>
+            <td>
+                <ModelMenu OpenModel="OpenModel" HandleClick="@(() => HandleModelChanged(context))"></ModelMenu>
+            </td>
+        </MatTableRow>
+    </MatTable>
+</div>
+
+@code {
+    [Parameter]
+    public string DatasetId { get; set; }
+
+    public string SessionId;
+    private String ModelName;
+    private GetSessionsResponseDto _sessions;
+
+    MatButton Button;
+    BaseMatMenu Menu;
+
+    public class AutoML{
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Library { get; set; }
+        public string Model { get; set; }
+        public double TestScore { get; set; }
+        public double Predictiontime { get; set; }
+        public int Runtime { get; set; }
+        public string Status { get; set; }
+
+        public AutoML(string id, string name, string library, string model, double testScore, double predictiontime, int runtime, string status){
+            Id = id;
+            Name = name;
+            Library = library;
+            Model = model;
+            TestScore = testScore;
+            Predictiontime = predictiontime;
+            Runtime = runtime;
+            Status = status;
+        }
+    }
+    List<AutoML> automls = new List<AutoML>();
+    Dictionary<string, GetSessionResponseDto> loadedSessions = new Dictionary<string, GetSessionResponseDto>();
+
+    protected override void OnInitialized(){
+        LoadSessions();
+    }
+
+    protected async Task LoadSessions()
+    {
+        //Load sessionIds
+        try
+        {
+            ApiResponseDto apiResponse = await apiClient.GetSessions(new GetSessionsRequestDto { User = "" });
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                _sessions = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionsResponseDto>(apiResponse.Result.ToString());
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+
+        //Load every session from sessions
+        foreach(string _sessionId in _sessions.SessionIds){
+            LoadSession(_sessionId);
+        }
+    }
+
+    protected void OpenModel(){
+        NavManager.NavigateTo(NavManager.ToAbsoluteUri("datasets/" + DatasetId + "/training/" + SessionId + "/Model/" + ModelName).AbsoluteUri);
+    }
+
+    private async void HandleModelChanged(AutoML obj)
+    {
+        SessionId = obj.Id;
+        ModelName = obj.Name;
+        SessionState.session = loadedSessions[SessionId];
+    }
+
+    private void PopulateTable(GetSessionResponseDto session, string _sessionId){
+        if(session.Dataset == DatasetId){
+            foreach (AutoMLStatusDto automl in session.AutoMls){
+                string status = "";
+                switch(automl.Status){
+                    case 0: status = "Unknown";
+                            break;
+                    case 1: status = "Running";
+                            break;
+                    case 2: status = "Completed";
+                            break;
+                    case 3: status = "Failed";
+                            break;
+                }
+                automls.Add(new AutoML(_sessionId, automl.Name, automl.Library, automl.Model, automl.TestScore, automl.Predictiontime, automl.Runtime, status));
+            }
+        }
+        automls = automls.OrderByDescending(x => x.TestScore).ToList();
+    }
+
+    private async void LoadSession(string _sessionId)
+    {
+        await InvokeAsync(async () =>
+        {
+            try
+            {
+                ApiResponseDto apiResponse = await apiClient.GetSession(new GetSessionRequestDto { SessionId = _sessionId });
+
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    GetSessionResponseDto session = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionResponseDto>(apiResponse.Result.ToString());
+                    PopulateTable(session, _sessionId);
+                    loadedSessions.Add(_sessionId, session);
+                    StateHasChanged();
+                }
+                else
+                {
+                    viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+        });
+    }
+}

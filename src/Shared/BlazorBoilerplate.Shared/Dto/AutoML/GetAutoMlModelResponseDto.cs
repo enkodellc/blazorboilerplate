@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Dto.AutoML
 {
-    public class GetAutoMlModelRespomseDto
+    public class GetAutoMlModelResponseDto
     {
         public string Name { get; set; }
         public byte[] Content { get; set; }
