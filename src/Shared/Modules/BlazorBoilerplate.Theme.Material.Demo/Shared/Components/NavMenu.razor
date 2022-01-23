@@ -6,17 +6,13 @@
 <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" NavLinkMatch="NavLinkMatch.All">
     <MatIcon>folder</MatIcon> <span class="miniHover">Datasets</span>
 </MatNavItem>
-@*TODO: remove session*@
-<MatNavItem Href="@navigationManager.ToAbsoluteUri("sessions").AbsoluteUri">
-    <MatIcon>list_alt</MatIcon> <span class="miniHover">Session</span>
-</MatNavItem>
 
 
 @code {
 
     public int Order { get => 1; }
     public string IntoComponent { get => "NavMenu"; }
-
+    @*
     public bool IsLoggedIn = false;
 
     [CascadingParameter]
@@ -38,4 +34,5 @@
             //Console.WriteLine(DefaultRoleNames.Administrator);
         }
     }
+        *@
 }
