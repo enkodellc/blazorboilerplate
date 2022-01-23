@@ -35,6 +35,20 @@ service ControllerService {
   rpc UploadDatasetFile(UploadDatasetFileRequest) returns (UploadDatasetFileResponse) {}
   /*start a new AutoML run, using the provided configuration*/
   rpc StartAutoMLprocess(StartAutoMLprocessRequest) returns (StartAutoMLprocessResponse) {}
+  /*test an existing AutoML*/
+  rpc TestAutoML(TestAutoMLRequest) returns (TestAutoMLResponse) {}
+}
+
+message TestAutoMLRequest {
+  string testData = 1;
+  string sessionId = 2;
+  string autoMlName = 3;
+}
+
+message TestAutoMLResponse {
+  repeated string predictions = 1;
+  float score = 2;
+  float predictiontime = 3;
 }
 
 

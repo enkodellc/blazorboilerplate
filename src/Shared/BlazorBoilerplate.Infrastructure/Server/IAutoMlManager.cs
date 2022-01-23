@@ -13,5 +13,6 @@ namespace BlazorBoilerplate.Infrastructure.Server
     {
         Task<ApiResponse> Start(StartAutoMLRequestDto autoMl);
         Task<ApiResponse> GetModel(GetAutoMlModelRequestDto autoMl);
+        Task<ApiResponse> TestAutoML(TestAutoMLRequestDto autoMl);
     }
 }

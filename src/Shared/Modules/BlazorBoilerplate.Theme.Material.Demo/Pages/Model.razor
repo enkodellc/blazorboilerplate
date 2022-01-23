@@ -1,11 +1,11 @@
 @page "/datasets/{DatasetId}/training/{SessionId}/model/{ModelId}"
 @inject IStringLocalizer<Global> L
 @using System
+@using System.IO;
 @inject IApiClient apiClient
 @inject IViewNotifier viewNotifier
 @inject IJSRuntime JSRuntime
 @inject BlazorBoilerplate.Shared.Services.SessionState SessionState
-
 
 <MatTabGroup>
     <MatTab Label="Overview">
@@ -47,6 +47,21 @@
         </div>
     </MatTab>
     <MatTab Label="Predict">
+        <div>
+            <div class="mat-layout-grid mat-layout-grid-align-left" style="max-width: 1000px;">
+                <div class="mat-layout-grid-inner">
+                    <div class="mat-layout-grid-cell">
+                        <MatFileUpload OnChange="@FilesReady" Label="Choose File"></MatFileUpload>
+                    </div>
+                    <div class="mat-layout-grid-cell">
+                        @if(predicted){
+                            <p>Score: @string.Format("{0:f3}", @automlResponse.Score)</p>
+                            <p>Prediction time[s]: @string.Format("{0:f3}", @automlResponse.Predictiontime)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
     </MatTab>
 </MatTabGroup>
 
@@ -59,6 +74,8 @@
     public string? ModelId { get; set; }
 
     private int selectedAutoMLId = 0;
+    private bool predicted = false;
+    private TestAutoMLResponseDto automlResponse;
 
     protected override void OnInitialized(){
         foreach (AutoMLStatusDto automl in SessionState.session.AutoMls){
@@ -73,11 +90,11 @@
     {
         try
         {
-            ApiResponseDto apiResponse = apiResponse = await apiClient.GetModel(new GetAutoMlModelRequestDto { SessionId = SessionId, AutoMl = ModelId });
+            ApiResponseDto apiResponse = await apiClient.GetModel(new GetAutoMlModelRequestDto { SessionId = SessionId, AutoMl = ModelId });
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                GetAutoMlModelRespomseDto file = Newtonsoft.Json.JsonConvert.DeserializeObject<GetAutoMlModelRespomseDto>(apiResponse.Result.ToString());
+                GetAutoMlModelResponseDto file = Newtonsoft.Json.JsonConvert.DeserializeObject<GetAutoMlModelResponseDto>(apiResponse.Result.ToString());
                 viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success, L["Operation Successful"]);
                 await JSRuntime.InvokeVoidAsync(
                     "downloadFromByteArray",
@@ -87,6 +104,54 @@
                          FileName = file.Name,
                          ContentType = "application/octet-stream"
                      });
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, L["Operation Failed"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+
+    private async Task FilesReady(IMatFileUploadEntry[] files)
+    {
+        string FileContent = "";
+        try
+        {
+            foreach (var file in files)
+            {
+                //Only one file can always be read
+                using (var stream = new MemoryStream())
+                {
+                    await file.WriteToStreamAsync(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    using (var reader = new StreamReader(stream))
+                    {
+                        var content = await reader.ReadToEndAsync();
+                        FileContent = content;
+                    }
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+
+        //Test AutoML
+        try
+        {
+            ApiResponseDto apiResponse = await apiClient.TestAutoML(new TestAutoMLRequestDto { TestData = FileContent, SessionId = SessionId, AutoMlName = ModelId });
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                TestAutoMLResponseDto response = Newtonsoft.Json.JsonConvert.DeserializeObject<TestAutoMLResponseDto>(apiResponse.Result.ToString());
+                automlResponse = response;
+                predicted=true;
+                StateHasChanged();
             }
             else
             {
