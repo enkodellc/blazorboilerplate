@@ -23,8 +23,8 @@
                     <p>@ModelId</p>
                     <p>@SessionState.session.AutoMls[selectedAutoMLId].Library</p>
                     <p>@SessionState.session.AutoMls[selectedAutoMLId].Model</p>
-                    <p>@SessionState.session.AutoMls[selectedAutoMLId].TestScore</p>
-                    <p>@SessionState.session.AutoMls[selectedAutoMLId].Predictiontime</p>
+                    <p>@string.Format("{0:f3}", @SessionState.session.AutoMls[selectedAutoMLId].TestScore)</p>
+                    <p>@string.Format("{0:f3}", @SessionState.session.AutoMls[selectedAutoMLId].Predictiontime)</p>
                     <p>@SessionState.session.AutoMls[selectedAutoMLId].Runtime</p>
                 </div>
             </div>
@@ -55,10 +55,16 @@
                     </div>
                     <div class="mat-layout-grid-cell">
                         @if(predicted){
-                            <p>Score: @string.Format("{0:f3}", @automlResponse.Score)</p>
+                            <p>File: @predictFileName</p>
+                            @if(automlResponse.Score!=0.0){
+                                <p>Score: @string.Format("{0:f3}", @automlResponse.Score)</p>
+                            }
                             <p>Prediction time[s]: @string.Format("{0:f3}", @automlResponse.Predictiontime)</p>
                         }
                     </div>
+                </div>
+                <div class="mat-layout-grid-cell" style="margin-top: 20px;">
+                    <MatButton Icon="@MatIconNames.Cloud_download" Outlined="true" @bind-Disabled="@disableButton" OnClick="@DownloadPredictions">Download result csv</MatButton>
                 </div>
             </div>
         </div>
@@ -75,6 +81,8 @@
 
     private int selectedAutoMLId = 0;
     private bool predicted = false;
+    private bool disableButton = true;
+    private string predictFileName = "";
     private TestAutoMLResponseDto automlResponse;
 
     protected override void OnInitialized(){
@@ -116,6 +124,25 @@
         }
     }
 
+    private async void DownloadPredictions(){
+        try{
+            byte[] predictionBytes = automlResponse.Predictions.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine)).ToArray();
+
+            await JSRuntime.InvokeVoidAsync(
+                "downloadFromByteArray",
+                 new
+                 {
+                     ByteArray = predictionBytes,
+                     FileName = predictFileName,
+                     ContentType = "application/octet-stream"
+                 });
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["Operation Failed"]);
+        }
+    }
+
     private async Task FilesReady(IMatFileUploadEntry[] files)
     {
         string FileContent = "";
@@ -131,6 +158,7 @@
                     using (var reader = new StreamReader(stream))
                     {
                         var content = await reader.ReadToEndAsync();
+                        predictFileName = file.Name;
                         FileContent = content;
                     }
                 }
@@ -151,6 +179,7 @@
                 TestAutoMLResponseDto response = Newtonsoft.Json.JsonConvert.DeserializeObject<TestAutoMLResponseDto>(apiResponse.Result.ToString());
                 automlResponse = response;
                 predicted=true;
+                disableButton=false;
                 StateHasChanged();
             }
             else

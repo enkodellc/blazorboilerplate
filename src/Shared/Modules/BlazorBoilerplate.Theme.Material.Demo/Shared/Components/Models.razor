@@ -22,13 +22,16 @@
         </MatTableHeader>
         <MatTableRow>
             <td>
-                <a href="@NavManager.ToAbsoluteUri("datasets/" + context.Name + "/training/" + context.Id).AbsoluteUri" Style="cursor: pointer;">@context.Id</a>
+                <a href="@NavManager.ToAbsoluteUri("datasets/" + DatasetId + "/training/" + context.Id).AbsoluteUri" Style="cursor: pointer;">@context.Id</a>
             </td>
             <td>@context.Name</td>
             <td>@context.Library</td>
-            <td>@context.Model</td>
+            <td>
+                <a href="@NavManager.ToAbsoluteUri("datasets/" + DatasetId + "/training/" + context.Id + "/model/" + @context.Name).AbsoluteUri"
+                    @onclick="@(() => HandleModelChanged(context))" Style="cursor: pointer;">@context.Model</a>
+            </td>
             <td>@string.Format("{0:f3}", @context.TestScore)</td>
-            <td>@string.Format("{0:f5}", @context.Predictiontime)</td>
+            <td>@string.Format("{0:f3}", @context.Predictiontime)</td>
             <td>@context.Runtime</td>
             <td>@context.Status</td>
             <td>

@@ -1,4 +1,5 @@
 ﻿@page "/datasets/{id}"
+@page "/datasets/{id}/{tabIndex:int?}"
 @inject IStringLocalizer<Global> L
 @using System
 @inject IApiClient apiClient
@@ -9,7 +10,7 @@
 
 <h1>@Id</h1>
 
-<MatTabGroup>
+<MatTabGroup @bind-ActiveIndex="@SelectedIndex">
     <MatTab Label="Train">
         <div style="display:flex; flex-direction:column; margin-top: 25px;">
             <div style="display:flex; flex-direction:row; justify-content:space-between">
@@ -72,7 +73,10 @@
 @code{
     [Parameter]
     public string? Id { get; set; }
+    [Parameter]
+    public int? TabIndex { get; set; }
 
+    public int SelectedIndex;
     private int ActiveStepId = 1;
     private bool AutoMLStarted = false;
 
@@ -83,6 +87,15 @@
         WizardState.automlRequest = new StartAutoMLRequestDto();
         WizardState.automlRequest.DatasetName = Id;
         WizardState.automlRequest.DatasetType = "TABULAR";
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            SelectedIndex = TabIndex ?? 0;
+            this.StateHasChanged();
+        }
     }
 
     protected void GoBack()

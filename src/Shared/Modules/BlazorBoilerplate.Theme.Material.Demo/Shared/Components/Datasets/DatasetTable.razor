@@ -15,7 +15,7 @@
     </MatTableHeader>
     <MatTableRow>
         <td>
-            <a href="" Style="cursor: pointer;" @onclick="@(() => { Console.WriteLine("Hello"); })">@context.Name</a>
+            <a href="@NavManager.ToAbsoluteUri("datasets/" + @context.Name + "/1").AbsoluteUri" Style="cursor: pointer;">@context.Name</a>
         </td>
         <td>@context.Rows</td>
         <td>@context.Columns</td>
