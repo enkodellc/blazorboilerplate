@@ -37,7 +37,7 @@
                 <td>@context.Runtime</td>
                 <td>@context.Status</td>
                 <td>
-                    <CustomMenu OpenModel="OpenModel" HandleClick="@(() => HandleModelChanged(context))"></CustomMenu>
+                    <ModelMenu OpenModel="OpenModel" HandleClick="@(() => HandleModelChanged(context))"></ModelMenu>
                 </td>
             </MatTableRow>
         </MatTable>
@@ -53,13 +53,9 @@
     [Parameter]
     public string? SessionId { get; set; }
 
-
     private GetSessionResponseDto _session = null;
     private Timer _timer;
     private String ModelName;
-
-    MatButton Button;
-    BaseMatMenu Menu;
 
     public class AutoML{
         public string Name { get; set; }
@@ -96,11 +92,6 @@
 
     protected void OpenModel(){
         NavManager.NavigateTo(NavManager.ToAbsoluteUri("datasets/" + DatasetId + "/training/" + SessionId + "/Model/" + ModelName).AbsoluteUri);
-    }
-
-    public void OnClick(MouseEventArgs e)
-    {
-        this.Menu.OpenAsync(Button.Ref);
     }
 
     private async void HandleModelChanged(AutoML obj)

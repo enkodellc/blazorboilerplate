@@ -21,7 +21,7 @@
         <td>@context.Columns</td>
         <td style="white-space:nowrap;">@context.Creation_date.ToString("yyyy-MM-dd")</td>
         <td>
-            <CustomMenuItem OpenDataset="OpenDataset" HandleClick="@(() => HandleDatasetChanged(context))"></CustomMenuItem>
+            <DatasetMenu OpenDataset="OpenDataset" HandleClick="@(() => HandleDatasetChanged(context))"></DatasetMenu>
         </td>
     </MatTableRow>
 </MatTable>

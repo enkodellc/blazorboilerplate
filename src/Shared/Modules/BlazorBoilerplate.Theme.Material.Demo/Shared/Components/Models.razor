@@ -32,12 +32,7 @@
             <td>@context.Runtime</td>
             <td>@context.Status</td>
             <td>
-                <MatButton Label="Menu" Style="float: right" OnClick="@((e) => {  OnClick(e); HandleModelChanged(context); })" @ref="Button"></MatButton>
-                <MatMenu @ref="Menu">
-                    <MatList>
-                        <MatListItem @onclick="OpenModel">More</MatListItem>
-                    </MatList>
-                </MatMenu>
+                <ModelMenu OpenModel="OpenModel" HandleClick="@(() => HandleModelChanged(context))"></ModelMenu>
             </td>
         </MatTableRow>
     </MatTable>
@@ -76,7 +71,7 @@
         }
     }
     List<AutoML> automls = new List<AutoML>();
-    List<GetSessionResponseDto> loadedSessions = new List<GetSessionResponseDto>();
+    Dictionary<string, GetSessionResponseDto> loadedSessions = new Dictionary<string, GetSessionResponseDto>();
 
     protected override void OnInitialized(){
         LoadSessions();
@@ -114,16 +109,11 @@
         NavManager.NavigateTo(NavManager.ToAbsoluteUri("datasets/" + DatasetId + "/training/" + SessionId + "/Model/" + ModelName).AbsoluteUri);
     }
 
-    public void OnClick(MouseEventArgs e)
-    {
-        this.Menu.OpenAsync(Button.Ref);
-    }
-
     private async void HandleModelChanged(AutoML obj)
     {
         SessionId = obj.Id;
         ModelName = obj.Name;
-        SessionState.session = loadedSessions[Int32.Parse(SessionId)];
+        SessionState.session = loadedSessions[SessionId];
     }
 
     private void PopulateTable(GetSessionResponseDto session, string _sessionId){
@@ -158,7 +148,7 @@
                 {
                     GetSessionResponseDto session = Newtonsoft.Json.JsonConvert.DeserializeObject<GetSessionResponseDto>(apiResponse.Result.ToString());
                     PopulateTable(session, _sessionId);
-                    loadedSessions.Add(session);
+                    loadedSessions.Add(_sessionId, session);
                     StateHasChanged();
                 }
                 else
