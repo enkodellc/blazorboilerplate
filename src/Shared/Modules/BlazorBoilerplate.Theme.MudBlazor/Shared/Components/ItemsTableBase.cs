@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.UI.Base.Shared.Components;
 using MudBlazor;
+using Humanizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
 
                 apiClient.ClearEntitiesCache();
 
-                var from = $"{typeof(T).Name}s";
+                var from = $"{typeof(T).Name}".Pluralize(true);
 
                 var prop = queryParameters?.GetType().GetProperties().SingleOrDefault(i => i.Name == "Filter");
 
