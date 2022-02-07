@@ -1,6 +1,5 @@
 using BlazorBoilerplate.UI.Base.Shared.Layouts;
 using Microsoft.AspNetCore.Components;
-using System;
 
 namespace BlazorBoilerplate.UI.Base.Shared.Components
 {

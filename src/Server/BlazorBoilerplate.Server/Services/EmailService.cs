@@ -2,14 +2,7 @@
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Storage;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Services
 {

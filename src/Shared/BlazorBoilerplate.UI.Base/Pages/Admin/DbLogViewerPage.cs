@@ -4,10 +4,7 @@ using BlazorBoilerplate.Shared.Localizer;
 using Karambolo.Common.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {

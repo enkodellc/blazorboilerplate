@@ -1,11 +1,5 @@
 ﻿using BlazorBoilerplate.Server.Services;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Serilog;
-using System;
-using System.Threading;
 
 namespace BlazorBoilerplate.Server
 {

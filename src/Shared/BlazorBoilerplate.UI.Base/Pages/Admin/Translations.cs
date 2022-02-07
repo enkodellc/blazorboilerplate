@@ -6,12 +6,6 @@ using Karambolo.Common.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using ObjectCloner.Extensions;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using static BlazorBoilerplate.Shared.Localizer.Settings;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin

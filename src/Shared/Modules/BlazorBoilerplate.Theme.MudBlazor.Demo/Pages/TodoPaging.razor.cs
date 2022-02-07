@@ -3,11 +3,7 @@ using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Theme.Material.Shared.Components;
 using Breeze.Sharp;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Theme.Material.Demo.Pages
 {

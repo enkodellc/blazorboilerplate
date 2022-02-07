@@ -4,8 +4,6 @@ using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.UI.Base.Pages.IdentityServer
 {

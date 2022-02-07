@@ -3,7 +3,6 @@ using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Storage;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace BlazorBoilerplate.Server.Managers
 {

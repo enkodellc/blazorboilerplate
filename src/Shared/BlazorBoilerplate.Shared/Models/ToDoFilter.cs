@@ -1,6 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using SourceGenerators;
-using System;
 
 namespace BlazorBoilerplate.Shared.Models
 {
