@@ -3,10 +3,7 @@ using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Server.Factories;
 using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Aop
@@ -19,6 +16,9 @@ namespace BlazorBoilerplate.Server.Aop
 
         private readonly MethodInfo _asyncHandler = typeof(ApiResponseExceptionAspect).GetMethod(nameof(WrapAsync), BindingFlags.Instance | BindingFlags.NonPublic);
         private readonly MethodInfo _syncHandler = typeof(ApiResponseExceptionAspect).GetMethod(nameof(WrapSync), BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private readonly MethodInfo _asyncGenericHandler = typeof(ApiResponseExceptionAspect).GetMethod(nameof(WrapGenericAsync), BindingFlags.Instance | BindingFlags.NonPublic);
+        private readonly MethodInfo _syncGenericHandler = typeof(ApiResponseExceptionAspect).GetMethod(nameof(WrapGenericSync), BindingFlags.Instance | BindingFlags.NonPublic);
 
         public ApiResponseExceptionAspect(ILogger<ApiResponseExceptionAspect> logger, IStringLocalizer<Global> l)
         {
@@ -39,9 +39,32 @@ namespace BlazorBoilerplate.Server.Aop
             {
                 return _asyncHandler.Invoke(this, new object[] { target, args, name });
             }
+            else if (retType.BaseType == typeof(Task))
+            {
+                var syncResultType = retType.GetGenericArguments()[0];
+                var isGenericApiResponse = syncResultType.IsGenericType && syncResultType.GetGenericTypeDefinition() == typeof(ApiResponse<>);
+
+                if (isGenericApiResponse)
+                {
+                    return _asyncGenericHandler
+                        .MakeGenericMethod(syncResultType, syncResultType.GetGenericArguments()[0])
+                        .Invoke(this, new object[] { target, args, name });
+                }
+            }
             else if (typeof(ApiResponse).IsAssignableFrom(retType))
             {
                 return _syncHandler.Invoke(this, new object[] { target, args, name });
+            }
+            else
+            {
+                var isGenericApiResponse = retType.IsGenericType && retType.GetGenericTypeDefinition() == typeof(ApiResponse<>);
+
+                if (isGenericApiResponse)
+                {
+                    return _syncGenericHandler
+                        .MakeGenericMethod(retType.GetGenericArguments()[0])
+                        .Invoke(this, new object[] { target, args, name });
+                }
             }
 
             return target(args);
@@ -93,6 +116,30 @@ namespace BlazorBoilerplate.Server.Aop
             catch (Exception ex)
             {
                 return GetApiResponseFor(name, ex);
+            }
+        }
+
+        private ApiResponse<R> WrapGenericSync<R>(Func<object[], object> target, object[] args, string name) where R : class
+        {
+            try
+            {
+                return (ApiResponse<R>)target(args);
+            }
+            catch (Exception ex)
+            {
+                return (ApiResponse<R>)GetApiResponseFor(name, ex);
+            }
+        }
+
+        private async Task<T> WrapGenericAsync<T, R>(Func<object[], object> target, object[] args, string name) where T : ApiResponse<R>
+        {
+            try
+            {
+                return await (Task<T>)target(args);
+            }
+            catch (Exception ex)
+            {
+                return (T)GetApiResponseFor(name, ex);
             }
         }
     }

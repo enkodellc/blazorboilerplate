@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 
@@ -24,10 +23,21 @@ namespace BlazorBoilerplate.Infrastructure.Server.Models
         public T Result { get; set; }
 
         [JsonConstructor]
-        public ApiResponse(int statusCode, string message = "")
+        public ApiResponse(int statusCode, string message = "", T result = default)
         {
             StatusCode = statusCode;
             Message = message;
+            Result = result;
+
+            Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            if (string.IsNullOrWhiteSpace(message))
+                Message = IsSuccessStatusCode ? "Operation Successful" : "Operation Failed";
+        }
+
+        static public implicit operator ApiResponse<T>(ApiResponse r)
+        {
+            return new ApiResponse<T>(r.StatusCode, r.Message, r.Result is T ? (T)r.Result : default);
         }
     }
 
@@ -36,12 +46,11 @@ namespace BlazorBoilerplate.Infrastructure.Server.Models
     public class ApiResponse : ApiResponse<object>
     {
         [JsonConstructor]
-        public ApiResponse(int statusCode, string message = "", object result = null, string apiVersion = "") : base(statusCode, message)
+        public ApiResponse(int statusCode, string message = "", object result = null) : base(statusCode, message)
         {
             StatusCode = statusCode;
             Message = message;
             Result = result;
-            Version = string.IsNullOrWhiteSpace(apiVersion) ? Assembly.GetEntryAssembly().GetName().Version.ToString() : apiVersion;
         }
 
         public ApiResponse(int statusCode) : base(statusCode, "")
