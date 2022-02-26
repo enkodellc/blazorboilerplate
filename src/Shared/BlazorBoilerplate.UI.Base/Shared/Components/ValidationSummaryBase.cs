@@ -8,19 +8,19 @@ namespace BlazorBoilerplate.UI.Base.Shared.Components
     /// </summary>
     public class ValidationSummaryBase : ComponentBase, IDisposable
     {
-        private EditContext? _previousEditContext;
+        private EditContext _previousEditContext;
         private readonly EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
 
         /// <summary>
         /// Gets or sets the model to produce the list of validation messages for.
         /// When specified, this lists all errors that are associated with the model instance.
         /// </summary>
-        [Parameter] public object? Model { get; set; }
+        [Parameter] public object Model { get; set; }
 
         /// <summary>
         /// Gets or sets a collection of additional attributes that will be applied to the created <c>ul</c> element.
         /// </summary>
-        [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+        [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> AdditionalAttributes { get; set; }
 
         [CascadingParameter] protected EditContext CurrentEditContext { get; set; } = default!;
 

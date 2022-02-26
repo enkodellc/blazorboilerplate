@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace BlazorBoilerplate.Shared.Models
+﻿namespace BlazorBoilerplate.Shared.Models
 {
     public abstract class QueryParameters
     {
