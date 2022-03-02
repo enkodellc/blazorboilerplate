@@ -1,7 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Localizer;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
-using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Theme.Material.Shared.Components
 {
@@ -20,7 +19,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
         protected override void OnInitialized()
         {
             if (IncludeRoot)
-                Items.Insert(0, new Breadcrumb("/", L["BreadCrumbHome"]));
+                Items.Insert(0, Breadcrumb.New("/", L["BreadCrumbHome"]));
         }
     }
 }

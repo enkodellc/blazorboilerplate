@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
 
 namespace BlazorBoilerplate.Theme.Material.Shared.Components
 {
@@ -14,17 +13,6 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
         [Parameter]
         public string Title { get; set; }
 
-        public Breadcrumb()
-        {
-
-        }
-
-        public Breadcrumb(string link, string title)
-        {
-            Link = link;
-            Title = title;
-        }
-
         protected override void OnInitialized()
         {
             Parent.Items.Add(this);
@@ -34,5 +22,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
         {
             Parent.Items.Remove(this);
         }
+
+        public static Breadcrumb New(string link, string title) => new Breadcrumb { Link = link, Title = title };
     }
 }
