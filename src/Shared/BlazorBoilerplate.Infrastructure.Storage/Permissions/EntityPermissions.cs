@@ -84,12 +84,12 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
 
         public string[] GetAllPermissionValues()
         {
-            return GetAllPermission().Select(p => p.Value).ToArray();
+            return GetAllPermission().OrderBy(p => p.Value).Select(p => p.Value).ToArray();
         }
 
         public string[] GetAllPermissionNames()
         {
-            return GetAllPermission().Select(p => p.Name).ToArray();
+            return GetAllPermission().OrderBy(p => p.Name).Select(p => p.Name).ToArray();
         }
     }
 }

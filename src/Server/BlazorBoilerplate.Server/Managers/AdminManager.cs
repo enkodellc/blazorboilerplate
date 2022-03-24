@@ -85,7 +85,7 @@ namespace BlazorBoilerplate.Server.Managers
         #region Roles
         public async Task<ApiResponse> GetRolesAsync(int pageSize = 0, int pageNumber = 0)
         {
-            var roleQuery = _roleManager.Roles.AsQueryable().OrderBy(x => x.Id);
+            var roleQuery = _roleManager.Roles.AsQueryable().OrderBy(x => x.Name);
             var count = roleQuery.Count();
             var listResponse = (pageSize > 0 ? roleQuery.Skip(pageNumber * pageSize).Take(pageSize) : roleQuery).ToList();
 
@@ -94,7 +94,7 @@ namespace BlazorBoilerplate.Server.Managers
             foreach (var role in listResponse)
             {
                 var claims = await _roleManager.GetClaimsAsync(role);
-                var permissions = claims.Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
+                List<string> permissions = claims.OrderBy(x => x.Value).Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
                 roleDtoList.Add(new RoleDto
                 {
@@ -111,7 +111,7 @@ namespace BlazorBoilerplate.Server.Managers
             var identityRole = await _roleManager.FindByNameAsync(roleName);
 
             var claims = await _roleManager.GetClaimsAsync(identityRole);
-            var permissions = claims.Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
+            var permissions = claims.OrderBy(x => x.Value).Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
             var roleDto = new RoleDto
             {
@@ -147,7 +147,7 @@ namespace BlazorBoilerplate.Server.Managers
                     await _roleManager.DeleteAsync(role);
             }
 
-            return new ApiResponse(Status200OK, L["Role {0} created", roleDto.Name], roleDto); //fix a strange System.Text.Json exception shown only in Debug_SSB 
+            return new ApiResponse(Status200OK, L["Role {0} created", roleDto.Name], roleDto); //fix a strange System.Text.Json exception shown only in Debug_SSB
         }
 
         public async Task<ApiResponse> UpdateRoleAsync(RoleDto roleDto)
@@ -166,7 +166,7 @@ namespace BlazorBoilerplate.Server.Managers
                     var role = await _roleManager.FindByNameAsync(roleDto.Name);
 
                     var claims = await _roleManager.GetClaimsAsync(role);
-                    var permissions = claims.Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => x.Value).ToList();
+                    var permissions = claims.OrderBy(x => x.Value).Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => x.Value).ToList();
 
                     foreach (var permission in permissions)
                     {
