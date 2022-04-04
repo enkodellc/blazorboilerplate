@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.DataInterfaces;
+using BlazorBoilerplate.Shared.DataInterfaces;
 using Karambolo.PO;
 using Microsoft.Extensions.Logging;
 using System;
@@ -27,7 +27,9 @@ namespace BlazorBoilerplate.Shared.Localizer
 
                 try
                 {
-                    foreach (var culture in localizationRecords.Select(i => i.Culture).Distinct())
+                    var cultureList = localizationRecords.Select(i => i.Culture).Distinct().ToList();
+
+                    foreach (var culture in cultureList)
                     {
                         var pluralFormRule = pluralFormRules.SingleOrDefault(i => i.Language == culture);
 
@@ -49,7 +51,8 @@ namespace BlazorBoilerplate.Shared.Localizer
                         }
                         };
 
-                        foreach (var localizationRecord in localizationRecords.Where(i => i.Culture == culture))
+                        var localizationRecordsInCulture = localizationRecords.Where(i => i.Culture == culture).ToList();
+                        foreach (var localizationRecord in localizationRecordsInCulture)
                         {
                             try
                             {
