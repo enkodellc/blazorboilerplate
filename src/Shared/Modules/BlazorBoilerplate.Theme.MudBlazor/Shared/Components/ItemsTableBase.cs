@@ -1,15 +1,12 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.UI.Base.Shared.Components;
-using MudBlazor;
 using Humanizer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MudBlazor;
 
 namespace BlazorBoilerplate.Theme.Material.Shared.Components
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "BL0005:Component parameter should not be set outside of its component.")]
     public class ItemsTableBase<T> : BaseComponent
     {
         protected List<T> items;
@@ -110,7 +107,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
             filter = text;
             await Reload();
         }
-
+        
         protected async Task Reload()
         {
             table.CurrentPage = 0;
