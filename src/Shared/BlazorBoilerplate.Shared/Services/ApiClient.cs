@@ -6,19 +6,14 @@ using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
 using Breeze.Sharp;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Services
 {
     public class ApiClient : BaseApiClient, IApiClient
     {
         public ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : base(httpClient, logger)
-        {   }              
+        { }
         public async Task<UserProfile> GetUserProfile()
         {
             return (await entityManager.ExecuteQuery(new EntityQuery<UserProfile>().From("UserProfile"), CancellationToken.None)).SingleOrDefault();

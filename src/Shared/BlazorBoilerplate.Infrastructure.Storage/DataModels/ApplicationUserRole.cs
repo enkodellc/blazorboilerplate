@@ -1,7 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Identity;
-using System;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {

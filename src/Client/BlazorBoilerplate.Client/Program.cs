@@ -8,13 +8,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
-using System;
 using System.Globalization;
-using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Client
 {

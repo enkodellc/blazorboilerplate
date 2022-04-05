@@ -1,6 +1,4 @@
 ﻿using BlazorBoilerplate.Shared.Providers;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BlazorBoilerplate.Shared.Models.Account
 {

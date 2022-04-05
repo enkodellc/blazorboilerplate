@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Reflection;
 
 namespace BlazorBoilerplate.Storage
@@ -54,10 +53,10 @@ namespace BlazorBoilerplate.Storage
             {
                 var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-                if(string.IsNullOrEmpty(connectionString))
+                if (string.IsNullOrEmpty(connectionString))
                     throw new ArgumentNullException("The DefaultConnection was not found.");
 
-                if(!connectionString.ToLower().Contains("multipleactiveresultsets=true"))
+                if (!connectionString.ToLower().Contains("multipleactiveresultsets=true"))
                     throw new ArgumentException("When Sql Server is in use the DefaultConnection must contain: MultipleActiveResultSets=true");
 
                 builder.UseSqlServer(connectionString, options =>

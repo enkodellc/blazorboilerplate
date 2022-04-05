@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using BlazorBoilerplate.Shared.Dto;
+﻿using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Models.Account;
 
 namespace BlazorBoilerplate.Shared.Interfaces

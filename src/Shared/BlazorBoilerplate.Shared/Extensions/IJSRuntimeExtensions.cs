@@ -1,7 +1,5 @@
 ﻿using Microsoft.JSInterop;
-using System;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Extensions
 {

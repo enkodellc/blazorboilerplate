@@ -1,5 +1,4 @@
 ﻿using Finbuckle.MultiTenant;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +9,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
     {
         [Key]
         public long Id { get; set; }
-       
+
         public Guid UserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 

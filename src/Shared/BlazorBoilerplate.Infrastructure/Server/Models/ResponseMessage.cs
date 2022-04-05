@@ -1,6 +1,5 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Http;
-using System.Linq;
 
 namespace BlazorBoilerplate.Infrastructure.Server.Models
 {

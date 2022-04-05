@@ -1,9 +1,6 @@
 ﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.Dto.Email;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Infrastructure.Server
 {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BlazorBoilerplate.Shared.Dto.Email
+﻿namespace BlazorBoilerplate.Shared.Dto.Email
 {
     public class EmailMessageDto
     {

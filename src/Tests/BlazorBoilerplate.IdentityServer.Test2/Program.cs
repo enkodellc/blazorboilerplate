@@ -3,9 +3,6 @@ using IdentityModel.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.IdentityServer.Test2
 {
@@ -69,7 +66,7 @@ namespace BlazorBoilerplate.IdentityServer.Test2
 
                 Console.WriteLine($"\ntodo found: {todos.InlineCount}");
 
-                foreach(var todo in todos.Results)
+                foreach (var todo in todos.Results)
                 {
                     apiClient.RemoveEntity(todo);
 

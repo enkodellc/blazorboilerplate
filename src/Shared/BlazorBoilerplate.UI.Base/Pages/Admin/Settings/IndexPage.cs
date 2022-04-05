@@ -1,7 +1,4 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Db;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin.Settings
 {

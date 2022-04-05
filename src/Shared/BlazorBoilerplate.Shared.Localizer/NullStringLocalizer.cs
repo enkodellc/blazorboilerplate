@@ -2,8 +2,6 @@
 using Karambolo.Common.Localization;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace BlazorBoilerplate.Shared.Localizer

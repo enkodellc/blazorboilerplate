@@ -1,5 +1,4 @@
 ﻿using AspectInjector.Broker;
-using System;
 
 namespace BlazorBoilerplate.Server.Aop
 {

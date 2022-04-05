@@ -53,7 +53,7 @@ namespace BlazorBoilerplate.UI.Base.Shared.Components
                 CurrentEditContext.GetValidationMessages() :
                 CurrentEditContext.GetValidationMessages(new FieldIdentifier(Model, string.Empty));
         }
-       
+
         protected virtual void Dispose(bool disposing)
         {
         }

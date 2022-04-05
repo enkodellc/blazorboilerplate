@@ -1,6 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.DataInterfaces;
 using Karambolo.PO;
-using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Shared.Localizer
 {

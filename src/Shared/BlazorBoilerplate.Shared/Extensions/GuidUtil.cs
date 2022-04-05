@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlazorBoilerplate.Shared.Extensions
+﻿namespace BlazorBoilerplate.Shared.Extensions
 {
     public static class GuidUtil
     {

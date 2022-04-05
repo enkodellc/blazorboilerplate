@@ -1,6 +1,4 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
-using System;
-using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Shared.Models
 {
@@ -15,7 +13,7 @@ namespace BlazorBoilerplate.Shared.Models
         public List<string> Roles { get; set; }
         public List<KeyValuePair<string, string>> ExposedClaims { get; set; }
 
-        public UserSession() 
+        public UserSession()
         {
         }
 

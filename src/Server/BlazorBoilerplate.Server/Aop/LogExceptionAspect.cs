@@ -1,10 +1,7 @@
 ﻿using AspectInjector.Broker;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Server.Factories;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Aop
 {

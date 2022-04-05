@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Theme.Material.TagHelpers
 {

@@ -21,7 +21,7 @@ namespace BlazorBoilerplate.Server.Services
         {
             try
             {
-                await Program.Sync.WaitAsync(stoppingToken);                
+                await Program.Sync.WaitAsync(stoppingToken);
 
                 _logger.LogInformation($"EmailService starting...");
 

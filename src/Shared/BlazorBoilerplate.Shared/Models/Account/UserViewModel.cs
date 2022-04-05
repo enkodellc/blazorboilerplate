@@ -1,6 +1,4 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
-using System;
-using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Shared.Models.Account
 {

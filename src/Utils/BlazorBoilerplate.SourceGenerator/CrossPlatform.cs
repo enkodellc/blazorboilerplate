@@ -11,9 +11,9 @@ namespace BlazorBoilerplate.SourceGenerator
             var segments = new string[totalLength + 1];
             segments[0] = basePath;
             var i = 0;
-            foreach(var split in splits)
+            foreach (var split in splits)
             {
-                foreach(var value in split)
+                foreach (var value in split)
                 {
                     i++;
                     segments[i] = value;

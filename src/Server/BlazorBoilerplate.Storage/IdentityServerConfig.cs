@@ -2,7 +2,6 @@
 using Humanizer;
 using IdentityModel;
 using IdentityServer4.Models;
-using System.Collections.Generic;
 using static IdentityServer4.IdentityServerConstants;
 
 namespace BlazorBoilerplate.Storage

@@ -5,7 +5,6 @@ using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Theme.Material
@@ -59,7 +58,7 @@ namespace BlazorBoilerplate.Theme.Material
             services.AddScoped<IViewNotifier, ViewNotifier>();
 
             var sp = services.BuildServiceProvider();
-            
+
             sp.GetRequiredService<HttpClient>().EnableIntercept(sp);
         }
 

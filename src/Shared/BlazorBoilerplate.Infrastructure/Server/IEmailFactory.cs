@@ -1,5 +1,4 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Email;
-using System;
 
 namespace BlazorBoilerplate.Infrastructure.Server
 {

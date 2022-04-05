@@ -1,7 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using Microsoft.AspNetCore.Authorization;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Authorization
 {

@@ -15,6 +15,6 @@ namespace BlazorBoilerplate.GoogleAnalytics
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<ITagHelperComponent, GoogleAnalyticsTagHelperComponent>();
-        }      
+        }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using BlazorBoilerplate.Shared.Localizer;
-using System;
-using System.Collections.Generic;
 
 namespace BlazorBoilerplate.Shared.Dto.Db
 {

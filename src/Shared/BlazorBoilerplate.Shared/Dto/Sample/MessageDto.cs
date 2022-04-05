@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlazorBoilerplate.Shared.Dto.Sample
+﻿namespace BlazorBoilerplate.Shared.Dto.Sample
 {
     public class MessageDto
     {

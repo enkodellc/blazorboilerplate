@@ -1,8 +1,5 @@
 ﻿using IdentityModel.Client;
 using Microsoft.AspNetCore.SignalR.Client;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.IdentityServer.Test3
 {

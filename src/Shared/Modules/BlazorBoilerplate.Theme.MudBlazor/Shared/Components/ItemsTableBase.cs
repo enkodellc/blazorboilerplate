@@ -107,7 +107,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
             filter = text;
             await Reload();
         }
-        
+
         protected async Task Reload()
         {
             table.CurrentPage = 0;

@@ -1,7 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using Microsoft.AspNetCore.Components.Forms;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Theme.Material.Services
 {

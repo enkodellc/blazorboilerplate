@@ -1,5 +1,4 @@
 using Breeze.Sharp;
-using System;
 
 namespace BlazorBoilerplate.Shared.Dto.Db
 {
@@ -42,5 +41,5 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             set { SetValue(value); }
         }
 
-   }
+    }
 }

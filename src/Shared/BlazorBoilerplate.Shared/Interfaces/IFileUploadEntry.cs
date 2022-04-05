@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-
-namespace BlazorBoilerplate.Shared.Interfaces
+﻿namespace BlazorBoilerplate.Shared.Interfaces
 {
     public interface IFileUploadEntry
     {

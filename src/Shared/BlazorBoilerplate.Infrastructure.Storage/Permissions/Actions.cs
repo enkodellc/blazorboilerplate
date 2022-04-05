@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
+﻿namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
 {
     [Flags]
     public enum Actions
@@ -9,7 +7,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
         Update = 2,
         Read = 4,
         Delete = 8,
-        CRUD= Create | Update | Read | Delete,
+        CRUD = Create | Update | Read | Delete,
         CUD = Create | Update | Delete
     }
 }

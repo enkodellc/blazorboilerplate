@@ -18,7 +18,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
         protected bool updatePasswordDialogOpen = false;
         protected UpdatePasswordViewModel updatePasswordViewModel { get; set; } = new UpdatePasswordViewModel();
         protected AuthenticatorVerificationCodeViewModel authenticatorVerificationCodeViewModel { get; set; } = new AuthenticatorVerificationCodeViewModel();
-        
+
         IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
 
         protected bool BrowserRemembered

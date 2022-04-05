@@ -7,9 +7,6 @@ using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Storage
 {

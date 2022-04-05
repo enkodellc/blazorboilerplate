@@ -1,12 +1,9 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
-using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Models.Account;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Services
 {

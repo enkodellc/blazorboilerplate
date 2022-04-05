@@ -3,9 +3,7 @@ using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 //# Links
 //## ASP.NET Core Roles/Policies/Claims
@@ -27,7 +25,7 @@ namespace BlazorBoilerplate.Server.Authorization
             RoleManager<ApplicationRole> roleManager,
             IOptions<IdentityOptions> optionsAccessor)
             : base(userManager, roleManager, optionsAccessor)
-        {  }
+        { }
 
         public async override Task<ClaimsPrincipal> CreateAsync(ApplicationUser user)
         {
@@ -59,7 +57,7 @@ namespace BlazorBoilerplate.Server.Authorization
                 identity.AddClaim(new Claim(JwtClaimTypes.AuthenticationMethod, ClaimValues.AuthenticationMethodPwd));
             }
 
-            return principal;         
+            return principal;
         }
     }
 }

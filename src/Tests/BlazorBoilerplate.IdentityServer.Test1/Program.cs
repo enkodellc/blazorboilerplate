@@ -4,9 +4,6 @@ using IdentityModel.OidcClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Server.Tests.Oidc
 {
@@ -137,7 +134,7 @@ namespace BlazorBoilerplate.Server.Tests.Oidc
 
         private static async Task CallApi(string currentAccessToken)
         {
-            _httpClient.SetBearerToken(currentAccessToken);            
+            _httpClient.SetBearerToken(currentAccessToken);
 
             var apiClient = new ApiClient(_httpClient, serviceProvider.GetService<ILogger<ApiClient>>());
 

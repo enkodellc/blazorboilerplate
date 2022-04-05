@@ -1,7 +1,5 @@
 ﻿using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
-using System;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
 {

@@ -1,7 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using MatBlazor;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Theme.Material.Services
 {

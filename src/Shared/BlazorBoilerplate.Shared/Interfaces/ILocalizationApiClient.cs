@@ -1,8 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Db;
 using Breeze.Sharp;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Interfaces
 {

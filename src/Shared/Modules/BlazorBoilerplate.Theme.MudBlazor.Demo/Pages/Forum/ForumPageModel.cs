@@ -5,10 +5,6 @@ using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Theme.Material.Demo.Hubs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Theme.Material.Demo.Pages
 {

@@ -176,7 +176,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
                     viewNotifier.Show(L["Operation Successful"], ViewNotifierType.Success);
                     await OnInitializedAsync();
                     isDeleteRoleDialogOpen = false;
-                    StateHasChanged();                    
+                    StateHasChanged();
                 }
                 else
                     viewNotifier.Show(L["Operation Failed"], ViewNotifierType.Error);

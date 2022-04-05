@@ -3,7 +3,6 @@ using Karambolo.PO;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using System;
 using System.Globalization;
 
 namespace BlazorBoilerplate.Shared.Localizer

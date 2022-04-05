@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
+﻿namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class PermissionsAttribute : Attribute

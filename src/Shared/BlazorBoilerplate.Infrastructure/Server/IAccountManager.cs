@@ -3,7 +3,6 @@ using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Models.Account;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Infrastructure.Server
 {
@@ -34,7 +33,7 @@ namespace BlazorBoilerplate.Infrastructure.Server
         Task<ApiResponse> UserViewModel(ClaimsPrincipal authenticatedUser);
 
         Task<ApiResponse> UpdateUser(UserViewModel userViewModel);
-        
+
         // Admin policies. 
 
         Task<ApiResponse> Create(RegisterViewModel parameters);
@@ -46,7 +45,7 @@ namespace BlazorBoilerplate.Infrastructure.Server
         Task<ApiResponse> AdminUpdateUser(UserViewModel userViewModel);
 
         Task<ApiResponse> AdminResetUserPasswordAsync(ChangePasswordViewModel changePasswordViewModel, ClaimsPrincipal authenticatedUser);
-        
+
         Task<ApplicationUser> RegisterNewUserAsync(string userName, string email, string password, bool requireConfirmEmail);
     }
 }

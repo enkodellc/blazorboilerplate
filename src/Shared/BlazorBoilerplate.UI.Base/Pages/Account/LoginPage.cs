@@ -19,7 +19,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
         [Inject] IViewNotifier viewNotifier { get; set; }
 
         [CascadingParameter]
-        Task<AuthenticationState> authenticationStateTask { get; set; }        
+        Task<AuthenticationState> authenticationStateTask { get; set; }
 
         private string navigateTo = null;
         private IdentityAuthenticationStateProvider identityAuthenticationStateProvider;

@@ -1,5 +1,4 @@
 ﻿using BlazorBoilerplate.Constants;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels

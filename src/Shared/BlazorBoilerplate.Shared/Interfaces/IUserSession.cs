@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BlazorBoilerplate.Shared.Interfaces
+﻿namespace BlazorBoilerplate.Shared.Interfaces
 {
     public interface IUserSession
     {

@@ -5,10 +5,6 @@ using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models.Localization;
 using Breeze.Sharp;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Services
 {

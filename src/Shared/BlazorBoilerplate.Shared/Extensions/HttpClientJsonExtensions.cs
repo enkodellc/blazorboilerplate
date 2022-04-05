@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace BlazorBoilerplate.Shared.Extensions
+﻿namespace BlazorBoilerplate.Shared.Extensions
 {
     public static class HttpClientJsonExtensions
     {

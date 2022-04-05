@@ -1,9 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Interfaces;
-using System;
-using System.Linq;
 using System.Security.Authentication;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin.Settings
 {

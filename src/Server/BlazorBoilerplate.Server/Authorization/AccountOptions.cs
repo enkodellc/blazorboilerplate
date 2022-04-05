@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlazorBoilerplate.Server.Authorization
+﻿namespace BlazorBoilerplate.Server.Authorization
 {
     public class AccountOptions
     {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlazorBoilerplate.Shared.Models.Account
+﻿namespace BlazorBoilerplate.Shared.Models.Account
 {
     public class AccountFormModel
     {

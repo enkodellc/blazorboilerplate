@@ -1,6 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using Microsoft.AspNetCore.Components;
-using System;
 
 namespace BlazorBoilerplate.UI.Base.Pages.ExternalAuth
 {

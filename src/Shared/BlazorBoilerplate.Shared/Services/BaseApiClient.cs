@@ -2,13 +2,7 @@
 using BlazorBoilerplate.Shared.Interfaces;
 using Breeze.Sharp;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BlazorBoilerplate.Shared.Services
 {

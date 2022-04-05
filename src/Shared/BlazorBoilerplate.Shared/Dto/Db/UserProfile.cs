@@ -8,5 +8,5 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             IsNavOpen = true;
             IsNavMinified = false;
         }
-   }
+    }
 }

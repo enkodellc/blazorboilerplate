@@ -1,9 +1,6 @@
 using BlazorBoilerplate.Shared.DataInterfaces;
 using Karambolo.PO;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BlazorBoilerplate.Shared.Localizer
 {
@@ -27,9 +24,8 @@ namespace BlazorBoilerplate.Shared.Localizer
 
                 try
                 {
-                    var cultureList = localizationRecords.Select(i => i.Culture).Distinct().ToList();
 
-                    foreach (var culture in cultureList)
+                    foreach (var culture in localizationRecords.Select(i => i.Culture).Distinct().ToList())
                     {
                         var pluralFormRule = pluralFormRules.SingleOrDefault(i => i.Language == culture);
 
@@ -37,7 +33,7 @@ namespace BlazorBoilerplate.Shared.Localizer
                         {
                             Logger.LogError($"Missing PluralFormRule for {culture}");
                             continue;
-                        }                            
+                        }
 
                         var catalog = new POCatalog
                         {
@@ -51,8 +47,7 @@ namespace BlazorBoilerplate.Shared.Localizer
                         }
                         };
 
-                        var localizationRecordsInCulture = localizationRecords.Where(i => i.Culture == culture).ToList();
-                        foreach (var localizationRecord in localizationRecordsInCulture)
+                        foreach (var localizationRecord in localizationRecords.Where(i => i.Culture == culture).ToList())
                         {
                             try
                             {

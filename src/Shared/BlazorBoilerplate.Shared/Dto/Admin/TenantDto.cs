@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BlazorBoilerplate.Shared.Dto.Admin
+﻿namespace BlazorBoilerplate.Shared.Dto.Admin
 {
     public class TenantDto : BaseDto
     {

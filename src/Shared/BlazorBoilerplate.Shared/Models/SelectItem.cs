@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BlazorBoilerplate.Shared.Models
+﻿namespace BlazorBoilerplate.Shared.Models
 {
     public class SelectItem<T> : IEquatable<SelectItem<T>>
     {
