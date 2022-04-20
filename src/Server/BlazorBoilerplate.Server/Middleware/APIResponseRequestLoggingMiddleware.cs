@@ -188,7 +188,7 @@ namespace BlazorBoilerplate.Server.Middleware
             var bodyAsText = Encoding.UTF8.GetString(buffer);
             request.Body.Seek(0, SeekOrigin.Begin);
 
-            return $"{request.Method} {request.Scheme} {request.Host}{request.Path} {request.QueryString} {bodyAsText}";
+            return $"{bodyAsText}";
         }
 
         private static async Task<string> FormatResponse(HttpResponse response)
