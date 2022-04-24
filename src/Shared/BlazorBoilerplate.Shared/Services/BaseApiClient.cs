@@ -163,6 +163,8 @@ namespace BlazorBoilerplate.Shared.Services
 
                 if (skip != null)
                     query = query.Skip(skip.Value);
+                else
+                    query = query.Skip(0); //query errors if skip is not defined so default to 0
 
                 var response = await entityManager.ExecuteQuery(query, CancellationToken.None);
 
