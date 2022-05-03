@@ -37,7 +37,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="6.0.3" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
