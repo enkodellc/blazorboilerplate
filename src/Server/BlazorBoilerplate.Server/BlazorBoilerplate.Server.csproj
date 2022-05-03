@@ -34,7 +34,7 @@
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="6.0.3" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
