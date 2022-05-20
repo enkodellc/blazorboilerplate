@@ -61,7 +61,7 @@ namespace BlazorBoilerplate.Server.Middleware
                         string responseBodyContent = null;
 
                         var response = httpContext.Response;
-
+                        //Breeze IQueryable paths here so it has the meta data to do its job
                         if (new string[] { "/api/localization", "/api/data", "/api/externalauth" }.Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
                             await _next.Invoke(httpContext);
                         else
