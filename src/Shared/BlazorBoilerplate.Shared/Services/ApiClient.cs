@@ -3,7 +3,6 @@ using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Models;
 using Breeze.Sharp;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
@@ -40,18 +39,6 @@ namespace BlazorBoilerplate.Shared.Services
         public async Task<QueryResult<ApiLogItem>> GetApiLogs(Expression<Func<ApiLogItem, bool>> predicate = null, int? take = null, int? skip = null)
         {
             return await GetItems("ApiLogs", predicate, null, i => i.RequestTime, take, skip);
-        }
-        public async Task<QueryResult<Todo>> GetToDos(ToDoFilter filter, int? take = null, int? skip = null)
-        {
-            return await GetItems<Todo>(from: "Todos", orderByDescending: i => i.CreatedOn, take: take, skip: skip, parameters: filter?.ToDictionary());
-        }
-        public async Task<QueryResult<ApplicationUser>> GetTodoCreators(ToDoFilter filter)
-        {
-            return await GetItems<ApplicationUser>(from: "TodoCreators", orderBy: i => i.UserName, parameters: filter?.ToDictionary());
-        }
-        public async Task<QueryResult<ApplicationUser>> GetTodoEditors(ToDoFilter filter)
-        {
-            return await GetItems<ApplicationUser>(from: "TodoEditors", orderBy: i => i.UserName, parameters: filter?.ToDictionary());
         }
         public async Task<ApiResponseDto> SendTestEmail(EmailDto email)
         {

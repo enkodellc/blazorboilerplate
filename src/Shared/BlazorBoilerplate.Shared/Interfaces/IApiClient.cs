@@ -17,11 +17,6 @@ namespace BlazorBoilerplate.Shared.Interfaces
 
         Task<QueryResult<DbLog>> GetLogs(Expression<Func<DbLog, bool>> predicate = null, int? take = null, int? skip = null);
         Task<QueryResult<ApiLogItem>> GetApiLogs(Expression<Func<ApiLogItem, bool>> predicate = null, int? take = null, int? skip = null);
-
-        Task<QueryResult<Todo>> GetToDos(ToDoFilter filter, int? take = null, int? skip = null);
-        Task<QueryResult<ApplicationUser>> GetTodoCreators(ToDoFilter filter);
-        Task<QueryResult<ApplicationUser>> GetTodoEditors(ToDoFilter filter);
-
         Task<ApiResponseDto> SendTestEmail(EmailDto email);
     }
 }

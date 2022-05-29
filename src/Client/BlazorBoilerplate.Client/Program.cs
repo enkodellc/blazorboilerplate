@@ -20,9 +20,8 @@ namespace BlazorBoilerplate.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-            //TODO see what oqtane does
             var baseModule = new Theme.Material.Module();
-            var demoModule = new Theme.Material.Demo.Module();
+            var demoModule = new Theme.Material.Main.Module();
 
             Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 

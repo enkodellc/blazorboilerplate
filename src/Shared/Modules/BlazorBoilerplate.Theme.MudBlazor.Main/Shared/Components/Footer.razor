@@ -1,0 +1,8 @@
+﻿@implements IDynamicComponent
+@inject AppState appState
+©&nbsp;@DateTime.Now.Year&nbsp;<a href="//www.blazorboilerplate.com">@appState.AppName</a>&nbsp;Version 1.0.0
+
+@code {
+    public int Order { get => 1; }
+    public string IntoComponent { get => "Footer"; }
+}

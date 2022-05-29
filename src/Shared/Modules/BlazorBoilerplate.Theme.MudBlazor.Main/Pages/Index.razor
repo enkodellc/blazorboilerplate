@@ -1,0 +1,28 @@
+﻿@page "/"
+@inject IStringLocalizer<Global> L
+@inject ISnackbar Snackbar
+
+@code{
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await Task.Delay(TimeSpan.FromSeconds(3)).ContinueWith((_) =>
+        {
+            Snackbar.Add(
+                "If you like BlazorBoilerplate, please put a <a href=\"https://github.com/enkodellc/blazorboilerplate\" target=\"_blank\">star on GitHub</a>.",
+                Severity.Info,
+                config =>
+            {
+                config.Icon = Icons.Custom.Brands.GitHub;
+                config.RequireInteraction = false;
+                config.ShowCloseIcon = true;
+                config.Onclick = snackbar =>
+                {
+                    return Task.CompletedTask;
+                };
+            });
+        });
+    }
+}

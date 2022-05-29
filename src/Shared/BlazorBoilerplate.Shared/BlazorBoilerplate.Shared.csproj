@@ -48,4 +48,8 @@
   <ItemGroup>
     <AdditionalFiles Include="EntityGeneratorConfig.json" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Dto\Db\Validators\" />
+  </ItemGroup>
 </Project>

@@ -1,14 +1,12 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Storage.Configurations;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
-using Message = BlazorBoilerplate.Infrastructure.Storage.DataModels.Message;
 using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile;
 
 namespace BlazorBoilerplate.Storage
@@ -20,8 +18,6 @@ namespace BlazorBoilerplate.Storage
         public DbSet<ApiLogItem> ApiLogs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<QueuedEmail> QueuedEmails { get; set; }
-        public DbSet<Todo> Todos { get; set; }
-        public DbSet<Message> Messages { get; set; }
         private IUserSession UserSession { get; set; }
         public DbSet<DbLog> Logs { get; set; }
 
@@ -73,11 +69,7 @@ namespace BlazorBoilerplate.Storage
 
             modelBuilder.ShadowProperties();
 
-            modelBuilder.Entity<TenantSetting>().ToTable("TenantSettings").HasKey(i => new { i.TenantId, i.Key }); ;
-
-            modelBuilder.Entity<Message>().ToTable("Messages");
-
-            modelBuilder.ApplyConfiguration(new MessageConfiguration());
+            modelBuilder.Entity<TenantSetting>().ToTable("TenantSettings").HasKey(i => new { i.TenantId, i.Key });
 
             SetGlobalQueryFilters(modelBuilder);
         }

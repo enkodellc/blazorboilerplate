@@ -300,7 +300,7 @@ namespace BlazorBoilerplate.Server
                         // If the request is for our hub...
                         var path = context.HttpContext.Request.Path;
                         if (!string.IsNullOrEmpty(accessToken) &&
-                            path.StartsWithSegments(Constants.HubPaths.Chat))
+                            path.StartsWithSegments(Constants.HubPaths.Main))
                         {
                             // Read the token out of the query string
                             context.Token = accessToken;
@@ -726,7 +726,7 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapFallbackToPage("/_Index");
 
                 // new SignalR endpoint routing setup
-                endpoints.MapHub<Hubs.ChatHub>(Constants.HubPaths.Chat);
+                //endpoints.MapHub<Hubs.ChatHub>(Constants.HubPaths.Main);
             });
 
             Program.Sync.Release();

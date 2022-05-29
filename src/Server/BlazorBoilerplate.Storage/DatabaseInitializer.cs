@@ -64,9 +64,6 @@ namespace BlazorBoilerplate.Storage
             await EnsureAdminIdentitiesAsync();
 
             await SeedIdentityServerAsync();
-
-            //Seed blazorboilerplate sample data
-            await SeedDemoDataAsync();
         }
 
         private async Task MigrateAsync()
@@ -89,89 +86,6 @@ namespace BlazorBoilerplate.Storage
             {
                 _logger.LogError("Importing PO files in db error: {0}", ex.GetBaseException().Message);
             }
-        }
-
-        private async Task SeedDemoDataAsync()
-        {
-            if ((await _userManager.FindByNameAsync(DefaultUserNames.User)) == null)
-            {
-                await CreateUserAsync(DefaultUserNames.User, "user123", "User", "Blazor", "user@blazorboilerplate.com", "+1 (123) 456-7890");
-            }
-
-            if (_tenantStoreDbContext.TenantInfo.Count() < 2)
-            {
-                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant1", Identifier = "tenant1.local", Name = "Microsoft Inc." });
-                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant2", Identifier = "tenant2.local", Name = "Contoso Corp." });
-
-                _tenantStoreDbContext.SaveChanges();
-            }
-
-            ApplicationUser user = await _userManager.FindByNameAsync(DefaultUserNames.User);
-
-            if (!_context.UserProfiles.Any())
-                _context.UserProfiles.Add(new UserProfile
-                {
-                    UserId = user.Id,
-                    ApplicationUser = user,
-                    Count = 2,
-                    IsNavOpen = true,
-                    LastPageVisited = "/dashboard",
-                    IsNavMinified = false,
-                    LastUpdatedDate = DateTime.Now
-                });
-
-            if (!_context.Todos.Any())
-            {
-                var rnd = new Random();
-
-                var fruits = new string[] { "apples", "pears", "peaches", "oranges" };
-
-                var users = _context.Users.ToArray();
-
-                for (int i = 0; i < 1000; i++)
-                    _context.Todos.Add(
-                            new Todo
-                            {
-                                IsCompleted = false,
-                                Title = $"Buy {rnd.Next(2, 5)} {fruits[rnd.Next(fruits.Length)]}",
-                                CreatedById = users[rnd.Next(users.Length)].Id
-                            }
-                    );
-            }
-
-            if (!_context.ApiLogs.Any())
-            {
-                _context.ApiLogs.AddRange(
-                new ApiLogItem
-                {
-                    RequestTime = DateTime.Now,
-                    ResponseMillis = 30,
-                    StatusCode = 200,
-                    Method = "Get",
-                    Path = "/api/seed",
-                    QueryString = "",
-                    RequestBody = "",
-                    ResponseBody = "",
-                    IPAddress = "::1",
-                    ApplicationUserId = user.Id
-                },
-                new ApiLogItem
-                {
-                    RequestTime = DateTime.Now,
-                    ResponseMillis = 30,
-                    StatusCode = 200,
-                    Method = "Get",
-                    Path = "/api/seed",
-                    QueryString = "",
-                    RequestBody = "",
-                    ResponseBody = "",
-                    IPAddress = "::1",
-                    ApplicationUserId = user.Id
-                }
-            );
-            }
-
-            _context.SaveChanges();
         }
 
         private async Task SeedIdentityServerAsync()

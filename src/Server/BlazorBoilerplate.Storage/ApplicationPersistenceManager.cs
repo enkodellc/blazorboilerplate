@@ -1,7 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Localizer;
 using Breeze.Persistence;
-using Finbuckle.MultiTenant;
 using FluentValidation;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
@@ -40,12 +39,11 @@ namespace BlazorBoilerplate.Storage
             {
                 userProfile = new UserProfile
                 {
-                    TenantId = httpContextAccessor.HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo.Id,
                     UserId = new Guid(user.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value),
                     LastUpdatedDate = DateTime.Now
                 };
 
-                await Context.UserProfiles.Upsert(userProfile).On(u => new { u.TenantId, u.UserId }).RunAsync();
+                await Context.UserProfiles.Upsert(userProfile).On(u => new { u.UserId }).RunAsync();
                 //see https://github.com/artiomchi/FlexLabs.Upsert/issues/29
                 userProfile = await Context.UserProfiles.SingleAsync(i => i.UserId == userProfile.UserId);
             }
