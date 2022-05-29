@@ -1,6 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "author": "Keith Fimreite",
+  "author": "Keith Fimreite, Giovanni Quarella",
   "classifications": [ "Web", "Blazor", "WebAssembly", "WebApi", "IdentityServer4" ], 
   "name": "Blazor Boilerplate & Starter Kit",
   "defaultName": "BlazorBoilerplate",
@@ -19,7 +19,7 @@
       "source": "./",
       "target": "./",
       "exclude": [
-        ".template.config/**"
+        "docs/**", ".*/**", "src/Server/BlazorBoilerplate.Server/Themes/*.dll", "src/Server/BlazorBoilerplate.Server/Modules/*.dll", "src/Server/BlazorBoilerplate.Server/Keys/**", "src/Server/BlazorBoilerplate.Server/logs/**"
       ]
     }
   ]

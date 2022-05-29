@@ -1,2 +1,0 @@
-dotnet new -i ..\..\
-pause

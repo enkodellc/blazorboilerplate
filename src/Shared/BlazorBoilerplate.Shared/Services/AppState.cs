@@ -60,24 +60,6 @@ namespace BlazorBoilerplate.Shared.Services
             return _userProfile;
         }
 
-        public async Task UpdateUserProfileCount(int count)
-        {
-            _userProfile.Count = count;
-            await UpdateUserProfile();
-            NotifyStateChanged();
-        }
-
-        public async Task<int> GetUserProfileCount()
-        {
-            if (_userProfile == null)
-            {
-                _userProfile = await GetUserProfile();
-                return _userProfile.Count;
-            }
-
-            return _userProfile.Count;
-        }
-
         public async Task SaveLastVisitedUri(string uri)
         {
             if (_userProfile == null)
