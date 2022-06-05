@@ -4,7 +4,6 @@ using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using BlazorBoilerplate.Shared.Localizer;
-using Finbuckle.MultiTenant;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
@@ -12,8 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
-using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile;
 
 namespace BlazorBoilerplate.Storage
 {

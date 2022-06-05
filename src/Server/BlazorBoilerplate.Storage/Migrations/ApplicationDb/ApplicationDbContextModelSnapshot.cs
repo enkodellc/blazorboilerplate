@@ -280,6 +280,9 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
+                    b.Property<string>("Culture")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsNavMinified")
                         .HasColumnType("bit");
 

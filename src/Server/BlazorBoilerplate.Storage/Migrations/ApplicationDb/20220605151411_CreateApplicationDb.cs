@@ -242,7 +242,8 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     LastPageVisited = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsNavOpen = table.Column<bool>(type: "bit", nullable: false),
                     IsNavMinified = table.Column<bool>(type: "bit", nullable: false),
-                    LastUpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    LastUpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Culture = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

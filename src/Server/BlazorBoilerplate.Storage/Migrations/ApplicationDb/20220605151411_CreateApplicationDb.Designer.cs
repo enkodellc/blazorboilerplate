@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220529085956_CreateApplicationDb")]
+    [Migration("20220605151411_CreateApplicationDb")]
     partial class CreateApplicationDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -281,6 +281,9 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("Culture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsNavMinified")
                         .HasColumnType("bit");

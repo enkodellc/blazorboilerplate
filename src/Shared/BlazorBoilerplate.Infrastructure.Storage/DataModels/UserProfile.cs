@@ -14,5 +14,6 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         public bool IsNavOpen { get; set; } = true;
         public bool IsNavMinified { get; set; } = false;
         public DateTime LastUpdatedDate { get; set; } = DateTime.MinValue;
+        public string Culture { get; set; }
     }
 }
