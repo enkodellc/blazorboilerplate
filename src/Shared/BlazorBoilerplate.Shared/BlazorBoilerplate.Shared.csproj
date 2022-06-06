@@ -5,7 +5,7 @@
 	<ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Blazored.FluentValidation" Version="2.1.0-preview.1" />
+    <PackageReference Include="Blazored.FluentValidation" Version="2.1.0-preview.2" />
     <PackageReference Include="Breeze.Sharp.Standard.Fork" Version="0.9.19" />
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.1.2" />
