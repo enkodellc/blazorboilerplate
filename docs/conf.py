@@ -20,11 +20,11 @@ master_doc = 'index'
 # -- Project information -----------------------------------------------------
 
 project = 'Blazor Boilerplate'
-copyright = '2020, Blazor Boilerplate Team'
+copyright = '2022, Blazor Boilerplate Team'
 author = 'Blazor Boilerplate Team'
 
 # The full version, including alpha/beta/rc tags
-release = '2.0.0'
+release = '4.0.0'
 
 
 # -- General configuration ---------------------------------------------------

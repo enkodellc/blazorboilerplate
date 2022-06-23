@@ -7,7 +7,7 @@ Architecture
 The diagram shows the dependencies of the main projects.
 Every project with text to localize depends on **Localization** project.
 
-**Client** project is used only with Blazor WebAssembly, so it runs on the browser. It initializes the WebAssembly startup.
+**Client** project is used only with Blazor WebAssembly, so it runs on the browser. It initializes the WebAssembly startup. If you only use Blazor Server, remove this project from solution.
 
 **Server** project manages the main services: authentication, authorization, API, etc.
 

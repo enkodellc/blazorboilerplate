@@ -75,6 +75,7 @@ Cons
    :hidden:
    :caption: Quickstarts
 
+   quickstarts/security
    quickstarts/breeze_sharp_with_blazor
    quickstarts/entity_framework_core
    quickstarts/localization
