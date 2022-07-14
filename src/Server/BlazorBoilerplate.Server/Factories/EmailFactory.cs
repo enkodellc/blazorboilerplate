@@ -17,23 +17,25 @@ namespace BlazorBoilerplate.Server.Factories
 
         public EmailMessageDto BuildTestEmail(string recipient)
         {
-            var emailMessage = new EmailMessageDto();
+            var emailMessage = new EmailMessageDto
+            {
+                Body = L["TestEmail.template"].Value
+                .FormatWith(new { baseUrl, user = recipient, testDate = DateTime.Now }),
 
-            emailMessage.Body = L["TestEmail.template"].Value
-                .FormatWith(new { baseUrl, user = recipient, testDate = DateTime.Now });
-
-            //emailMessage.Subject = L["TestEmail.subject", recipient];
-            emailMessage.Subject = $"Test email from {baseUrl}";
+                //emailMessage.Subject = L["TestEmail.subject", recipient];
+                Subject = $"Test email from {baseUrl}"
+            };
             emailMessage.Body = "Test email completed.";
 
             return emailMessage;
         }
         public EmailMessageDto GetPlainTextTestEmail(DateTime date)
         {
-            var emailMessage = new EmailMessageDto();
-
-            emailMessage.Body = L["PlainTextTestEmail.template"].Value
-                .FormatWith(new { date });
+            var emailMessage = new EmailMessageDto
+            {
+                Body = L["PlainTextTestEmail.template"].Value
+                .FormatWith(new { date })
+            };
 
             emailMessage.Subject = L["PlainTextTestEmail.subject", emailMessage.ToAddresses[0].Name];
 
@@ -43,57 +45,63 @@ namespace BlazorBoilerplate.Server.Factories
         }
         public EmailMessageDto BuildNewUserConfirmationEmail(string fullName, string userName, string callbackUrl)
         {
-            var emailMessage = new EmailMessageDto();
+            var emailMessage = new EmailMessageDto
+            {
+                Body = L["NewUserConfirmationEmail.template"].Value
+                .FormatWith(new { baseUrl, name = fullName, userName, callbackUrl }),
 
-            emailMessage.Body = L["NewUserConfirmationEmail.template"].Value
-                .FormatWith(new { baseUrl, name = fullName, userName, callbackUrl });
-
-            emailMessage.Subject = L["NewUserConfirmationEmail.subject", fullName];
+                Subject = L["NewUserConfirmationEmail.subject", fullName]
+            };
 
             return emailMessage;
         }
         public EmailMessageDto BuildNewUserEmail(string fullName, string userName, string emailAddress, string password)
         {
-            var emailMessage = new EmailMessageDto();
+            var emailMessage = new EmailMessageDto
+            {
+                Body = L["NewUserEmail.template"].Value
+                .FormatWith(new { baseUrl, fullName = userName, userName, email = emailAddress, password }),
 
-            emailMessage.Body = L["NewUserEmail.template"].Value
-                .FormatWith(new { baseUrl, fullName = userName, userName, email = emailAddress, password });
-
-            emailMessage.Subject = L["NewUserEmail.subject", fullName];
+                Subject = L["NewUserEmail.subject", fullName]
+            };
 
             return emailMessage;
         }
         public EmailMessageDto BuilNewUserNotificationEmail(string creator, string name, string userName, string company, string roles)
         {
-            var emailMessage = new EmailMessageDto();
-            //placeholder not actually implemented
+            var emailMessage = new EmailMessageDto
+            {
+                //placeholder not actually implemented
 
-            emailMessage.Body = L["NewUserNotificationEmail.template"].Value
-                .FormatWith(new { baseUrl, creator, name, userName, roles, company });
+                Body = L["NewUserNotificationEmail.template"].Value
+                .FormatWith(new { baseUrl, creator, name, userName, roles, company }),
 
-            emailMessage.Subject = L["NewUserNotificationEmail.subject", userName];
+                Subject = L["NewUserNotificationEmail.subject", userName]
+            };
 
             return emailMessage;
         }
         public EmailMessageDto BuildForgotPasswordEmail(string name, string callbackUrl, string token)
         {
-            var emailMessage = new EmailMessageDto();
+            var emailMessage = new EmailMessageDto
+            {
+                Body = L["ForgotPassword.template"].Value
+                .FormatWith(new { baseUrl, name, callbackUrl, token }),
 
-            emailMessage.Body = L["ForgotPassword.template"].Value
-                .FormatWith(new { baseUrl, name, callbackUrl, token });
-
-            emailMessage.Subject = L["ForgotPassword.subject", name];
+                Subject = L["ForgotPassword.subject", name]
+            };
 
             return emailMessage;
         }
         public EmailMessageDto BuildPasswordResetEmail(string userName)
         {
-            var emailMessage = new EmailMessageDto();
+            var emailMessage = new EmailMessageDto
+            {
+                Body = L["PasswordReset.template"].Value
+                .FormatWith(new { baseUrl, userName }),
 
-            emailMessage.Body = L["PasswordReset.template"].Value
-                .FormatWith(new { baseUrl, userName });
-
-            emailMessage.Subject = L["PasswordReset.subject", userName];
+                Subject = L["PasswordReset.subject", userName]
+            };
 
             return emailMessage;
         }

@@ -26,7 +26,7 @@ namespace BlazorBoilerplate.Shared.Providers
                 throw new Exception("No module contains ITheme");
             else
             {
-                ((List<Assembly>)assembliesWithPages).Remove(theme);
+                assembliesWithPages.Remove(theme);
 
                 ITheme themeInstance = (ITheme)Activator.CreateInstance(theme.ExportedTypes.Single(t => t.GetInterfaces().Contains(typeof(ITheme))));
 

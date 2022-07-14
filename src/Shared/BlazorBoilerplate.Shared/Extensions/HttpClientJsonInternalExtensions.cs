@@ -153,7 +153,7 @@ namespace BlazorBoilerplate.Shared.Extensions
 
     internal static class JsonSerializerOptionsProvider
     {
-        public static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        public static readonly JsonSerializerOptions Options = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true,

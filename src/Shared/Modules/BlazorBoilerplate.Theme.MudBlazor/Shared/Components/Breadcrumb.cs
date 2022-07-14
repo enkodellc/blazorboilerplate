@@ -23,6 +23,6 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
             Parent.Items.Remove(this);
         }
 
-        public static Breadcrumb New(string link, string title) => new Breadcrumb { Link = link, Title = title };
+        public static Breadcrumb New(string link, string title) => new() { Link = link, Title = title };
     }
 }

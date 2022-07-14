@@ -31,7 +31,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpGet("Tenant")]
         public ApiResponse Get()
-            => new ApiResponse(Status200OK, string.Empty, _autoMapper.Map<TenantDto>(HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo));
+            => new(Status200OK, string.Empty, _autoMapper.Map<TenantDto>(HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo));
 
         [HttpGet("Users")]
         [Authorize(Permissions.User.Read)]

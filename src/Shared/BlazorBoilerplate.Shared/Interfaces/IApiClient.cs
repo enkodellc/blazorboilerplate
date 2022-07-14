@@ -1,7 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Dto.Email;
-using BlazorBoilerplate.Shared.Models;
 using Breeze.Sharp;
 using System.Linq.Expressions;
 

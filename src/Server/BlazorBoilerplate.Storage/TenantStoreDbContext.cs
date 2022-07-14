@@ -7,7 +7,7 @@ namespace BlazorBoilerplate.Storage
 {
     public class TenantStoreDbContext : EFCoreStoreDbContext<TenantInfo>
     {
-        public static readonly TenantInfo DefaultTenant = new TenantInfo() { Id = Settings.DefaultTenantId, Identifier = Settings.DefaultTenantId, Name = Settings.DefaultTenantId };
+        public static readonly TenantInfo DefaultTenant = new() { Id = Settings.DefaultTenantId, Identifier = Settings.DefaultTenantId, Name = Settings.DefaultTenantId };
 
         public TenantStoreDbContext(DbContextOptions<TenantStoreDbContext> options) : base(options)
         {

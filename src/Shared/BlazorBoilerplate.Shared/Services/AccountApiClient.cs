@@ -147,7 +147,7 @@ namespace BlazorBoilerplate.Shared.Services
 
         public async Task<UserViewModel> GetUserViewModel()
         {
-            UserViewModel userViewModel = new UserViewModel { IsAuthenticated = false, Roles = new List<string>() };
+            UserViewModel userViewModel = new() { IsAuthenticated = false, Roles = new List<string>() };
 
             var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/UserViewModel");
 

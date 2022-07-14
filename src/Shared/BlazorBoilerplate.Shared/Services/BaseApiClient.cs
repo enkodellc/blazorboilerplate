@@ -31,9 +31,11 @@ namespace BlazorBoilerplate.Shared.Services
             entityManager = new EntityManager(dataService);
 
             var clientNameSpace = typeof(ApplicationUser).Namespace;
-            var dic = new Dictionary<string, string>();
-            dic.Add("BlazorBoilerplate.Infrastructure.Storage.DataModels", clientNameSpace);
-            dic.Add("Microsoft.AspNetCore.Identity", clientNameSpace);
+            var dic = new Dictionary<string, string>
+            {
+                { "BlazorBoilerplate.Infrastructure.Storage.DataModels", clientNameSpace },
+                { "Microsoft.AspNetCore.Identity", clientNameSpace }
+            };
 
             entityManager.MetadataStore.NamingConvention = new NamingConvention().WithServerClientNamespaceMapping(dic);
 
@@ -174,8 +176,10 @@ namespace BlazorBoilerplate.Shared.Services
                     result = (QueryResult<T>)response;
                 else
                 {
-                    result = new QueryResult<T>();
-                    result.Results = response;
+                    result = new QueryResult<T>
+                    {
+                        Results = response
+                    };
                 }
 
                 return result;

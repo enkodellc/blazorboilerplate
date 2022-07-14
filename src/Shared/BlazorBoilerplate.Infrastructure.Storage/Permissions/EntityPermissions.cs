@@ -17,14 +17,14 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
         /// </summary>
         static EntityPermissions()
         {
-            List<EntityPermission> allPermissions = new List<EntityPermission>();
+            List<EntityPermission> allPermissions = new();
             IEnumerable<object> permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Static | BindingFlags.Public).Cast<TypeInfo>();
             foreach (TypeInfo permissionClass in permissionClasses)
             {
                 IEnumerable<FieldInfo> permissions = permissionClass.DeclaredFields.Where(f => f.IsLiteral);
                 foreach (FieldInfo permission in permissions)
                 {
-                    EntityPermission applicationPermission = new EntityPermission
+                    EntityPermission applicationPermission = new()
                     {
                         Value = permission.GetValue(null).ToString(),
                         Name = permission.GetValue(null).ToString().Replace('.', ' '),

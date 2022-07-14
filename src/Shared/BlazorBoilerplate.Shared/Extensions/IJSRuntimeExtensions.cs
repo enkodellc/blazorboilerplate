@@ -5,7 +5,7 @@ namespace BlazorBoilerplate.Shared.Extensions
 {
     public static class IJSRuntimeExtensions
     {
-        private static Regex regExAspNetCoreCulture = new Regex(@"c=(?<culture>[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8}))\|uic=(?<uiculture>[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8}))");
+        private static Regex regExAspNetCoreCulture = new(@"c=(?<culture>[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8}))\|uic=(?<uiculture>[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8}))");
         public static async Task<string> GetAspNetCoreCultureCookie(this IJSRuntime js)
         {
             var culture = await js.InvokeAsync<string>("cookieStorage.get", ".AspNetCore.Culture");
