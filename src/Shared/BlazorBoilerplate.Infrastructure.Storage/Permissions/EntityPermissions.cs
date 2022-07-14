@@ -1,4 +1,5 @@
 using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using Finbuckle.MultiTenant;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -87,6 +88,16 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
         public string[] GetAllPermissionNames()
         {
             return GetAllPermission().OrderBy(p => p.Name).Select(p => p.Name).ToArray();
+        }
+
+        public string[] GetAllPermissionValuesForOperator()
+        {
+            return GetAllPermission()
+                .Where(i => i.GroupName == "User" ||
+                i.GroupName == nameof(ApplicationUser) ||
+                i.GroupName == nameof(LocalizationRecord) ||
+                i.GroupName == nameof(PluralTranslation))
+                .Select(p => p.Value).ToArray();
         }
     }
 }

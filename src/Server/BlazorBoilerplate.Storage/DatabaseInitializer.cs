@@ -127,7 +127,9 @@ namespace BlazorBoilerplate.Storage
         public async Task EnsureAdminIdentities()
         {
             await EnsureRole(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
+            await EnsureRole(DefaultRoleNames.Operator, _entityPermissions.GetAllPermissionValuesForOperator());
             await CreateUser(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
+            await CreateUser(DefaultUserNames.Operator, "complexPassword", "Operator", "Blazor", "operator@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Operator });
 
             _logger.LogInformation("Inbuilt account generation completed");
         }
