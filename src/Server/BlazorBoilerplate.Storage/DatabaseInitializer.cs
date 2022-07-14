@@ -52,19 +52,18 @@ namespace BlazorBoilerplate.Storage
             _logger = logger;
         }
 
-        public virtual async Task SeedAsync()
+        public virtual async Task Seed()
         {
-            //Apply EF Core migration
-            await MigrateAsync();
+            await Migrate();
 
             await ImportTranslations();
 
-            await EnsureAdminIdentitiesAsync();
+            await EnsureAdminIdentities();
 
-            await SeedIdentityServerAsync();
+            await SeedIdentityServer();
         }
 
-        private async Task MigrateAsync()
+        private async Task Migrate()
         {
             await _tenantStoreDbContext.Database.MigrateAsync();
             await _localizationDbContext.Database.MigrateAsync();
@@ -86,7 +85,7 @@ namespace BlazorBoilerplate.Storage
             }
         }
 
-        private async Task SeedIdentityServerAsync()
+        private async Task SeedIdentityServer()
         {
             if (!await _configurationContext.ApiScopes.AnyAsync())
             {
@@ -125,10 +124,10 @@ namespace BlazorBoilerplate.Storage
             }
         }
 
-        public async Task EnsureAdminIdentitiesAsync()
+        public async Task EnsureAdminIdentities()
         {
             await EnsureRole(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
-            await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
+            await CreateUser(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
 
             _logger.LogInformation("Inbuilt account generation completed");
         }
@@ -179,7 +178,7 @@ namespace BlazorBoilerplate.Storage
                     await _roleManager.RemoveClaimAsync(r, new Claim(ApplicationClaimTypes.Permission, claim));
         }
 
-        private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string firstName, string lastName, string email, string phoneNumber, string[] roles = null)
+        private async Task<ApplicationUser> CreateUser(string userName, string password, string firstName, string lastName, string email, string phoneNumber, string[] roles = null)
         {
             var applicationUser = _userManager.FindByNameAsync(userName).Result;
 

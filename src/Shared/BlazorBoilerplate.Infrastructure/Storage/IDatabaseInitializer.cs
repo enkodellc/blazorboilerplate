@@ -2,7 +2,7 @@
 {
     public interface IDatabaseInitializer
     {
-        Task SeedAsync();
-        Task EnsureAdminIdentitiesAsync();
+        Task Seed();
+        Task EnsureAdminIdentities();
     }
 }

@@ -689,7 +689,7 @@ namespace BlazorBoilerplate.Server
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var databaseInitializer = serviceScope.ServiceProvider.GetService<IDatabaseInitializer>();
-                databaseInitializer.SeedAsync().Wait();
+                databaseInitializer.Seed().Wait();
 
                 var localizationProvider = serviceScope.ServiceProvider.GetService<ILocalizationProvider>();
 

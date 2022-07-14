@@ -244,7 +244,7 @@ namespace BlazorBoilerplate.Server.Managers
         {
             try
             {
-                await _databaseInitializer.EnsureAdminIdentitiesAsync();
+                await _databaseInitializer.EnsureAdminIdentities();
 
                 var context = await _interaction.GetAuthorizationContextAsync(parameters.ReturnUrl);
 
