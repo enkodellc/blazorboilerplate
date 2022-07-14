@@ -7,6 +7,10 @@
 	<ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+	<ItemGroup>
+		<Using Include="BlazorBoilerplate.Shared.Dto.Db" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.7" />
   </ItemGroup>
