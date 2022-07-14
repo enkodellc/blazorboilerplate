@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Infrastructure.Storage.Permissions;
@@ -126,30 +127,17 @@ namespace BlazorBoilerplate.Storage
 
         public async Task EnsureAdminIdentitiesAsync()
         {
-            await EnsureRoleAsync(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
+            await EnsureRole(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
             await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
-
-            ApplicationRole adminRole = await _roleManager.FindByNameAsync(DefaultRoleNames.Administrator);
-            var AllClaims = _entityPermissions.GetAllPermissionValues().Distinct();
-            var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
-            var NewClaims = AllClaims.Except(RoleClaims);
-
-            foreach (string claim in NewClaims)
-                await _roleManager.AddClaimAsync(adminRole, new Claim(ApplicationClaimTypes.Permission, claim));
-
-            var DeprecatedClaims = RoleClaims.Except(AllClaims);
-            var roles = await _roleManager.Roles.ToListAsync();
-
-            foreach (string claim in DeprecatedClaims)
-                foreach (var role in roles)
-                    await _roleManager.RemoveClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, claim));
 
             _logger.LogInformation("Inbuilt account generation completed");
         }
 
-        private async Task EnsureRoleAsync(string roleName, string[] claims)
+        private async Task EnsureRole(string roleName, IEnumerable<string> claims)
         {
-            if ((await _roleManager.FindByNameAsync(roleName)) == null)
+            var role = await _roleManager.FindByNameAsync(roleName);
+
+            if (role == null)
             {
                 if (claims == null)
                     claims = Array.Empty<string>();
@@ -162,16 +150,33 @@ namespace BlazorBoilerplate.Storage
 
                 var result = await _roleManager.CreateAsync(applicationRole);
 
-                ApplicationRole role = await _roleManager.FindByNameAsync(applicationRole.Name);
+                role = await _roleManager.FindByNameAsync(applicationRole.Name);
 
                 foreach (string claim in claims.Distinct())
                 {
                     result = await _roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, _entityPermissions.GetPermissionByValue(claim)));
 
                     if (!result.Succeeded)
+                    {
                         await _roleManager.DeleteAsync(role);
+
+                        throw new DomainException($"Unable to add claim {claim} to role {roleName}");
+                    }
                 }
             }
+
+            var roleClaims = (await _roleManager.GetClaimsAsync(role)).Select(c => c.Value).ToList();
+            var newClaims = claims.Except(roleClaims);
+
+            foreach (string claim in newClaims)
+                await _roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, claim));
+
+            var deprecatedClaims = roleClaims.Except(claims);
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            foreach (string claim in deprecatedClaims)
+                foreach (var r in roles)
+                    await _roleManager.RemoveClaimAsync(r, new Claim(ApplicationClaimTypes.Permission, claim));
         }
 
         private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string firstName, string lastName, string email, string phoneNumber, string[] roles = null)
