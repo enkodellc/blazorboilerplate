@@ -7,9 +7,9 @@
 
   <ItemGroup>
     <PackageReference Include="Karambolo.PO" Version="1.8.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.7" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.7" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
   </ItemGroup>
