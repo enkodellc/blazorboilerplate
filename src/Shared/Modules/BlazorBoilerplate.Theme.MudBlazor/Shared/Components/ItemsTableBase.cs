@@ -10,6 +10,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
     public class ItemsTableBase<T> : BaseComponent
     {
         protected List<T> items;
+        protected HashSet<T> selected = new(); 
         protected int pageSize;
         protected int pageIndex;
         protected int totalItemsCount;
