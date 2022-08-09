@@ -26,8 +26,6 @@ namespace BlazorBoilerplate.Theme.Material.Services
                 totalRead += bytesRead;
                 await stream.WriteAsync(buffer, 0, bytesRead);
             }
-
-            await stream.WriteAsync(buffer);
         }
     }
 }
