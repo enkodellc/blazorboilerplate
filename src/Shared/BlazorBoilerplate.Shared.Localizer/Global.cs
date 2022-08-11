@@ -7,7 +7,7 @@ namespace BlazorBoilerplate.Shared.Localizer
         private static CultureInfo[] allCultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
         public static string GetCountryName(string countryCode)
         {
-            return countryCode != null ? new RegionInfo(Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName + "-" + countryCode).NativeName.Replace("Itàlia", "Italia") : null;
+            return !string.IsNullOrEmpty(countryCode) ? new RegionInfo(Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName + "-" + countryCode).NativeName.Replace("Itàlia", "Italia") : null;
         }
 
         public static string GetLanguageName(string languageCode)
