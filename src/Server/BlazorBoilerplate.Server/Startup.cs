@@ -26,6 +26,7 @@ using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
 using Breeze.AspNetCore;
 using Breeze.Core;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
@@ -522,7 +523,11 @@ namespace BlazorBoilerplate.Server
                 {
                     return factory.Create(typeof(Global));
                 };
-            }).AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LocalizationRecordValidator>());
+            });
+
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssemblyContaining<LocalizationRecordValidator>();
 
             services.AddServerSideBlazor().AddCircuitOptions(o =>
             {
