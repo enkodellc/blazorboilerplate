@@ -1,4 +1,7 @@
-﻿namespace BlazorBoilerplate.Shared.Extensions
+﻿using Newtonsoft.Json;
+using System.Text;
+
+namespace BlazorBoilerplate.Shared.Extensions
 {
     public static class HttpClientJsonExtensions
     {
@@ -9,6 +12,30 @@
         {
             var stringContent = await httpClient.GetStringAsync(requestUri);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(stringContent);
+        }
+
+        public static async Task<T> PostNewtonsoftJsonAsync<T>(this HttpClient httpClient, string requestUri, object content)
+        {
+            string json = JsonConvert.SerializeObject(content, LocalJsonSerializer.Settings);
+
+            var response = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, requestUri)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            });
+
+            response.EnsureSuccessStatusCode();
+
+            var stringContent = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<T>(stringContent);
+        }
+
+        internal static class LocalJsonSerializer
+        {
+            public static readonly JsonSerializerSettings Settings = new()
+            {
+                ContractResolver = new SkipEntityAspectContractResolver()
+            };
         }
     }
 }
