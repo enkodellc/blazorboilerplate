@@ -31,6 +31,7 @@
     }
     <base href="~/" />
     <link href="manifest.json" rel="manifest" />
+    <link rel="stylesheet" href="./_content/IntlTelInputBlazor/css/intlTelInput.css">
     <link href="_content/BlazorBoilerplate.Theme.Material/BlazorBoilerplate.Theme.Material.bundle.scp.css" rel="stylesheet">
 </head>
 <body>
@@ -74,6 +75,10 @@
     <script src="js/interop.js"></script>
     <!-- https://docs.microsoft.com/en-us/aspnet/core/blazor/progressive-web-app -->
     <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCF0emevacMGNnyjCxldlboBx9-QK0ZD7k&v=3&libraries=places"></script>
+    <script src="_content/BlazorGoogleMaps/js/objectManager.js"></script>
+    <script src="https://unpkg.com/@@googlemaps/markerclustererplus/dist/index.min.js"></script>
+    <script src="./_content/IntlTelInputBlazor/js/intlTelInput.js"></script>
 
     @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
     {

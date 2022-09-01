@@ -11,10 +11,11 @@ using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProf
 
 namespace BlazorBoilerplate.Storage
 {
-    //https://trailheadtechnology.com/entity-framework-core-2-1-automate-all-that-boring-boiler-plate/
     public class ApplicationDbContext : MultiTenantIdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, ApplicationUserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>, IMultiTenantDbContext
     {
         public DbSet<TenantSetting> TenantSettings { get; set; }
+        public DbSet<Person> Persons { get; set; }
+        public DbSet<Company> Companies { get; set; }
         public DbSet<ApiLogItem> ApiLogs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<QueuedEmail> QueuedEmails { get; set; }
@@ -53,6 +54,27 @@ namespace BlazorBoilerplate.Storage
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
             });
+
+            modelBuilder.Entity<Person>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.HasOne(e => e.User)
+                .WithOne(d => d.Person)
+                .HasForeignKey<ApplicationUser>(d => d.PersonId);
+
+                entity.HasOne(d => d.CreatedBy)
+                   .WithMany()
+                   .HasForeignKey(p => p.CreatedById)
+                   .OnDelete(DeleteBehavior.ClientCascade);
+
+                entity.HasOne(d => d.ModifiedBy)
+                   .WithMany()
+                   .HasForeignKey(p => p.ModifiedById)
+                   .OnDelete(DeleteBehavior.ClientCascade);
+            });
+
+            modelBuilder.Entity<Company>().HasIndex(e => e.VatIn).IsUnique();
 
             modelBuilder.Entity<ApiLogItem>(b =>
             {

@@ -63,6 +63,7 @@ namespace BlazorBoilerplate.Storage
                 {
                     options.CommandTimeout(60);
                     options.MigrationsAssembly(migrationsAssembly);
+                    options.UseNetTopologySuite();
                 });
             }
             else

@@ -1,0 +1,267 @@
+﻿@inherits UserViewModelBasePanel
+
+@using GoogleMapsComponents
+@using IntlTelInputBlazor
+
+<MudText Typo="Typo.h5" Class="mt-4">@title</MudText>
+
+<EditForm Model="@Model" OnValidSubmit="@Update">
+    <FluentValidationValidator />
+    <MudCard Elevation="2" Class="my-4 pa-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@L["Main details"]</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Outlined.Close" Link="@BackLink" Size="MudBlazor.Size.Medium" />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudValidationSummary />
+            @if (!Model.UserNameEqualsEmail && Model.UserName != DefaultUserNames.Administrator)
+            {
+                <MudTextField AutoFocus="true" @bind-Value="@Model.UserName" Label=@L["UserName"] AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+            }
+            <MudTextField @bind-Value="@Model.Email" Label="Email" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+            <MudTextField @bind-Value="@Model.FirstName" Label=@L["FirstName"] FullWidth="true"></MudTextField>
+            <MudTextField @bind-Value="@Model.LastName" Label=@L["LastName"] FullWidth="true"></MudTextField>           
+            @if (Model.UserId == null)
+            {
+                <MudTextField @bind-Value="@Model.Password" autocomplete="new-password" Label=@L["Password"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@Model.PasswordConfirm" autocomplete="new-password" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+            }
+        </MudCardContent>
+        <MudCardActions>
+            <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+        </MudCardActions>
+    </MudCard>
+
+    @if (isOperator)
+    {
+        <MudCard Elevation="2" Class="my-4 pa-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["Permissions"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudValidationSummary />
+                @foreach (var userFeature in Enum.GetValues<UserFeatures>())
+                {
+                    <MudSwitch @bind-Checked="@Model.UserFeatures[userFeature]" Label=@L[$"Is{userFeature}Switch"] Color="Color.Primary" />
+                    <br />
+                }
+            </MudCardContent>
+            <MudCardActions>
+                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+            </MudCardActions>
+        </MudCard>
+
+        <MudCard Elevation="2" Class="my-4 pa-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["Subscription"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudDatePicker @bind-Date="@Model.ExpirationDate" Label="@L["Expiration"]" ReadOnly="@(!isOperator)" MinDate="@DateTime.Now" @ref="_datePicker">
+                    <PickerActions Context="datePicker">
+                        <MudButton Class="mr-auto align-self-start" OnClick="@(() => { _datePicker.Clear(); _datePicker.Clear(); })">@L["Cancel"]</MudButton>
+                        <MudButton OnClick="@(() => _datePicker.Close(false))">@L["Close"]</MudButton>
+                        <MudButton Color="Color.Primary" OnClick="@(() => _datePicker.Close())">Ok</MudButton>
+                    </PickerActions>
+                </MudDatePicker>
+            </MudCardContent>
+            <MudCardActions>
+                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+            </MudCardActions>
+        </MudCard>
+    }
+
+    <MudCard Elevation="2" Class="my-4 pa-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@L["Company"]</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudValidationSummary />
+            <MudTextField @bind-Value="@Model.CompanyName" Label=@L["Name"] AdornmentIcon="@Icons.Material.Filled.Home" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+            <div class="mud-input-control mud-input-control-full-width mud-input-input-control" style="margin-bottom: 20px">
+                <div class="mud-input-control-input-container">
+                    <div class="mud-input mud-input-text mud-input-adorned-end mud-input-underline">
+                        <input type="text" @ref="searchBox" id="searchBox" class="mud-input-slot mud-input-root mud-input-root-text mud-input-root-adorned-end">
+                        <div class="mud-input-adornment mud-input-adornment-end"><svg class="mud-icon-root mud-svg-icon mud-inherit-text mud-icon-size-medium" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><title>MyLocation</title><!--!--><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"></path></svg></div>
+                    </div>
+                </div>
+            </div>
+            <GoogleMap @ref="@map1" Id="map1" Options="@mapOptions" OnAfterInit="async () => await OnAfterMapInit()"></GoogleMap>
+            <MudTextField @bind-Value="@Model.CompanyAddress" Label=@L["Address"] FullWidth="true" ReadOnly="true"></MudTextField>
+            <MudTextField @bind-Value="@Model.CompanyCity" Label=@L["City"] FullWidth="true" ReadOnly="true"></MudTextField>
+            <MudTextField @bind-Value="@Model.CompanyProvince" Label=@L["Province"] FullWidth="true" ReadOnly="true"></MudTextField>
+            <MudTextField @bind-Value="@Model.CompanyZipCode" Label=@L["ZipCode"] FullWidth="true" ReadOnly="true"></MudTextField>
+            <MudTextField Value="@(Global.GetCountryName(Model.CompanyCountryCode))" Label=@L["Country"] FullWidth="true" ReadOnly="true"></MudTextField>
+            <MudTextField @bind-Value="@Model.CompanyVatIn" Label=@L["VatIn"] FullWidth="true"></MudTextField>
+            @*
+            <MudTextField InputType="InputType.Telephone" @bind-Value="@Model.CompanyPhoneNumber" Label=@L["PhoneNumber"] AdornmentIcon="@Icons.Material.Filled.Phone" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+            *@
+            <div class="mud-input-control mud-input-control-full-width mud-input-input-control">
+                <div class="mud-input-control-input-container">
+                    <div class="mud-input-iti mud-input mud-input-text mud-input-adorned-end mud-input-underline mud-ltr">
+                        <IntlTelInput id="CompanyIntTelNumber" @bind-Value="@Model.CompanyIntTelNumber" PreferredCountries="@(new[] {"it", "ch", "fr", "de"})" />
+                        <div class="mud-input-slot mud-input-root mud-input-root-text mud-input-root-adorned-end" style="display:none" tabindex="-1"></div>
+                        <div class="mud-input-adornment mud-input-adornment-end">
+                            <svg aria-label="Icon" tabindex="-1" class="mud-icon-root mud-icon-default mud-svg-icon mud-icon-size-medium" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <label class="mud-input-label mud-input-label-animated mud-input-label-text mud-input-label-inputcontrol" for="CompanyIntTelNumber">@L["PhoneNumber"]</label>
+                </div>
+            </div>
+            <MudValidationSummary />
+        </MudCardContent>
+        <MudCardActions>
+            <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+        </MudCardActions>
+    </MudCard>
+</EditForm>
+
+@if (updatePasswordViewModel != null)
+{
+    <EditForm Model="@updatePasswordViewModel" OnValidSubmit="@UpdateMyPassword" autocomplete="off">
+        <MudCard Elevation="2" Class="my-4 pa-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["Change password"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <FluentValidationValidator />
+                <MudValidationSummary />
+                <MudTextField @bind-Value="@updatePasswordViewModel.CurrentPassword" Label=@L["CurrentPassword"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@updatePasswordViewModel.NewPassword" autocomplete="new-password" Label=@L["NewPassword"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@updatePasswordViewModel.NewPasswordConfirm" autocomplete="new-password" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+            </MudCardContent>
+            <MudCardActions>
+                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+}
+
+@if (changePasswordViewModel != null)
+{
+    <EditForm Model="@changePasswordViewModel" OnValidSubmit="@UpdateUserPassword" autocomplete="off">
+        <MudCard Elevation="2" Class="my-4 pa-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["Change password"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <FluentValidationValidator />
+                <MudValidationSummary />
+                <MudTextField @bind-Value="@changePasswordViewModel.Password" Label=@L["Password"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@changePasswordViewModel.PasswordConfirm" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                @if (Model.TwoFactorEnabled)
+                {
+                    <MudButton StartIcon="@Icons.Filled.MobileOff" OnClick="@Disable2fa" Class="ml-auto">@L["Disable2fa"]</MudButton>
+                }
+            </MudCardContent>
+            <MudCardActions>
+                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+}
+
+@if (authenticatorVerificationCodeViewModel != null && Model.IsAuthenticated)
+{
+    <EditForm Model="@authenticatorVerificationCodeViewModel" OnValidSubmit="@EnableAuthenticator" autocomplete="off">
+        <MudCard Elevation="2" Class="my-4 pa-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["TwoFactorAuthentication"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <FluentValidationValidator />
+                <MudValidationSummary />
+                @L["EnableAuthenticatorInstructions", Model.SharedKey, $"https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={Model.AuthenticatorUri}"].ToMarkup()
+                <MudTextField @bind-Value="@authenticatorVerificationCodeViewModel.Code" Label=@L["Code"] FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+            </MudCardContent>
+            <MudCardActions>
+                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+}
+
+@if (Model.TwoFactorEnabled && Model.IsAuthenticated)
+{
+    <MudCard Elevation="2" Class="my-4 pa-4" id="twoFactorEnabledCard">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@L["TwoFactorAuthentication"]</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudSwitch @bind-Checked="@TwoFactorEnabled" Label=@L["TwoFactorAuthentication"] Color="Color.Primary" />
+
+            @if (Model.BrowserRemembered)
+            {
+                <MudSwitch @bind-Checked="@BrowserRemembered" Label=@L["BrowserRemembered"] Color="Color.Primary" />
+            }
+
+            @if (Model.RecoveryCodes != null)
+            {
+                <div>
+                    @foreach (var rcode in Model.RecoveryCodes)
+                    {
+                        <MudChip Color="Color.Dark">@rcode</MudChip>
+                    }
+                </div>
+            }
+            else
+            {
+                <MudText>@L["RecoveryCodesLeft"] @Model.CountRecoveryCodes</MudText>
+            }
+        </MudCardContent>
+        <MudCardActions>
+            @if (Model.HasAuthenticator)
+            {
+                <MudButton StartIcon="@Icons.Filled.RotateRight" OnClick="@DisableAuthenticator" Class="ml-auto">@L["ResetAuthenticator"]</MudButton>
+            }
+        </MudCardActions>
+    </MudCard>
+}
+
+@if (Model.UserId != null && Model.UserName != DefaultUserNames.Administrator)
+{
+    <MudCard Elevation="2" Class="my-4 pa-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@deleteTitle</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudAlert Severity="Severity.Error" Variant="Variant.Filled">@L["Insert email to confirm"]</MudAlert>
+            <MudTextField @bind-Value="@email" Label=@L["Email"] AdornmentIcon="@Icons.Outlined.Mail" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+        </MudCardContent>
+        <MudCardActions>
+            <MudFab OnClick="@Delete" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+        </MudCardActions>
+    </MudCard>
+}
+
+<MudOverlay @bind-Visible="isBusy" DarkBackground="true">
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+
+@code {
+    private MudDatePicker _datePicker;
+}

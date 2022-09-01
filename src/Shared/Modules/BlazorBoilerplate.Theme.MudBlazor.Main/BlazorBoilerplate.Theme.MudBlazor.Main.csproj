@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.8" />
+	<PackageReference Include="BlazorGoogleMaps" Version="2.2.5" />
   </ItemGroup>
 
   <ItemGroup>

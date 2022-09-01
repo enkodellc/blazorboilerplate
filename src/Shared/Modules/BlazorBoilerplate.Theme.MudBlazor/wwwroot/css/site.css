@@ -48,11 +48,6 @@ html, body {
         margin: 20px auto;
     }
 
-.loading-container {
-    border-radius: 0 !important;
-    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19) !important;
-}
-
 .logo-img {
     height: 42px;
 }
@@ -102,7 +97,7 @@ hr {
     margin-top: -16px;
 }
 
-    .selectCulture .mud-input {
+    .mud-appbar .selectCulture .mud-input {
         color: #fff;
     }
 

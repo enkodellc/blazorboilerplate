@@ -9,7 +9,7 @@ namespace BlazorBoilerplate.Infrastructure.Server
     public interface IAccountManager
     {
         Task<ApiResponse> BuildLoginViewModel(string returnUrl);
-        Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal authenticatedUser, HttpContext httpContext, string logoutId);
+        Task<LoggedOutViewModel> BuildLoggedOutViewModel(ClaimsPrincipal authenticatedUser, HttpContext httpContext, string logoutId);
 
         Task<ApiResponse> Login(LoginInputModel parameters);
         Task<ApiResponse> LoginWith2fa(LoginWith2faInputModel parameters);
@@ -27,16 +27,19 @@ namespace BlazorBoilerplate.Infrastructure.Server
         Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal authenticatedUser, AuthenticatorVerificationCodeViewModel parameters);
         Task<ApiResponse> DisableAuthenticator(ClaimsPrincipal authenticatedUser);
         Task<ApiResponse> ForgetTwoFactorClient(ClaimsPrincipal authenticatedUser);
-        Task<ApiResponse> Enable2fa(ClaimsPrincipal authenticatedUser);
-        Task<ApiResponse> Disable2fa(ClaimsPrincipal authenticatedUser);
+        Task<ApiResponse> Enable2fa(Guid userId, ClaimsPrincipal authenticatedUser = null);
+        Task<ApiResponse> Disable2fa(Guid userId, ClaimsPrincipal authenticatedUser = null);
 
         Task<ApiResponse> UserViewModel(ClaimsPrincipal authenticatedUser);
+        Task<ApiResponse> UserViewModel(Guid id);
 
-        Task<ApiResponse> UpdateUser(UserViewModel userViewModel);
+        Task<ApiResponse> UpdateUser(UserViewModel userViewModel, bool isUpsert, ClaimsPrincipal authenticatedUser);
 
         // Admin policies. 
 
         Task<ApiResponse> Create(RegisterViewModel parameters);
+
+        Task<ApplicationUser> RegisterNewUser(string userName, string email, string password, bool emailConfirmedByAdmin);
 
         Task<ApiResponse> Delete(string id);
 
@@ -44,8 +47,6 @@ namespace BlazorBoilerplate.Infrastructure.Server
 
         Task<ApiResponse> AdminUpdateUser(UserViewModel userViewModel);
 
-        Task<ApiResponse> AdminResetUserPasswordAsync(ChangePasswordViewModel changePasswordViewModel, ClaimsPrincipal authenticatedUser);
-
-        Task<ApplicationUser> RegisterNewUserAsync(string userName, string email, string password, bool requireConfirmEmail);
+        Task<ApiResponse> AdminResetUserPassword(ChangePasswordViewModel changePasswordViewModel, ClaimsPrincipal authenticatedUser);
     }
 }

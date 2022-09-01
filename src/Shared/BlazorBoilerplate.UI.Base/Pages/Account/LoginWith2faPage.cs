@@ -25,26 +25,17 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
         string navigateTo = null;
         IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
         protected bool forgotAuthenticatorToggle = false;
-        protected bool RedirectInProgress = false;
-        static bool LoginSuccess = false;
         protected LoginWith2faInputModel loginViewModel { get; set; } = new LoginWith2faInputModel();
         protected LoginWithRecoveryCodeInputModel forgotAuthenticatorInputModel { get; set; } = new LoginWithRecoveryCodeInputModel();
 
         string ReturnUrl;
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             if (navigationManager.TryGetQueryString("ReturnUrl", out string url))
                 ReturnUrl = url;
 
-            var user = (await authenticationStateTask).User;
-
-            if (user.Identity.IsAuthenticated || LoginSuccess)
-                RedirectInProgress = true;
-            else
-                identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
-
-            LoginSuccess = false;
+            identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
         }
 
         protected override async Task OnParametersSetAsync()
@@ -105,10 +96,6 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
 
                     navigationManager.NavigateTo(navigateTo);
                 }
-                else
-                    RedirectInProgress = true;
-
-                LoginSuccess = true;
             }
             else
                 viewNotifier.Show(response.Message, ViewNotifierType.Error, L["LoginFailed"]);
