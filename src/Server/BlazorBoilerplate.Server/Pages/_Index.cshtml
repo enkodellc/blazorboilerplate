@@ -2,12 +2,12 @@
 @namespace BlazorBoilerplate.Server.Pages
 @using BlazorBoilerplate.Infrastructure.Server
 @using BlazorBoilerplate.Shared.Models
-@using BlazorBoilerplate.Shared.Providers
+@using BlazorBoilerplate.Theme.Root
+@using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@addTagHelper *, BlazorBoilerplate.Shared
 @inject IWebHostEnvironment env
 @inject ITenantSettings<MainConfiguration> mainConfiguration
 
@@ -23,40 +23,59 @@
     <meta name="apple-touch-fullscreen" content="yes">
     @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
     {
-        <title>BlazorBoilerplate Starter Kit (Server)</title>
+        <title>BlazorBoilerplate (Server)</title>
     }
     else
     {
-        <title>BlazorBoilerplate Starter Kit (WASM)</title>
+        <title>BlazorBoilerplate (WASM)</title>
     }
-    <base href="~/" />
-    <link href="manifest.json" rel="manifest" />
+    <base href="/">
+    <link href="manifest.json" rel="manifest">
+    <link rel="shortcut icon" type="image/x-icon" href="_content/BlazorBoilerplate.Theme.MudBlazor/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="_content/BlazorBoilerplate.Theme.MudBlazor/images/favicon.ico">
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet">
+    <link href="_content/BlazorBoilerplate.Theme.MudBlazor/css/site.css" rel="stylesheet">
+    <link href="_content/BlazorBoilerplate.Theme.MudBlazor/BlazorBoilerplate.Theme.MudBlazor.bundle.scp.css" rel="stylesheet">
+    <link href="_content/BlazorBoilerplate.Theme.MudBlazor.Main/css/site.css" rel="stylesheet">
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
     <link rel="stylesheet" href="./_content/IntlTelInputBlazor/css/intlTelInput.css">
-    <link href="_content/BlazorBoilerplate.Theme.Material/BlazorBoilerplate.Theme.Material.bundle.scp.css" rel="stylesheet">
+    @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
+    {
+        <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+    }
 </head>
 <body>
     @{
         if (HttpContext.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName] == null)
             HttpContext.Response.Cookies.Append(
-               CookieRequestCultureProvider.DefaultCookieName,
-               CookieRequestCultureProvider.MakeCookieValue(
-                 new RequestCulture(
-                     CultureInfo.CurrentCulture,
-                     CultureInfo.CurrentUICulture)),
-                 new Microsoft.AspNetCore.Http.CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+            CookieRequestCultureProvider.DefaultCookieName,
+            CookieRequestCultureProvider.MakeCookieValue(
+            new RequestCulture(
+            CultureInfo.CurrentCulture,
+            CultureInfo.CurrentUICulture)),
+            new Microsoft.AspNetCore.Http.CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
     }
 
     @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
     {
         @(Html.AntiForgeryToken())
-        <app>
-            <component type="ModuleProvider.RootComponentMapping.ComponentType" render-mode="Server" />
-        </app>
+        <component type="typeof(App)" render-mode="Server" />
     }
     else
     {
-        <app wasm>
-        </app>
+        <div id="app">
+            <div class="triangle-container" style="background-color: blue">
+                <div class="triangles">
+                </div>
+            </div>
+            <div style="position:absolute; top:30vh; width:100%; text-align:center; color: white">
+                <h1>Blazor Boilerplate...</h1>
+                <div style="display:flex; gap:10px; justify-content:center; align-items:center">
+                    <img src="_content/BlazorBoilerplate.Theme.MudBlazor/images/logo.svg" alt="Loading" title="Loading BlazorBoilerplate" />
+                </div>
+            </div>            
+        </div>
     }
 
     <div id="blazor-error-ui" data-nosnippet>
@@ -73,12 +92,18 @@
 
     <!-- load remaining JS after blazor boot loads -->
     <script src="js/interop.js"></script>
-    <!-- https://docs.microsoft.com/en-us/aspnet/core/blazor/progressive-web-app -->
     <script>navigator.serviceWorker.register('service-worker.js');</script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCF0emevacMGNnyjCxldlboBx9-QK0ZD7k&v=3&libraries=places"></script>
     <script src="_content/BlazorGoogleMaps/js/objectManager.js"></script>
     <script src="https://unpkg.com/@@googlemaps/markerclustererplus/dist/index.min.js"></script>
-    <script src="./_content/IntlTelInputBlazor/js/intlTelInput.js"></script>
+    
+    <script src="_content/IntlTelInputBlazor/js/intlTelInput.js"></script>
+    
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="_content/Blazored.TextEditor/quill-blot-formatter.min.js"></script>
+    <script src="_content/Blazored.TextEditor/Blazored-BlazorQuill.js"></script>
 
     @if (mainConfiguration.Value.Runtime == Shared.Dto.Db.BlazorRuntime.Server)
     {

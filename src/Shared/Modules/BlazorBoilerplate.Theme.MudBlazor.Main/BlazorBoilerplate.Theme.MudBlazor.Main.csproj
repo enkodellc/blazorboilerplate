@@ -19,8 +19,4 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorBoilerplate.Theme.MudBlazor\BlazorBoilerplate.Theme.MudBlazor.csproj" />
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)Server\BlazorBoilerplate.Server\Themes\MudBlazor\" />
-  </Target>
 </Project>

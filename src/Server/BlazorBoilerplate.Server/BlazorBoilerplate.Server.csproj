@@ -12,15 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="logs\**" />
-    <Content Remove="logs\**" />
-    <EmbeddedResource Remove="logs\**" />
-    <None Remove="logs\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AspectInjector" Version="2.7.4" />
-    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="6.0.9" />
+    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="6.0.10" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.1.0" />
     <PackageReference Include="Azure.Identity" Version="1.6.1" />
@@ -65,10 +58,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Infrastructure\BlazorBoilerplate.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\Shared\BlazorBoilerplate.UI.Base\BlazorBoilerplate.UI.Base.csproj" />
-    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor.Admin\BlazorBoilerplate.Theme.MudBlazor.Admin.csproj" />
-    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor.Main\BlazorBoilerplate.Theme.MudBlazor.Main.csproj" />
-    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor\BlazorBoilerplate.Theme.MudBlazor.csproj" />
+    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Root\BlazorBoilerplate.Theme.Root.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Storage\BlazorBoilerplate.Storage.csproj" />
     <ProjectReference Include="..\..\Client\BlazorBoilerplate.Client\BlazorBoilerplate.Client.csproj" />
   </ItemGroup>
@@ -77,12 +67,6 @@
     <None Update="Controllers\AdminController.tt">
       <LastGenOutput>AdminController.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="Modules\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Themes\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Localization\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -103,7 +87,6 @@
 
   <ItemGroup>
     <Folder Include="Hubs\" />
-    <Folder Include="Themes\" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildingInsideVisualStudio)' == 'true'">
     <Exec Command="if exist &quot;$(ProjectDir)Logs\*.*&quot; del &quot;$(ProjectDir)Logs\*.*&quot; /q" />

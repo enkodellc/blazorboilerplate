@@ -4,10 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <Title>BlazorBoilerplate Client</Title>
-    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
 	<ImplicitUsings>enable</ImplicitUsings>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
     <BlazorWebAssemblyI18NAssemblies>all</BlazorWebAssemblyI18NAssemblies>
   </PropertyGroup>
 
@@ -17,15 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
-    <ProjectReference Include="..\..\Shared\BlazorBoilerplate.UI.Base\BlazorBoilerplate.UI.Base.csproj" />
-    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor.Admin\BlazorBoilerplate.Theme.MudBlazor.Admin.csproj" />
-    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor.Main\BlazorBoilerplate.Theme.MudBlazor.Main.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <BlazorWebAssemblyLazyLoad Include="BlazorBoilerplate.Theme.MudBlazor.Admin.dll" />
-    <BlazorWebAssemblyLazyLoad Include="Blazored.TextEditor.dll" />
+    <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.Root\BlazorBoilerplate.Theme.Root.csproj" />
   </ItemGroup>
 
 </Project>

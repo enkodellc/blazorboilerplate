@@ -2,6 +2,8 @@
 @page "/users"
 @attribute [AuthorizeForFeature(UserFeatures.Operator)]
 
+<PageTitle>@L["User management"]</PageTitle>
+
 <MudContainer MaxWidth="MaxWidth.False">
     <MudItem xs="10" sm="4" Class="d-flex align-center justify-center mud-width-full">
         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder=@L["Search"] Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />

@@ -4,13 +4,18 @@ using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
+using BlazorBoilerplate.Theme.Material.Main.Shared.Components;
+using BlazorBoilerplate.Theme.Material.Services;
+using BlazorBoilerplate.Theme.Root;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.JSInterop;
+using MudBlazor;
+using MudBlazor.Services;
 using System.Globalization;
-using System.Reflection;
 
 namespace BlazorBoilerplate.Client
 {
@@ -19,15 +24,8 @@ namespace BlazorBoilerplate.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
-            var baseModule = new Theme.Material.Module();
-            var demoModule = new Theme.Material.Main.Module();
-
-            Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            ModuleProvider.Init(allAssemblies);
-
-            builder.RootComponents.AddRange(new[] { ModuleProvider.RootComponentMapping });
+            builder.RootComponents.Add<App>("#app");
+            builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
             builder.Services.AddTextLocalization(options =>
@@ -49,13 +47,29 @@ namespace BlazorBoilerplate.Client
             builder.Services.AddScoped<AppState>();
             builder.Services.AddScoped<IApiClient, ApiClient>();
 
-            foreach (var module in ModuleProvider.Modules)
-                module.ConfigureWebAssemblyServices(builder.Services);
+            builder.Services.AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+
+                config.SnackbarConfiguration.PreventDuplicates = true;
+                config.SnackbarConfiguration.NewestOnTop = true;
+                config.SnackbarConfiguration.ShowCloseIcon = true;
+                config.SnackbarConfiguration.VisibleStateDuration = 10000;
+                config.SnackbarConfiguration.HideTransitionDuration = 500;
+                config.SnackbarConfiguration.ShowTransitionDuration = 500;
+                config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+            });
+
+            builder.Services.AddScoped<IViewNotifier, ViewNotifier>();
+
+            builder.Services.AddSingleton<IDynamicComponent, NavMenu>();
+            builder.Services.AddSingleton<IDynamicComponent, Footer>();
+            builder.Services.AddSingleton<IDynamicComponent, DrawerFooter>();
+            builder.Services.AddSingleton<IDynamicComponent, TopRightBarSection>();
+
+            builder.Services.RegisterIntlTelInput();
 
             var host = builder.Build();
-
-            foreach (var module in ModuleProvider.Modules)
-                module.ConfigureWebAssemblyHost(host);
 
             using (var serviceScope = host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {

@@ -1,5 +1,7 @@
 ﻿@inject IStringLocalizer<Global> L
 
+<PageTitle>@L["You are not authorized to access this page"]</PageTitle>
+
 <AuthorizeView Policy=@Policies.TwoFactorEnabled>
     <Authorized></Authorized>
     <NotAuthorized>
