@@ -145,8 +145,8 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
                 {
                     UserId = currentUser.Id,
                     UserName = currentUser.UserName,
-                    FirstName = currentUser.FirstName,
-                    LastName = currentUser.LastName,
+                    FirstName = currentUser.Person?.FirstName,
+                    LastName = currentUser.Person?.LastName,
                     Email = currentUser.Email,
                     Roles = roleSelections.Where(i => i.Selected).Select(i => i.DisplayValue).ToList()
                 });

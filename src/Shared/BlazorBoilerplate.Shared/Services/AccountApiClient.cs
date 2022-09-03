@@ -136,13 +136,13 @@ namespace BlazorBoilerplate.Shared.Services
 
             return response;
         }
-        public async Task<ApiResponseDto<UserViewModel>> Enable2fa()
+        public async Task<ApiResponseDto<UserViewModel>> Enable2fa(string userId = null)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Enable2fa", null);
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Enable2fa", userId);
         }
-        public async Task<ApiResponseDto<UserViewModel>> Disable2fa()
+        public async Task<ApiResponseDto<UserViewModel>> Disable2fa(string userId = null)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Disable2fa", null);
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Disable2fa", userId);
         }
 
         public async Task<UserViewModel> GetUserViewModel()
@@ -157,6 +157,11 @@ namespace BlazorBoilerplate.Shared.Services
             return userViewModel;
         }
 
+        public async Task<ApiResponseDto<UserViewModel>> GetUserViewModel(string id)
+        {
+            return await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserViewModel>>($"api/Account/UserViewModel/{id}");
+        }
+
         public async Task<UserViewModel> GetUser()
         {
             var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/GetUser");
@@ -166,6 +171,20 @@ namespace BlazorBoilerplate.Shared.Services
         public async Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdateUser", userViewModel);
+        }
+
+        public async Task<ApiResponseDto> UpsertUser(UserViewModel userViewModel)
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpsertUser", userViewModel);
+        }
+        public async Task<ApiResponseDto> DeleteUser(string id)
+        {
+            return await _httpClient.DeleteAsync<ApiResponseDto>($"api/Account/{id}");
+        }
+
+        public async Task<ApiResponseDto> DeleteMe()
+        {
+            return await _httpClient.DeleteAsync<ApiResponseDto>("api/Account");
         }
 
         public async Task<ApiResponseDto> AdminUpdateUser(UserViewModel userViewModel)

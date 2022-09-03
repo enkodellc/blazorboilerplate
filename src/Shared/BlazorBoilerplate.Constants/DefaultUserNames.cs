@@ -6,8 +6,5 @@
 
         //The developer
         public const string Administrator = "admin";
-
-        //End user with some administrative tasks
-        public const string Operator = "Operator";
     }
 }

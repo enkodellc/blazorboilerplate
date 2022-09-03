@@ -24,8 +24,11 @@ using BlazorBoilerplate.Shared.Services;
 using BlazorBoilerplate.Shared.Validators.Db;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
+using BlazorBoilerplate.Theme.Material.Main.Shared.Components;
+using BlazorBoilerplate.Theme.Material.Services;
 using Breeze.AspNetCore;
 using Breeze.Core;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
@@ -43,6 +46,8 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
+using MudBlazor.Services;
 using Newtonsoft.Json.Serialization;
 using NSwag;
 using NSwag.AspNetCore;
@@ -522,7 +527,11 @@ namespace BlazorBoilerplate.Server
                 {
                     return factory.Create(typeof(Global));
                 };
-            }).AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LocalizationRecordValidator>());
+            });
+
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssemblyContaining<LocalizationRecordValidator>();
 
             services.AddServerSideBlazor().AddCircuitOptions(o =>
             {
@@ -647,7 +656,25 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
             /**********************/
 
-            services.AddModules();
+            services.AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+
+                config.SnackbarConfiguration.PreventDuplicates = true;
+                config.SnackbarConfiguration.NewestOnTop = true;
+                config.SnackbarConfiguration.ShowCloseIcon = true;
+                config.SnackbarConfiguration.VisibleStateDuration = 10000;
+                config.SnackbarConfiguration.HideTransitionDuration = 500;
+                config.SnackbarConfiguration.ShowTransitionDuration = 500;
+                config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+            });
+
+            services.AddScoped<IViewNotifier, ViewNotifier>();
+
+            services.AddSingleton<IDynamicComponent, NavMenu>();
+            services.AddSingleton<IDynamicComponent, Footer>();
+            services.AddSingleton<IDynamicComponent, DrawerFooter>();
+            services.AddSingleton<IDynamicComponent, TopRightBarSection>();
 
             if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
             {

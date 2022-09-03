@@ -15,7 +15,7 @@ namespace BlazorBoilerplate.Server.Controllers
     [Route("api/data/[action]")]
     [Authorize(AuthenticationSchemes = AuthSchemes)]
     [BreezeQueryFilter]
-    public class ApplicationController : Controller
+    public class ApplicationController : BaseController
     {
         private const string AuthSchemes =
             "Identity.Application" + "," + JwtBearerDefaults.AuthenticationScheme; //Cookie + Token authentication
@@ -58,6 +58,24 @@ namespace BlazorBoilerplate.Server.Controllers
         public IQueryable<ApplicationRole> Roles()
         {
             return persistenceManager.GetEntities<ApplicationRole>().AsNoTracking().OrderBy(i => i.Name);
+        }
+
+        [HttpGet]
+        [AuthorizeForFeature(UserFeatures.Operator)]
+        public IQueryable<Person> People([FromQuery] string filter)
+        {
+            filter = filter?.ToLower();
+
+            var userId = GetUserId();
+
+            return persistenceManager.Context.Persons
+                .Include(i => i.User)
+                .Include(i => i.CreatedBy)
+                .Where(i => i.User != null && i.User.Id != userId && (filter == null
+                || i.FirstName.ToLower().Contains(filter)
+                || i.LastName.ToLower().Contains(filter))).AsNoTracking()
+                .OrderBy(i => i.LastName)
+                .ThenBy(i => i.FirstName);
         }
 
         [HttpGet]

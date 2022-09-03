@@ -12,14 +12,11 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.8" />
+	<PackageReference Include="BlazorGoogleMaps" Version="2.2.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlazorBoilerplate.Theme.MudBlazor\BlazorBoilerplate.Theme.MudBlazor.csproj" />
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)Server\BlazorBoilerplate.Server\Themes\MudBlazor\" />
-  </Target>
 </Project>

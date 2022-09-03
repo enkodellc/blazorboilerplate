@@ -55,7 +55,7 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> GetUsers(int pageSize = 10, int pageNumber = 0)
         {
-            var userList = _userManager.Users.AsQueryable();
+            var userList = _userManager.Users.Include(i => i.Person).AsQueryable();
             var count = userList.Count();
             var listResponse = userList.OrderBy(x => x.Id).Skip(pageNumber * pageSize).Take(pageSize).ToList();
 
@@ -64,12 +64,13 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 userDtoList.Add(new UserViewModel
                 {
-                    FirstName = applicationUser.FirstName,
-                    LastName = applicationUser.LastName,
+                    FirstName = applicationUser.Person?.FirstName,
+                    LastName = applicationUser.Person?.LastName,
                     UserName = applicationUser.UserName,
                     Email = applicationUser.Email,
                     UserId = applicationUser.Id,
-                    Roles = await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true) as List<string>
+                    Roles = await _userManager.GetRolesAsync(applicationUser).ConfigureAwait(true) as List<string>,
+                    ExpirationDate = applicationUser.Person?.ExpirationDate
                 });
             }
 
@@ -94,7 +95,7 @@ namespace BlazorBoilerplate.Server.Managers
             foreach (var role in listResponse)
             {
                 var claims = await _roleManager.GetClaimsAsync(role);
-                List<string> permissions = claims.OrderBy(x => x.Value).Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
+                var permissions = claims.OrderBy(x => x.Value).Where(x => x.Type == ApplicationClaimTypes.Permission).Select(x => _entityPermissions.GetPermissionByValue(x.Value).Name).ToList();
 
                 roleDtoList.Add(new RoleDto
                 {
@@ -147,7 +148,7 @@ namespace BlazorBoilerplate.Server.Managers
                     await _roleManager.DeleteAsync(role);
             }
 
-            return new ApiResponse(Status200OK, L["Role {0} created", roleDto.Name], roleDto); //fix a strange System.Text.Json exception shown only in Debug_SSB
+            return new ApiResponse(Status200OK, L["Role {0} created", roleDto.Name], roleDto); //fix a strange System.Text.Json exception shown only in Debug_SSB 
         }
 
         public async Task<ApiResponse> UpdateRoleAsync(RoleDto roleDto)

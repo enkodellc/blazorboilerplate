@@ -18,14 +18,18 @@ namespace BlazorBoilerplate.Shared.Interfaces
         Task<ApiResponseDto> Logout(string returnUrl = null);
         Task<ApiResponseDto> ConfirmEmail(ConfirmEmailViewModel parameters);
         Task<UserViewModel> GetUserViewModel();
+        Task<ApiResponseDto<UserViewModel>> GetUserViewModel(string id);
         Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel);
+        Task<ApiResponseDto> UpsertUser(UserViewModel userViewModel);
+        Task<ApiResponseDto> DeleteUser(string id);
+        Task<ApiResponseDto> DeleteMe();
         Task<ApiResponseDto> AdminUpdateUser(UserViewModel userViewModel);
         Task<UserViewModel> GetUser();
 
         Task<ApiResponseDto<UserViewModel>> EnableAuthenticator(AuthenticatorVerificationCodeViewModel parameters);
         Task<ApiResponseDto<UserViewModel>> DisableAuthenticator();
         Task<ApiResponseDto<UserViewModel>> ForgetTwoFactorClient();
-        Task<ApiResponseDto<UserViewModel>> Enable2fa();
-        Task<ApiResponseDto<UserViewModel>> Disable2fa();
+        Task<ApiResponseDto<UserViewModel>> Enable2fa(string userId = null);
+        Task<ApiResponseDto<UserViewModel>> Disable2fa(string userId = null);
     }
 }

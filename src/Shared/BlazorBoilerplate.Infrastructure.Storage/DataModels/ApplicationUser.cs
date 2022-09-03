@@ -1,6 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
 
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
@@ -21,13 +20,10 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         public override int AccessFailedCount { get => base.AccessFailedCount; set => base.AccessFailedCount = value; }
         public override string ConcurrencyStamp { get => base.ConcurrencyStamp; set => base.ConcurrencyStamp = value; }
 
-        [MaxLength(64)]
-        public string FirstName { get; set; }
+        public Guid? PersonId { get; set; }
+        public Person Person { get; set; }
 
-        [MaxLength(64)]
-        public string LastName { get; set; }
-
-        public string FullName => $"{FirstName} {LastName}";
+        public string Name { get => Person?.FullName ?? UserName; }
 
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 

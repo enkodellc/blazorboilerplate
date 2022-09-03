@@ -32,14 +32,22 @@ namespace BlazorBoilerplate.Server.Authorization
             var principal = await base.CreateAsync(user);
             var identity = (ClaimsIdentity)principal.Identity;
 
-            if (!string.IsNullOrWhiteSpace(user.FirstName))
+            if (user.Person != null)
             {
-                identity.AddClaims(new[] { new Claim(ClaimTypes.GivenName, user.FirstName) });
+                if (!string.IsNullOrWhiteSpace(user.Person.FirstName))
+                {
+                    identity.AddClaims(new[] { new Claim(ClaimTypes.GivenName, user.Person?.FirstName) });
+                }
+
+                if (!string.IsNullOrWhiteSpace(user.Person.LastName))
+                {
+                    identity.AddClaims(new[] { new Claim(ClaimTypes.Surname, user.Person?.LastName) });
+                }
             }
 
-            if (!string.IsNullOrWhiteSpace(user.LastName))
+            if (user.Person == null || user.Person.ExpirationDate == null || user.Person.ExpirationDate > DateTime.Now)
             {
-                identity.AddClaims(new[] { new Claim(ClaimTypes.Surname, user.LastName) });
+                identity.AddClaims(new[] { new Claim(ApplicationClaimTypes.IsSubscriptionActive, ClaimValues.trueString) });
             }
 
             if (!string.IsNullOrWhiteSpace(user.Email))

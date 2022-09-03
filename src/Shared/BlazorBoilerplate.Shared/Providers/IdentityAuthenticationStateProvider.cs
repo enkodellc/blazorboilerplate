@@ -143,6 +143,12 @@ namespace BlazorBoilerplate.Shared.Providers
             return apiResponse;
         }
 
+        public async Task<ApiResponseDto> UpsertUser(UserViewModel userViewModel)
+        {
+            ApiResponseDto apiResponse = await _accountApiClient.UpsertUser(userViewModel);
+            return apiResponse;
+        }
+
         public async Task<ApiResponseDto> AdminUpdateUser(UserViewModel userViewModel)
         {
             return await _accountApiClient.AdminUpdateUser(userViewModel);

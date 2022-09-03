@@ -7,6 +7,12 @@
     @L["AppNavHome"]
 </MudNavLink>
 
+<AuthorizeView Policy=@Policies.For(UserFeatures.Operator)>
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("/users").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.People">
+        @L["Users"]
+    </MudNavLink>
+</AuthorizeView>
+
 @code {
 
     public int Order { get => 1; }

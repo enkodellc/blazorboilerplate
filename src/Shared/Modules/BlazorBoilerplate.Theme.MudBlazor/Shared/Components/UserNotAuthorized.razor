@@ -1,11 +1,20 @@
 ﻿@inject IStringLocalizer<Global> L
 
-@*<AuthorizeView Policy=@Policies.TwoFactorEnabled>
+<PageTitle>@L["You are not authorized to access this page"]</PageTitle>
+
+<AuthorizeView Policy=@Policies.TwoFactorEnabled>
     <Authorized></Authorized>
     <NotAuthorized>
         <MudAlert Severity="Severity.Error" Class="ma-8" Variant="Variant.Filled">@L["EnableTwoFactorAuthentication"]</MudAlert>
     </NotAuthorized>
-</AuthorizeView>*@
+</AuthorizeView>
+
+<AuthorizeView Policy=@Policies.IsSubscriptionActive>
+    <Authorized></Authorized>
+    <NotAuthorized>
+        <MudAlert Severity="Severity.Error" Class="ma-8" Variant="Variant.Filled">@L["IsSubscriptionExpiredMessage"]</MudAlert>
+    </NotAuthorized>
+</AuthorizeView>
 
 <div class="loading-container">
     <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Primary" Style="font-size: 7em" />

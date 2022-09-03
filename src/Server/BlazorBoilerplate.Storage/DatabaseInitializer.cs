@@ -127,10 +127,12 @@ namespace BlazorBoilerplate.Storage
         public async Task EnsureAdminIdentities()
         {
             await EnsureRole(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
-            await EnsureRole(DefaultRoleNames.Operator, _entityPermissions.GetAllPermissionValuesForOperator());
-            await CreateUser(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
-            await CreateUser(DefaultUserNames.Operator, "complexPassword", "Operator", "Blazor", "operator@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Operator });
+            
+            foreach (var userFeature in Enum.GetValues<UserFeatures>())
+                await EnsureRole(userFeature.ToString(), _entityPermissions.GetAllPermissionValuesFor(userFeature));
 
+            await CreateUser(DefaultUserNames.Administrator, "admin123", "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
+            
             _logger.LogInformation("Inbuilt account generation completed");
         }
 
@@ -179,8 +181,7 @@ namespace BlazorBoilerplate.Storage
                 foreach (var r in roles)
                     await _roleManager.RemoveClaimAsync(r, new Claim(ApplicationClaimTypes.Permission, claim));
         }
-
-        private async Task<ApplicationUser> CreateUser(string userName, string password, string firstName, string lastName, string email, string phoneNumber, string[] roles = null)
+        private async Task<ApplicationUser> CreateUser(string userName, string password, string email, string phoneNumber, string[] roles = null)
         {
             var applicationUser = _userManager.FindByNameAsync(userName).Result;
 
@@ -191,8 +192,6 @@ namespace BlazorBoilerplate.Storage
                     UserName = userName,
                     Email = email,
                     PhoneNumber = phoneNumber,
-                    FirstName = firstName,
-                    LastName = lastName,
                     EmailConfirmed = true
                 };
 
@@ -203,8 +202,6 @@ namespace BlazorBoilerplate.Storage
 
                 result = _userManager.AddClaimsAsync(applicationUser, new Claim[]{
                         new Claim(JwtClaimTypes.Name, userName),
-                        new Claim(JwtClaimTypes.GivenName, firstName),
-                        new Claim(JwtClaimTypes.FamilyName, lastName),
                         new Claim(JwtClaimTypes.Email, email),
                         new Claim(JwtClaimTypes.EmailVerified, ClaimValues.trueString, ClaimValueTypes.Boolean),
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber)

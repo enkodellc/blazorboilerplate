@@ -113,7 +113,7 @@ namespace BlazorBoilerplate.Server.Managers
                 }
                 else // create new user first
                 {
-                    //requireConfirmEmail = false because the external provider has just confirmed the user email.
+                    //the external provider has just confirmed the user email.
                     //Some provider does not provide true email for privacy
 
                     var userName = userNameClaim.Value.Replace(" ", string.Empty);
@@ -123,7 +123,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                     try
                     {
-                        user = await _accountManager.RegisterNewUserAsync(userName, userEmailClaim.Value, null, false);
+                        user = await _accountManager.RegisterNewUser(userName, userEmailClaim.Value, null, true);
                     }
                     catch (DomainException ex)
                     {

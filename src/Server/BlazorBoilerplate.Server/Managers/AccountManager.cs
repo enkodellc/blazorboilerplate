@@ -18,6 +18,7 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -33,6 +34,7 @@ namespace BlazorBoilerplate.Server.Managers
     public class AccountManager : IAccountManager
     {
         private readonly IDatabaseInitializer _databaseInitializer;
+        private readonly IAuthorizationService _authorizationService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<AccountManager> _logger;
@@ -51,6 +53,7 @@ namespace BlazorBoilerplate.Server.Managers
         private static readonly UserViewModel LoggedOutUser = new() { IsAuthenticated = false, Roles = new List<string>() };
 
         public AccountManager(IDatabaseInitializer databaseInitializer,
+            IAuthorizationService authorizationService,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<AccountManager> logger,
@@ -67,6 +70,7 @@ namespace BlazorBoilerplate.Server.Managers
             IStringLocalizer<Global> l)
         {
             _databaseInitializer = databaseInitializer;
+            _authorizationService = authorizationService;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
@@ -117,33 +121,6 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["EmailVerificationSuccessful"]);
         }
 
-        public async Task<ApiResponse> ForgotPassword(ForgotPasswordViewModel parameters)
-        {
-            var user = await _userManager.FindByEmailAsync(parameters.Email);
-
-            if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
-            {
-                _logger.LogInformation("Forgot Password with non-existent email / user: {0}", parameters.Email);
-                // Don't reveal that the user does not exist or is not confirmed
-                return new ApiResponse(Status200OK, L["Operation Successful"]);
-            }
-
-            // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", baseUrl, user.Id, token); //token must be a query string parameter as it is very long
-
-            var email = _emailFactory.BuildForgotPasswordEmail(user.UserName, callbackUrl, token);
-            email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-
-            var response = await _emailManager.QueueEmail(email, EmailType.Password);
-
-            if (response.IsSuccessStatusCode)
-                _logger.LogInformation($"Reset Password Successful Email Sent: {user.Email}");
-            else
-                _logger.LogError($"Reset Password Successful Email Sent: {user.Email}");
-
-            return response;
-        }
 
         public async Task<ApiResponse> BuildLoginViewModel(string returnUrl)
         {
@@ -203,7 +180,7 @@ namespace BlazorBoilerplate.Server.Managers
             });
         }
 
-        public async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal authenticatedUser, HttpContext httpContext, string logoutId)
+        public async Task<LoggedOutViewModel> BuildLoggedOutViewModel(ClaimsPrincipal authenticatedUser, HttpContext httpContext, string logoutId)
         {
             // get context information (client name, post logout redirect URI and iframe for federated signout)
             var logout = await _interaction.GetLogoutContextAsync(logoutId);
@@ -279,7 +256,9 @@ namespace BlazorBoilerplate.Server.Managers
 
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByNameAsync(parameters.UserName);
+                    var normalizeUserName = _userManager.NormalizeName(parameters.UserName);
+                    //AdditionalUserClaimsPrincipalFactory needs Person to add extra claims
+                    var user = await _dbContext.Users.Include(i => i.Person).SingleAsync(i => i.NormalizedUserName == normalizeUserName);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client?.ClientId));
                     _logger.LogInformation("Logged In user {0}", parameters.UserName);
 
@@ -316,6 +295,120 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status500InternalServerError, L["LoginFailed"]);
             }
         }
+        public async Task<ApiResponse> Logout(ClaimsPrincipal authenticatedUser)
+        {
+            if (authenticatedUser?.Identity.IsAuthenticated == true)
+            {
+                await _signInManager.SignOutAsync();
+                await _events.RaiseAsync(new UserLogoutSuccessEvent(authenticatedUser.GetSubjectId(), authenticatedUser.GetDisplayName()));
+            }
+
+            return new ApiResponse(Status200OK, "Logout Successful");
+        }
+
+        public async Task<ApiResponse> Register(RegisterViewModel parameters)
+        {
+            await RegisterNewUser(parameters.UserName, parameters.Email, parameters.Password, false);
+
+            if (_userManager.Options.SignIn.RequireConfirmedEmail)
+                return new ApiResponse(Status200OK, L["Operation Successful"]);
+            else
+            {
+                return await Login(new LoginInputModel
+                {
+                    UserName = parameters.UserName,
+                    Password = parameters.Password
+                });
+            }
+        }
+
+        #region password
+        public async Task<ApiResponse> ForgotPassword(ForgotPasswordViewModel parameters)
+        {
+            var user = await _userManager.FindByEmailAsync(parameters.Email);
+
+            if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
+            {
+                _logger.LogInformation("Forgot Password with non-existent email / user: {0}", parameters.Email);
+                // Don't reveal that the user does not exist or is not confirmed
+                return new ApiResponse(Status200OK, L["Operation Successful"]);
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            string callbackUrl = string.Format("{0}/Account/ResetPassword/{1}?token={2}", baseUrl, user.Id, token); //token must be a query string parameter as it is very long
+
+            var email = _emailFactory.BuildForgotPasswordEmail(user.UserName, callbackUrl, token);
+            email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
+
+            var response = await _emailManager.QueueEmail(email, EmailType.Password);
+
+            if (response.IsSuccessStatusCode)
+                _logger.LogInformation($"Reset Password Successful Email Sent: {user.Email}");
+            else
+                _logger.LogError($"Reset Password Successful Email Sent: {user.Email}");
+
+            return response;
+        }
+        public async Task<ApiResponse> ResetPassword(ResetPasswordViewModel parameters)
+        {
+            var user = await _userManager.FindByIdAsync(parameters.UserId);
+
+            if (user == null)
+            {
+                _logger.LogInformation(L["The user {0} doesn't exist", parameters.UserId]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
+
+            if (result.Succeeded)
+            {
+                var email = _emailFactory.BuildPasswordResetEmail(user.UserName);
+                email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
+
+                var response = await _emailManager.QueueEmail(email, EmailType.Password);
+
+                if (response.IsSuccessStatusCode)
+                    _logger.LogInformation($"Reset Password Successful Email to {user.Email}");
+                else
+                    _logger.LogError($"Fail to send Reset Password Email to {user.Email}");
+
+                return response;
+            }
+            else
+            {
+                var msg = result.GetErrors();
+                _logger.LogWarning("Error while resetting the password: {0}", msg);
+                return new ApiResponse(Status400BadRequest, msg);
+            }
+        }
+        public async Task<ApiResponse> UpdatePassword(ClaimsPrincipal authenticatedUser, UpdatePasswordViewModel parameters)
+        {
+            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
+
+            if (user == null)
+            {
+                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
+                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, parameters.CurrentPassword, parameters.NewPassword);
+
+            if (result.Succeeded)
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                return new ApiResponse(Status200OK, L["Operation Successful"]);
+            }
+            else
+            {
+                var msg = result.GetErrors();
+                _logger.LogWarning($"Error while updating the password of {user.UserName}: {msg}");
+                return new ApiResponse(Status400BadRequest, msg);
+            }
+        }
+        #endregion
+
+        #region 2fa
         public async Task<ApiResponse> LoginWith2fa(LoginWith2faInputModel parameters)
         {
             try
@@ -327,6 +420,9 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     return new ApiResponse(Status404NotFound, "Unable to load two-factor authentication user.");
                 }
+
+                //AdditionalUserClaimsPrincipalFactory needs Person to add extra claims
+                await _dbContext.Entry(user).Reference(i => i.Person).LoadAsync();
 
                 var authenticatorCode = parameters.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
@@ -420,90 +516,6 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status500InternalServerError, L["LoginFailed"]);
             }
         }
-        public async Task<ApiResponse> Logout(ClaimsPrincipal authenticatedUser)
-        {
-            if (authenticatedUser?.Identity.IsAuthenticated == true)
-            {
-                await _signInManager.SignOutAsync();
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(authenticatedUser.GetSubjectId(), authenticatedUser.GetDisplayName()));
-            }
-
-            return new ApiResponse(Status200OK, "Logout Successful");
-        }
-
-        public async Task<ApiResponse> Register(RegisterViewModel parameters)
-        {
-            await RegisterNewUserAsync(parameters.UserName, parameters.Email, parameters.Password, _userManager.Options.SignIn.RequireConfirmedEmail);
-
-            if (_userManager.Options.SignIn.RequireConfirmedEmail)
-                return new ApiResponse(Status200OK, L["Operation Successful"]);
-            else
-            {
-                return await Login(new LoginInputModel
-                {
-                    UserName = parameters.UserName,
-                    Password = parameters.Password
-                });
-            }
-        }
-
-        public async Task<ApiResponse> ResetPassword(ResetPasswordViewModel parameters)
-        {
-            var user = await _userManager.FindByIdAsync(parameters.UserId);
-            if (user == null)
-            {
-                _logger.LogInformation(L["The user {0} doesn't exist", parameters.UserId]);
-                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
-            }
-
-            var result = await _userManager.ResetPasswordAsync(user, parameters.Token, parameters.Password);
-
-            if (result.Succeeded)
-            {
-                var email = _emailFactory.BuildPasswordResetEmail(user.UserName);
-                email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-
-                var response = await _emailManager.QueueEmail(email, EmailType.Password);
-
-                if (response.IsSuccessStatusCode)
-                    _logger.LogInformation($"Reset Password Successful Email to {user.Email}");
-                else
-                    _logger.LogError($"Fail to send Reset Password Email to {user.Email}");
-
-                return response;
-            }
-            else
-            {
-                var msg = result.GetErrors();
-                _logger.LogWarning("Error while resetting the password: {0}", msg);
-                return new ApiResponse(Status400BadRequest, msg);
-            }
-        }
-
-        public async Task<ApiResponse> UpdatePassword(ClaimsPrincipal authenticatedUser, UpdatePasswordViewModel parameters)
-        {
-            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
-            if (user == null)
-            {
-                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
-                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
-            }
-
-            var result = await _userManager.ChangePasswordAsync(user, parameters.CurrentPassword, parameters.NewPassword);
-
-            if (result.Succeeded)
-            {
-                await _signInManager.RefreshSignInAsync(user);
-                return new ApiResponse(Status200OK, L["Operation Successful"]);
-            }
-            else
-            {
-                var msg = result.GetErrors();
-                _logger.LogWarning($"Error while updating the password of {user.UserName}: {msg}");
-                return new ApiResponse(Status400BadRequest, msg);
-            }
-        }
-
         public async Task<ApiResponse> EnableAuthenticator(ClaimsPrincipal authenticatedUser, AuthenticatorVerificationCodeViewModel parameters)
         {
             var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
@@ -586,12 +598,13 @@ namespace BlazorBoilerplate.Server.Managers
 
             return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserViewModel(authenticatedUser));
         }
-        public async Task<ApiResponse> Enable2fa(ClaimsPrincipal authenticatedUser)
+
+        public async Task<ApiResponse> Enable2fa(Guid userId, ClaimsPrincipal authenticatedUser = null)
         {
-            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
+                _logger.LogInformation(L["The user {0} doesn't exist", userId]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
@@ -599,17 +612,17 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (result.Succeeded)
             {
-                return new ApiResponse(Status200OK, "Enabling 2fa Successful", await BuildUserViewModel(authenticatedUser));
+                return new ApiResponse(Status200OK, "Enabling 2fa Successful", authenticatedUser != null ? await BuildUserViewModel(authenticatedUser) : await BuildUserViewModel(userId));
             }
             else
                 return new ApiResponse(Status400BadRequest, "Error while enabling 2fa");
         }
-        public async Task<ApiResponse> Disable2fa(ClaimsPrincipal authenticatedUser)
+        public async Task<ApiResponse> Disable2fa(Guid userId, ClaimsPrincipal authenticatedUser = null)
         {
-            var user = await _userManager.FindByIdAsync(authenticatedUser.GetSubjectId());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", authenticatedUser.GetDisplayName()]);
+                _logger.LogInformation(L["The user {0} doesn't exist", userId]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
 
@@ -617,30 +630,192 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (result.Succeeded)
             {
-                return new ApiResponse(Status200OK, "Disabling 2fa Successful", await BuildUserViewModel(authenticatedUser));
+                return new ApiResponse(Status200OK, "Disabling 2fa Successful", authenticatedUser != null ? await BuildUserViewModel(authenticatedUser) : await BuildUserViewModel(userId));
             }
             else
                 return new ApiResponse(Status400BadRequest, "Error while disabling 2fa");
         }
+        #endregion
 
         public async Task<ApiResponse> UserViewModel(ClaimsPrincipal authenticatedUser)
         {
             var userViewModel = await BuildUserViewModel(authenticatedUser);
             return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
         }
-        public async Task<ApiResponse> UpdateUser(UserViewModel userViewModel)
-        {
-            var user = await _userManager.FindByEmailAsync(userViewModel.Email);
 
-            if (user == null)
+        public async Task<ApiResponse> UserViewModel(Guid id)
+        {
+            var userViewModel = await BuildUserViewModel(id);
+            return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
+        }
+
+        private async Task<ApiResponse> UpdateClaim(ApplicationUser user, IEnumerable<Claim> claims, string claimType, bool updateClaimValue, ClaimsPrincipal authenticatedUser)
+        {
+            var currentClaimValue = claims.Any(claim => claim.Type == claimType && claim.Value == ClaimValues.trueString);
+
+            if (currentClaimValue && !updateClaimValue)
             {
-                _logger.LogInformation(L["The user {0} doesn't exist", userViewModel.Email]);
-                return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
+                var result = await _userManager.RemoveClaimAsync(user, new Claim(claimType, ClaimValues.trueString));
+
+                if (!result.Succeeded)
+                {
+                    var msg = result.GetErrors();
+                    _logger.LogWarning($"Removing claim {claimType} to {user.UserName} by {authenticatedUser.Identity.Name} failed: {msg}");
+                    return new ApiResponse(Status400BadRequest, msg);
+                }
+                else
+                    _logger.LogInformation($"Claim {claimType} removed from {user.UserName} by {authenticatedUser.Identity.Name}");
+            }
+            else if (!currentClaimValue && updateClaimValue)
+            {
+                var result = await _userManager.AddClaimAsync(user, new Claim(claimType, ClaimValues.trueString));
+
+                if (!result.Succeeded)
+                {
+                    var msg = result.GetErrors();
+                    _logger.LogWarning($"Adding claim {claimType} to {user.UserName} by {authenticatedUser.Identity.Name} failed: {msg}");
+
+                    return new ApiResponse(Status400BadRequest, msg);
+                }
+                else
+                    _logger.LogInformation($"Claim {claimType} added to {user.UserName} by {authenticatedUser.Identity.Name}");
             }
 
-            user.FirstName = userViewModel.FirstName;
-            user.LastName = userViewModel.LastName;
-            user.Email = userViewModel.Email;
+            return new ApiResponse(Status200OK, L["Operation Successful"]);
+        }
+
+        private async Task AddToRole(ApplicationUser user, string role)
+        {
+            if (!await _userManager.IsInRoleAsync(user, role))
+            {
+                var result = await _userManager.AddToRoleAsync(user, role);
+
+                if (!result.Succeeded)
+                {
+                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
+
+                    _logger.LogWarning("AddToRoleAsync Failed: {0}", msg);
+
+                    throw new DomainException(msg);
+                }
+            }
+        }
+
+        private async Task RemoveFromRole(ApplicationUser user, string role)
+        {
+            if (await _userManager.IsInRoleAsync(user, role))
+            {
+                var result = await _userManager.RemoveFromRoleAsync(user, role);
+
+                if (!result.Succeeded)
+                {
+                    var msg = string.Join(",", result.Errors.Select(i => i.Description));
+
+                    _logger.LogWarning("AddToRoleAsync Failed: {0}", msg);
+
+                    throw new DomainException(msg);
+                }
+            }
+        }
+
+        private async Task<ApiResponse> UpdateManagerPermissions(ApplicationUser user, UserViewModel model, ClaimsPrincipal authenticatedUser)
+        {
+            if (user != null)
+            {
+                var claims = (await _userManager.GetClaimsAsync(user)).ToArray();
+
+                foreach (var userFeature in Enum.GetValues<UserFeatures>())
+                {
+                    var result = await UpdateClaim(user, claims, ApplicationClaimTypes.For(userFeature), model.UserFeatures[userFeature], authenticatedUser);
+
+                    if (!result.IsSuccessStatusCode)
+                        return result;
+
+                    if (model.UserFeatures[userFeature])
+                        await AddToRole(user, userFeature.ToString());
+                    else
+                        await RemoveFromRole(user, userFeature.ToString());
+                }
+
+                return new ApiResponse(Status200OK, L["Operation Successful"]);
+            }
+            else
+                return new ApiResponse(Status400BadRequest, L["InvalidData"]);
+        }
+        public async Task<ApiResponse> UpdateUser(UserViewModel userViewModel, bool isUpsert, ClaimsPrincipal authenticatedUser)
+        {
+            ApplicationUser user;
+
+            if (userViewModel.UserId != null)
+            {
+                //var email = _userManager.NormalizeEmail(userViewModel.Email);
+
+                user = await _userManager.Users
+                    .Include(i => i.Person).ThenInclude(i => i.Company)
+                    .Include(i => i.Person).ThenInclude(i => i.CreatedBy)
+                    .SingleAsync(i => i.Id == userViewModel.UserId);
+
+                if (user == null)
+                {
+                    _logger.LogWarning("userViewModel.UserId not found");
+                    return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
+                }
+                else
+                {
+                    user.UserName = userViewModel.UserName;
+                    user.Email = userViewModel.Email;
+                }
+            }
+            else
+            {
+                if (isUpsert)
+                {
+                    user = new ApplicationUser
+                    {
+                        UserName = userViewModel.UserName,
+                        Email = userViewModel.Email
+                    };
+
+                    await RegisterNewUser(user, userViewModel.Password, true);
+                }
+                else
+                {
+                    _logger.LogWarning("userViewModel.UserId is null");
+                    return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
+                }
+            }
+
+            if (user.Person == null &&
+                (!string.IsNullOrWhiteSpace(userViewModel.FirstName) || !string.IsNullOrWhiteSpace(userViewModel.LastName) || !string.IsNullOrWhiteSpace(userViewModel.CompanyName)))
+                user.Person = new Person();
+
+            user.Person.FirstName = userViewModel.FirstName;
+            user.Person.LastName = userViewModel.LastName;
+
+            if (userViewModel.ExpirationDate != user.Person.ExpirationDate)
+            {
+                user.Person.ExpirationDate = userViewModel.ExpirationDate;
+                user.Person.ExpirationReminderSentOn = null;
+            }
+
+            var company = await _dbContext.Companies.SingleOrDefaultAsync(i => i.VatIn == userViewModel.CompanyVatIn);
+
+            if (user.Person.Company == null && !string.IsNullOrWhiteSpace(userViewModel.CompanyName))
+                user.Person.Company = company ?? new Company();
+
+            if (user.Person.Company != null)
+            {
+                user.Person.Company.Name = userViewModel.CompanyName;
+                user.Person.Company.Longitude = userViewModel.CompanyLongitude;
+                user.Person.Company.Latitude = userViewModel.CompanyLatitude;
+                user.Person.Company.Address = userViewModel.CompanyAddress;
+                user.Person.Company.City = userViewModel.CompanyCity;
+                user.Person.Company.Province = userViewModel.CompanyProvince;
+                user.Person.Company.ZipCode = userViewModel.CompanyZipCode;
+                user.Person.Company.CountryCode = userViewModel.CompanyCountryCode;
+                user.Person.Company.VatIn = userViewModel.CompanyVatIn;
+                user.Person.Company.PhoneNumber = userViewModel.CompanyPhoneNumber;
+            }
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -651,9 +826,75 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status400BadRequest, msg);
             }
 
+            var updateManagerPermissionsResult = await UpdateManagerPermissions(user, userViewModel, authenticatedUser);
+
+            if (!updateManagerPermissionsResult.IsSuccessStatusCode)
+            {
+                return updateManagerPermissionsResult;
+            }
+
             return new ApiResponse(Status200OK, L["Operation Successful"]);
         }
 
+        public async Task<ApplicationUser> RegisterNewUser(string userName, string email, string password, bool emailConfirmedByAdmin)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = userName,
+                Email = email
+            };
+
+            return await RegisterNewUser(user, password, emailConfirmedByAdmin);
+        }
+        private async Task<ApplicationUser> RegisterNewUser(ApplicationUser user, string password, bool emailConfirmedByAdmin)
+        {
+            var result = password == null ?
+                await _userManager.CreateAsync(user) :
+                await _userManager.CreateAsync(user, password);
+
+            if (!result.Succeeded)
+                throw new DomainException(result.GetErrors());
+
+            user.EmailConfirmed = emailConfirmedByAdmin;
+
+            await _userManager.AddClaimsAsync(user, new Claim[]{
+                    new Claim(Policies.IsUser, string.Empty),
+                    new Claim(JwtClaimTypes.Name, user.UserName),
+                    new Claim(JwtClaimTypes.Email, user.Email),
+                    new Claim(JwtClaimTypes.EmailVerified, emailConfirmedByAdmin? ClaimValues.trueString : ClaimValues.falseString, ClaimValueTypes.Boolean)
+                });
+
+            _logger.LogInformation("New user registered: {0}", user);
+
+            EmailMessageDto emailMessage;
+
+            var requireConfirmedEmail = !emailConfirmedByAdmin && _userManager.Options.SignIn.RequireConfirmedEmail;
+
+            if (requireConfirmedEmail)
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = $"{baseUrl}/Account/ConfirmEmail/{user.Id}?token={token}";
+
+                emailMessage = _emailFactory.BuildNewUserConfirmationEmail(user.Person?.FullName, user.UserName, callbackUrl);
+            }
+            else
+            {
+                emailMessage = _emailFactory.BuildNewUserEmail(user.Person?.FullName, user.UserName, user.Email, password);
+            }
+
+            emailMessage.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
+
+            var response = requireConfirmedEmail ? await _emailManager.QueueEmail(emailMessage, EmailType.Confirmation) : await _emailManager.QueueEmail(emailMessage, EmailType.Password);
+
+            if (response.IsSuccessStatusCode)
+                _logger.LogInformation($"New user email sent to {user.Email}");
+            else
+                _logger.LogError("New user email failed: Body: {0}, Error: {1}", emailMessage.Body, response.Message);
+
+            return user;
+        }
+
+        //By Admin
         public async Task<ApiResponse> Create(RegisterViewModel parameters)
         {
             var user = new ApplicationUser
@@ -662,81 +903,46 @@ namespace BlazorBoilerplate.Server.Managers
                 Email = parameters.Email
             };
 
-            var result = await _userManager.CreateAsync(user, parameters.Password);
+            await RegisterNewUser(user, parameters.Password, true);
 
-            if (!result.Succeeded)
+            var userViewModel = new UserViewModel
             {
-                var msg = result.GetErrors();
-                _logger.LogWarning($"Error while creating {user.UserName}: {msg}");
-                return new ApiResponse(Status400BadRequest, msg);
-            }
-            else
-            {
-                var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
-                        new Claim(Policies.IsUser, string.Empty),
-                        new Claim(JwtClaimTypes.Name, parameters.UserName),
-                        new Claim(JwtClaimTypes.Email, parameters.Email),
-                        new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean)
-                    }).Result;
-            }
+                UserId = user.Id,
+                IsAuthenticated = false,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.Person?.FirstName,
+                LastName = user.Person?.LastName,
+                ExpirationDate = user.Person?.ExpirationDate
+            };
 
-            if (_userManager.Options.SignIn.RequireConfirmedEmail)
-            {
-                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                string callbackUrl = string.Format("{0}/Account/ConfirmEmail/{1}?token={2}", baseUrl, user.Id, token);
-
-                var email = _emailFactory.BuildNewUserConfirmationEmail(user.FullName, user.UserName, callbackUrl);
-                email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-
-                _logger.LogInformation("New user created: {0}", user);
-                var response = await _emailManager.QueueEmail(email, EmailType.Confirmation);
-
-                if (!response.IsSuccessStatusCode)
-                    _logger.LogError($"New user email failed: {response.Message}");
-
-                return new ApiResponse(Status200OK, "Create User Success");
-            }
-            else
-            {
-                var email = _emailFactory.BuildNewUserEmail(user.FullName, user.UserName, user.Email, parameters.Password);
-                email.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-
-                _logger.LogInformation("New user created: {0}", user);
-
-                var response = await _emailManager.SendEmail(email);
-
-                if (!response.IsSuccessStatusCode)
-                    _logger.LogError($"New user email failed: {response.Message}");
-
-                var userViewModel = new UserViewModel
-                {
-                    UserId = user.Id,
-                    IsAuthenticated = false,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName
-                };
-
-                return new ApiResponse(Status200OK, L["User {0} created", userViewModel.UserName], userViewModel);
-            }
+            return new ApiResponse(Status200OK, L["User {0} created", userViewModel.UserName], userViewModel);
         }
         public async Task<ApiResponse> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
+
             if (user == null)
             {
                 _logger.LogWarning(L["The user {0} doesn't exist", id]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
+
             if (user.UserName.ToLower() != DefaultUserNames.Administrator)
             {
                 //TODO it could generate time-out
                 //await _userProfileStore.DeleteAllApiLogsForUser(user.Id);
 
-                await _userManager.DeleteAsync(user);
-                return new ApiResponse(Status200OK, "User Deletion Successful");
+                var result = await _userManager.DeleteAsync(user);
+
+                if (result.Succeeded)
+                    return new ApiResponse(Status200OK, L["Operation Successful"]);
+                else
+                {
+                    var msg = result.GetErrors();
+                    _logger.LogWarning("User delete failed: {0}", msg);
+                    return new ApiResponse(Status400BadRequest, msg);
+                }
             }
             else
                 return new ApiResponse(Status403Forbidden, L["User {0} cannot be edited", user.UserName]);
@@ -752,13 +958,17 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> AdminUpdateUser(UserViewModel userViewModel)
         {
-            var user = await _userManager.FindByIdAsync(userViewModel.UserId.ToString());
+            var user = await _userManager.Users.Include(i => i.Person).SingleAsync(i => i.Id == userViewModel.UserId);
 
             if (user.UserName.ToLower() != DefaultUserNames.Administrator && userViewModel.UserName.ToLower() != DefaultUserNames.Administrator)
                 user.UserName = userViewModel.UserName;
 
-            user.FirstName = userViewModel.FirstName;
-            user.LastName = userViewModel.LastName;
+            if (user.Person == null)
+                user.Person = new Person();
+
+            user.Person.FirstName = userViewModel.FirstName;
+            user.Person.LastName = userViewModel.LastName;
+            user.Person.ExpirationDate = userViewModel.ExpirationDate;
             user.Email = userViewModel.Email;
 
             try
@@ -817,14 +1027,16 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["Operation Successful"]);
         }
 
-        public async Task<ApiResponse> AdminResetUserPasswordAsync(ChangePasswordViewModel changePasswordViewModel, ClaimsPrincipal authenticatedUser)
+        public async Task<ApiResponse> AdminResetUserPassword(ChangePasswordViewModel changePasswordViewModel, ClaimsPrincipal authenticatedUser)
         {
             var user = await _userManager.FindByIdAsync(changePasswordViewModel.UserId);
+
             if (user == null)
             {
                 _logger.LogWarning(L["The user {0} doesn't exist", changePasswordViewModel.UserId]);
                 return new ApiResponse(Status404NotFound, L["The user doesn't exist"]);
             }
+
             var passToken = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, passToken, changePasswordViewModel.Password);
             if (result.Succeeded)
@@ -840,61 +1052,6 @@ namespace BlazorBoilerplate.Server.Managers
                 _logger.LogWarning($"Error while resetting password of {user.UserName}: {msg}");
                 return new ApiResponse(Status400BadRequest, msg);
             }
-        }
-        public async Task<ApplicationUser> RegisterNewUserAsync(string userName, string email, string password, bool requireConfirmEmail)
-        {
-            var user = new ApplicationUser
-            {
-                UserName = userName,
-                Email = email
-            };
-
-            return await RegisterNewUserAsync(user, password, requireConfirmEmail);
-        }
-
-        public async Task<ApplicationUser> RegisterNewUserAsync(ApplicationUser user, string password, bool requireConfirmEmail)
-        {
-            var result = password == null ?
-                await _userManager.CreateAsync(user) :
-                await _userManager.CreateAsync(user, password);
-
-            if (!result.Succeeded)
-                throw new DomainException(result.GetErrors());
-
-            await _userManager.AddClaimsAsync(user, new Claim[]{
-                    new Claim(Policies.IsUser, string.Empty),
-                    new Claim(JwtClaimTypes.Name, user.UserName),
-                    new Claim(JwtClaimTypes.Email, user.Email),
-                    new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean)
-                });
-
-            _logger.LogInformation("New user registered: {0}", user);
-
-            EmailMessageDto emailMessage;
-
-            if (requireConfirmEmail)
-            {
-                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = $"{baseUrl}/Account/ConfirmEmail/{user.Id}?token={token}";
-
-                emailMessage = _emailFactory.BuildNewUserConfirmationEmail(user.FullName, user.UserName, callbackUrl);
-            }
-            else
-            {
-                emailMessage = _emailFactory.BuildNewUserEmail(user.FullName, user.UserName, user.Email, password);
-            }
-
-            emailMessage.ToAddresses.Add(new EmailAddressDto(user.Email, user.Email));
-
-            var response = requireConfirmEmail ? await _emailManager.QueueEmail(emailMessage, EmailType.Confirmation) : await _emailManager.SendEmail(emailMessage);
-
-            if (response.IsSuccessStatusCode)
-                _logger.LogInformation($"New user email sent to {user.Email}");
-            else
-                _logger.LogError("New user email failed: Body: {0}, Error: {1}", emailMessage.Body, response.Message);
-
-            return user;
         }
 
         private static string FormatKey(string unformattedKey)
@@ -918,20 +1075,36 @@ namespace BlazorBoilerplate.Server.Managers
 
         private async Task<UserViewModel> BuildUserViewModel(ClaimsPrincipal authenticatedUser)
         {
-            var user = await _userManager.GetUserAsync(authenticatedUser);
+            var id = new Guid(authenticatedUser.Identity.GetSubjectId());
+
+            var userViewModel = await BuildUserViewModel(id);
+
+            if (userViewModel.UserName != null)
+            {
+                userViewModel.IsAuthenticated = authenticatedUser.Identity.IsAuthenticated;
+                userViewModel.ExposedClaims = authenticatedUser.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList();
+                userViewModel.Roles = ((ClaimsIdentity)authenticatedUser.Identity).Claims
+                        .Where(c => c.Type == "role")
+                        .Select(c => c.Value).ToList();
+            }
+
+            return userViewModel;
+        }
+        private async Task<UserViewModel> BuildUserViewModel(Guid id)
+        {
+            var user = await _userManager.Users.Include(i => i.Person).ThenInclude(i => i.Company).SingleOrDefaultAsync(i => i.Id == id); //user==null browser cache of deleted users
 
             if (user != null)
             {
                 var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
 
+                var claims = await _userManager.GetClaimsAsync(user);
+
                 var userViewModel = new UserViewModel
                 {
-                    IsAuthenticated = authenticatedUser.Identity.IsAuthenticated,
+                    UserId = user.Id,
                     UserName = user.UserName,
                     Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    UserId = user.Id,
                     HasPassword = await _userManager.HasPasswordAsync(user),
                     PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
                     TwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user),
@@ -939,13 +1112,35 @@ namespace BlazorBoilerplate.Server.Managers
                     BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
                     CountRecoveryCodes = await _userManager.CountRecoveryCodesAsync(user),
 
-                    Logins = (await _userManager.GetLoginsAsync(user)).Select(i => new KeyValuePair<string, string>(i.LoginProvider, i.ProviderKey)).ToList(),
+                    ExposedClaims = claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
+                    Roles = claims.Where(c => c.Type == "role").Select(c => c.Value).ToList(),
 
-                    ExposedClaims = authenticatedUser.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
-                    Roles = ((ClaimsIdentity)authenticatedUser.Identity).Claims
-                            .Where(c => c.Type == "role")
-                            .Select(c => c.Value).ToList()
+                    Logins = (await _userManager.GetLoginsAsync(user)).Select(i => new KeyValuePair<string, string>(i.LoginProvider, i.ProviderKey)).ToList()
                 };
+
+                if (user.Person is Person person)
+                {
+                    userViewModel.FirstName = person.FirstName;
+                    userViewModel.LastName = person.LastName;
+                    userViewModel.ExpirationDate = person.ExpirationDate;
+
+                    foreach (var userFeature in Enum.GetValues<UserFeatures>())
+                        userViewModel.UserFeatures[userFeature] = userViewModel.ExposedClaims.Any(claim => claim.Key == ApplicationClaimTypes.For(userFeature) && claim.Value == ClaimValues.trueString);
+
+                    if (person.Company is Company company)
+                    {
+                        userViewModel.CompanyName = company.Name;
+                        userViewModel.CompanyLongitude = company.Longitude;
+                        userViewModel.CompanyLatitude = company.Latitude;
+                        userViewModel.CompanyAddress = company.Address;
+                        userViewModel.CompanyCity = company.City;
+                        userViewModel.CompanyProvince = company.Province;
+                        userViewModel.CompanyZipCode = company.ZipCode;
+                        userViewModel.CompanyCountryCode = company.CountryCode;
+                        userViewModel.CompanyVatIn = company.VatIn;
+                        userViewModel.CompanyPhoneNumber = company.PhoneNumber;
+                    }
+                }
 
                 if (!userViewModel.TwoFactorEnabled)
                 {
@@ -958,7 +1153,7 @@ namespace BlazorBoilerplate.Server.Managers
                     userViewModel.SharedKey = FormatKey(unformattedKey);
                     userViewModel.AuthenticatorUri = string.Format(
                         "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6",
-                        _urlEncoder.Encode("BlazorBoilerplate"),
+                        _urlEncoder.Encode(nameof(BlazorBoilerplate)),
                         _urlEncoder.Encode(user.Email),
                         unformattedKey);
                 }
