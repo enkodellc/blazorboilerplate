@@ -21,6 +21,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.ExternalAuth
 
             errorText = error switch
             {
+                ErrorEnum.UserWithSameEmailAlreadyExists => "User with same email already exists",
                 ErrorEnum.UserCreationFailed => "User cannot be created",
                 ErrorEnum.UserIsNotAllowed => "Login not allowed, check email inbox for account confirmation",
                 ErrorEnum.UserLockedOut => "User is locked out",

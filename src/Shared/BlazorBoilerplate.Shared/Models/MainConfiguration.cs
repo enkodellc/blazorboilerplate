@@ -1,6 +1,4 @@
-﻿using BlazorBoilerplate.Shared.Dto.Db;
-
-namespace BlazorBoilerplate.Shared.Models
+﻿namespace BlazorBoilerplate.Shared.Models
 {
     public class MainConfiguration
     {

@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
+using BlazorBoilerplate.Storage;
 using IdentityModel;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
@@ -16,16 +17,19 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IAccountManager _accountManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _dbContext;
         private readonly ILogger<ExternalAuthManager> _logger;
 
         public ExternalAuthManager(IAccountManager accountManager,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext dbContext,
             ILogger<ExternalAuthManager> logger)
         {
             _accountManager = accountManager;
             _userManager = userManager;
             _signInManager = signInManager;
+            _dbContext = dbContext;
             _logger = logger;
         }
 
@@ -75,6 +79,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                 //If external login/signin failed
                 var userNameClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
+                var surnameClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname);
                 var userEmailClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
 
                 //For Apple provider
@@ -107,7 +112,7 @@ namespace BlazorBoilerplate.Server.Managers
                             return $"~/externalauth/error/{ErrorEnum.UserIsNotAllowed}";
                         }
 
-                        return $"~/externalauth/error/{ErrorEnum.Unknown}";
+                        return $"~/externalauth/error/{ErrorEnum.UserWithSameEmailAlreadyExists}";
                     }
 
                 }
@@ -124,6 +129,12 @@ namespace BlazorBoilerplate.Server.Managers
                     try
                     {
                         user = await _accountManager.RegisterNewUser(userName, userEmailClaim.Value, null, true);
+
+                        user.Person = new Person { Id = Guid.NewGuid(), FirstName = userNameClaim.Value, LastName = surnameClaim.Value };
+
+                        _dbContext.Persons.Add(user.Person);
+
+                        await _dbContext.SaveChangesAsync();
                     }
                     catch (DomainException ex)
                     {

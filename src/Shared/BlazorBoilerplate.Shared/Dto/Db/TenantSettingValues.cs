@@ -3,11 +3,6 @@ using System.Security.Authentication;
 
 namespace BlazorBoilerplate.Shared.Dto.Db
 {
-    public enum BlazorRuntime
-    {
-        Server,
-        WebAssembly
-    }
     public static class TenantSettingValues
     {
         public static readonly Dictionary<SettingKey, Tuple<string, SettingType>> Default =

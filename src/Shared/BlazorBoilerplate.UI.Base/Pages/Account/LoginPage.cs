@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Shared.Extensions;
+﻿using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
@@ -15,6 +16,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
         [Inject] NavigationManager navigationManager { get; set; }
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
         [Inject] protected AppState appState { get; set; }
+        [Inject] protected HttpClient httpClient { get; set; }
         [Inject] protected IStringLocalizer<Global> L { get; set; }
         [Inject] IViewNotifier viewNotifier { get; set; }
 
@@ -53,7 +55,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
                         if (!string.IsNullOrEmpty(ReturnUrl))
                             ReturnUrl = Uri.EscapeDataString(ReturnUrl);
                         // we only have one option for logging in and it's an external provider
-                        navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
+                        navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
                     }
                 }
                 else
@@ -66,7 +68,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
             if (!string.IsNullOrEmpty(ReturnUrl))
                 ReturnUrl = Uri.EscapeDataString(ReturnUrl);
 
-            navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{provider.AuthenticationScheme}/{ReturnUrl}", true);
+            navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{provider.AuthenticationScheme}/{ReturnUrl}", true);
         }
 
         protected void Register()
@@ -83,7 +85,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
 
                 if (response.IsSuccessStatusCode)
                 {
-                    if (navigationManager.IsWebAssembly())
+                    if (AppState.Runtime == BlazorRuntime.WebAssembly)
                     {
                         if (response.Result?.RequiresTwoFactor == true)
                         {

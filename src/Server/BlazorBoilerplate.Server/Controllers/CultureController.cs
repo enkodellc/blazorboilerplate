@@ -19,7 +19,7 @@ namespace BlazorBoilerplate.Server.Controllers
                         new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             }
 
-            return LocalRedirect(redirectUri);
+            return Redirect(redirectUri);
         }
     }
 }

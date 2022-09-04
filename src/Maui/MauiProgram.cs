@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.JSInterop;
-using System.Globalization;
-using System.Reflection;
+﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Localizer;
-using Microsoft.AspNetCore.Components.Authorization;
+using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
-using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-using BlazorBoilerplate.Shared.Extensions;
+using BlazorBoilerplate.Theme.Material.Main.Shared.Components;
+using BlazorBoilerplate.Theme.Material.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
+using MudBlazor;
+using MudBlazor.Services;
+using Serilog;
 
 namespace BlazorBoilerplateMaui;
 
@@ -29,19 +30,24 @@ public static class MauiProgram
 
 #if DEBUG
         string baseAddress = "http://localhost:53414";
+
         builder.Services.AddBlazorWebViewDeveloperTools();
+
+        Log.Logger = new LoggerConfiguration()
+             .Enrich.FromLogContext()
+             .WriteTo.Debug()
+             .WriteTo.File(path: @"D:\maui.log")
+             .CreateLogger();
+
+        builder.Services.AddLogging(logging =>
+        {
+            logging.AddSerilog(dispose: true);
+        });
+
+        builder.Services.AddLogging();
 #else
         string baseAddress = "https://www.blazorboilerplate.com";
 #endif
-
-        var baseModule = new BlazorBoilerplate.Theme.Material.Main.Module();
-        var demoModule = new BlazorBoilerplate.Theme.Material.Admin.Module();
-
-        Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-        ModuleProvider.Init(allAssemblies);
-
-        //builder.RootComponents.AddRange(new[] { ModuleProvider.RootComponentMapping });
 
         builder.Services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
         builder.Services.AddTextLocalization(options =>
@@ -68,36 +74,28 @@ public static class MauiProgram
         builder.Services.AddScoped<AppState>();
         builder.Services.AddScoped<IApiClient, ApiClient>();
 
-        foreach (var module in ModuleProvider.Modules)
-            module.ConfigureWebAssemblyServices(builder.Services);
-
-        var host = builder.Build();
-
-        //foreach (var module in ModuleProvider.Modules)
-        //    module.ConfigureWebAssemblyHost(host);
-
-        using (var serviceScope = host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        builder.Services.AddMudServices(config =>
         {
-            var js = serviceScope.ServiceProvider.GetService<IJSRuntime>();
-            var cookieCulture = js.GetAspNetCoreCultureCookie().Result;
+            config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
 
-            if (!string.IsNullOrWhiteSpace(cookieCulture))
-            {
-                CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(cookieCulture);
-                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
-            }
+            config.SnackbarConfiguration.PreventDuplicates = true;
+            config.SnackbarConfiguration.NewestOnTop = true;
+            config.SnackbarConfiguration.ShowCloseIcon = true;
+            config.SnackbarConfiguration.VisibleStateDuration = 10000;
+            config.SnackbarConfiguration.HideTransitionDuration = 500;
+            config.SnackbarConfiguration.ShowTransitionDuration = 500;
+            config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+        });
 
-            var localizationApiClient = serviceScope.ServiceProvider.GetService<ILocalizationApiClient>();
+        builder.Services.AddScoped<IViewNotifier, ViewNotifier>();
 
-            var localizationProvider = serviceScope.ServiceProvider.GetService<ILocalizationProvider>();
+        builder.Services.AddSingleton<IDynamicComponent, NavMenu>();
+        builder.Services.AddSingleton<IDynamicComponent, Footer>();
+        builder.Services.AddSingleton<IDynamicComponent, DrawerFooter>();
+        builder.Services.AddSingleton<IDynamicComponent, TopRightBarSection>();
 
-            var localizationRecordsTask = localizationApiClient.GetLocalizationRecords();
+        builder.Services.RegisterIntlTelInput();
 
-            var pluralFormRulesTask = localizationApiClient.GetPluralFormRules();
-
-            localizationProvider.Init(localizationRecordsTask.Result, pluralFormRulesTask.Result);
-        }
-
-        return host;
+        return builder.Build();
     }
 }

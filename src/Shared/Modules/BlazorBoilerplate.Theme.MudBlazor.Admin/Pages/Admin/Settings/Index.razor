@@ -1,5 +1,6 @@
 ﻿@inherits IndexPage
 @page "/admin/settings"
+@using System.Runtime.InteropServices
 @layout AdminLayout
 
 <TopSection>
@@ -22,12 +23,15 @@ else
     <EditForm Model="@settings" class="mb-4">
         <FluentValidationValidator />
         <MudValidationSummary />
-        <MudSelect @bind-Value="@settings[SettingKey.MainConfiguration_Runtime].Value" Label="@L["Blazor Runtime"]">
-            @foreach (var item in BlazorRuntimes)
+        @if (AppState.Runtime == BlazorRuntime.Server || RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
+        {
+            <MudSelect @bind-Value="@settings[SettingKey.MainConfiguration_Runtime].Value" Label="@L["Blazor Runtime"]">
+                @foreach (var item in BlazorRuntimes)
                 {
-                <MudSelectItem Value="@item">@item</MudSelectItem>
+                    <MudSelectItem Value="@item">@item</MudSelectItem>
                 }
-        </MudSelect>
+            </MudSelect>
+        }
     </EditForm>
 
     <MudButton OnClick="@(()=>apiClient.CancelChanges())">@L["Cancel"]</MudButton>

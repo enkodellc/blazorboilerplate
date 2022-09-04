@@ -1,11 +1,17 @@
-﻿namespace BlazorBoilerplateMaui;
+﻿using BlazorBoilerplate.Shared.Interfaces;
+using BlazorBoilerplate.Shared.Localizer;
+using Microsoft.Extensions.Logging;
+
+namespace BlazorBoilerplateMaui;
 
 public partial class App : Application
 {
-	public App()
+	public App(ILocalizationApiClient localizationApiClient,
+        ILocalizationProvider localizationProvider,
+        ILogger<App> logger)
 	{
-		InitializeComponent();
+        InitializeComponent();
 
-		MainPage = new MainPage();
-	}
+        MainPage = new LoadingPage(localizationApiClient, localizationProvider, logger);
+    }
 }

@@ -13,10 +13,10 @@
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
 
         <!-- Display name -->
-        <ApplicationTitle>BlazorBoilerplateMaui</ApplicationTitle>
+        <ApplicationTitle>BlazorBoilerplate</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>com.companyname.blazorboilerplatemaui</ApplicationId>
+        <ApplicationId>com.blazorboilerplate.app</ApplicationId>
         <ApplicationIdGuid>21882587-B12E-4053-ABB8-40F8E927B67B</ApplicationIdGuid>
 
         <!-- Versions -->
@@ -49,4 +49,31 @@
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
 
+	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+		<PackageReference Include="Serilog" Version="2.12.0-dev-01543" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10301" />
+		<PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
+	</ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Shared\Modules\BlazorBoilerplate.Theme.Root\BlazorBoilerplate.Theme.Root.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Resources\Texts.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Texts.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\Texts.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Texts.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <MauiXaml Update="LoadingPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </MauiXaml>
+    </ItemGroup>
 </Project>

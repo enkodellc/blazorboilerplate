@@ -91,12 +91,12 @@
                             {
                                 case "Google":
                                 case "Facebook":
-                                    <MudButton Class="signInWithButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SignInWith(provider))"><img height="18" src="/images/@(provider.AuthenticationScheme.ToLower()).svg" /></MudButton>
+                                    <MudButton Class="signInWithButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SignInWith(provider))"><img height="18" src="_content/BlazorBoilerplate.Theme.MudBlazor/images/@(provider.AuthenticationScheme.ToLower()).svg" /></MudButton>
                                     break;
                                 case "Twitter":
                                 case "Microsoft":
                                 case "Apple":
-                                    <MudButton Class="signInWithButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SignInWith(provider))"><img height="18" src="/images/@(provider.AuthenticationScheme.ToLower()).svg" />&nbsp;@provider.DisplayName</MudButton>
+                                    <MudButton Class="signInWithButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SignInWith(provider))"><img height="18" src="_content/BlazorBoilerplate.Theme.MudBlazor/images/@(provider.AuthenticationScheme.ToLower()).svg" />&nbsp;@provider.DisplayName</MudButton>
                                     break;
                                 default:
                                     <MudButton Class="signInWithButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SignInWith(provider))">@provider.DisplayName</MudButton>

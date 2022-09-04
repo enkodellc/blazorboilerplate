@@ -1,6 +1,7 @@
 ﻿@inject NavigationManager navigationManager
 @inject IJSRuntime js
 @inject AppState appState
+@inject HttpClient httpClient
 
 <MudSelect Class="selectCulture" Value="CurrentCulture" ValueChanged="(string i) => OnCultureChanged(i)" AdornmentIcon="@Icons.Material.Filled.Public">
     @foreach (var item in BlazorBoilerplate.Shared.Localizer.Settings.SupportedCulturesWithName)
@@ -24,7 +25,7 @@
 
     public async void OnCultureChanged(string culture)
     {
-        var uri = new Uri(navigationManager.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+        //var uri = new Uri(navigationManager.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
 
         if ((await authenticationStateTask).User.Identity.IsAuthenticated)
         {
@@ -35,6 +36,14 @@
             await appState.UpdateUserProfile();
         }
 
-        navigationManager.NavigateTo($"/Culture/SetCulture?culture={Uri.EscapeDataString(culture)}&redirectUri={Uri.EscapeDataString(uri)}", forceLoad: true);
+        if (AppState.Runtime == BlazorRuntime.Server)
+            navigationManager.NavigateTo($"{httpClient.BaseAddress}Culture/SetCulture?culture={Uri.EscapeDataString(culture)}&redirectUri={Uri.EscapeDataString(navigationManager.Uri)}", forceLoad: true);
+        else
+        {
+            await js.SetAspNetCoreCultureCookie(culture);
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(culture);
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
+            navigationManager.NavigateTo(navigationManager.Uri, true);
+        }
     }
 }

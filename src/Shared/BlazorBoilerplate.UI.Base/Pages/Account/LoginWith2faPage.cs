@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Shared.Dto;
+﻿using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
@@ -40,7 +41,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
 
         protected override async Task OnParametersSetAsync()
         {
-            if (navigationManager.IsWebAssembly())
+            if (AppState.Runtime == BlazorRuntime.WebAssembly)
             {
                 var user = (await authenticationStateTask).User;
 
@@ -83,7 +84,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
         {
             if (response.IsSuccessStatusCode)
             {
-                if (navigationManager.IsWebAssembly())
+                if (AppState.Runtime == BlazorRuntime.WebAssembly)
                 {
                     if (string.IsNullOrEmpty(ReturnUrl))
                     {

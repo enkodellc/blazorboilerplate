@@ -3,6 +3,8 @@
 @attribute [Authorize(Policies.IsAdmin)]
 @layout AdminLayout
 
+@inject HttpClient httpClient
+
 @using Blazored.TextEditor
 
 <PageTitle>@L["Translations"]</PageTitle>
@@ -27,7 +29,7 @@ else
             <MudButton StartIcon="@Icons.Filled.Add" OnClick="@OpenNewKeyDialogOpen" Variant="Variant.Filled" Color="Color.Primary" Class="ma-2">@L["NewTranslation"]</MudButton>
             <MudButton OnClick="@SaveChanges" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
             <MudButton OnClick="@ReloadTranslations" Class="ma-2">@L["ReloadTranslations"]</MudButton>
-            <MudButton OnClick="@(e => { navigationManager.NavigateTo("/api/localization/export", true); })" Class="ma-2">@L["Export"]</MudButton>
+            <MudButton OnClick="@(e => { navigationManager.NavigateTo($"{httpClient.BaseAddress}/api/localization/export", true); })" Class="ma-2">@L["Export"]</MudButton>
             <InputFile id="fileInput" OnChange="UploadFiles" hidden multiple accept=".po" />
             <MudButton HtmlTag="label"
                        StartIcon="@Icons.Filled.CloudUpload"

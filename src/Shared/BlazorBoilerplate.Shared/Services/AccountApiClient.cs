@@ -36,7 +36,7 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto<LoginResponseModel>>("api/Account/Login", parameters);
 
-            if (!_navigationManager.IsWebAssembly())
+            if (AppState.Runtime == BlazorRuntime.Server)
                 if (response.IsSuccessStatusCode)
                     await SubmitServerForm("/server/login/", parameters);
 
@@ -47,7 +47,7 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/LoginWith2fa", parameters);
 
-            if (!_navigationManager.IsWebAssembly())
+            if (AppState.Runtime == BlazorRuntime.Server)
                 if (response.IsSuccessStatusCode)
                     await SubmitServerForm("/server/loginwith2fa/", parameters);
 
@@ -57,7 +57,7 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/LoginWithRecoveryCode", parameters);
 
-            if (!_navigationManager.IsWebAssembly())
+            if (AppState.Runtime == BlazorRuntime.Server)
                 if (response.IsSuccessStatusCode)
                     await SubmitServerForm("/server/loginwith2fa/", parameters);
 
@@ -72,10 +72,10 @@ namespace BlazorBoilerplate.Shared.Services
             {
                 var logoutModel = new AccountFormModel() { ReturnUrl = returnUrl };
 
-                if (_navigationManager.IsWebAssembly())
+                if (AppState.Runtime == BlazorRuntime.WebAssembly)
                 {
                     if (!string.IsNullOrEmpty(logoutModel.ReturnUrl))
-                        _navigationManager.NavigateTo(logoutModel.ReturnUrl);
+                        _navigationManager.NavigateTo(logoutModel.ReturnUrl, true);
                 }
                 else
                     await SubmitServerForm("/server/logout/", logoutModel);
@@ -130,7 +130,7 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/ForgetTwoFactorClient", null);
 
-            if (!_navigationManager.IsWebAssembly())
+            if (AppState.Runtime == BlazorRuntime.Server)
                 if (response.IsSuccessStatusCode)
                     await SubmitServerForm("/server/ForgetTwoFactorClient/", new AccountFormModel());
 

@@ -1,13 +1,18 @@
-﻿@using BlazorBoilerplate.Theme.Material.Shared.Components
+﻿@using BlazorBoilerplate.Shared.Extensions
+@using BlazorBoilerplate.Theme.Material.Shared.Components
 @using BlazorBoilerplate.Theme.Material.Shared.Layouts
 @using BlazorBoilerplate.UI.Base.Shared.Components
+@using BlazorBoilerplate.Shared.Services
 @using BlazorBoilerplate.Shared.Localizer
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Routing
 @using System.Reflection
 @using Microsoft.Extensions.Localization
+@using Microsoft.JSInterop
 @using MudBlazor
-@inject NavigationManager navigationManager
+@using System.Runtime.InteropServices
+@using System.Globalization
+@inject IJSRuntime js
 @inject IStringLocalizer<Global> L
 
 
@@ -59,4 +64,43 @@
                 typeof(Theme.Material.Main.Pages.Index).Assembly,
                 typeof(Theme.Material.Admin.Pages.Admin.Index).Assembly
             };
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AppState.Runtime == Shared.BlazorRuntime.Server)
+        {
+            mudTheme = new MudTheme()
+                {
+                    Palette = new Palette()
+                    {
+                        Primary = "#c62828",
+                        AppbarBackground = "#c62828",
+                    }
+                };
+        }
+        else if (!RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
+        {
+            //Maui
+
+            mudTheme = new MudTheme()
+                {
+                    Palette = new Palette()
+                    {
+                        Primary = "#2e7d32",
+                        AppbarBackground = "#2e7d32",
+                    }
+                };
+
+            var cookieCulture = await js.GetAspNetCoreCultureCookie();
+
+            if (!string.IsNullOrWhiteSpace(cookieCulture))
+            {
+                CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(cookieCulture);
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
+            } else
+            {
+                await js.SetAspNetCoreCultureCookie(Thread.CurrentThread.CurrentUICulture.Name);
+            }
+        }
+    }
 }

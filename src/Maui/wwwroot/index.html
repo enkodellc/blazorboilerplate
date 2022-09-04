@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-	<title>BlazorBoilerplateMaui</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+	<title>BlazorBoilerplate</title>
 	<base href="/" />
-	<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+	<link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet">
+	<link href="_content/BlazorBoilerplate.Theme.MudBlazor/css/site.css" rel="stylesheet">
+	<link href="_content/BlazorBoilerplate.Theme.MudBlazor/BlazorBoilerplate.Theme.MudBlazor.bundle.scp.css" rel="stylesheet">
+	<link href="_content/BlazorBoilerplate.Theme.MudBlazor.Main/css/site.css" rel="stylesheet">
+	<link href="_content/IntlTelInputBlazor/css/intlTelInput.css" rel="stylesheet">
+	<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+	<link href="https://cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+
+
 	<link href="css/app.css" rel="stylesheet" />
-	<link href="BlazorBoilerplateMaui.styles.css" rel="stylesheet" />
 </head>
 
 <body>
 
 	<div class="status-bar-safe-area"></div>
 
-	<div id="app">Loading...</div>
+	<div id="app">
+		<div class="triangle-container" style="background-color: #2e7d32">
+			<div class="triangles">
+			</div>
+		</div>
+		<div style="position:absolute; top:30vh; width:100%; text-align:center; color: white">
+			<h1>Blazor Boilerplate...</h1>
+			<div style="display:flex; gap:10px; justify-content:center; align-items:center">
+				<img src="_content/BlazorBoilerplate.Theme.MudBlazor/images/logo.svg" alt="Loading" title="Loading BlazorBoilerplate" />
+			</div>
+		</div>
+	</div>
 
 	<div id="blazor-error-ui">
 		An unhandled error has occurred.
@@ -22,8 +40,20 @@
 		<a class="dismiss">🗙</a>
 	</div>
 
-	<script src="_framework/blazor.webview.js" autostart="false"></script>
+	<script src="_content/BlazorBoilerplate.Theme.MudBlazor/js/interop.js"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCF0emevacMGNnyjCxldlboBx9-QK0ZD7k&v=3&libraries=places"></script>
+	<script src="_content/BlazorGoogleMaps/js/objectManager.js"></script>
+	<script src="https://unpkg.com/@googlemaps/markerclustererplus/dist/index.min.js"></script>
 
+	<script src="_content/IntlTelInputBlazor/js/intlTelInput.js"></script>
+
+	<script src="_content/MudBlazor/MudBlazor.min.js"></script>
+
+	<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+	<script src="_content/Blazored.TextEditor/quill-blot-formatter.min.js"></script>
+	<script src="_content/Blazored.TextEditor/Blazored-BlazorQuill.js"></script>
+
+	<script src="_framework/blazor.webview.js" autostart="false"></script>
 </body>
 
 </html>

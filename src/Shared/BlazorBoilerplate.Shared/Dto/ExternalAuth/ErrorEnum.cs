@@ -3,6 +3,7 @@
     public enum ErrorEnum
     {
         Unknown = -99,
+        UserWithSameEmailAlreadyExists = -2,
         UserCreationFailed = -1,
         UserIsNotAllowed = 0,
         UserLockedOut = 1,

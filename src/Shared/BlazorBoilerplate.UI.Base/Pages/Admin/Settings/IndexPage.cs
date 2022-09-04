@@ -1,4 +1,4 @@
-﻿using BlazorBoilerplate.Shared.Dto.Db;
+﻿using BlazorBoilerplate.Shared;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin.Settings
 {
