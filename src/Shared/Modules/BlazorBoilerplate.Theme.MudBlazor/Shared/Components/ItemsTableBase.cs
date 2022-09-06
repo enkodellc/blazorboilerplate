@@ -10,17 +10,17 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
     public class ItemsTableBase<T> : BaseComponent
     {
         protected List<T> items;
+        protected HashSet<T> selected = new(); 
         protected int pageSize;
         protected int pageIndex;
         protected int totalItemsCount;
-
         protected bool isBusy = true;
-
         protected string filter;
         protected QueryParameters queryParameters;
         protected string orderByDefaultField;
         protected string orderBy;
         protected string orderByDescending;
+        protected bool waitingForFilter = false;
 
         protected async Task OnPage(int index, int size)
         {
@@ -72,6 +72,12 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
 
         protected async Task<TableData<T>> ServerReload(TableState state)
         {
+            if (waitingForFilter) //use if you want to wait till your filter is loaded before filling the data
+            {
+                waitingForFilter = false;
+                return new TableData<T>() { TotalItems = 0, Items = new List<T>() };
+            }
+            
             switch (state.SortDirection)
             {
                 case SortDirection.Ascending:

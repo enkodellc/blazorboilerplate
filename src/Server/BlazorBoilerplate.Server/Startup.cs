@@ -522,7 +522,10 @@ namespace BlazorBoilerplate.Server
                 {
                     return factory.Create(typeof(Global));
                 };
-            }).AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LocalizationRecordValidator>());
+            });  
+            //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LocalizationRecordValidator>());
+
+            services.AddFluentValidationAutoValidation();
 
             services.AddServerSideBlazor().AddCircuitOptions(o =>
             {
