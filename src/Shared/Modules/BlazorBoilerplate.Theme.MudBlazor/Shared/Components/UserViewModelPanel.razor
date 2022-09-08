@@ -24,7 +24,7 @@
             }
             <MudTextField @bind-Value="@Model.Email" Label="Email" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
             <MudTextField @bind-Value="@Model.FirstName" Label=@L["FirstName"] FullWidth="true"></MudTextField>
-            <MudTextField @bind-Value="@Model.LastName" Label=@L["LastName"] FullWidth="true"></MudTextField>           
+            <MudTextField @bind-Value="@Model.LastName" Label=@L["LastName"] FullWidth="true"></MudTextField>
             @if (Model.UserId == null)
             {
                 <MudTextField @bind-Value="@Model.Password" autocomplete="new-password" Label=@L["Password"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
@@ -191,7 +191,7 @@
             <MudCardContent>
                 <FluentValidationValidator />
                 <MudValidationSummary />
-                @L["EnableAuthenticatorInstructions", Model.SharedKey, $"https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={Model.AuthenticatorUri}"].ToMarkup()
+                @L["EnableAuthenticatorInstructions", Model.SharedKey, $"https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={Model.AuthenticatorUri}", Model.AuthenticatorUri].ToMarkup()
                 <MudTextField @bind-Value="@authenticatorVerificationCodeViewModel.Code" Label=@L["Code"] FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
             </MudCardContent>
             <MudCardActions>
