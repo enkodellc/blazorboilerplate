@@ -1034,3 +1034,17 @@ msgstr ""
 msgctxt "Global"
 msgid "You are not authorized to access this page"
 msgstr "Accesso non autorizzato"
+
+msgctxt "Global"
+msgid "CreatedBy"
+msgstr "Creato da"
+
+msgctxt "Global"
+msgid "EnableTwoFactorAuthentication"
+msgstr ""
+"Si prega di abilitare l'autenticazione a due fattori nel proprio profilo "
+"utente."
+
+msgctxt "Global"
+msgid "AppNavHome"
+msgstr "Home"

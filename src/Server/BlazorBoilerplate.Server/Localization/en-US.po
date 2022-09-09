@@ -1182,3 +1182,11 @@ msgstr ""
 msgctxt "Global"
 msgid "You are not authorized to access this page"
 msgstr "You are not authorized to access this page"
+
+msgctxt "Global"
+msgid "CreatedBy"
+msgstr "Created by"
+
+msgctxt "Global"
+msgid "EnableTwoFactorAuthentication"
+msgstr "Please enable two factor authentication in your user profile."
