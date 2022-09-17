@@ -29,6 +29,8 @@ namespace BlazorBoilerplate.Storage
             TenantNotSetMode = TenantNotSetMode.Overwrite;
             TenantMismatchMode = TenantMismatchMode.Overwrite;
             UserSession = userSession;
+
+            Database.ExecuteSqlRaw("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
