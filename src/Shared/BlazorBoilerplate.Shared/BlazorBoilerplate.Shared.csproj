@@ -19,7 +19,8 @@
     <PackageReference Include="SourceGenerators.AutoNotify" Version="1.2.3" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+	<PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.1" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />	  
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Utils\BlazorBoilerplate.SourceGenerator\BlazorBoilerplate.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
