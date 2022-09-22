@@ -44,10 +44,12 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using MudBlazor.Services;
+using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Serialization;
 using NSwag;
 using NSwag.AspNetCore;
@@ -507,19 +509,22 @@ namespace BlazorBoilerplate.Server
             });
             #endregion
 
-            services.AddMvc().AddNewtonsoftJson(opt =>
-            {
-                // Set Breeze defaults for entity serialization
-                var ss = JsonSerializationFns.UpdateWithDefaults(opt.SerializerSettings);
-                if (ss.ContractResolver is DefaultContractResolver resolver)
+            var validator = new SuppressChildValidationMetadataProvider(typeof(Point));
+
+            services.AddMvc(options => options.ModelMetadataDetailsProviders.Add(validator))
+                .AddNewtonsoftJson(opt =>
                 {
-                    resolver.NamingStrategy = null;  // remove json camelCasing; names are converted on the client.
-                }
-                if (_environment.IsDevelopment())
-                {
-                    ss.Formatting = Newtonsoft.Json.Formatting.Indented; // format JSON for debugging
-                }
-            })   // Add Breeze exception filter to send errors back to the client
+                    // Set Breeze defaults for entity serialization
+                    var ss = JsonSerializationFns.UpdateWithDefaults(opt.SerializerSettings);
+                    if (ss.ContractResolver is DefaultContractResolver resolver)
+                    {
+                        resolver.NamingStrategy = null;  // remove json camelCasing; names are converted on the client.
+                    }
+                    if (_environment.IsDevelopment())
+                    {
+                        ss.Formatting = Newtonsoft.Json.Formatting.Indented; // format JSON for debugging
+                    }
+                })   // Add Breeze exception filter to send errors back to the client
             .AddMvcOptions(o => { o.Filters.Add(new GlobalExceptionFilter()); })
             .AddViewLocalization().AddDataAnnotationsLocalization(options =>
             {
