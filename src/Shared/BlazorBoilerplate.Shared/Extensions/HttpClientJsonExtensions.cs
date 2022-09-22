@@ -11,7 +11,7 @@ namespace BlazorBoilerplate.Shared.Extensions
         public static async Task<T> GetNewtonsoftJsonAsync<T>(this HttpClient httpClient, string requestUri)
         {
             var stringContent = await httpClient.GetStringAsync(requestUri);
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(stringContent);
+            return JsonConvert.DeserializeObject<T>(stringContent);
         }
 
         public static async Task<T> PostNewtonsoftJsonAsync<T>(this HttpClient httpClient, string requestUri, object content)
@@ -23,9 +23,10 @@ namespace BlazorBoilerplate.Shared.Extensions
                 Content = new StringContent(json, Encoding.UTF8, "application/json")
             });
 
-            response.EnsureSuccessStatusCode();
-
             var stringContent = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                throw new HttpRequestException(stringContent, null, response.StatusCode);
 
             return JsonConvert.DeserializeObject<T>(stringContent);
         }
