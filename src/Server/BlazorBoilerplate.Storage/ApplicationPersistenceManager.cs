@@ -38,16 +38,21 @@ namespace BlazorBoilerplate.Storage
 
             if (userProfile == null)
             {
-                userProfile = new UserProfile
-                {
-                    TenantId = httpContextAccessor.HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo.Id,
-                    UserId = new Guid(user.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value),
-                    LastUpdatedDate = DateTime.Now
-                };
+                var tenantId = httpContextAccessor.HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo.Id;
+                var userId = new Guid(user.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value);
 
-                await Context.UserProfiles.Upsert(userProfile).On(u => new { u.TenantId, u.UserId }).RunAsync();
-                //see https://github.com/artiomchi/FlexLabs.Upsert/issues/29
-                userProfile = await Context.UserProfiles.SingleAsync(i => i.UserId == userProfile.UserId);
+                userProfile = await Context.UserProfiles.SingleOrDefaultAsync(i => i.TenantId == tenantId && i.UserId == userId);
+
+                if (userProfile == null)
+                {
+                    userProfile = new UserProfile { TenantId = tenantId, UserId = userId };
+
+                    Context.UserProfiles.Add(userProfile);
+                }
+
+                userProfile.LastUpdatedDate = DateTime.Now;
+
+                await Context.SaveChangesAsync();
             }
 
             return userProfile;
