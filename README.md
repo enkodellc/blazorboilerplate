@@ -4,7 +4,7 @@ Blazor is a web framework designed to run in the browser on a WebAssembly-based 
 
 ## Repository Notes
 - Read the news below to stay up to date on the repo. We will try to keep the latest major changes on a different branch and have the more stable / tested version on the master branch.
-- There several people who use this as a base for a production app. If you do so please donate. Gio and Enkode have thousands of hours of coding and support into BB. Show your support by contributing or donating.
+- There are several people who use this as a base for a production app. If you do so please donate. Gio and Enkode have thousands of hours of coding and support into BB. Show your support by contributing or donating.
 - The main roadblock after the project is running is learning Breeze for Entity Framework. We have some examples and will put out a few more. 
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
