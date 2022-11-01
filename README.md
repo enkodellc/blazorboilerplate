@@ -4,6 +4,8 @@ Blazor is a web framework designed to run in the browser on a WebAssembly-based 
 
 ## Repository Notes
 - Read the news below to stay up to date on the repo. We will try to keep the latest major changes on a different branch and have the more stable / tested version on the master branch.
+- There several people who use this as a base for a production app. If you do so please donate. Gio and Enkode have thousands of hours of coding and support into BB. Show your support by contributing or donating.
+- The main roadblock after the project is running is learning Breeze for Entity Framework. We have some examples and will put out a few more. 
 
 [![Build Status](https://enkodellc.visualstudio.com/blazorboilerplate/_apis/build/status/enkodellc.blazorboilerplate?branchName=master)](https://enkodellc.visualstudio.com/blazorboilerplate/_build/latest?definitionId=1&branchName=master)
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://blazorboilerplate.com)
@@ -31,7 +33,7 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 Complete all Blazor dependencies.
 
 - The latest [.Net 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-- Install the Latest Visual Studio 2022 with the ASP.NET and web development workload selected. Ver. 3.1.0 is .net & Visual Studio 2019
+- Install the Latest Visual Studio 2022 with the ASP.NET and web development workload selected.
 - Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef**
 
 ### How to run
@@ -102,11 +104,10 @@ I have taken small solutions from other repositories and will do my best to reco
 This project is licensed under the terms of the [MIT license](LICENSE).
 
 ### Problem Solving Tips
-- If you are having issues wih authentication or any other strange behavior try using Incognito mode / different browser. 
+- If you get compile errors after updating your EF Models, delete the obj and bin folders from your project and then rebuild. 
+- If you are having issues with authentication or any other strange behavior try using Incognito mode / different browser. 
 - Make sure you have all pre-requisites installed.
 - Keep It Simple Stupid: If you are running into issues with SQL / connection string. First CHECK both appsettings.json (appsettings.production.json for production) and (appsettings.development.json for development). 
-- Test out with SQLlite / file db. Then test out with a known good connection string.
-- Go back to the Origin: BlazorBoilerplate was built off of [BlazorWithIdentity](https://github.com/stavroskasidis/BlazorWithIdentity) so first step is to run this and try and publish. The reasoning is that this is a very lean project to reduce the amount of code and resources requiring debugging.
 - If still failing get on [Gitter BlazorBoilerplate](https://gitter.im/blazorboilerplate/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
  for Blazor Boilerplate or  [Gitter aspnet/Blazor](https://gitter.im/aspnet/Blazor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
 - Debugging is very limited on WebAssembly / Client-side Blazor. Use Debug_SSB for debugging the UI. Just be aware of browser caching issues when switching modes.
