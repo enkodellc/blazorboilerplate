@@ -61,6 +61,8 @@ namespace BlazorBoilerplate.Storage
             await EnsureAdminIdentities();
 
             await SeedIdentityServer();
+
+            _context.Database.ExecuteSqlRaw("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;");
         }
 
         private async Task Migrate()
