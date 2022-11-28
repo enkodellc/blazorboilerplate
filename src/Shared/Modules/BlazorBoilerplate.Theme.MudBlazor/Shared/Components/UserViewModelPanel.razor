@@ -104,24 +104,7 @@
             <MudTextField @bind-Value="@Model.CompanyZipCode" Label=@L["ZipCode"] FullWidth="true" ReadOnly="true"></MudTextField>
             <MudTextField Value="@(Global.GetCountryName(Model.CompanyCountryCode))" Label=@L["Country"] FullWidth="true" ReadOnly="true"></MudTextField>
             <MudTextField @bind-Value="@Model.CompanyVatIn" Label=@L["VatIn"] FullWidth="true"></MudTextField>
-            @*
-            <MudTextField InputType="InputType.Telephone" @bind-Value="@Model.CompanyPhoneNumber" Label=@L["PhoneNumber"] AdornmentIcon="@Icons.Material.Filled.Phone" Adornment="Adornment.End" FullWidth="true"></MudTextField>
-            *@
-            <div class="mud-input-control mud-input-control-full-width mud-input-input-control">
-                <div class="mud-input-control-input-container">
-                    <div class="mud-input-iti mud-input mud-input-text mud-input-adorned-end mud-input-underline mud-ltr">
-                        <IntlTelInput id="CompanyIntTelNumber" @bind-Value="@Model.CompanyIntTelNumber" PreferredCountries="@(new[] {"it", "ch", "fr", "de"})" />
-                        <div class="mud-input-slot mud-input-root mud-input-root-text mud-input-root-adorned-end" style="display:none" tabindex="-1"></div>
-                        <div class="mud-input-adornment mud-input-adornment-end">
-                            <svg aria-label="Icon" tabindex="-1" class="mud-icon-root mud-icon-default mud-svg-icon mud-icon-size-medium" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <label class="mud-input-label mud-input-label-animated mud-input-label-text mud-input-label-inputcontrol" for="CompanyIntTelNumber">@L["PhoneNumber"]</label>
-                </div>
-            </div>
+            <MudIntlTelInput @bind-Value="@Model.CompanyIntTelNumber" Label=@L["PhoneNumber"] PreferredCountries="@(new[] {"it", "ch", "fr", "de"})" />
             <MudValidationSummary />
         </MudCardContent>
         <MudCardActions>
