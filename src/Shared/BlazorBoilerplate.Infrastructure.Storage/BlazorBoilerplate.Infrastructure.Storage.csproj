@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Finbuckle.MultiTenant" Version="6.9.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.12" />
 	<PackageReference Include="NetTopologySuite" Version="2.5.0" />
   </ItemGroup>
 
