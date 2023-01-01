@@ -76,4 +76,9 @@
         <Generator>MSBuild:Compile</Generator>
       </MauiXaml>
     </ItemGroup>
+
+	<PropertyGroup>
+		<EnableAssemblyILStripping>false</EnableAssemblyILStripping>
+		<UseInterpreter Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">true</UseInterpreter>
+	</PropertyGroup>
 </Project>
