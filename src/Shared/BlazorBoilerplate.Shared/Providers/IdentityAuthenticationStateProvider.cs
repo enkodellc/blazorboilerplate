@@ -125,12 +125,18 @@ namespace BlazorBoilerplate.Shared.Providers
         {
             var identity = new ClaimsIdentity();
 
-            var userViewModel = await GetUserViewModel();
-
-            if (userViewModel.IsAuthenticated)
+            try
             {
-                var claims = new[] { new Claim(ClaimTypes.Name, userViewModel.UserName) }.Concat(userViewModel.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
-                identity = new ClaimsIdentity(claims, "Server authentication", "name", "role");
+                var userViewModel = await GetUserViewModel();
+
+                if (userViewModel.IsAuthenticated)
+                {
+                    var claims = new[] { new Claim(ClaimTypes.Name, userViewModel.UserName) }.Concat(userViewModel.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
+                    identity = new ClaimsIdentity(claims, "Server authentication", "name", "role");
+                }
+            }
+            catch (Exception)
+            {
             }
 
             return new AuthenticationState(new ClaimsPrincipal(identity));

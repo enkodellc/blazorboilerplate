@@ -44,22 +44,29 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
             {
                 identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
 
-                var apiResponse = await identityAuthenticationStateProvider.BuildLoginViewModel(ReturnUrl);
-
-                if (apiResponse.IsSuccessStatusCode)
+                try
                 {
-                    loginViewModel = apiResponse.Result;
+                    var apiResponse = await identityAuthenticationStateProvider.BuildLoginViewModel(ReturnUrl);
 
-                    if (loginViewModel.IsExternalLoginOnly)
+                    if (apiResponse.IsSuccessStatusCode)
                     {
-                        if (!string.IsNullOrEmpty(ReturnUrl))
-                            ReturnUrl = Uri.EscapeDataString(ReturnUrl);
-                        // we only have one option for logging in and it's an external provider
-                        navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
+                        loginViewModel = apiResponse.Result;
+
+                        if (loginViewModel.IsExternalLoginOnly)
+                        {
+                            if (!string.IsNullOrEmpty(ReturnUrl))
+                                ReturnUrl = Uri.EscapeDataString(ReturnUrl);
+                            // we only have one option for logging in and it's an external provider
+                            navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
+                        }
                     }
+                    else
+                        viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["LoginFailed"]);
                 }
-                else
-                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["LoginFailed"]);
+                catch (Exception ex)
+                {
+                    viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["LoginFailed"]);
+                }
             }
         }
 
