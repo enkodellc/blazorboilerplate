@@ -7,23 +7,25 @@ namespace BlazorBoilerplateMaui;
 
 public partial class LoadingPage : ContentPage
 {
-	public LoadingPage(
-        ILocalizationApiClient localizationApiClient,
+    public LoadingPage(
         ILocalizationProvider localizationProvider,
         ILogger<App> logger)
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
 
         Task.Run(async () =>
         {
             try
             {
-                var localizationRecordsTask = localizationApiClient.GetLocalizationRecords();
+                var streams = new Dictionary<string, Stream>();
 
-                var pluralFormRulesTask = localizationApiClient.GetPluralFormRules();
-                await Task.WhenAll(new Task[] { localizationRecordsTask, pluralFormRulesTask });
+                var stream = await FileSystem.OpenAppPackageFileAsync("Resources\\Raw\\en-US.po");
+                streams.Add("en-US", stream);
 
-                localizationProvider.Init(localizationRecordsTask.Result, pluralFormRulesTask.Result);
+                stream = await FileSystem.OpenAppPackageFileAsync("Resources\\Raw\\it-IT.po");
+                streams.Add("it-IT", stream);
+
+                localizationProvider.Init(streams);
 
                 Application.Current.Dispatcher.Dispatch(() =>
                 {
@@ -39,7 +41,7 @@ public partial class LoadingPage : ContentPage
                     Message.Text = Texts.ConnectionFailed;
 
                     Indicator.IsRunning = false;
-                });                
+                });
             }
         });
     }

@@ -55,6 +55,11 @@
 		<PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiAsset Include="..\Server\BlazorBoilerplate.Server\Localization\en-US.po" Link="Resources\Raw\en-US.po" />
+	  <MauiAsset Include="..\Server\BlazorBoilerplate.Server\Localization\it-IT.po" Link="Resources\Raw\it-IT.po" />
+	</ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Shared\Modules\BlazorBoilerplate.Theme.Root\BlazorBoilerplate.Theme.Root.csproj" />
     </ItemGroup>
