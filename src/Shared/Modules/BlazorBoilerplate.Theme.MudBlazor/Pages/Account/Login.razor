@@ -38,7 +38,9 @@
                             <MudTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
 
                             @if (loginViewModel.AllowRememberLogin)
-                            {<MudCheckBox @bind-Checked="@loginViewModel.RememberMe" Class="ml-n2">@L["Keep me logged in"]</MudCheckBox>}
+                            {
+                                <MudCheckBox @bind-Checked="@loginViewModel.RememberMe" Class="ml-n2">@L["Keep me logged in"]</MudCheckBox>
+                            }
                         </MudCardContent>
                         <MudCardActions>
                             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@L["Login"]</MudButton>
@@ -104,13 +106,16 @@
                             }
                         }
                     </MudCardContent>
-                </MudCard>}
+                </MudCard>
+            }
             @if (!loginViewModel.EnableLocalLogin && !loginViewModel.VisibleExternalProviders.Any())
             {
-                <MudAlert Severity="Severity.Warning">
-                    <strong>Invalid login request</strong>
-                    There are no login schemes configured for this client.
-                </MudAlert>
+                <MudCard Elevation="2" Class="pa-4" Style="text-align: center">
+                    <MudAlert Severity="Severity.Warning" Class="ma-4">
+                        <strong>@L["Connection failed"]</strong>
+                    </MudAlert>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => navigationManager.NavigateTo(navigationManager.Uri, true))">@L["Reload"]</MudButton>
+                </MudCard>
             }
         }
     </NotAuthorized>

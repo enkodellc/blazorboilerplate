@@ -1048,3 +1048,11 @@ msgstr ""
 msgctxt "Global"
 msgid "AppNavHome"
 msgstr "Home"
+
+msgctxt "Global"
+msgid "Reload"
+msgstr "Ricarica"
+
+msgctxt "Global"
+msgid "Connection failed"
+msgstr "Connessione fallita"

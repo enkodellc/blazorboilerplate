@@ -13,7 +13,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
 {
     public class LoginPage : ComponentBase
     {
-        [Inject] NavigationManager navigationManager { get; set; }
+        [Inject] protected NavigationManager navigationManager { get; set; }
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
         [Inject] protected AppState appState { get; set; }
         [Inject] protected HttpClient httpClient { get; set; }
@@ -65,6 +65,8 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
                 }
                 catch (Exception ex)
                 {
+                    loginViewModel = new LoginViewModel { EnableLocalLogin = false };
+
                     viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["LoginFailed"]);
                 }
             }
@@ -97,7 +99,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
                         if (response.Result?.RequiresTwoFactor == true)
                         {
                             var par = string.IsNullOrEmpty(ReturnUrl) ? string.Empty : $"?returnurl={Uri.EscapeDataString(ReturnUrl)}";
-                            navigationManager.NavigateTo($"{BlazorBoilerplate.Constants.Settings.LoginWith2faPath}{par}", true);
+                            navigationManager.NavigateTo($"{Constants.Settings.LoginWith2faPath}{par}", true);
                         }
                         else
                         {

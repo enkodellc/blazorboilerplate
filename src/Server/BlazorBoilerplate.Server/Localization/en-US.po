@@ -1189,3 +1189,11 @@ msgstr "Created by"
 msgctxt "Global"
 msgid "EnableTwoFactorAuthentication"
 msgstr "Please enable two factor authentication in your user profile."
+
+msgctxt "Global"
+msgid "Reload"
+msgstr "Reload"
+
+msgctxt "Global"
+msgid "Connection failed"
+msgstr "Connection failed"
