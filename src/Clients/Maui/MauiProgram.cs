@@ -5,6 +5,7 @@ using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
 using BlazorBoilerplate.Theme.Material.Main.Shared.Components;
 using BlazorBoilerplate.Theme.Material.Services;
+using IdentityModel;
 using IdentityModel.OidcClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -32,7 +33,7 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
-        string baseAddress = "http://localhost:53414";
+        string baseAddress = "https://openid.quarella.net";
 
         builder.Services.AddBlazorWebViewDeveloperTools();
 
@@ -103,8 +104,9 @@ public static class MauiProgram
         {
             Authority = baseAddress,
 
-            ClientId = "interactive.public",
-            Scope = "openid profile LocalApi",
+            ClientId = "myapp",
+            ClientSecret= "secret",
+            Scope = "openid profile LocalAPI",
             RedirectUri = "myapp://callback",
 
             Browser = new MauiAuthenticationBrowser()

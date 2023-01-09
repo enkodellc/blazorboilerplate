@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 
 namespace BlazorBoilerplateMaui.Platforms.Android
