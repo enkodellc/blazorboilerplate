@@ -3,12 +3,12 @@
 @inject IStringLocalizer<Global> L
 @implements IDynamicComponent
 
-<MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">
+<MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
     @L["AppNavHome"]
 </MudNavLink>
 
 <AuthorizeView Policy=@Policies.For(UserFeatures.Operator)>
-    <MudNavLink Href="@navigationManager.ToAbsoluteUri("/users").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.People">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("/users").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People">
         @L["Users"]
     </MudNavLink>
 </AuthorizeView>

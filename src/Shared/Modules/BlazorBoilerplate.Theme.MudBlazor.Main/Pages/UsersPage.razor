@@ -6,13 +6,13 @@
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudItem xs="10" sm="4" Class="d-flex align-center justify-center mud-width-full">
-        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder=@L["Search"] Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder=@L["Search"] Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" />
     </MudItem>
 </MudContainer>
 
 <div class="d-flex flex-wrap mb-4 mx-4">
     <MudFab Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Link="/user/add" Size="Size.Medium" Class="ma-2" aria-label="add" />
-    <MudFab Icon="@Icons.Filled.Refresh" OnClick="@Reload" Size="Size.Medium" Class="ma-2" />
+    <MudFab Icon="@Icons.Material.Filled.Refresh" OnClick="@Reload" Size="Size.Medium" Class="ma-2" />
 </div>
 
 <MudTable ServerData="@(new Func<TableState, Task<TableData<Person>>>(ServerReload))" Striped="true" Bordered="true" Hover="true" Class="rounded-0" Elevation="0"

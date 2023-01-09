@@ -26,7 +26,7 @@ else
         </HeaderContent>
         <RowTemplate Context="row">
             <MudTd>
-                <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDelete(row))"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDelete(row))"></MudIconButton>
             </MudTd>
             <MudTd>@row.Language</MudTd>
             <MudTd><MudTextField @bind-Value="@row.Count" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField></MudTd>

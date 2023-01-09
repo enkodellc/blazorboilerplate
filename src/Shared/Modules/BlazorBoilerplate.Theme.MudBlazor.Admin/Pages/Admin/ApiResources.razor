@@ -23,7 +23,7 @@ else
 {
     <MudTable Items="@apiResources" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
         <HeaderContent>
-            <MudTh><MudButton StartIcon="@Icons.Filled.Add" OnClick="@(() => OpenUpsertApiResourceDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New API Resource"]</MudButton></MudTh>
+            <MudTh><MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertApiResourceDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New API Resource"]</MudButton></MudTh>
             <MudTh>@L["Name"]</MudTh>
             <MudTh>Enabled</MudTh>
             <MudTh>Display Name</MudTh>
@@ -34,8 +34,8 @@ else
         <RowTemplate Context="ApiResourceRow">
             <MudTd>
                 <div style="width:155px;">
-                    <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenUpsertApiResourceDialog(ApiResourceRow))"></MudIconButton>
-                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteApiResourceDialog(ApiResourceRow))"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => OpenUpsertApiResourceDialog(ApiResourceRow))"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteApiResourceDialog(ApiResourceRow))"></MudIconButton>
                 </div>
             </MudTd>
             <MudTd><div style="min-width:130px;">@ApiResourceRow.Name</div></MudTd>
@@ -76,13 +76,13 @@ else
                 <MudValidationSummary />
                 <MudTabs Elevation="4" Rounded="true" Color="@Color.Info">
                     <MudTabPanel Text="Main">
-                        <MudTextField @bind-Value="@currentApiResource.Name" Disabled="@isCurrentApiContextIdReadOnly" Label="Id" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+                        <MudTextField @bind-Value="@currentApiResource.Name" Disabled="@isCurrentApiContextIdReadOnly" Label="Id" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                         <MudSwitch @bind-Checked="@currentApiResource.Enabled" Label="Enabled" Color="Color.Primary" />
 
-                        <MudTextField @bind-Value="@currentApiResource.DisplayName" Label="Display Name" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+                        <MudTextField @bind-Value="@currentApiResource.DisplayName" Label="Display Name" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
 
-                        <MudTextField @bind-Value="@currentApiResource.Description" Label="Description" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+                        <MudTextField @bind-Value="@currentApiResource.Description" Label="Description" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
 
                         <MudTextField @bind-Value="@currentApiResource.ScopesText" Label="API Scopes" Lines="5" FullWidth="true" Required="false"></MudTextField>
 
@@ -104,13 +104,13 @@ else
                     <MudTabPanel Text="Secrets">
                         <MudTable Items="@currentApiResource.ApiSecrets" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
                             <HeaderContent>
-                                <MudTh style="min-width:190px;"><MudFab Color="Color.Primary" Icon="@Icons.Filled.Add" Size="Size.Small" OnClick="@(() => OpenCreateApiResourceSecretDialogOpen())"></MudFab></MudTh>
+                                <MudTh style="min-width:190px;"><MudFab Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => OpenCreateApiResourceSecretDialogOpen())"></MudFab></MudTh>
                                 <MudTh>Expiration</MudTh>
                                 <MudTh>Description</MudTh>
                             </HeaderContent>
                             <RowTemplate Context="ApiResourceSecretRow">
                                 <MudTd style="text-align:center;">
-                                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteApiResourceSecretDialog(ApiResourceSecretRow))"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteApiResourceSecretDialog(ApiResourceSecretRow))"></MudIconButton>
                                 </MudTd>
                                 <MudTd>@ApiResourceSecretRow.Expiration</MudTd>
                                 <MudTd>@ApiResourceSecretRow.GetDisplayValue()</MudTd>
@@ -192,12 +192,12 @@ else
         <EditForm Model="@currentSecret">
             <FluentValidationValidator />
             <MudValidationSummary />
-            <MudTextField @bind-Value="@currentSecret.Description" Label="Description" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+            <MudTextField @bind-Value="@currentSecret.Description" Label="Description" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
 
-            <MudTextField @bind-Value="@currentSecret.Value" Label="Secret" AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" Required="true" RequiredError=@L["Required"]></MudTextField>
-            <MudIconButton OnClick="@GenerateSecret" Icon="@Icons.Filled.Refresh"></MudIconButton>
+            <MudTextField @bind-Value="@currentSecret.Value" Label="Secret" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" Required="true" RequiredError=@L["Required"]></MudTextField>
+            <MudIconButton OnClick="@GenerateSecret" Icon="@Icons.Material.Filled.Refresh"></MudIconButton>
             <MudTooltip Text="You have to copy the secret now, because it cannot be retrieved anymore.">
-                <MudIconButton Icon="@Icons.Filled.Info"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Info"></MudIconButton>
             </MudTooltip>
 
             <MudDatePicker @bind-Date="@currentSecret.Expiration" Label="Expiration" MinDate="@DateTime.Now"></MudDatePicker>

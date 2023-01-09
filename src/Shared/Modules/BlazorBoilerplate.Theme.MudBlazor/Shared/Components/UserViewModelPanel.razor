@@ -13,7 +13,7 @@
                 <MudText Typo="Typo.h6">@L["Main details"]</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Outlined.Close" Link="@BackLink" Size="MudBlazor.Size.Medium" />
+                <MudIconButton Icon="@Icons.Material.Outlined.Close" Link="@BackLink" Size="MudBlazor.Size.Medium" />
             </CardHeaderActions>
         </MudCardHeader>
         <MudCardContent>
@@ -27,8 +27,8 @@
             <MudTextField @bind-Value="@Model.LastName" Label=@L["LastName"] FullWidth="true"></MudTextField>
             @if (Model.UserId == null)
             {
-                <MudTextField @bind-Value="@Model.Password" autocomplete="new-password" Label=@L["Password"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
-                <MudTextField @bind-Value="@Model.PasswordConfirm" autocomplete="new-password" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@Model.Password" autocomplete="new-password" Label=@L["Password"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@Model.PasswordConfirm" autocomplete="new-password" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
             }
         </MudCardContent>
         <MudCardActions>
@@ -126,8 +126,8 @@
                 <FluentValidationValidator />
                 <MudValidationSummary />
                 <MudTextField @bind-Value="@updatePasswordViewModel.CurrentPassword" Label=@L["CurrentPassword"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
-                <MudTextField @bind-Value="@updatePasswordViewModel.NewPassword" autocomplete="new-password" Label=@L["NewPassword"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
-                <MudTextField @bind-Value="@updatePasswordViewModel.NewPasswordConfirm" autocomplete="new-password" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@updatePasswordViewModel.NewPassword" autocomplete="new-password" Label=@L["NewPassword"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@updatePasswordViewModel.NewPasswordConfirm" autocomplete="new-password" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
             </MudCardContent>
             <MudCardActions>
                 <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
@@ -148,11 +148,11 @@
             <MudCardContent>
                 <FluentValidationValidator />
                 <MudValidationSummary />
-                <MudTextField @bind-Value="@changePasswordViewModel.Password" Label=@L["Password"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
-                <MudTextField @bind-Value="@changePasswordViewModel.PasswordConfirm" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@changePasswordViewModel.Password" Label=@L["Password"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
+                <MudTextField @bind-Value="@changePasswordViewModel.PasswordConfirm" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
                 @if (Model.TwoFactorEnabled)
                 {
-                    <MudButton StartIcon="@Icons.Filled.MobileOff" OnClick="@Disable2fa" Class="ml-auto">@L["Disable2fa"]</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.MobileOff" OnClick="@Disable2fa" Class="ml-auto">@L["Disable2fa"]</MudButton>
                 }
             </MudCardContent>
             <MudCardActions>
@@ -217,7 +217,7 @@
         <MudCardActions>
             @if (Model.HasAuthenticator)
             {
-                <MudButton StartIcon="@Icons.Filled.RotateRight" OnClick="@DisableAuthenticator" Class="ml-auto">@L["ResetAuthenticator"]</MudButton>
+                <MudButton StartIcon="@Icons.Material.Filled.RotateRight" OnClick="@DisableAuthenticator" Class="ml-auto">@L["ResetAuthenticator"]</MudButton>
             }
         </MudCardActions>
     </MudCard>
@@ -233,7 +233,7 @@
         </MudCardHeader>
         <MudCardContent>
             <MudAlert Severity="Severity.Error" Variant="Variant.Filled">@L["Insert email to confirm"]</MudAlert>
-            <MudTextField @bind-Value="@email" Label=@L["Email"] AdornmentIcon="@Icons.Outlined.Mail" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+            <MudTextField @bind-Value="@email" Label=@L["Email"] AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true"></MudTextField>
         </MudCardContent>
         <MudCardActions>
             <MudFab OnClick="@Delete" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="MudBlazor.Size.Medium" Class="ml-auto" />
