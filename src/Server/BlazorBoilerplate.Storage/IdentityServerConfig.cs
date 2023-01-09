@@ -82,24 +82,31 @@ namespace BlazorBoilerplate.Storage
                 {
                     ClientClaimsPrefix = string.Empty,
 
-                    ClientId = "clientToDo",
+                    ClientId = "myapp",
 
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedGrantTypes = GrantTypes.Code,
 
-                    // secret for authentication
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
 
-                    // scopes that client has access to
-                    AllowedScopes = { LocalApiName },
+                    AllowedScopes = {
+                        StandardScopes.OpenId,
+                        StandardScopes.Profile,
+                        StandardScopes.Phone,
+                        StandardScopes.Email,
+                        ScopeConstants.Roles,
+                        LocalApi.ScopeName,
+                        LocalApiName
+                    },
 
                     Claims =
                     {
                         new ClientClaim(ApplicationClaimTypes.Permission, "Todo.Delete")
-                    }
+                    },
+
+                    RedirectUris = { "myapp://callback" },
                 }
             };
 

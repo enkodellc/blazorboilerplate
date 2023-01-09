@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 	<RootNamespace>BlazorBoilerplate.Theme.Material.Main</RootNamespace>
     <Title>BlazorBoilerplate Main</Title>
 	<ImplicitUsings>enable</ImplicitUsings>
@@ -12,7 +12,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.1" />
 	<PackageReference Include="BlazorGoogleMaps" Version="2.4.4" />
   </ItemGroup>
 

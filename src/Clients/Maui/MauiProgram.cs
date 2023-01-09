@@ -5,12 +5,15 @@ using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
 using BlazorBoilerplate.Theme.Material.Main.Shared.Components;
 using BlazorBoilerplate.Theme.Material.Services;
+using IdentityModel.OidcClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using MudBlazor;
 using MudBlazor.Services;
+#if DEBUG
 using Serilog;
+#endif
 
 namespace BlazorBoilerplateMaui;
 
@@ -95,6 +98,17 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDynamicComponent, TopRightBarSection>();
 
         builder.Services.RegisterIntlTelInput();
+
+        builder.Services.AddSingleton(new OidcClient(new()
+        {
+            Authority = baseAddress,
+
+            ClientId = "interactive.public",
+            Scope = "openid profile LocalApi",
+            RedirectUri = "myapp://callback",
+
+            Browser = new MauiAuthenticationBrowser()
+        }));
 
         return builder.Build();
     }
