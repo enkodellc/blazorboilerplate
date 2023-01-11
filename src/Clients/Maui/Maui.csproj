@@ -80,10 +80,6 @@
     </ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="IdentityModel.OidcClient" Version="5.2.1" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor.Main\BlazorBoilerplate.Theme.MudBlazor.Main.csproj" />
 	</ItemGroup>
 
