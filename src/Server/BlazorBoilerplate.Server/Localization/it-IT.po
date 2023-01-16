@@ -679,6 +679,10 @@ msgid "User Profile"
 msgstr "Profilo utente"
 
 msgctxt "Global"
+msgid "Profile"
+msgstr "Profilo"
+
+msgctxt "Global"
 msgid "RememberBrowser"
 msgstr "Ricorda questo browser"
 

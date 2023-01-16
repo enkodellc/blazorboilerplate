@@ -1,6 +1,7 @@
 ﻿@using BlazorBoilerplate.Shared.Models.Account
 @using Microsoft.AspNetCore.Components
 @inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Global> L
 
 <AuthorizeView>
     <Authorized>
@@ -9,14 +10,17 @@
                 <div class="triangles">
                 </div>
             </div>
-            <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Link="/account/profile" Style="padding-left: 0" />
             @if (userViewModel == null)
             {
                 <MudProgressCircular Color="Color.Default" Indeterminate="true" />
             }
             else
             {
-                <span><b><a href="/account/profile">@userViewModel.UserName</a></b></span>
+                <MudTooltip Text="@userViewModel.UserName" Placement="Placement.End">
+                    <MudButton StartIcon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" Link="/account/profile" Style="min-width: auto;">
+                        @L["Profile"]
+                    </MudButton>
+                </MudTooltip>
                 <Login />
             }
         </div>
