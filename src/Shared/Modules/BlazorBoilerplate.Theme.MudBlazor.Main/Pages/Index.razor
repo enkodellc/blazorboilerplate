@@ -1,8 +1,17 @@
 ﻿@page "/"
-@attribute [Authorize]
+@*@attribute [Authorize]*@
 
 @inject IStringLocalizer<Global> L
 @inject ISnackbar Snackbar
+
+<AuthorizeView>
+    <Authorized>
+        <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">You are authenticated, but some content require you enable 2fa in your profile.</MudAlert>
+    </Authorized>
+    <NotAuthorized>
+        <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">You are not authenticated.</MudAlert>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code{
 
