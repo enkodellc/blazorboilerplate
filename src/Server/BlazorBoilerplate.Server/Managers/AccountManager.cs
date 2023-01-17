@@ -639,14 +639,12 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> UserViewModel(ClaimsPrincipal authenticatedUser)
         {
-            var userViewModel = await BuildUserViewModel(authenticatedUser);
-            return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
+            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserViewModel(authenticatedUser));
         }
 
         public async Task<ApiResponse> UserViewModel(Guid id)
         {
-            var userViewModel = await BuildUserViewModel(id);
-            return new ApiResponse(Status200OK, L["Operation Successful"], userViewModel);
+            return new ApiResponse(Status200OK, L["Operation Successful"], await BuildUserViewModel(id));
         }
 
         private async Task<ApiResponse> UpdateClaim(ApplicationUser user, IEnumerable<Claim> claims, string claimType, bool updateClaimValue, ClaimsPrincipal authenticatedUser)

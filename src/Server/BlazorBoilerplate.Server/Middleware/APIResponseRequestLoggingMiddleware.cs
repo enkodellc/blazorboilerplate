@@ -3,7 +3,7 @@ using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Storage;
-using IdentityModel;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using Microsoft.Net.Http.Headers;
@@ -43,6 +43,7 @@ namespace BlazorBoilerplate.Server.Middleware
             try
             {
                 var request = httpContext.Request;
+
                 if (IsSwagger(httpContext) || !request.Path.StartsWithSegments(new PathString("/api")))
                 {
                     await _next(httpContext);
@@ -56,13 +57,21 @@ namespace BlazorBoilerplate.Server.Middleware
                     var originalBodyStream = httpContext.Response.Body;
 
                     using var responseBody = new MemoryStream();
+
                     try
                     {
                         string responseBodyContent = null;
 
                         var response = httpContext.Response;
+
                         //Breeze IQueryable paths here so it has the meta data to do its job
-                        if (new string[] { "/api/localization", "/api/data", "/api/externalauth" }.Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
+                        if (new string[]
+                        {
+                            "/api/localization",
+                            "/api/data",
+                            "/api/externalauth"
+                        }
+                        .Any(e => request.Path.StartsWithSegments(new PathString(e.ToLower()))))
                             await _next.Invoke(httpContext);
                         else
                         {
@@ -74,6 +83,7 @@ namespace BlazorBoilerplate.Server.Middleware
                             if (httpContext.Response.StatusCode == Status200OK)
                             {
                                 responseBodyContent = await FormatResponse(response);
+
                                 await HandleSuccessRequestAsync(httpContext, responseBodyContent, Status200OK);
                             }
                             else
@@ -91,9 +101,9 @@ namespace BlazorBoilerplate.Server.Middleware
                             {
                                 await responseBody.CopyToAsync(originalBodyStream);
 
-                                //User id = "sub" y default
+                                //User id derive from "sub" claim
                                 ApplicationUser user = httpContext.User.Identity.IsAuthenticated
-                                        ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value)
+                                        ? await userManager.FindByIdAsync(httpContext.User.GetSubjectId())
                                         : null;
 
                                 await SafeLog(requestTime,
@@ -109,14 +119,15 @@ namespace BlazorBoilerplate.Server.Middleware
                             }
                             catch (Exception ex)
                             {
-                                _logger.LogWarning("An Inner Middleware exception occurred on SafeLog: " + ex.Message);
+                                _logger.LogWarning($"An Inner Middleware exception occurred on SafeLog: {ex.GetBaseException().Message}");
                             }
                         }
                         #endregion
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning("An Inner Middleware exception occurred: " + ex.Message);
+                        _logger.LogWarning($"An Inner Middleware exception occurred: {ex.GetBaseException().Message}");
+
                         await HandleExceptionAsync(httpContext, ex);
                     }
                     finally
@@ -136,6 +147,7 @@ namespace BlazorBoilerplate.Server.Middleware
                 }
 
                 await HandleExceptionAsync(httpContext, ex);
+
                 throw;
             }
         }
