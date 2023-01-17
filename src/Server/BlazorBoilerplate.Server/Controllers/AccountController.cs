@@ -2,19 +2,16 @@
 using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.Permissions;
+using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using NSwag.Annotations;
-using static BlazorBoilerplate.Infrastructure.Storage.Permissions.Permissions;
-using System.Security.Policy;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-using IdentityServer4.Extensions;
-using BlazorBoilerplate.Server.Extensions;
 
 namespace BlazorBoilerplate.Server.Controllers
 {
