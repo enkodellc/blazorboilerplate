@@ -16,6 +16,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace BlazorBoilerplate.Server.Controllers
 {
     [SecurityHeaders]
+    [Authorize(AuthenticationSchemes = AuthSchemes)]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : BaseController
@@ -76,7 +77,6 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // POST: api/Account/Logout
         [HttpPost("Logout")]
-        [Authorize]
         public async Task<ApiResponse> Logout()
         {
             var response = await _accountManager.Logout(User);
@@ -124,24 +124,22 @@ namespace BlazorBoilerplate.Server.Controllers
 
         //api/Account/UpdatePassword
         [HttpPost("UpdatePassword")]
+        [AllowAnonymous]
         public async Task<ApiResponse> UpdatePassword(UpdatePasswordViewModel parameters)
         => ModelState.IsValid ? await _accountManager.UpdatePassword(User, parameters) : _invalidData;
 
-        [Authorize]
         [HttpPost("EnableAuthenticator")]
         [ProducesResponseType(Status200OK)]
         [ProducesResponseType(Status401Unauthorized)]
         public async Task<ApiResponse> EnableAuthenticator(AuthenticatorVerificationCodeViewModel parameters)
         => ModelState.IsValid ? await _accountManager.EnableAuthenticator(User, parameters) : _invalidData;
 
-        [Authorize]
         [HttpPost("DisableAuthenticator")]
         [ProducesResponseType(Status200OK)]
         [ProducesResponseType(Status401Unauthorized)]
         public async Task<ApiResponse> DisableAuthenticator()
         => await _accountManager.DisableAuthenticator(User);
 
-        [Authorize]
         [HttpPost("ForgetTwoFactorClient")]
         [ProducesResponseType(Status200OK)]
         [ProducesResponseType(Status401Unauthorized)]
@@ -150,7 +148,6 @@ namespace BlazorBoilerplate.Server.Controllers
             return await _accountManager.ForgetTwoFactorClient(User);
         }
 
-        [Authorize]
         [HttpPost("Enable2fa")]
         [ProducesResponseType(Status200OK)]
         [ProducesResponseType(Status401Unauthorized)]
@@ -170,8 +167,6 @@ namespace BlazorBoilerplate.Server.Controllers
                 return await _accountManager.Enable2fa(User.GetUserId(), User);
         }
 
-
-        [Authorize]
         [HttpPost("Disable2fa")]
         [ProducesResponseType(Status200OK)]
         [ProducesResponseType(Status401Unauthorized)]
@@ -191,8 +186,6 @@ namespace BlazorBoilerplate.Server.Controllers
                 return await _accountManager.Disable2fa(User.GetUserId(), User);
         }
 
-
-        [Authorize]
         [HttpGet("UserViewModel/{id?}")]
         [ProducesResponseType(Status200OK)]
         [ProducesResponseType(Status401Unauthorized)]
@@ -212,7 +205,6 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost("UpdateUser")]
-        [Authorize]
         public async Task<ApiResponse> UpdateUser(UserViewModel userViewModel)
         => ModelState.IsValid ? await _accountManager.UpdateUser(userViewModel, false, User) : _invalidData;
 
@@ -237,11 +229,11 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
         public async Task<ApiResponse> Delete()
         => await _accountManager.Delete(User.Identity.GetSubjectId());
 
         [HttpGet("GetUser")]
+        [AllowAnonymous]
         public ApiResponse GetUser()
         => _accountManager.GetUser(User);
 

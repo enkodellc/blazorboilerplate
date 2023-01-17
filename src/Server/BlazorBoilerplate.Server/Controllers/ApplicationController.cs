@@ -4,7 +4,6 @@ using BlazorBoilerplate.Storage;
 using Breeze.AspNetCore;
 using Breeze.Persistence;
 using Breeze.Persistence.EFCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +16,6 @@ namespace BlazorBoilerplate.Server.Controllers
     [BreezeQueryFilter]
     public class ApplicationController : BaseController
     {
-        private const string AuthSchemes =
-            "Identity.Application" + "," + JwtBearerDefaults.AuthenticationScheme; //Cookie + Token authentication
-
         private readonly ApplicationPersistenceManager persistenceManager;
         public ApplicationController(ApplicationPersistenceManager persistenceManager)
         {
