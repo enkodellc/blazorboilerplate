@@ -1,4 +1,3 @@
-using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplateMaui.Resources;
 using Microsoft.Extensions.Logging;
@@ -19,10 +18,16 @@ public partial class LoadingPage : ContentPage
             {
                 var streams = new Dictionary<string, Stream>();
 
-                var stream = await FileSystem.OpenAppPackageFileAsync("Resources\\Raw\\en-US.po");
+                var path = @"Resources\Raw\";
+
+#if IOS
+                path = @"Raw\";
+#endif
+
+                var stream = await FileSystem.OpenAppPackageFileAsync($"{path}en-US.po");
                 streams.Add("en-US", stream);
 
-                stream = await FileSystem.OpenAppPackageFileAsync("Resources\\Raw\\it-IT.po");
+                stream = await FileSystem.OpenAppPackageFileAsync($"{path}it-IT.po");
                 streams.Add("it-IT", stream);
 
                 localizationProvider.Init(streams);
