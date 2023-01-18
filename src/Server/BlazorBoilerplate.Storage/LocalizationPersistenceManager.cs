@@ -3,6 +3,7 @@ using BlazorBoilerplate.Shared.Localizer;
 using Breeze.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -11,7 +12,8 @@ namespace BlazorBoilerplate.Storage
         public LocalizationPersistenceManager(LocalizationDbContext dbContext,
             IHttpContextAccessor accessor,
             IServiceProvider serviceProvider,
-            IStringLocalizer<Global> l) : base(dbContext, accessor, serviceProvider, l)
+            ILogger<LocalizationPersistenceManager> logger,
+            IStringLocalizer<Global> l) : base(dbContext, accessor, serviceProvider, logger, l)
         { }
 
         protected override bool BeforeSaveEntity(EntityInfo entityInfo)

@@ -3,21 +3,24 @@ using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models.Account;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 namespace BlazorBoilerplate.Shared.Services
 {
     public class AccountApiClient : IAccountApiClient
     {
+        private readonly ILogger<AccountApiClient> _logger;
         private readonly HttpClient _httpClient;
         private readonly NavigationManager _navigationManager;
         private readonly IJSRuntime _jsRuntime;
 
-        public AccountApiClient(NavigationManager navigationManager, HttpClient httpClient, IJSRuntime jsRuntime)
+        public AccountApiClient(NavigationManager navigationManager, HttpClient httpClient, IJSRuntime jsRuntime, ILogger<AccountApiClient> logger)
         {
             _navigationManager = navigationManager;
             _httpClient = httpClient;
             _jsRuntime = jsRuntime;
+            _logger = logger;
         }
 
         public async Task<ApiResponseDto<LoginViewModel>> BuildLoginViewModel(string returnUrl)

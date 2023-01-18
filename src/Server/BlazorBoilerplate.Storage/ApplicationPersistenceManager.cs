@@ -1,10 +1,12 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Localizer;
 using Breeze.Persistence;
-using IdentityModel;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -13,7 +15,8 @@ namespace BlazorBoilerplate.Storage
         public ApplicationPersistenceManager(ApplicationDbContext dbContext,
             IHttpContextAccessor accessor,
             IServiceProvider serviceProvider,
-            IStringLocalizer<Global> l) : base(dbContext, accessor, serviceProvider, l)
+            ILogger<ApplicationPersistenceManager> logger,
+            IStringLocalizer<Global> l) : base(dbContext, accessor, serviceProvider, logger, l)
         { }
 
         protected override bool BeforeSaveEntity(EntityInfo entityInfo)
@@ -36,7 +39,7 @@ namespace BlazorBoilerplate.Storage
 
             if (userProfile == null)
             {
-                var userId = new Guid(user.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value);
+                var userId = new Guid(user.GetSubjectId());
 
                 userProfile = await Context.UserProfiles.SingleOrDefaultAsync(i => i.UserId == userId);
 

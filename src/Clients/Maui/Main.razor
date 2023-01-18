@@ -61,7 +61,8 @@
 
     private readonly IEnumerable<Assembly> additionalAssemblies = new Assembly[]
             {
-                typeof(BlazorBoilerplate.Theme.Material.Main.Pages.Index).Assembly
+                typeof(BlazorBoilerplate.Theme.Material.Main.Pages.Index).Assembly,
+                typeof(BlazorBoilerplate.Theme.Material.Pages.Account.Profile).Assembly
             };
 
     protected override async Task OnInitializedAsync()

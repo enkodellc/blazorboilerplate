@@ -26,6 +26,7 @@ using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
 using BlazorBoilerplate.Theme.Material.Main.Shared.Components;
 using BlazorBoilerplate.Theme.Material.Services;
+using Blazored.SessionStorage;
 using Breeze.AspNetCore;
 using Breeze.Core;
 using FluentValidation;
@@ -55,6 +56,7 @@ using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
@@ -82,6 +84,8 @@ namespace BlazorBoilerplate.Server
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddBlazoredSessionStorage();
+            services.AddScoped<ITokenStorage, TokenSessionStorage>();
             services.AddSingleton<ILocalizationProvider, StorageLocalizationProvider>();
             services.AddTextLocalization(options =>
             {
@@ -290,6 +294,9 @@ namespace BlazorBoilerplate.Server
                 }
             }
 
+            //https://mderriey.com/2019/06/23/where-are-my-jwt-claims/
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             var authBuilder = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -297,6 +304,7 @@ namespace BlazorBoilerplate.Server
                 options.RequireHttpsMetadata = _environment.IsProduction();
                 options.Audience = IdentityServerConfig.LocalApiName;
                 options.TokenValidationParameters.ValidTypes = new[] { JwtTypes.AccessToken };
+                options.TokenValidationParameters.NameClaimType = Name;
 
                 options.Events = new JwtBearerEvents
                 {
@@ -312,6 +320,7 @@ namespace BlazorBoilerplate.Server
                             // Read the token out of the query string
                             context.Token = accessToken;
                         }
+
                         return Task.CompletedTask;
                     }
                 };
@@ -448,11 +457,9 @@ namespace BlazorBoilerplate.Server
                 options.Lockout.MaxFailedAccessAttempts = 10;
                 options.Lockout.AllowedForNewUsers = true;
 
-                if (Convert.ToBoolean(Configuration[$"{projectName}:RequireConfirmedEmail"] ?? "false"))
-                {
-                    options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedEmail = true;
-                }
+                options.User.RequireUniqueEmail = true;
+
+                options.SignIn.RequireConfirmedEmail = Convert.ToBoolean(Configuration[$"{projectName}:RequireConfirmedEmail"] ?? bool.TrueString);
             });
 
             #region Cookies

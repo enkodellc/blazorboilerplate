@@ -7,6 +7,7 @@ using BlazorBoilerplate.Shared.Services;
 using BlazorBoilerplate.Theme.Material.Main.Shared.Components;
 using BlazorBoilerplate.Theme.Material.Services;
 using BlazorBoilerplate.Theme.Root;
+using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -27,6 +28,8 @@ namespace BlazorBoilerplate.Client
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
+            builder.Services.AddBlazoredSessionStorage();
+            builder.Services.AddScoped<ITokenStorage, TokenSessionStorage>();
             builder.Services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
             builder.Services.AddTextLocalization(options =>
             {

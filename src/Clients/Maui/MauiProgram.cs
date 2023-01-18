@@ -5,7 +5,7 @@ using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
 using BlazorBoilerplate.Theme.Material.Main.Shared.Components;
 using BlazorBoilerplate.Theme.Material.Services;
-using IdentityModel;
+using BlazorBoilerplateMaui.Services;
 using IdentityModel.OidcClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -40,7 +40,6 @@ public static class MauiProgram
         Log.Logger = new LoggerConfiguration()
              .Enrich.FromLogContext()
              .WriteTo.Debug()
-             .WriteTo.File(path: @"D:\maui.log")
              .CreateLogger();
 
         builder.Services.AddLogging(logging =>
@@ -65,13 +64,13 @@ public static class MauiProgram
 #endif
         });
         builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
-        builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
+        builder.Services.AddSingleton(sp => new HttpClient(sp.GetRequiredService<RefreshTokenHandler>()) { BaseAddress = new Uri(baseAddress) });
 
         builder.Services.AddAuthorizationCore();
         builder.Services.AddSingleton<IAuthorizationPolicyProvider, SharedAuthorizationPolicyProvider>();
         builder.Services.AddTransient<IAuthorizationHandler, DomainRequirementHandler>();
         builder.Services.AddTransient<IAuthorizationHandler, EmailVerifiedHandler>();
-        builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
+        builder.Services.AddScoped<AuthenticationStateProvider, OidcAuthenticationStateProvider>();
 
         builder.Services.AddScoped<ILocalizationApiClient, LocalizationApiClient>();
         builder.Services.AddScoped<IAccountApiClient, AccountApiClient>();
@@ -100,17 +99,19 @@ public static class MauiProgram
 
         builder.Services.RegisterIntlTelInput();
 
+        builder.Services.AddSingleton<ITokenStorage, TokenStorage>();
         builder.Services.AddSingleton(new OidcClient(new()
         {
             Authority = baseAddress,
 
             ClientId = "myapp",
             ClientSecret= "secret",
-            Scope = "openid profile LocalAPI",
+            Scope = "openid profile email LocalAPI",
             RedirectUri = "myapp://callback",
 
             Browser = new MauiAuthenticationBrowser()
         }));
+        builder.Services.AddSingleton<RefreshTokenHandler>();
 
         return builder.Build();
     }

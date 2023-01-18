@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models.Account;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace BlazorBoilerplate.Shared.Providers
@@ -9,10 +10,12 @@ namespace BlazorBoilerplate.Shared.Providers
     public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly IAccountApiClient _accountApiClient;
+        protected readonly ILogger<IdentityAuthenticationStateProvider> _logger;
 
-        public IdentityAuthenticationStateProvider(IAccountApiClient accountApiClient)
+        public IdentityAuthenticationStateProvider(IAccountApiClient accountApiClient, ILogger<IdentityAuthenticationStateProvider> logger)
         {
             _accountApiClient = accountApiClient;
+            _logger = logger;
         }
 
         public async Task<ApiResponseDto<LoginViewModel>> BuildLoginViewModel(string returnUrl)
@@ -135,8 +138,9 @@ namespace BlazorBoilerplate.Shared.Providers
                     identity = new ClaimsIdentity(claims, "Server authentication", "name", "role");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError($"IdentityAuthenticationStateProvider {ex.GetBaseException().Message}");
             }
 
             return new AuthenticationState(new ClaimsPrincipal(identity));

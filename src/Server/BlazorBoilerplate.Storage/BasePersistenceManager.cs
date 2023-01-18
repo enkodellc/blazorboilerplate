@@ -8,6 +8,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Reflection;
 using EntityState = Breeze.Persistence.EntityState;
@@ -19,13 +20,16 @@ namespace BlazorBoilerplate.Storage
         protected readonly IHttpContextAccessor httpContextAccessor;
         protected readonly IServiceProvider serviceProvider;
         protected readonly IStringLocalizer<Global> L;
+        protected readonly ILogger<BasePersistenceManager<T>> logger;
         public BasePersistenceManager(T dbContext,
             IHttpContextAccessor accessor,
             IServiceProvider serviceProvider,
+            ILogger<BasePersistenceManager<T>> logger,
             IStringLocalizer<Global> l) : base(dbContext)
         {
             httpContextAccessor = accessor;
             this.serviceProvider = serviceProvider;
+            this.logger = logger;
             L = l;
         }
         public DbSet<TEntity> GetEntities<TEntity>() where TEntity : class
