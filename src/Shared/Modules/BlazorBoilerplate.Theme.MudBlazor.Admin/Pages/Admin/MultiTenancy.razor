@@ -1,6 +1,6 @@
 ﻿@inherits MultiTenancyPage
 @page "/admin/multitenancy"
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 <TopSection>

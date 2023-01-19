@@ -127,9 +127,7 @@ namespace BlazorBoilerplate.Storage
         }
 
         public async Task EnsureAdminIdentities()
-        {
-            await EnsureRole(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
-            
+        {            
             foreach (var userFeature in Enum.GetValues<UserFeatures>())
                 await EnsureRole(userFeature.ToString(), _entityPermissions.GetAllPermissionValuesFor(userFeature));
 

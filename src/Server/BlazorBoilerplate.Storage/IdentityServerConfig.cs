@@ -41,11 +41,13 @@ namespace BlazorBoilerplate.Storage
                     UserClaims = {
                         JwtClaimTypes.Name,
                         JwtClaimTypes.Email,
-                        JwtClaimTypes.PhoneNumber,
+                        JwtClaimTypes.EmailVerified,
                         JwtClaimTypes.Role,
                         ApplicationClaimTypes.Permission,
-                        Policies.IsUser,
-                        Policies.IsAdmin
+                        ApplicationClaimTypes.IsSubscriptionActive,
+                        ApplicationClaimTypes.For(UserFeatures.User),
+                        ApplicationClaimTypes.For(UserFeatures.Administrator),
+                        ApplicationClaimTypes.For(UserFeatures.Operator),
                     }
                 }
             };
@@ -71,7 +73,6 @@ namespace BlazorBoilerplate.Storage
                     AllowedScopes = {
                         StandardScopes.OpenId,
                         StandardScopes.Profile,
-                        StandardScopes.Phone,
                         StandardScopes.Email,
                         ScopeConstants.Roles,
                         LocalApi.ScopeName
@@ -94,17 +95,13 @@ namespace BlazorBoilerplate.Storage
                     AllowedScopes = {
                         StandardScopes.OpenId,
                         StandardScopes.Profile,
-                        StandardScopes.Phone,
                         StandardScopes.Email,
                         ScopeConstants.Roles,
                         LocalApi.ScopeName,
                         LocalApiName
                     },
-
-                    Claims =
-                    {
-                        new ClientClaim(ApplicationClaimTypes.Permission, "Todo.Delete")
-                    },
+                    
+                    RequirePkce = true,
 
                     RedirectUris = { "myapp://callback" },
                 }

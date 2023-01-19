@@ -1,66 +1,15 @@
 ﻿@page "/"
 @*@attribute [Authorize]*@
 
-@inject AuthenticationStateProvider authStateProvider
 @inject IStringLocalizer<Global> L
 @inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h5">Authentication status</MudText>
-<AuthorizeView>
-    <Authorized>
-        <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">You are authenticated, but some content require you enable 2fa in your profile.</MudAlert>
-    </Authorized>
-    <NotAuthorized>
-        <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">You are not authenticated.</MudAlert>
-    </NotAuthorized>
-</AuthorizeView>
-
-@if (IsAuthenticated)
-{
-    <MudText Typo="Typo.h6">Policies.TwoFactorEnabled</MudText>
-    <AuthorizeView Policy=@Policies.TwoFactorEnabled>
-        <Authorized>
-            <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">2fa is enable.</MudAlert>
-        </Authorized>
-        <NotAuthorized>
-            <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">2fa is not enable.</MudAlert>
-        </NotAuthorized>
-    </AuthorizeView>
-
-    <MudText Typo="Typo.h6">Policies.IsUser</MudText>
-    <AuthorizeView Policy=@Policies.IsUser>
-        <Authorized>
-            <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">The policy is satisfied.</MudAlert>
-        </Authorized>
-        <NotAuthorized>
-            <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">The policy is not satisfied.</MudAlert>
-        </NotAuthorized>
-    </AuthorizeView>
-
-    <MudText Typo="Typo.h6">IsOperator</MudText>
-    <AuthorizeView Policy="IsOperator">
-        <Authorized>
-            <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">The policy is satisfied.</MudAlert>
-        </Authorized>
-        <NotAuthorized>
-            <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">The policy is not satisfied.</MudAlert>
-        </NotAuthorized>
-    </AuthorizeView>
-}
+<PolicyCheck />
 
 @code {
 
-    [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask { get; set; }
-
-    private bool IsAuthenticated;
-
     protected override async Task OnInitializedAsync()
     {
-        var user = (await authenticationStateTask).User;
-
-        IsAuthenticated = user.Identity.IsAuthenticated;
-
         await base.OnInitializedAsync();
 
         await Task.Delay(TimeSpan.FromSeconds(3)).ContinueWith((_) =>

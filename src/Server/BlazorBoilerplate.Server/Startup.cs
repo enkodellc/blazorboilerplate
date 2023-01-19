@@ -305,6 +305,7 @@ namespace BlazorBoilerplate.Server
                 options.Audience = IdentityServerConfig.LocalApiName;
                 options.TokenValidationParameters.ValidTypes = new[] { JwtTypes.AccessToken };
                 options.TokenValidationParameters.NameClaimType = Name;
+                options.TokenValidationParameters.RoleClaimType = Role;
 
                 options.Events = new JwtBearerEvents
                 {

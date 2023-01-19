@@ -1,6 +1,6 @@
 @inherits IdentityResourcesPage
 @page "/admin/identityResources"
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 <TopSection>

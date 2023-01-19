@@ -43,14 +43,14 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policies.IsAdmin)]
+        [AuthorizeForFeature(UserFeatures.Administrator)]
         public IQueryable<ApplicationUser> Users()
         {
             return persistenceManager.GetEntities<ApplicationUser>().AsNoTracking().Include(i => i.UserRoles).ThenInclude(i => i.Role).OrderBy(i => i.UserName);
         }
 
         [HttpGet]
-        [Authorize(Policies.IsAdmin)]
+        [AuthorizeForFeature(UserFeatures.Administrator)]
         public IQueryable<ApplicationRole> Roles()
         {
             return persistenceManager.GetEntities<ApplicationRole>().AsNoTracking().OrderBy(i => i.Name);
@@ -75,14 +75,14 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policies.IsAdmin)]
+        [AuthorizeForFeature(UserFeatures.Administrator)]
         public IQueryable<DbLog> Logs()
         {
             return persistenceManager.GetEntities<DbLog>().AsNoTracking().OrderByDescending(i => i.TimeStamp);
         }
 
         [HttpGet]
-        [Authorize(Policies.IsAdmin)]
+        [AuthorizeForFeature(UserFeatures.Administrator)]
         public IQueryable<ApiLogItem> ApiLogs()
         {
             return persistenceManager.GetEntities<ApiLogItem>().AsNoTracking().OrderByDescending(i => i.RequestTime);

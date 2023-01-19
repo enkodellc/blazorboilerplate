@@ -1,6 +1,6 @@
 @inherits RolesPage
 @page "/admin/roles"
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 <TopSection>

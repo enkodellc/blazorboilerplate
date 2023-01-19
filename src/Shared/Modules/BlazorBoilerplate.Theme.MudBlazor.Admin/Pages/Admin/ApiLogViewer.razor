@@ -1,7 +1,7 @@
 ﻿@inherits ApiLogViewerPage
 @page "/admin/apilog"
 
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 <TopSection>

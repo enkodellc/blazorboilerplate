@@ -2,6 +2,8 @@
 {
     public enum UserFeatures
     {
+        Administrator,
+        User,
         Operator
     }
 }

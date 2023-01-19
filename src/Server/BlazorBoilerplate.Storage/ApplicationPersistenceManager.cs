@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -35,6 +34,10 @@ namespace BlazorBoilerplate.Storage
         public async Task<UserProfile> GetUserProfile()
         {
             var user = httpContextAccessor.HttpContext.User;
+
+            if (user.Identity.Name == null)
+                throw new Exception("user.Identity.Name is null");
+
             var userProfile = await Context.UserProfiles.SingleOrDefaultAsync(i => i.ApplicationUser.NormalizedUserName == user.Identity.Name.ToUpper());
 
             if (userProfile == null)

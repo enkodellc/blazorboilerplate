@@ -2,7 +2,7 @@
 @inject NavigationManager navigationManager
 @inject AppState appState
 @inject IStringLocalizer<Global> L
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 
 <CascadingValue Value="this">
     <MudLayout>

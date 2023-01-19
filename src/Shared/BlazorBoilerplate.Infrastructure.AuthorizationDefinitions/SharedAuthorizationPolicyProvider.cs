@@ -23,27 +23,6 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                 bool created = false;
                 switch (policyName)
                 {
-                    //In DatabaseInitializer: await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", ClaimValues.trueString));
-                    case Policies.IsAdmin:
-                        policy = new AuthorizationPolicyBuilder()
-                            .Combine(await GetPolicyAsync(Policies.IsUser))
-                            .RequireClaim("IsAdministrator")
-                            .Build();
-
-                        created = true;
-                        break;
-
-                    case Policies.IsUser:
-                        policy = new AuthorizationPolicyBuilder()
-                            .RequireAuthenticatedUser()
-                            .AddRequirements(new EmailVerifiedRequirement(true))
-                            .RequireClaim(JwtClaimTypes.AuthenticationMethod, ClaimValues.AuthenticationMethodMFA)
-                            .RequireClaim(ApplicationClaimTypes.IsSubscriptionActive, ClaimValues.trueString)
-                            .Build();
-
-                        created = true;
-                        break;
-
                     //https://docs.microsoft.com/it-it/aspnet/core/security/authentication/mfa
                     case Policies.TwoFactorEnabled:
                         policy = new AuthorizationPolicyBuilder()
@@ -77,10 +56,30 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                         {
                             switch (userFeature)
                             {
+                                case UserFeatures.User:
+                                    policy = new AuthorizationPolicyBuilder()
+                                        .RequireAuthenticatedUser()
+                                        .AddRequirements(new EmailVerifiedRequirement(true))
+                                        .RequireClaim(JwtClaimTypes.AuthenticationMethod, ClaimValues.AuthenticationMethodMFA)
+                                        .RequireClaim(ApplicationClaimTypes.IsSubscriptionActive, ClaimValues.trueString)
+                                        .Build();
+
+                                    created = true;
+                                    break;
+
+                                //In DatabaseInitializer: await _userManager.AddClaimAsync(applicationUser, new Claim($"Is{role}", ClaimValues.trueString));
+                                case UserFeatures.Administrator:
+                                    policy = new AuthorizationPolicyBuilder()
+                                        .Combine(await GetPolicyAsync(Policies.For(UserFeatures.User)))
+                                        .RequireClaim(ApplicationClaimTypes.For(UserFeatures.Administrator))
+                                        .Build();
+
+                                    created = true;
+                                    break;
 
                                 case UserFeatures.Operator:
                                     policy = new AuthorizationPolicyBuilder()
-                                        .Combine(await GetPolicyAsync(Policies.IsUser))
+                                        .Combine(await GetPolicyAsync(Policies.For(UserFeatures.User)))
                                         .RequireAssertion(ctx =>
                                         ctx.User.IsInRole(DefaultRoleNames.Administrator) ||
                                         ctx.User.HasClaim(claim => claim.Type == ApplicationClaimTypes.For(UserFeatures.Operator) && claim.Value == ClaimValues.trueString))

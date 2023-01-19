@@ -1,7 +1,7 @@
 ﻿@inherits DbLogViewerPage
 @page "/admin/dblog"
 
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 <TopSection>

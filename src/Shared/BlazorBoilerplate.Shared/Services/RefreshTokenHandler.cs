@@ -11,13 +11,13 @@ namespace BlazorBoilerplate.Shared.Services
         private readonly SemaphoreSlim _lock = new(1, 1);
         private readonly OidcClient _oidcClient;
         protected readonly ITokenStorage _tokenStorage;
-        private readonly ILogger<RefreshTokenDelegatingHandler> _logger;
+        private readonly ILogger<RefreshTokenHandler> _logger;
 
         private bool _disposed;
 
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
 
-        public RefreshTokenHandler(OidcClient oidcClient, ITokenStorage tokenStorage, ILogger<RefreshTokenDelegatingHandler> logger)
+        public RefreshTokenHandler(OidcClient oidcClient, ITokenStorage tokenStorage, ILogger<RefreshTokenHandler> logger)
         {
             _oidcClient = oidcClient ?? throw new ArgumentNullException(nameof(oidcClient));
             _tokenStorage = tokenStorage ?? throw new ArgumentNullException(nameof(tokenStorage));
@@ -42,7 +42,7 @@ namespace BlazorBoilerplate.Shared.Services
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-            _logger.LogInformation($"RefreshTokenDelegatingHandler {request.RequestUri} {response.StatusCode}");
+            _logger.LogInformation($"RefreshTokenHandler {request.RequestUri} {response.StatusCode}");
 
             if (response.StatusCode != HttpStatusCode.Unauthorized)
             {

@@ -3,13 +3,12 @@ using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin.Settings
 {
-    [Authorize(Policies.IsAdmin)]
+    [AuthorizeForFeature(UserFeatures.Administrator)]
     public abstract class SettingsBase : ComponentBase, IDisposable
     {
         protected Dictionary<SettingKey, TenantSetting> settings;

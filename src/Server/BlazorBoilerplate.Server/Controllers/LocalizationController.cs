@@ -103,7 +103,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policies.IsAdmin)]
+        [AuthorizeForFeature(UserFeatures.Administrator)]
         public ApiResponse ReloadTranslations()
         {
             localizationProvider.Init(persistenceManager.Context.LocalizationRecords.Include(i => i.PluralTranslations), persistenceManager.Context.PluralFormRules, true);
@@ -129,7 +129,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policies.IsAdmin)]
+        [AuthorizeForFeature(UserFeatures.Administrator)]
         [Produces(MediaTypeNames.Application.Zip)]
         public IActionResult Export()
         {
@@ -176,7 +176,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policies.IsAdmin)]
+        [AuthorizeForFeature(UserFeatures.Administrator)]
         public async Task<ApiResponse> Upload(IFormFile uploadedFile)
         {
             if (uploadedFile == null || uploadedFile.Length == 0)

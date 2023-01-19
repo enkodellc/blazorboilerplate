@@ -94,6 +94,9 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
         {
             switch (userFeature)
             {
+                case UserFeatures.Administrator:
+                    return GetAllPermission().Select(p => p.Value).ToArray();
+
                 case UserFeatures.Operator:
                     return GetAllPermission()
                         .Where(i => i.GroupName == "User" ||

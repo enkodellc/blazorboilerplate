@@ -1,6 +1,6 @@
 @inherits ClientsPage
 @page "/admin/clients"
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 <TopSection>

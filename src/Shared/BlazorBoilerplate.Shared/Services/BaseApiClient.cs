@@ -186,7 +186,7 @@ namespace BlazorBoilerplate.Shared.Services
             }
             catch (Exception ex)
             {
-                logger.LogError("GetItems: {0}", ex.GetBaseException().Message);
+                logger.LogError($"GetItems {from}: {ex.GetBaseException().Message}");
 
                 throw;
             }

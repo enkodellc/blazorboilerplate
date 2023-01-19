@@ -1,6 +1,6 @@
 @inherits ApiResourcesPage
 @page "/admin/apiResources"
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 

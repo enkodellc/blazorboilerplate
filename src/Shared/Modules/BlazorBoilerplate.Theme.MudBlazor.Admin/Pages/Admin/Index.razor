@@ -1,5 +1,5 @@
 ﻿@page "/admin"
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 @code {

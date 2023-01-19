@@ -1,6 +1,6 @@
 ﻿@inherits TranslationsPage
 @page "/admin/translations"
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 @inject HttpClient httpClient

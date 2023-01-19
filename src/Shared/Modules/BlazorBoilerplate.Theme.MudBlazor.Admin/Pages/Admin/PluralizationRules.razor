@@ -1,6 +1,6 @@
 ﻿@inherits PluralizationRulesPage
 @page "/admin/pluralizationrules"
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 <PageTitle>@L["Pluralization rules"]</PageTitle>

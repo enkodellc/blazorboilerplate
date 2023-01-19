@@ -856,7 +856,7 @@ namespace BlazorBoilerplate.Server.Managers
             user.EmailConfirmed = emailConfirmedByAdmin;
 
             await _userManager.AddClaimsAsync(user, new Claim[]{
-                    new Claim(Policies.IsUser, string.Empty),
+                    new Claim(ApplicationClaimTypes.For(UserFeatures.User), string.Empty),
                     new Claim(JwtClaimTypes.Name, user.UserName),
                     new Claim(JwtClaimTypes.Email, user.Email),
                     new Claim(JwtClaimTypes.EmailVerified, emailConfirmedByAdmin? ClaimValues.trueString : ClaimValues.falseString, ClaimValueTypes.Boolean)

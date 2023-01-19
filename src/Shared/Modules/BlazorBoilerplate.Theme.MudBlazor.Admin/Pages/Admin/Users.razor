@@ -1,6 +1,6 @@
 ﻿@inherits UsersPage
 @page "/admin/users"
-@attribute [Authorize(Policies.IsAdmin)]
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 @layout AdminLayout
 
 <TopSection>
