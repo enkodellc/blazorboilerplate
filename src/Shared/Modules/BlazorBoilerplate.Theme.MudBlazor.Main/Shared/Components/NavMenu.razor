@@ -14,23 +14,6 @@
 </AuthorizeView>
 
 @code {
-
     public int Order { get => 1; }
-    public string IntoComponent { get => "NavMenu"; }
-
-    public bool IsLoggedIn = false;
-
-    [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask { get; set; }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        IsLoggedIn = false;
-        var user = (await authenticationStateTask).User;
-
-        if (user.Identity.IsAuthenticated)
-        {
-            IsLoggedIn = true;
-        }
-    }
+    public string IntoComponent { get => "NavMenuContainer"; }
 }

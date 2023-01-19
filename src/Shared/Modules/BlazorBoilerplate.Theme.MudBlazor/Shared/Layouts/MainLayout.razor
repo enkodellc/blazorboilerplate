@@ -8,7 +8,7 @@
         <MudAppBar Elevation="2">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
             <MudSpacer />
-            <TopRightBarSection />
+            <TopRightBarSectionContainer />
         </MudAppBar>
         <MudDrawer @bind-Open="@_navMenuOpened" Elevation="2">
             <MudDrawerHeader>
@@ -18,8 +18,8 @@
                 </div>
             </MudDrawerHeader>
             <UserProfile />
-            <NavMenu />
-            <DrawerFooter />
+            <NavMenuContainer />
+            <DrawerFooterContainer />
         </MudDrawer>
         <MudMainContent Style="min-height: 100vh; display: flex; flex-direction: column">
             <MudContainer MaxWidth="MaxWidth.False" Style="flex: 1">
@@ -28,7 +28,7 @@
                     @Body
                 </MudPaper>
             </MudContainer>
-            <Footer />
+            <FooterContainer />
         </MudMainContent>
         <MudScrollToTop TopOffset="400" Style="z-index:2000;">
             <MudFab Icon="@Icons.Material.Filled.KeyboardArrowUp" Color="Color.Primary" />
