@@ -13,7 +13,7 @@ public partial class MainPage : ContentPage
             {
                 if (urlLoadingEventArgs.Url.Host != "0.0.0.0")
                 {
-                    urlLoadingEventArgs.UrlLoadingStrategy = UrlLoadingStrategy.OpenInWebView;
+                    urlLoadingEventArgs.UrlLoadingStrategy = UrlLoadingStrategy.OpenExternally;
                 }
             };
     }

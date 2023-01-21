@@ -48,11 +48,24 @@ namespace BlazorBoilerplate.Shared.Providers
             }
         }
 
-        public async Task Logout()
+        public async Task<ApiResponseDto> Logout()
         {
-            await _tokenStorage.Clear();
+            try
+            {
+                await _tokenStorage.Clear();
 
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+                return new ApiResponseDto { StatusCode = Status200OK };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Oidc Logout: {ex.GetBaseException().Message}");
+
+                return new ApiResponseDto { StatusCode = Status500InternalServerError, Message = ex.GetBaseException().Message };
+            }
+            finally
+            {
+                NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            }
         }
     }
 }
