@@ -1,0 +1,261 @@
+﻿@inherits ClientPage
+@page "/admin/client/{Id}"
+@page "/admin/client/add"
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Link="/admin/clients" Title=@L["BreadCrumbadminclients"] />
+        <Breadcrumb Title=@($"Client {Id}") />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>@pageTitle</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False">
+    @if (found)
+    {
+        @if (Client == null)
+        {
+            <LoadingBackground>
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        }
+        else
+        {
+            <EditForm Model="@Client">
+                <FluentValidationValidator />
+                <MudValidationSummary />
+                <MudTabs Elevation="4" Rounded="true" Color="@Color.Info" Class="my-4" PanelClass="py-4">
+                    <MudTabPanel Text="Main">
+                        <MudTextField @bind-Value="@Client.ClientId" Disabled="@isClientKeyReadOnly" Label="Id" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                        <MudSwitch @bind-Checked="@Client.Enabled" Label="Enabled" Color="Color.Primary" />
+
+                        <MudTextField @bind-Value="@Client.Description" Label="Description" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudDivider />
+                        <MudText Typo="Typo.h6">Device Flow</MudText>
+
+                        <MudTextField @bind-Value="@Client.DeviceCodeLifetime" Label="Device Code Lifetime in seconds" AdornmentIcon="@Icons.Material.Filled.Timer" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.UserCodeType" Label="User Code Type" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="false"></MudTextField>
+
+                    </MudTabPanel>
+                    <MudTabPanel Text="Secrets">
+                        <MudSwitch @bind-Checked="@Client.RequireClientSecret" Label="Require Client Secret" Color="Color.Primary" />
+
+                        <MudTable Items="@Client.ClientSecrets" style="@(Client.RequireClientSecret ? "" : "display:none;")" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+                            <HeaderContent>
+                                <MudTh style="min-width:190px;"><MudFab Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => OpenCreateClientSecretDialogOpen())"></MudFab></MudTh>
+                                <MudTh>Expiration</MudTh>
+                                <MudTh>Description</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="ClientSecretRow">
+                                <MudTd style="text-align:center;">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteClientSecretDialog(ClientSecretRow))"></MudIconButton>
+                                </MudTd>
+                                <MudTd>@ClientSecretRow.Expiration</MudTd>
+                                <MudTd>@ClientSecretRow.GetDisplayValue()</MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+                            </PagerContent>
+                        </MudTable>
+                    </MudTabPanel>
+                    <MudTabPanel Text="Grant Types">
+                        <MudTable Items="@grantTypeSelections" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+                            <HeaderContent>
+                                <MudTh>@L["Name"]</MudTh>
+                                <MudTh>Allow</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="GrantTypeRow">
+                                <MudTd>@GrantTypeRow.DisplayValue</MudTd>
+                                <MudTd><MudCheckBox @bind-Checked="@GrantTypeRow.Selected"></MudCheckBox></MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+                            </PagerContent>
+                        </MudTable>
+                        <MudSwitch @bind-Checked="@Client.RequirePkce" Label="Proof Key for Code Exchange (PKCE)" Color="Color.Primary" />
+                    </MudTabPanel>
+                    <MudTabPanel Text="Standard Scopes">
+                        <MudTable Items="@standardScopeSelections" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+                            <HeaderContent>
+                                <MudTh>@L["Name"]</MudTh>
+                                <MudTh>Allow</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="StandardScopeRow">
+                                <MudTd>@StandardScopeRow.DisplayValue</MudTd>
+                                <MudTd><MudCheckBox @bind-Checked="@StandardScopeRow.Selected"></MudCheckBox></MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+                            </PagerContent>
+                        </MudTable>
+                    </MudTabPanel>
+                    <MudTabPanel Text="API Scopes">
+                        <MudTable Items="@apiScopeSelections" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+                            <HeaderContent>
+                                <MudTh>@L["Name"]</MudTh>
+                                <MudTh>Allow</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="ApiScopeRow">
+                                <MudTd>@ApiScopeRow.DisplayValue</MudTd>
+                                <MudTd><MudCheckBox @bind-Checked="@ApiScopeRow.Selected"></MudCheckBox></MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+                            </PagerContent>
+                        </MudTable>
+                    </MudTabPanel>
+                    <MudTabPanel Text="Authentication / Logout">
+                        <MudTextField @bind-Value="@Client.PostLogoutRedirectUrisText" Label="Post Logout Redirect Uris" AdornmentIcon="@Icons.Material.Filled.Link" Adornment="Adornment.End" Lines="5" FullWidth="true" Required="false"></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.FrontChannelLogoutUri" Label="Front Channel Logout Uri" AdornmentIcon="@Icons.Material.Filled.Link" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudSwitch @bind-Checked="@Client.FrontChannelLogoutSessionRequired" Label="Front Channel Logout Session Required" Color="Color.Primary" />
+
+                        <MudTextField @bind-Value="@Client.BackChannelLogoutUri" Label="Back Channel Logout Uri" AdornmentIcon="@Icons.Material.Filled.Link" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudSwitch @bind-Checked="@Client.BackChannelLogoutSessionRequired" Label="Back Channel Logout Session Required" Color="Color.Primary" />
+
+                        <MudSwitch @bind-Checked="@Client.EnableLocalLogin" Label="Enable Local Login" Color="Color.Primary" />
+
+                        <MudTextField @bind-Value="@Client.IdentityProviderRestrictionsText" Label="Identity Provider Restrictions" AdornmentIcon="@Icons.Material.Filled.Link" Adornment="Adornment.End" Lines="5" FullWidth="true" Required="false"></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.UserSsoLifetime" Label="User Sso Lifetime  in seconds" AdornmentIcon="@Icons.Material.Filled.Timer" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                    </MudTabPanel>
+                    <MudTabPanel Text="Token">
+                        <MudSwitch @bind-Checked="@Client.AllowOfflineAccess" Label="Allow Offline Access (client can request refresh tokens)" Color="Color.Primary" />
+
+                        <MudTextField @bind-Value="@Client.IdentityTokenLifetime" Label="Identity Token Lifetime in seconds" AdornmentIcon="@Icons.Material.Filled.Timer" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.AccessTokenLifetime" Label="Access Token Lifetime in seconds" AdornmentIcon="@Icons.Material.Filled.Timer" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                        <MudSwitch @bind-Checked="@Client.AllowAccessTokensViaBrowser" Label="Allow Access Tokens Via Browser" Color="Color.Primary" />
+
+                        <MudTextField @bind-Value="@Client.AuthorizationCodeLifetime" Label="Authorization Code Lifetime in seconds" AdornmentIcon="@Icons.Material.Filled.Timer" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.AbsoluteRefreshTokenLifetime" Label="Maximum lifetime of a refresh token in seconds" AdornmentIcon="@Icons.Material.Filled.Timer" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.SlidingRefreshTokenLifetime" Label="Sliding lifetime of a refresh token in seconds" AdornmentIcon="@Icons.Material.Filled.Timer" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                        <MudSelect @bind-Value="@Client.RefreshTokenUsage" Label="Refresh Token Usage">
+                            @foreach (var item in TokenUsages)
+                            {
+                                <MudSelectItem Value="@item">@item</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudSelect @bind-Value="@Client.RefreshTokenExpiration" Label="Refresh Token Expiration">
+                            @foreach (var item in RefreshTokenExpirations)
+                            {
+                                <MudSelectItem Value="@item">@item</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudSwitch @bind-Checked="@Client.UpdateAccessTokenClaimsOnRefresh" Label="Update Access Token Claims on refresh" Color="Color.Primary" />
+
+                        <MudSelect @bind-Value="@Client.AccessTokenType" Label="Access Token Type">
+                            @foreach (var item in AccessTokenTypes)
+                            {
+                                <MudSelectItem Value="@item">@item</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudSwitch @bind-Checked="@Client.IncludeJwtId" Label="Include Jwt Id" Color="Color.Primary" />
+
+                        <MudTextField @bind-Value="@Client.AllowedCorsOriginsText" Label="Allowed Cors Origins" AdornmentIcon="@Icons.Material.Filled.Link" Adornment="Adornment.End" Lines="5" FullWidth="true" Required="false"></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.RedirectUrisText" Label="Redirect Uris" AdornmentIcon="@Icons.Material.Filled.Link" Adornment="Adornment.End" Lines="5" FullWidth="true" Required="false"></MudTextField>
+
+                        <MudText Typo="Typo.h6">Allowed Identity Token Signing Algorithms</MudText>
+                        <MudTable Items="@tokenSigningAlgorithmsSelections" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+                            <HeaderContent>
+                                <MudTh>@L["Name"]</MudTh>
+                                <MudTh>Allow</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="TokenSigningAlgorithmsRow">
+                                <MudTd>@TokenSigningAlgorithmsRow.DisplayValue</MudTd>
+                                <MudTd><MudCheckBox @bind-Checked="@TokenSigningAlgorithmsRow.Selected"></MudCheckBox></MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+                            </PagerContent>
+                        </MudTable>
+                    </MudTabPanel>
+                    <MudTabPanel Text="Consent Screen">
+                        <MudSwitch @bind-Checked="@Client.RequireConsent" Label="Require Consent" Color="Color.Primary" />
+
+                        <MudSwitch @bind-Checked="@Client.AllowRememberConsent" Label="Allow Remember Consent" Color="Color.Primary" />
+
+                        <MudTextField @bind-Value="@Client.ConsentLifetime" Label="Consent Lifetime in seconds" AdornmentIcon="@Icons.Material.Filled.Timer" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.ClientName" Label="Client display name" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.ClientUri" Label="Client Uri" AdornmentIcon="@Icons.Material.Filled.Link" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudTextField @bind-Value="@Client.LogoUri" Label="Logo Uri" AdornmentIcon="@Icons.Material.Filled.Link" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                    </MudTabPanel>
+                </MudTabs>
+
+                <MudButton OnClick="@CancelChanges">@L["Cancel"]</MudButton>
+                <MudButton OnClick="@UpsertClient" Variant="Variant.Filled" Color="Color.Primary">@mainButtonLabel</MudButton>
+            </EditForm>
+
+
+            <MudDialog @bind-IsVisible="@isDeleteClientSecretDialogOpen" Style="z-index:100">
+                <TitleContent>
+                    <MudText Typo="Typo.h6">
+                        <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />
+                        @L["Confirm Delete"]
+                    </MudText>
+                </TitleContent>
+                <DialogContent>
+                    @L["Are you sure you want to delete {0}?", Secret.GetDisplayValue()]
+                </DialogContent>
+                <DialogActions>
+                    <MudButton OnClick="@(e => { isDeleteClientSecretDialogOpen = false; })">@L["Cancel"]</MudButton>
+                    <MudButton OnClick="@DeleteClientSecret" Variant="Variant.Filled" Color="Color.Error">@L["Delete"]</MudButton>
+                </DialogActions>
+            </MudDialog>
+
+            <MudDialog @bind-IsVisible="@isCreateClientSecretDialogOpen">
+                <TitleContent>
+                    <MudText Typo="Typo.h6">
+                        <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
+                        New Secret for Client @Client.ClientId
+                    </MudText>
+                </TitleContent>
+                <DialogContent>
+                    <EditForm Model="@Secret">
+                        <FluentValidationValidator />
+                        <MudValidationSummary />
+                        <MudTextField @bind-Value="@Secret.Description" Label="Description" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudTextField @bind-Value="@Secret.Value" Label="Secret" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" Required="true" RequiredError=@L["Required"]></MudTextField>
+                        <MudIconButton OnClick="@GenerateSecret" Icon="refresh"></MudIconButton>
+                        <MudTooltip Text="You have to copy the secret now, because it cannot be retrieved anymore.">
+                            <MudIconButton Icon="info"></MudIconButton>
+                        </MudTooltip>
+
+                        <MudDatePicker @bind-Date="@Secret.Expiration" Label="Expiration" MinDate="@DateTime.Now"></MudDatePicker>
+                    </EditForm>
+                </DialogContent>
+                <DialogActions>
+                    <MudButton OnClick="@(e => { isCreateClientSecretDialogOpen = false; })">@L["Cancel"]</MudButton>
+                    <MudButton OnClick="@CreateSecret" Variant="Variant.Filled" Color="Color.Primary">Create Client Secret</MudButton>
+                </DialogActions>
+            </MudDialog>
+        }
+    }
+    else
+    {
+        <PageNotFound />
+    }
+</MudContainer>

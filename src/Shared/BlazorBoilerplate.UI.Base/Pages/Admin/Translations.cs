@@ -1,21 +1,17 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Karambolo.Common.Localization;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
 using ObjectCloner.Extensions;
 using static BlazorBoilerplate.Shared.Localizer.Settings;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
-    public abstract class TranslationsPage : ComponentBase
+    public abstract class TranslationsPage : BaseComponent
     {
-        [Inject] protected NavigationManager navigationManager { get; set; }
-        [Inject] IViewNotifier viewNotifier { get; set; }
         [Inject] ILocalizationApiClient localizationApiClient { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
 
         protected List<LocalizationRecordKey> localizationRecordKeys { get; set; }
 

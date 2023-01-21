@@ -2,20 +2,16 @@
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
 using System.Net;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
-    public class MultiTenancyPage : ComponentBase
+    public class MultiTenancyPage : BaseComponent
     {
-        [Inject] NavigationManager Navigation { get; set; }
-        [Inject] IViewNotifier viewNotifier { get; set; }
         [Inject] HttpClient Http { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
         int pageSize { get; set; } = 15;
         int currentPage { get; set; } = 0;
 
@@ -33,7 +29,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
         protected string GetTenantUri(TenantDto tenant)
         {
-            var builder = new UriBuilder(Navigation.BaseUri)
+            var builder = new UriBuilder(navigationManager.BaseUri)
             {
                 Host = tenant.Identifier
             };

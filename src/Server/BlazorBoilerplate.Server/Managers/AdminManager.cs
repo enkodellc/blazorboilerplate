@@ -84,7 +84,7 @@ namespace BlazorBoilerplate.Server.Managers
         }
 
         #region Roles
-        public async Task<ApiResponse> GetRolesAsync(int pageSize = 0, int pageNumber = 0)
+        public async Task<ApiResponse> GetRoles(int pageSize = 0, int pageNumber = 0)
         {
             var roleQuery = _roleManager.Roles.AsQueryable().OrderBy(x => x.Name);
             var count = roleQuery.Count();
@@ -107,7 +107,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["{0} roles fetched", count], roleDtoList);
         }
 
-        public async Task<ApiResponse> GetRoleAsync(string roleName)
+        public async Task<ApiResponse> GetRole(string roleName)
         {
             var identityRole = await _roleManager.FindByNameAsync(roleName);
 
@@ -123,7 +123,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, "Role fetched", roleDto);
         }
 
-        public async Task<ApiResponse> CreateRoleAsync(RoleDto roleDto)
+        public async Task<ApiResponse> CreateRole(RoleDto roleDto)
         {
             if (_roleManager.Roles.Any(r => r.Name == roleDto.Name))
                 return new ApiResponse(Status400BadRequest, L["Role {0} already exists", roleDto.Name]);
@@ -151,7 +151,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["Role {0} created", roleDto.Name], roleDto); //fix a strange System.Text.Json exception shown only in Debug_SSB 
         }
 
-        public async Task<ApiResponse> UpdateRoleAsync(RoleDto roleDto)
+        public async Task<ApiResponse> UpdateRole(RoleDto roleDto)
         {
             var response = new ApiResponse(Status200OK, L["Role {0} updated", roleDto.Name], roleDto);
 
@@ -187,7 +187,7 @@ namespace BlazorBoilerplate.Server.Managers
             return response;
         }
 
-        public async Task<ApiResponse> DeleteRoleAsync(string name)
+        public async Task<ApiResponse> DeleteRole(string name)
         {
             var response = new ApiResponse(Status200OK, L["Role {0} deleted", name]);
 
@@ -212,7 +212,7 @@ namespace BlazorBoilerplate.Server.Managers
         #endregion
 
         #region Clients
-        public async Task<ApiResponse> GetClientsAsync(int pageSize = 0, int pageNumber = 0)
+        public async Task<ApiResponse> GetClients(int pageSize = 0, int pageNumber = 0)
         {
             var query = _configurationDbContext.Clients
                 .Include(c => c.AllowedGrantTypes)
@@ -232,15 +232,23 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["{0} clients fetched", count], (await query.ToListAsync()).Select(i => i.ToModel()).ToList());
         }
 
-        public async Task<ApiResponse> GetClientAsync(string clientId)
+        public async Task<ApiResponse> GetClient(string clientId)
         {
-            var client = await _configurationDbContext.Clients.SingleOrDefaultAsync(i => i.ClientId == clientId);
+            var client = await _configurationDbContext.Clients
+                .Include(c => c.AllowedGrantTypes)
+                .Include(c => c.ClientSecrets)
+                .Include(c => c.AllowedScopes)
+                .Include(c => c.AllowedCorsOrigins)
+                .Include(c => c.RedirectUris)
+                .Include(c => c.PostLogoutRedirectUris)
+                .Include(c => c.IdentityProviderRestrictions)
+                .SingleOrDefaultAsync(i => i.ClientId == clientId);
 
             return client != null ? new ApiResponse(Status200OK, "Retrieved Client", client.ToModel()) :
                                     new ApiResponse(Status404NotFound, "Failed to Retrieve Client");
         }
 
-        public async Task<ApiResponse> CreateClientAsync(ClientDto clientDto)
+        public async Task<ApiResponse> CreateClient(ClientDto clientDto)
         {
             var client = clientDto.ToEntity();
             await _configurationDbContext.Clients.AddAsync(client);
@@ -249,7 +257,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["Client {0} created", clientDto.ClientId], clientDto);
         }
 
-        public async Task<ApiResponse> UpdateClientAsync(ClientDto clientDto)
+        public async Task<ApiResponse> UpdateClient(ClientDto clientDto)
         {
             //ClientId is not the primary key, but a unique index and ClientDto does not contain the real key Id.
             //So in UI I have to use ClientId as a key and I make it read only.
@@ -266,7 +274,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["Client {0} updated", clientDto.ClientId], clientDto);
         }
 
-        public async Task<ApiResponse> DeleteClientAsync(string clientId)
+        public async Task<ApiResponse> DeleteClient(string clientId)
         {
             var client = _configurationDbContext.Clients.SingleOrDefault(i => i.ClientId == clientId);
 
@@ -281,7 +289,7 @@ namespace BlazorBoilerplate.Server.Managers
         #endregion
 
         #region IdentityResources
-        public async Task<ApiResponse> GetIdentityResourcesAsync(int pageSize = 0, int pageNumber = 0)
+        public async Task<ApiResponse> GetIdentityResources(int pageSize = 0, int pageNumber = 0)
         {
             var query = _configurationDbContext.IdentityResources
                 .Include(i => i.UserClaims)
@@ -295,15 +303,17 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["{0} identity resources fetched", count], (await query.ToListAsync()).Select(i => i.ToModel()).ToList());
         }
 
-        public async Task<ApiResponse> GetIdentityResourceAsync(string name)
+        public async Task<ApiResponse> GetIdentityResource(string name)
         {
-            var identityResource = await _configurationDbContext.IdentityResources.SingleOrDefaultAsync(i => i.Name == name);
+            var identityResource = await _configurationDbContext.IdentityResources
+                .Include(i => i.UserClaims)
+                .SingleOrDefaultAsync(i => i.Name == name);
 
             return identityResource != null ? new ApiResponse(Status200OK, "Retrieved Identity Resource", identityResource.ToModel()) :
                                               new ApiResponse(Status404NotFound, "Failed to Retrieve Identity Resource");
         }
 
-        public async Task<ApiResponse> CreateIdentityResourceAsync(IdentityResourceDto identityResourceDto)
+        public async Task<ApiResponse> CreateIdentityResource(IdentityResourceDto identityResourceDto)
         {
             var identityResource = identityResourceDto.ToEntity();
             await _configurationDbContext.IdentityResources.AddAsync(identityResource);
@@ -312,7 +322,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["Identity Resource {0} created", identityResourceDto.Name], identityResourceDto);
         }
 
-        public async Task<ApiResponse> UpdateIdentityResourceAsync(IdentityResourceDto identityResourceDto)
+        public async Task<ApiResponse> UpdateIdentityResource(IdentityResourceDto identityResourceDto)
         {
             //Name is not the primary key, but a unique index and IdentityResourceDto does not contain the real key Id.
             //So in UI I have to use Name as a key and I make it read only.
@@ -329,7 +339,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["Identity Resource {0} updated", identityResourceDto.Name], identityResourceDto);
         }
 
-        public async Task<ApiResponse> DeleteIdentityResourceAsync(string name)
+        public async Task<ApiResponse> DeleteIdentityResource(string name)
         {
             var identityResource = _configurationDbContext.IdentityResources.SingleOrDefault(i => i.Name == name);
 
@@ -344,7 +354,7 @@ namespace BlazorBoilerplate.Server.Managers
         #endregion
 
         #region ApiResources
-        public async Task<ApiResponse> GetApiResourcesAsync(int pageSize = 0, int pageNumber = 0)
+        public async Task<ApiResponse> GetApiResources(int pageSize = 0, int pageNumber = 0)
         {
             var query = _configurationDbContext.ApiResources
                 .Include(i => i.Secrets)
@@ -360,15 +370,19 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["{0} API resources fetched", count], (await query.ToListAsync()).Select(i => i.ToModel()).ToList());
         }
 
-        public async Task<ApiResponse> GetApiResourceAsync(string name)
+        public async Task<ApiResponse> GetApiResource(string name)
         {
-            var apiResource = await _configurationDbContext.ApiResources.SingleOrDefaultAsync(i => i.Name == name);
+            var apiResource = await _configurationDbContext.ApiResources
+                .Include(i => i.Secrets)
+                .Include(i => i.Scopes)
+                .Include(i => i.UserClaims)
+                .SingleOrDefaultAsync(i => i.Name == name);
 
             return apiResource != null ? new ApiResponse(Status200OK, "Retrieved API Resource", apiResource.ToModel()) :
                                          new ApiResponse(Status404NotFound, "Failed to Retrieve API Resource");
         }
 
-        public async Task<ApiResponse> CreateApiResourceAsync(ApiResourceDto apiResourceDto)
+        public async Task<ApiResponse> CreateApiResource(ApiResourceDto apiResourceDto)
         {
             var apiResource = apiResourceDto.ToEntity();
             await _configurationDbContext.ApiResources.AddAsync(apiResource);
@@ -377,7 +391,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["API Resource {0} created", apiResourceDto.Name], apiResourceDto);
         }
 
-        public async Task<ApiResponse> UpdateApiResourceAsync(ApiResourceDto apiResourceDto)
+        public async Task<ApiResponse> UpdateApiResource(ApiResourceDto apiResourceDto)
         {
             //Name is not the primary key, but a unique index and ApiResourceDto does not contain the real key Id.
             //So in UI I have to use Name as a key and I make it read only.
@@ -394,7 +408,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["API Resource {0} updated", apiResourceDto.Name], apiResourceDto);
         }
 
-        public async Task<ApiResponse> DeleteApiResourceAsync(string name)
+        public async Task<ApiResponse> DeleteApiResource(string name)
         {
             var apiResource = _configurationDbContext.ApiResources.SingleOrDefault(i => i.Name == name);
 
@@ -409,7 +423,7 @@ namespace BlazorBoilerplate.Server.Managers
         #endregion
 
         #region Tenants
-        public async Task<ApiResponse> GetTenantsAsync(int pageSize = 0, int pageNumber = 0)
+        public async Task<ApiResponse> GetTenants(int pageSize = 0, int pageNumber = 0)
         {
             var query = _tenantStoreDbContext.TenantInfo.OrderBy(i => i.Id).AsQueryable();
 
@@ -421,7 +435,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["{0} tenants fetched", count], await _autoMapper.ProjectTo<TenantDto>(query).ToListAsync());
         }
 
-        public async Task<ApiResponse> GetTenantAsync(string id)
+        public async Task<ApiResponse> GetTenant(string id)
         {
             var tenant = await _tenantStoreDbContext.TenantInfo.SingleOrDefaultAsync(i => i.Id == id);
 
@@ -429,7 +443,7 @@ namespace BlazorBoilerplate.Server.Managers
                                     new ApiResponse(Status404NotFound, "Failed to Retrieve Tenant");
         }
 
-        public async Task<ApiResponse> CreateTenantAsync(TenantDto tenantDto)
+        public async Task<ApiResponse> CreateTenant(TenantDto tenantDto)
         {
             var tenant = _autoMapper.Map<TenantDto, TenantInfo>(tenantDto);
             await _tenantStoreDbContext.TenantInfo.AddAsync(tenant);
@@ -438,7 +452,7 @@ namespace BlazorBoilerplate.Server.Managers
             return new ApiResponse(Status200OK, L["Tenant {0} created", tenantDto.Name], tenantDto);
         }
 
-        public async Task<ApiResponse> UpdateTenantAsync(TenantDto tenantDto)
+        public async Task<ApiResponse> UpdateTenant(TenantDto tenantDto)
         {
             var tenant = await _tenantStoreDbContext.TenantInfo.SingleOrDefaultAsync(i => i.Id == tenantDto.Id);
 
@@ -460,7 +474,7 @@ namespace BlazorBoilerplate.Server.Managers
             return response;
         }
 
-        public async Task<ApiResponse> DeleteTenantAsync(string id)
+        public async Task<ApiResponse> DeleteTenant(string id)
         {
             var response = new ApiResponse(Status200OK, L["Tenant {0} deleted", id]);
 

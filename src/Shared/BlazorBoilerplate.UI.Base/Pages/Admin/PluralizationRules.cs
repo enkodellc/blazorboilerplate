@@ -1,18 +1,15 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Karambolo.Common.Localization;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
 using static BlazorBoilerplate.Shared.Localizer.Settings;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
-    public class PluralizationRulesPage : ComponentBase
+    public class PluralizationRulesPage : BaseComponent
     {
-        [Inject] IViewNotifier viewNotifier { get; set; }
         [Inject] ILocalizationApiClient localizationApiClient { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
 
         protected List<PluralFormRule> PluralFormRules { get; set; }
         protected List<string> LocalizationCultures { get; set; } = new List<string>();

@@ -1,19 +1,13 @@
 ﻿using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Karambolo.Common.Localization;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
-    public class DbLogViewerPage : ComponentBase
+    public class DbLogViewerPage : BaseComponent
     {
-        [Inject] IViewNotifier viewNotifier { get; set; }
-        [Inject] IApiClient apiClient { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
-
         protected List<DbLog> dbLogItems;
         protected string[] DebugLevels = { "Debug", "Information", "Warning", "Error" };
         protected string DebugLevel = string.Empty;

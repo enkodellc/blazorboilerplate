@@ -2,19 +2,16 @@
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
 using System.Net.Http.Json;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
-    public class RolesPage : ComponentBase
+    public class RolesPage : BaseComponent
     {
         [Inject] HttpClient Http { get; set; }
-        [Inject] IViewNotifier viewNotifier { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
         protected int pageSize { get; set; } = 15;
         protected int currentPage { get; set; } = 0;
 

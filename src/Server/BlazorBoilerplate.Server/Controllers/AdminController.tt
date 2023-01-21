@@ -18,7 +18,6 @@ using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Controllers
@@ -60,12 +59,12 @@ namespace BlazorBoilerplate.Server.Controllers
         [HttpGet("<#=entity.Item1#>s")]
         [Authorize(Permissions.<#=entity.Item1#>.Read)]
         public async Task<ApiResponse> Get<#=entity.Item1#>s([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
-            => await _adminManager.Get<#=entity.Item1#>sAsync(pageSize, pageNumber);
+            => await _adminManager.Get<#=entity.Item1#>s(pageSize, pageNumber);
 
         [HttpGet("<#=entity.Item1#>/{<#=entity.Item2#>}")]
-        [Authorize]
-        public async Task<ApiResponse> Get<#=entity.Item1#>Async(string <#=entity.Item2#>)
-            => await _adminManager.Get<#=entity.Item1#>Async(<#=entity.Item2#>);
+        [Authorize(Permissions.<#=entity.Item1#>.Read)]
+        public async Task<ApiResponse> Get<#=entity.Item1#>(string <#=entity.Item2#>)
+            => await _adminManager.Get<#=entity.Item1#>(<#=entity.Item2#>);
 
 <# foreach(var action in actions)
 {#>
@@ -74,13 +73,13 @@ namespace BlazorBoilerplate.Server.Controllers
 {#>
         [<#=action.Item2#>("<#=entity.Item1#>/{<#=entity.Item2#>}")]
         [Authorize(Permissions.<#=entity.Item1#>.<#=action.Item1#>)]
-        public async Task<ApiResponse> <#=action.Item1#><#=entity.Item1#>Async(string <#=entity.Item2#>)
-            => await _adminManager.<#=action.Item1#><#=entity.Item1#>Async(<#=entity.Item2#>);
+        public async Task<ApiResponse> <#=action.Item1#><#=entity.Item1#>(string <#=entity.Item2#>)
+            => await _adminManager.<#=action.Item1#><#=entity.Item1#>(<#=entity.Item2#>);
 <#} else {#>
         [<#=action.Item2#>("<#=entity.Item1#>")]
         [Authorize(Permissions.<#=entity.Item1#>.<#=action.Item1#>)]
-        public async Task<ApiResponse> <#=action.Item1#><#=entity.Item1#>Async([FromBody] <#=entity.Item1#>Dto <#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto)
-            => await _adminManager.<#=action.Item1#><#=entity.Item1#>Async(<#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto);
+        public async Task<ApiResponse> <#=action.Item1#><#=entity.Item1#>([FromBody] <#=entity.Item1#>Dto <#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto)
+            => await _adminManager.<#=action.Item1#><#=entity.Item1#>(<#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto);
 
 <#}}#>
         #endregion

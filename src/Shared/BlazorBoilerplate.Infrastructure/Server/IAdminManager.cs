@@ -11,63 +11,63 @@ namespace BlazorBoilerplate.Infrastructure.Server
         ApiResponse GetPermissions();
 
         #region Roles
-        Task<ApiResponse> GetRolesAsync(int pageSize = 0, int pageNumber = 0);
+        Task<ApiResponse> GetRoles(int pageSize = 0, int pageNumber = 0);
 
-        Task<ApiResponse> GetRoleAsync(string name);
+        Task<ApiResponse> GetRole(string name);
 
-        Task<ApiResponse> CreateRoleAsync(RoleDto roleDto);
+        Task<ApiResponse> CreateRole(RoleDto roleDto);
 
-        Task<ApiResponse> UpdateRoleAsync([FromBody] RoleDto roleDto);
+        Task<ApiResponse> UpdateRole([FromBody] RoleDto roleDto);
 
-        Task<ApiResponse> DeleteRoleAsync(string name);
+        Task<ApiResponse> DeleteRole(string name);
         #endregion
 
         #region Clients
-        Task<ApiResponse> GetClientsAsync(int pageSize = 0, int pageNumber = 0);
+        Task<ApiResponse> GetClients(int pageSize = 0, int pageNumber = 0);
 
-        Task<ApiResponse> GetClientAsync(string clientId);
+        Task<ApiResponse> GetClient(string clientId);
 
-        Task<ApiResponse> CreateClientAsync(ClientDto clientDto);
+        Task<ApiResponse> CreateClient(ClientDto clientDto);
 
-        Task<ApiResponse> UpdateClientAsync([FromBody] ClientDto clientDto);
+        Task<ApiResponse> UpdateClient([FromBody] ClientDto clientDto);
 
-        Task<ApiResponse> DeleteClientAsync(string clientId);
+        Task<ApiResponse> DeleteClient(string clientId);
         #endregion
 
         #region ApiResources
-        Task<ApiResponse> GetApiResourcesAsync(int pageSize = 0, int pageNumber = 0);
+        Task<ApiResponse> GetApiResources(int pageSize = 0, int pageNumber = 0);
 
-        Task<ApiResponse> GetApiResourceAsync(string name);
+        Task<ApiResponse> GetApiResource(string name);
 
-        Task<ApiResponse> CreateApiResourceAsync(ApiResourceDto apiResourceDto);
+        Task<ApiResponse> CreateApiResource(ApiResourceDto apiResourceDto);
 
-        Task<ApiResponse> UpdateApiResourceAsync([FromBody] ApiResourceDto apiResourceDto);
+        Task<ApiResponse> UpdateApiResource([FromBody] ApiResourceDto apiResourceDto);
 
-        Task<ApiResponse> DeleteApiResourceAsync(string name);
+        Task<ApiResponse> DeleteApiResource(string name);
         #endregion
 
         #region IdentityResources
-        Task<ApiResponse> GetIdentityResourcesAsync(int pageSize = 0, int pageNumber = 0);
+        Task<ApiResponse> GetIdentityResources(int pageSize = 0, int pageNumber = 0);
 
-        Task<ApiResponse> GetIdentityResourceAsync(string name);
+        Task<ApiResponse> GetIdentityResource(string name);
 
-        Task<ApiResponse> CreateIdentityResourceAsync(IdentityResourceDto identityResourceDto);
+        Task<ApiResponse> CreateIdentityResource(IdentityResourceDto identityResourceDto);
 
-        Task<ApiResponse> UpdateIdentityResourceAsync([FromBody] IdentityResourceDto identityResourceDto);
+        Task<ApiResponse> UpdateIdentityResource([FromBody] IdentityResourceDto identityResourceDto);
 
-        Task<ApiResponse> DeleteIdentityResourceAsync(string name);
+        Task<ApiResponse> DeleteIdentityResource(string name);
         #endregion
 
         #region Tenants
-        Task<ApiResponse> GetTenantsAsync(int pageSize = 0, int pageNumber = 0);
+        Task<ApiResponse> GetTenants(int pageSize = 0, int pageNumber = 0);
 
-        Task<ApiResponse> GetTenantAsync(string id);
+        Task<ApiResponse> GetTenant(string id);
 
-        Task<ApiResponse> CreateTenantAsync(TenantDto tenantDto);
+        Task<ApiResponse> CreateTenant(TenantDto tenantDto);
 
-        Task<ApiResponse> UpdateTenantAsync([FromBody] TenantDto tenantDto);
+        Task<ApiResponse> UpdateTenant([FromBody] TenantDto tenantDto);
 
-        Task<ApiResponse> DeleteTenantAsync(string id);
+        Task<ApiResponse> DeleteTenant(string id);
         #endregion
     }
 }

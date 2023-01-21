@@ -2,23 +2,20 @@
 using BlazorBoilerplate.Shared.Dto.Admin;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Humanizer;
 using IdentityModel;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
 using System.Net;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
-    public class IdentityResourcesPage : ComponentBase
+    public class IdentityResourcesPage : BaseComponent
     {
-        [Inject] IViewNotifier viewNotifier { get; set; }
         [Inject] HttpClient Http { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
         int pageSize { get; set; } = 15;
         int currentPage { get; set; } = 0;
 

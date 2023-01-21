@@ -1,0 +1,78 @@
+@inherits IdentityResourcePage
+@page "/admin/identityResource/{Id}"
+@page "/admin/identityResource/add"
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Link="/admin/identityResources" Title=@L["BreadCrumbadminidentityResources"] />
+        <Breadcrumb Title=@($"Identity Resource {Id}") />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>@pageTitle</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False">
+    @if (found)
+    {
+        @if (IdentityResource == null)
+        {
+            <LoadingBackground>
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        }
+        else
+        {
+            <EditForm Model="@IdentityResource">
+                <FluentValidationValidator />
+                <MudValidationSummary />
+                <MudTabs Elevation="4" Rounded="true" Color="@Color.Info" Class="my-4" PanelClass="py-4">
+                    <MudTabPanel Text="Main">
+                        <MudTextField @bind-Value="@IdentityResource.Name" Disabled="@isIdentityContextIdReadOnly" Label="Id" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                        <MudSwitch @bind-Checked="@IdentityResource.Enabled" Label="Enabled" Color="Color.Primary" />
+
+                        <MudTextField @bind-Value="@IdentityResource.DisplayName" Label="Display Name" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudTextField @bind-Value="@IdentityResource.Description" Label="Description" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudSwitch @bind-Checked="@IdentityResource.Required" Label="Required" Color="Color.Primary" />
+
+                        <MudSwitch @bind-Checked="@IdentityResource.Emphasize" Label="Emphasize in consent screen" Color="Color.Primary" />
+
+                        <MudSwitch @bind-Checked="@IdentityResource.ShowInDiscoveryDocument" Label="Show in discovery document" Color="Color.Primary" />
+
+                    </MudTabPanel>
+                    <MudTabPanel Text="User Claims">
+                        <MudTextField @bind-Value="@IdentityResource.CustomUserClaimsText" Label="Custom User Claims" Lines="5" FullWidth="true" Required="false"></MudTextField>
+
+                        <MudDivider />
+                        <MudText Typo="Typo.h6">Jwt Claims</MudText>
+                        <MudTable Items="@jwtClaimSelections" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+                            <HeaderContent>
+                                <MudTh>@L["Name"]</MudTh>
+                                <MudTh>Required</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="JwtClaimRow">
+                                <MudTd>@JwtClaimRow.DisplayValue</MudTd>
+                                <MudTd><MudCheckBox @bind-Checked="@JwtClaimRow.Selected"></MudCheckBox></MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+                            </PagerContent>
+                        </MudTable>
+                    </MudTabPanel>
+                </MudTabs>
+            </EditForm>
+
+            <MudButton OnClick="@CancelChanges">@L["Cancel"]</MudButton>
+            <MudButton OnClick="@UpsertIdentityResource" Variant="Variant.Filled" Color="Color.Primary">@mainButtonLabel</MudButton>
+        }
+    }
+    else
+    {
+        <PageNotFound />
+    }
+</MudContainer>

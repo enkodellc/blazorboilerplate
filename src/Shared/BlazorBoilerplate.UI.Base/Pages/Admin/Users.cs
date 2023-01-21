@@ -1,24 +1,20 @@
 ﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Breeze.Sharp;
 using Karambolo.Common.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Localization;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin
 {
-    public class UsersPage : ComponentBase
+    public class UsersPage : BaseComponent
     {
-        [Inject] IViewNotifier viewNotifier { get; set; }
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
-        [Inject] IApiClient apiClient { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
 
         protected IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
 

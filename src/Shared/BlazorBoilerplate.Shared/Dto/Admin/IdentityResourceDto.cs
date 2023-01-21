@@ -38,7 +38,7 @@ namespace BlazorBoilerplate.Shared.Dto.Admin
         }
         private static string JoinLines(IEnumerable<string> value)
         {
-            return string.Join('\n', value);
+            return string.Join('\n', value ?? Array.Empty<string>());
         }
     }
 }

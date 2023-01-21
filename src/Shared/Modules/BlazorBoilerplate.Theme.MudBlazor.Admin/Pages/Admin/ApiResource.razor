@@ -1,0 +1,154 @@
+@inherits ApiResourcePage
+@page "/admin/apiResource/{Id}"
+@page "/admin/apiResource/add"
+@attribute [AuthorizeForFeature(UserFeatures.Administrator)]
+@layout AdminLayout
+
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Link="/admin/apiResources" Title=@L["BreadCrumbadminapiResources"] />
+        <Breadcrumb Title=@($"Api Resource {Id}") />
+    </Breadcrumbs>
+</TopSection>
+
+<PageTitle>@pageTitle</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False">
+    @if (found)
+    {
+        @if (ApiResource == null)
+        {
+            <LoadingBackground>
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        }
+        else
+        {
+            <EditForm Model="@ApiResource">
+                <FluentValidationValidator />
+                <MudValidationSummary />
+                <MudTabs Elevation="4" Rounded="true" Color="@Color.Info" Class="my-4" PanelClass="py-4">
+                    <MudTabPanel Text="Main">
+                        <MudTextField @bind-Value="@ApiResource.Name" Disabled="@isApiContextIdReadOnly" Label="Id" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+
+                        <MudSwitch @bind-Checked="@ApiResource.Enabled" Label="Enabled" Color="Color.Primary" />
+
+                        <MudTextField @bind-Value="@ApiResource.DisplayName" Label="Display Name" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudTextField @bind-Value="@ApiResource.Description" Label="Description" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudTextField @bind-Value="@ApiResource.ScopesText" Label="API Scopes" Lines="5" FullWidth="true" Required="false"></MudTextField>
+
+                        <MudText Typo="Typo.h6">Allowed Access Token Signing Algorithms</MudText>
+                        <MudTable Items="@tokenSigningAlgorithmsSelections" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+                            <HeaderContent>
+                                <MudTh>@L["Name"]</MudTh>
+                                <MudTh>Allow</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="TokenSigningAlgorithmsRow">
+                                <MudTd>@TokenSigningAlgorithmsRow.DisplayValue</MudTd>
+                                <MudTd><MudCheckBox @bind-Checked="@TokenSigningAlgorithmsRow.Selected"></MudCheckBox></MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+                            </PagerContent>
+                        </MudTable>
+                    </MudTabPanel>
+                    <MudTabPanel Text="Secrets">
+                        <MudTable Items="@ApiResource.ApiSecrets" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+                            <HeaderContent>
+                                <MudTh style="min-width:190px;"><MudFab Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => OpenCreateApiResourceSecretDialogOpen())"></MudFab></MudTh>
+                                <MudTh>Expiration</MudTh>
+                                <MudTh>Description</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="ApiResourceSecretRow">
+                                <MudTd style="text-align:center;">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteApiResourceSecretDialog(ApiResourceSecretRow))"></MudIconButton>
+                                </MudTd>
+                                <MudTd>@ApiResourceSecretRow.Expiration</MudTd>
+                                <MudTd>@ApiResourceSecretRow.GetDisplayValue()</MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+                            </PagerContent>
+                        </MudTable>
+                    </MudTabPanel>
+                    <MudTabPanel Text="User Claims">
+                        <MudTextField @bind-Value="@ApiResource.CustomUserClaimsText" Label="Custom User Claims" Lines="5" FullWidth="true" Required="false"></MudTextField>
+
+                        <MudDivider />
+                        <MudText Typo="Typo.h6">Jwt Claims</MudText>
+                        <MudTable Items="@jwtClaimSelections" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
+                            <HeaderContent>
+                                <MudTh>@L["Name"]</MudTh>
+                                <MudTh>Required</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="JwtClaimRow">
+                                <MudTd>@JwtClaimRow.DisplayValue</MudTd>
+                                <MudTd><MudCheckBox @bind-Checked="@JwtClaimRow.Selected"></MudCheckBox></MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager RowsPerPageString=@L["Rows per page"] />
+                            </PagerContent>
+                        </MudTable>
+                    </MudTabPanel>
+                </MudTabs>
+            </EditForm>
+
+            <MudButton OnClick="@CancelChanges">@L["Cancel"]</MudButton>
+            <MudButton OnClick="@UpsertApiResource" Variant="Variant.Filled" Color="Color.Primary">@mainButtonLabel</MudButton>
+
+
+            <MudDialog @bind-IsVisible="@isDeleteApiResourceSecretDialogOpen" Style="z-index:100">
+                <TitleContent>
+                    <MudText Typo="Typo.h6">
+                        <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />
+                        @L["Confirm Delete"]
+                    </MudText>
+                </TitleContent>
+                <DialogContent>
+                    @L["Are you sure you want to delete {0}?", Secret.GetDisplayValue()]
+                </DialogContent>
+                <DialogActions>
+                    <MudButton OnClick="@(e => { isDeleteApiResourceSecretDialogOpen = false; })">@L["Cancel"]</MudButton>
+                    <MudButton OnClick="@DeleteApiResourceSecret" Variant="Variant.Filled" Color="Color.Error">@L["Delete"]</MudButton>
+                </DialogActions>
+            </MudDialog>
+
+            <MudDialog @bind-IsVisible="@isCreateApiResourceSecretDialogOpen">
+                <TitleContent>
+                    <MudText Typo="Typo.h6">
+                        <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
+                        New Secret for API Resource @ApiResource.Name
+                    </MudText>
+                </TitleContent>
+                <DialogContent>
+                    <EditForm Model="@Secret">
+                        <FluentValidationValidator />
+                        <MudValidationSummary />
+                        <MudTextField @bind-Value="@Secret.Description" Label="Description" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+
+                        <MudTextField @bind-Value="@Secret.Value" Label="Secret" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" Required="true" RequiredError=@L["Required"]></MudTextField>
+                        <MudIconButton OnClick="@GenerateSecret" Icon="@Icons.Material.Filled.Refresh"></MudIconButton>
+                        <MudTooltip Text="You have to copy the secret now, because it cannot be retrieved anymore.">
+                            <MudIconButton Icon="@Icons.Material.Filled.Info"></MudIconButton>
+                        </MudTooltip>
+
+                        <MudDatePicker @bind-Date="@Secret.Expiration" Label="Expiration" MinDate="@DateTime.Now"></MudDatePicker>
+                    </EditForm>
+                </DialogContent>
+                <DialogActions>
+                    <MudButton OnClick="@(e => { isCreateApiResourceSecretDialogOpen = false; })">@L["Cancel"]</MudButton>
+                    <MudButton OnClick="@CreateSecret" Variant="Variant.Filled" Color="Color.Primary">Create API Resource Secret</MudButton>
+                </DialogActions>
+            </MudDialog>
+        }
+    }
+    else
+    {
+        <PageNotFound />
+    }
+</MudContainer>
+
