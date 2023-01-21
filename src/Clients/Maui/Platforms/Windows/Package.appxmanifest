@@ -35,7 +35,7 @@
       </uap:VisualElements>
 	  <Extensions>
             <uap:Extension Category="windows.protocol">
-            <uap:Protocol Name="myapp">
+            <uap:Protocol Name="com.blazorboilerplate.app">
                 <uap:DisplayName>My App</uap:DisplayName>
             </uap:Protocol>
             </uap:Extension>

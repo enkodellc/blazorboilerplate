@@ -1,6 +1,6 @@
 ﻿@using BlazorBoilerplate.Shared.Extensions
 @using BlazorBoilerplate.Theme.Material.Shared.Components
-@using BlazorBoilerplate.Theme.Material.Shared.Layouts
+@using BlazorBoilerplateMaui.Shared.Layouts
 @using BlazorBoilerplate.UI.Base.Shared.Components
 @using BlazorBoilerplateMaui.Shared.Components
 @using BlazorBoilerplate.Shared.Services
@@ -21,7 +21,7 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<Router AppAssembly="typeof(Main).Assembly" AdditionalAssemblies="@additionalAssemblies">
+<Router AppAssembly="typeof(Main).Assembly">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
             <Authorizing>
@@ -58,12 +58,6 @@
                 AppbarBackground = "#2e7d32",
             }
         };
-
-    private readonly IEnumerable<Assembly> additionalAssemblies = new Assembly[]
-            {
-                typeof(BlazorBoilerplate.Theme.Material.Main.Pages.Index).Assembly,
-                typeof(BlazorBoilerplate.Theme.Material.Pages.Account.Profile).Assembly
-            };
 
     protected override async Task OnInitializedAsync()
     {

@@ -22,7 +22,7 @@ else
 {
     <MudTable Items="@roles" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
         <HeaderContent>
-            <MudTh><MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertRoleDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Role"]</MudButton></MudTh>
+            <MudTh><MudFab Icon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertRoleDialog())" Color="Color.Primary" Size="Size.Medium" /></MudTh>
             <MudTh>@L["Name"]</MudTh>
             <MudTh>@L["Permissions"]</MudTh>
         </HeaderContent>

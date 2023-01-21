@@ -1,0 +1,14 @@
+@inject NavigationManager navigationManager
+@inject IStringLocalizer<Global> L
+
+<MudNavMenu Style="flex: 1">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
+        @L["AppNavHome"]
+    </MudNavLink>
+
+    <AuthorizeView Policy=@Policies.For(UserFeatures.Operator)>
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("/users").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People">
+            @L["Users"]
+        </MudNavLink>
+    </AuthorizeView>
+</MudNavMenu>

@@ -1,0 +1,26 @@
+﻿@inherits UserBasePage
+@page "/user/edit/{id}"
+@page "/user/add"
+@attribute [AuthorizeForFeature(UserFeatures.Operator)]
+
+<MudContainer MaxWidth="MaxWidth.False">
+    @if (found)
+    {
+        if (model == null)
+        {
+            <LoadingBackground />
+        }
+        else
+        {
+            <UserViewModelPanel Model="@model" BackLink="/users" />            
+        }
+    }
+    else
+    {
+        <PageNotFound />
+    }
+</MudContainer>
+
+@code {
+
+}

@@ -22,7 +22,7 @@ else
 {
     <MudTable ServerData="@(new Func<TableState, Task<TableData<ApplicationUser>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" @ref="table">
         <HeaderContent>
-            <MudTh><MudButton StartIcon="@Icons.Material.Filled.PersonAdd" OnClick="@(e => { createUserDialogOpen = true; })" Variant="Variant.Filled" Color="Color.Primary">@L["New User"]</MudButton></MudTh>
+            <MudTh><MudFab Icon="@Icons.Material.Filled.Add" OnClick="@(e => { createUserDialogOpen = true; })" Color="Color.Primary" Size="Size.Medium" /></MudTh>
             <MudTh>@L["UserName"]</MudTh>
             <MudTh>@L["Email"]</MudTh>
             <MudTh>@L["Roles"]</MudTh>

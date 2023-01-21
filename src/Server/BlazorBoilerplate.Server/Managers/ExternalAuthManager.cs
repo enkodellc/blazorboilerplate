@@ -80,6 +80,7 @@ namespace BlazorBoilerplate.Server.Managers
                 //If external login/signin failed
                 var userNameClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
                 var surnameClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname);
+                var givenClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName);
                 var userEmailClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
 
                 //For Apple provider
@@ -130,9 +131,12 @@ namespace BlazorBoilerplate.Server.Managers
                     {
                         user = await _accountManager.RegisterNewUser(userName, userEmailClaim.Value, null, true);
 
-                        user.Person = new Person { Id = Guid.NewGuid(), FirstName = userNameClaim.Value, LastName = surnameClaim.Value };
+                        if (givenClaim != null && surnameClaim != null)
+                        {
+                            user.Person = new Person { Id = Guid.NewGuid(), FirstName = givenClaim.Value, LastName = surnameClaim.Value };
 
-                        _dbContext.Persons.Add(user.Person);
+                            _dbContext.Persons.Add(user.Person);
+                        }
 
                         await _dbContext.SaveChangesAsync();
                     }

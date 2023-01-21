@@ -33,7 +33,7 @@
         <string>My App</string>
         <key>CFBundleURLSchemes</key>
         <array>
-            <string>myapp</string>
+            <string>com.blazorboilerplate.app</string>
         </array>
         <key>CFBundleTypeRole</key>
         <string>Editor</string>

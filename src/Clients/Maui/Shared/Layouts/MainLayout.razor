@@ -1,0 +1,58 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject AppState appState
+@inject IStringLocalizer<Global> L
+
+<CascadingValue Value="this">
+    <MudLayout>
+        <MudAppBar Elevation="2">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudSpacer />
+            <TopRightBarSection />
+        </MudAppBar>
+        <MudDrawer @bind-Open="@_navMenuOpened" Elevation="2">
+            <MudDrawerHeader>
+                <div class="drawer-logo">
+                    <img alt="@appState.AppName" class="logo-img" src="_content/BlazorBoilerplate.Theme.MudBlazor/images/logo-dark.svg" title="@appState.AppName">
+                    <a href="/">@appState.AppName</a>
+                </div>
+            </MudDrawerHeader>
+            <UserProfileWidget />
+            <NavMenu />
+            <DrawerFooter />
+        </MudDrawer>
+        <MudMainContent Style="min-height: 100vh; display: flex; flex-direction: column">
+            <MudContainer MaxWidth="MaxWidth.False" Style="flex: 1">
+                <MudPaper Class="py-4" Elevation="0">
+                    @Body
+                </MudPaper>
+            </MudContainer>
+            <Footer />
+        </MudMainContent>
+        <MudScrollToTop TopOffset="400" Style="z-index:2000;">
+            <MudFab Icon="@Icons.Material.Filled.KeyboardArrowUp" Color="Color.Primary" />
+        </MudScrollToTop>
+    </MudLayout>
+</CascadingValue>
+
+@code {
+    bool _navMenuOpened = true;
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            
+        }
+    }
+
+    private void DrawerToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+    }
+}

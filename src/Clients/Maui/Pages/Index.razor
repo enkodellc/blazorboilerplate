@@ -1,0 +1,15 @@
+﻿@page "/"
+@*@attribute [Authorize]*@
+
+@inject IStringLocalizer<Global> L
+@inject ISnackbar Snackbar
+
+<PolicyCheck />
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+}

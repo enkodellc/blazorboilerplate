@@ -1,0 +1,49 @@
+﻿@inherits UsersBasePage
+@page "/users"
+@attribute [AuthorizeForFeature(UserFeatures.Operator)]
+
+<PageTitle>@L["User management"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False">
+    <MudItem xs="10" sm="4" Class="d-flex align-center justify-center mud-width-full">
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder=@L["Search"] Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" />
+    </MudItem>
+</MudContainer>
+
+<div class="d-flex flex-wrap mb-4 mx-4">
+    <MudFab Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Link="/user/add" Size="Size.Medium" Class="ma-2" aria-label="add" />
+    <MudFab Icon="@Icons.Material.Filled.Refresh" OnClick="@Reload" Size="Size.Medium" Class="ma-2" />
+</div>
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<Person>>>(ServerReload))" Striped="true" Bordered="true" Hover="true" Class="rounded-0" Elevation="0"
+          SelectedItemChanged="@((Person item) => { navigationManager.NavigateTo($"/user/edit/{item.User.Id.ToCompressedString()}"); })" @ref="table">
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="LastName" T="Person">@L["LastName"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="FirstName" T="Person">@L["FirstName"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="User.UserName" T="Person">@L["UserName"]</MudTableSortLabel></MudTh>
+        @if (isOperator)
+        {
+            <MudTh><MudTableSortLabel SortLabel="CreatedBy" T="Person">@L["CreatedBy"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="CreatedOn" T="Person">@L["CreationDate"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="ExpirationDate" T="Person">@L["ExpirationDate"]</MudTableSortLabel></MudTh>
+        }
+    </HeaderContent>
+    <RowTemplate Context="row">
+        <MudTd DataLabel="@L["LastName"]">@row.LastName</MudTd>
+        <MudTd DataLabel="@L["FirstName"]">@row.FirstName</MudTd>
+        <MudTd DataLabel="@L["UserName"]">@row.User?.UserName</MudTd>
+        @if (isOperator)
+        {
+            <MudTd DataLabel="@L["CreatedBy"]">@row.CreatedBy?.UserName</MudTd>
+            <MudTd DataLabel="@L["CreationDate"]">@row.CreatedOn</MudTd>
+            <MudTd DataLabel="@L["ExpirationDate"]">@row.ExpirationDate</MudTd>
+        }
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager RowsPerPageString=@L["Rows per page"] />
+    </PagerContent>
+</MudTable>
+
+@code {
+
+}

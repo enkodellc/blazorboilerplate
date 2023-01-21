@@ -22,7 +22,7 @@ else
 {
     <MudTable Items="@identityResources" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
         <HeaderContent>
-            <MudTh><MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertIdentityResourceDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Identity Resource"]</MudButton></MudTh>
+            <MudTh><MudFab Icon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertIdentityResourceDialog())" Color="Color.Primary" Size="Size.Medium" /></MudTh>
             <MudTh>@L["Name"]</MudTh>
             <MudTh>Enabled</MudTh>
             <MudTh>Display Name</MudTh>

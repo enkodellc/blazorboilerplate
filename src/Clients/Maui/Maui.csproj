@@ -59,6 +59,10 @@
 	  <MauiAsset Include="..\..\Server\BlazorBoilerplate.Server\Localization\en-US.po" Link="Resources\Raw\en-US.po" />
 	  <MauiAsset Include="..\..\Server\BlazorBoilerplate.Server\Localization\it-IT.po" Link="Resources\Raw\it-IT.po" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor\BlazorBoilerplate.Theme.MudBlazor.csproj" />
+	</ItemGroup>
     <ItemGroup>
       <Compile Update="Resources\Texts.Designer.cs">
         <DesignTime>True</DesignTime>
@@ -78,12 +82,13 @@
       </MauiXaml>
     </ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\..\Shared\Modules\BlazorBoilerplate.Theme.MudBlazor.Main\BlazorBoilerplate.Theme.MudBlazor.Main.csproj" />
-	</ItemGroup>
-
 	<PropertyGroup>
 		<EnableAssemblyILStripping>false</EnableAssemblyILStripping>
 		<UseInterpreter Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">true</UseInterpreter>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
+	  <CodesignKey>Apple Development: Created via API (5C954B3W93)</CodesignKey>
+	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
 	</PropertyGroup>
 </Project>

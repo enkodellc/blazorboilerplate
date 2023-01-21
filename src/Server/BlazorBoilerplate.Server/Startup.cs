@@ -313,7 +313,7 @@ namespace BlazorBoilerplate.Server
                     {
                         var accessToken = context.Request.Query["access_token"];
 
-                        // If the request is for our hub...
+                        // If the request is for SignalR hub
                         var path = context.HttpContext.Request.Path;
                         if (!string.IsNullOrEmpty(accessToken) &&
                             path.StartsWithSegments(Constants.HubPaths.Main))
@@ -328,13 +328,12 @@ namespace BlazorBoilerplate.Server
             });
 
             #region ExternalAuthProviders
-            //https://github.com/dotnet/aspnetcore/blob/master/src/Security/Authentication/samples/SocialSample/Startup.cs
-            //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/google-logins
+
             if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Google:Enabled"] ?? "false"))
             {
                 authBuilder.AddGoogle(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignInScheme = ExternalCookieAuthenticationScheme;
 
                     options.ClientId = Configuration["ExternalAuthProviders:Google:ClientId"];
                     options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
@@ -347,18 +346,14 @@ namespace BlazorBoilerplate.Server
                         OnRemoteFailure = HandleOnRemoteFailure
                     };
                     options.ClaimActions.MapJsonSubKey("urn:google:image", "image", "url");
-                    options.ClaimActions.Remove(ClaimTypes.GivenName);
                 });
             }
 
             if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Facebook:Enabled"] ?? "false"))
             {
-                // You must first create an app with Facebook and add its ID and Secret to your user-secrets.
-                // https://developers.facebook.com/apps/
-                // https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#login
                 authBuilder.AddFacebook(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignInScheme = ExternalCookieAuthenticationScheme;
 
                     options.AppId = Configuration["ExternalAuthProviders:Facebook:AppId"];
                     options.AppSecret = Configuration["ExternalAuthProviders:Facebook:AppSecret"];
@@ -376,18 +371,13 @@ namespace BlazorBoilerplate.Server
 
             if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Twitter:Enabled"] ?? "false"))
             {
-                // You must first create an app with Twitter and add its key and Secret to your user-secrets.
-                // https://apps.twitter.com/
-                // https://developer.twitter.com/en/docs/basics/authentication/api-reference/access_token
                 authBuilder.AddTwitter(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignInScheme = ExternalCookieAuthenticationScheme;
 
                     options.ConsumerKey = Configuration["ExternalAuthProviders:Twitter:ConsumerKey"];
                     options.ConsumerSecret = Configuration["ExternalAuthProviders:Twitter:ConsumerSecret"];
 
-                    // http://stackoverflow.com/questions/22627083/can-we-get-email-id-from-twitter-oauth-api/32852370#32852370
-                    // http://stackoverflow.com/questions/36330675/get-users-email-from-twitter-api-for-external-login-authentication-asp-net-mvc?lq=1
                     options.RetrieveUserDetails = true;
                     options.SaveTokens = true;
                     options.ClaimActions.MapJsonKey("urn:twitter:profilepicture", "profile_image_url", ClaimTypes.Uri);
@@ -398,19 +388,17 @@ namespace BlazorBoilerplate.Server
                 });
             }
 
-            //https://github.com/xamarin/Essentials/blob/master/Samples/Sample.Server.WebAuthenticator/Startup.cs
             if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Apple:Enabled"] ?? "false"))
             {
                 authBuilder.AddApple(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignInScheme = ExternalCookieAuthenticationScheme;
 
                     options.ClientId = Configuration["ExternalAuthProviders:Apple:ClientId"];
                     options.KeyId = Configuration["ExternalAuthProviders:Apple:KeyId"];
                     options.TeamId = Configuration["ExternalAuthProviders:Apple:TeamId"];
 
-                    options.UsePrivateKey(keyId
-                       => _environment.ContentRootFileProvider.GetFileInfo($"AuthKey_{keyId}.p8"));
+                    options.UsePrivateKey(keyId => _environment.ContentRootFileProvider.GetFileInfo($"AuthKey_{keyId}.p8"));
                     options.SaveTokens = true;
                 });
             }
@@ -421,7 +409,7 @@ namespace BlazorBoilerplate.Server
             {
                 authBuilder.AddMicrosoftAccount(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignInScheme = ExternalCookieAuthenticationScheme;
 
                     options.ClientId = Configuration["ExternalAuthProviders:Microsoft:ClientId"];
                     options.ClientSecret = Configuration["ExternalAuthProviders:Microsoft:ClientSecret"];

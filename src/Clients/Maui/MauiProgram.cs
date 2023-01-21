@@ -3,7 +3,6 @@ using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
-using BlazorBoilerplate.Theme.Material.Main.Shared.Components;
 using BlazorBoilerplate.Theme.Material.Services;
 using BlazorBoilerplateMaui.Services;
 using IdentityModel.OidcClient;
@@ -20,6 +19,7 @@ namespace BlazorBoilerplateMaui;
 
 public static class MauiProgram
 {
+    public static string ServerAddres { get; private set; }
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -33,7 +33,7 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
-        string baseAddress = "https://openid.quarella.net";
+        ServerAddres = "https://openid.quarella.net";
 
         builder.Services.AddBlazorWebViewDeveloperTools();
 
@@ -49,7 +49,7 @@ public static class MauiProgram
 
         builder.Services.AddLogging();
 #else
-        string baseAddress = "https://www.blazorboilerplate.com";
+        ServerAddres = "https://www.blazorboilerplate.com";
 #endif
 
         builder.Services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
@@ -64,7 +64,7 @@ public static class MauiProgram
 #endif
         });
         builder.Services.AddDataProtection().SetApplicationName(nameof(BlazorBoilerplate));
-        builder.Services.AddSingleton(sp => new HttpClient(sp.GetRequiredService<RefreshTokenHandler>()) { BaseAddress = new Uri(baseAddress) });
+        builder.Services.AddSingleton(sp => new HttpClient(sp.GetRequiredService<RefreshTokenHandler>()) { BaseAddress = new Uri(ServerAddres) });
 
         builder.Services.AddAuthorizationCore();
         builder.Services.AddSingleton<IAuthorizationPolicyProvider, SharedAuthorizationPolicyProvider>();
@@ -92,22 +92,16 @@ public static class MauiProgram
 
         builder.Services.AddScoped<IViewNotifier, ViewNotifier>();
 
-        builder.Services.AddSingleton<IDynamicComponent, NavMenu>();
-        builder.Services.AddSingleton<IDynamicComponent, Footer>();
-        builder.Services.AddSingleton<IDynamicComponent, DrawerFooter>();
-        builder.Services.AddSingleton<IDynamicComponent, TopRightBarSection>();
-
         builder.Services.RegisterIntlTelInput();
 
         builder.Services.AddSingleton<ITokenStorage, TokenStorage>();
         builder.Services.AddSingleton(new OidcClient(new()
         {
-            Authority = baseAddress,
-
-            ClientId = "myapp",
+            Authority = ServerAddres,            
+            ClientId = "com.blazorboilerplate.app",
             ClientSecret= "secret",
             Scope = "openid profile email LocalAPI",
-            RedirectUri = "myapp://callback",
+            RedirectUri = "com.blazorboilerplate.app://callback",
 
             Browser = new MauiAuthenticationBrowser()
         }));

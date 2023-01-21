@@ -13,7 +13,7 @@ public class MauiAuthenticationBrowser : IdentityModel.OidcClient.Browser.IBrows
                 new Uri(options.StartUrl),
                 new Uri(options.EndUrl));
 
-            var url = new RequestUrl("myapp://callback")
+            var url = new RequestUrl("com.blazorboilerplate.app://callback")
                 .Create(new Parameters(result.Properties));
 
             return new BrowserResult

@@ -83,7 +83,7 @@ namespace BlazorBoilerplate.Storage
                 {
                     ClientClaimsPrefix = string.Empty,
 
-                    ClientId = "myapp",
+                    ClientId = "com.blazorboilerplate.app",
 
                     AllowedGrantTypes = GrantTypes.Code,
 
@@ -100,10 +100,12 @@ namespace BlazorBoilerplate.Storage
                         LocalApi.ScopeName,
                         LocalApiName
                     },
-                    
+
                     RequirePkce = true,
 
-                    RedirectUris = { "myapp://callback" },
+                    RedirectUris = { "com.blazorboilerplate.app://callback" },
+
+                    AccessTokenLifetime = 300
                 }
             };
 

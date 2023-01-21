@@ -26,7 +26,7 @@ else
     <MudTable ServerData="@(new Func<TableState, Task<TableData<LocalizationRecordKey>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" Class="mb-4"
               SelectedItemChanged="async (LocalizationRecordKey key) => await LoadLocalizationRecords((LocalizationRecordKey)key)" @ref="table">
         <ToolBarContent>
-            <MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@OpenNewKeyDialogOpen" Variant="Variant.Filled" Color="Color.Primary" Class="ma-2">@L["NewTranslation"]</MudButton>
+            <MudFab Icon="@Icons.Material.Filled.Add" OnClick="@OpenNewKeyDialogOpen" Color="Color.Primary" Size="Size.Medium" Class="ma-2" />
             <MudButton OnClick="@SaveChanges" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
             <MudButton OnClick="@ReloadTranslations" Class="ma-2">@L["ReloadTranslations"]</MudButton>
             <MudButton OnClick="@(e => { navigationManager.NavigateTo($"{httpClient.BaseAddress}/api/localization/export", true); })" Class="ma-2">@L["Export"]</MudButton>

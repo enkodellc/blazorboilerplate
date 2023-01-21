@@ -22,16 +22,17 @@ else
 {
     <MudTable Items="@clients" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
         <HeaderContent>
-            <MudTh><MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertClientDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Client"]</MudButton></MudTh>
+            <MudTh><MudFab Icon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertClientDialog())" Color="Color.Primary" Size="Size.Medium" /></MudTh>
             <MudTh>Id</MudTh>
             <MudTh>Enabled</MudTh>
             <MudTh>Access Token Lifetime</MudTh>
             <MudTh>Require Client Secret</MudTh>
             <MudTh>Require Consent</MudTh>
             <MudTh>Local Login</MudTh>
-            <MudTh>Grant Types</MudTh>
+            <MudTh>Allowed Grant Types</MudTh>
             <MudTh>PKCE</MudTh>
-            <MudTh>Scopes</MudTh>
+            <MudTh>Allowed Scopes</MudTh>
+            <MudTh>Client claims</MudTh>
         </HeaderContent>
         <RowTemplate Context="ClientRow">
             <MudTd>
@@ -61,6 +62,14 @@ else
                         {
                         <MudChip Text="@scope"></MudChip>
                         }
+                </MudChipSet>
+            </MudTd>
+            <MudTd>
+                <MudChipSet>
+                    @foreach (var claim in ClientRow.Claims)
+                    {
+                        <MudChip Text="@($"{claim.Type} {claim.Value}")"></MudChip>
+                    }
                 </MudChipSet>
             </MudTd>
         </RowTemplate>
