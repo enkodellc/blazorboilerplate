@@ -74,7 +74,7 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     // delete temporary cookie used during external authentication
                     await httpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-                    return "~/externalauth/success";
+                    return result.Properties.Items["returnUrl"] ?? "~/externalauth/success";
                 }
 
                 //If external login/signin failed
@@ -168,7 +168,7 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     //// delete temporary cookie used during external authentication
                     await httpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-                    return "~/externalauth/success";
+                    return result.Properties.Items["returnUrl"] ?? "~/externalauth/success";
                 }
                 else
                 {

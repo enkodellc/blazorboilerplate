@@ -26,9 +26,8 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet("challenge/{provider}")]
-        [HttpGet("challenge/{provider}/{returnUrl?}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Challenge(string provider, string returnUrl)
+        public async Task<IActionResult> Challenge(string provider, [FromQuery] string returnUrl)
         {
             if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
 
@@ -72,7 +71,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 // auth the same as any other external authentication mechanism
                 var props = new AuthenticationProperties()
                 {
-                    RedirectUri = Url.Action("Callback"),
+                    RedirectUri = Url.Action(nameof(ExternalSignIn)),
                     Items =
                     {
                         { "returnUrl", returnUrl },

@@ -294,7 +294,8 @@ namespace BlazorBoilerplate.Server
                 }
             }
 
-            //https://mderriey.com/2019/06/23/where-are-my-jwt-claims/
+            services.AddOidcStateDataFormatterCache();
+
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             var authBuilder = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -57,7 +57,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
                             if (!string.IsNullOrEmpty(ReturnUrl))
                                 ReturnUrl = Uri.EscapeDataString(ReturnUrl);
                             // we only have one option for logging in and it's an external provider
-                            navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
+                            navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}?ReturnUrl={ReturnUrl}", true);
                         }
                     }
                     else
@@ -77,7 +77,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
             if (!string.IsNullOrEmpty(ReturnUrl))
                 ReturnUrl = Uri.EscapeDataString(ReturnUrl);
 
-            navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{provider.AuthenticationScheme}/{ReturnUrl}", true);
+            navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{provider.AuthenticationScheme}?ReturnUrl={ReturnUrl}", true);
         }
 
         protected void Register()
