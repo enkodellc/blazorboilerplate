@@ -71,7 +71,9 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                                 case UserFeatures.Administrator:
                                     policy = new AuthorizationPolicyBuilder()
                                         .Combine(await GetPolicyAsync(Policies.For(UserFeatures.User)))
-                                        .RequireClaim(ApplicationClaimTypes.For(UserFeatures.Administrator))
+                                        .RequireAssertion(ctx =>
+                                        ctx.User.IsInRole(DefaultRoleNames.Administrator) ||
+                                        ctx.User.HasClaim(claim => claim.Type == ApplicationClaimTypes.For(UserFeatures.Administrator) && claim.Value == ClaimValues.trueString))
                                         .Build();
 
                                     created = true;
