@@ -785,7 +785,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (user.Person == null &&
                 (!string.IsNullOrWhiteSpace(userViewModel.FirstName) || !string.IsNullOrWhiteSpace(userViewModel.LastName) || !string.IsNullOrWhiteSpace(userViewModel.CompanyName)))
-                user.Person = new Person();
+                user.Person = new Person() {Id = Guid.NewGuid() };
 
             user.Person.FirstName = userViewModel.FirstName;
             user.Person.LastName = userViewModel.LastName;
@@ -962,7 +962,7 @@ namespace BlazorBoilerplate.Server.Managers
                 user.UserName = userViewModel.UserName;
 
             if (user.Person == null)
-                user.Person = new Person();
+                user.Person = new Person() { Id = Guid.NewGuid() };
 
             user.Person.FirstName = userViewModel.FirstName;
             user.Person.LastName = userViewModel.LastName;
