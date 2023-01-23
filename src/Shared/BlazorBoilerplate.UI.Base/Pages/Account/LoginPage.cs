@@ -1,27 +1,20 @@
 ﻿using BlazorBoilerplate.Shared;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
-using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Localization;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Account
 {
-    public class LoginPage : ComponentBase
+    public class LoginPage : BaseComponent
     {
-        [Inject] protected NavigationManager navigationManager { get; set; }
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
         [Inject] protected AppState appState { get; set; }
         [Inject] protected HttpClient httpClient { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
-        [Inject] IViewNotifier viewNotifier { get; set; }
-
-        [CascadingParameter]
-        Task<AuthenticationState> authenticationStateTask { get; set; }
 
         private string navigateTo = null;
         private IdentityAuthenticationStateProvider identityAuthenticationStateProvider;

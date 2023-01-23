@@ -6,22 +6,17 @@ using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.Shared.Services;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Localization;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Account
 {
-    public class LoginWith2faPage : ComponentBase
+    public class LoginWith2faPage : BaseComponent
     {
-        [Inject] NavigationManager navigationManager { get; set; }
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
         [Inject] protected AppState appState { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
-        [Inject] IViewNotifier viewNotifier { get; set; }
-
-        [CascadingParameter]
-        Task<AuthenticationState> authenticationStateTask { get; set; }
 
         string navigateTo = null;
         IdentityAuthenticationStateProvider identityAuthenticationStateProvider;

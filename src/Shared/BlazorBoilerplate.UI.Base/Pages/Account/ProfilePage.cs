@@ -2,17 +2,16 @@
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Localization;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Account
 {
-    public class ProfilePage : ComponentBase
+    public class ProfilePage : BaseComponent
     {
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
-        [Inject] protected IStringLocalizer<Global> L { get; set; }
-        [Inject] IViewNotifier viewNotifier { get; set; }
 
         protected UserViewModel userViewModel;
         protected bool updatePasswordDialogOpen = false;
