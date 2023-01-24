@@ -146,6 +146,11 @@ namespace BlazorBoilerplate.Shared.Providers
             return new AuthenticationState(new ClaimsPrincipal(identity));
         }
 
+        public void Refresh()
+        {
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        }
+
         public async Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel)
         {
             ApiResponseDto apiResponse = await _accountApiClient.UpdateUser(userViewModel);

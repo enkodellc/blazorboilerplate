@@ -89,6 +89,7 @@ namespace BlazorBoilerplate.Shared.Services
                     if (!response.IsError)
                     {
                         tokens.AccessToken = response.AccessToken;
+                        tokens.AccessTokenExpiration = response.AccessTokenExpiration;
 
                         if (response.RefreshToken != null)
                         {

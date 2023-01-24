@@ -1,4 +1,7 @@
-﻿<MudText Typo="Typo.h5">Authentication status</MudText>
+﻿@inject AuthenticationStateProvider authStateProvider
+@inject ITokenStorage tokenStorage;
+
+<MudText Typo="Typo.h5">Authentication status</MudText>
 <AuthorizeView>
     <Authorized>
         <MudAlert Severity="Severity.Info" Class="ma-8" Variant="Variant.Filled">You are authenticated, but some content may require you enable 2fa in your profile.</MudAlert>
@@ -38,6 +41,13 @@
     {
         <MudText><b>@claim.Type</b> @claim.Value</MudText>
     }
+
+    <MudText Typo="Typo.h6">Access Token</MudText>
+    <MudText><b>Access Token Expiration</b> @AccessTokenExpiration</MudText>
+    <MudText><b>Is Access Token Present</b> @IsAccessTokenPresent</MudText>
+    <MudText><b>Is Refresh Token Present</b> @IsRefreshTokenPresent</MudText>
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-auto mt-2" OnClick="@Refresh">Refresh</MudButton>
 }
 
 @code {
@@ -49,12 +59,29 @@
 
     private ClaimsPrincipal User;
 
+    private DateTimeOffset? AccessTokenExpiration;
+
+    private bool IsAccessTokenPresent;
+    private bool IsRefreshTokenPresent;
+
     protected override async Task OnInitializedAsync()
     {
         User = (await authenticationStateTask).User;
 
         IsAuthenticated = User.Identity.IsAuthenticated;
 
+        var tokens = await tokenStorage.Get();
+
+        AccessTokenExpiration = tokens?.AccessTokenExpiration;
+
+        IsAccessTokenPresent = tokens?.AccessToken != null;
+        IsRefreshTokenPresent = tokens?.RefreshToken != null;
+
         await base.OnInitializedAsync();
+    }
+
+    private void Refresh()
+    {
+        ((IdentityAuthenticationStateProvider)authStateProvider).Refresh();
     }
 }

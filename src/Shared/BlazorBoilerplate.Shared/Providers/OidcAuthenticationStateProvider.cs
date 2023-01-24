@@ -27,7 +27,12 @@ namespace BlazorBoilerplate.Shared.Providers
                 {
                     _logger.LogInformation($"Oidc Login successful {response.AccessTokenExpiration}");
 
-                    await _tokenStorage.Set(new Tokens { AccessToken = response.AccessToken, RefreshToken = response.RefreshToken });
+                    await _tokenStorage.Set(new Tokens
+                    {
+                        AccessTokenExpiration = response.AccessTokenExpiration,
+                        AccessToken = response.AccessToken,
+                        RefreshToken = response.RefreshToken
+                    });                   
 
                     return new ApiResponseDto { StatusCode = Status200OK, Result = response.User };
                 }
