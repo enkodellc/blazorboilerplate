@@ -46,7 +46,7 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.3" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.18.2" />
     <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
