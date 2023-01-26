@@ -84,7 +84,7 @@
 
             if (value != null)
             {
-                Filter.To = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, date.Hour, date.Minute, 0).AddMinutes(1);
+                Filter.To = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, date.Hour, date.Minute, 0);
             }
             else
                 Filter.To = null;
@@ -137,7 +137,7 @@
 
                 if (value != null)
                 {
-                    Filter.To = new DateTime(date.Year, date.Month, date.Day, value.Value.Hours, value.Value.Minutes, 0).AddMinutes(1);
+                    Filter.To = new DateTime(date.Year, date.Month, date.Day, value.Value.Hours, value.Value.Minutes, 0);
                 }
                 else
                     Filter.To = new DateTime(date.Year, date.Month, date.Day);
