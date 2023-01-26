@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Storage;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -9,15 +10,22 @@ namespace BlazorBoilerplate.Server.Authorization
 {
     public class AdditionalUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>
     {
+        private readonly ApplicationDbContext _dbContext;
         public AdditionalUserClaimsPrincipalFactory(
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
-            IOptions<IdentityOptions> optionsAccessor)
+            IOptions<IdentityOptions> optionsAccessor,
+            ApplicationDbContext dbContext)
             : base(userManager, roleManager, optionsAccessor)
-        { }
+        {
+            _dbContext = dbContext;
+        }
 
         public async override Task<ClaimsPrincipal> CreateAsync(ApplicationUser user)
         {
+            //AdditionalUserClaimsPrincipalFactory needs Person to add extra claims
+            await _dbContext.Entry(user).Reference(i => i.Person).LoadAsync();
+
             var principal = await base.CreateAsync(user);
             var identity = (ClaimsIdentity)principal.Identity;
 

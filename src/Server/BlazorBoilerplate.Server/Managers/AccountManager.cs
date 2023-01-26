@@ -257,7 +257,7 @@ namespace BlazorBoilerplate.Server.Managers
                 if (result.Succeeded)
                 {
                     var normalizeUserName = _userManager.NormalizeName(parameters.UserName);
-                    //AdditionalUserClaimsPrincipalFactory needs Person to add extra claims
+
                     var user = await _dbContext.Users.Include(i => i.Person).SingleAsync(i => i.NormalizedUserName == normalizeUserName);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client?.ClientId));
                     _logger.LogInformation("Logged In user {0}", parameters.UserName);
