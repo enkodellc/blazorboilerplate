@@ -12,7 +12,28 @@
 
 <PageTitle>@L["Users"]</PageTitle>
 
-@if (users == null)
+<MudGrid Spacing="0" Class="my-4" Style="align-items: center; justify-content: space-around !important;">
+
+    <MudItem xs="6" sm="3" Class="px-8 mt-2 d-flex justify-center">
+        <MudTextField T="string" @bind-Value="userFilter.Search" Immediate="true" Label="@L["Search"]" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" AdornmentColor="Color.Secondary" HelperTextOnFocus="true"></MudTextField>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3" lg="2" Class="px-8 mt-2 d-flex justify-center">
+        <MudCheckBox TriState="true" @bind-Checked="@userFilter.EmailConfirmed" Label="@L["Email Confirmed"]" Color="Color.Primary"></MudCheckBox>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3" lg="2" Class="px-8 mt-2 d-flex justify-center">
+        <MudCheckBox TriState="true" @bind-Checked="@userFilter.PhoneNumberConfirmed" Label="@L["Phone Number Confirmed"]"></MudCheckBox>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3" lg="2" Class="px-8 mt-2 d-flex justify-center">
+        <div class="d-flex" style="width: fit-content;">
+            <MudTooltip Text="Clear / Reset Filter" Placement="Placement.Left">
+                <MudFab Color="Color.Tertiary" Class="mx-2" OnClick="@ResetFilter" Disabled="@isBusy" Size="Size.Small" StartIcon="@Icons.Material.Filled.Refresh"></MudFab>
+            </MudTooltip>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@SearchUsers" Disabled="@isBusy" StartIcon="@Icons.Material.Filled.Search">Search</MudButton>
+        </div>
+    </MudItem>
+</MudGrid>
+
+@if (items == null)
 {
     <LoadingBackground>
         <label>@L["Loading"]</label>
@@ -22,9 +43,10 @@ else
 {
     <MudTable ServerData="@(new Func<TableState, Task<TableData<ApplicationUser>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" @ref="table">
         <HeaderContent>
-            <MudTh><MudFab Icon="@Icons.Material.Filled.Add" OnClick="@(e => { createUserDialogOpen = true; })" Color="Color.Primary" Size="Size.Medium" /></MudTh>
-            <MudTh>@L["UserName"]</MudTh>
-            <MudTh>@L["Email"]</MudTh>
+            <MudTh><MudButton StartIcon="@Icons.Material.Filled.PersonAdd" OnClick="@(e => { createUserDialogOpen = true; })" Variant="Variant.Filled" Color="Color.Primary">@L["New User"]</MudButton></MudTh>
+            @*Email and UserName are not localized in the sort label because they are used for querying and localizing would mess it up*@
+            <MudTh><MudTableSortLabel T="ApplicationUser" SortLabel="UserName">@L["UserName"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel T="ApplicationUser" SortLabel="Email">@L["Email"]</MudTableSortLabel></MudTh>
             <MudTh>@L["Roles"]</MudTh>
         </HeaderContent>
         <RowTemplate Context="UserRow">
@@ -148,19 +170,3 @@ else
         <MudButton ButtonType="ButtonType.Submit" form="changePasswordForm" Disabled="@disableChangePasswordButton" Variant="Variant.Filled" Color="Color.Primary">@L["Reset Password"]</MudButton>
     </DialogActions>
 </MudDialog>
-
-@code {
-    private MudTable<ApplicationUser> table;
-
-    private async Task<TableData<ApplicationUser>> ServerReload(TableState state)
-    {
-        await OnPage(state.Page, state.PageSize);
-
-        return new TableData<ApplicationUser>() { TotalItems = totalItemsCount, Items = users };
-    }
-
-    protected override async Task Reload()
-    {
-        await table.ReloadServerData();
-    }
-}

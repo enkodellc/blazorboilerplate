@@ -1,5 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-using BlazorBoilerplate.Theme.Material.Shared.Components;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BlazorBoilerplate.Theme.Material.Main.Pages
