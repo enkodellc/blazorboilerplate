@@ -1,10 +1,9 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
-using BlazorBoilerplate.UI.Base.Shared.Components;
 using Humanizer;
 using MudBlazor;
 
-namespace BlazorBoilerplate.Theme.Material.Shared.Components
+namespace BlazorBoilerplate.UI.Base.Shared.Components
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "BL0005:Component parameter should not be set outside of its component.")]
     public class ItemsTableBase<T> : BaseComponent
@@ -41,8 +40,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
 
                 apiClient.ClearEntitiesCache();
 
-                if (from == null)
-                    from = $"{typeof(T).Name}".Pluralize(true);
+                from ??= $"{typeof(T).Name}".Pluralize(true);
 
                 var prop = queryParameters?.GetType().GetProperties().SingleOrDefault(i => i.Name == "Filter");
 

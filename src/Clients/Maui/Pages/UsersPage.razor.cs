@@ -1,6 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto.Db;
-using BlazorBoilerplate.Theme.Material.Shared.Components;
+using BlazorBoilerplate.UI.Base.Shared.Components;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BlazorBoilerplateMaui.Pages

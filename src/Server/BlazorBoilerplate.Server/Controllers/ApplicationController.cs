@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
+using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Storage;
 using Breeze.AspNetCore;
 using Breeze.Persistence;
@@ -43,10 +44,15 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
-        [AuthorizeForFeature(UserFeatures.Administrator)]
-        public IQueryable<ApplicationUser> Users()
+        public IQueryable<ApplicationUser> Users([FromQuery] UserFilter filter)
         {
-            return persistenceManager.GetEntities<ApplicationUser>().AsNoTracking().Include(i => i.UserRoles).ThenInclude(i => i.Role).OrderBy(i => i.UserName);
+            return persistenceManager.GetEntities<ApplicationUser>().AsNoTracking().Include(i => i.UserRoles)
+                .ThenInclude(i => i.Role)
+                .OrderBy(i => i.UserName)
+                .Where(u =>
+                    (filter.Search == null || u.UserName.Contains(filter.Search) || u.Email.Contains(filter.Search))
+                    && (filter.EmailConfirmed == null || u.EmailConfirmed == filter.EmailConfirmed)
+                    && (filter.PhoneNumberConfirmed == null || u.PhoneNumberConfirmed == filter.PhoneNumberConfirmed));
         }
 
         [HttpGet]
