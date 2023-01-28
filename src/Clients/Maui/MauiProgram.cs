@@ -102,6 +102,7 @@ public static class MauiProgram
             ClientSecret= "secret",
             Scope = "openid profile email LocalAPI",
             RedirectUri = "com.blazorboilerplate.app://callback",
+            PostLogoutRedirectUri = "com.blazorboilerplate.app://callback",
 
             Browser = new MauiAuthenticationBrowser()
         }));

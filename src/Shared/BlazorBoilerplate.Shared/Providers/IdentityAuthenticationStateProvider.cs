@@ -23,6 +23,11 @@ namespace BlazorBoilerplate.Shared.Providers
             return await _accountApiClient.BuildLoginViewModel(returnUrl);
         }
 
+        public async Task<ApiResponseDto<LogoutViewModel>> BuildLogoutViewModel(string logoutId)
+        {
+            return await _accountApiClient.BuildLogoutViewModel(logoutId);
+        }
+
         public async Task<ApiResponseDto<LoginResponseModel>> Login(LoginInputModel parameters)
         {
             ApiResponseDto<LoginResponseModel> apiResponse = await _accountApiClient.Login(parameters);
@@ -40,10 +45,9 @@ namespace BlazorBoilerplate.Shared.Providers
             return apiResponse;
         }
 
-        public async Task<ApiResponseDto> Logout(string returnUrl = null)
+        public async Task<ApiResponseDto<LoggedOutViewModel>> Logout(LogoutViewModel logoutViewModel = null)
         {
-            ApiResponseDto apiResponse = await _accountApiClient.Logout(returnUrl);
-            return apiResponse;
+            return await _accountApiClient.Logout(logoutViewModel);
         }
 
         public async Task<ApiResponseDto<LoginResponseModel>> Register(RegisterViewModel parameters)

@@ -45,6 +45,13 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> BuildLoginViewModel(string returnUrl)
             => await _accountManager.BuildLoginViewModel(returnUrl);
 
+        [HttpPost("BuildLogoutViewModel")]
+        [AllowAnonymous]
+        [ProducesResponseType(Status204NoContent)]
+        [ProducesResponseType(Status401Unauthorized)]
+        public async Task<ApiResponse> BuildLogoutViewModel(string logoutId)
+            => new ApiResponse(Status200OK, null, await _accountManager.BuildLogoutViewModel(User, logoutId));
+
         // POST: api/Account/Login
         [HttpPost("Login")]
         [AllowAnonymous]
@@ -75,13 +82,33 @@ namespace BlazorBoilerplate.Server.Controllers
             return ModelState.IsValid ? await _accountManager.LoginWith2fa(parameters) : _invalidData;
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ApiResponse> Logout([FromQuery] string logoutId)
+        {
+            // build a model so the logout page knows what to display
+            var vm = await _accountManager.BuildLogoutViewModel(User, logoutId);
+
+            if (vm.ShowLogoutPrompt == false)
+            {
+                // if the request for logout was properly authenticated from IdentityServer, then
+                // we don't need to show the prompt and can just log the user out directly.
+                return await Logout(vm);
+            }
+
+            return new ApiResponse(Status200OK);
+        }
+
         // POST: api/Account/Logout
         [HttpPost("Logout")]
-        public async Task<ApiResponse> Logout()
+        [AllowAnonymous]
+        public async Task<ApiResponse> Logout([FromBody] LogoutInputModel model)
         {
             var response = await _accountManager.Logout(User);
 
-            var vm = await _accountManager.BuildLoggedOutViewModel(User, HttpContext, null);
+            var vm = await _accountManager.BuildLoggedOutViewModel(User, HttpContext, model?.LogoutId);
+
+            response.Result = vm;
 
             // check if we need to trigger sign-out at an upstream identity provider
             if (vm.TriggerExternalSignout)
@@ -89,7 +116,7 @@ namespace BlazorBoilerplate.Server.Controllers
                 // build a return URL so the upstream provider will redirect back
                 // to us after the user has logged out. this allows us to then
                 // complete our single sign-out processing.
-                string url = Url.Action("Logout", new { logoutId = vm.LogoutId });
+                string url = Url.Action(nameof(Logout), new { logoutId = vm.LogoutId });
 
                 // this triggers a redirect to the external provider for sign-out
                 SignOut(new AuthenticationProperties { RedirectUri = url }, vm.ExternalAuthenticationScheme);

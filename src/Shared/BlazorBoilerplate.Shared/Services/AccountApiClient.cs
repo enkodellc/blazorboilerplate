@@ -28,6 +28,11 @@ namespace BlazorBoilerplate.Shared.Services
             return await _httpClient.PostJsonAsync<ApiResponseDto<LoginViewModel>>("api/Account/BuildLoginViewModel", returnUrl);
         }
 
+        public async Task<ApiResponseDto<LogoutViewModel>> BuildLogoutViewModel(string logoutId)
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto<LogoutViewModel>>("api/Account/BuildLogoutViewModel", logoutId);
+        }
+
         private async Task SubmitServerForm(string path, AccountFormModel model)
         {
             model.__RequestVerificationToken = await _jsRuntime.InvokeAsync<string>("interop.getElementByName", "__RequestVerificationToken");
@@ -67,21 +72,19 @@ namespace BlazorBoilerplate.Shared.Services
             return response;
         }
 
-        public async Task<ApiResponseDto> Logout(string returnUrl = null)
+        public async Task<ApiResponseDto<LoggedOutViewModel>> Logout(LogoutViewModel logoutViewModel)
         {
-            var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/Logout", null);
+            var response = await _httpClient.PostJsonAsync<ApiResponseDto<LoggedOutViewModel>>("api/Account/Logout", logoutViewModel);
 
             if (response.IsSuccessStatusCode)
             {
-                var logoutModel = new AccountFormModel() { ReturnUrl = returnUrl };
-
                 if (AppState.Runtime == BlazorRuntime.WebAssembly)
                 {
-                    if (!string.IsNullOrEmpty(logoutModel.ReturnUrl))
-                        _navigationManager.NavigateTo(logoutModel.ReturnUrl, true);
+                    if (!string.IsNullOrEmpty(logoutViewModel?.ReturnUrl))
+                        _navigationManager.NavigateTo(logoutViewModel.ReturnUrl, true);
                 }
                 else
-                    await SubmitServerForm("/server/logout/", logoutModel);
+                    await SubmitServerForm("/server/logout/", logoutViewModel ?? new AccountFormModel());
             }
 
             return response;

@@ -44,7 +44,7 @@
             var response = await oidcAuthenticationStateProvider.Logout();
 
             if (!response.IsSuccessStatusCode)
-                viewNotifier.Show(response.Message, ViewNotifierType.Error, L["LoginFailed"]);
+                viewNotifier.Show(response.Message, ViewNotifierType.Error, L["LogoutFailed"]);
         }
         else
             await ((IdentityAuthenticationStateProvider)authStateProvider).Logout();

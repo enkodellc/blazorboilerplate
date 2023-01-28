@@ -9,6 +9,7 @@ namespace BlazorBoilerplate.Infrastructure.Server
     public interface IAccountManager
     {
         Task<ApiResponse> BuildLoginViewModel(string returnUrl);
+        Task<LogoutViewModel> BuildLogoutViewModel(ClaimsPrincipal authenticatedUser, string logoutId);
         Task<LoggedOutViewModel> BuildLoggedOutViewModel(ClaimsPrincipal authenticatedUser, HttpContext httpContext, string logoutId);
 
         Task<ApiResponse> Login(LoginInputModel parameters);

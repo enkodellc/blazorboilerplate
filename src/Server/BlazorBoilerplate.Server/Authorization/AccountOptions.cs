@@ -6,8 +6,8 @@
         public static bool AllowRememberLogin = true;
         public static TimeSpan RememberMeLoginDuration = TimeSpan.FromDays(30);
 
-        public static bool ShowLogoutPrompt = true;
-        public static bool AutomaticRedirectAfterSignOut = false;
+        public static bool ShowLogoutPrompt = false;
+        public static bool AutomaticRedirectAfterSignOut = true;
 
         // specify the Windows authentication scheme being used
         public static readonly string WindowsAuthenticationSchemeName = Microsoft.AspNetCore.Server.IISIntegration.IISDefaults.AuthenticationScheme;

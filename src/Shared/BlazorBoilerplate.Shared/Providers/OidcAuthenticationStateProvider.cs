@@ -59,7 +59,20 @@ namespace BlazorBoilerplate.Shared.Providers
             {
                 await _tokenStorage.Clear();
 
-                return new ApiResponseDto { StatusCode = Status200OK };
+                var response = await _oidcClient.LogoutAsync();
+
+                if (!response.IsError)
+                {
+                    _logger.LogInformation($"Oidc Logout");
+
+                    return new ApiResponseDto { StatusCode = Status200OK };
+                }
+                else
+                {
+                    _logger.LogError($"Oidc Logout: {response.Error} - {response.ErrorDescription}");
+
+                    return new ApiResponseDto { StatusCode = Status500InternalServerError, Message = response.ErrorDescription };
+                }
             }
             catch (Exception ex)
             {

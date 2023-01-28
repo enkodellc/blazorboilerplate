@@ -1,7 +1,33 @@
-﻿@page "/account/logout"
+﻿@inherits LogoutPage
+@page "/account/logout"
 
 @layout LoginLayout
 
-@code {
-
+@if (logoutViewModel == null)
+{
+    <LoadingBackground />
 }
+else
+{
+    <EditForm Model="@logoutViewModel" OnValidSubmit="@SubmitLogout">
+        <MudCard Elevation="2" Class="pa-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudIconButton Icon="@Icons.Material.Filled.Home" Class="ml-auto" Link="/" />
+                    <div class="logo">
+                        <a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.MudBlazor/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
+                        <br />
+                    </div>
+                    <MudText Typo="Typo.h5" Align="Align.Center">@L["Log out"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@L["Logout"]</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+}
+

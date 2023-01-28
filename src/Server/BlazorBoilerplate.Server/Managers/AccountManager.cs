@@ -26,6 +26,7 @@ using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using static BlazorBoilerplate.Infrastructure.Storage.Permissions.Permissions;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -178,6 +179,30 @@ namespace BlazorBoilerplate.Server.Managers
                 UserName = context?.LoginHint,
                 ExternalProviders = providers.ToArray()
             });
+        }
+
+        public async Task<LogoutViewModel> BuildLogoutViewModel(ClaimsPrincipal authenticatedUser, string logoutId)
+        {
+            var vm = new LogoutViewModel { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
+
+            if (authenticatedUser?.Identity.IsAuthenticated != true)
+            {
+                // if the user is not authenticated, then just show logged out page
+                vm.ShowLogoutPrompt = false;
+                return vm;
+            }
+
+            var context = await _interaction.GetLogoutContextAsync(logoutId);
+            if (context?.ShowSignoutPrompt == false)
+            {
+                // it's safe to automatically sign-out
+                vm.ShowLogoutPrompt = false;
+                return vm;
+            }
+
+            // show the logout prompt. this prevents attacks where the user
+            // is automatically signed out by another malicious web page.
+            return vm;
         }
 
         public async Task<LoggedOutViewModel> BuildLoggedOutViewModel(ClaimsPrincipal authenticatedUser, HttpContext httpContext, string logoutId)

@@ -104,6 +104,7 @@ namespace BlazorBoilerplate.Storage
                     RequirePkce = true,
 
                     RedirectUris = { "com.blazorboilerplate.app://callback" },
+                    PostLogoutRedirectUris = { "com.blazorboilerplate.app://callback" },
 
                     AccessTokenLifetime = 300
                 }
