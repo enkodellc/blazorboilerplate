@@ -26,7 +26,7 @@
     <PackageReference Include="Azure.Identity" Version="1.8.1" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.4.0" />
     <PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.4.0" />
-    <PackageReference Include="Breeze.AspNetCore.NetCore" Version="7.0.1" />
+    <PackageReference Include="Breeze.AspNetCore.NetCore" Version="7.0.2" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
     <PackageReference Include="FormatWith" Version="3.0.1" />
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
