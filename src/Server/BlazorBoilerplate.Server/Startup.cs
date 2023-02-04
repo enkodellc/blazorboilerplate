@@ -12,9 +12,11 @@ using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using BlazorBoilerplate.Server.Authorization;
 using BlazorBoilerplate.Server.Extensions;
 using BlazorBoilerplate.Server.Factories;
+using BlazorBoilerplate.Server.Hubs;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Providers;
+using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
@@ -678,6 +680,10 @@ namespace BlazorBoilerplate.Server
             services.AddSingleton<IDynamicComponent, DrawerFooter>();
             services.AddSingleton<IDynamicComponent, TopRightBarSection>();
 
+            services.AddSingleton<BackgroundWorkerQueue>();
+            services.AddSingleton<Notifier>();
+            services.AddScoped<HubClient>();
+
             if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
             {
                 Log.Logger.Debug($"Total Services Registered: {services.Count}");
@@ -754,8 +760,7 @@ namespace BlazorBoilerplate.Server
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
 
-                // new SignalR endpoint routing setup
-                //endpoints.MapHub<Hubs.ChatHub>(Constants.HubPaths.Main);
+                endpoints.MapHub<MainHub>(Constants.HubPaths.Main);
             });
 
             Program.Sync.Release();

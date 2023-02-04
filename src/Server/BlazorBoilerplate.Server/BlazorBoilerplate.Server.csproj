@@ -76,10 +76,6 @@
       <DependentUpon>AdminController.tt</DependentUpon>
     </Compile>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Hubs\" />
-  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildingInsideVisualStudio)' == 'true'">
     <Exec Command="if exist &quot;$(ProjectDir)Logs\*.*&quot; del &quot;$(ProjectDir)Logs\*.*&quot; /q" />
   </Target>

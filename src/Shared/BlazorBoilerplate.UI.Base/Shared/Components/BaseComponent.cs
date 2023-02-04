@@ -1,5 +1,6 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
+using BlazorBoilerplate.Shared.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -14,6 +15,7 @@ namespace BlazorBoilerplate.UI.Base.Shared.Components
         [Inject] protected NavigationManager navigationManager { get; set; }
         [Inject] protected IViewNotifier viewNotifier { get; set; }
         [Inject] protected IApiClient apiClient { get; set; }
+        [Inject] protected HubClient hubClient { get; set; }
         [Inject] protected IStringLocalizer<Global> L { get; set; }
 
         public virtual void Dispose()

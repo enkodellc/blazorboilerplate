@@ -40,6 +40,7 @@ namespace BlazorBoilerplate.Server
             .ConfigureServices((hostContext, services) =>
             {
                 services.AddHostedService<EmailService>();
+                services.AddHostedService<BackgroundWorkerQueueService>();
                 services.RegisterIntlTelInput();
             })
             .ConfigureWebHostDefaults(webBuilder =>

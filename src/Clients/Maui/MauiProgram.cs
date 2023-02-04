@@ -76,6 +76,7 @@ public static class MauiProgram
         builder.Services.AddScoped<IAccountApiClient, AccountApiClient>();
         builder.Services.AddScoped<AppState>();
         builder.Services.AddScoped<IApiClient, ApiClient>();
+        builder.Services.AddScoped<HubClient>();
 
         builder.Services.AddMudServices(config =>
         {

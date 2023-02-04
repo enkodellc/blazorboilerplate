@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
+	<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="7.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
