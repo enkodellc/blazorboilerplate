@@ -14,7 +14,7 @@
                 if (!string.IsNullOrEmpty(value))
                 {
                     if (value.StartsWith("http"))
-                        value = new Uri(value).LocalPath;
+                        value = new Uri(value).PathAndQuery;
 
                     if (!value.StartsWith("/"))
                         value = $"/{value}";
