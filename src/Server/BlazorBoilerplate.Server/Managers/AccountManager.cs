@@ -741,7 +741,7 @@ namespace BlazorBoilerplate.Server.Managers
             }
         }
 
-        private async Task<ApiResponse> UpdateManagerPermissions(ApplicationUser user, UserViewModel model, ClaimsPrincipal authenticatedUser)
+        private async Task<ApiResponse> UpdatePermissions(ApplicationUser user, UserViewModel model, ClaimsPrincipal authenticatedUser)
         {
             if (user != null)
             {
@@ -749,15 +749,32 @@ namespace BlazorBoilerplate.Server.Managers
 
                 foreach (var userFeature in Enum.GetValues<UserFeatures>())
                 {
-                    var result = await UpdateClaim(user, claims, ApplicationClaimTypes.For(userFeature), model.UserFeatures[userFeature], authenticatedUser);
+                    var currentClaimValue = claims.Any(claim => claim.Type == ApplicationClaimTypes.For(userFeature) && claim.Value == ClaimValues.trueString);
 
-                    if (!result.IsSuccessStatusCode)
-                        return result;
+                    if (currentClaimValue != model.UserFeatures[userFeature])
+                    {
+                        if ((await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(UserFeatures.Operator))).Succeeded ||
+                            (await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(userFeature))).Succeeded)
+                        {
+                            var result = await UpdateClaim(user, claims, ApplicationClaimTypes.For(userFeature), model.UserFeatures[userFeature], authenticatedUser);
 
-                    if (model.UserFeatures[userFeature])
-                        await AddToRole(user, userFeature.ToString());
-                    else
-                        await RemoveFromRole(user, userFeature.ToString());
+                            if (!result.IsSuccessStatusCode)
+                                return result;
+
+                            if (model.UserFeatures[userFeature])
+                                await AddToRole(user, userFeature.ToString());
+                            else
+                                await RemoveFromRole(user, userFeature.ToString());
+                        }
+                        else
+                        {
+                            var msg = $"The user {authenticatedUser.GetDisplayName()} cannot assign permission {userFeature} he does not have";
+
+                            _logger.LogWarning(msg);
+
+                            return new ApiResponse(Status403Forbidden, msg);
+                        }
+                    }
                 }
 
                 return new ApiResponse(Status200OK, L["Operation Successful"]);
@@ -810,7 +827,7 @@ namespace BlazorBoilerplate.Server.Managers
 
             if (user.Person == null &&
                 (!string.IsNullOrWhiteSpace(userViewModel.FirstName) || !string.IsNullOrWhiteSpace(userViewModel.LastName) || !string.IsNullOrWhiteSpace(userViewModel.CompanyName)))
-                user.Person = new Person() {Id = Guid.NewGuid() };
+                user.Person = new Person() { Id = Guid.NewGuid() };
 
             user.Person.FirstName = userViewModel.FirstName;
             user.Person.LastName = userViewModel.LastName;
@@ -849,11 +866,11 @@ namespace BlazorBoilerplate.Server.Managers
                 return new ApiResponse(Status400BadRequest, msg);
             }
 
-            var updateManagerPermissionsResult = await UpdateManagerPermissions(user, userViewModel, authenticatedUser);
+            var updatePermissionsResult = await UpdatePermissions(user, userViewModel, authenticatedUser);
 
-            if (!updateManagerPermissionsResult.IsSuccessStatusCode)
+            if (!updatePermissionsResult.IsSuccessStatusCode)
             {
-                return updateManagerPermissionsResult;
+                return updatePermissionsResult;
             }
 
             return new ApiResponse(Status200OK, L["Operation Successful"]);
