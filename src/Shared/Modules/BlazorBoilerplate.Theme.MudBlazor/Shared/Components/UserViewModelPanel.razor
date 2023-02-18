@@ -36,7 +36,7 @@
         </MudCardActions>
     </MudCard>
 
-    @if (isOperator)
+    @if (!Model.IsAuthenticated)
     {
         <MudCard Elevation="2" Class="my-4 pa-4">
             <MudCardHeader>
@@ -48,15 +48,29 @@
                 <MudValidationSummary />
                 @foreach (var userFeature in Enum.GetValues<UserFeatures>())
                 {
-                    <MudSwitch @bind-Checked="@Model.UserFeatures[userFeature]" Label=@L[$"Is{userFeature}Switch"] Color="Color.Primary" />
-                    <br />
+                    @if (isOperator)
+                    {
+                        <MudSwitch @bind-Checked="@Model.UserFeatures[userFeature]" Label=@L[$"Is{userFeature}Switch"] Color="Color.Primary" />
+                        <br />
+                    }
+                    else
+                    {
+                        <AuthorizeView Policy=@Policies.For(userFeature) Context="UserFeatureCtx">
+                            <MudSwitch @bind-Checked="@Model.UserFeatures[userFeature]" Label=@L[$"Is{userFeature}Switch"] Color="Color.Primary" />
+                            <br />
+                        </AuthorizeView>
+                    }
+
                 }
             </MudCardContent>
             <MudCardActions>
                 <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
             </MudCardActions>
         </MudCard>
+    }
 
+    @if (isOperator)
+    {
         <MudCard Elevation="2" Class="my-4 pa-4">
             <MudCardHeader>
                 <CardHeaderContent>

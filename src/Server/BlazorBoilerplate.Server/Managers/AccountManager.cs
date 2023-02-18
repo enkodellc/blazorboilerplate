@@ -745,39 +745,50 @@ namespace BlazorBoilerplate.Server.Managers
         {
             if (user != null)
             {
-                var claims = (await _userManager.GetClaimsAsync(user)).ToArray();
-
-                foreach (var userFeature in Enum.GetValues<UserFeatures>())
+                if (user.Id != authenticatedUser.GetUserId())
                 {
-                    var currentClaimValue = claims.Any(claim => claim.Type == ApplicationClaimTypes.For(userFeature) && claim.Value == ClaimValues.trueString);
+                    var claims = (await _userManager.GetClaimsAsync(user)).ToArray();
 
-                    if (currentClaimValue != model.UserFeatures[userFeature])
+                    foreach (var userFeature in Enum.GetValues<UserFeatures>())
                     {
-                        if ((await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(UserFeatures.Operator))).Succeeded ||
-                            (await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(userFeature))).Succeeded)
+                        var currentClaimValue = claims.Any(claim => claim.Type == ApplicationClaimTypes.For(userFeature) && claim.Value == ClaimValues.trueString);
+
+                        if (currentClaimValue != model.UserFeatures[userFeature])
                         {
-                            var result = await UpdateClaim(user, claims, ApplicationClaimTypes.For(userFeature), model.UserFeatures[userFeature], authenticatedUser);
+                            if ((await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(UserFeatures.Operator))).Succeeded ||
+                                (await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(userFeature))).Succeeded)
+                            {
+                                var result = await UpdateClaim(user, claims, ApplicationClaimTypes.For(userFeature), model.UserFeatures[userFeature], authenticatedUser);
 
-                            if (!result.IsSuccessStatusCode)
-                                return result;
+                                if (!result.IsSuccessStatusCode)
+                                    return result;
 
-                            if (model.UserFeatures[userFeature])
-                                await AddToRole(user, userFeature.ToString());
+                                if (model.UserFeatures[userFeature])
+                                    await AddToRole(user, userFeature.ToString());
+                                else
+                                    await RemoveFromRole(user, userFeature.ToString());
+                            }
                             else
-                                await RemoveFromRole(user, userFeature.ToString());
-                        }
-                        else
-                        {
-                            var msg = $"The user {authenticatedUser.GetDisplayName()} cannot assign permission {userFeature} he does not have";
+                            {
+                                var msg = $"The user {authenticatedUser.GetDisplayName()} cannot assign permission {userFeature} he does not have";
 
-                            _logger.LogWarning(msg);
+                                _logger.LogWarning(msg);
 
-                            return new ApiResponse(Status403Forbidden, msg);
+                                return new ApiResponse(Status403Forbidden, msg);
+                            }
                         }
                     }
-                }
 
-                return new ApiResponse(Status200OK, L["Operation Successful"]);
+                    return new ApiResponse(Status200OK, L["Operation Successful"]);
+                }
+                else
+                {
+                    var msg = $"The user {authenticatedUser.GetDisplayName()} cannot change its own permissions";
+
+                    _logger.LogWarning(msg);
+
+                    return new ApiResponse(Status403Forbidden, msg);
+                }
             }
             else
                 return new ApiResponse(Status400BadRequest, L["InvalidData"]);
