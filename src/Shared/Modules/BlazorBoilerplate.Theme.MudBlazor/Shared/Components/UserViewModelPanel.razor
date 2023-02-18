@@ -38,35 +38,37 @@
 
     @if (!Model.IsAuthenticated)
     {
-        <MudCard Elevation="2" Class="my-4 pa-4">
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h6">@L["Permissions"]</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudValidationSummary />
-                @foreach (var userFeature in Enum.GetValues<UserFeatures>())
-                {
-                    @if (isOperator)
+        <AuthorizeView Policy=@Policies.For(UserFeatures.UserManager) Context="UserManagerCtx">
+            <MudCard Elevation="2" Class="my-4 pa-4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@L["Permissions"]</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudValidationSummary />
+                    @foreach (var userFeature in Enum.GetValues<UserFeatures>())
                     {
-                        <MudSwitch @bind-Checked="@Model.UserFeatures[userFeature]" Label=@L[$"Is{userFeature}Switch"] Color="Color.Primary" />
-                        <br />
-                    }
-                    else
-                    {
-                        <AuthorizeView Policy=@Policies.For(userFeature) Context="UserFeatureCtx">
+                        @if (isOperator)
+                        {
                             <MudSwitch @bind-Checked="@Model.UserFeatures[userFeature]" Label=@L[$"Is{userFeature}Switch"] Color="Color.Primary" />
                             <br />
-                        </AuthorizeView>
-                    }
+                        }
+                        else
+                        {
+                            <AuthorizeView Policy=@Policies.For(userFeature) Context="UserFeatureCtx">
+                                <MudSwitch @bind-Checked="@Model.UserFeatures[userFeature]" Label=@L[$"Is{userFeature}Switch"] Color="Color.Primary" />
+                                <br />
+                            </AuthorizeView>
+                        }
 
-                }
-            </MudCardContent>
-            <MudCardActions>
-                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
-            </MudCardActions>
-        </MudCard>
+                    }
+                </MudCardContent>
+                <MudCardActions>
+                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+                </MudCardActions>
+            </MudCard>
+        </AuthorizeView>
     }
 
     @if (isOperator)

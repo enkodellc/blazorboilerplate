@@ -1,6 +1,6 @@
 ﻿@inherits UsersBasePage
 @page "/users"
-@attribute [AuthorizeForFeature(UserFeatures.Operator)]
+@attribute [AuthorizeForFeature(UserFeatures.UserManager)]
 
 <PageTitle>@L["User management"]</PageTitle>
 
@@ -43,7 +43,3 @@
         <MudTablePager RowsPerPageString=@L["Rows per page"] />
     </PagerContent>
 </MudTable>
-
-@code {
-
-}

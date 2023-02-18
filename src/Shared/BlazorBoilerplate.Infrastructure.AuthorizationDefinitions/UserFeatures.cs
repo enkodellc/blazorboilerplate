@@ -4,6 +4,7 @@
     {
         Administrator,
         User,
-        Operator
+        Operator,
+        UserManager
     }
 }

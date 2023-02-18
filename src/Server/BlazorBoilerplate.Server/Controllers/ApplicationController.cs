@@ -63,7 +63,7 @@ namespace BlazorBoilerplate.Server.Controllers
         }
 
         [HttpGet]
-        [AuthorizeForFeature(UserFeatures.Operator)]
+        [AuthorizeForFeature(UserFeatures.UserManager)]
         public IQueryable<Person> People([FromQuery] string filter)
         {
             filter = filter?.ToLower();

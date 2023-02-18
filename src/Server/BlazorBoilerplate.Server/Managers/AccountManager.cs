@@ -745,18 +745,29 @@ namespace BlazorBoilerplate.Server.Managers
         {
             if (user != null)
             {
-                if (user.Id != authenticatedUser.GetUserId())
+                var claims = (await _userManager.GetClaimsAsync(user)).ToArray();
+
+                var isOperator = (await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(UserFeatures.Operator))).Succeeded;
+
+                var isUserManager = false;
+
+                if (!isOperator)
+                    isUserManager = (await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(UserFeatures.UserManager))).Succeeded;
+
+                foreach (var userFeature in Enum.GetValues<UserFeatures>())
                 {
-                    var claims = (await _userManager.GetClaimsAsync(user)).ToArray();
+                    var currentClaimValue = claims.Any(claim => claim.Type == ApplicationClaimTypes.For(userFeature) && claim.Value == ClaimValues.trueString);
 
-                    foreach (var userFeature in Enum.GetValues<UserFeatures>())
+                    if (currentClaimValue != model.UserFeatures[userFeature])
                     {
-                        var currentClaimValue = claims.Any(claim => claim.Type == ApplicationClaimTypes.For(userFeature) && claim.Value == ClaimValues.trueString);
-
-                        if (currentClaimValue != model.UserFeatures[userFeature])
+                        if (user.Id != authenticatedUser.GetUserId())
                         {
-                            if ((await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(UserFeatures.Operator))).Succeeded ||
-                                (await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(userFeature))).Succeeded)
+                            var canSetUserFeature = false;
+
+                            if (!isOperator && isUserManager)
+                                canSetUserFeature = (await _authorizationService.AuthorizeAsync(authenticatedUser, Policies.For(userFeature))).Succeeded;
+
+                            if (isOperator || (isUserManager && canSetUserFeature))
                             {
                                 var result = await UpdateClaim(user, claims, ApplicationClaimTypes.For(userFeature), model.UserFeatures[userFeature], authenticatedUser);
 
@@ -770,25 +781,31 @@ namespace BlazorBoilerplate.Server.Managers
                             }
                             else
                             {
-                                var msg = $"The user {authenticatedUser.GetDisplayName()} cannot assign permission {userFeature} he does not have";
+                                var msg = $"The user {authenticatedUser.GetDisplayName()}";
+
+                                if (isUserManager)
+                                    msg = $"{msg} cannot assign permission {userFeature} he does not have";
+                                else
+                                    msg = $"{msg} is neither an operator nor an user manager";
 
                                 _logger.LogWarning(msg);
 
                                 return new ApiResponse(Status403Forbidden, msg);
                             }
+
+                        }
+                        else
+                        {
+                            var msg = $"The user {authenticatedUser.GetDisplayName()} cannot change its own permissions";
+
+                            _logger.LogWarning(msg);
+
+                            return new ApiResponse(Status403Forbidden, msg);
                         }
                     }
-
-                    return new ApiResponse(Status200OK, L["Operation Successful"]);
                 }
-                else
-                {
-                    var msg = $"The user {authenticatedUser.GetDisplayName()} cannot change its own permissions";
 
-                    _logger.LogWarning(msg);
-
-                    return new ApiResponse(Status403Forbidden, msg);
-                }
+                return new ApiResponse(Status200OK, L["Operation Successful"]);
             }
             else
                 return new ApiResponse(Status400BadRequest, L["InvalidData"]);
@@ -840,32 +857,35 @@ namespace BlazorBoilerplate.Server.Managers
                 (!string.IsNullOrWhiteSpace(userViewModel.FirstName) || !string.IsNullOrWhiteSpace(userViewModel.LastName) || !string.IsNullOrWhiteSpace(userViewModel.CompanyName)))
                 user.Person = new Person() { Id = Guid.NewGuid() };
 
-            user.Person.FirstName = userViewModel.FirstName;
-            user.Person.LastName = userViewModel.LastName;
-
-            if (userViewModel.ExpirationDate != user.Person.ExpirationDate)
+            if (user.Person != null)
             {
-                user.Person.ExpirationDate = userViewModel.ExpirationDate;
-                user.Person.ExpirationReminderSentOn = null;
-            }
+                user.Person.FirstName = userViewModel.FirstName;
+                user.Person.LastName = userViewModel.LastName;
 
-            var company = await _dbContext.Companies.SingleOrDefaultAsync(i => i.VatIn == userViewModel.CompanyVatIn);
+                if (userViewModel.ExpirationDate != user.Person.ExpirationDate)
+                {
+                    user.Person.ExpirationDate = userViewModel.ExpirationDate;
+                    user.Person.ExpirationReminderSentOn = null;
+                }
 
-            if (user.Person.Company == null && !string.IsNullOrWhiteSpace(userViewModel.CompanyName))
-                user.Person.Company = company ?? new Company();
+                var company = await _dbContext.Companies.SingleOrDefaultAsync(i => i.VatIn == userViewModel.CompanyVatIn);
 
-            if (user.Person.Company != null)
-            {
-                user.Person.Company.Name = userViewModel.CompanyName;
-                user.Person.Company.Longitude = userViewModel.CompanyLongitude;
-                user.Person.Company.Latitude = userViewModel.CompanyLatitude;
-                user.Person.Company.Address = userViewModel.CompanyAddress;
-                user.Person.Company.City = userViewModel.CompanyCity;
-                user.Person.Company.Province = userViewModel.CompanyProvince;
-                user.Person.Company.ZipCode = userViewModel.CompanyZipCode;
-                user.Person.Company.CountryCode = userViewModel.CompanyCountryCode;
-                user.Person.Company.VatIn = userViewModel.CompanyVatIn;
-                user.Person.Company.PhoneNumber = userViewModel.CompanyPhoneNumber;
+                if (user.Person.Company == null && !string.IsNullOrWhiteSpace(userViewModel.CompanyName))
+                    user.Person.Company = company ?? new Company();
+
+                if (user.Person.Company != null)
+                {
+                    user.Person.Company.Name = userViewModel.CompanyName;
+                    user.Person.Company.Longitude = userViewModel.CompanyLongitude;
+                    user.Person.Company.Latitude = userViewModel.CompanyLatitude;
+                    user.Person.Company.Address = userViewModel.CompanyAddress;
+                    user.Person.Company.City = userViewModel.CompanyCity;
+                    user.Person.Company.Province = userViewModel.CompanyProvince;
+                    user.Person.Company.ZipCode = userViewModel.CompanyZipCode;
+                    user.Person.Company.CountryCode = userViewModel.CompanyCountryCode;
+                    user.Person.Company.VatIn = userViewModel.CompanyVatIn;
+                    user.Person.Company.PhoneNumber = userViewModel.CompanyPhoneNumber;
+                }
             }
 
             var result = await _userManager.UpdateAsync(user);

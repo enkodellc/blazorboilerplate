@@ -7,7 +7,7 @@
     @L["AppNavHome"]
 </MudNavLink>
 
-<AuthorizeView Policy=@Policies.For(UserFeatures.Operator)>
+<AuthorizeView Policy=@Policies.For(UserFeatures.UserManager)>
     <MudNavLink Href="@navigationManager.ToAbsoluteUri("/users").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People">
         @L["Users"]
     </MudNavLink>

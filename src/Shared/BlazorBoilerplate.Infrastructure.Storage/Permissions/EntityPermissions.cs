@@ -107,6 +107,14 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
                         i.GroupName == nameof(PluralTranslation))
                         .Select(p => p.Value).ToArray();
 
+                case UserFeatures.UserManager:
+                    return GetAllPermission()
+                        .Where(i => i.GroupName == "User" ||
+                        i.GroupName == nameof(ApplicationUser) ||
+                        i.GroupName == nameof(Person) ||
+                        i.GroupName == nameof(Company))
+                        .Select(p => p.Value).ToArray();
+
                 default:
                     return Array.Empty<string>();
             }

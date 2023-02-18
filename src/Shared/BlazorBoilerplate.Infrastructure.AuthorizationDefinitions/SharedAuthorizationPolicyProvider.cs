@@ -90,6 +90,19 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                                     created = true;
                                     break;
 
+                                case UserFeatures.UserManager:
+                                    policy = new AuthorizationPolicyBuilder()
+                                        .Combine(await GetPolicyAsync(Policies.For(UserFeatures.User)))
+                                        .RequireAssertion(ctx =>
+                                        ctx.User.IsInRole(DefaultRoleNames.Administrator) ||
+                                        ctx.User.HasClaim(claim => 
+                                        (claim.Type == ApplicationClaimTypes.For(UserFeatures.Operator) || claim.Type == ApplicationClaimTypes.For(UserFeatures.UserManager))
+                                        && claim.Value == ClaimValues.trueString))
+                                        .Build();
+
+                                    created = true;
+                                    break;
+
                             }
                         }
                         break;
