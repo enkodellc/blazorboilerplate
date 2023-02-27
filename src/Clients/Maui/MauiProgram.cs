@@ -33,7 +33,7 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
-        ServerAddres = "https://openid.quarella.net";
+        ServerAddres = "https://home.quarella.net";
 
         builder.Services.AddBlazorWebViewDeveloperTools();
 

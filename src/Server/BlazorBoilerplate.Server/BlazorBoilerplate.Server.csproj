@@ -24,6 +24,7 @@
     <PackageReference Include="FormatWith" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.7.0-alpha.0.0" />
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.2.0" />
+	<PackageReference Include="LettuceEncrypt" Version="1.2.0" />
     <PackageReference Include="IntlTelInputBlazor.Fork" Version="1.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.2" />
