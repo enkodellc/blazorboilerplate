@@ -55,7 +55,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
             await LoadRoles();
         }
 
-        private async void TimerElapsed(object? sender, ElapsedEventArgs e)
+        private async void TimerElapsed(object sender, ElapsedEventArgs e)
         {
             _serverCalled = false;
             _timer.Stop();
@@ -66,7 +66,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
             }
         }
 
-        private async void OnFilterChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnFilterChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!_serverCalled)
             {
