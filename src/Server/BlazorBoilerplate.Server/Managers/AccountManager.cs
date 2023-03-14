@@ -26,7 +26,6 @@ using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
-using static BlazorBoilerplate.Infrastructure.Storage.Permissions.Permissions;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers

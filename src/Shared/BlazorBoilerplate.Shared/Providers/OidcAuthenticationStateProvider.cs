@@ -30,9 +30,10 @@ namespace BlazorBoilerplate.Shared.Providers
                     await _tokenStorage.Set(new Tokens
                     {
                         AccessTokenExpiration = response.AccessTokenExpiration,
+                        IdentityToken = response.IdentityToken,
                         AccessToken = response.AccessToken,
                         RefreshToken = response.RefreshToken
-                    });                   
+                    });
 
                     return new ApiResponseDto { StatusCode = Status200OK, Result = response.User };
                 }
@@ -57,13 +58,15 @@ namespace BlazorBoilerplate.Shared.Providers
         {
             try
             {
-                await _tokenStorage.Clear();
+                var tokens = await _tokenStorage.Get();
 
-                var response = await _oidcClient.LogoutAsync();
+                var response = await _oidcClient.LogoutAsync(new LogoutRequest() { IdTokenHint = tokens.IdentityToken });
 
                 if (!response.IsError)
                 {
                     _logger.LogInformation($"Oidc Logout");
+
+                    await _tokenStorage.Clear();
 
                     return new ApiResponseDto { StatusCode = Status200OK };
                 }

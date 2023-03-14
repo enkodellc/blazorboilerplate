@@ -42,14 +42,14 @@ namespace BlazorBoilerplate.Server.Controllers
         [AllowAnonymous]
         [ProducesResponseType(Status204NoContent)]
         [ProducesResponseType(Status401Unauthorized)]
-        public async Task<ApiResponse> BuildLoginViewModel(string returnUrl)
+        public async Task<ApiResponse> BuildLoginViewModel([FromBody] string returnUrl)
             => await _accountManager.BuildLoginViewModel(returnUrl);
 
         [HttpPost("BuildLogoutViewModel")]
         [AllowAnonymous]
         [ProducesResponseType(Status204NoContent)]
         [ProducesResponseType(Status401Unauthorized)]
-        public async Task<ApiResponse> BuildLogoutViewModel(string logoutId)
+        public async Task<ApiResponse> BuildLogoutViewModel([FromBody] string logoutId)
             => new ApiResponse(Status200OK, null, await _accountManager.BuildLogoutViewModel(User, logoutId));
 
         // POST: api/Account/Login
@@ -104,9 +104,9 @@ namespace BlazorBoilerplate.Server.Controllers
         [AllowAnonymous]
         public async Task<ApiResponse> Logout([FromBody] LogoutInputModel model)
         {
-            var response = await _accountManager.Logout(User);
-
             var vm = await _accountManager.BuildLoggedOutViewModel(User, HttpContext, model?.LogoutId);
+
+            var response = await _accountManager.Logout(User);
 
             response.Result = vm;
 
