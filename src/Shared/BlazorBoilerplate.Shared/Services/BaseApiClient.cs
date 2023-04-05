@@ -2,6 +2,7 @@
 using BlazorBoilerplate.Shared.Interfaces;
 using Breeze.Sharp;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Linq.Expressions;
 
 namespace BlazorBoilerplate.Shared.Services
