@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="[10.1.1]" />
-    <PackageReference Include="Breeze.Persistence.EFCore" Version="7.0.1" />
+    <PackageReference Include="Breeze.Persistence.EFCore" Version="7.1.0" />
 	<PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="6.10.0" />
 	<PackageReference Include="Finbuckle.MultiTenant.EntityFrameworkCore" Version="6.9.1" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.2" />
