@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Security.Claims;
+using BlazorBoilerplate.Storage.Mapping;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server.Managers
@@ -228,14 +229,14 @@ namespace BlazorBoilerplate.Server.Managers
             if (pageSize > 0)
                 query = query.Skip(pageNumber * pageSize).Take(pageSize);
 
-            return new ApiResponse(Status200OK, L["{0} clients fetched", count], (await query.ToListAsync()).Select(i => i.ToModel()).ToList());
+            return new ApiResponse(Status200OK, L["{0} clients fetched", count], (await query.ToListAsync()).Select(i => i.CreateModel()).ToList());
         }
 
         public async Task<ApiResponse> GetClientAsync(string clientId)
         {
             var client = await _configurationDbContext.Clients.SingleOrDefaultAsync(i => i.ClientId == clientId);
 
-            return client != null ? new ApiResponse(Status200OK, "Retrieved Client", client.ToModel()) :
+            return client != null ? new ApiResponse(Status200OK, "Retrieved Client", client.CreateModel()) :
                                     new ApiResponse(Status404NotFound, "Failed to Retrieve Client");
         }
 
@@ -291,14 +292,14 @@ namespace BlazorBoilerplate.Server.Managers
             if (pageSize > 0)
                 query = query.Skip(pageNumber * pageSize).Take(pageSize);
 
-            return new ApiResponse(Status200OK, L["{0} identity resources fetched", count], (await query.ToListAsync()).Select(i => i.ToModel()).ToList());
+            return new ApiResponse(Status200OK, L["{0} identity resources fetched", count], (await query.ToListAsync()).Select(i => i.CreateModel()).ToList());
         }
 
         public async Task<ApiResponse> GetIdentityResourceAsync(string name)
         {
             var identityResource = await _configurationDbContext.IdentityResources.SingleOrDefaultAsync(i => i.Name == name);
 
-            return identityResource != null ? new ApiResponse(Status200OK, "Retrieved Identity Resource", identityResource.ToModel()) :
+            return identityResource != null ? new ApiResponse(Status200OK, "Retrieved Identity Resource", identityResource.CreateModel()) :
                                               new ApiResponse(Status404NotFound, "Failed to Retrieve Identity Resource");
         }
 
@@ -356,14 +357,14 @@ namespace BlazorBoilerplate.Server.Managers
             if (pageSize > 0)
                 query = query.Skip(pageNumber * pageSize).Take(pageSize);
 
-            return new ApiResponse(Status200OK, L["{0} API resources fetched", count], (await query.ToListAsync()).Select(i => i.ToModel()).ToList());
+            return new ApiResponse(Status200OK, L["{0} API resources fetched", count], (await query.ToListAsync()).Select(i => i.CreateModel()).ToList());
         }
 
         public async Task<ApiResponse> GetApiResourceAsync(string name)
         {
             var apiResource = await _configurationDbContext.ApiResources.SingleOrDefaultAsync(i => i.Name == name);
 
-            return apiResource != null ? new ApiResponse(Status200OK, "Retrieved API Resource", apiResource.ToModel()) :
+            return apiResource != null ? new ApiResponse(Status200OK, "Retrieved API Resource", apiResource.CreateModel()) :
                                          new ApiResponse(Status404NotFound, "Failed to Retrieve API Resource");
         }
 
