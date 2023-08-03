@@ -22,7 +22,7 @@ else
 {
     <MudTable Items="@identityResources" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
         <HeaderContent>
-            <MudTh><MudButton StartIcon="@Icons.Filled.Add" OnClick="@(() => OpenUpsertIdentityResourceDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Identity Resource"]</MudButton></MudTh>
+            <MudTh><MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertIdentityResourceDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Identity Resource"]</MudButton></MudTh>
             <MudTh>@L["Name"]</MudTh>
             <MudTh>Enabled</MudTh>
             <MudTh>Display Name</MudTh>
@@ -35,8 +35,8 @@ else
         <RowTemplate Context="IdentityResourceRow">
             <MudTd>
                 <div style="width:155px;">
-                    <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenUpsertIdentityResourceDialog(IdentityResourceRow))"></MudIconButton>
-                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteIdentityResourceDialog(IdentityResourceRow))"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => OpenUpsertIdentityResourceDialog(IdentityResourceRow))"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteIdentityResourceDialog(IdentityResourceRow))"></MudIconButton>
                 </div>
             </MudTd>
             <MudTd><div style="min-width:130px;">@IdentityResourceRow.Name</div></MudTd>
@@ -71,13 +71,13 @@ else
             <MudValidationSummary />
             <MudTabs Elevation="4" Rounded="true" Color="@Color.Info">
                 <MudTabPanel Text="Main">
-                    <MudTextField @bind-Value="@currentIdentityResource.Name" Disabled="@isCurrentIdentityContextIdReadOnly" Label="Id" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+                    <MudTextField @bind-Value="@currentIdentityResource.Name" Disabled="@isCurrentIdentityContextIdReadOnly" Label="Id" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                     <MudSwitch @bind-Checked="@currentIdentityResource.Enabled" Label="Enabled" Color="Color.Primary" />
 
-                    <MudTextField @bind-Value="@currentIdentityResource.DisplayName" Label="Display Name" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+                    <MudTextField @bind-Value="@currentIdentityResource.DisplayName" Label="Display Name" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
 
-                    <MudTextField @bind-Value="@currentIdentityResource.Description" Label="Description" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+                    <MudTextField @bind-Value="@currentIdentityResource.Description" Label="Description" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
 
                     <MudSwitch @bind-Checked="@currentIdentityResource.Required" Label="Required" Color="Color.Primary" />
 

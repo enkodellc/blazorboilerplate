@@ -22,7 +22,7 @@ else
 {
     <MudTable Items="@tenants" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
         <HeaderContent>
-            <MudTh><MudButton StartIcon="@Icons.Filled.Add" OnClick="@(() => OpenUpsertTenantDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Tenant"]</MudButton></MudTh>
+            <MudTh><MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertTenantDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Tenant"]</MudButton></MudTh>
             <MudTh>Id</MudTh>
             <MudTh>Identifier</MudTh>
             <MudTh>@L["Name"]</MudTh>
@@ -31,8 +31,8 @@ else
         <RowTemplate Context="TenantRow">
             <MudTd>
                 <div style="width:155px;">
-                    <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenUpsertTenantDialog(TenantRow))"></MudIconButton>
-                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteTenantDialog(TenantRow))" Disabled="@(TenantRow.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => OpenUpsertTenantDialog(TenantRow))"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteTenantDialog(TenantRow))" Disabled="@(TenantRow.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)"></MudIconButton>
                 </div>
             </MudTd>
             <MudTd><div style="min-width:130px;">@TenantRow.Id</div></MudTd>
@@ -41,7 +41,7 @@ else
                     @TenantRow.Identifier
                     @if (TenantRow.Id != BlazorBoilerplate.Constants.Settings.DefaultTenantId)
                         {
-                        <MudIconButton Link="@GetTenantUri(TenantRow)" Target="_blank" Icon="@Icons.Filled.Link" />
+                        <MudIconButton Link="@GetTenantUri(TenantRow)" Target="_blank" Icon="@Icons.Material.Filled.Link" />
                         }
                 </div>
             </MudTd>
@@ -62,13 +62,13 @@ else
         <EditForm Model="@currentTenant">
             <FluentValidationValidator />
             <MudValidationSummary />
-            <MudTextField @bind-Value="@currentTenant.Id" Disabled="@isCurrentTenantKeyReadOnly" Label="Id" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+            <MudTextField @bind-Value="@currentTenant.Id" Disabled="@isCurrentTenantKeyReadOnly" Label="Id" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-            <MudTextField @bind-Value="@currentTenant.Identifier" Disabled="@(currentTenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)" Label="Identifier" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
+            <MudTextField @bind-Value="@currentTenant.Identifier" Disabled="@(currentTenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)" Label="Identifier" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true"></MudTextField>
 
-            <MudTextField @bind-Value="@currentTenant.Name" Label=@L["Name"] AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+            <MudTextField @bind-Value="@currentTenant.Name" Label=@L["Name"] AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-            <MudTextField @bind-Value="@currentTenant.ConnectionString" Label="ConnectionString" AdornmentIcon="@Icons.Filled.Description" Adornment="Adornment.End" FullWidth="true" Lines="5"></MudTextField>
+            <MudTextField @bind-Value="@currentTenant.ConnectionString" Label="ConnectionString" AdornmentIcon="@Icons.Material.Filled.Description" Adornment="Adornment.End" FullWidth="true" Lines="5"></MudTextField>
 
         </EditForm>
     </DialogContent>

@@ -1,4 +1,6 @@
-﻿using BlazorBoilerplate.Shared.Extensions;
+﻿using BlazorBoilerplate.Shared;
+using BlazorBoilerplate.Shared.Dto.Db;
+using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
@@ -15,6 +17,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
         [Inject] NavigationManager navigationManager { get; set; }
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
         [Inject] protected AppState appState { get; set; }
+        [Inject] protected HttpClient httpClient { get; set; }
         [Inject] protected IStringLocalizer<Global> L { get; set; }
         [Inject] IViewNotifier viewNotifier { get; set; }
 
@@ -42,22 +45,29 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
             {
                 identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
 
-                var apiResponse = await identityAuthenticationStateProvider.BuildLoginViewModel(ReturnUrl);
-
-                if (apiResponse.IsSuccessStatusCode)
+                try
                 {
-                    loginViewModel = apiResponse.Result;
+                    var apiResponse = await identityAuthenticationStateProvider.BuildLoginViewModel(ReturnUrl);
 
-                    if (loginViewModel.IsExternalLoginOnly)
+                    if (apiResponse.IsSuccessStatusCode)
                     {
-                        if (!string.IsNullOrEmpty(ReturnUrl))
-                            ReturnUrl = Uri.EscapeDataString(ReturnUrl);
-                        // we only have one option for logging in and it's an external provider
-                        navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
+                        loginViewModel = apiResponse.Result;
+
+                        if (loginViewModel.IsExternalLoginOnly)
+                        {
+                            if (!string.IsNullOrEmpty(ReturnUrl))
+                                ReturnUrl = Uri.EscapeDataString(ReturnUrl);
+                            // we only have one option for logging in and it's an external provider
+                            navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{loginViewModel.ExternalLoginScheme}/{ReturnUrl}", true);
+                        }
                     }
+                    else
+                        viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["LoginFailed"]);
                 }
-                else
-                    viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["LoginFailed"]);
+                catch (Exception ex)
+                {
+                    viewNotifier.Show(ex.GetBaseException().Message, ViewNotifierType.Error, L["LoginFailed"]);
+                }
             }
         }
 
@@ -66,7 +76,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
             if (!string.IsNullOrEmpty(ReturnUrl))
                 ReturnUrl = Uri.EscapeDataString(ReturnUrl);
 
-            navigationManager.NavigateTo($"{navigationManager.BaseUri}api/externalauth/challenge/{provider.AuthenticationScheme}/{ReturnUrl}", true);
+            navigationManager.NavigateTo($"{httpClient.BaseAddress}api/externalauth/challenge/{provider.AuthenticationScheme}/{ReturnUrl}", true);
         }
 
         protected void Register()
@@ -83,7 +93,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
 
                 if (response.IsSuccessStatusCode)
                 {
-                    if (navigationManager.IsWebAssembly())
+                    if (AppState.Runtime == BlazorRuntime.WebAssembly)
                     {
                         if (response.Result?.RequiresTwoFactor == true)
                         {
@@ -94,9 +104,15 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
                         {
                             if (string.IsNullOrEmpty(ReturnUrl))
                             {
-                                var userProfile = await appState.GetUserProfile();
-
-                                navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                                try
+                                {
+                                    var userProfile = await appState.GetUserProfile();
+                                    navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
+                                }
+                                catch (Exception ex)
+                                {
+                                    viewNotifier.Show("Could not load User Profile", ViewNotifierType.Error);
+                                }
                             }
                             else
                                 navigateTo = ReturnUrl;

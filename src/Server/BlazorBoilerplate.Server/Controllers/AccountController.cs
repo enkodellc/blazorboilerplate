@@ -16,7 +16,7 @@ namespace BlazorBoilerplate.Server.Controllers
     [SecurityHeaders]
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseController
     {
         private readonly IAccountManager _accountManager;
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BlazorBoilerplate.Constants;
+using IdentityModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
 namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
@@ -35,6 +37,8 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                         policy = new AuthorizationPolicyBuilder()
                             .RequireAuthenticatedUser()
                             .AddRequirements(new EmailVerifiedRequirement(true))
+                            .RequireClaim(JwtClaimTypes.AuthenticationMethod, ClaimValues.AuthenticationMethodMFA)
+                            .RequireClaim(ApplicationClaimTypes.IsSubscriptionActive, ClaimValues.trueString)
                             .Build();
 
                         created = true;
@@ -44,7 +48,16 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                     case Policies.TwoFactorEnabled:
                         policy = new AuthorizationPolicyBuilder()
                             .RequireAuthenticatedUser()
-                            .RequireClaim("amr", "mfa")
+                            .RequireClaim(JwtClaimTypes.AuthenticationMethod, ClaimValues.AuthenticationMethodMFA)
+                            .Build();
+
+                        created = true;
+                        break;
+
+                    case Policies.IsSubscriptionActive:
+                        policy = new AuthorizationPolicyBuilder()
+                            .RequireAuthenticatedUser()
+                            .RequireClaim(ApplicationClaimTypes.IsSubscriptionActive, ClaimValues.trueString)
                             .Build();
 
                         created = true;
@@ -53,10 +66,31 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
                     case Policies.IsMyEmailDomain:
                         policy = new AuthorizationPolicyBuilder()
                             .RequireAuthenticatedUser()
-                            .AddRequirements(new DomainRequirement("blazorboilerplate.com"))
+                            .AddRequirements(new DomainRequirement("blazorBoilerplate.com"))
                             .Build();
 
                         created = true;
+                        break;
+
+                    default:
+                        if (Enum.TryParse(policyName.Replace("Is", string.Empty), out UserFeatures userFeature))
+                        {
+                            switch (userFeature)
+                            {
+
+                                case UserFeatures.Operator:
+                                    policy = new AuthorizationPolicyBuilder()
+                                        .Combine(await GetPolicyAsync(Policies.IsUser))
+                                        .RequireAssertion(ctx =>
+                                        ctx.User.IsInRole(DefaultRoleNames.Administrator) ||
+                                        ctx.User.HasClaim(claim => claim.Type == ApplicationClaimTypes.For(UserFeatures.Operator) && claim.Value == ClaimValues.trueString))
+                                        .Build();
+
+                                    created = true;
+                                    break;
+
+                            }
+                        }
                         break;
                 }
 

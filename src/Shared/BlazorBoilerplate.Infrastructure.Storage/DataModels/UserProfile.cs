@@ -18,6 +18,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         public bool IsNavMinified { get; set; } = false;
         public int Count { get; set; } = 0;
         public DateTime LastUpdatedDate { get; set; } = DateTime.MinValue;
+        public string Culture { get; set; }
 
         [Column(TypeName = "nvarchar(64)")]
         public string TenantId { get; set; }

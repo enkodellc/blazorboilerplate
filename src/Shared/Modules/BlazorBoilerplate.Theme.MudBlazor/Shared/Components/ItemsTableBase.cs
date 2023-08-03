@@ -16,6 +16,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
         protected int totalItemsCount;
         protected bool isBusy = true;
         protected string filter;
+        protected string from;
         protected QueryParameters queryParameters;
         protected string orderByDefaultField;
         protected string orderBy;
@@ -39,8 +40,9 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
                 await InvokeAsync(StateHasChanged);
 
                 apiClient.ClearEntitiesCache();
-
-                var from = $"{typeof(T).Name}".Pluralize(true);
+                
+                if (from == null)
+                    from = $"{typeof(T).Name}".Pluralize(true);
 
                 var prop = queryParameters?.GetType().GetProperties().SingleOrDefault(i => i.Name == "Filter");
 

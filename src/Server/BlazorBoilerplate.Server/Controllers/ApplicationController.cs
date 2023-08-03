@@ -1,6 +1,5 @@
 ﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
-using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Storage;
 using Breeze.AspNetCore;
 using Breeze.Persistence;
@@ -16,7 +15,7 @@ namespace BlazorBoilerplate.Server.Controllers
     [Route("api/data/[action]")]
     [Authorize(AuthenticationSchemes = AuthSchemes)]
     [BreezeQueryFilter]
-    public class ApplicationController : Controller
+    public class ApplicationController : BaseController
     {
         private const string AuthSchemes =
             "Identity.Application" + "," + JwtBearerDefaults.AuthenticationScheme; //Cookie + Token authentication
@@ -61,38 +60,22 @@ namespace BlazorBoilerplate.Server.Controllers
             return persistenceManager.GetEntities<ApplicationRole>().AsNoTracking().OrderBy(i => i.Name);
         }
 
-        [AllowAnonymous]
         [HttpGet]
-        public IQueryable<Todo> Todos([FromQuery] ToDoFilter filter)
+        [AuthorizeForFeature(UserFeatures.Operator)]
+        public IQueryable<Person> People([FromQuery] string filter)
         {
-            return persistenceManager.GetEntities<Todo>().AsNoTracking()
+            filter = filter?.ToLower();
+
+            var userId = GetUserId();
+
+            return persistenceManager.Context.Persons
+                .Include(i => i.User)
                 .Include(i => i.CreatedBy)
-                .Include(i => i.ModifiedBy)
-                .Where(i =>
-                (filter.From == null || i.CreatedOn >= filter.From) && (filter.To == null || i.CreatedOn <= filter.To) &&
-                (filter.CreatedById == null || i.CreatedById == filter.CreatedById) &&
-                (filter.ModifiedById == null || i.ModifiedById == filter.ModifiedById) &&
-                (filter.IsCompleted == null || i.IsCompleted == filter.IsCompleted) &&
-                (filter.Query == null || i.Title.ToLower().Contains(filter.Query.ToLower())))
-                .OrderByDescending(i => i.CreatedOn);
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public IQueryable<ApplicationUser> TodoCreators([FromQuery] ToDoFilter filter)
-        {
-            filter.CreatedById = null;
-
-            return Todos(filter).Where(i => i.CreatedBy != null).Select(i => i.CreatedBy).Distinct().AsNoTracking();
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public IQueryable<ApplicationUser> TodoEditors([FromQuery] ToDoFilter filter)
-        {
-            filter.ModifiedById = null;
-
-            return Todos(filter).Where(i => i.ModifiedBy != null).Select(i => i.ModifiedBy).Distinct().AsNoTracking();
+                .Where(i => i.User != null && i.User.Id != userId && (filter == null
+                || i.FirstName.ToLower().Contains(filter)
+                || i.LastName.ToLower().Contains(filter))).AsNoTracking()
+                .OrderBy(i => i.LastName)
+                .ThenBy(i => i.FirstName);
         }
 
         [HttpGet]

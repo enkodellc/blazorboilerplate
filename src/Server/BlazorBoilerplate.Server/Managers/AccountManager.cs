@@ -11,6 +11,7 @@ using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
+using BlazorBoilerplate.Storage;
 using IdentityModel;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -18,7 +19,9 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -37,6 +40,7 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly IEmailFactory _emailFactory;
         private readonly IEmailManager _emailManager;
         private readonly IClientStore _clientStore;
+        private readonly ApplicationDbContext _dbContext;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly UrlEncoder _urlEncoder;
@@ -54,6 +58,7 @@ namespace BlazorBoilerplate.Server.Managers
             IEmailFactory emailFactory,
             IEmailManager emailManager,
             IClientStore clientStore,
+            ApplicationDbContext dbContext,
             IConfiguration configuration,
             IIdentityServerInteractionService interaction,
             IAuthenticationSchemeProvider schemeProvider,
@@ -69,6 +74,7 @@ namespace BlazorBoilerplate.Server.Managers
             _emailFactory = emailFactory;
             _emailManager = emailManager;
             _clientStore = clientStore;
+            _dbContext = dbContext;
             _interaction = interaction;
             _schemeProvider = schemeProvider;
             _urlEncoder = urlEncoder;
@@ -277,6 +283,8 @@ namespace BlazorBoilerplate.Server.Managers
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client?.ClientId));
                     _logger.LogInformation("Logged In user {0}", parameters.UserName);
 
+                    await SetCultureInProfile(user.Id);
+
                     if (context != null)
                     {
                         if (context.IsNativeClient())
@@ -345,6 +353,8 @@ namespace BlazorBoilerplate.Server.Managers
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client?.ClientId));
                     _logger.LogInformation("User '{0}' logged in with a authenticator code", user.UserName);
 
+                    await SetCultureInProfile(user.Id);
+
                     return new ApiResponse(Status200OK);
                 }
 
@@ -394,6 +404,8 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client?.ClientId));
                     _logger.LogInformation("User '{0}' logged in with a recovery code", user.UserName);
+
+                    await SetCultureInProfile(user.Id);
 
                     return new ApiResponse(Status200OK);
                 }
@@ -957,6 +969,20 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 return new UserViewModel();
             }
+        }
+
+        private async Task SetCultureInProfile(Guid id)
+        {
+            var profile = await _dbContext.UserProfiles.SingleOrDefaultAsync(i => i.UserId == id);
+
+            if (profile == null)
+            {
+                profile = new UserProfile { UserId = id, LastUpdatedDate = DateTime.Now };
+            }
+
+            profile.Culture = CultureInfo.CurrentCulture.Name;
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
