@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using AutoMapper;
-using IdentityServer4.EntityFramework.Entities;
+﻿using IdentityServer4.EntityFramework.Entities;
 
 namespace BlazorBoilerplate.Storage.Mapping
 {
