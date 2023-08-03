@@ -32,16 +32,16 @@
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="7.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="7.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.2" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="7.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="7.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.9" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.9">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
@@ -54,7 +54,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
     <PackageReference Include="MailKit" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="6.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.9" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="7.0.1" />

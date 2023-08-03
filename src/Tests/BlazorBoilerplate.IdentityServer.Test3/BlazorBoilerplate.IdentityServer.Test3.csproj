@@ -8,6 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="6.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.9" />
   </ItemGroup>
 </Project>
