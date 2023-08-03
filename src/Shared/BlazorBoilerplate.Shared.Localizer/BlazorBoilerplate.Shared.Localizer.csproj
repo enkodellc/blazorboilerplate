@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Karambolo.PO" Version="1.9.0" />
+    <PackageReference Include="Karambolo.PO" Version="1.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="7.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.2" />

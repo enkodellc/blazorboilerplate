@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,13 +7,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="[10.1.1]" />
-    <PackageReference Include="Breeze.Persistence.EFCore" Version="7.0.1" />
-	<PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="6.9.1" />
+    <PackageReference Include="Breeze.Persistence.EFCore" Version="7.1.0" />
+	<PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="6.10.0" />
 	<PackageReference Include="Finbuckle.MultiTenant.EntityFrameworkCore" Version="6.9.1" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="4.1.2" />
-    <PackageReference Include="Karambolo.PO" Version="1.9.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="Karambolo.PO" Version="1.10.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.2">
