@@ -7,11 +7,11 @@ using BlazorBoilerplate.Shared.Localizer;
 using Finbuckle.MultiTenant;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using BlazorBoilerplate.Storage.Mapping;
 using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
 using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile;
 
@@ -180,7 +180,7 @@ namespace BlazorBoilerplate.Storage
             {
                 _logger.LogInformation("Seeding IdentityServer API Scopes");
                 foreach (var scope in IdentityServerConfig.GetApiScopes)
-                    _configurationContext.ApiScopes.Add(scope.ToEntity());
+                    _configurationContext.ApiScopes.Add(scope.CreateEntity());
 
                 await _configurationContext.SaveChangesAsync();
             }
@@ -189,7 +189,7 @@ namespace BlazorBoilerplate.Storage
             {
                 _logger.LogInformation("Seeding IdentityServer Clients");
                 foreach (var client in IdentityServerConfig.GetClients)
-                    _configurationContext.Clients.Add(client.ToEntity());
+                    _configurationContext.Clients.Add(client.CreateEntity());
 
                 await _configurationContext.SaveChangesAsync();
             }
@@ -198,7 +198,7 @@ namespace BlazorBoilerplate.Storage
             {
                 _logger.LogInformation("Seeding IdentityServer Identity Resources");
                 foreach (var resource in IdentityServerConfig.GetIdentityResources)
-                    _configurationContext.IdentityResources.Add(resource.ToEntity());
+                    _configurationContext.IdentityResources.Add(resource.CreateEntity());
 
                 await _configurationContext.SaveChangesAsync();
             }
@@ -207,7 +207,7 @@ namespace BlazorBoilerplate.Storage
             {
                 _logger.LogInformation("Seeding IdentityServer API Resources");
                 foreach (var resource in IdentityServerConfig.GetApiResources)
-                    _configurationContext.ApiResources.Add(resource.ToEntity());
+                    _configurationContext.ApiResources.Add(resource.CreateEntity());
 
                 await _configurationContext.SaveChangesAsync();
             }

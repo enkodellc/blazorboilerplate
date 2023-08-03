@@ -2,8 +2,7 @@
 
 ***Job Posting***  If you like working with Blazor Boilerplate and want to get paid to work with a great team [review this post](https://github.com/enkodellc/blazorboilerplate/issues/1046).
 
-***Note*** The current master branch does not work but when I published to IIS it is having issues with .net7 and IS4. Open to PR's but recommend using the .net7 Maui branch for now.  Please use the Maui branch or the [.Net Core 6.0 Latest](https://github.com/enkodellc/blazorboilerplate/releases/tag/3.4) RELEASE.
-
+***Note** The current master branch is now fixed and working with net7.0
 
 Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to run both WebAssembly (Core-Hosted) and Server-Side Blazor with a .NET Core 6.0 Server. Default mode for BB is Server Side. To switch to Webassembly log in as Admin and go to settings. [Read more here](https://blazor-boilerplate.readthedocs.io/en/latest/features/dual_mode_blazor.html)
 
