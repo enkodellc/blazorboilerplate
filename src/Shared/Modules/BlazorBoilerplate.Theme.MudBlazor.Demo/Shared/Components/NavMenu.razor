@@ -3,42 +3,42 @@
 @inject IStringLocalizer<Global> L
 @implements IDynamicComponent
 
-<MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">
+<MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
     @L["AppNavHome"]
 </MudNavLink>
 
-<MudNavLink Href="@navigationManager.ToAbsoluteUri("todos-virtualtable").AbsoluteUri" Icon="@Icons.Filled.ListAlt">
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("todos-virtualtable").AbsoluteUri" Icon="@Icons.Material.Filled.ListAlt">
     @L["TodoNav"] Virtual Table
 </MudNavLink>
 
-<MudNavLink Href="@navigationManager.ToAbsoluteUri("todos-paging").AbsoluteUri" Icon="@Icons.Filled.ListAlt">
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("todos-paging").AbsoluteUri" Icon="@Icons.Material.Filled.ListAlt">
     @L["TodoNav"] Paging
 </MudNavLink>
 
-<MudNavGroup Title="@L["AppNavFeatures"]" Icon="@Icons.Filled.Stars">
-    <MudNavLink Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri" Icon="@Icons.Filled.TouchApp">
+<MudNavGroup Title="@L["AppNavFeatures"]" Icon="@Icons.Material.Filled.Stars">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri" Icon="@Icons.Material.Filled.TouchApp">
         @L["AppNavDragAndDrop"]
     </MudNavLink>
 </MudNavGroup>
 
-<MudNavLink Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.BarChart">
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Material.Filled.BarChart">
     @L["Dashboard"]
 </MudNavLink>
 
-<MudNavGroup Title="@L["AppNavEmail"]" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.MailOutline">
-    <MudNavLink Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.Inbox">
+<MudNavGroup Title="@L["AppNavEmail"]" Disabled="@(!IsLoggedIn)" Icon="@Icons.Material.Filled.MailOutline">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("email_view").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Material.Filled.Inbox">
         @L["AppNavReadEmail"]
     </MudNavLink>
-    <MudNavLink Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.Send">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("email").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Material.Filled.Send">
         @L["AppNavSendEmail"]
     </MudNavLink>
 </MudNavGroup>
 
-<MudNavLink Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Filled.Forum">
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("forum").AbsoluteUri" Disabled="@(!IsLoggedIn)" Icon="@Icons.Material.Filled.Forum">
     @L["AppNavForum"]
 </MudNavLink>
 
-<MudNavLink Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri" Icon="@Icons.Filled.AttachMoney">
+<MudNavLink Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri" Icon="@Icons.Material.Filled.AttachMoney">
     @L["AppNavSponsors"]
 </MudNavLink>
 

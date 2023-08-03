@@ -56,15 +56,11 @@ namespace BlazorBoilerplate.Theme.Material
             });
 
             services.AddScoped<IViewNotifier, ViewNotifier>();
-
-            var sp = services.BuildServiceProvider();
-
-            sp.GetRequiredService<HttpClient>().EnableIntercept(sp);
         }
 
         public void ConfigureWebAssemblyHost(WebAssemblyHost webAssemblyHost)
         {
-            webAssemblyHost.UseLoadingBar();
+
         }
     }
 }

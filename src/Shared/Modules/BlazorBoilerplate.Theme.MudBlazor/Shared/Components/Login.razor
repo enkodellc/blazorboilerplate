@@ -7,7 +7,7 @@
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
         <MudTooltip Text="@L["Logout"]" Placement="Placement.End">
-            <MudButton StartIcon="@Icons.Filled.ExitToApp" Color="Color.Inherit" OnClick="LogoutClick" Style="min-width: auto; padding-right:0">
+            <MudButton StartIcon="@Icons.Material.Filled.ExitToApp" Color="Color.Inherit" OnClick="LogoutClick" Style="min-width: auto; padding-right:0">
                 @if (ShowLogOutLabel)
                 {@L["Logout"]}
             </MudButton>
@@ -15,7 +15,7 @@
     </Authorized>
     <NotAuthorized>
         <MudTooltip Text="@L["Login"]" Placement="Placement.End">
-            <MudButton StartIcon="@Icons.Filled.AccountBox" Color="Color.Inherit" Link="@BlazorBoilerplate.Constants.Settings.LoginPath">
+            <MudButton StartIcon="@Icons.Material.Filled.AccountBox" Color="Color.Inherit" Link="@BlazorBoilerplate.Constants.Settings.LoginPath">
                 @if (ShowLogInLabel)
                 {@L["Login"]}
             </MudButton>
