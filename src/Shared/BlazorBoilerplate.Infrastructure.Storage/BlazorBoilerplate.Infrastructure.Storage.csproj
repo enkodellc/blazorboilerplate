@@ -10,12 +10,14 @@
     <PackageReference Include="Finbuckle.MultiTenant" Version="6.11.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
+    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Utils\BlazorBoilerplate.SourceGenerator\BlazorBoilerplate.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\BlazorBoilerplate.Constants\BlazorBoilerplate.Constants.csproj" />
     <ProjectReference Include="..\BlazorBoilerplate.Shared.DataInterfaces\BlazorBoilerplate.Shared.DataInterfaces.csproj" />
+    <ProjectReference Include="..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

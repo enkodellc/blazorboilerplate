@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
-using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Theme.Material
 {
@@ -62,8 +61,6 @@ namespace BlazorBoilerplate.Theme.Material
                 config.SnackbarConfiguration.ShowTransitionDuration = 500;
                 config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
             });
-
-            services.AddLoadingBar();
 
             services.AddScoped<IViewNotifier, ViewNotifier>();
 

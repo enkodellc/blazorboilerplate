@@ -8,6 +8,8 @@ namespace BlazorBoilerplate.Shared.Services
 {
     public class AppState
     {
+        public static BlazorRuntime Runtime { get; set; } = BlazorRuntime.WebAssembly;
+
         public event Action OnChange;
 
         private readonly IApiClient _apiClient;

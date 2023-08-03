@@ -1,5 +1,8 @@
 using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using Finbuckle.MultiTenant;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -17,14 +20,14 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
         /// </summary>
         static EntityPermissions()
         {
-            List<EntityPermission> allPermissions = new List<EntityPermission>();
+            List<EntityPermission> allPermissions = new();
             IEnumerable<object> permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Static | BindingFlags.Public).Cast<TypeInfo>();
             foreach (TypeInfo permissionClass in permissionClasses)
             {
                 IEnumerable<FieldInfo> permissions = permissionClass.DeclaredFields.Where(f => f.IsLiteral);
                 foreach (FieldInfo permission in permissions)
                 {
-                    EntityPermission applicationPermission = new EntityPermission
+                    EntityPermission applicationPermission = new()
                     {
                         Value = permission.GetValue(null).ToString(),
                         Name = permission.GetValue(null).ToString().Replace('.', ' '),
@@ -87,6 +90,25 @@ namespace BlazorBoilerplate.Infrastructure.Storage.Permissions
         public string[] GetAllPermissionNames()
         {
             return GetAllPermission().OrderBy(p => p.Name).Select(p => p.Name).ToArray();
+        }
+        public string[] GetAllPermissionValuesFor(UserFeatures userFeature)
+        {
+            switch (userFeature)
+            {
+                case UserFeatures.Operator:
+                    return GetAllPermission()
+                        .Where(i => i.GroupName == "User" ||
+                        i.GroupName == nameof(ApplicationUser) ||
+                        i.GroupName == nameof(Person) ||
+                        i.GroupName == nameof(Company) ||
+                        i.GroupName == nameof(LocalizationRecord) ||
+                        i.GroupName == nameof(PluralTranslation))
+                        .Select(p => p.Value).ToArray();
+
+                default:
+                    return Array.Empty<string>();
+            }
+
         }
     }
 }

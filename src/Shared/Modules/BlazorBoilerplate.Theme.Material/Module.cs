@@ -5,7 +5,6 @@ using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Theme.Material
 {
@@ -44,7 +43,6 @@ namespace BlazorBoilerplate.Theme.Material
 
         public void ConfigureWebAssemblyServices(IServiceCollection services)
         {
-            services.AddLoadingBar();
             services.AddMatToaster(config =>
             {
                 config.Position = MatToastPosition.BottomRight;

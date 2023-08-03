@@ -312,7 +312,7 @@ else
                 <MudIconButton Icon="info"></MudIconButton>
             </MudTooltip>
 
-            <MudDatePicker @bind-Date="@currentSecret.Expiration" Label="Expiration" Minimum="@DateTime.Now"></MudDatePicker>
+            <MudDatePicker @bind-Date="@currentSecret.Expiration" Label="Expiration" MinDate="@DateTime.Now"></MudDatePicker>
         </EditForm>
     </DialogContent>
     <DialogActions>

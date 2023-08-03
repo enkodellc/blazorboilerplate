@@ -61,8 +61,10 @@ namespace BlazorBoilerplate.Storage
 
                 builder.UseSqlServer(connectionString, options =>
                 {
+                    options.UseNetTopologySuite();
                     options.CommandTimeout(60);
                     options.MigrationsAssembly(migrationsAssembly);
+                    
                 });
             }
             else
