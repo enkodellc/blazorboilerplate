@@ -14,8 +14,8 @@ namespace BlazorBoilerplate.Storage
     {
         public ApplicationPersistenceManager(ApplicationDbContext dbContext,
             IHttpContextAccessor accessor,
-            IValidatorFactory factory,
-            IStringLocalizer<Global> l) : base(dbContext, accessor, factory, l)
+            IServiceProvider serviceProvider,
+            IStringLocalizer<Global> l) : base(dbContext, accessor, serviceProvider, l)
         { }
 
         protected override bool BeforeSaveEntity(EntityInfo entityInfo)

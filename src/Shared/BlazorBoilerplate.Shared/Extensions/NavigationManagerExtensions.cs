@@ -7,6 +7,11 @@ namespace BlazorBoilerplate.Shared.Extensions
     //https://chrissainty.com/working-with-query-strings-in-blazor/
     public static class NavigationManagerExtensions
     {
+        public static void GoTo(this NavigationManager navManager, string uri)
+        {
+            navManager.NavigateTo(uri, new NavigationOptions { ReplaceHistoryEntry = true });
+        }
+        
         public static bool TryGetQueryString<T>(this NavigationManager navManager, string key, out T value)
         {
             var uri = navManager.ToAbsoluteUri(navManager.Uri);

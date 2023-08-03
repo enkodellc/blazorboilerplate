@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models.Account;
@@ -36,7 +37,7 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto<LoginResponseModel>>("api/Account/Login", parameters);
 
-            if (!_navigationManager.IsWebAssembly())
+            if (AppState.Runtime == BlazorRuntime.Server)
                 if (response.IsSuccessStatusCode)
                     await SubmitServerForm("/server/login/", parameters);
 
@@ -47,7 +48,7 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/LoginWith2fa", parameters);
 
-            if (!_navigationManager.IsWebAssembly())
+            if (AppState.Runtime == BlazorRuntime.Server)
                 if (response.IsSuccessStatusCode)
                     await SubmitServerForm("/server/loginwith2fa/", parameters);
 
@@ -57,7 +58,7 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/LoginWithRecoveryCode", parameters);
 
-            if (!_navigationManager.IsWebAssembly())
+            if (AppState.Runtime == BlazorRuntime.Server)
                 if (response.IsSuccessStatusCode)
                     await SubmitServerForm("/server/loginwith2fa/", parameters);
 
@@ -72,10 +73,10 @@ namespace BlazorBoilerplate.Shared.Services
             {
                 var logoutModel = new AccountFormModel() { ReturnUrl = returnUrl };
 
-                if (_navigationManager.IsWebAssembly())
+                if (AppState.Runtime == BlazorRuntime.WebAssembly)
                 {
                     if (!string.IsNullOrEmpty(logoutModel.ReturnUrl))
-                        _navigationManager.NavigateTo(logoutModel.ReturnUrl);
+                        _navigationManager.NavigateTo(logoutModel.ReturnUrl, true);
                 }
                 else
                     await SubmitServerForm("/server/logout/", logoutModel);
@@ -130,24 +131,24 @@ namespace BlazorBoilerplate.Shared.Services
         {
             var response = await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/ForgetTwoFactorClient", null);
 
-            if (!_navigationManager.IsWebAssembly())
+            if (AppState.Runtime == BlazorRuntime.Server)
                 if (response.IsSuccessStatusCode)
                     await SubmitServerForm("/server/ForgetTwoFactorClient/", new AccountFormModel());
 
             return response;
         }
-        public async Task<ApiResponseDto<UserViewModel>> Enable2fa()
+        public async Task<ApiResponseDto<UserViewModel>> Enable2fa(string userId = null)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Enable2fa", null);
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Enable2fa", userId);
         }
-        public async Task<ApiResponseDto<UserViewModel>> Disable2fa()
+        public async Task<ApiResponseDto<UserViewModel>> Disable2fa(string userId = null)
         {
-            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Disable2fa", null);
+            return await _httpClient.PostJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/Disable2fa", userId);
         }
 
         public async Task<UserViewModel> GetUserViewModel()
         {
-            UserViewModel userViewModel = new UserViewModel { IsAuthenticated = false, Roles = new List<string>() };
+            UserViewModel userViewModel = new() { IsAuthenticated = false, Roles = new List<string>() };
 
             var apiResponse = await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserViewModel>>("api/Account/UserViewModel");
 
@@ -155,6 +156,11 @@ namespace BlazorBoilerplate.Shared.Services
                 userViewModel = apiResponse.Result;
 
             return userViewModel;
+        }
+
+        public async Task<ApiResponseDto<UserViewModel>> GetUserViewModel(string id)
+        {
+            return await _httpClient.GetNewtonsoftJsonAsync<ApiResponseDto<UserViewModel>>($"api/Account/UserViewModel/{id}");
         }
 
         public async Task<UserViewModel> GetUser()
@@ -166,6 +172,20 @@ namespace BlazorBoilerplate.Shared.Services
         public async Task<ApiResponseDto> UpdateUser(UserViewModel userViewModel)
         {
             return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpdateUser", userViewModel);
+        }
+
+        public async Task<ApiResponseDto> UpsertUser(UserViewModel userViewModel)
+        {
+            return await _httpClient.PostJsonAsync<ApiResponseDto>("api/Account/UpsertUser", userViewModel);
+        }
+        public async Task<ApiResponseDto> DeleteUser(string id)
+        {
+            return await _httpClient.DeleteAsync<ApiResponseDto>($"api/Account/{id}");
+        }
+
+        public async Task<ApiResponseDto> DeleteMe()
+        {
+            return await _httpClient.DeleteAsync<ApiResponseDto>("api/Account");
         }
 
         public async Task<ApiResponseDto> AdminUpdateUser(UserViewModel userViewModel)
