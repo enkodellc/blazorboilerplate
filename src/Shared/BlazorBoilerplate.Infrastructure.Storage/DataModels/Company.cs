@@ -1,4 +1,5 @@
-﻿using NetTopologySuite.Geometries;
+﻿using BlazorBoilerplate.Shared.Helpers;
+using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -25,7 +26,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
                 if (value != null)
                 {
                     if (Location == null)
-                        Location = Utils.CreatePoint(value.Value, 0);
+                        Location = TopologyUtils.CreatePoint(value.Value, 0);
                     else
                         Location.X = value.Value;
                 }
@@ -41,7 +42,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
                 if (value != null)
                 {
                     if (Location == null)
-                        Location = Utils.CreatePoint(0, value.Value);
+                        Location = TopologyUtils.CreatePoint(0, value.Value);
                     else
                         Location.Y = value.Value;
                 }

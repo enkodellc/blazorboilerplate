@@ -58,9 +58,9 @@ namespace BlazorBoilerplate.Storage
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.HasOne(e => e.User)
-                .WithOne(d => d.Person)
-                .HasForeignKey<ApplicationUser>(d => d.PersonId);
+                //entity.HasOne(e => e.User)
+                //.WithOne(d => d.Person)
+                //.HasForeignKey<ApplicationUser>(d => d.PersonId);
 
                 entity.HasOne(d => d.CreatedBy)
                    .WithMany()

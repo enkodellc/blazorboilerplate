@@ -7,11 +7,11 @@ using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using BlazorBoilerplate.Shared.Localizer;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using BlazorBoilerplate.Storage.Mapping;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -52,20 +52,20 @@ namespace BlazorBoilerplate.Storage
             _logger = logger;
         }
 
-        public virtual async Task Seed()
+        public virtual async Task SeedAsync()
         {
-            await Migrate();
+            await MigrateAsync();
 
             await ImportTranslations();
 
-            await EnsureAdminIdentities();
+            await EnsureAdminIdentitiesAsync();
 
             await SeedIdentityServer();
 
             _context.Database.ExecuteSqlRaw("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;");
         }
 
-        private async Task Migrate()
+        private async Task MigrateAsync()
         {
             await _tenantStoreDbContext.Database.MigrateAsync();
             await _localizationDbContext.Database.MigrateAsync();
@@ -93,7 +93,7 @@ namespace BlazorBoilerplate.Storage
             {
                 _logger.LogInformation("Seeding IdentityServer API Scopes");
                 foreach (var scope in IdentityServerConfig.GetApiScopes)
-                    _configurationContext.ApiScopes.Add(scope.ToEntity());
+                    _configurationContext.ApiScopes.Add(scope.CreateEntity());
 
                 await _configurationContext.SaveChangesAsync();
             }
@@ -102,7 +102,7 @@ namespace BlazorBoilerplate.Storage
             {
                 _logger.LogInformation("Seeding IdentityServer Clients");
                 foreach (var client in IdentityServerConfig.GetClients)
-                    _configurationContext.Clients.Add(client.ToEntity());
+                    _configurationContext.Clients.Add(client.CreateEntity());
 
                 await _configurationContext.SaveChangesAsync();
             }
@@ -111,7 +111,7 @@ namespace BlazorBoilerplate.Storage
             {
                 _logger.LogInformation("Seeding IdentityServer Identity Resources");
                 foreach (var resource in IdentityServerConfig.GetIdentityResources)
-                    _configurationContext.IdentityResources.Add(resource.ToEntity());
+                    _configurationContext.IdentityResources.Add(resource.CreateEntity());
 
                 await _configurationContext.SaveChangesAsync();
             }
@@ -120,13 +120,13 @@ namespace BlazorBoilerplate.Storage
             {
                 _logger.LogInformation("Seeding IdentityServer API Resources");
                 foreach (var resource in IdentityServerConfig.GetApiResources)
-                    _configurationContext.ApiResources.Add(resource.ToEntity());
+                    _configurationContext.ApiResources.Add(resource.CreateEntity());
 
                 await _configurationContext.SaveChangesAsync();
             }
         }
 
-        public async Task EnsureAdminIdentities()
+        public async Task EnsureAdminIdentitiesAsync()
         {
             await EnsureRole(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
 
