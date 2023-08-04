@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace BlazorBoilerplate.Server.Pages
 {
     [Authorize]
+    //[IgnoreAntiforgeryToken]
     public class LogoutModel : PageModel
     {
         private readonly IAccountManager _accountManager;

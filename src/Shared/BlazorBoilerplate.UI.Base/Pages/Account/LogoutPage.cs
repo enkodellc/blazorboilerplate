@@ -30,14 +30,10 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
 
                 if (apiResponse.IsSuccessStatusCode)
                 {
-                    var vm = apiResponse.Result;
+                    logoutViewModel = apiResponse.Result;
 
-                    if (vm.ShowLogoutPrompt == false)
-                    {
+                    if (logoutViewModel.ShowLogoutPrompt == false)
                         await SubmitLogout();
-                    }
-                    else
-                        logoutViewModel = vm;
                 }
                 else
                     viewNotifier.Show(apiResponse.Message, ViewNotifierType.Error, L["LogoutFailed"]);

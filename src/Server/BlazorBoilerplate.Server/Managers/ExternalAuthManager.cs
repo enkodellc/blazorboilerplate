@@ -5,6 +5,8 @@ using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using BlazorBoilerplate.Storage;
 using IdentityModel;
 using IdentityServer4;
+using IdentityServer4.Events;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
@@ -18,18 +20,24 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _dbContext;
+        private readonly IIdentityServerInteractionService _interaction;
+        private readonly IEventService _events;
         private readonly ILogger<ExternalAuthManager> _logger;
 
         public ExternalAuthManager(IAccountManager accountManager,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ApplicationDbContext dbContext,
+            IIdentityServerInteractionService interaction,
+            IEventService events,
             ILogger<ExternalAuthManager> logger)
         {
             _accountManager = accountManager;
             _userManager = userManager;
             _signInManager = signInManager;
+            _interaction = interaction;
             _dbContext = dbContext;
+            _events = events;
             _logger = logger;
         }
 
@@ -168,7 +176,13 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     //// delete temporary cookie used during external authentication
                     await httpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-                    return result.Properties.Items["returnUrl"] ?? "~/externalauth/success";
+
+                    var returnUrl= result.Properties.Items["returnUrl"] ?? "~/externalauth/success";
+
+                    var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(externalProvider, externalUserId, user.Id.ToString(), user.UserName, true, context?.Client.ClientId));
+
+                    return returnUrl;
                 }
                 else
                 {

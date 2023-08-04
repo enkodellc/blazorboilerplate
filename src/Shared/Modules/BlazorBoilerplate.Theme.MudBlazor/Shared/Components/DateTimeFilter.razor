@@ -11,7 +11,7 @@
                 <MudButton Color="Color.Primary" OnClick="@(() => _fromDatePicker.Close())">Ok</MudButton>
             </PickerActions>
         </MudDatePicker>
-        <MudTimePicker @ref="_fromTimePicker" Disabled="@(Busy || Filter.From == null)" @bind-Time="fromTime" InputIcon="@Icons.Material.Filled.AccessTime">
+        <MudTimePicker @ref="_fromTimePicker" Disabled="@(Busy || Filter.From == null)" @bind-Time="fromTime" AdornmentIcon="@Icons.Material.Filled.AccessTime">
             <PickerActions>
                 <MudButton Class="mr-auto align-self-start" OnClick="@(() => _fromTimePicker.Clear())">@L["Cancel"]</MudButton>
                 <MudButton OnClick="@(() => _fromTimePicker.Close(false))">@L["Close"]</MudButton>
@@ -27,7 +27,7 @@
                 <MudButton Color="Color.Primary" OnClick="@(() => _toDatePicker.Close())">Ok</MudButton>
             </PickerActions>
         </MudDatePicker>
-        <MudTimePicker @ref="_toTimePicker" Disabled="@(Busy || Filter.To == null)" @bind-Time="toTime" InputIcon="@Icons.Material.Filled.AccessTime">
+        <MudTimePicker @ref="_toTimePicker" Disabled="@(Busy || Filter.To == null)" @bind-Time="toTime" AdornmentIcon="@Icons.Material.Filled.AccessTime">
             <PickerActions>
                 <MudButton Class="mr-auto align-self-start" OnClick="@(() => _toTimePicker.Clear())">@L["Cancel"]</MudButton>
                 <MudButton OnClick="@(() => _toTimePicker.Close(false))">@L["Close"]</MudButton>

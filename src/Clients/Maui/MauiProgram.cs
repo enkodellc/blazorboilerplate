@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.DataProtection;
 using MudBlazor;
 using MudBlazor.Services;
 #if DEBUG
-using Serilog;
+using Microsoft.Extensions.Logging;
 #endif
 
 namespace BlazorBoilerplateMaui;
@@ -37,17 +37,10 @@ public static class MauiProgram
 
         builder.Services.AddBlazorWebViewDeveloperTools();
 
-        Log.Logger = new LoggerConfiguration()
-             .Enrich.FromLogContext()
-             .WriteTo.Debug()
-             .CreateLogger();
-
-        builder.Services.AddLogging(logging =>
+        builder.Services.AddLogging(configure =>
         {
-            logging.AddSerilog(dispose: true);
+            configure.AddDebug();
         });
-
-        builder.Services.AddLogging();
 #else
         ServerAddres = "https://www.blazorboilerplate.com";
 #endif

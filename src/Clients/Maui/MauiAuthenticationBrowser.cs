@@ -9,9 +9,11 @@ public class MauiAuthenticationBrowser : IdentityModel.OidcClient.Browser.IBrows
     {
         try
         {
-            var result = await WebAuthenticator.Default.AuthenticateAsync(
-                new Uri(options.StartUrl),
-                new Uri(options.EndUrl));
+#if WINDOWS
+            var result = await WinUIEx.WebAuthenticator.AuthenticateAsync(new Uri(options.StartUrl), new Uri(options.EndUrl));
+#else
+            var result = await WebAuthenticator.Default.AuthenticateAsync(new Uri(options.StartUrl), new Uri(options.EndUrl));
+#endif
 
             var url = new RequestUrl(options.EndUrl)
                 .Create(new Parameters(result.Properties));
