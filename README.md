@@ -1,6 +1,6 @@
 # <img src="https://github.com/enkodellc/blazorboilerplate/blob/master/docs/images/logo-title.png" alt="Blazor Boilerplate" style="max-wdith:100%"/>
 
-***Job Posting***  If you like working with Blazor Boilerplate and want to get paid to work with a great team [review this post](https://github.com/enkodellc/blazorboilerplate/issues/1046).
+***Job Opportunity***  If you like working with Blazor Boilerplate and want others to notify you of oppurtunities [review this post](https://github.com/enkodellc/blazorboilerplate/issues/1046).
 
 ***Note** The current master branch is now fixed and working with net7.0
 
