@@ -1,5 +1,4 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server.Models;
-using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Localizer;
 using Karambolo.Common;
 using Karambolo.PO;

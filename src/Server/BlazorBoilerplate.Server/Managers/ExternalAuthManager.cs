@@ -177,7 +177,7 @@ namespace BlazorBoilerplate.Server.Managers
                     //// delete temporary cookie used during external authentication
                     await httpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
 
-                    var returnUrl= result.Properties.Items["returnUrl"] ?? "~/externalauth/success";
+                    var returnUrl = result.Properties.Items["returnUrl"] ?? "~/externalauth/success";
 
                     var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(externalProvider, externalUserId, user.Id.ToString(), user.UserName, true, context?.Client.ClientId));

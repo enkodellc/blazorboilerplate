@@ -31,7 +31,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpGet("Tenant")]
         public ApiResponse Get()
-            => new ApiResponse(Status200OK, string.Empty,  _autoMapper.Map<TenantDto>(HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo));
+            => new(Status200OK, string.Empty, _autoMapper.Map<TenantDto>(HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo));
 
         [HttpGet("Users")]
         [Authorize(Permissions.User.Read)]
@@ -54,19 +54,19 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> GetRole(string name)
             => await _adminManager.GetRole(name);
 
-        
+
         [HttpPost("Role")]
         [Authorize(Permissions.Role.Create)]
         public async Task<ApiResponse> CreateRole([FromBody] RoleDto roleDto)
             => await _adminManager.CreateRole(roleDto);
 
-        
+
         [HttpPut("Role")]
         [Authorize(Permissions.Role.Update)]
         public async Task<ApiResponse> UpdateRole([FromBody] RoleDto roleDto)
             => await _adminManager.UpdateRole(roleDto);
 
-        
+
         [HttpDelete("Role/{name}")]
         [Authorize(Permissions.Role.Delete)]
         public async Task<ApiResponse> DeleteRole(string name)
@@ -84,19 +84,19 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> GetClient(string clientId)
             => await _adminManager.GetClient(clientId);
 
-        
+
         [HttpPost("Client")]
         [Authorize(Permissions.Client.Create)]
         public async Task<ApiResponse> CreateClient([FromBody] ClientDto clientDto)
             => await _adminManager.CreateClient(clientDto);
 
-        
+
         [HttpPut("Client")]
         [Authorize(Permissions.Client.Update)]
         public async Task<ApiResponse> UpdateClient([FromBody] ClientDto clientDto)
             => await _adminManager.UpdateClient(clientDto);
 
-        
+
         [HttpDelete("Client/{clientId}")]
         [Authorize(Permissions.Client.Delete)]
         public async Task<ApiResponse> DeleteClient(string clientId)
@@ -114,19 +114,19 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> GetApiResource(string name)
             => await _adminManager.GetApiResource(name);
 
-        
+
         [HttpPost("ApiResource")]
         [Authorize(Permissions.ApiResource.Create)]
         public async Task<ApiResponse> CreateApiResource([FromBody] ApiResourceDto apiResourceDto)
             => await _adminManager.CreateApiResource(apiResourceDto);
 
-        
+
         [HttpPut("ApiResource")]
         [Authorize(Permissions.ApiResource.Update)]
         public async Task<ApiResponse> UpdateApiResource([FromBody] ApiResourceDto apiResourceDto)
             => await _adminManager.UpdateApiResource(apiResourceDto);
 
-        
+
         [HttpDelete("ApiResource/{name}")]
         [Authorize(Permissions.ApiResource.Delete)]
         public async Task<ApiResponse> DeleteApiResource(string name)
@@ -144,19 +144,19 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> GetIdentityResource(string name)
             => await _adminManager.GetIdentityResource(name);
 
-        
+
         [HttpPost("IdentityResource")]
         [Authorize(Permissions.IdentityResource.Create)]
         public async Task<ApiResponse> CreateIdentityResource([FromBody] IdentityResourceDto identityResourceDto)
             => await _adminManager.CreateIdentityResource(identityResourceDto);
 
-        
+
         [HttpPut("IdentityResource")]
         [Authorize(Permissions.IdentityResource.Update)]
         public async Task<ApiResponse> UpdateIdentityResource([FromBody] IdentityResourceDto identityResourceDto)
             => await _adminManager.UpdateIdentityResource(identityResourceDto);
 
-        
+
         [HttpDelete("IdentityResource/{name}")]
         [Authorize(Permissions.IdentityResource.Delete)]
         public async Task<ApiResponse> DeleteIdentityResource(string name)
@@ -174,19 +174,19 @@ namespace BlazorBoilerplate.Server.Controllers
         public async Task<ApiResponse> GetTenant(string id)
             => await _adminManager.GetTenant(id);
 
-        
+
         [HttpPost("Tenant")]
         [Authorize(Permissions.Tenant.Create)]
         public async Task<ApiResponse> CreateTenant([FromBody] TenantDto tenantDto)
             => await _adminManager.CreateTenant(tenantDto);
 
-        
+
         [HttpPut("Tenant")]
         [Authorize(Permissions.Tenant.Update)]
         public async Task<ApiResponse> UpdateTenant([FromBody] TenantDto tenantDto)
             => await _adminManager.UpdateTenant(tenantDto);
 
-        
+
         [HttpDelete("Tenant/{id}")]
         [Authorize(Permissions.Tenant.Delete)]
         public async Task<ApiResponse> DeleteTenant(string id)

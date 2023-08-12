@@ -1,18 +1,18 @@
-﻿using GoogleMapsComponents;
-using GoogleMapsComponents.Maps;
-using GoogleMapsComponents.Maps.Places;
-using BlazorBoilerplate.Constants;
+﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
+using BlazorBoilerplate.UI.Base.Shared.Components;
+using GoogleMapsComponents;
+using GoogleMapsComponents.Maps;
+using GoogleMapsComponents.Maps.Places;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
-using BlazorBoilerplate.UI.Base.Shared.Components;
 
 namespace BlazorBoilerplate.Theme.Material.Shared.Components
 {

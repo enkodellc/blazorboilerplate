@@ -91,9 +91,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<ITokenStorage, TokenStorage>();
         builder.Services.AddSingleton(new OidcClient(new()
         {
-            Authority = ServerAddres,            
+            Authority = ServerAddres,
             ClientId = "com.blazorboilerplate.app",
-            ClientSecret= "secret",
+            ClientSecret = "secret",
             Scope = "openid profile email LocalAPI",
             RedirectUri = "com.blazorboilerplate.app://callback",
             PostLogoutRedirectUri = "com.blazorboilerplate.app://callback",

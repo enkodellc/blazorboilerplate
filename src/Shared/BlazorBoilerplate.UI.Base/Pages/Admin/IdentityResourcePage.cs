@@ -6,7 +6,6 @@ using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.UI.Base.Shared.Components;
 using Humanizer;
 using IdentityModel;
-using IdentityServer4.Models;
 using Microsoft.AspNetCore.Components;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 

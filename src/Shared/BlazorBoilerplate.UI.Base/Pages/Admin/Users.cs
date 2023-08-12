@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Timers;
-using BlazorBoilerplate.Constants;
+﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models;
@@ -9,6 +7,8 @@ using BlazorBoilerplate.Shared.Providers;
 using BlazorBoilerplate.UI.Base.Shared.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.ComponentModel;
+using System.Timers;
 using Timer = System.Timers.Timer;
 
 namespace BlazorBoilerplate.UI.Base.Pages.Admin

@@ -1,6 +1,5 @@
 ﻿using BlazorBoilerplate.Server.Services;
 using Serilog;
-using System.Net;
 
 namespace BlazorBoilerplate.Server
 {

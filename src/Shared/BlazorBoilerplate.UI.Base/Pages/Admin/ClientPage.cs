@@ -212,7 +212,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
         protected void OpenDeleteClientSecretDialog(Secret secret)
         {
-            this.Secret = secret;
+            Secret = secret;
             isDeleteClientSecretDialogOpen = true;
         }
 

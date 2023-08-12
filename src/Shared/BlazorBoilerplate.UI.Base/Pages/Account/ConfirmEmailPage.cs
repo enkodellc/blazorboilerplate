@@ -31,7 +31,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
                 confirmEmailViewModel = new ConfirmEmailViewModel
                 {
                     Token = token,
-                    UserId = this.UserId
+                    UserId = UserId
                 };
                 await SendConfirmation();
             }

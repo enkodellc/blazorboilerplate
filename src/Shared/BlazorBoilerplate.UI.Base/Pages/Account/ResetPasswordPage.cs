@@ -27,7 +27,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
             if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(token))
             {
                 resetPasswordViewModel.Token = token;
-                resetPasswordViewModel.UserId = this.UserId;
+                resetPasswordViewModel.UserId = UserId;
             }
             else
             {
