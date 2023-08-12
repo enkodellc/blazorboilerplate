@@ -25,7 +25,7 @@
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.7.0-alpha.0.0" />
     <PackageReference Include="IdentityServer4.Contrib.Certificates" Version="0.2.0" />
 	<PackageReference Include="LettuceEncrypt" Version="1.3.0" />
-    <PackageReference Include="IntlTelInputBlazor.Fork" Version="1.2.2" />
+    <PackageReference Include="IntlTelInputBlazor.Fork" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
@@ -46,8 +46,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
-    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.9" />
-    <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2" />
+    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.1" />
+    <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="72.1" />
   </ItemGroup>
 
   <ItemGroup>

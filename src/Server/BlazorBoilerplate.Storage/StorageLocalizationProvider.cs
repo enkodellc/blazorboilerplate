@@ -89,16 +89,18 @@ namespace BlazorBoilerplate.Storage
             if (textCatalog == null || textCatalog.Count == 0)
                 throw new DomainException("File empty");
 
+            CultureInfo culture;
+
             try
             {
-                var culture = new CultureInfo(textCatalog.Language.Replace("_", "-") ?? string.Empty);
+                culture = new CultureInfo(textCatalog.Language.Replace("_", "-") ?? string.Empty);
             }
             catch (CultureNotFoundException)
             {
                 throw new DomainException("PO File without a valid language");
             }
 
-            var catalogCulture = textCatalog.GetCultureName();
+            var catalogCulture = culture.TwoLetterISOLanguageName;
 
             var pluralFormRule = await localizationDbContext.PluralFormRules
                 .SingleOrDefaultAsync(i => i.Language == catalogCulture);

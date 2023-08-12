@@ -28,7 +28,7 @@ namespace BlazorBoilerplate.Shared.Localizer
 
                     foreach (var culture in localizationRecords.Select(i => i.Culture).Distinct().ToList())
                     {
-                        var pluralFormRule = pluralFormRules.SingleOrDefault(i => i.Language == culture);
+                        var pluralFormRule = pluralFormRules.SingleOrDefault(i => i.Language == culture.Split("-")[0]);
 
                         if (pluralFormRule == null)
                         {

@@ -58,7 +58,7 @@
 
 	<ItemGroup>
 	  <MauiAsset Include="..\..\Server\BlazorBoilerplate.Server\Localization\en-US.po" Link="Resources\Raw\en-US.po" />
-	  <MauiAsset Include="..\..\Server\BlazorBoilerplate.Server\Localization\it-IT.po" Link="Resources\Raw\it-IT.po" />
+	  <MauiAsset Include="..\..\Server\BlazorBoilerplate.Server\Localization\it.po" Link="Resources\Raw\it.po" />
 	</ItemGroup>
 
 	<ItemGroup>

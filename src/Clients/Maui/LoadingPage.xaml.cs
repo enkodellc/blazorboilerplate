@@ -27,8 +27,8 @@ public partial class LoadingPage : ContentPage
                 var stream = await FileSystem.OpenAppPackageFileAsync($"{path}en-US.po");
                 streams.Add("en-US", stream);
 
-                stream = await FileSystem.OpenAppPackageFileAsync($"{path}it-IT.po");
-                streams.Add("it-IT", stream);
+                stream = await FileSystem.OpenAppPackageFileAsync($"{path}it.po");
+                streams.Add("it", stream);
 
                 localizationProvider.Init(streams);
 

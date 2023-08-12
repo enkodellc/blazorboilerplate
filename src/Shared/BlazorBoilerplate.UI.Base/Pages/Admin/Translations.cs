@@ -41,6 +41,8 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
         protected PluralTranslation newPlural { get; set; } = new PluralTranslation();
 
+        private IEnumerable<string> supportedLanguages = SupportedCultures.Select(i => i.Split("-")[0]).Distinct();
+
         protected override async Task OnInitializedAsync()
         {
             await LoadKeys();
@@ -106,8 +108,8 @@ namespace BlazorBoilerplate.UI.Base.Pages.Admin
 
                     LocalizationCultures.Clear();
 
-                    LocalizationCultures.AddRange(SupportedCultures
-                        .Where(i => !currentKey.LocalizationRecords.Any(l => l.Culture == i)));
+                    LocalizationCultures.AddRange(SupportedCultures.Union(supportedLanguages)
+                        .Where(i => !currentKey.LocalizationRecords.Any(l => l.Culture == i)).OrderBy(i => i));
 
                     if (LocalizationCultures.Count > 0)
                         newLocalizationRecord = new LocalizationRecord() { ContextId = currentKey.ContextId, MsgId = currentKey.MsgId, Culture = LocalizationCultures[0] };
