@@ -273,6 +273,7 @@ namespace BlazorBoilerplate.Shared.Dto.Db
         }
 
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1035:")]
         private IEnumerable<SyntaxTree> ManualLoad(string rootDir)
         {
             foreach (var filepath in Directory.GetFiles(rootDir, "*.cs", SearchOption.AllDirectories))
@@ -282,6 +283,7 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1035:")]
         private EntityGeneratorConfig GetConfig(GeneratorExecutionContext context)
         {
             var configFile = context.AdditionalFiles.FirstOrDefault(x => Path.GetFileName(x.Path) == "EntityGeneratorConfig.json");
