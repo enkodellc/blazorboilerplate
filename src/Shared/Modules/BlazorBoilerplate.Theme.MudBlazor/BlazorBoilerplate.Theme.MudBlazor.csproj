@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="6.1.9" />
-	<PackageReference Include="BlazorGoogleMaps" Version="2.5.5" />
+    <PackageReference Include="MudBlazor" Version="6.8.0" />
+	<PackageReference Include="BlazorGoogleMaps" Version="3.1.2" />
   </ItemGroup>
 
   <ItemGroup>

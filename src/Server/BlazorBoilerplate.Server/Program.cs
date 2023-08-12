@@ -52,16 +52,16 @@ namespace BlazorBoilerplate.Server
                 webBuilder.UseStartup<Startup>();
 #if DEBUG
                 //https://github.com/natemcmaster/LettuceEncrypt
-                webBuilder.UseKestrel(k =>
-                {
-                    var appServices = k.ApplicationServices;
-                    k.Listen(
-                        IPAddress.Any, 443,
-                        o => o.UseHttps(h =>
-                        {
-                            h.UseLettuceEncrypt(appServices);
-                        }));
-                });
+                //webBuilder.UseKestrel(k =>
+                //{
+                //    var appServices = k.ApplicationServices;
+                //    k.Listen(
+                //        IPAddress.Any, 443,
+                //        o => o.UseHttps(h =>
+                //        {
+                //            h.UseLettuceEncrypt(appServices);
+                //        }));
+                //});
 #endif
             })
             .UseSerilog();
