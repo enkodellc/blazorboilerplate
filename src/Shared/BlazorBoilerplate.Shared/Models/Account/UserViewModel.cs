@@ -17,6 +17,7 @@ namespace BlazorBoilerplate.Shared.Models.Account
         public bool TwoFactorEnabled { get; set; }
         public bool HasAuthenticator { get; set; }
         public List<KeyValuePair<string, string>> Logins { get; set; }
+        public bool IsLockedOut { get; set; }
         public bool BrowserRemembered { get; set; }
         public string SharedKey { get; set; }
         public string AuthenticatorUri { get; set; }
@@ -26,6 +27,7 @@ namespace BlazorBoilerplate.Shared.Models.Account
         public List<KeyValuePair<string, string>> ExposedClaims { get; set; }
         public Dictionary<UserFeatures, bool> UserFeatures { get; private set; } = Enum.GetValues<UserFeatures>().ToDictionary(k => k, v => false);
         public DateTime? ExpirationDate { get; set; }
+        public string Culture { get; set; }
 
         public string CompanyName { get; set; }
         public double? CompanyLongitude { get; set; }

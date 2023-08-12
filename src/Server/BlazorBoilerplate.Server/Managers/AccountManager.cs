@@ -831,6 +831,9 @@ namespace BlazorBoilerplate.Server.Managers
                 {
                     user.UserName = userViewModel.UserName;
                     user.Email = userViewModel.Email;
+
+                    if (await _userManager.IsLockedOutAsync(user) && !userViewModel.IsLockedOut)
+                        await _userManager.SetLockoutEndDateAsync(user, null);
                 }
             }
             else
@@ -842,6 +845,9 @@ namespace BlazorBoilerplate.Server.Managers
                         UserName = userViewModel.UserName,
                         Email = userViewModel.Email
                     };
+
+                    CultureInfo.CurrentCulture = new CultureInfo(userViewModel.Culture ?? "en-US");
+                    CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
 
                     await RegisterNewUser(user, userViewModel.Password, true);
                 }
@@ -1181,6 +1187,7 @@ namespace BlazorBoilerplate.Server.Managers
                     HasAuthenticator = !string.IsNullOrEmpty(unformattedKey),
                     BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
                     CountRecoveryCodes = await _userManager.CountRecoveryCodesAsync(user),
+                    IsLockedOut = await _userManager.IsLockedOutAsync(user),
 
                     ExposedClaims = claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList(),
                     Roles = claims.Where(c => c.Type == "role").Select(c => c.Value).ToList(),

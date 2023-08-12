@@ -25,6 +25,22 @@
             <MudTextField @bind-Value="@Model.Email" Label="Email" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
             <MudTextField @bind-Value="@Model.FirstName" Label=@L["FirstName"] FullWidth="true"></MudTextField>
             <MudTextField @bind-Value="@Model.LastName" Label=@L["LastName"] FullWidth="true"></MudTextField>
+            @if (isOperator)
+            {
+                @if (Model.UserId != null)
+                {
+                    <MudSwitch @bind-Checked="@Model.IsLockedOut" Label=@L["UnlockUser"] Color="Color.Primary" />
+                }
+                else
+                {
+                    <MudSelect Class="selectCulture" Label=@L["Country"] @bind-Value="@Model.Culture" AdornmentIcon="@Icons.Material.Filled.Public">
+                        @foreach (var item in BlazorBoilerplate.Shared.Localizer.Settings.SupportedCultures)
+                        {
+                            <MudSelectItem Value="@item">@(Global.GetCountryName(item.Split('-').Last()))</MudSelectItem>
+                        }
+                    </MudSelect>
+                }
+            }
             @if (Model.UserId == null)
             {
                 <MudTextField @bind-Value="@Model.Password" autocomplete="new-password" Label=@L["Password"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
