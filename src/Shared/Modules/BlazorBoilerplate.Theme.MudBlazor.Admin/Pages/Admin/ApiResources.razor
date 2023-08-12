@@ -23,7 +23,7 @@ else
 {
     <MudTable Items="@apiResources" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
         <HeaderContent>
-            <MudTh><MudFab Icon="@Icons.Material.Filled.Add" OnClick="@(() => navigationManager.NavigateTo("/admin/apiResource/add"))" Color="Color.Primary" Size="Size.Medium" /></MudTh>
+            <MudTh><MudFab StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => navigationManager.NavigateTo("/admin/apiResource/add"))" Color="Color.Primary" Size="Size.Medium" /></MudTh>
             <MudTh>@L["Name"]</MudTh>
             <MudTh>Enabled</MudTh>
             <MudTh>Display Name</MudTh>

@@ -13,7 +13,7 @@
                 <MudText Typo="Typo.h6">@L["Main details"]</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Outlined.Close" Link="@BackLink" Size="MudBlazor.Size.Medium" />
+                <MudIconButton Icon="@Icons.Material.Outlined.Close" Href="@BackLink" Size="MudBlazor.Size.Medium" />
             </CardHeaderActions>
         </MudCardHeader>
         <MudCardContent>
@@ -48,7 +48,7 @@
             }
         </MudCardContent>
         <MudCardActions>
-            <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+            <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
         </MudCardActions>
     </MudCard>
 
@@ -81,7 +81,7 @@
                     }
                 </MudCardContent>
                 <MudCardActions>
-                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
                 </MudCardActions>
             </MudCard>
         </AuthorizeView>
@@ -105,7 +105,7 @@
                 </MudDatePicker>
             </MudCardContent>
             <MudCardActions>
-                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
             </MudCardActions>
         </MudCard>
     }
@@ -140,7 +140,7 @@
             <MudValidationSummary />
         </MudCardContent>
         <MudCardActions>
-            <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+            <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
         </MudCardActions>
     </MudCard>
 </EditForm>
@@ -162,7 +162,7 @@
                 <MudTextField @bind-Value="@updatePasswordViewModel.NewPasswordConfirm" autocomplete="new-password" Label=@L["Password Confirmation"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
             </MudCardContent>
             <MudCardActions>
-                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
             </MudCardActions>
         </MudCard>
     </EditForm>
@@ -188,7 +188,7 @@
                 }
             </MudCardContent>
             <MudCardActions>
-                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
             </MudCardActions>
         </MudCard>
     </EditForm>
@@ -210,7 +210,7 @@
                 <MudTextField @bind-Value="@authenticatorVerificationCodeViewModel.Code" Label=@L["Code"] FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
             </MudCardContent>
             <MudCardActions>
-                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+                <MudFab ButtonType="ButtonType.Submit" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Check" Size="MudBlazor.Size.Medium" Class="ml-auto" />
             </MudCardActions>
         </MudCard>
     </EditForm>
@@ -268,7 +268,7 @@
             <MudTextField @bind-Value="@email" Label=@L["Email"] AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true"></MudTextField>
         </MudCardContent>
         <MudCardActions>
-            <MudFab OnClick="@Delete" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+            <MudFab OnClick="@Delete" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Size="MudBlazor.Size.Medium" Class="ml-auto" />
         </MudCardActions>
     </MudCard>
 }

@@ -11,8 +11,8 @@
 </MudContainer>
 
 <div class="d-flex flex-wrap mb-4 mx-4">
-    <MudFab Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Link="/user/add" Size="Size.Medium" Class="ma-2" aria-label="add" />
-    <MudFab Icon="@Icons.Material.Filled.Refresh" OnClick="@Reload" Size="Size.Medium" Class="ma-2" />
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Href="/user/add" Size="Size.Medium" Class="ma-2" aria-label="add" />
+    <MudFab StartIcon="@Icons.Material.Filled.Refresh" OnClick="@Reload" Size="Size.Medium" Class="ma-2" />
 </div>
 
 <MudTable ServerData="@(new Func<TableState, Task<TableData<Person>>>(ServerReload))" Striped="true" Bordered="true" Hover="true" Class="rounded-0" Elevation="0"

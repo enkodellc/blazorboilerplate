@@ -22,7 +22,7 @@ else
 {
     <MudTable Items="@clients" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
         <HeaderContent>
-            <MudTh><MudFab Icon="@Icons.Material.Filled.Add" OnClick="@(() => navigationManager.NavigateTo("/admin/client/add"))" Color="Color.Primary" Size="Size.Medium" /></MudTh>
+            <MudTh><MudFab StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => navigationManager.NavigateTo("/admin/client/add"))" Color="Color.Primary" Size="Size.Medium" /></MudTh>
             <MudTh>Id</MudTh>
             <MudTh>Enabled</MudTh>
             <MudTh>Access Token Lifetime</MudTh>

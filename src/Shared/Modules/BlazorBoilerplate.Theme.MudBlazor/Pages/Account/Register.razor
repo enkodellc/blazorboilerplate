@@ -8,7 +8,7 @@
     <MudCard Elevation="2" Class="pa-4">
         <MudCardHeader>
             <CardHeaderContent>
-                <MudIconButton Icon="@Icons.Material.Filled.Home" Class="ml-auto" Link="/" />
+                <MudIconButton Icon="@Icons.Material.Filled.Home" Class="ml-auto" Href="/" />
                 <div class="logo">
                     <a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.MudBlazor/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
                     <br />
@@ -31,7 +31,7 @@
         <MudCardActions>
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@L["Register"]</MudButton>
         </MudCardActions>
-        <MudButton Link="account/login" Color="Color.Primary">
+        <MudButton Href="account/login" Color="Color.Primary">
             @L["AlreadyRegistered"]
         </MudButton>
     </MudCard>

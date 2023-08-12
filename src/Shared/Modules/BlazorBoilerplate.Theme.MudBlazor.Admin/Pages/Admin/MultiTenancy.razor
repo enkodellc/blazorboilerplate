@@ -41,7 +41,7 @@ else
                     @TenantRow.Identifier
                     @if (TenantRow.Id != BlazorBoilerplate.Constants.Settings.DefaultTenantId)
                         {
-                        <MudIconButton Link="@GetTenantUri(TenantRow)" Target="_blank" Icon="@Icons.Material.Filled.Link" />
+                        <MudIconButton Href="@GetTenantUri(TenantRow)" Target="_blank" Icon="@Icons.Material.Filled.Link" />
                         }
                 </div>
             </MudTd>
@@ -93,6 +93,3 @@ else
         <MudButton OnClick="@DeleteTenantAsync" Variant="Variant.Filled" Color="Color.Error">@L["Delete"]</MudButton>
     </DialogActions>
 </MudDialog>
-
-@code {
-}

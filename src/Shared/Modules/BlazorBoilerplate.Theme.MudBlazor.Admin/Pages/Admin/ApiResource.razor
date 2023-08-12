@@ -59,7 +59,7 @@
                     <MudTabPanel Text="Secrets">
                         <MudTable Items="@ApiResource.ApiSecrets" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
                             <HeaderContent>
-                                <MudTh style="min-width:190px;"><MudFab Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => OpenCreateApiResourceSecretDialogOpen())"></MudFab></MudTh>
+                                <MudTh style="min-width:190px;"><MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => OpenCreateApiResourceSecretDialogOpen())"></MudFab></MudTh>
                                 <MudTh>Expiration</MudTh>
                                 <MudTh>Description</MudTh>
                             </HeaderContent>
