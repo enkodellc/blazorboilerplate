@@ -105,5 +105,18 @@ namespace BlazorBoilerplate.Server.Factories
 
             return emailMessage;
         }
+
+        public EmailMessageDto BuildNewAccessEmail(string fullName, string userName, string ipAddress, DateTimeOffset date)
+        {
+            var emailMessage = new EmailMessageDto
+            {
+                Body = L["NewAccessEmail.template"].Value
+                .FormatWith(new { baseUrl, fullName, userName, ipAddress, date }),
+
+                Subject = L["NewAccessEmail.subject", ipAddress, date]
+            };
+
+            return emailMessage;
+        }
     }
 }

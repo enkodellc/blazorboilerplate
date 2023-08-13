@@ -182,7 +182,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             if (userId != null)
             {
-                if ((await _authorizationService.AuthorizeAsync(User, Policies.For(UserFeatures.Operator))).Succeeded)
+                if ((await _authorizationService.AuthorizeAsync(User, Policies.For(UserFeatures.UserManager))).Succeeded)
                 {
 
                     return await _accountManager.Enable2fa(GuidUtil.FromCompressedString(userId));
@@ -201,7 +201,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             if (userId != null)
             {
-                if ((await _authorizationService.AuthorizeAsync(User, Policies.For(UserFeatures.Operator))).Succeeded)
+                if ((await _authorizationService.AuthorizeAsync(User, Policies.For(UserFeatures.UserManager))).Succeeded)
                 {
 
                     return await _accountManager.Disable2fa(GuidUtil.FromCompressedString(userId));
@@ -220,7 +220,7 @@ namespace BlazorBoilerplate.Server.Controllers
         {
             if (id != null)
             {
-                if ((await _authorizationService.AuthorizeAsync(User, Policies.For(UserFeatures.Operator))).Succeeded)
+                if ((await _authorizationService.AuthorizeAsync(User, Policies.For(UserFeatures.UserManager))).Succeeded)
                 {
                     return await _accountManager.UserViewModel(GuidUtil.FromCompressedString(id));
                 }
@@ -236,7 +236,7 @@ namespace BlazorBoilerplate.Server.Controllers
         => ModelState.IsValid ? await _accountManager.UpdateUser(userViewModel, false, User) : _invalidData;
 
         [HttpPost("UpsertUser")]
-        [AuthorizeForFeature(UserFeatures.Operator)]
+        [AuthorizeForFeature(UserFeatures.UserManager)]
         public async Task<ApiResponse> UpsertUser(UserViewModel userViewModel)
         => ModelState.IsValid ? await _accountManager.UpdateUser(userViewModel, true, User) : _invalidData;
 
@@ -249,7 +249,7 @@ namespace BlazorBoilerplate.Server.Controllers
 
         // DELETE: api/Account/5
         [HttpDelete("{id}")]
-        [AuthorizeForFeature(UserFeatures.Operator)]
+        [AuthorizeForFeature(UserFeatures.UserManager)]
         public async Task<ApiResponse> Delete(string id)
         {
             return await _accountManager.Delete(id);

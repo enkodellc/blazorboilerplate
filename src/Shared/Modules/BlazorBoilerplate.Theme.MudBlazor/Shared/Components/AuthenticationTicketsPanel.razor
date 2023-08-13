@@ -1,0 +1,30 @@
+﻿@inject IStringLocalizer<Global> L
+
+<MudTable Items="@AuthenticationTickets" Context="TicketContext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
+    <ColGroup>
+        <col />
+        <col />
+        <col />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh>@L["LastActivity"]</MudTh>
+        <MudTh>@L["Expires"]</MudTh>
+        <MudTh>@L["RemoteIpAddress"]</MudTh>
+        <MudTh>@L["OperatingSystem"]</MudTh>
+        <MudTh>@L["UserAgentFamily"]</MudTh>
+        <MudTh>@L["UserAgentVersion"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="LastActivity">@TicketContext.LastActivity</MudTd>
+        <MudTd DataLabel="Expires">@TicketContext.Expires</MudTd>
+        <MudTd DataLabel="RemoteIpAddress"><a style="all: revert;" href="@($"https://whatismyipaddress.com/ip/{TicketContext.RemoteIpAddress}")" target="_blank">@TicketContext.RemoteIpAddress</a></MudTd>
+        <MudTd DataLabel="OperatingSystem">@TicketContext.OperatingSystem</MudTd>
+        <MudTd DataLabel="UserAgentFamily">@TicketContext.UserAgentFamily</MudTd>
+        <MudTd DataLabel="UserAgentVersion">@TicketContext.UserAgentVersion</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter]
+    public IEnumerable<AuthenticationTicket> AuthenticationTickets { get; set; }
+}

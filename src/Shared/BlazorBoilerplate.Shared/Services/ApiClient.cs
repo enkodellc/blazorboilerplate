@@ -21,7 +21,10 @@ namespace BlazorBoilerplate.Shared.Services
         {
             return await GetItems<TenantSetting>(from: "TenantSettings", orderBy: i => i.Key);
         }
-
+        public async Task<IEnumerable<AuthenticationTicket>> GetAuthenticationTickets(Guid? userId)
+        {
+            return await GetItems<AuthenticationTicket>("AuthenticationTickets", parameters: new() { { "userId", userId } });
+        }
         public async Task<QueryResult<ApplicationUser>> GetUsers(Expression<Func<ApplicationUser, bool>> predicate = null, int? take = null, int? skip = null)
         {
             return await GetItems("Users", predicate, i => i.UserName, null, take, skip);

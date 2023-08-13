@@ -5,6 +5,7 @@
         Generic,
         Test,
         Confirmation,
-        Password
+        Password,
+        NewAccess
     }
 }

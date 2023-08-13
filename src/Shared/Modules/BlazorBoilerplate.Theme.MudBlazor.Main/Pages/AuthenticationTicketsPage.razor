@@ -1,0 +1,47 @@
+﻿@page "/AuthenticationTickets"
+@inherits AuthenticationTicketsBasePage
+@attribute [AuthorizeForFeature(UserFeatures.UserManager)]
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<ApplicationUser>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Class="rounded-0" Elevation="0"
+          @ref="table">
+    <ColGroup>
+        <col style="width:50px" />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="UserName" T="ApplicationUser">@L["UserName"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Person.LastName" T="ApplicationUser">@L["LastName"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Person.FirstName" T="ApplicationUser">@L["FirstName"]</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate Context="row">
+        <MudTd>
+            <MudIconButton Icon=@(row.ShowDetails ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore) Size="Size.Small" OnClick="@(() => row.ShowDetails = !row.ShowDetails)"></MudIconButton>
+        </MudTd>
+        <MudTd DataLabel="@L["UserName"]">
+            @if (row.IsOnline)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Brightness1" Color="Color.Success" Size="Size.Small" Style="vertical-align: middle" Class="mr-2" />
+            }
+            @row.UserName
+        </MudTd>
+        <MudTd DataLabel="@L["LastName"]">@row.Person?.LastName</MudTd>
+        <MudTd DataLabel="@L["FirstName"]">@row.Person?.FirstName</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager RowsPerPageString=@L["Rows per page"] />
+    </PagerContent>
+    <ChildRowContent>
+        @if (context.ShowDetails)
+        {
+            <MudTr>
+                <td colspan="4">
+                    <MudCard Elevation="0" Class="mb-4">
+                        <MudCardContent Class="pa-0">
+                            <AuthenticationTicketsPanel AuthenticationTickets="@context.AuthenticationTickets" />
+                        </MudCardContent>
+                    </MudCard>
+                </td>
+            </MudTr>
+        }
+    </ChildRowContent>
+</MudTable>

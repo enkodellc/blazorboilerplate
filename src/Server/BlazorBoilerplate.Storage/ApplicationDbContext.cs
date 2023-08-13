@@ -1,4 +1,6 @@
-﻿using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
+﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Interfaces;
 using Finbuckle.MultiTenant;
@@ -20,6 +22,7 @@ namespace BlazorBoilerplate.Storage
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<QueuedEmail> QueuedEmails { get; set; }
         private IUserSession UserSession { get; set; }
+        public DbSet<AuthenticationTicket> AuthenticationTickets { get; set; }
         public DbSet<DbLog> Logs { get; set; }
 
         /* We define a default value for TenantInfo. This is a hack. FinBuckle does not provide any method to init TenantInfo or define a default value when seeding the database (in DatabaseInitializer, HttpContext is not yet initialized). */
@@ -28,7 +31,7 @@ namespace BlazorBoilerplate.Storage
         {
             TenantNotSetMode = TenantNotSetMode.Overwrite;
             TenantMismatchMode = TenantMismatchMode.Overwrite;
-            UserSession = userSession;            
+            UserSession = userSession;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,6 +48,10 @@ namespace BlazorBoilerplate.Storage
                 .WithOne(e => e.User)
                 .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
+
+                b.HasMany(e => e.AuthenticationTickets)
+                .WithOne(e => e.User)
+                .HasForeignKey(e => e.UserId);
             });
 
             modelBuilder.Entity<ApplicationRole>(b =>
@@ -79,7 +86,7 @@ namespace BlazorBoilerplate.Storage
             modelBuilder.Entity<ApiLogItem>(b =>
             {
                 b.HasOne(e => e.ApplicationUser)
-                    .WithMany(e => e.ApiLogItems)
+                    .WithMany()
                     .HasForeignKey(e => e.ApplicationUserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
@@ -129,6 +136,17 @@ namespace BlazorBoilerplate.Storage
         {
             ChangeTracker.SetShadowProperties(UserSession);
             return await base.SaveChangesAsync(true, cancellationToken);
+        }
+
+        public async Task<List<string>> GetUserManagers()
+        {
+            var roles = new string[] { UserFeatures.Administrator.ToString(), UserFeatures.Operator.ToString(), UserFeatures.UserManager.ToString() };
+
+            return await Users.AsNoTracking()
+                                    .Where(i => i.UserRoles.Any(r => roles.Contains(r.Role.Name)))
+                                    .Select(i => i.UserName)
+                                    .Distinct()
+                                    .ToListAsync();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
-using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Shared.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -39,7 +38,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Layouts
             try
             {
                 if (await hubClient.Start())
-                    hubClient.NotificationReceived += HubClient_NotificationReceived;
+                    hubClient.LongOperationResultReceived += HubClient_LongOperationResultReceived;
             }
             catch (Exception e)
             {
@@ -47,10 +46,9 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Layouts
             }
         }
 
-        private void HubClient_NotificationReceived(object sender, NotificationReceivedEventArgs e)
+        private void HubClient_LongOperationResultReceived(object sender, LongOperationResultReceivedEventArgs e)
         {
-            if (e.Notification.NotificationType == NotificationType.OperationCompleted)
-                viewNotifier.Show($"{e.Notification.Value}", e.Notification.Success ? ViewNotifierType.Success : ViewNotifierType.Error, "Operation completed");
+            viewNotifier.Show($"{e.Message}", e.Success ? ViewNotifierType.Success : ViewNotifierType.Error, "Operation completed");
         }
 
         protected override async Task OnInitializedAsync()
@@ -83,7 +81,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Layouts
         {
             _ = Disconnect();
 
-            hubClient.NotificationReceived -= HubClient_NotificationReceived;
+            hubClient.LongOperationResultReceived -= HubClient_LongOperationResultReceived;
         }
     }
 }

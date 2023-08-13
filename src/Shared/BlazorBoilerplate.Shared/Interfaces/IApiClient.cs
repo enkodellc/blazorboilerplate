@@ -9,8 +9,8 @@ namespace BlazorBoilerplate.Shared.Interfaces
     public interface IApiClient : IBaseApiClient
     {
         Task<UserProfile> GetUserProfile();
-
         Task<QueryResult<TenantSetting>> GetTenantSettings();
+        Task<IEnumerable<AuthenticationTicket>> GetAuthenticationTickets(Guid? userId);
         Task<QueryResult<ApplicationUser>> GetUsers(Expression<Func<ApplicationUser, bool>> predicate = null, int? take = null, int? skip = null);
         Task<QueryResult<ApplicationRole>> GetRoles(Expression<Func<ApplicationRole, bool>> predicate = null, int? take = null, int? skip = null);
 

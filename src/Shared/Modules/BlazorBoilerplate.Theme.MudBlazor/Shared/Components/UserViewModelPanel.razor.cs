@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Shared.Dto;
+using BlazorBoilerplate.Shared.Dto.Db;
 using BlazorBoilerplate.Shared.Extensions;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models.Account;
@@ -25,6 +26,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
         protected UpdatePasswordViewModel updatePasswordViewModel { get; set; }
         protected ChangePasswordViewModel changePasswordViewModel { get; set; }
         protected AuthenticatorVerificationCodeViewModel authenticatorVerificationCodeViewModel { get; set; }
+        protected IEnumerable<AuthenticationTicket> AuthenticationTickets { get; set; }
 
         IdentityAuthenticationStateProvider identityAuthenticationStateProvider;
 
@@ -69,7 +71,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
             }
         }
 
-        protected bool isOperator;
+        protected bool isUserManager;
         protected override async Task OnInitializedAsync()
         {
             identityAuthenticationStateProvider = (IdentityAuthenticationStateProvider)authStateProvider;
@@ -89,28 +91,22 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
             else if (Model.UserId != null)
             {
                 changePasswordViewModel = new() { UserId = Model.UserId.ToString() };
+            }
 
+            if (!Model.IsAuthenticated)
+            {
                 var user = (await authenticationStateTask).User;
-
-                if (!Model.IsAuthenticated)
-                    isOperator = (await authorizationService.AuthorizeAsync(user, Policies.For(UserFeatures.Operator))).Succeeded;
+                isUserManager = (await authorizationService.AuthorizeAsync(user, Policies.For(UserFeatures.UserManager))).Succeeded;
             }
 
             if (Model.UserId == null)
                 title = L["New User"];
             else
+            {
                 title = Model.FullName;
 
-            mapOptions = new MapOptions
-            {
-                Zoom = 18,
-                Center = new LatLngLiteral
-                {
-                    Lat = Model.CompanyLatitude ?? DefaultLocation.Latitude,
-                    Lng = Model.CompanyLongitude ?? DefaultLocation.Longitude
-                },
-                MapTypeId = MapTypeId.Roadmap
-            };
+                AuthenticationTickets = await apiClient.GetAuthenticationTickets(Model.UserId);
+            }
         }
 
         protected async Task Update()
@@ -145,6 +141,17 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
 
         protected async Task OnAfterMapInit()
         {
+            mapOptions = new MapOptions
+            {
+                Zoom = 18,
+                Center = new LatLngLiteral
+                {
+                    Lat = Model.CompanyLatitude ?? DefaultLocation.Latitude,
+                    Lng = Model.CompanyLongitude ?? DefaultLocation.Longitude
+                },
+                MapTypeId = MapTypeId.Roadmap
+            };
+
             marker = await Marker.CreateAsync(map1.JsRuntime, new MarkerOptions
             {
                 Position = mapOptions.Center,

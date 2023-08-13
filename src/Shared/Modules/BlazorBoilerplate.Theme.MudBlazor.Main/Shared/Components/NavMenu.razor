@@ -11,6 +11,9 @@
     <MudNavLink Href="@navigationManager.ToAbsoluteUri("/users").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People">
         @L["Users"]
     </MudNavLink>
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("/AuthenticationTickets").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.SupervisedUserCircle">
+        @L["AuthenticationTickets"]
+    </MudNavLink>
 </AuthorizeView>
 
 @code {

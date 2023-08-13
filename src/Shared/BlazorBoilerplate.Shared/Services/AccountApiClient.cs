@@ -78,13 +78,7 @@ namespace BlazorBoilerplate.Shared.Services
 
             if (response.IsSuccessStatusCode)
             {
-                if (AppState.Runtime == BlazorRuntime.WebAssembly)
-                {
-                    if (!string.IsNullOrEmpty(logoutViewModel?.ReturnUrl))
-                        _navigationManager.NavigateTo(logoutViewModel.ReturnUrl, true);
-                }
-                else
-                    await SubmitServerForm("/server/logout/", logoutViewModel ?? new AccountFormModel());
+                _navigationManager.NavigateTo(logoutViewModel?.ReturnUrl ?? "/", true);
             }
 
             return response;

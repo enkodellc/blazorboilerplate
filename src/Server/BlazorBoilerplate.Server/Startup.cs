@@ -16,6 +16,7 @@ using BlazorBoilerplate.Server.Hubs;
 using BlazorBoilerplate.Server.Managers;
 using BlazorBoilerplate.Server.Middleware;
 using BlazorBoilerplate.Server.Providers;
+using BlazorBoilerplate.Server.Security;
 using BlazorBoilerplate.Server.Services;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
 using BlazorBoilerplate.Shared.Interfaces;
@@ -457,6 +458,7 @@ namespace BlazorBoilerplate.Server
             });
 
             #region Cookies
+            services.ConfigureOptions<CookieAuthenticationOptionsConfigure>();
             // cookie policy to deal with temporary browser incompatibilities
             services.AddSameSiteCookiePolicy();
 

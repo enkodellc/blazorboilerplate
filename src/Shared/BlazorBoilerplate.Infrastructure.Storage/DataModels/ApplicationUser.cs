@@ -26,8 +26,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         public string Name { get => Person?.FullName ?? UserName; }
 
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
-
-        public ICollection<ApiLogItem> ApiLogItems { get; set; }
+        public virtual ICollection<AuthenticationTicket> AuthenticationTickets { get; set; }
 
         public UserProfile Profile { get; set; }
     }

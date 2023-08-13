@@ -11,5 +11,6 @@ namespace BlazorBoilerplate.Infrastructure.Server
         EmailMessageDto BuilNewUserNotificationEmail(string creator, string name, string userName, string company, string roles);
         EmailMessageDto BuildForgotPasswordEmail(string name, string callbackUrl, string token);
         EmailMessageDto BuildPasswordResetEmail(string userName);
+        EmailMessageDto BuildNewAccessEmail(string fullName, string userName, string ipAddress, DateTimeOffset date);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using BlazorBoilerplate.Constants;
-using BlazorBoilerplate.Shared.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BlazorBoilerplate.Shared.Services
@@ -8,7 +7,8 @@ namespace BlazorBoilerplate.Shared.Services
     {
         private readonly HubConnection connection;
 
-        public event NotificationReceivedEventHandler NotificationReceived;
+        public event OnlineUsersReceivedEventHandler OnlineUsersReceived;
+        public event LongOperationResultReceivedEventHandler LongOperationResultReceived;
 
         public HubClient(HttpClient httpClient)
         {
@@ -29,9 +29,14 @@ namespace BlazorBoilerplate.Shared.Services
 
             if (connection.State == HubConnectionState.Disconnected)
             {
-                connection.On<Notification, string>("Notify", (notification, sender) =>
+                connection.On<Guid, bool>("NotifyOnlineUsers", (userId, online) =>
                 {
-                    NotificationReceived?.Invoke(this, new NotificationReceivedEventArgs(notification, sender));
+                    OnlineUsersReceived?.Invoke(this, new OnlineUsersReceivedEventArgs(userId, online));
+                });
+
+                connection.On<string, bool>("NotifyLongOperationCompleted", (message, success) =>
+                {
+                    LongOperationResultReceived?.Invoke(this, new LongOperationResultReceivedEventArgs(message, success));
                 });
 
                 await connection.StartAsync();
@@ -49,6 +54,11 @@ namespace BlazorBoilerplate.Shared.Services
             }
         }
 
+        public async Task<IEnumerable<Guid>> GetOnlineUsers()
+        {
+            return await connection.InvokeAsync<IEnumerable<Guid>>("GetOnlineUsers");
+        }
+
         public void Dispose()
         {
             if (connection.State != HubConnectionState.Disconnected)
@@ -57,18 +67,32 @@ namespace BlazorBoilerplate.Shared.Services
             }
         }
     }
+    
 
-    public delegate void NotificationReceivedEventHandler(object sender, NotificationReceivedEventArgs e);
+    public delegate void LongOperationResultReceivedEventHandler(object sender, LongOperationResultReceivedEventArgs e);
 
-    public class NotificationReceivedEventArgs : EventArgs
+    public class LongOperationResultReceivedEventArgs : EventArgs
     {
-        public NotificationReceivedEventArgs(Notification notification, string sender = null)
+        public LongOperationResultReceivedEventArgs(string message, bool success)
         {
-            Notification = notification;
-            Sender = sender;
+            Message = message;
+            Success = success;
         }
 
-        public Notification Notification { get; set; }
-        public string Sender { get; set; }
+        public string Message { get; set; }
+        public bool Success { get; set; }
+    }
+
+    public delegate void OnlineUsersReceivedEventHandler(object sender, OnlineUsersReceivedEventArgs e);
+    public class OnlineUsersReceivedEventArgs : EventArgs
+    {
+        public OnlineUsersReceivedEventArgs(Guid userId, bool online)
+        {
+            UserId = userId;
+            Online = online;
+        }
+
+        public Guid UserId { get; set; }
+        public bool Online { get; set; }
     }
 }

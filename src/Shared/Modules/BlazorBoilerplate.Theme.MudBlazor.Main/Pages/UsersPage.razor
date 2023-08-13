@@ -21,7 +21,7 @@
         <MudTh><MudTableSortLabel SortLabel="LastName" T="Person">@L["LastName"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="FirstName" T="Person">@L["FirstName"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="User.UserName" T="Person">@L["UserName"]</MudTableSortLabel></MudTh>
-        @if (isOperator)
+        @if (isUserManager)
         {
             <MudTh><MudTableSortLabel SortLabel="CreatedBy" T="Person">@L["CreatedBy"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="CreatedOn" T="Person">@L["CreationDate"]</MudTableSortLabel></MudTh>
@@ -32,7 +32,7 @@
         <MudTd DataLabel="@L["LastName"]">@row.LastName</MudTd>
         <MudTd DataLabel="@L["FirstName"]">@row.FirstName</MudTd>
         <MudTd DataLabel="@L["UserName"]">@row.User?.UserName</MudTd>
-        @if (isOperator)
+        @if (isUserManager)
         {
             <MudTd DataLabel="@L["CreatedBy"]">@row.CreatedBy?.UserName</MudTd>
             <MudTd DataLabel="@L["CreationDate"]">@row.CreatedOn</MudTd>

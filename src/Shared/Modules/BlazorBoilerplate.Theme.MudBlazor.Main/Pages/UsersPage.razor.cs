@@ -6,13 +6,13 @@ namespace BlazorBoilerplate.Theme.Material.Main.Pages
 {
     public class UsersBasePage : ItemsTableBase<Person>
     {
-        protected bool isOperator;
+        protected bool isUserManager;
         protected override async Task OnInitializedAsync()
         {
             base.OnInitialized();
 
             var user = (await authenticationStateTask).User;
-            isOperator = (await authorizationService.AuthorizeAsync(user, Policies.For(UserFeatures.Operator))).Succeeded;
+            isUserManager = (await authorizationService.AuthorizeAsync(user, Policies.For(UserFeatures.UserManager))).Succeeded;
 
             orderByDefaultField = "LastName";
         }

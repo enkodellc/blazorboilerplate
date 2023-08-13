@@ -13,17 +13,18 @@ using NetTopologySuite.Geometries;
 namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220831155420_CreateApplicationDb")]
+    [Migration("20230812230710_CreateApplicationDb")]
     partial class CreateApplicationDb
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem", b =>
                 {
@@ -31,7 +32,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<Guid?>("ApplicationUserId")
                         .HasColumnType("uniqueidentifier");
@@ -193,13 +194,54 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.AuthenticationTicket", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("Expires")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("LastActivity")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("OperatingSystem")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("RemoteIpAddress")
+                        .HasMaxLength(46)
+                        .HasColumnType("nvarchar(46)");
+
+                    b.Property<string>("UserAgentFamily")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("UserAgentVersion")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("Value")
+                        .HasColumnType("varbinary(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AuthenticationTickets");
+                });
+
             modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.Company", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -256,7 +298,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Exception")
                         .HasColumnType("nvarchar(max)");
@@ -385,7 +427,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -435,7 +477,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Culture")
                         .HasColumnType("nvarchar(max)");
@@ -469,7 +511,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -493,7 +535,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -554,7 +596,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
             modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem", b =>
                 {
                     b.HasOne("BlazorBoilerplate.Infrastructure.Storage.DataModels.ApplicationUser", "ApplicationUser")
-                        .WithMany("ApiLogItems")
+                        .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -585,6 +627,17 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         .IsRequired();
 
                     b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.AuthenticationTicket", b =>
+                {
+                    b.HasOne("BlazorBoilerplate.Infrastructure.Storage.DataModels.ApplicationUser", "User")
+                        .WithMany("AuthenticationTickets")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -666,7 +719,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 
             modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.ApplicationUser", b =>
                 {
-                    b.Navigation("ApiLogItems");
+                    b.Navigation("AuthenticationTickets");
 
                     b.Navigation("Profile");
 

@@ -6,8 +6,10 @@ using NetTopologySuite.Geometries;
 
 namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 {
+    /// <inheritdoc />
     public partial class CreateApplicationDb : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -230,6 +232,31 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "AuthenticationTickets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Value = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    LastActivity = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    Expires = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    RemoteIpAddress = table.Column<string>(type: "nvarchar(46)", maxLength: 46, nullable: true),
+                    OperatingSystem = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    UserAgentFamily = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    UserAgentVersion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuthenticationTickets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AuthenticationTickets_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Persons",
                 columns: table => new
                 {
@@ -354,6 +381,11 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AuthenticationTickets_UserId",
+                table: "AuthenticationTickets",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Companies_VatIn",
                 table: "Companies",
                 column: "VatIn",
@@ -420,6 +452,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 principalColumn: "Id");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
@@ -447,6 +480,9 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "AuthenticationTickets");
 
             migrationBuilder.DropTable(
                 name: "Logs");

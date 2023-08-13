@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
+﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Storage;
@@ -17,9 +18,11 @@ namespace BlazorBoilerplate.Server.Controllers
     [BreezeQueryFilter]
     public class ApplicationController : BaseController
     {
+        private readonly IAuthorizationService authorizationService;
         private readonly ApplicationPersistenceManager persistenceManager;
-        public ApplicationController(ApplicationPersistenceManager persistenceManager)
+        public ApplicationController(IAuthorizationService authorizationService, ApplicationPersistenceManager persistenceManager)
         {
+            this.authorizationService = authorizationService;
             this.persistenceManager = persistenceManager;
         }
 
@@ -53,6 +56,36 @@ namespace BlazorBoilerplate.Server.Controllers
                     (filter.Search == null || u.UserName.Contains(filter.Search) || u.Email.Contains(filter.Search))
                     && (filter.EmailConfirmed == null || u.EmailConfirmed == filter.EmailConfirmed)
                     && (filter.PhoneNumberConfirmed == null || u.PhoneNumberConfirmed == filter.PhoneNumberConfirmed));
+        }
+
+        [HttpGet]
+        public async Task<IQueryable<AuthenticationTicket>> AuthenticationTickets(Guid? userId)
+        {
+            if (userId == null || !(await authorizationService.AuthorizeAsync(User, Policies.For(UserFeatures.UserManager))).Succeeded)
+                userId = GetUserId();
+
+            return persistenceManager.GetEntities<AuthenticationTicket>().Where(i => i.UserId == userId).AsNoTracking().OrderByDescending(i => i.LastActivity);
+        }
+
+        [HttpGet]
+        public async Task<IQueryable<ApplicationUser>> LoggedUsers()
+        {
+            var query = persistenceManager.GetEntities<AuthenticationTicket>().AsNoTracking()
+                .Where(i => i.User.UserName != DefaultUserNames.Administrator)
+                .Select(i => i.User)
+                .Distinct();
+
+            if (!(await authorizationService.AuthorizeAsync(User, Policies.For(UserFeatures.UserManager))).Succeeded)
+            {
+                var userId = GetUserId();
+
+                query = query.Where(i => i.Id == userId);
+            }
+
+            return query
+                .Include(i => i.Person)
+                .Include(i => i.AuthenticationTickets)
+                .OrderBy(i => i.UserName);
         }
 
         [HttpGet]

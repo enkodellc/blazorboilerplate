@@ -13,7 +13,7 @@
                 <MudText Typo="Typo.h6">@L["Main details"]</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Outlined.Close" Href="@BackLink" Size="MudBlazor.Size.Medium" />
+                <MudIconButton Icon="@Icons.Material.Outlined.Close" Href="@BackLink" Size="Size.Medium" />
             </CardHeaderActions>
         </MudCardHeader>
         <MudCardContent>
@@ -25,7 +25,7 @@
             <MudTextField @bind-Value="@Model.Email" Label="Email" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
             <MudTextField @bind-Value="@Model.FirstName" Label=@L["FirstName"] FullWidth="true"></MudTextField>
             <MudTextField @bind-Value="@Model.LastName" Label=@L["LastName"] FullWidth="true"></MudTextField>
-            @if (isOperator)
+            @if (isUserManager)
             {
                 @if (Model.UserId != null)
                 {
@@ -65,7 +65,7 @@
                     <MudValidationSummary />
                     @foreach (var userFeature in Enum.GetValues<UserFeatures>())
                     {
-                        @if (isOperator)
+                        @if (isUserManager)
                         {
                             <MudSwitch @bind-Checked="@Model.UserFeatures[userFeature]" Label=@L[$"Is{userFeature}Switch"] Color="Color.Primary" />
                             <br />
@@ -87,7 +87,7 @@
         </AuthorizeView>
     }
 
-    @if (isOperator)
+    @if (isUserManager)
     {
         <MudCard Elevation="2" Class="my-4 pa-4">
             <MudCardHeader>
@@ -96,7 +96,7 @@
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent>
-                <MudDatePicker @bind-Date="@Model.ExpirationDate" Label="@L["Expiration"]" ReadOnly="@(!isOperator)" MinDate="@DateTime.Now" @ref="_datePicker">
+                <MudDatePicker @bind-Date="@Model.ExpirationDate" Label="@L["Expiration"]" ReadOnly="@(!isUserManager)" MinDate="@DateTime.Now" @ref="_datePicker">
                     <PickerActions Context="datePicker">
                         <MudButton Class="mr-auto align-self-start" OnClick="@(() => { _datePicker.Clear(); _datePicker.Clear(); })">@L["Cancel"]</MudButton>
                         <MudButton OnClick="@(() => _datePicker.Close(false))">@L["Close"]</MudButton>
@@ -255,8 +255,21 @@
     </MudCard>
 }
 
-@if (Model.UserId != null && Model.UserName != DefaultUserNames.Administrator)
+@if (Model.UserId != null)
 {
+    @if (AuthenticationTickets != null)
+    {
+        <MudCard Elevation="2" Class="my-4 pa-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@L["AuthenticationTickets"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <AuthenticationTicketsPanel AuthenticationTickets="@AuthenticationTickets" />
+            </MudCardContent>
+        </MudCard>
+    }
     <MudCard Elevation="2" Class="my-4 pa-4">
         <MudCardHeader>
             <CardHeaderContent>
@@ -268,7 +281,7 @@
             <MudTextField @bind-Value="@email" Label=@L["Email"] AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" FullWidth="true"></MudTextField>
         </MudCardContent>
         <MudCardActions>
-            <MudFab OnClick="@Delete" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Size="MudBlazor.Size.Medium" Class="ml-auto" />
+            <MudFab OnClick="@Delete" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Medium" Class="ml-auto" />
         </MudCardActions>
     </MudCard>
 }

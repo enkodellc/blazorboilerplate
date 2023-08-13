@@ -1,7 +1,7 @@
 ﻿@inherits UserBasePage
 @page "/user/edit/{id}"
 @page "/user/add"
-@attribute [AuthorizeForFeature(UserFeatures.Operator)]
+@attribute [AuthorizeForFeature(UserFeatures.UserManager)]
 
 <MudContainer MaxWidth="MaxWidth.False">
     @if (found)
