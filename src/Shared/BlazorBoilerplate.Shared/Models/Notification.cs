@@ -6,11 +6,13 @@
 
         public string Value { get; set; }
 
+        public int Progress { get; set; }
+
         public bool Success { get; set; }
 
         public override string ToString()
         {
-            return $"Notification: {NotificationType} {Value}";
+            return $"Notification: {NotificationType} {Value} Success {Success}";
         }
     };
 }

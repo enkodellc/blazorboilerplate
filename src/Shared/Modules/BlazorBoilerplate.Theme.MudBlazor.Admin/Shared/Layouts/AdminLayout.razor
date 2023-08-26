@@ -1,7 +1,4 @@
 ﻿@inherits RootLayout
-@inject NavigationManager navigationManager
-@inject AppState appState
-@inject IStringLocalizer<Global> L
 @attribute [AuthorizeForFeature(UserFeatures.Administrator)]
 
 <CascadingValue Value="this">
@@ -40,9 +37,6 @@
 
 @code {
     bool _navMenuOpened = true;
-
-    [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using BlazorBoilerplate.Infrastructure.Server;
+using BlazorBoilerplate.Shared.Models;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BlazorBoilerplate.Server.Hubs
 {
-    public class Notifier
+    public class Notifier : INotifier
     {
         private readonly IHubContext<MainHub, IHubClient> _hubContext;
 
@@ -11,9 +13,9 @@ namespace BlazorBoilerplate.Server.Hubs
             _hubContext = hubContext;
         }
 
-        public async Task NotifyLongOperationCompleted(IReadOnlyList<string> users, string message, bool success)
+        public async Task Raise(IReadOnlyList<string> users, Notification notification)
         {
-            await _hubContext.Clients.Users(users).NotifyLongOperationCompleted(message, success);
+            await _hubContext.Clients.Users(users).Notify(notification);
         }
     }
 }

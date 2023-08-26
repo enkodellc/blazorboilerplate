@@ -1,21 +1,2 @@
 ﻿@inherits LayoutComponentBase
-@using BlazorBoilerplate.UI.Base.Shared.Components
 @Body
-
-@code {
-    public RenderFragment TopSection => topSection?.ChildContent;
-
-    TopSection topSection;
-
-    public void SetTopSection(TopSection topSection)
-    {
-        this.topSection = topSection;
-        Update();
-    }
-
-    public void Update()
-    {
-        if (topSection != null)
-            StateHasChanged();
-    }
-}

@@ -1,4 +1,5 @@
 ﻿using BlazorBoilerplate.Constants;
+using BlazorBoilerplate.Shared.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BlazorBoilerplate.Shared.Services
@@ -8,7 +9,7 @@ namespace BlazorBoilerplate.Shared.Services
         private readonly HubConnection connection;
 
         public event OnlineUsersReceivedEventHandler OnlineUsersReceived;
-        public event LongOperationResultReceivedEventHandler LongOperationResultReceived;
+        public event NotificationReceivedEventHandler NotificationReceived;
 
         public HubClient(HttpClient httpClient)
         {
@@ -34,9 +35,9 @@ namespace BlazorBoilerplate.Shared.Services
                     OnlineUsersReceived?.Invoke(this, new OnlineUsersReceivedEventArgs(userId, online));
                 });
 
-                connection.On<string, bool>("NotifyLongOperationCompleted", (message, success) =>
+                connection.On<Notification, string>("Notify", (notification, sender) =>
                 {
-                    LongOperationResultReceived?.Invoke(this, new LongOperationResultReceivedEventArgs(message, success));
+                    NotificationReceived?.Invoke(this, new NotificationReceivedEventArgs(notification, sender));
                 });
 
                 await connection.StartAsync();
@@ -67,20 +68,20 @@ namespace BlazorBoilerplate.Shared.Services
             }
         }
     }
-    
 
-    public delegate void LongOperationResultReceivedEventHandler(object sender, LongOperationResultReceivedEventArgs e);
 
-    public class LongOperationResultReceivedEventArgs : EventArgs
+    public delegate void NotificationReceivedEventHandler(object sender, NotificationReceivedEventArgs e);
+
+    public class NotificationReceivedEventArgs : EventArgs
     {
-        public LongOperationResultReceivedEventArgs(string message, bool success)
+        public NotificationReceivedEventArgs(Notification notification, string sender = null)
         {
-            Message = message;
-            Success = success;
+            Notification = notification;
+            Sender = sender;
         }
 
-        public string Message { get; set; }
-        public bool Success { get; set; }
+        public Notification Notification { get; set; }
+        public string Sender { get; set; }
     }
 
     public delegate void OnlineUsersReceivedEventHandler(object sender, OnlineUsersReceivedEventArgs e);

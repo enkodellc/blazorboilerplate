@@ -685,7 +685,7 @@ namespace BlazorBoilerplate.Server
             services.AddSingleton<IDynamicComponent, TopRightBarSection>();
 
             services.AddSingleton<BackgroundWorkerQueue>();
-            services.AddSingleton<Notifier>();
+            services.AddSingleton<INotifier, Notifier>();
             services.AddScoped<HubClient>();
 
             if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))

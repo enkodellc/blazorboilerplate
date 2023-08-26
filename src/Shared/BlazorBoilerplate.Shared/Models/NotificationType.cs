@@ -2,6 +2,8 @@
 {
     public enum NotificationType
     {
-        OperationCompleted
+        OperationCompleted,
+        ForceLogout,
+        Progress
     }
 }
