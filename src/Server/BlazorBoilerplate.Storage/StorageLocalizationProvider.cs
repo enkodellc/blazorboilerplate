@@ -99,14 +99,14 @@ namespace BlazorBoilerplate.Storage
                 throw new DomainException("PO File without a valid language");
             }
 
-            var catalogCulture = culture.TwoLetterISOLanguageName;
+            var catalogLanguage = culture.TwoLetterISOLanguageName;
 
             var pluralFormRule = await localizationDbContext.PluralFormRules
-                .SingleOrDefaultAsync(i => i.Language == catalogCulture);
+                .SingleOrDefaultAsync(i => i.Language == catalogLanguage);
 
             if (pluralFormRule == null)
             {
-                pluralFormRule = new() { Language = catalogCulture };
+                pluralFormRule = new() { Language = catalogLanguage };
 
                 localizationDbContext.PluralFormRules.Add(pluralFormRule);
             }
@@ -125,14 +125,14 @@ namespace BlazorBoilerplate.Storage
                     var localizationRecord = await localizationDbContext.LocalizationRecords
                             .SingleOrDefaultAsync(l =>
                             l.MsgId == item.Key.Id &&
-                            l.Culture == catalogCulture &&
+                            l.Culture == culture.Name &&
                             l.ContextId == contextId);
 
                     if (localizationRecord == null)
                     {
                         localizationRecord = new()
                         {
-                            Culture = catalogCulture,
+                            Culture = culture.Name,
                             MsgId = item.Key.Id,
                             ContextId = contextId
                         };
