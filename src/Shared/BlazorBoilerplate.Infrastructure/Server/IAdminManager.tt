@@ -8,7 +8,6 @@
 var entities = new [] { ("Role", "name"), ("Client", "clientId"), ("ApiResource", "name"), ("IdentityResource", "name"), ("Tenant", "id") };
 #>
 
-using System.Threading.Tasks;
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Shared.Dto.Admin;
 using Microsoft.AspNetCore.Mvc;
@@ -24,15 +23,15 @@ namespace BlazorBoilerplate.Infrastructure.Server
 {#>
 
         #region <#=entity.Item1#>s
-        Task<ApiResponse> Get<#=entity.Item1#>sAsync(int pageSize = 0, int pageNumber = 0);
+        Task<ApiResponse> Get<#=entity.Item1#>s(int pageSize = 0, int pageNumber = 0);
 
-        Task<ApiResponse> Get<#=entity.Item1#>Async(string <#=entity.Item2#>);
+        Task<ApiResponse> Get<#=entity.Item1#>(string <#=entity.Item2#>);
 
-        Task<ApiResponse> Create<#=entity.Item1#>Async(<#=entity.Item1#>Dto <#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto);
+        Task<ApiResponse> Create<#=entity.Item1#>(<#=entity.Item1#>Dto <#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto);
 
-        Task<ApiResponse> Update<#=entity.Item1#>Async([FromBody] <#=entity.Item1#>Dto <#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto);
+        Task<ApiResponse> Update<#=entity.Item1#>([FromBody] <#=entity.Item1#>Dto <#=$"{Char.ToLowerInvariant(entity.Item1[0])}{entity.Item1.Substring(1)}"#>Dto);
 
-        Task<ApiResponse> Delete<#=entity.Item1#>Async(string <#=entity.Item2#>);
+        Task<ApiResponse> Delete<#=entity.Item1#>(string <#=entity.Item2#>);
         #endregion
 <#}#>
     }
