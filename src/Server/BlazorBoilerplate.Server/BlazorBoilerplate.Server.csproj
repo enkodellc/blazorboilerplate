@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -62,7 +62,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
-    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="[68.2.0.9]" />
+    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="[72.1.0.2]" />
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2" />
   </ItemGroup>
 
