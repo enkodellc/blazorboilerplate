@@ -79,13 +79,14 @@ namespace BlazorBoilerplate.Storage
 
                         var entityType = entityInfo.Entity.GetType();
 
-                        if ((requiredPermissions.Actions & requiredAction) == requiredAction)
-                        {
-                            if (user == null || user.Identity.IsAuthenticated == false)
-                                errors.Add(new EFEntityError(entityInfo, L["AuthenticationRequired"], L["LoginRequired"], null));
-                            else if (!user.Claims.Any(c => c.Type == ApplicationClaimTypes.Permission && c.Value == $"{entityType.Name}.{requiredAction}"))
-                                errors.Add(new EFEntityError(entityInfo, L["Operation not allowed"], L["NotAuthorizedTo"], null));
-                        }
+                        if (requiredAction != null)
+                            if ((requiredPermissions.Actions & requiredAction) == requiredAction)
+                            {
+                                if (user == null || user.Identity.IsAuthenticated == false)
+                                    errors.Add(new EFEntityError(entityInfo, L["AuthenticationRequired"], L["LoginRequired"], null));
+                                else if (!user.Claims.Any(c => c.Type == ApplicationClaimTypes.Permission && c.Value == $"{entityType.Name}.{requiredAction}"))
+                                    errors.Add(new EFEntityError(entityInfo, L["Operation not allowed"], L["NotAuthorizedTo"], null));
+                            }
 
                         if (entityInfo.EntityState == EntityState.Added || entityInfo.EntityState == EntityState.Modified)
                         {
