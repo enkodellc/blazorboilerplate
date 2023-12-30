@@ -87,7 +87,7 @@ namespace BlazorBoilerplate.Server
         public void ConfigureServices(IServiceCollection services)
         {
 #if DEBUG
-            services.AddLettuceEncrypt();
+            //services.AddLettuceEncrypt();
 #endif
             services.AddBlazoredSessionStorage();
             services.AddScoped<ITokenStorage, TokenSessionStorage>();

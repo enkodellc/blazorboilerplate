@@ -6,18 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Breeze.Persistence.EFCore" Version="7.1.0" />
-	<PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="6.12.0" />
-	<PackageReference Include="Finbuckle.MultiTenant.EntityFrameworkCore" Version="6.12.0" />
+    <PackageReference Include="Breeze.Persistence.EFCore" Version="7.2.1" />
+	<PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="6.13.0" />
+	<PackageReference Include="Finbuckle.MultiTenant.EntityFrameworkCore" Version="6.13.0" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="4.7.0-alpha.0.0" />
-    <PackageReference Include="Karambolo.PO" Version="1.10.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
+    <PackageReference Include="Karambolo.PO" Version="1.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="7.0.10" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="7.0.14" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
   </ItemGroup>
 
