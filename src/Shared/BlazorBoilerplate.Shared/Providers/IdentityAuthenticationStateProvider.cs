@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Shared.Dto;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Models.Account;
+using IdentityModel;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
@@ -139,7 +140,7 @@ namespace BlazorBoilerplate.Shared.Providers
                 if (userViewModel.IsAuthenticated)
                 {
                     var claims = new[] { new Claim(ClaimTypes.Name, userViewModel.UserName) }.Concat(userViewModel.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
-                    identity = new ClaimsIdentity(claims, "Server authentication", "name", "role");
+                    identity = new ClaimsIdentity(claims, "Server authentication", ClaimTypes.Name, JwtClaimTypes.Role);
                 }
             }
             catch (Exception ex)
