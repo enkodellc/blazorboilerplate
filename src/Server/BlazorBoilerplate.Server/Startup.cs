@@ -21,7 +21,6 @@ using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Shared.Providers; //ServerSideBlazor
 using BlazorBoilerplate.Shared.Services;
-using BlazorBoilerplate.Shared.Validators.Db;
 using BlazorBoilerplate.Storage;
 using BlazorBoilerplate.Storage.Mapping;
 using Breeze.AspNetCore;
@@ -29,7 +28,6 @@ using Breeze.Core;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication.Twitter;
 using Microsoft.AspNetCore.Authorization;
@@ -43,17 +41,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
-using NSwag;
-using NSwag.AspNetCore;
-using NSwag.Generation.Processors.Security;
 using Serilog;
 using System.Reflection;
 using System.Security.Claims;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography.X509Certificates;
 using static BlazorBoilerplate.Constants.PasswordPolicy;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using Settings = BlazorBoilerplate.Shared.Localizer.Settings;
 
 namespace BlazorBoilerplate.Server
 {
@@ -569,7 +562,7 @@ namespace BlazorBoilerplate.Server
             if (_enableAPIDoc)
             {
                 app.UseOpenApi();
-                app.UseSwaggerUi3();
+                app.UseSwaggerUi();
             }
 
             app.UseEndpoints(endpoints =>

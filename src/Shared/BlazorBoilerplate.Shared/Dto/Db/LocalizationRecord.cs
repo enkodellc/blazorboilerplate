@@ -1,4 +1,7 @@
 ﻿using BlazorBoilerplate.Shared.Localizer;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace BlazorBoilerplate.Shared.Dto.Db
 {
@@ -18,7 +21,7 @@ namespace BlazorBoilerplate.Shared.Dto.Db
         public bool Equals(LocalizationRecord other)
         {
             return other != null &&
-                   MsgId == other.MsgId &&
+                    MsgId == other.MsgId &&
                    Culture == other.Culture &&
                    ContextId == other.ContextId;
         }

@@ -1,6 +1,7 @@
 using BlazorBoilerplate.Shared.DataInterfaces;
 using Karambolo.PO;
 using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace BlazorBoilerplate.Shared.Localizer
 {
@@ -38,7 +39,7 @@ namespace BlazorBoilerplate.Shared.Localizer
                         var catalog = new POCatalog
                         {
                             Encoding = "UTF-8",
-                            PluralFormCount = pluralFormRule.Count,
+                            PluralFormCount = 1,// pluralFormRule.Count,
                             PluralFormSelector = pluralFormRule.Selector,
                             Language = culture,
                             Headers = new Dictionary<string, string>
@@ -73,6 +74,44 @@ namespace BlazorBoilerplate.Shared.Localizer
                         }
 
                         textCatalogs.Add(culture, catalog);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"Init: {ex.GetBaseException().StackTrace}");
+                }
+
+                TextCatalogs = textCatalogs;
+            }
+        }
+
+        public void Init(Dictionary<string, Stream> streams, bool reLoad = false)
+        {
+            if (TextCatalogs == null || TextCatalogs.Count == 0 || reLoad)
+            {
+                var textCatalogs = new Dictionary<string, POCatalog>();
+
+                try
+                {
+                    var parser = new POParser();
+
+                    foreach (var stream in streams)
+                    {
+                        string text;
+
+                        using (StreamReader reader = new(stream.Value, Encoding.UTF8))
+                        {
+                            text = reader.ReadToEnd().Trim('\0');
+                        }
+
+                        var result = parser.Parse(text);
+
+                        if (result.Success)
+                            textCatalogs.Add(stream.Key, result.Catalog);
+                        else
+                            Logger.LogError($"Parse error: {result.Diagnostics}");
+
+                        stream.Value.Dispose();
                     }
                 }
                 catch (Exception ex)

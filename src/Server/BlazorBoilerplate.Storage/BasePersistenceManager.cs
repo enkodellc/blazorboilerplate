@@ -17,15 +17,15 @@ namespace BlazorBoilerplate.Storage
     public abstract class BasePersistenceManager<T> : EFPersistenceManager<T> where T : DbContext
     {
         protected readonly IHttpContextAccessor httpContextAccessor;
-        protected readonly IValidatorFactory validatorFactory;
+        protected readonly IServiceProvider serviceProvider;
         protected readonly IStringLocalizer<Global> L;
         public BasePersistenceManager(T dbContext,
             IHttpContextAccessor accessor,
-            IValidatorFactory factory,
+            IServiceProvider serviceProvider,
             IStringLocalizer<Global> l) : base(dbContext)
         {
             httpContextAccessor = accessor;
-            validatorFactory = factory;
+            this.serviceProvider = serviceProvider;
             L = l;
         }
         public DbSet<TEntity> GetEntities<TEntity>() where TEntity : class
@@ -85,7 +85,7 @@ namespace BlazorBoilerplate.Storage
 
                         if (entityInfo.EntityState == EntityState.Added || entityInfo.EntityState == EntityState.Modified)
                         {
-                            var validator = validatorFactory.GetValidator(entityType);
+                            IValidator validator = (IValidator)serviceProvider.GetService(typeof(IValidator<>).MakeGenericType(entityType));
 
                             if (validator == null)
                             {
@@ -93,7 +93,7 @@ namespace BlazorBoilerplate.Storage
 
                                 if (iface != null)
                                 {
-                                    validator = validatorFactory.GetValidator(iface);
+                                    validator = (IValidator)serviceProvider.GetService(typeof(IValidator<>).MakeGenericType(iface));
 
                                     if (validator != null)
                                     {

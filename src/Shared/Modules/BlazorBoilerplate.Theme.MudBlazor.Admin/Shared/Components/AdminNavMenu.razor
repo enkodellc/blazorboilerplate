@@ -5,38 +5,38 @@
 @inject IStringLocalizer<Global> L
 
 <MudNavMenu Style="flex: 1">
-    <MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
         Frontend
     </MudNavLink>
 
-    <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Filled.BarChart">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin").AbsoluteUri" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.BarChart">
         @L["Dashboard"]
     </MudNavLink>
     <MudNavGroup Title="@L["Settings"]">
-        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/settings").AbsoluteUri" Icon="@Icons.Filled.SettingsApplications">
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/settings").AbsoluteUri" Icon="@Icons.Material.Filled.SettingsApplications">
             @L["MainSettings"]
         </MudNavLink>
-        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/settings/email").AbsoluteUri" Icon="@Icons.Filled.Email">
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/settings/email").AbsoluteUri" Icon="@Icons.Material.Filled.Email">
             @L["Email"]
         </MudNavLink>
     </MudNavGroup>
-    <MudNavGroup Title="@L["Localization"]" Icon="@Icons.Filled.Public">
-        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/translations").AbsoluteUri" Icon="@Icons.Filled.Translate">
+    <MudNavGroup Title="@L["Localization"]" Icon="@Icons.Material.Filled.Public">
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/translations").AbsoluteUri" Icon="@Icons.Material.Filled.Translate">
             @L["Translations"]
         </MudNavLink>
-        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/pluralizationrules").AbsoluteUri" Icon="@Icons.Filled.Group">
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/pluralizationrules").AbsoluteUri" Icon="@Icons.Material.Filled.Group">
             @L["Pluralization rules"]
         </MudNavLink>
     </MudNavGroup>
-    <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri" Icon="@Icons.Filled.SupervisorAccount">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/users").AbsoluteUri" Icon="@Icons.Material.Filled.SupervisorAccount">
         @L["Users"]
     </MudNavLink>
-    <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri" Icon="@Icons.Filled.SupervisorAccount">
+    <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/roles").AbsoluteUri" Icon="@Icons.Material.Filled.SupervisorAccount">
         @L["Roles"]
     </MudNavLink>
     @if (tenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)
     {
-        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/multitenancy").AbsoluteUri" Icon="@Icons.Filled.AccountBalance">
+        <MudNavLink Href="@navigationManager.ToAbsoluteUri("admin/multitenancy").AbsoluteUri" Icon="@Icons.Material.Filled.AccountBalance">
             @L["MultiTenancy"]
         </MudNavLink>
     }
