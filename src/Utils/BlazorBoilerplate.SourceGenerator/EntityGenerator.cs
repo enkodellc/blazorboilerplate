@@ -268,11 +268,14 @@ namespace BlazorBoilerplate.Shared.Dto.Db
 
         private IEnumerable<SyntaxTree> ManualLoad(string rootDir)
         {
+#pragma warning disable RS1035 // Do not use APIs banned for analyzers
             foreach (var filepath in Directory.GetFiles(rootDir, "*.cs", SearchOption.AllDirectories))
             {
                 var file = File.ReadAllText(filepath);
                 yield return CSharpSyntaxTree.ParseText(file);
             }
+#pragma warning restore RS1035 // Do not use APIs banned for analyzers
+
         }
 
         private EntityGeneratorConfig GetConfig(GeneratorExecutionContext context)
@@ -281,7 +284,9 @@ namespace BlazorBoilerplate.Shared.Dto.Db
             if (configFile == null)
                 return null;
 
+#pragma warning disable RS1035 // Do not use APIs banned for analyzers
             var jsonString = File.ReadAllText(configFile.Path);
+#pragma warning restore RS1035 // Do not use APIs banned for analyzers
             var config = JsonConvert.DeserializeObject<EntityGeneratorConfig>(jsonString);
 
             config.EntitiesPath = CrossPlatform.PathCombine(Path.GetDirectoryName(configFile.Path), config.EntitiesPath.Split("\\".ToCharArray()));
