@@ -1,0 +1,60 @@
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+<div class="job-status">
+    <h3>@ListStatus (@Jobs.Count())</h3>
+
+    <ul class="dropzone @dropClass" ondragover="event.preventDefault();"
+        @ondrop="HandleDrop"
+        @ondragenter="HandleDragEnter"
+        @ondragleave="HandleDragLeave">
+
+        @foreach (var job in Jobs)
+        {
+            <Job JobDto="job" />
+        }
+
+    </ul>
+</div>
+
+@code {
+
+    [CascadingParameter] JobsContainer Container { get; set; }
+    [Parameter] public JobStatuses ListStatus { get; set; }
+    [Parameter] public JobStatuses[] AllowedStatuses { get; set; }
+
+    List<JobDto> Jobs = new List<JobDto>();
+    string dropClass = "";
+
+    protected override void OnParametersSet()
+    {
+        Jobs.Clear();
+        Jobs.AddRange(Container.Jobs.Where(x => x.Status == ListStatus));
+    }
+
+    private void HandleDragEnter()
+    {
+        if (ListStatus == Container.Payload.Status) return;
+
+        if (AllowedStatuses != null && !AllowedStatuses.Contains(Container.Payload.Status))
+        {
+            dropClass = "no-drop";
+        }
+        else
+        {
+            dropClass = "can-drop";
+        }
+    }
+
+    private void HandleDragLeave()
+    {
+        dropClass = "";
+    }
+
+    private async Task HandleDrop()
+    {
+        dropClass = "";
+
+        if (AllowedStatuses != null && !AllowedStatuses.Contains(Container.Payload.Status)) return;
+
+        await Container.UpdateJobAsync(ListStatus);
+    }
+}

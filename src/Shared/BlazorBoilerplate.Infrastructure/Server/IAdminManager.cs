@@ -22,42 +22,6 @@ namespace BlazorBoilerplate.Infrastructure.Server
         Task<ApiResponse> DeleteRoleAsync(string name);
         #endregion
 
-        #region Clients
-        Task<ApiResponse> GetClientsAsync(int pageSize = 0, int pageNumber = 0);
-
-        Task<ApiResponse> GetClientAsync(string clientId);
-
-        Task<ApiResponse> CreateClientAsync(ClientDto clientDto);
-
-        Task<ApiResponse> UpdateClientAsync([FromBody] ClientDto clientDto);
-
-        Task<ApiResponse> DeleteClientAsync(string clientId);
-        #endregion
-
-        #region ApiResources
-        Task<ApiResponse> GetApiResourcesAsync(int pageSize = 0, int pageNumber = 0);
-
-        Task<ApiResponse> GetApiResourceAsync(string name);
-
-        Task<ApiResponse> CreateApiResourceAsync(ApiResourceDto apiResourceDto);
-
-        Task<ApiResponse> UpdateApiResourceAsync([FromBody] ApiResourceDto apiResourceDto);
-
-        Task<ApiResponse> DeleteApiResourceAsync(string name);
-        #endregion
-
-        #region IdentityResources
-        Task<ApiResponse> GetIdentityResourcesAsync(int pageSize = 0, int pageNumber = 0);
-
-        Task<ApiResponse> GetIdentityResourceAsync(string name);
-
-        Task<ApiResponse> CreateIdentityResourceAsync(IdentityResourceDto identityResourceDto);
-
-        Task<ApiResponse> UpdateIdentityResourceAsync([FromBody] IdentityResourceDto identityResourceDto);
-
-        Task<ApiResponse> DeleteIdentityResourceAsync(string name);
-        #endregion
-
         #region Tenants
         Task<ApiResponse> GetTenantsAsync(int pageSize = 0, int pageNumber = 0);
 

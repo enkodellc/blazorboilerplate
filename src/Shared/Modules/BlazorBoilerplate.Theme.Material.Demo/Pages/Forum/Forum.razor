@@ -1,0 +1,38 @@
+﻿@page "/forum"
+@inherits ForumPageModel
+@inject IStringLocalizer<Global> L
+
+<AuthorizeView Context="AuthorizeContext">
+    <NotAuthorized>
+        <div class="alert alert-success">
+            <a href="@BlazorBoilerplate.Constants.Settings.LoginPath">Log in</a> to post a message.
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+<h1>Forum</h1>
+<p>This forum page uses SignalR and persists in a database.</p>
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <ForumMessageCreateForm Send="Send" />
+
+        <MatList SingleSelection="true" TwoLine="true">
+            @if (Messages == null || Messages.Count == 0)
+            {
+                <MatListItem>
+                    <MatListItemText>
+                        @L["Loading"]
+                    </MatListItemText>
+                </MatListItem>
+            }
+            else
+            {
+                @foreach (var message in Messages)
+                {
+                    <ForumMessage Delete="Delete" Message="@message" />
+                }
+            }
+        </MatList>
+    </Authorized>
+</AuthorizeView>

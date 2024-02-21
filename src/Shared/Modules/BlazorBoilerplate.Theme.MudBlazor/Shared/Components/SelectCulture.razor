@@ -1,8 +1,7 @@
 ﻿@inject NavigationManager navigationManager
 @inject IJSRuntime js
-@inject AppState appState
 
-<MudSelect Class="selectCulture" Value="CurrentCulture" ValueChanged="(string i) => OnCultureChanged(i)" AdornmentIcon="@Icons.Material.Filled.Public">
+<MudSelect Class="selectCulture" Value="CurrentCulture" ValueChanged="(string i) => OnCultureChanged(i)">
     @foreach (var item in BlazorBoilerplate.Shared.Localizer.Settings.SupportedCulturesWithName)
     {
         <MudSelectItem Value="@item.Item2">@item.Item1</MudSelectItem>
@@ -10,9 +9,6 @@
 </MudSelect>
 
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-
     private string CurrentCulture { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -22,19 +18,9 @@
         await base.OnInitializedAsync();
     }
 
-    public async void OnCultureChanged(string culture)
+    public void OnCultureChanged(string culture)
     {
         var uri = new Uri(navigationManager.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
-
-        if ((await authenticationStateTask).User.Identity.IsAuthenticated)
-        {
-            var profile = await appState.GetUserProfile();
-
-            profile.Culture = culture;
-
-            await appState.UpdateUserProfile();
-        }
-
         navigationManager.NavigateTo($"/Culture/SetCulture?culture={Uri.EscapeDataString(culture)}&redirectUri={Uri.EscapeDataString(uri)}", forceLoad: true);
     }
 }

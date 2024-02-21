@@ -1,0 +1,55 @@
+﻿@inherits ApiLogViewerPage
+@page "/admin/apilog"
+
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminapilog"] />
+    </Breadcrumbs>
+</TopSection>
+
+<h1>Blazor / .NET Core Middleware Audit Log</h1>
+<p>
+    This is an example of the .NET Core Middleware that logs all API calls into the database. We filter out "api/account" calls for Login / Logout / GetUser to keep it somewhat reasonable.
+    This code can be easily modified to fit your needs. I think this is a great feature for you to track your user interactions and errors. For instance, if Bob logged in and filled out a form with
+    erroneous data, it will log the error as well as the request data. Then you could easily look through this audit log and recreate his actions. Afterwards, you could add additional validation or handle the
+    input in an appropriate manner.
+</p>
+
+@if (apiLogItems == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Items="@apiLogItems" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
+        <MatTableHeader>
+            <th><div style="width:175px;"><MatFAB Icon="refresh" OnClick="@(() => LoadData())" Raised="true" Mini="true" Style="margin-right:16px;"></MatFAB> Date / Time</div></th>
+            <th>Http Code</th>
+            <th>IP Address</th>
+            <th>Method</th>
+            <th>Response Time</th>
+            <th><div style="width:175px;">UserId</div></th>
+            <th>Path</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.RequestTime</td>
+            <td>@context.StatusCode</td>
+            <td><span style="font-size:small">@context.IPAddress</span></td>
+            <td>@context.Method</td>
+            <td>@context.ResponseMillis</td>
+            <td>@context.ApplicationUserId</td>
+            <td>@context.Path</td>
+        </MatTableRow>
+    </MatTable>
+    <MatPaginator PageSize="@pageSize" Page="@(async e => await OnPage(e.PageIndex, e.PageSize))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
+}
+
+
+@code {
+}

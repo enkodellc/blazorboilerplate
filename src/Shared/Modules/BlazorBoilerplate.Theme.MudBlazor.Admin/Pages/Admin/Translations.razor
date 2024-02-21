@@ -17,20 +17,20 @@ else
 {
     <MudGrid Class="my-4">
         <MudItem xs="12" sm="4" md="2">
-            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder=@L["Search"] Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder=@L["Search"] Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />
         </MudItem>
     </MudGrid>
 
     <MudTable ServerData="@(new Func<TableState, Task<TableData<LocalizationRecordKey>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" Class="mb-4"
               SelectedItemChanged="async (LocalizationRecordKey key) => await LoadLocalizationRecords((LocalizationRecordKey)key)" @ref="table">
         <ToolBarContent>
-            <MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@OpenNewKeyDialogOpen" Variant="Variant.Filled" Color="Color.Primary" Class="ma-2">@L["NewTranslation"]</MudButton>
+            <MudButton StartIcon="@Icons.Filled.Add" OnClick="@OpenNewKeyDialogOpen" Variant="Variant.Filled" Color="Color.Primary" Class="ma-2">@L["NewTranslation"]</MudButton>
             <MudButton OnClick="@SaveChanges" Variant="Variant.Filled" Color="Color.Primary">@L["Save"]</MudButton>
             <MudButton OnClick="@ReloadTranslations" Class="ma-2">@L["ReloadTranslations"]</MudButton>
             <MudButton OnClick="@(e => { navigationManager.NavigateTo("/api/localization/export", true); })" Class="ma-2">@L["Export"]</MudButton>
             <InputFile id="fileInput" OnChange="UploadFiles" hidden multiple accept=".po" />
             <MudButton HtmlTag="label"
-                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       StartIcon="@Icons.Filled.CloudUpload"
                        Class="ma-2"
                        for="fileInput">
                 @L["Import PO file"]
@@ -43,8 +43,8 @@ else
         </HeaderContent>
         <RowTemplate Context="keyRow">
             <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => OpenEditDialog(keyRow))" />
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteDialog(keyRow))" />
+                <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenEditDialog(keyRow))" />
+                <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteDialog(keyRow))" />
             </MudTd>
             <MudTd>@keyRow.MsgId</MudTd>
             <MudTd>@keyRow.ContextId</MudTd>
@@ -63,7 +63,7 @@ else
                             </HeaderContent>
                             <RowTemplate Context="row">
                                 <MudTd>
-                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteLocalizationRecord(row))" Disabled="@(row.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture)"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => DeleteLocalizationRecord(row))" Disabled="@(row.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture)"></MudIconButton>
                                 </MudTd>
                                 <MudTd><b>@row.Culture</b></MudTd>
                                 <MudTd>
@@ -119,9 +119,9 @@ else
             </MudText>
         </TitleContent>
         <DialogContent>
-            <MudTextField @bind-Value="@newKey.ContextId" Label=@L["ContextId"] AdornmentIcon="@Icons.Material.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+            <MudTextField @bind-Value="@newKey.ContextId" Label=@L["ContextId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-            <MudTextField @bind-Value="@newKey.MsgId" Label=@L["MsgId"] AdornmentIcon="@Icons.Material.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+            <MudTextField @bind-Value="@newKey.MsgId" Label=@L["MsgId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="@(e => { isEditDialogOpen = false; })">@L["Cancel"]</MudButton>
@@ -156,11 +156,11 @@ else
             <EditForm id="newKeyForm" Model="@newLocalizationRecord" OnValidSubmit="@SaveNewKey">
                 <FluentValidationValidator />
                 <MudValidationSummary />
-                <MudTextField @bind-Value="@newLocalizationRecord.ContextId" Label=@L["ContextId"] AdornmentIcon="@Icons.Material.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+                <MudTextField @bind-Value="@newLocalizationRecord.ContextId" Label=@L["ContextId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-                <MudTextField @bind-Value="@newLocalizationRecord.MsgId" Label=@L["MsgId"] AdornmentIcon="@Icons.Material.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+                <MudTextField @bind-Value="@newLocalizationRecord.MsgId" Label=@L["MsgId"] AdornmentIcon="@Icons.Filled.VpnKey" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-                <MudTextField @bind-Value="@newLocalizationRecord.Culture" Label=@L["Culture"] AdornmentIcon="@Icons.Material.Filled.Public" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] Disabled="true"></MudTextField>
+                <MudTextField @bind-Value="@newLocalizationRecord.Culture" Label=@L["Culture"] AdornmentIcon="@Icons.Filled.Public" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] Disabled="true"></MudTextField>
 
                 <MudTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" Required="true" RequiredError=@L["Required"] Lines="5" Style="resize: both"></MudTextField>
             </EditForm>
@@ -187,7 +187,7 @@ else
                 </HeaderContent>
                 <RowTemplate Context="row">
                     <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeletePluralTranslation(row))" />
+                        <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => DeletePluralTranslation(row))" />
                     </MudTd>
                     <MudTd>
                         <MudTextField @bind-Value="@row.Index" Lines="5" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>

@@ -1,0 +1,121 @@
+@inherits LoginPage
+@page "/account/login"
+
+@layout LoginLayout
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <LoadingBackground ShowLogoBox="true">
+            <label>@L["Loading"]</label>
+        </LoadingBackground>
+    </Authorized>
+    <NotAuthorized>
+        @if (loginViewModel?.EnableLocalLogin == true)
+        {
+            <MatCard>
+                <div class="hidden-mdc-down">
+                    <MatIconButton Icon="home" Class="float-left" Link="/" />
+                </div>
+                <div class="logo">
+                    <a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
+                    <br />
+                    <h4>@L["Log in"]</h4>
+                </div>
+                <EditForm Model="@loginViewModel" OnValidSubmit="@SubmitLogin">
+                    <FluentValidationValidator />
+                    <ValidationSummary />
+                    <fieldset>
+                        <div class="form-group">
+                            <MatTextField @ref="UserNameInput" @bind-Value="@loginViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" tabindex="1"></MatTextField>
+                            <AutoFocus Control=@(() => UserNameInput.InputRef) />
+                        </div>
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password" tabindex="2"></MatTextField>
+                        </div>
+                        <div class="form-group">
+                            <MatButton class="float-right" Type="submit" Raised="true" tabindex="3">@L["Login"]</MatButton>
+                            @if (loginViewModel.AllowRememberLogin)
+                            {<MatCheckbox @bind-Value="@loginViewModel.RememberMe" class="filled-in chk-col-blue">@L["Keep me logged in"]</MatCheckbox>}
+                        </div>
+                    </fieldset>
+                </EditForm>
+                <hr />
+                <div>
+                    <MatButton class="float-left" OnClick="@Register" Raised="true">@L["Sign up"]</MatButton>
+                </div>
+            </MatCard>
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>@L["Forgot your password?"]</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <EditForm Model="@forgotPasswordViewModel" OnValidSubmit="@ForgotPassword">
+                            <FluentValidationValidator />
+                            <ValidationSummary />
+                            <div class="form-group">
+                                <MatTextField @bind-Value="@forgotPasswordViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                            </div>
+                            <div class="form-group">
+                                <MatButton class="float-right" Type="submit" Raised="true">@L["Submit"]</MatButton>
+                            </div>
+                        </EditForm>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+            @if (loginViewModel.VisibleExternalProviders.Any())
+            {
+                <br />
+                <MatCard>
+                    @if (!loginViewModel.EnableLocalLogin)
+                    {<div class="hidden-mdc-down">
+                            <MatIconButton Icon="home" Class="float-left" Link="/" />
+                        </div>}
+                    <div class="logo">
+                        @if (!loginViewModel.EnableLocalLogin)
+                        {<a href="/" title="@appState.AppName Home"><img src="_content/BlazorBoilerplate.Theme.Material/images/logo.svg" style="width:100px;" title="@appState.AppName Home" alt="@appState.AppName" /><br />@appState.AppName</a>
+                        <br />}
+                        <h4>@L["Sign in with"]</h4>
+                    </div>
+                    <div style="text-align: center">
+                        @foreach (var provider in loginViewModel.VisibleExternalProviders)
+                        {
+                            @switch (provider.AuthenticationScheme)
+                            {
+                                case "Google":
+                                case "Facebook":
+                                    <div class="form-group">
+                                        <MatButton Style="min-width: 140px;" OnClick="@(() => SignInWith(provider))" Raised="true"><img height="18" src="/images/@(provider.AuthenticationScheme.ToLower()).svg" /></MatButton>
+                                    </div>
+                                    break;
+                                case "Twitter":
+                                case "Microsoft":
+                                case "Apple":
+                                    <div class="form-group">
+                                        <MatButton Style="min-width: 140px;" OnClick="@(() => SignInWith(provider))" Raised="true"><img height="18" src="/images/@(provider.AuthenticationScheme.ToLower()).svg" />&nbsp;@provider.DisplayName</MatButton>
+                                    </div>
+                                    break;
+                                default:
+                                    <div class="form-group">
+                                        <MatButton Style="min-width: 140px;" OnClick="@(() => SignInWith(provider))" Raised="true" Label="@provider.DisplayName" />
+                                    </div>
+                                    break;
+                            }
+                        }
+                    </div>
+                </MatCard>}
+            @if (!loginViewModel.EnableLocalLogin && !loginViewModel.VisibleExternalProviders.Any())
+            {
+                <div class="alert alert-warning">
+                    <strong>Invalid login request</strong>
+                    There are no login schemes configured for this client.
+                </div>
+            }
+        }
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+    private MatTextField<string> UserNameInput;
+
+}

@@ -27,7 +27,6 @@ using BlazorBoilerplate.Storage.Mapping;
 using Breeze.AspNetCore;
 using Breeze.Core;
 using FluentValidation.AspNetCore;
-using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -50,10 +49,10 @@ using NSwag.Generation.Processors.Security;
 using Serilog;
 using System.Reflection;
 using System.Security.Claims;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography.X509Certificates;
 using static BlazorBoilerplate.Constants.PasswordPolicy;
-using static IdentityModel.JwtClaimTypes;
-using static IdentityServer4.IdentityServerConstants;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace BlazorBoilerplate.Server
@@ -104,34 +103,10 @@ namespace BlazorBoilerplate.Server
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
                 AdditionalUserClaimsPrincipalFactory>();
 
-            var authAuthority = Configuration[$"{projectName}:IS4ApplicationUrl"].TrimEnd('/');
-
-            // Adds IdentityServer https://identityserver4.readthedocs.io/en/latest/reference/options.html
-            var identityServerBuilder = services.AddIdentityServer(options =>
-            {
-                options.IssuerUri = authAuthority;
-                options.Events.RaiseErrorEvents = true;
-                options.Events.RaiseInformationEvents = true;
-                options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseSuccessEvents = true;
-                options.UserInteraction.ErrorUrl = "/identityserver/error";
-            })
-              .AddIdentityServerStores(Configuration)
-              .AddAspNetIdentity<ApplicationUser>(); //https://identityserver4.readthedocs.io/en/latest/reference/aspnet_identity.html
-
-            X509Certificate2 cert = null;
-
             var keysLocalFolder = Path.Combine(_environment.ContentRootPath, "Keys");
 
             if (_environment.IsDevelopment())
             {
-                // The AddDeveloperSigningCredential extension creates temporary key material tempkey.jwk for signing tokens.
-                // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
-                // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
-                // https://stackoverflow.com/questions/42351274/identityserver4-hosting-in-iis
-
-                identityServerBuilder.AddDeveloperSigningCredential();
-
                 dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysLocalFolder));
             }
             else
@@ -217,8 +192,6 @@ namespace BlazorBoilerplate.Server
                             KeyVaultSecretIdentifier secretIdentifier = new(certificateWithPolicy.SecretId);
                             KeyVaultSecret secret = secretClient.GetSecretAsync(secretIdentifier.Name, secretIdentifier.Version).GetAwaiter().GetResult();
                             byte[] privateKeyBytes = Convert.FromBase64String(secret.Value);
-
-                            cert = new X509Certificate2(privateKeyBytes, (string)null, X509KeyStorageFlags.MachineKeySet);
                         }
                     }
                     else // if app id and app secret are used
@@ -226,99 +199,17 @@ namespace BlazorBoilerplate.Server
                 }
                 else
                     dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysLocalFolder));
-
-                //TODO this implementation does not consider certificate expiration 
-                if (Convert.ToBoolean(Configuration[$"{projectName}:UseLocalCertStore"]) == true)
-                {
-                    var certificateThumbprint = Configuration[$"{projectName}:CertificateThumbprint"];
-
-                    var storeLocation = StoreLocation.LocalMachine;
-
-                    dynamic storeName = "WebHosting";
-
-                    if (OperatingSystem.IsLinux())
-                    {
-                        storeLocation = StoreLocation.CurrentUser;
-                        storeName = StoreName.My;
-                    }
-
-                    using X509Store store = new(storeName, storeLocation);
-                    store.Open(OpenFlags.ReadOnly);
-                    var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
-                    if (certs.Count > 0)
-                    {
-                        cert = certs[0];
-                    }
-                    else
-                    {
-                        var certPath = Path.Combine(_environment.ContentRootPath, "AuthSample.pfx");
-
-                        if (File.Exists(certPath))
-                        {
-                            string certificatePassword = Configuration[$"{projectName}:CertificatePassword"] ?? "Admin123";
-                            cert = new X509Certificate2(certPath, certificatePassword,
-                                                X509KeyStorageFlags.MachineKeySet |
-                                                X509KeyStorageFlags.PersistKeySet |
-                                                X509KeyStorageFlags.Exportable);
-                        }
-                    }
-
-                    store.Close();
-                }
-
-                // pass the resulting certificate to Identity Server
-                if (cert != null)
-                {
-                    identityServerBuilder.AddSigningCredential(cert);
-                    Log.Logger.Information($"Added certificate {cert.Subject} to Identity Server");
-                }
-                else if (OperatingSystem.IsWindows())
-                {
-                    Log.Logger.Debug("Trying to use WebHosting Certificate for Identity Server");
-                    identityServerBuilder.AddWebHostingCertificate();
-                }
-                else
-                {
-                    throw new Exception("Missing Certificate for Identity Server");
-                }
             }
 
-            var authBuilder = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = authAuthority;
-                options.RequireHttpsMetadata = _environment.IsProduction();
-                options.Audience = IdentityServerConfig.LocalApiName;
-                options.TokenValidationParameters.ValidTypes = new[] { JwtTypes.AccessToken };
-
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
-                    {
-                        var accessToken = context.Request.Query["access_token"];
-
-                        // If the request is for our hub...
-                        var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) &&
-                            path.StartsWithSegments(Constants.HubPaths.Chat))
-                        {
-                            // Read the token out of the query string
-                            context.Token = accessToken;
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+            var authBuilder = services.AddAuthentication();
 
             #region ExternalAuthProviders
-            //https://github.com/dotnet/aspnetcore/blob/master/src/Security/Authentication/samples/SocialSample/Startup.cs
+            //https://github.com/dotnet/aspfSignInSchemenetcore/blob/master/src/Security/Authentication/samples/SocialSample/Startup.cs
             //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/google-logins
             if (Convert.ToBoolean(Configuration["ExternalAuthProviders:Google:Enabled"] ?? "false"))
             {
                 authBuilder.AddGoogle(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
                     options.ClientId = Configuration["ExternalAuthProviders:Google:ClientId"];
                     options.ClientSecret = Configuration["ExternalAuthProviders:Google:ClientSecret"];
 
@@ -341,8 +232,6 @@ namespace BlazorBoilerplate.Server
                 // https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#login
                 authBuilder.AddFacebook(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
                     options.AppId = Configuration["ExternalAuthProviders:Facebook:AppId"];
                     options.AppSecret = Configuration["ExternalAuthProviders:Facebook:AppSecret"];
 
@@ -364,8 +253,6 @@ namespace BlazorBoilerplate.Server
                 // https://developer.twitter.com/en/docs/basics/authentication/api-reference/access_token
                 authBuilder.AddTwitter(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
                     options.ConsumerKey = Configuration["ExternalAuthProviders:Twitter:ConsumerKey"];
                     options.ConsumerSecret = Configuration["ExternalAuthProviders:Twitter:ConsumerSecret"];
 
@@ -386,8 +273,6 @@ namespace BlazorBoilerplate.Server
             {
                 authBuilder.AddApple(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
                     options.ClientId = Configuration["ExternalAuthProviders:Apple:ClientId"];
                     options.KeyId = Configuration["ExternalAuthProviders:Apple:KeyId"];
                     options.TeamId = Configuration["ExternalAuthProviders:Apple:TeamId"];
@@ -404,8 +289,6 @@ namespace BlazorBoilerplate.Server
             {
                 authBuilder.AddMicrosoftAccount(options =>
                 {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
                     options.ClientId = Configuration["ExternalAuthProviders:Microsoft:ClientId"];
                     options.ClientSecret = Configuration["ExternalAuthProviders:Microsoft:ClientSecret"];
 
@@ -548,28 +431,6 @@ namespace BlazorBoilerplate.Server
                 {
                     document.Title = "BlazorBoilerplate API";
                     document.Version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString();
-                    document.AddSecurity("bearer", Enumerable.Empty<string>(), new OpenApiSecurityScheme
-                    {
-                        Type = OpenApiSecuritySchemeType.OAuth2,
-                        Description = "Local Identity Server",
-                        OpenIdConnectUrl = $"{authAuthority}/.well-known/openid-configuration", //not working
-                        Flow = OpenApiOAuth2Flow.AccessCode,
-                        Flows = new OpenApiOAuthFlows()
-                        {
-                            AuthorizationCode = new OpenApiOAuthFlow()
-                            {
-                                Scopes = new Dictionary<string, string>
-                                {
-                                { LocalApi.ScopeName, IdentityServerConfig.LocalApiName }
-                                },
-                                AuthorizationUrl = $"{authAuthority}/connect/authorize",
-                                TokenUrl = $"{authAuthority}/connect/token"
-                            },
-                        }
-                    }); ;
-
-                    document.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
-                    //      new OperationSecurityScopeProcessor("bearer"));
                 });
 
             services.AddScoped<IUserSession, UserSession>();
@@ -683,8 +544,7 @@ namespace BlazorBoilerplate.Server
 
             app.UseRouting();
 
-            app.UseIdentityServer();
-            //app.UseAuthentication();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseMultiTenant();
@@ -709,15 +569,7 @@ namespace BlazorBoilerplate.Server
             if (_enableAPIDoc)
             {
                 app.UseOpenApi();
-                app.UseSwaggerUi3(settings =>
-                {
-                    settings.OAuth2Client = new OAuth2ClientSettings()
-                    {
-                        AppName = projectName,
-                        ClientId = IdentityServerConfig.SwaggerClientID,
-                        UsePkceWithAuthorizationCodeGrant = true
-                    };
-                });
+                app.UseSwaggerUi3();
             }
 
             app.UseEndpoints(endpoints =>

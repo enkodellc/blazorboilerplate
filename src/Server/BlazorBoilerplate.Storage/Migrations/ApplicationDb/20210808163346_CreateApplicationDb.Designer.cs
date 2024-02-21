@@ -370,9 +370,6 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<string>("Culture")
-                       .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsNavMinified")
                         .HasColumnType("bit");
 

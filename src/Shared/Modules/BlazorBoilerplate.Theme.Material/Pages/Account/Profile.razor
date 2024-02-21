@@ -1,0 +1,116 @@
+﻿@inherits ProfilePage
+@page "/account/profile"
+@attribute [Authorize]
+
+<h1>@L["User Profile"]</h1>
+<p>User profile management.</p>
+@if (userViewModel == null)
+{
+    <LoadingBackground ShowLogoBox="true"></LoadingBackground>
+}
+else
+{
+    <div class="form-group">
+        <MatButton Type="submit" form="mainForm" Raised="true">@L["Save"]</MatButton>
+        @if (userViewModel.HasPassword)
+        {
+            <MatButton Icon="rotate_right" OnClick="@(() => OpenUpdatePasswordDialog())" Label=@L["Change Password"] Raised="true" Style="margin-left: 10px"></MatButton>
+        }
+        @if (userViewModel.HasAuthenticator)
+        {
+            <MatButton Icon="rotate_right" OnClick="@(() => DisableAuthenticator())" Label=@L["ResetAuthenticator"] Raised="true" Style="margin-left: 10px"></MatButton>
+        }
+    </div>
+    <EditForm id="mainForm" Model="@userViewModel" OnValidSubmit="@UpdateUser">
+        <FluentValidationValidator />
+        <ValidationSummary />
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true" ReadOnly="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userViewModel.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userViewModel.FirstName" Label=@L["FirstName"] FullWidth="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@userViewModel.LastName" Label=@L["LastName"] FullWidth="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <strong>@L["Roles"]</strong><br />
+                <MatChipSet>
+                    @foreach (var role in userViewModel.Roles)
+                    {
+                        <MatChip Label="@role"></MatChip>
+                    }
+                </MatChipSet>
+            </div>
+        </fieldset>
+    </EditForm>
+    @if (userViewModel.TwoFactorEnabled)
+    {
+        <div class="form-group">
+            <MatSlideToggle @bind-Value="@TwoFactorEnabled" Label=@L["TwoFactorAuthentication"] />
+        </div>
+        @if (userViewModel.BrowserRemembered)
+        {
+            <div class="form-group">
+                <MatSlideToggle @bind-Value="@BrowserRemembered" Label=@L["BrowserRemembered"] />
+            </div>
+        }
+        if (userViewModel.RecoveryCodes != null)
+        {
+            <div class="form-group">
+                <MatChipSet>
+                    @foreach (var rcode in userViewModel.RecoveryCodes)
+                    {
+                        <MatChip Label="@rcode"></MatChip>
+                    }
+                </MatChipSet>
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <span>@L["RecoveryCodesLeft"]</span> @userViewModel.CountRecoveryCodes
+            </div>
+        }
+    }
+    else
+    {
+        <h3>@L["TwoFactorAuthentication"]</h3>
+        @L["EnableAuthenticatorInstructions", userViewModel.SharedKey, $"https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={userViewModel.AuthenticatorUri}"].ToMarkup()
+        <MatTextField @bind-Value="@authenticatorVerificationCodeViewModel.Code" Label=@L["Code"] FullWidth="true"></MatTextField>
+        <MatButton OnClick="@EnableAuthenticator">@L["VerifyCode"]</MatButton>
+    }
+
+    <MatDialog @bind-IsOpen="@updatePasswordDialogOpen">
+        <MatDialogTitle>Password Update for @userViewModel.UserName</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm Model="@updatePasswordViewModel" OnValidSubmit="@UpdatePassword">
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <fieldset>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@updatePasswordViewModel.CurrentPassword" Label=@L["CurrentPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@updatePasswordViewModel.NewPassword" Label=@L["NewPassword"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@updatePasswordViewModel.NewPasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                    </div>
+                </fieldset>
+            </EditForm>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { updatePasswordDialogOpen = false; })">@L["Cancel"]</MatButton>
+            <MatButton OnClick="@UpdatePassword">@L["Update Password"]</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+}
+@code {
+
+}

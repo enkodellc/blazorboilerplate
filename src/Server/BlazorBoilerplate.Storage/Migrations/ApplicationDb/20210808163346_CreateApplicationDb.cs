@@ -297,8 +297,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     IsNavMinified = table.Column<bool>(type: "bit", nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),
                     LastUpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    Culture = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {

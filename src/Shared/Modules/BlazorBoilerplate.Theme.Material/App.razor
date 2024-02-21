@@ -1,0 +1,54 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.WebAssembly.Services
+@inject LazyAssemblyLoader assemblyLoader
+@inject NavigationManager navigationManager
+@inject IStringLocalizer<Global> L
+
+<Router AppAssembly="typeof(App).Assembly" AdditionalAssemblies="ModuleProvider.AssembliesWithPages" OnNavigateAsync="@OnNavigateAsync">
+    @*see https://github.com/dotnet/aspnetcore/issues/25731
+            <Navigating>
+            <LoadingBackground ShowLogoBox="true">
+                <label>@L["Loading"]</label>
+            </LoadingBackground>
+        </Navigating>*@
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
+            <Authorizing>
+                <AuthorizingInProgress />
+            </Authorizing>
+            <NotAuthorized>
+                @if (!context.User.Identity.IsAuthenticated)
+                {
+                    <RedirectToLogin />
+                }
+                else
+                {
+                    <UserNotAuthorized />
+                }
+            </NotAuthorized>
+        </AuthorizeRouteView>
+    </Found>
+    <NotFound>
+        <CascadingAuthenticationState>
+            <LayoutView Layout="typeof(MainLayout)">
+                <PageNotFound />
+            </LayoutView>
+        </CascadingAuthenticationState>
+    </NotFound>
+</Router>
+<MatToastContainer />
+
+@code
+{
+    private async Task OnNavigateAsync(NavigationContext args)
+    {
+        if (navigationManager.IsWebAssembly())
+            if (args.Path.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                var assemblies = await assemblyLoader.LoadAssembliesAsync(
+                    new List<string>() { "BlazorBoilerplate.Theme.Material.Admin.dll", "Blazored.TextEditor.dll" });
+
+                ModuleProvider.AddModules(assemblies);
+            }
+    }
+}

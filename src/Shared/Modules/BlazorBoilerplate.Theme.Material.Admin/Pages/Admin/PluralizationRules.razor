@@ -1,0 +1,53 @@
+﻿@inherits PluralizationRulesPage
+@page "/admin/pluralizationrules"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<h1>@L["Pluralization rules"]</h1>
+
+@if (PluralFormRules == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Items="@PluralFormRules" Class="mat-elevation-z5" Striped="true" ShowPaging="false" PageSize="50">
+        <MatTableHeader>
+            <th></th>
+            <th>@L["Culture"]</th>
+            <th>@L["Count"]</th>
+            <th>@L["Selector"]</th>
+        </MatTableHeader>
+        <MatTableRow Context="row">
+            <td>
+                <div>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDelete(row))"></MatIconButton>
+                </div>
+            </td>
+            <td>@row.Language</td>
+            <td><MatTextField @bind-Value="@row.Count" FullWidth="true" Required="true"></MatTextField></td>
+            <td><MatTextField @bind-Value="@row.Selector" FullWidth="true" Required="true"></MatTextField></td>
+        </MatTableRow>
+    </MatTable>
+    @if (LocalizationCultures.Count > 0)
+    {<EditForm Model="@newPluralFormRule" OnValidSubmit="@SaveNewPluralFormRule">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatSelectItem @bind-Value="@newPluralFormRule.Language" Items="@LocalizationCultures" Label=@L["Culture"]></MatSelectItem>
+                    <MatTextField @bind-Value="@newPluralFormRule.Count" Label=@L["Count"] FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@newPluralFormRule.Selector" Label=@L["Selector"] FullWidth="true" Required="true"></MatTextField>
+                    <MatButton Type="submit" Raised="true">@L["Add"]</MatButton>
+                </div>
+            </fieldset>
+        </EditForm>}
+    <MatButton OnClick="@CancelChanges" Raised="true">@L["Cancel"]</MatButton>
+    <MatButton OnClick="@SaveChanges" Raised="true">@L["Save"]</MatButton>
+}
+
+@code {
+
+}

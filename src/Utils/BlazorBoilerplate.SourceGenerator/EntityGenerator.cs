@@ -152,12 +152,7 @@ namespace BlazorBoilerplate.SourceGenerator
                     propertyTypeName = GetFirstGenericTypeName(pds, property);
 
                     if (propertyType.NullableAnnotation == NullableAnnotation.Annotated)
-                    {
                         propertyTypeName = $"{propertyTypeName}?";
-
-                        if (config.GenInterfaces)
-                            propertiesSb.Append(@$"{propertyTypeName} {property.Name} {{ get; set; }}");                    
-                    }
                     else if (propertyType.Name == "ICollection")
                     {
                         if (config.GenInterfaces)

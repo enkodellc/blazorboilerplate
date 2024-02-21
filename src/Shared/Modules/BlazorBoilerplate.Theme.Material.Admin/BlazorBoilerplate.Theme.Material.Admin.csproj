@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.TextEditor" Version="1.0.8" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BlazorBoilerplate.UI.Base\BlazorBoilerplate.UI.Base.csproj" />
+    <ProjectReference Include="..\BlazorBoilerplate.Theme.Material\BlazorBoilerplate.Theme.Material.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)Server\BlazorBoilerplate.Server\Themes\MatBlazor\" />
+  </Target>
+</Project>

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MatBlazor" Version="2.9.0-develop-042" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
+    <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="13.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BlazorBoilerplate.Shared\BlazorBoilerplate.Shared.csproj" />
+    <ProjectReference Include="..\..\BlazorBoilerplate.UI.Base\BlazorBoilerplate.UI.Base.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)Server\BlazorBoilerplate.Server\Themes\MatBlazor\" />
+  </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="del &quot;$(SolutionDir)Server\BlazorBoilerplate.Server\Modules\*Theme*.dll&quot;" />
+  </Target>
+</Project>

@@ -1,7 +1,7 @@
 ﻿using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Shared.Localizer;
-using IdentityModel;
 using Microsoft.Extensions.Localization;
+using System.Security.Claims;
 
 namespace BlazorBoilerplate.Server.Middleware
 {
@@ -16,17 +16,17 @@ namespace BlazorBoilerplate.Server.Middleware
             {
                 var request = httpContext.Request;
 
-                //First setup the userSession, then call next midleware
+                //First setup the userSession, then call next middleware
                 if (httpContext.User.Identity.IsAuthenticated)
                 {
-                    var subClaim = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).SingleOrDefault();
+                    var subClaim = httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).SingleOrDefault();
 
                     if (subClaim != null)
                     {
                         userSession.UserId = new Guid(subClaim.Value);
                         userSession.UserName = httpContext.User.Identity.Name;
 
-                        userSession.Roles = httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Role).Select(c => c.Value).ToList();
+                        userSession.Roles = httpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
                         userSession.ExposedClaims = httpContext.User.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)).ToList();
                     }
                 }

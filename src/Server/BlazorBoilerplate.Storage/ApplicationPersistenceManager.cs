@@ -3,10 +3,10 @@ using BlazorBoilerplate.Shared.Localizer;
 using Breeze.Persistence;
 using Finbuckle.MultiTenant;
 using FluentValidation;
-using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Security.Claims;
 
 namespace BlazorBoilerplate.Storage
 {
@@ -14,8 +14,8 @@ namespace BlazorBoilerplate.Storage
     {
         public ApplicationPersistenceManager(ApplicationDbContext dbContext,
             IHttpContextAccessor accessor,
-            IServiceProvider serviceProvider,
-            IStringLocalizer<Global> l) : base(dbContext, accessor, serviceProvider, l)
+            IValidatorFactory factory,
+            IStringLocalizer<Global> l) : base(dbContext, accessor, factory, l)
         { }
 
         protected override bool BeforeSaveEntity(EntityInfo entityInfo)
@@ -39,7 +39,7 @@ namespace BlazorBoilerplate.Storage
             if (userProfile == null)
             {
                 var tenantId = httpContextAccessor.HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo.Id;
-                var userId = new Guid(user.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value);
+                var userId = new Guid(user.Claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
                 userProfile = await Context.UserProfiles.SingleOrDefaultAsync(i => i.TenantId == tenantId && i.UserId == userId);
 

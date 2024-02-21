@@ -4,10 +4,7 @@
     {
         ///<summary>A claim that specifies the permission of an entity</summary>
         public const string Permission = "permission";
-
-        public const string IsSubscriptionActive = "IsSubscriptionActive";
-
-        public static string For(UserFeatures userFeature) => $"Is{userFeature}";
+        public static string EmailVerified = "email_verified";
     }
 
     public static class ClaimValues

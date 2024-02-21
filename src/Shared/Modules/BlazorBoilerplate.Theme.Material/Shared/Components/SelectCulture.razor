@@ -1,0 +1,27 @@
+﻿@inject NavigationManager navigationManager
+@inject IJSRuntime js
+
+<MatSelectValue Class="selectCulture" Value="CurrentCulture" Items="@BlazorBoilerplate.Shared.Localizer.Settings.SupportedCulturesWithName"
+                ValueSelector=@(i => i.Item2)
+                ValueChanged="(string i) => OnCultureChanged(i)">
+    <ItemTemplate Context="CultureItem">
+        <span>@CultureItem.Item1</span>
+    </ItemTemplate>
+</MatSelectValue>
+
+@code {
+    private string CurrentCulture { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CurrentCulture = CultureInfo.CurrentCulture.Name;
+
+        await base.OnInitializedAsync();
+    }
+
+    public void OnCultureChanged(string culture)
+    {
+        var uri = new Uri(navigationManager.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+        navigationManager.NavigateTo($"/Culture/SetCulture?culture={Uri.EscapeDataString(culture)}&redirectUri={Uri.EscapeDataString(uri)}", forceLoad: true);
+    }
+}

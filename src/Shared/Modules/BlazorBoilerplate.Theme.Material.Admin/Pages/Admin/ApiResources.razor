@@ -1,0 +1,205 @@
+@inherits ApiResourcesPage
+@page "/admin/apiResources"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminapiResources"] />
+    </Breadcrumbs>
+</TopSection>
+
+<h1>@L["ApiResources"]</h1>
+<p>API Resources Management.</p>
+
+@if (apiResources == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Class="mat-elevation-z5" Items="@apiResources" Striped="true">
+        <MatTableHeader>
+            <th><MatButton Icon="add" Label=@L["New API Resource"] OnClick="@(() => OpenUpsertApiResourceDialog())"></MatButton></th>
+            <th>@L["Name"]</th>
+            <th>Enabled</th>
+            <th>Display Name</th>
+            <th>Description</th>
+            <th>Scopes</th>
+            <th>User Claims</th>
+        </MatTableHeader>
+        <MatTableRow Context="ApiResourceRow">
+            <td>
+                <div style="width:155px;">
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertApiResourceDialog(ApiResourceRow))"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteApiResourceDialog(ApiResourceRow))"></MatIconButton>
+                </div>
+            </td>
+            <td><div style="min-width:130px;">@ApiResourceRow.Name</div></td>
+            <td><MatSlideToggle TValue="bool" Value="@ApiResourceRow.Enabled" ValueChanged="@((item) => UpdateEnabled(ApiResourceRow))"></MatSlideToggle></td>
+            <td><div style="min-width:130px;">@ApiResourceRow.DisplayName</div></td>
+            <td><div style="min-width:130px;">@ApiResourceRow.Description</div></td>
+            <td>
+                <MatChipSet>
+                    @foreach (var scope in ApiResourceRow.Scopes)
+                        {
+                        <MatChip Label="@scope"></MatChip>
+                        }
+                </MatChipSet>
+            </td>
+            <td>
+                <MatChipSet>
+                    @foreach (var userClaim in ApiResourceRow.UserClaims)
+                        {
+                        <MatChip Label="@userClaim"></MatChip>
+                        }
+                </MatChipSet>
+            </td>
+        </MatTableRow>
+    </MatTable>
+}
+
+<MatDialog @bind-IsOpen="@isUpsertApiResourceDialogOpen">
+    <MatDialogTitle>
+        @labelUpsertDialogTitle
+    </MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@currentApiResource">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <MatTabGroup>
+                <MatTab Label="Main">
+                    <fieldset>
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@currentApiResource.Name" Disabled="@isCurrentApiContextIdReadOnly" Label="Id" Icon="description" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                        </div>
+                        <div class="form-group">
+                            <MatSlideToggle @bind-Value="@currentApiResource.Enabled" Label="Enabled"></MatSlideToggle>
+                        </div>
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@currentApiResource.DisplayName" Label="Display Name" Icon="description" IconTrailing="true" FullWidth="true"></MatTextField>
+                        </div>
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@currentApiResource.Description" Label="Description" Icon="description" IconTrailing="true" FullWidth="true"></MatTextField>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <MatTextField @bind-Value="@currentApiResource.ScopesText" Label="API Scopes" TextArea="true" FullWidth="true" Required="false"></MatTextField>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <h3 class="mat-subtitle1">Allowed Access Token Signing Algorithms</h3>
+                    <MatTable Items="@tokenSigningAlgorithmsSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
+                        <MatTableHeader>
+                            <th>@L["Name"]</th>
+                            <th>Allow</th>
+                        </MatTableHeader>
+                        <MatTableRow Context="TokenSigningAlgorithmsRow">
+                            <td>@TokenSigningAlgorithmsRow.DisplayValue</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@TokenSigningAlgorithmsRow.Selected"></MatCheckbox></td>
+                        </MatTableRow>
+                    </MatTable>
+                </MatTab>
+                <MatTab Label="Secrets">
+                    <MatTable Items="@currentApiResource.ApiSecrets" Class="mat-elevation-z5" ShowPaging="false" PageSize="@int.MaxValue">
+                        <MatTableHeader>
+                            <th style="min-width:190px;"><MatButton Icon="add" Label="New Secret" OnClick="@(() => OpenCreateApiResourceSecretDialogOpen())"></MatButton></th>
+                            <th>Expiration</th>
+                            <th>Description</th>
+                        </MatTableHeader>
+                        <MatTableRow Context="ApiResourceSecretRow">
+                            <td style="text-align:center;">
+                                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteApiResourceSecretDialog(ApiResourceSecretRow))"></MatIconButton>
+                            </td>
+                            <td>@ApiResourceSecretRow.Expiration</td>
+                            <td>@ApiResourceSecretRow.GetDisplayValue()</td>
+                        </MatTableRow>
+                    </MatTable>
+                </MatTab>
+                <MatTab Label="User Claims">
+                    <fieldset>
+                        <div class="form-group" style="margin-top:16px;">
+                            <div class="form-group">
+                                <MatTextField @bind-Value="@currentApiResource.CustomUserClaimsText" Label="Custom User Claims" TextArea="true" FullWidth="true" Required="false"></MatTextField>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <MatDivider></MatDivider>
+                    <h3 class="mat-subtitle1">Jwt Claims</h3>
+                    <MatTable Items="@jwtClaimSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
+                        <MatTableHeader>
+                            <th>@L["Name"]</th>
+                            <th>Required</th>
+                        </MatTableHeader>
+                        <MatTableRow Context="JwtClaimRow">
+                            <td>@JwtClaimRow.DisplayValue</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@JwtClaimRow.Selected"></MatCheckbox></td>
+                        </MatTableRow>
+                    </MatTable>
+                </MatTab>
+            </MatTabGroup>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@UpsertApiResource">@labelUpsertDialogOkButton</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@isDeleteApiResourceDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+    <MatDialogContent>
+        @L["Are you sure you want to delete {0}?", currentApiResource.Name]
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isDeleteApiResourceDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteApiResourceAsync">@L["Delete"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@isDeleteApiResourceSecretDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+    <MatDialogContent>
+        @L["Are you sure you want to delete {0}?", currentSecret.GetDisplayValue()]
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isDeleteApiResourceSecretDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteApiResourceSecret">@L["Delete"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@isCreateApiResourceSecretDialogOpen">
+    <MatDialogTitle>New Secret for API Resource @currentApiResource.Name</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@currentSecret">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentSecret.Description" Label="Description" Icon="description" IconTrailing="true" FullWidth="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentSecret.Value" Label="Secret" Icon="lock_outline" IconTrailing="true" Required="true"></MatTextField>
+                    <MatIconButton OnClick="@GenerateSecret" Icon="refresh"></MatIconButton>
+                    @*https://github.com/SamProf/MatBlazor/issues/303
+                        <MatTooltip Tooltip="You have to copy the secret now, because it cannot be retrieved anymore."></MatTooltip>*@
+                    <MatIconButton Icon="info"></MatIconButton>
+                </div>
+                <div class="form-group">
+                    <MatDatePicker @bind-Value="@currentSecret.Expiration" Label="Expiration" FullWidth="true" Minimum="@DateTime.Now"></MatDatePicker>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isCreateApiResourceSecretDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@CreateSecret">Create API Resource Secret</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+}

@@ -9,11 +9,11 @@
         <PageTitle>@L["User Profile"]</PageTitle>
         @if (userViewModel.HasPassword)
         {
-            <MudButton StartIcon="@Icons.Material.Filled.RotateRight" OnClick="@(() => OpenUpdatePasswordDialog())" Style="margin-left: 10px">@L["Change Password"]</MudButton>
+            <MudButton StartIcon="@Icons.Filled.RotateRight" OnClick="@(() => OpenUpdatePasswordDialog())" Style="margin-left: 10px">@L["Change Password"]</MudButton>
         }
         @if (userViewModel.HasAuthenticator)
         {
-            <MudButton StartIcon="@Icons.Material.Filled.RotateRight" OnClick="@(() => DisableAuthenticator())" Style="margin-left: 10px">@L["ResetAuthenticator"]</MudButton>
+            <MudButton StartIcon="@Icons.Filled.RotateRight" OnClick="@(() => DisableAuthenticator())" Style="margin-left: 10px">@L["ResetAuthenticator"]</MudButton>
         }
 
         <EditForm id="mainForm" Model="@userViewModel" OnValidSubmit="@UpdateUser">

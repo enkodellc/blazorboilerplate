@@ -1,0 +1,42 @@
+﻿@page "/dashboard"
+@attribute [Authorize]
+@inject AppState appState
+
+<h1>Dashboard</h1>
+
+<p>
+    Expecting to see a bunch of flashy charts then you download the repo and delete them all because you don't need them? <br />
+    Check out <a href="https://github.com/mariusmuntean/ChartJs.Blazor" target="_blank">ChartJs.Blazor</a> and you will find a great resource for animated charts for a dashboard.<br />
+</p>
+<hr />
+<h2>Counter</h2>
+
+<MatFAB icon="exposure_plus_1" @onclick="@IncrementCount"></MatFAB>
+
+<p>
+    Current Page Count: <strong>@currentCount</strong>
+    <br />
+    Current User Profile / Persistent Count: <strong>@if (@profileCurrentCount != -1)@profileCurrentCount</strong>
+</p>
+
+<p>
+    There is a "User Profile" for persistant user data built into BlazorBoilerplate. This is a bit of hack until Microsoft or others create that functionality.
+    Currently we store Sidebar Navigation settings, Count. In the future I would like to track the users last page but I don't see much for <br/>
+</p>
+
+@code {
+    int currentCount = 0;
+    int profileCurrentCount = -1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        profileCurrentCount = await appState.GetUserProfileCount();
+    }
+
+    public async Task IncrementCount()
+    {
+        currentCount++;
+        profileCurrentCount++;
+        await appState.UpdateUserProfileCount(profileCurrentCount);
+    }
+}

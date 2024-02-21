@@ -1,0 +1,47 @@
+﻿@page "/email"
+@using BlazorBoilerplate.Shared.Dto.Email
+@attribute [Authorize]
+
+@inject IApiClient apiClient
+@inject IViewNotifier viewNotifier
+
+<h1>Send Email</h1>
+<p>Test out SMTP email sending with MailKit. This will send out an email using a default "Test" template.</p>
+<EditForm Model="@emailParameters" OnValidSubmit="@SendTestEmail">
+    <FluentValidationValidator />
+    <ValidationSummary />
+    <fieldset>
+        <div class="form-group">
+            <MatTextField @bind-Value="@emailParameters.ToAddress" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group d-flex justify-content-end">
+            <MatButton Type="submit" Raised="true">Send Test Template Email</MatButton>
+        </div>
+    </fieldset>
+</EditForm>
+
+@code {
+
+    EmailDto emailParameters { get; set; } = new EmailDto();    
+
+    async Task SendTestEmail()
+    {
+        try
+        {
+            ApiResponseDto apiResponse = await apiClient.SendTestEmail(emailParameters);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                viewNotifier.Show(apiResponse.Message, ViewNotifierType.Success);
+            }
+            else
+            {
+                viewNotifier.Show(apiResponse.Message + " : " + apiResponse.StatusCode, ViewNotifierType.Error, "Email Send Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, "Email Send Failed");
+        }
+    }
+}

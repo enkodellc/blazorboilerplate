@@ -1,0 +1,129 @@
+﻿@page "/email_view"
+@using BlazorBoilerplate.Shared.Dto.Email
+@attribute [Authorize]
+
+@inject HttpClient Http
+@inject IViewNotifier viewNotifier
+
+<h1>Email Retrieval</h1>
+<p>This component demonstrates fetching and viewing emails from an account.</p>
+
+<button @onclick="GetMessagesAsync" class="btn-primary">Fetch emails</button>
+
+
+@if (emails == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Subject</th>
+                <th>Body</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var email in emails)
+            {
+                <tr>
+                    <td>
+                        @foreach (EmailAddressDto sender in email.FromAddresses)
+                        {<figure>@sender.Name (@sender.Address)</figure>}
+                    </td>
+                    <td>
+                        @foreach (EmailAddressDto receipient in email.ToAddresses)
+                        {<figure>@receipient.Name (@receipient.Address)</figure>}
+                    </td>
+                    <td>@email.Subject</td>
+                    <td>
+                        <button class="btn-danger" @onclick="@( () => openModal(email.GetHashCode()))">View Email</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    if (ModalOpen)
+    {
+        <div class="modal" tabindex="-1" style="display:block" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">@modalTitle</h3>
+                        <button type="button" class="close" @onclick="closeModal">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="From" class="control-label">From:</label>
+                                <figure for="From" class="form-control">
+                                    @foreach (EmailAddressDto sender in email.FromAddresses)
+                                    {<figure>@sender.Name (@sender.Address)</figure>}
+                                </figure>
+                            </div>
+                            <div class="form-group container" style="max-height: calc(80vh - 210px); overflow-y:auto; overflow-x:auto; padding-bottom:50px">
+                                @((MarkupString)email.Body)
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-block btn-info" @onclick="closeModal" data-dismiss="modal">exit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+@code {
+
+    List<EmailMessageDto> emails;
+    EmailMessageDto email = new EmailMessageDto();
+
+    ApiResponseDto apiResponse;
+    bool ModalOpen { get; set; }
+    string modalTitle { get; set; }
+
+    void openModal(int hash)
+    {
+
+        email = emails.Where(x => x.GetHashCode().Equals(hash)).SingleOrDefault();
+
+        this.modalTitle = email.Subject;
+        this.ModalOpen = true;
+
+    }
+    protected void closeModal()
+    {
+        this.ModalOpen = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetMessagesAsync();
+    }
+
+    public async Task GetMessagesAsync()
+    {
+        try
+        {
+            apiResponse = await Http.GetFromJsonAsync<ApiResponseDto>("api/Email/Receive");
+
+            if (apiResponse.IsSuccessStatusCode)
+                emails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EmailMessageDto>>(apiResponse.Result.ToString());
+
+        }
+        catch (Exception ex)
+        {
+            viewNotifier.Show(ex.Message, ViewNotifierType.Error, "Email retrieval failed");
+        }
+    }
+}

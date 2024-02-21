@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace BlazorBoilerplate.Shared.Extensions
+﻿namespace BlazorBoilerplate.Shared.Extensions
 {
     public static class GuidUtil
     {
@@ -20,13 +18,6 @@ namespace BlazorBoilerplate.Shared.Extensions
                 + "==";
 
             return new Guid(Convert.FromBase64String(base64));
-        }
-
-        public static Guid CreateCryptographicallySecureGuid()
-        {
-            Span<byte> bytes = stackalloc byte[16];
-            RandomNumberGenerator.Fill(bytes);
-            return new Guid(bytes);
         }
     }
 }

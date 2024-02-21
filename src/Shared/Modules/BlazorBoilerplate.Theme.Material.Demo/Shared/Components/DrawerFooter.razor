@@ -1,0 +1,11 @@
+﻿@implements IDynamicComponent
+@inject IStringLocalizer<Global> L
+
+<MatTooltip Tooltip="Help">
+    <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">@L["AppHelpAndSupport"]</span></MatButton>
+</MatTooltip>
+
+@code {
+    public int Order { get => 1; }
+    public string IntoComponent { get => "DrawerFooter"; }
+}

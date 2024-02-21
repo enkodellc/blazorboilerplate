@@ -1,0 +1,17 @@
+﻿@using BlazorBoilerplate.Shared.Dto.Sample
+<li class="draggable" draggable="true" title="@ReportPeriodDto.Title" @ondragstart="@(() => HandleDragStart(ReportPeriodDto))">
+    @ReportPeriodDto.Title
+</li>
+
+@code {
+    [CascadingParameter] 
+    ReportPeriodsContainer Container { get; set; }
+    
+    [Parameter] 
+    public ReportPeriodDto ReportPeriodDto { get; set; }
+
+    private void HandleDragStart(ReportPeriodDto selectedReportPeriod)
+    {
+        Container.Payload = selectedReportPeriod;
+    }
+}

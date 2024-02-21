@@ -1,0 +1,37 @@
+﻿@inherits IndexPage
+@page "/admin/settings"
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminsettings"] />
+    </Breadcrumbs>
+</TopSection>
+
+<MatH4>@L["MainSettings"]</MatH4>
+
+@if (settings == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <EditForm Model="@settings">
+        <FluentValidationValidator />
+        <ValidationSummary />
+        <fieldset>
+            <div class="form-group">
+                <MatSelectItem @bind-Value="@settings[SettingKey.MainConfiguration_Runtime].Value" Items="@BlazorRuntimes" Label="@L["Blazor Runtime"]"></MatSelectItem>
+            </div>
+        </fieldset>
+    </EditForm>
+
+    <MatButton OnClick="@(()=>apiClient.CancelChanges())">@L["Cancel"]</MatButton>
+    <MatButton OnClick="@SaveChanges">@L["Save"]</MatButton>
+}
+
+@code {
+}

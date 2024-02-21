@@ -1,0 +1,119 @@
+﻿@inherits EmailPage
+@page "/admin/settings/email"
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Link="/admin/settings" Title=@L["BreadCrumbadminsettings"] />
+        <Breadcrumb Title=@L["BreadCrumbadminsettingsemail"] />
+    </Breadcrumbs>
+</TopSection>
+
+<MatH4>@L["EmailSettings"]</MatH4>
+
+@if (settings == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <EditForm Model="@settings">
+        <FluentValidationValidator />
+        <ValidationSummary />
+        <fieldset>
+            <MatH5>@L["OutgoingEmail"]</MatH5>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromAddress].Value" Label="@L["SenderEmail"]" Icon="alternate_email" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromName].Value" Label="@L["SenderName"]" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpServer].Value" Label="@L["SmtpServer"]" Icon="dns" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpUsername].Value" Label="@L["UserName"]" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPassword].Value" Label="@L["Password"]" Type="password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatSlideToggle @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool" Label="SSL"></MatSlideToggle>
+            </div>
+            @if (@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool)
+            {<div class="form-group">
+                <MatSelectItem @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpSslProtocol].Value" Items="@sslProtocols" Label="SSL Protocol"></MatSelectItem>
+            </div>}
+            <MatDivider></MatDivider>
+            <MatH5>@L["IncomingEmail"]</MatH5>
+            <MatH5>POP3</MatH5>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopServer].Value" Label="@L["PopServer"]" Icon="dns" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopUsername].Value" Label="@L["UserName"]" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPassword].Value" Label="@L["Password"]" Type="password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatSlideToggle @bind-Value="@settings[SettingKey.EmailConfiguration_PopUseSSL].ValueAsBool" Label="SSL"></MatSlideToggle>
+            </div>
+            <MatDivider></MatDivider>
+            <MatH5>IMAP</MatH5>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapServer].Value" Label="@L["ImapServer"]" Icon="dns" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapUsername].Value" Label="@L["UserName"]" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPassword].Value" Label="@L["Password"]" Type="password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatSlideToggle @bind-Value="@settings[SettingKey.EmailConfiguration_ImapUseSSL].ValueAsBool" Label="SSL"></MatSlideToggle>
+            </div>
+        </fieldset>
+    </EditForm>
+
+    <MatButton OnClick="@(()=>apiClient.CancelChanges())">@L["Cancel"]</MatButton>
+    <MatButton OnClick="@SaveChanges">@L["Save"]</MatButton>
+    <MatButton OnClick="@(e => { isSendEmailDialogOpen = true; })">@L["Send test email"]</MatButton>
+
+    <MatDialog @bind-IsOpen="@isSendEmailDialogOpen">
+        <MatDialogTitle>@L["Send test email"]</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm id="emailForm" Model="@email" OnValidSubmit="@SendTestEmail">
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <fieldset>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@email.ToAddress" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatSlideToggle @bind-Value="@email.Queued" Label=@L["Queued"]></MatSlideToggle>
+                    </div>
+                </fieldset>
+            </EditForm>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { isSendEmailDialogOpen = false; })">@L["Cancel"]</MatButton>
+            <MatButton Type="submit" form="emailForm">@L["Send"]</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+}
+
+@code {
+}

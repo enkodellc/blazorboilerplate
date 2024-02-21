@@ -1,9 +1,8 @@
 ﻿using BlazorBoilerplate.Infrastructure.Server;
 using BlazorBoilerplate.Server.Authorization;
-using IdentityModel;
-using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Security.Claims;
@@ -16,12 +15,10 @@ namespace BlazorBoilerplate.Server.Controllers
     [ApiController]
     public class ExternalAuthController : ControllerBase
     {
-        private readonly IIdentityServerInteractionService _interaction;
         private readonly IExternalAuthManager _externalAuthManager;
 
-        public ExternalAuthController(IIdentityServerInteractionService interaction, IExternalAuthManager externalAuthManager)
+        public ExternalAuthController( IExternalAuthManager externalAuthManager)
         {
-            _interaction = interaction;
             _externalAuthManager = externalAuthManager;
         }
 
@@ -33,7 +30,7 @@ namespace BlazorBoilerplate.Server.Controllers
             if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
 
             // validate returnUrl - either it is a valid OIDC URL or back to a local page
-            if (Url.IsLocalUrl(returnUrl) == false && _interaction.IsValidReturnUrl(returnUrl) == false && !returnUrl.Contains(Request.Host.Value))
+            if (Url.IsLocalUrl(returnUrl) == false && !returnUrl.Contains(Request.Host.Value))
             {
                 // user might have clicked on a malicious link - should be logged
                 throw new Exception("invalid return URL");
@@ -82,21 +79,21 @@ namespace BlazorBoilerplate.Server.Controllers
 
 #pragma warning disable CA1416 // Validate platform compatibility
                 var id = new ClaimsIdentity(AccountOptions.WindowsAuthenticationSchemeName);
-                id.AddClaim(new Claim(JwtClaimTypes.Subject, wp.FindFirst(ClaimTypes.PrimarySid).Value));
-                id.AddClaim(new Claim(JwtClaimTypes.Name, wp.Identity.Name));
+                id.AddClaim(new Claim(ClaimTypes.NameIdentifier, wp.FindFirst(ClaimTypes.PrimarySid).Value));
+                id.AddClaim(new Claim(ClaimTypes.Name, wp.Identity.Name));
 
                 // add the groups as claims -- be careful if the number of groups is too large
                 if (AccountOptions.IncludeWindowsGroups)
                 {
                     var wi = wp.Identity as WindowsIdentity;
                     var groups = wi.Groups.Translate(typeof(NTAccount));
-                    var roles = groups.Select(x => new Claim(JwtClaimTypes.Role, x.Value));
+                    var roles = groups.Select(x => new Claim(ClaimTypes.Role, x.Value));
                     id.AddClaims(roles);
                 }
 #pragma warning restore CA1416 // Validate platform compatibility
 
                 await HttpContext.SignInAsync(
-                    IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                    IdentityConstants.ExternalScheme,
                     new ClaimsPrincipal(id),
                     props);
 

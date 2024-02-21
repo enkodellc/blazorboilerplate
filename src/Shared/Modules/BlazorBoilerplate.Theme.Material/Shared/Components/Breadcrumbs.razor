@@ -1,0 +1,18 @@
+﻿<CascadingValue Value="this">
+    <ul class="breadcrumb">
+        @for (int i = 0; i < Items.Count; ++i)
+        {
+            <li>
+                @if (i == Items.Count - 1)
+                {
+                    @Items[i].Title
+                }
+                else
+                {
+                    <a href="@Items[i].Link">@Items[i].Title</a>
+                }
+            </li>
+        }
+        @ChildContent
+    </ul>
+</CascadingValue>

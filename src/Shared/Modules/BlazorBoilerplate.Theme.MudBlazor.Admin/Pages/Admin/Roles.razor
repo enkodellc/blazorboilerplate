@@ -22,14 +22,14 @@ else
 {
     <MudTable Items="@roles" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2">
         <HeaderContent>
-            <MudTh><MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => OpenUpsertRoleDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Role"]</MudButton></MudTh>
+            <MudTh><MudButton StartIcon="@Icons.Filled.Add" OnClick="@(() => OpenUpsertRoleDialog())" Variant="Variant.Filled" Color="Color.Primary">@L["New Role"]</MudButton></MudTh>
             <MudTh>@L["Name"]</MudTh>
             <MudTh>@L["Permissions"]</MudTh>
         </HeaderContent>
         <RowTemplate Context="RoleRow">
             <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)" />
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)" />
+                <MudIconButton Icon="@Icons.Filled.Edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)" />
+                <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)" />
             </MudTd>
             <MudTd><div style="width:130px;">@RoleRow.Name</div></MudTd>
             <MudTd>
@@ -52,7 +52,7 @@ else
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@currentRoleName" Disabled="@isCurrentRoleReadOnly" Label="Role Name" AdornmentIcon="@Icons.Material.Filled.Add" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@currentRoleName" Disabled="@isCurrentRoleReadOnly" Label="Role Name" AdornmentIcon="@Icons.Filled.Add" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
         <MudTable Items="@permissionsSelections" Class="mt-4">
             <HeaderContent>

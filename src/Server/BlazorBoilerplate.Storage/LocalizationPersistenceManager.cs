@@ -1,6 +1,7 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Localizer;
 using Breeze.Persistence;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 
@@ -10,8 +11,8 @@ namespace BlazorBoilerplate.Storage
     {
         public LocalizationPersistenceManager(LocalizationDbContext dbContext,
             IHttpContextAccessor accessor,
-            IServiceProvider serviceProvider,
-            IStringLocalizer<Global> l) : base(dbContext, accessor, serviceProvider, l)
+            IValidatorFactory factory,
+            IStringLocalizer<Global> l) : base(dbContext, accessor, factory, l)
         { }
 
         protected override bool BeforeSaveEntity(EntityInfo entityInfo)

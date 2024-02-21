@@ -1,0 +1,89 @@
+@inherits RolesPage
+@page "/admin/roles"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminroles"] />
+    </Breadcrumbs>
+</TopSection>
+
+<h1>@L["Roles"]</h1>
+
+@if (roles == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Class="mat-elevation-z5" Items="@roles" Striped="true" PageSize="@pageSize" ShowPaging="false">
+        <MatTableHeader>
+            <th><MatButton Icon="add" Label=@L["New Role"] OnClick="@(() => OpenUpsertRoleDialog())"></MatButton></th>
+            <th>@L["Name"]</th>
+            <th>@L["Permissions"]</th>
+        </MatTableHeader>
+        <MatTableRow Context="RoleRow">
+            <td>
+                <div style="width:155px;">
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertRoleDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(@RoleRow.Name))" Disabled="@(RoleRow.Name == BlazorBoilerplate.Constants.DefaultRoleNames.Administrator)"></MatIconButton>
+                </div>
+            </td>
+            <td><div style="width:130px;">@RoleRow.Name</div></td>
+            <td>
+                <MatChipSet>
+                    @foreach (var permission in @RoleRow.Permissions)
+                        {
+                        <MatChip Label="@permission"></MatChip>
+                        }
+                </MatChipSet>
+            </td>
+        </MatTableRow>
+    </MatTable>
+}
+
+<MatDialog @bind-IsOpen="@isUpsertRoleDialogOpen">
+    <MatDialogTitle>
+        @labelUpsertDialogTitle
+    </MatDialogTitle>
+    <MatDialogContent>
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@currentRoleName" Disabled="@isCurrentRoleReadOnly" Label="Role Name" Icon="add" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+        </fieldset>
+        <MatTable Items="@permissionsSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
+            <MatTableHeader>
+                <th>@L["Permissions"]</th>
+                <th>@L["Allow"]</th>
+            </MatTableHeader>
+            <MatTableRow>
+                <td>@context.DisplayValue</td>
+                <td><MatCheckbox TValue="bool" @bind-Value="@context.Selected"></MatCheckbox></td>
+            </MatTableRow>
+        </MatTable>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isUpsertRoleDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@UpsertRole">@labelUpsertDialogOkButton</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@isDeleteRoleDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+    <MatDialogContent>
+        @L["Are you sure you want to delete {0}?", currentRoleName]
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isDeleteRoleDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteRoleAsync">@L["Delete"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+
+}

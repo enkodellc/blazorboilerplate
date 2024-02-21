@@ -1,0 +1,99 @@
+﻿@inherits MultiTenancyPage
+@page "/admin/multitenancy"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminmultitenancy"] />
+    </Breadcrumbs>
+</TopSection>
+
+<h1>@L["Tenants"]</h1>
+<p>Tenants Management.</p>
+
+@if (tenants == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Class="mat-elevation-z5" Items="@tenants" Striped="true">
+        <MatTableHeader>
+            <th><MatButton Icon="add" Label=@L["New Tenant"] OnClick="@(() => OpenUpsertTenantDialog())"></MatButton></th>
+            <th>Id</th>
+            <th>Identifier</th>
+            <th>@L["Name"]</th>
+            <th>ConnectionString</th>
+        </MatTableHeader>
+        <MatTableRow Context="TenantRow">
+            <td>
+                <div style="width:155px;">
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertTenantDialog(TenantRow))"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteTenantDialog(TenantRow))" Disabled="@(TenantRow.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)"></MatIconButton>
+                </div>
+            </td>
+            <td><div style="min-width:130px;">@TenantRow.Id</div></td>
+            <td>
+                <div style="min-width:130px; white-space:nowrap;">
+                    @TenantRow.Identifier
+                    @if (TenantRow.Id != BlazorBoilerplate.Constants.Settings.DefaultTenantId)
+                        {
+                        <MatIconButton Link="@GetTenantUri(TenantRow)" Target="_blank">
+                            <MatIcon>@MatIconNames.Link</MatIcon>
+                        </MatIconButton>
+                        }
+                </div>
+            </td>
+            <td><div style="min-width:130px;">@TenantRow.Name</div></td>
+            <td><div style="min-width:130px;">@TenantRow.ConnectionString</div></td>
+        </MatTableRow>
+    </MatTable>
+}
+
+<MatDialog @bind-IsOpen="@isUpsertTenantDialogOpen">
+    <MatDialogTitle>
+        @labelUpsertDialogTitle
+    </MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@currentTenant">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentTenant.Id" Disabled="@isCurrentTenantKeyReadOnly" Label="Id" Icon="description" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentTenant.Identifier" Disabled="@(currentTenant.Id == BlazorBoilerplate.Constants.Settings.DefaultTenantId)" Label="Identifier" Icon="description" IconTrailing="true" FullWidth="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentTenant.Name" Label=@L["Name"] Icon="description" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentTenant.ConnectionString" Label="ConnectionString" Icon="description" IconTrailing="true" FullWidth="true" TextArea="true"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@UpsertTenant">@labelUpsertDialogOkButton</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@isDeleteTenantDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure you want to delete the Tenant "@currentTenant.Name" ?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isDeleteTenantDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteTenantAsync">@L["Delete"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+}

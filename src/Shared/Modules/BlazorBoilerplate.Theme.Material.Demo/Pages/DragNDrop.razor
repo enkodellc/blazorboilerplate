@@ -1,0 +1,65 @@
+﻿@page "/drag_and_drop"
+@using BlazorBoilerplate.Shared.Dto.Sample
+
+<h1>Drag and Drop Examples</h1>
+
+<p>This example is from <a href="https://chrissainty.com/investigating-drag-and-drop-with-blazor/" target="_blank">https://chrissainty.com/investigating-drag-and-drop-with-blazor/</a> </p>
+<JobsContainer Jobs="Jobs" OnStatusUpdated="HandleStatusUpdated">
+    <JobList ListStatus="JobStatuses.Todo" AllowedStatuses="@(new JobStatuses[] { JobStatuses.Started})" />
+    <JobList ListStatus="JobStatuses.Started" AllowedStatuses="@(new JobStatuses[] { JobStatuses.Todo})" />
+    <JobList ListStatus="JobStatuses.Completed" AllowedStatuses="@(new JobStatuses[] { JobStatuses.Started })" />
+</JobsContainer>
+
+<hr />
+<p>Last updated job was: <strong>@lastUpdatedJob</strong></p>
+<hr />
+
+@foreach (var task in Jobs)
+{
+    <p>@task.Description - <strong>@task.Status</strong></p>
+}
+
+
+<hr/>
+<h2>Report Period Example</h2>
+<p>This example of drag and drop with Blazor is for Report Periods which are used in grouping data for analytics. Once a period is set there is
+    logic to previent periods from being placed in the incorect buckets.</p>
+
+<ReportPeriodsContainer ReportPeriods="ReportPeriods" OnReportPeriodUpdated="HandleReportPeriodUpdated">
+    <ReportPeriodList IsBenchmark="false" IsComparison="false" />
+    <ReportPeriodList IsBenchmark="true" IsComparison="false"  />
+    <ReportPeriodList IsBenchmark="false" IsComparison="true"  />
+</ReportPeriodsContainer>
+
+@code {
+    List<JobDto> Jobs = new List<JobDto>();
+    List<ReportPeriodDto> ReportPeriods = new List<ReportPeriodDto>();
+
+    string lastUpdatedJob = "";
+
+    protected override void OnInitialized()
+    {
+        Jobs.Add(new JobDto { Id = 1, Description = "Mow the lawn", Status = JobStatuses.Todo, LastUpdated = DateTime.Now });
+        Jobs.Add(new JobDto { Id = 2, Description = "Go to the gym", Status = JobStatuses.Todo, LastUpdated = DateTime.Now });
+        Jobs.Add(new JobDto { Id = 3, Description = "Call Ollie", Status = JobStatuses.Todo, LastUpdated = DateTime.Now });
+        Jobs.Add(new JobDto { Id = 4, Description = "Fix bike tyre", Status = JobStatuses.Todo, LastUpdated = DateTime.Now });
+        Jobs.Add(new JobDto { Id = 5, Description = "Finish blog post", Status = JobStatuses.Todo, LastUpdated = DateTime.Now });
+        
+        ReportPeriods.Add(new ReportPeriodDto { Id = 1, StartDate = Convert.ToDateTime("01/01/2013"), EndDate = Convert.ToDateTime("01/01/2014"), IsBenchmark = false, IsComparison = false});
+        ReportPeriods.Add(new ReportPeriodDto { Id = 2, StartDate = Convert.ToDateTime("01/01/2014"), EndDate = Convert.ToDateTime("01/01/2015"), IsBenchmark = false, IsComparison = false});
+        ReportPeriods.Add(new ReportPeriodDto { Id = 3, StartDate = Convert.ToDateTime("01/01/2015"), EndDate = Convert.ToDateTime("01/01/2016"), IsBenchmark = false, IsComparison = false});
+        ReportPeriods.Add(new ReportPeriodDto { Id = 4, StartDate = Convert.ToDateTime("01/01/2016"), EndDate = Convert.ToDateTime("01/01/2017"), IsBenchmark = false, IsComparison = true});
+        ReportPeriods.Add(new ReportPeriodDto { Id = 5, StartDate = Convert.ToDateTime("01/01/2017"), EndDate = Convert.ToDateTime("01/01/2018"), IsBenchmark = false, IsComparison = false});
+        ReportPeriods.Add(new ReportPeriodDto { Id = 6, StartDate = Convert.ToDateTime("01/01/2018"), EndDate = Convert.ToDateTime("01/01/2019"), IsBenchmark = false, IsComparison = false});
+    }
+
+    void HandleStatusUpdated(JobDto updatedJob)
+    {
+        lastUpdatedJob = updatedJob.Description;
+    }
+
+    void HandleReportPeriodUpdated(ReportPeriodDto updateReportPeriod)
+    {
+        //do something
+    }
+}

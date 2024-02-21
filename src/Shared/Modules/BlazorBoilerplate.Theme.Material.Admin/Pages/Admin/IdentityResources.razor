@@ -1,0 +1,138 @@
+@inherits IdentityResourcesPage
+@page "/admin/identityResources"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminidentityResources"] />
+    </Breadcrumbs>
+</TopSection>
+
+<h1>@L["IdentityResources"]</h1>
+<p>Identity Resources Management.</p>
+
+@if (identityResources == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Class="mat-elevation-z5" Items="@identityResources" Striped="true">
+        <MatTableHeader>
+            <th><MatButton Icon="add" Label=@L["New Identity Resource"] OnClick="@(() => OpenUpsertIdentityResourceDialog())"></MatButton></th>
+            <th>@L["Name"]</th>
+            <th>Enabled</th>
+            <th>Display Name</th>
+            <th>Description</th>
+            <th>Required</th>
+            <th>Emphasize</th>
+            <th>Show in discovery document</th>
+            <th>User Claims</th>
+        </MatTableHeader>
+        <MatTableRow Context="IdentityResourceRow">
+            <td>
+                <div style="width:155px;">
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertIdentityResourceDialog(IdentityResourceRow))"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteIdentityResourceDialog(IdentityResourceRow))"></MatIconButton>
+                </div>
+            </td>
+            <td><div style="min-width:130px;">@IdentityResourceRow.Name</div></td>
+            <td><MatSlideToggle TValue="bool" Value="@IdentityResourceRow.Enabled" ValueChanged="@((item) => UpdateEnabled(IdentityResourceRow))"></MatSlideToggle></td>
+            <td><div style="min-width:130px;">@IdentityResourceRow.DisplayName</div></td>
+            <td><div style="min-width:130px;">@IdentityResourceRow.Description</div></td>
+            <td><MatSlideToggle TValue="bool" Value="@IdentityResourceRow.Required" Disabled="true"></MatSlideToggle></td>
+            <td><MatSlideToggle TValue="bool" Value="@IdentityResourceRow.Emphasize" Disabled="true"></MatSlideToggle></td>
+            <td><MatSlideToggle TValue="bool" Value="@IdentityResourceRow.ShowInDiscoveryDocument" Disabled="true"></MatSlideToggle></td>
+            <td>
+                <MatChipSet>
+                    @foreach (var userClaim in IdentityResourceRow.UserClaims)
+                        {
+                        <MatChip Label="@userClaim"></MatChip>
+                        }
+                </MatChipSet>
+            </td>
+        </MatTableRow>
+    </MatTable>
+}
+
+<MatDialog @bind-IsOpen="@isUpsertIdentityResourceDialogOpen">
+    <MatDialogTitle>
+        @labelUpsertDialogTitle
+    </MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@currentIdentityResource">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <MatTabGroup>
+                <MatTab Label="Main">
+                    <fieldset>
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@currentIdentityResource.Name" Disabled="@isCurrentIdentityContextIdReadOnly" Label="Id" Icon="description" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                        </div>
+                        <div class="form-group">
+                            <MatSlideToggle @bind-Value="@currentIdentityResource.Enabled" Label="Enabled"></MatSlideToggle>
+                        </div>
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@currentIdentityResource.DisplayName" Label="Display Name" Icon="description" IconTrailing="true" FullWidth="true"></MatTextField>
+                        </div>
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@currentIdentityResource.Description" Label="Description" Icon="description" IconTrailing="true" FullWidth="true"></MatTextField>
+                        </div>
+                        <div class="form-group">
+                            <MatSlideToggle @bind-Value="@currentIdentityResource.Required" Label="Required"></MatSlideToggle>
+                        </div>
+                        <div class="form-group">
+                            <MatSlideToggle @bind-Value="@currentIdentityResource.Emphasize" Label="Emphasize in consent screen"></MatSlideToggle>
+                        </div>
+                        <div class="form-group">
+                            <MatSlideToggle @bind-Value="@currentIdentityResource.ShowInDiscoveryDocument" Label="Show in discovery document"></MatSlideToggle>
+                        </div>
+                    </fieldset>
+                </MatTab>
+                <MatTab Label="User Claims">
+                    <fieldset>
+                        <div class="form-group" style="margin-top:16px;">
+                            <div class="form-group">
+                                <MatTextField @bind-Value="@currentIdentityResource.CustomUserClaimsText" Label="Custom User Claims" TextArea="true" FullWidth="true" Required="false"></MatTextField>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <MatDivider></MatDivider>
+                    <h3 class="mat-subtitle1">Jwt Claims</h3>
+                    <MatTable Items="@jwtClaimSelections" Class="mat-elevation-z5, mdc-table-allow" ShowPaging="false" PageSize="@int.MaxValue">
+                        <MatTableHeader>
+                            <th>@L["Name"]</th>
+                            <th>Required</th>
+                        </MatTableHeader>
+                        <MatTableRow Context="JwtClaimRow">
+                            <td>@JwtClaimRow.DisplayValue</td>
+                            <td><MatCheckbox TValue="bool" @bind-Value="@JwtClaimRow.Selected"></MatCheckbox></td>
+                        </MatTableRow>
+                    </MatTable>
+                </MatTab>
+            </MatTabGroup>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@UpsertIdentityResource">@labelUpsertDialogOkButton</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@isDeleteIdentityResourceDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+    <MatDialogContent>
+        @L["Are you sure you want to delete {0}?", currentIdentityResource.Name]
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isDeleteIdentityResourceDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteIdentityResourceAsync">@L["Delete"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+}

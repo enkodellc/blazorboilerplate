@@ -1,0 +1,148 @@
+﻿@inherits UsersPage
+@page "/admin/users"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+<TopSection>
+    <Breadcrumbs>
+        <Breadcrumb Link="/admin" Title=@L["BreadCrumbadmin"] />
+        <Breadcrumb Title=@L["BreadCrumbadminusers"] />
+    </Breadcrumbs>
+</TopSection>
+
+<h1>@L["Users"]</h1>
+
+@if (users == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Items="@users" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false">
+        <MatTableHeader>
+            <th><MatButton Icon="person_add" Label=@L["New User"] OnClick="@(e => { createUserDialogOpen = true; })"></MatButton></th>
+            <th>@L["UserName"]</th>
+            <th>@L["Email"]</th>
+            <th>@L["Roles"]</th>
+        </MatTableHeader>
+        <MatTableRow Context="UserRow">
+            <td>
+                <div style="width:155px;">
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(UserRow))"></MatIconButton>
+                    <MatIconButton Icon="rotate_right" OnClick="@(() => OpenResetPasswordDialog(UserRow))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(UserRow))" Disabled="@(UserRow.UserName == DefaultUserNames.Administrator)"></MatIconButton>
+                </div>
+            </td>
+            <td><div style="width:130px;">@UserRow.UserName</div></td>
+            <td style="white-space: nowrap">
+                @UserRow.Email @if (UserRow.EmailConfirmed)
+                {<MatIcon Style="vertical-align: text-bottom" Icon="check_circle"></MatIcon>}
+            </td>
+            <td>
+                @if (@UserRow.UserRoles != null)
+                    {<MatChipSet>
+                        @foreach (var ur in @UserRow.UserRoles)
+                            {
+                            <MatChip Label="@ur.Role.Name"></MatChip>
+                            }
+                    </MatChipSet>}
+            </td>
+        </MatTableRow>
+    </MatTable>
+    <MatPaginator PageSize="@pageSize" Page="@(async e => await OnPage(e.PageIndex, e.PageSize))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
+}
+
+<MatDialog @bind-IsOpen="@createUserDialogOpen">
+    <MatDialogTitle>@L["New User"]</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm id="createUserForm" Model="@newUserViewModel" OnValidSubmit="@CreateUserAsync">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@newUserViewModel.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@newUserViewModel.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@newUserViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@newUserViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { createUserDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton Type="submit" form="createUserForm" Disabled="@disableCreateUserButton">@L["Create"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@editDialogOpen">
+    <MatDialogTitle>@L["Edit {0}", currentUser.UserName]</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm id="updateUserForm" Model="@currentUser" OnValidSubmit="@UpdateUserAsync">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentUser.UserName" Label=@L["UserName"] Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@currentUser.Email" Label=@L["Email"] Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true" Type="mail"></MatTextField>
+                </div>
+                <MatChipSet>
+                    @foreach (var role in roleSelections.OrderBy(x => x.DisplayValue))
+                    {
+                        <MatChip Label="@role.DisplayValue" LeadingIcon="@((role.Selected) ? "done" : "")" @onclick="@(()=>UpdateUserRole(role))" />
+                    }
+                </MatChipSet>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
+        <MatButton Type="submit" form="updateUserForm" Disabled="@disableUpdateUserButton">@L["Update"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@deleteUserDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+    <MatDialogContent>
+        @L["Are you sure you want to delete {0}?", currentUser.UserName]
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { deleteUserDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton OnClick="@DeleteUserAsync">@L["Delete"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@changePasswordDialogOpen">
+    <MatDialogTitle>@L["Change password for {0}", currentUser.UserName]</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm id="changePasswordForm" Model="@changePasswordViewModel" OnValidSubmit="@ResetUserPasswordAsync">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@changePasswordViewModel.Password" Label=@L["Password"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@changePasswordViewModel.PasswordConfirm" Label=@L["Password Confirmation"] Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { changePasswordDialogOpen = false; })">@L["Cancel"]</MatButton>
+        <MatButton Type="submit" form="changePasswordForm" Disabled="@disableChangePasswordButton">@L["Reset Password"]</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+
+}

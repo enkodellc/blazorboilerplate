@@ -1,20 +1,17 @@
 ﻿using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Storage;
-using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BlazorBoilerplate.Server.Hubs
 {
-    [Authorize(AuthenticationSchemes = AuthSchemes)]
+    [Authorize]
     public class ChatHub : Hub
     {
-        private const string AuthSchemes =
-            "Identity.Application" + "," + JwtBearerDefaults.AuthenticationScheme; //Cookie + Token authentication
-
         private static readonly Dictionary<string, string> userLookup = new();
 
         private readonly ApplicationDbContext _dbContext;
@@ -64,7 +61,7 @@ namespace BlazorBoilerplate.Server.Hubs
         {
             try
             {
-                var subClaim = Context.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).SingleOrDefault();
+                var subClaim = Context.User.Claims.Where(c => c.Type == ClaimTypes.Name).SingleOrDefault();
 
                 var newMessage = new Message()
                 {
@@ -85,7 +82,7 @@ namespace BlazorBoilerplate.Server.Hubs
                 }
                 else
                 {
-                    var clientIdClaim = Context.User.Claims.Where(c => c.Type == JwtClaimTypes.ClientId).SingleOrDefault();
+                    var clientIdClaim = Context.User.Claims.Where(c => c.Type == "client_id").SingleOrDefault();
 
                     if (clientIdClaim != null)
                         newMessage.UserName = clientIdClaim.Value;

@@ -24,17 +24,17 @@ else
         <FluentValidationValidator />
         <MudValidationSummary />
         <MudText Typo="Typo.h4">@L["OutgoingEmail"]</MudText>
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromAddress].Value" Label="@L["SenderEmail"]" AdornmentIcon="@Icons.Material.Filled.AlternateEmail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromAddress].Value" Label="@L["SenderEmail"]" AdornmentIcon="@Icons.Filled.AlternateEmail" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromName].Value" Label="@L["SenderName"]" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_FromName].Value" Label="@L["SenderName"]" AdornmentIcon="@Icons.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpServer].Value" Label="@L["SmtpServer"]" AdornmentIcon="@Icons.Material.Filled.Dns" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpServer].Value" Label="@L["SmtpServer"]" AdornmentIcon="@Icons.Filled.Dns" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
         <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpUsername].Value" Label="@L["UserName"]" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpUsername].Value" Label="@L["UserName"]" AdornmentIcon="@Icons.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
         <MudSwitch @bind-Checked="@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
 
@@ -51,26 +51,26 @@ else
         <MudText Typo="Typo.h4">@L["IncomingEmail"]</MudText>
         <MudText Typo="Typo.h4">POP3</MudText>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopServer].Value" Label="@L["PopServer"]" AdornmentIcon="@Icons.Material.Filled.Dns" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopServer].Value" Label="@L["PopServer"]" AdornmentIcon="@Icons.Filled.Dns" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
         <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopUsername].Value" Label="@L["UserName"]" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopUsername].Value" Label="@L["UserName"]" AdornmentIcon="@Icons.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
         <MudSwitch @bind-Checked="@settings[SettingKey.EmailConfiguration_PopUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
 
         <MudDivider Class="my-4" />
         <MudText Typo="Typo.h4">IMAP</MudText>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapServer].Value" Label="@L["ImapServer"]" AdornmentIcon="@Icons.Material.Filled.Dns" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapServer].Value" Label="@L["ImapServer"]" AdornmentIcon="@Icons.Filled.Dns" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
         <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPort].ValueAsInt" Label="@L["Port"]" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapUsername].Value" Label="@L["UserName"]" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapUsername].Value" Label="@L["UserName"]" AdornmentIcon="@Icons.Filled.Person" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+        <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
         <MudSwitch @bind-Checked="@settings[SettingKey.EmailConfiguration_ImapUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
     </EditForm>
@@ -90,7 +90,7 @@ else
             <EditForm id="emailForm" Model="@email" OnValidSubmit="@SendTestEmail">
                 <FluentValidationValidator />
                 <MudValidationSummary />
-                <MudTextField @bind-Value="@email.ToAddress" Label=@L["Email"] AdornmentIcon="@Icons.Material.Outlined.Email" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+                <MudTextField @bind-Value="@email.ToAddress" Label=@L["Email"] AdornmentIcon="@Icons.Outlined.Email" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                 <MudSwitch @bind-Checked="@email.Queued" Label=@L["Queued"] Color="Color.Primary" />
             </EditForm>

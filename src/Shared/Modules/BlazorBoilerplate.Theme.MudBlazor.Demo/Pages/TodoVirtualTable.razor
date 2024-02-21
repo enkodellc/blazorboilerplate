@@ -58,7 +58,7 @@
 
 <MudGrid Style="font-weight:bold;background-color:#ddd;margin:0" Class="align-center">
     <MudItem xs="2">
-        <MudButton StartIcon="@Icons.Material.Filled.PlaylistAdd" OnClick="@((e) => OpenDialog())" Variant="Variant.Filled" Color="Color.Primary">New Todo</MudButton>
+        <MudButton StartIcon="@Icons.Filled.PlaylistAdd" OnClick="@((e) => OpenDialog())" Variant="Variant.Filled" Color="Color.Primary">New Todo</MudButton>
     </MudItem>
     <MudItem xs="2">Todo</MudItem>
     <MudItem xs="2">Completed</MudItem>
@@ -70,7 +70,7 @@
     <Virtualize @ref="asyncVirtualize" Context="item" ItemsProvider="LoadToDos" ItemSize="72" OverscanCount="20">
         <ItemContent>
             <MudGrid Class="align-center" @key="item.Id" Style="border-bottom: 1px solid #eee;">
-                <MudItem xs="2"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteDialog(item))"></MudIconButton></MudItem>
+                <MudItem xs="2"><MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => OpenDeleteDialog(item))"></MudIconButton></MudItem>
                 <MudItem xs="2">@item.Title</MudItem>
                 <MudItem xs="2"><MudCheckBox Checked="@item.IsCompleted" CheckedChanged="@((bool i) => Update(item))"></MudCheckBox></MudItem>
                 <MudItem xs="2">@item.CreatedOn</MudItem>
@@ -98,7 +98,7 @@
             <EditForm id="newTodoForm" Model="@currentTodo" OnValidSubmit="@NewEntity">
                 <FluentValidationValidator />
                 <MudValidationSummary />
-                <MudTextField @bind-Value="@currentTodo.Title" Label="Title" AdornmentIcon="@Icons.Material.Filled.Title" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
+                <MudTextField @bind-Value="@currentTodo.Title" Label="Title" AdornmentIcon="@Icons.Filled.Title" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
                 <MudCheckBox @bind-Checked="@currentTodo.IsCompleted" Label="Completed"></MudCheckBox>
             </EditForm>

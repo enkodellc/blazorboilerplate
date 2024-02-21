@@ -11,17 +11,9 @@ using BlazorBoilerplate.Shared.Dto.Email;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Shared.Models.Account;
 using BlazorBoilerplate.Shared.Providers;
-using BlazorBoilerplate.Storage;
-using IdentityModel;
-using IdentityServer4.Events;
-using IdentityServer4.Extensions;
-using IdentityServer4.Services;
-using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -39,12 +31,8 @@ namespace BlazorBoilerplate.Server.Managers
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IEmailFactory _emailFactory;
         private readonly IEmailManager _emailManager;
-        private readonly IClientStore _clientStore;
-        private readonly ApplicationDbContext _dbContext;
-        private readonly IIdentityServerInteractionService _interaction;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly UrlEncoder _urlEncoder;
-        private readonly IEventService _events;
         private readonly IStringLocalizer<Global> L;
         private readonly string baseUrl;
 
@@ -57,13 +45,9 @@ namespace BlazorBoilerplate.Server.Managers
             RoleManager<ApplicationRole> roleManager,
             IEmailFactory emailFactory,
             IEmailManager emailManager,
-            IClientStore clientStore,
-            ApplicationDbContext dbContext,
             IConfiguration configuration,
-            IIdentityServerInteractionService interaction,
             IAuthenticationSchemeProvider schemeProvider,
             UrlEncoder urlEncoder,
-            IEventService events,
             IStringLocalizer<Global> l)
         {
             _databaseInitializer = databaseInitializer;
@@ -73,12 +57,8 @@ namespace BlazorBoilerplate.Server.Managers
             _roleManager = roleManager;
             _emailFactory = emailFactory;
             _emailManager = emailManager;
-            _clientStore = clientStore;
-            _dbContext = dbContext;
-            _interaction = interaction;
             _schemeProvider = schemeProvider;
             _urlEncoder = urlEncoder;
-            _events = events;
             L = l;
             baseUrl = configuration[$"{nameof(BlazorBoilerplate)}:ApplicationUrl"];
         }
@@ -110,8 +90,8 @@ namespace BlazorBoilerplate.Server.Managers
                     return new ApiResponse(Status400BadRequest, msg);
                 }
 
-                await _userManager.RemoveClaimAsync(user, new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean));
-                await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.EmailVerified, ClaimValues.trueString, ClaimValueTypes.Boolean));
+                await _userManager.RemoveClaimAsync(user, new Claim(ApplicationClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean));
+                await _userManager.AddClaimAsync(user, new Claim(ApplicationClaimTypes.EmailVerified, ClaimValues.trueString, ClaimValueTypes.Boolean));
             }
 
             return new ApiResponse(Status200OK, L["EmailVerificationSuccessful"]);
@@ -147,25 +127,6 @@ namespace BlazorBoilerplate.Server.Managers
 
         public async Task<ApiResponse> BuildLoginViewModel(string returnUrl)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
-            {
-                var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
-
-                // this is meant to short circuit the UI and only trigger the one external IdP
-                var vm = new LoginViewModel
-                {
-                    EnableLocalLogin = local,
-                    ReturnUrl = returnUrl,
-                    UserName = context?.LoginHint
-                };
-
-                if (!local)
-                    vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
-
-                return new ApiResponse(Status200OK, L["Operation Successful"], vm);
-            }
-
             var schemes = await _schemeProvider.GetAllSchemesAsync();
 
             var providers = schemes
@@ -179,64 +140,23 @@ namespace BlazorBoilerplate.Server.Managers
                 }).ToList();
 
             var allowLocal = true;
-            if (context?.Client.ClientId != null)
-            {
-                var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
-                if (client != null)
-                {
-                    allowLocal = client.EnableLocalLogin;
-
-                    if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
-                    {
-                        providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
-                    }
-                }
-            }
 
             return new ApiResponse(Status200OK, L["Operation Successful"], new LoginViewModel
             {
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
-                UserName = context?.LoginHint,
                 ExternalProviders = providers.ToArray()
             });
         }
 
         public async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(ClaimsPrincipal authenticatedUser, HttpContext httpContext, string logoutId)
         {
-            // get context information (client name, post logout redirect URI and iframe for federated signout)
-            var logout = await _interaction.GetLogoutContextAsync(logoutId);
-
             var vm = new LoggedOutViewModel
             {
                 AutomaticRedirectAfterSignOut = AccountOptions.AutomaticRedirectAfterSignOut,
-                PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
-                ClientName = string.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout?.ClientName,
-                SignOutIframeUrl = logout?.SignOutIFrameUrl,
                 LogoutId = logoutId
             };
-
-            if (authenticatedUser?.Identity.IsAuthenticated == true)
-            {
-                var idp = authenticatedUser.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
-                if (idp != null && idp != IdentityServer4.IdentityServerConstants.LocalIdentityProvider)
-                {
-                    var providerSupportsSignout = await httpContext.GetSchemeSupportsSignOutAsync(idp);
-                    if (providerSupportsSignout)
-                    {
-                        if (vm.LogoutId == null)
-                        {
-                            // if there's no current logout context, we need to create one
-                            // this captures necessary info from the current logged in user
-                            // before we signout and redirect away to the external IdP for signout
-                            vm.LogoutId = await _interaction.CreateLogoutContextAsync();
-                        }
-
-                        vm.ExternalAuthenticationScheme = idp;
-                    }
-                }
-            }
 
             return vm;
         }
@@ -245,8 +165,6 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 await _databaseInitializer.EnsureAdminIdentitiesAsync();
-
-                var context = await _interaction.GetAuthorizationContextAsync(parameters.ReturnUrl);
 
                 var result = await _signInManager.PasswordSignInAsync(parameters.UserName, parameters.Password, parameters.RememberMe, true);
 
@@ -280,23 +198,7 @@ namespace BlazorBoilerplate.Server.Managers
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByNameAsync(parameters.UserName);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client?.ClientId));
                     _logger.LogInformation("Logged In user {0}", parameters.UserName);
-
-                    await SetCultureInProfile(user.Id);
-
-                    if (context != null)
-                    {
-                        if (context.IsNativeClient())
-                        {
-                            // The client is native, so this change in how to
-                            // return the response is for better UX for the end user.
-                            //return this.LoadingPage("Redirect", model.ReturnUrl);
-                        }
-
-                        // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                        //return Redirect(model.ReturnUrl);
-                    }
 
                     //TODO parameters.IsValidReturnUrl is set true above 
                     //if (!parameters.IsValidReturnUrl)
@@ -306,7 +208,6 @@ namespace BlazorBoilerplate.Server.Managers
                     return new ApiResponse(Status200OK);
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(parameters.UserName, "Invalid Password for user {0}", clientId: context?.Client.ClientId));
                 _logger.LogInformation("Invalid Password for user {0}", parameters.UserName);
                 return new ApiResponse(Status401Unauthorized, L["LoginFailed"]);
             }
@@ -330,8 +231,6 @@ namespace BlazorBoilerplate.Server.Managers
 
                 var authenticatorCode = parameters.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-                var context = await _interaction.GetAuthorizationContextAsync(parameters.ReturnUrl);
-
                 var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, parameters.RememberMe, parameters.RememberMachine);
 
                 // If lock out activated and the max. amounts of attempts is reached.
@@ -350,15 +249,11 @@ namespace BlazorBoilerplate.Server.Managers
 
                 if (result.Succeeded)
                 {
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client?.ClientId));
                     _logger.LogInformation("User '{0}' logged in with a authenticator code", user.UserName);
-
-                    await SetCultureInProfile(user.Id);
 
                     return new ApiResponse(Status200OK);
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(user.UserName, "Invalid authenticator code for user {0}", clientId: context?.Client.ClientId));
                 _logger.LogInformation("Invalid authenticator code for user {0}", user.UserName);
                 return new ApiResponse(Status401Unauthorized, L["LoginFailed"]);
             }
@@ -382,8 +277,6 @@ namespace BlazorBoilerplate.Server.Managers
 
                 var recoveryCode = parameters.RecoveryCode.Replace(" ", string.Empty);
 
-                var context = await _interaction.GetAuthorizationContextAsync(parameters.ReturnUrl);
-
                 var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
 
                 // If lock out activated and the max. amounts of attempts is reached.
@@ -402,15 +295,11 @@ namespace BlazorBoilerplate.Server.Managers
 
                 if (result.Succeeded)
                 {
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client?.ClientId));
                     _logger.LogInformation("User '{0}' logged in with a recovery code", user.UserName);
-
-                    await SetCultureInProfile(user.Id);
 
                     return new ApiResponse(Status200OK);
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(user.UserName, "Invalid recovery code for user {0}", clientId: context?.Client.ClientId));
                 _logger.LogInformation("Invalid recovery code for user {0}", user.UserName);
                 return new ApiResponse(Status401Unauthorized, L["LoginFailed"]);
             }
@@ -425,7 +314,6 @@ namespace BlazorBoilerplate.Server.Managers
             if (authenticatedUser?.Identity.IsAuthenticated == true)
             {
                 await _signInManager.SignOutAsync();
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(authenticatedUser.GetSubjectId(), authenticatedUser.GetDisplayName()));
             }
 
             return new ApiResponse(Status200OK, "Logout Successful");
@@ -674,9 +562,9 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 var claimsResult = _userManager.AddClaimsAsync(user, new Claim[]{
                         new Claim(Policies.IsUser, string.Empty),
-                        new Claim(JwtClaimTypes.Name, parameters.UserName),
-                        new Claim(JwtClaimTypes.Email, parameters.Email),
-                        new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean)
+                        new Claim(ClaimTypes.Name, parameters.UserName),
+                        new Claim(ClaimTypes.Email, parameters.Email),
+                        new Claim(ApplicationClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean)
                     }).Result;
             }
 
@@ -863,9 +751,9 @@ namespace BlazorBoilerplate.Server.Managers
 
             await _userManager.AddClaimsAsync(user, new Claim[]{
                     new Claim(Policies.IsUser, string.Empty),
-                    new Claim(JwtClaimTypes.Name, user.UserName),
-                    new Claim(JwtClaimTypes.Email, user.Email),
-                    new Claim(JwtClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean)
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ApplicationClaimTypes.EmailVerified, ClaimValues.falseString, ClaimValueTypes.Boolean)
                 });
 
             _logger.LogInformation("New user registered: {0}", user);
@@ -969,20 +857,6 @@ namespace BlazorBoilerplate.Server.Managers
             {
                 return new UserViewModel();
             }
-        }
-
-        private async Task SetCultureInProfile(Guid id)
-        {
-            var profile = await _dbContext.UserProfiles.SingleOrDefaultAsync(i => i.UserId == id);
-
-            if (profile == null)
-            {
-                profile = new UserProfile { UserId = id, LastUpdatedDate = DateTime.Now };
-            }
-
-            profile.Culture = CultureInfo.CurrentCulture.Name;
-
-            await _dbContext.SaveChangesAsync();
         }
     }
 }

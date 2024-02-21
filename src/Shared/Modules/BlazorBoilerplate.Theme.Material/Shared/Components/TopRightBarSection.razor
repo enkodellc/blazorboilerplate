@@ -1,0 +1,10 @@
+﻿@inherits DynamicComponentContainer
+
+@foreach (var component in components)
+{
+    @CreateDynamicComponent(component);
+}
+
+@code {
+
+}

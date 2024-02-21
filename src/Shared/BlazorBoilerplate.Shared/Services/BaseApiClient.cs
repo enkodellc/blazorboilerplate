@@ -2,7 +2,6 @@
 using BlazorBoilerplate.Shared.Interfaces;
 using Breeze.Sharp;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Linq.Expressions;
 
 namespace BlazorBoilerplate.Shared.Services
@@ -183,10 +182,7 @@ namespace BlazorBoilerplate.Shared.Services
             }
             catch (Exception ex)
             {
-                //Breeze Uses a querystring for its filtering so if you run into this error you might need look at your parameters length and possibly increase the allowable size of the 
-                // query string that your server will accept.
-                //check the log file if you arrive here. Most likely your parameters are bad / possibly not able to handle null. Not sure what "Not Found" relates to 
-                logger.LogError($"GetItems Error from -> {from} => {JsonConvert.SerializeObject(parameters)} : \r\n \t{ex} ");
+                logger.LogError("GetItems: {0}", ex.GetBaseException().Message);
 
                 throw;
             }

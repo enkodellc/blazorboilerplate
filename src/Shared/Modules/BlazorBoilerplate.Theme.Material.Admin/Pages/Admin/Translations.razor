@@ -1,0 +1,248 @@
+﻿@inherits TranslationsPage
+@page "/admin/translations"
+@attribute [Authorize(Policies.IsAdmin)]
+@layout AdminLayout
+
+@using Blazored.TextEditor
+
+<h1>@L["Translations"]</h1>
+
+@if (localizationRecordKeys == null)
+{
+    <LoadingBackground ShowLogoBox="true">
+        <label>@L["Loading"]</label>
+    </LoadingBackground>
+}
+else
+{
+    <MatTextField ValueChanged="(string filter) => OnSearch(filter)" Icon="search" />
+    <MatTable Items="@localizationRecordKeys" Class="mat-elevation-z5" Striped="true" PageSize="@pageSize" ShowPaging="false"
+              AllowSelection="true" SelectionChanged="async (object key) => await LoadLocalizationRecords((LocalizationRecordKey)key)">
+        <MatTableHeader>
+            <th><MatButton Icon="add" Label=@L["NewTranslation"] OnClick="@OpenNewKeyDialogOpen"></MatButton></th>
+            <th>@L["MsgId"]</th>
+            <th>@L["ContextId"]</th>
+        </MatTableHeader>
+        <MatTableRow Context="keyRow">
+            <td>
+                <div>
+                    <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(keyRow))"></MatIconButton>
+                    <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(keyRow))"></MatIconButton>
+                </div>
+            </td>
+            <td>@keyRow.MsgId</td>
+            <td>@keyRow.ContextId</td>
+        </MatTableRow>
+    </MatTable>
+    <MatPaginator PageSize="@pageSize" Page="@(async e => await OnPage(e.PageIndex, e.PageSize))" Length="@totalItemsCount" Style="background: transparent"></MatPaginator>
+
+    @if (currentKey?.LocalizationRecords != null)
+    {<MatTable Items="@currentKey.LocalizationRecords" Class="mat-elevation-z5" Striped="true" ShowPaging="false" PageSize="50">
+            <MatTableHeader>
+                <th></th>
+                <th>@L["Culture"]</th>
+                <th style="width: 100%;">@L["Translation"]</th>
+                <th></th>
+            </MatTableHeader>
+            <MatTableRow Context="row">
+                <td>
+                    <div>
+                        <MatIconButton Icon="delete" OnClick="@(() => DeleteLocalizationRecord(row))" Disabled="@(row.Culture == BlazorBoilerplate.Shared.Localizer.Settings.NeutralCulture)"></MatIconButton>
+                    </div>
+                </td>
+                <td><b>@row.Culture</b></td>
+                <td>
+                    <MatTextField @bind-Value="@row.Translation" TextArea="true" FullWidth="true" Required="true" Style="resize: both"></MatTextField>
+                </td>
+                <td>
+                    <div>
+                        <MatButton Style="margin-bottom: 5px; white-space: nowrap" Raised="true" OnClick="@(() => OpenEditAsHtmlDialog(row))">@L["Edit as HTML"]</MatButton>
+                        <MatButton Outlined="@(row.PluralTranslations.Count == 0)" Raised="@(row.PluralTranslations.Count > 0)" OnClick="@(() => OpenPluralDialog(row))">@L["Plural"]</MatButton>
+                    </div>
+                </td>
+            </MatTableRow>
+        </MatTable>
+    }
+    @if (LocalizationCultures.Count > 0)
+    {<EditForm Model="@newLocalizationRecord" OnValidSubmit="@SaveNewLocalizationRecord">
+            <FluentValidationValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatSelectItem @bind-Value="@newLocalizationRecord.Culture" Items="@LocalizationCultures" Label=@L["Culture"]></MatSelectItem>
+                    <MatTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" TextArea="true" Style="resize: both"></MatTextField>
+                    <MatButton Type="submit" Raised="true">@L["Add"]</MatButton>
+                    <MatButton Raised="true" OnClick="@(() => OpenEditAsHtmlDialog(newLocalizationRecord))">@L["Edit as HTML"]</MatButton>
+                </div>
+            </fieldset>
+        </EditForm>}
+
+    <MatButton OnClick="@CancelChanges" Raised="true">@L["Cancel"]</MatButton>
+    <MatButton OnClick="@SaveChanges" Raised="true">@L["Save"]</MatButton>
+    <MatButton OnClick="@ReloadTranslations" Raised="true">@L["ReloadTranslations"]</MatButton>
+    @*Hack. See https://github.com/SamProf/MatBlazor/issues/713*@
+    <div>
+        <MatButton Style="margin-top: 5px" OnClick="@(e => { navigationManager.NavigateTo("/api/localization/export", true); })" Raised="true">@L["Export"]</MatButton>
+        @*<MatButton Link="/api/localization/export" Raised="true">@L["Export"]</MatButton>*@
+
+        <MatFileUpload OnChange="@UploadMat" Label="@L["Import PO file"]"></MatFileUpload>
+    </div>
+
+    <MatDialog @bind-IsOpen="@isEditDialogOpen">
+        <MatDialogTitle>@L["Edit {0}", currentKey]</MatDialogTitle>
+        <MatDialogContent>
+            <div class="form-group">
+                <MatTextField @bind-Value="@newKey.ContextId" Label=@L["ContextId"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@newKey.MsgId" Label=@L["MsgId"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { isEditDialogOpen = false; })">@L["Cancel"]</MatButton>
+            <MatButton OnClick="@(()=>EditLocalizationRecordKey())">@L["Save"]</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@isDeleteDialogOpen">
+        <MatDialogTitle><MatIcon Icon="warning"></MatIcon> @L["Confirm Delete"]</MatDialogTitle>
+        <MatDialogContent>
+            @L["Are you sure you want to delete {0}?", currentKey]
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { isDeleteDialogOpen = false; })">@L["Cancel"]</MatButton>
+            <MatButton OnClick="@(()=>DeleteLocalizationRecordKey(currentKey))">@L["Delete"]</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@isNewKeyDialogOpen">
+        <MatDialogTitle>@L["NewTranslation"]</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm id="newKeyForm" Model="@newLocalizationRecord" OnValidSubmit="@SaveNewKey">
+                <FluentValidationValidator />
+                <ValidationSummary />
+                <fieldset>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@newLocalizationRecord.ContextId" Label=@L["ContextId"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@newLocalizationRecord.MsgId" Label=@L["MsgId"] Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@newLocalizationRecord.Culture" Label=@L["Culture"] Icon="public" IconTrailing="true" FullWidth="true" Required="true" Disabled="true"></MatTextField>
+                    </div>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@newLocalizationRecord.Translation" Label=@L["Translation"] FullWidth="true" Required="true" TextArea="true" Style="resize: both"></MatTextField>
+                    </div>
+                </fieldset>
+            </EditForm>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@CancelChanges">@L["Cancel"]</MatButton>
+            <MatButton Type="submit" form="newKeyForm" Raised="true">@L["Save"]</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@isPluralDialogOpen">
+        <MatDialogTitle>@L["Plural"]</MatDialogTitle>
+        <MatDialogContent>
+            <MatTable Items="@currentLocalizationRecord.PluralTranslations" Class="mat-elevation-z5" Striped="true" ShowPaging="false" PageSize="50">
+                <MatTableHeader>
+                    <th></th>
+                    <th>@L["Index"]</th>
+                    <th>@L["Translation"]</th>
+                </MatTableHeader>
+                <MatTableRow Context="row">
+                    <td>
+                        <div>
+                            <MatIconButton Icon="delete" OnClick="@(() => DeletePluralTranslation(row))"></MatIconButton>
+                        </div>
+                    </td>
+                    <td>
+                        <MatTextField @bind-Value="@row.Index" TextArea="true" FullWidth="true" Required="true"></MatTextField>
+                    </td>
+                    <td>
+                        <MatTextField @bind-Value="@row.Translation" TextArea="true" FullWidth="true" Required="true" Style="resize: both"></MatTextField>
+                    </td>
+                </MatTableRow>
+            </MatTable>
+            @if (PluralFormRules[currentLocalizationRecord.Culture].Count > currentLocalizationRecord.PluralTranslations.Count)
+            {<EditForm Model="@newPlural" OnValidSubmit="@SaveNewPlural">
+                    <FluentValidationValidator />
+                    <ValidationSummary />
+                    <fieldset>
+                        <div class="form-group">
+                            <MatTextField @bind-Value="@newPlural.Index" Label=@L["Index"] FullWidth="true"></MatTextField>
+                            <MatTextField @bind-Value="@newPlural.Translation" Label=@L["Translation"] FullWidth="true" TextArea="true" Style="resize: both"></MatTextField>
+                            <MatButton Type="submit" Raised="true">@L["Add"]</MatButton>
+                        </div>
+                    </fieldset>
+                </EditForm>}
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@CancelPluralChanges">@L["Cancel"]</MatButton>
+            <MatButton OnClick="@SavePluralChanges" Raised="true">@L["Save"]</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+    @if (currentLocalizationRecord != null)
+    {<MatDialog Id="editashtmldialog" @bind-IsOpen="@isEditAsHtmlDialogOpen">
+            <MatDialogTitle>@L["Edit as HTML"]</MatDialogTitle>
+            <MatDialogContent Style="overflow: visible">
+                <BlazoredTextEditor @ref="@HtmlEditor">
+                    <ToolbarContent>
+                        <select class="ql-header">
+                            <option selected=""></option>
+                            <option value="1"></option>
+                            <option value="2"></option>
+                            <option value="3"></option>
+                            <option value="4"></option>
+                            <option value="5"></option>
+                        </select>
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                        <button class="ql-strike"></button>
+                        <select class="ql-color"></select>
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                        <select class="ql-align">
+                            <option selected=""></option>
+                            <option value="center"></option>
+                            <option value="right"></option>
+                            <option value="justify"></option>
+                        </select>
+                        <button class="ql-link"></button>
+                    </ToolbarContent>
+                    <EditorContent>
+                    </EditorContent>
+                </BlazoredTextEditor>
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton OnClick="@(e => { isEditAsHtmlDialogOpen = false; })">@L["Cancel"]</MatButton>
+                <MatButton OnClick="@(() => SaveLocalizationRecordAsHTML())">@L["Confirm"]</MatButton>
+            </MatDialogActions>
+        </MatDialog>}
+}
+
+@code {
+    BlazoredTextEditor HtmlEditor;
+
+    protected override void SetHTML(string html)
+    {
+        HtmlEditor.LoadHTMLContent(html);
+    }
+
+    protected override Task<string> GetHTML() => HtmlEditor.GetHTML();
+
+    async Task UploadMat(IMatFileUploadEntry[] files)
+    {
+        await Upload(files.Select(e => new FileUploadEntry(e)));
+    }
+
+    private async Task OnSearch(string text)
+    {
+        filter = text;
+        await LoadKeys();
+    }
+}
