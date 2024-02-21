@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
-using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Theme.Material
 {
@@ -63,18 +62,14 @@ namespace BlazorBoilerplate.Theme.Material
                 config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
             });
 
-            services.AddLoadingBar();
-
             services.AddScoped<IViewNotifier, ViewNotifier>();
 
             var sp = services.BuildServiceProvider();
-
-            sp.GetRequiredService<HttpClient>().EnableIntercept(sp);
         }
 
         public void ConfigureWebAssemblyHost(WebAssemblyHost webAssemblyHost)
         {
-            webAssemblyHost.UseLoadingBar();
+
         }
     }
 }
