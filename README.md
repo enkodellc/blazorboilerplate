@@ -5,6 +5,7 @@
 Blazor is a web framework designed to run in the browser on a WebAssembly-based .NET runtime. Blazor Boilerplate aka Blazor Starter Template is a SPA admin template that is able to run both WebAssembly (Core-Hosted) and Server-Side Blazor with a .NET Core 6.0 Server. Default mode for BB is Server Side. To switch to Webassembly log in as Admin and go to settings. [Read more here](https://blazor-boilerplate.readthedocs.io/en/latest/features/dual_mode_blazor.html)
 
 ## Repository Notes
+- Yes, I did not update this repository for a couple of years. During this time I was the CTO of a mid-size software company. We used BB as the base of our application. It was fairly successful. It was a SAAS app with about 1,200 daily users. 
 - Read the news below to stay up to date on the repo. We will try to keep the latest major changes on a different branch and have the more stable / tested version on the master branch.
 - There are several people who use this as a base for a production app. If you do so please donate. Gio and Enkode have thousands of hours of coding and support into BB. Show your support by contributing or donating.
 - The main roadblock after the project is running is learning Breeze for Entity Framework. We have some examples and will put out a few more. [IAmTimeCorey](https://www.youtube.com/watch?v=qkJ9keBmQWo) has a great video for new users of EF.  
