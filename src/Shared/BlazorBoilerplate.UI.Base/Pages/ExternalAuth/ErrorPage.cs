@@ -27,7 +27,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.ExternalAuth
                 ErrorEnum.CannotAddExternalLogin => "Cannot create binding for this external login provider to the account",
                 ErrorEnum.ExternalAuthError => "External provider cannot authenticate.\nCheck configuration.",
                 ErrorEnum.ExternalUnknownUserId => "External authentication provider did not pass user identifier",
-                ErrorEnum.ProviderNotFound => "Choosen provider has not been found/configured",
+                ErrorEnum.ProviderNotFound => "Chosen provider has not been found/configured",
                 ErrorEnum.Domain => string.Empty,
                 ErrorEnum.Unknown => "Unknown reason",
                 _ => "Unknown reason",

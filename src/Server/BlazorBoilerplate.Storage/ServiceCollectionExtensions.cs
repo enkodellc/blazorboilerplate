@@ -63,27 +63,11 @@ namespace BlazorBoilerplate.Storage
                 {
                     options.UseNetTopologySuite();
                     options.CommandTimeout(60);
-                    options.MigrationsAssembly(migrationsAssembly);
-                    
+                    options.MigrationsAssembly(migrationsAssembly);                    
                 });
             }
             else
                 builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), options => options.MigrationsAssembly(migrationsAssembly));
         }
-
-        public static IIdentityServerBuilder AddIdentityServerStores(this IIdentityServerBuilder builder, IConfiguration configuration)
-        => builder.AddConfigurationStore(options =>
-            {
-                options.ConfigureDbContext = x => GetDbContextOptions<ApplicationDbContext>(x, configuration);
-            })
-            .AddOperationalStore(options =>
-            {
-                options.ConfigureDbContext = x => GetDbContextOptions<ApplicationDbContext>(x, configuration);
-
-                // this enables automatic token cleanup. this is optional.
-                options.EnableTokenCleanup = true;
-
-                options.TokenCleanupInterval = 3600; //In Seconds 1 hour
-            });
     }
 }

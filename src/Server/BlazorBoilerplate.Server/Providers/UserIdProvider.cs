@@ -1,5 +1,5 @@
-﻿using IdentityModel;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 
 namespace BlazorBoilerplate.Server.Providers
 {
@@ -7,7 +7,7 @@ namespace BlazorBoilerplate.Server.Providers
     {
         public virtual string GetUserId(HubConnectionContext connection)
         {
-            return connection.User?.FindFirst(JwtClaimTypes.Name)?.Value;
+            return connection.User?.FindFirst(ClaimTypes.Name)?.Value;
         }
     }
 }

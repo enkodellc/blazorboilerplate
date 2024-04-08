@@ -26,13 +26,10 @@ namespace BlazorBoilerplate.Server.Controllers
 {
     [ApiResponseException]
     [Route("api/localization/[action]")]
-    [Authorize(AuthenticationSchemes = AuthSchemes)]
+    [Authorize]
     [BreezeQueryFilter]
     public class LocalizationController : Controller
     {
-        private const string AuthSchemes =
-            "Identity.Application" + "," + JwtBearerDefaults.AuthenticationScheme; //Cookie + Token authentication
-
         private readonly LocalizationPersistenceManager persistenceManager;
         private readonly ILocalizationProvider localizationProvider;
         private readonly ILogger<LocalizationController> logger;

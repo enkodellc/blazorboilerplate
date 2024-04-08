@@ -2,15 +2,14 @@
 using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Dto.ExternalAuth;
-using IdentityModel;
-using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace BlazorBoilerplate.Server.Managers
 {
-    // TODO: The methods are very tightly coupled with the controllers. Will re-visit. 
+    // TODO: The methods are very tightly coupled with the controllers. Will re-visit.     
     public class ExternalAuthManager : IExternalAuthManager
     {
         private readonly IAccountManager _accountManager;
@@ -34,7 +33,7 @@ namespace BlazorBoilerplate.Server.Managers
             try
             {
                 // read external identity from the temporary cookie
-                var result = await httpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+                var result = await httpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
 
                 if (result?.Succeeded != true)
                     return $"~/externalauth/error/{ErrorEnum.ExternalAuthError}";
@@ -54,7 +53,7 @@ namespace BlazorBoilerplate.Server.Managers
 
                 // try to determine the unique id of the external user - the most common claim type for that are the sub claim and the NameIdentifier
                 // depending on the external provider, some other claim type might be used                
-                var userIdClaim = externalUser.FindFirst(JwtClaimTypes.Subject) ??
+                var userIdClaim = externalUser.FindFirst(JwtRegisteredClaimNames.Sub) ??
                     externalUser.FindFirst(ClaimTypes.NameIdentifier);
 
                 if (userIdClaim == null)
@@ -69,7 +68,7 @@ namespace BlazorBoilerplate.Server.Managers
                 if (externalSignInResult.Succeeded)
                 {
                     // delete temporary cookie used during external authentication
-                    await httpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+                    await httpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                     return "~/externalauth/success";
                 }
 
@@ -152,7 +151,7 @@ namespace BlazorBoilerplate.Server.Managers
                 if (externalSignInResult.Succeeded)
                 {
                     //// delete temporary cookie used during external authentication
-                    await httpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+                    await httpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                     return "~/externalauth/success";
                 }
                 else

@@ -1,25 +1,22 @@
 ﻿using BlazorBoilerplate.Constants;
 using BlazorBoilerplate.Infrastructure.AuthorizationDefinitions;
-using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Infrastructure.Storage.Permissions;
 using BlazorBoilerplate.Shared.Localizer;
-using IdentityModel;
-using IdentityServer4.EntityFramework.DbContexts;
+using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using BlazorBoilerplate.Storage.Mapping;
+using ApiLogItem = BlazorBoilerplate.Infrastructure.Storage.DataModels.ApiLogItem;
+using UserProfile = BlazorBoilerplate.Infrastructure.Storage.DataModels.UserProfile;
 
 namespace BlazorBoilerplate.Storage
 {
     public class DatabaseInitializer : IDatabaseInitializer
     {
         private readonly LocalizationDbContext _localizationDbContext;
-        private readonly PersistedGrantDbContext _persistedGrantContext;
-        private readonly ConfigurationDbContext _configurationContext;
         private readonly ApplicationDbContext _context;
         private readonly TenantStoreDbContext _tenantStoreDbContext;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,8 +29,6 @@ namespace BlazorBoilerplate.Storage
             TenantStoreDbContext tenantStoreDbContext,
             LocalizationDbContext localizationDbContext,
             ApplicationDbContext context,
-            PersistedGrantDbContext persistedGrantContext,
-            ConfigurationDbContext configurationContext,
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             EntityPermissions entityPermissions,
@@ -42,8 +37,6 @@ namespace BlazorBoilerplate.Storage
         {
             _tenantStoreDbContext = tenantStoreDbContext;
             _localizationDbContext = localizationDbContext;
-            _persistedGrantContext = persistedGrantContext;
-            _configurationContext = configurationContext;
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -54,13 +47,15 @@ namespace BlazorBoilerplate.Storage
 
         public virtual async Task SeedAsync()
         {
+            //Apply EF Core migration
             await MigrateAsync();
 
             await ImportTranslations();
 
             await EnsureAdminIdentitiesAsync();
 
-            await SeedIdentityServer();
+            //Seed blazorboilerplate sample data
+            await SeedDemoDataAsync();
 
             _context.Database.ExecuteSqlRaw("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;");
         }
@@ -70,8 +65,6 @@ namespace BlazorBoilerplate.Storage
             await _tenantStoreDbContext.Database.MigrateAsync();
             await _localizationDbContext.Database.MigrateAsync();
             await _context.Database.MigrateAsync();
-            await _persistedGrantContext.Database.MigrateAsync();
-            await _configurationContext.Database.MigrateAsync();
         }
 
         private async Task ImportTranslations()
@@ -87,62 +80,115 @@ namespace BlazorBoilerplate.Storage
             }
         }
 
-        private async Task SeedIdentityServer()
+        private async Task SeedDemoDataAsync()
         {
-            if (!await _configurationContext.ApiScopes.AnyAsync())
+            if ((await _userManager.FindByNameAsync(DefaultUserNames.User)) == null)
             {
-                _logger.LogInformation("Seeding IdentityServer API Scopes");
-                foreach (var scope in IdentityServerConfig.GetApiScopes)
-                    _configurationContext.ApiScopes.Add(scope.CreateEntity());
-
-                await _configurationContext.SaveChangesAsync();
+                await CreateUserAsync(DefaultUserNames.User, "user123", "User", "Blazor", "user@blazorboilerplate.com", "+1 (123) 456-7890");
             }
 
-            if (!await _configurationContext.Clients.AnyAsync())
+            if (_tenantStoreDbContext.TenantInfo.Count() < 2)
             {
-                _logger.LogInformation("Seeding IdentityServer Clients");
-                foreach (var client in IdentityServerConfig.GetClients)
-                    _configurationContext.Clients.Add(client.CreateEntity());
+                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant1", Identifier = "tenant1.local", Name = "Microsoft Inc." });
+                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant2", Identifier = "tenant2.local", Name = "Contoso Corp." });
 
-                await _configurationContext.SaveChangesAsync();
+                _tenantStoreDbContext.SaveChanges();
             }
 
-            if (!await _configurationContext.IdentityResources.AnyAsync())
-            {
-                _logger.LogInformation("Seeding IdentityServer Identity Resources");
-                foreach (var resource in IdentityServerConfig.GetIdentityResources)
-                    _configurationContext.IdentityResources.Add(resource.CreateEntity());
+            ApplicationUser user = await _userManager.FindByNameAsync(DefaultUserNames.User);
 
-                await _configurationContext.SaveChangesAsync();
+            if (!_context.UserProfiles.Any())
+                _context.UserProfiles.Add(new UserProfile
+                {
+                    UserId = user.Id,
+                    ApplicationUser = user,
+                    Count = 2,
+                    IsNavOpen = true,
+                    LastPageVisited = "/dashboard",
+                    IsNavMinified = false,
+                    LastUpdatedDate = DateTime.Now
+                });
+
+            if (!_context.Todos.Any())
+            {
+                var rnd = new Random();
+
+                var fruits = new string[] { "apples", "pears", "peaches", "oranges" };
+
+                var users = _context.Users.ToArray();
+
+                for (int i = 0; i < 1000; i++)
+                    _context.Todos.Add(
+                            new Todo
+                            {
+                                IsCompleted = false,
+                                Title = $"Buy {rnd.Next(2, 5)} {fruits[rnd.Next(fruits.Length)]}",
+                                //CreatedById = users[rnd.Next(users.Length)].Id
+                            }
+                    );
             }
 
-            if (!await _configurationContext.ApiResources.AnyAsync())
+            if (!_context.ApiLogs.Any())
             {
-                _logger.LogInformation("Seeding IdentityServer API Resources");
-                foreach (var resource in IdentityServerConfig.GetApiResources)
-                    _configurationContext.ApiResources.Add(resource.CreateEntity());
-
-                await _configurationContext.SaveChangesAsync();
+                _context.ApiLogs.AddRange(
+                new ApiLogItem
+                {
+                    RequestTime = DateTime.Now,
+                    ResponseMillis = 30,
+                    StatusCode = 200,
+                    Method = "Get",
+                    Path = "/api/seed",
+                    QueryString = "",
+                    RequestBody = "",
+                    ResponseBody = "",
+                    IPAddress = "::1",
+                    ApplicationUserId = user.Id
+                },
+                new ApiLogItem
+                {
+                    RequestTime = DateTime.Now,
+                    ResponseMillis = 30,
+                    StatusCode = 200,
+                    Method = "Get",
+                    Path = "/api/seed",
+                    QueryString = "",
+                    RequestBody = "",
+                    ResponseBody = "",
+                    IPAddress = "::1",
+                    ApplicationUserId = user.Id
+                }
+            );
             }
+
+            _context.SaveChanges();
         }
 
         public async Task EnsureAdminIdentitiesAsync()
         {
-            await EnsureRole(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
+            await EnsureRoleAsync(DefaultRoleNames.Administrator, _entityPermissions.GetAllPermissionValues());
+            await CreateUserAsync(DefaultUserNames.Administrator, "admin123", "Admin", "Blazor", "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
 
-            foreach (var userFeature in Enum.GetValues<UserFeatures>())
-                await EnsureRole(userFeature.ToString(), _entityPermissions.GetAllPermissionValuesFor(userFeature));
+            ApplicationRole adminRole = await _roleManager.FindByNameAsync(DefaultRoleNames.Administrator);
+            var AllClaims = _entityPermissions.GetAllPermissionValues().Distinct();
+            var RoleClaims = (await _roleManager.GetClaimsAsync(adminRole)).Select(c => c.Value).ToList();
+            var NewClaims = AllClaims.Except(RoleClaims);
 
-            await CreateUser(DefaultUserNames.Administrator, "admin123", "admin@blazorboilerplate.com", "+1 (123) 456-7890", new string[] { DefaultRoleNames.Administrator });
+            foreach (string claim in NewClaims)
+                await _roleManager.AddClaimAsync(adminRole, new Claim(ApplicationClaimTypes.Permission, claim));
+
+            var DeprecatedClaims = RoleClaims.Except(AllClaims);
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            foreach (string claim in DeprecatedClaims)
+                foreach (var role in roles)
+                    await _roleManager.RemoveClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, claim));
 
             _logger.LogInformation("Inbuilt account generation completed");
         }
 
-        private async Task EnsureRole(string roleName, IEnumerable<string> claims)
+        private async Task EnsureRoleAsync(string roleName, string[] claims)
         {
-            var role = await _roleManager.FindByNameAsync(roleName);
-
-            if (role == null)
+            if ((await _roleManager.FindByNameAsync(roleName)) == null)
             {
                 if (claims == null)
                     claims = Array.Empty<string>();
@@ -155,35 +201,19 @@ namespace BlazorBoilerplate.Storage
 
                 var result = await _roleManager.CreateAsync(applicationRole);
 
-                role = await _roleManager.FindByNameAsync(applicationRole.Name);
+                ApplicationRole role = await _roleManager.FindByNameAsync(applicationRole.Name);
 
                 foreach (string claim in claims.Distinct())
                 {
                     result = await _roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, _entityPermissions.GetPermissionByValue(claim)));
 
                     if (!result.Succeeded)
-                    {
                         await _roleManager.DeleteAsync(role);
-
-                        throw new DomainException($"Unable to add claim {claim} to role {roleName}");
-                    }
                 }
             }
-
-            var roleClaims = (await _roleManager.GetClaimsAsync(role)).Select(c => c.Value).ToList();
-            var newClaims = claims.Except(roleClaims);
-
-            foreach (string claim in newClaims)
-                await _roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, claim));
-
-            var deprecatedClaims = roleClaims.Except(claims);
-            var roles = await _roleManager.Roles.ToListAsync();
-
-            foreach (string claim in deprecatedClaims)
-                foreach (var r in roles)
-                    await _roleManager.RemoveClaimAsync(r, new Claim(ApplicationClaimTypes.Permission, claim));
         }
-        private async Task<ApplicationUser> CreateUser(string userName, string password, string email, string phoneNumber, string[] roles = null)
+
+        private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string firstName, string lastName, string email, string phoneNumber, string[] roles = null)
         {
             var applicationUser = _userManager.FindByNameAsync(userName).Result;
 
@@ -194,6 +224,8 @@ namespace BlazorBoilerplate.Storage
                     UserName = userName,
                     Email = email,
                     PhoneNumber = phoneNumber,
+                    FirstName = firstName,
+                    LastName = lastName,
                     EmailConfirmed = true
                 };
 
@@ -203,10 +235,12 @@ namespace BlazorBoilerplate.Storage
                     throw new Exception(result.Errors.First().Description);
 
                 result = _userManager.AddClaimsAsync(applicationUser, new Claim[]{
-                        new Claim(JwtClaimTypes.Name, userName),
-                        new Claim(JwtClaimTypes.Email, email),
-                        new Claim(JwtClaimTypes.EmailVerified, ClaimValues.trueString, ClaimValueTypes.Boolean),
-                        new Claim(JwtClaimTypes.PhoneNumber, phoneNumber)
+                        new Claim(ClaimTypes.Name, userName),
+                        new Claim(ClaimTypes.GivenName, firstName),
+                        new Claim(ClaimTypes.Surname, lastName),
+                        new Claim(ClaimTypes.Email, email),
+                        new Claim(ApplicationClaimTypes.EmailVerified, ClaimValues.trueString, ClaimValueTypes.Boolean),
+                        new Claim(ClaimTypes.HomePhone, phoneNumber)
                     }).Result;
 
                 if (!result.Succeeded)

@@ -1,5 +1,4 @@
-﻿using IdentityModel;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 
 namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
 {
@@ -18,9 +17,9 @@ namespace BlazorBoilerplate.Infrastructure.AuthorizationDefinitions
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
             EmailVerifiedRequirement requirement)
         {
-            if (context.User.HasClaim(c => c.Type == JwtClaimTypes.EmailVerified))
+            if (context.User.HasClaim(c => c.Type == ApplicationClaimTypes.EmailVerified))
             {
-                var claim = context.User.FindFirst(c => c.Type == JwtClaimTypes.EmailVerified);
+                var claim = context.User.FindFirst(c => c.Type == ApplicationClaimTypes.EmailVerified);
                 var isEmailVerified = Convert.ToBoolean(claim.Value);
 
                 if (isEmailVerified)

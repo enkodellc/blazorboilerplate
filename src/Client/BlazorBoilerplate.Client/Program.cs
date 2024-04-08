@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.JSInterop;
 using System.Globalization;
 using System.Reflection;
-using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorBoilerplate.Client
 {
@@ -21,7 +20,6 @@ namespace BlazorBoilerplate.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-            //TODO see what oqtane does
             var baseModule = new Theme.Material.Module();
             var demoModule = new Theme.Material.Demo.Module();
 
@@ -50,14 +48,6 @@ namespace BlazorBoilerplate.Client
             builder.Services.AddScoped<IAccountApiClient, AccountApiClient>();
             builder.Services.AddScoped<AppState>();
             builder.Services.AddScoped<IApiClient, ApiClient>();
-
-            builder.Services.AddLoadingBar();
-            builder.UseLoadingBar();
-
-            builder.Services.AddScoped(sp => new HttpClient
-            {
-                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
-            }.EnableIntercept(sp));
 
             foreach (var module in ModuleProvider.Modules)
                 module.ConfigureWebAssemblyServices(builder.Services);

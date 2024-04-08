@@ -3,7 +3,6 @@ using BlazorBoilerplate.Infrastructure.Server.Models;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Localizer;
 using BlazorBoilerplate.Storage;
-using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using Microsoft.Net.Http.Headers;
@@ -11,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using static Microsoft.AspNetCore.Http.StatusCodes;
@@ -93,8 +93,9 @@ namespace BlazorBoilerplate.Server.Middleware
 
                                 //User id = "sub" y default
                                 ApplicationUser user = httpContext.User.Identity.IsAuthenticated
-                                        ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == JwtClaimTypes.Subject).First().Value)
-                                        : null;
+                                         ? await userManager.FindByIdAsync(httpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value)
+                                         : null;
+
 
                                 await SafeLog(requestTime,
                                     stopWatch.ElapsedMilliseconds,
