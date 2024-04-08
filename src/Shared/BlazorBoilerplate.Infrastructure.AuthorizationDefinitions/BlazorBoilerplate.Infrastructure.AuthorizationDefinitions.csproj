@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.3" />
   </ItemGroup>
 
   <ItemGroup>
