@@ -142,6 +142,9 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - *Note that Azure isn't as up to date with their SDK as Blazor Boilerplate so you might have to use an older version
 
 ## News
+### 7.0.17 Net Core 7
+-  Moved the version to coincide with .Net.
+-  Removed IS4 since Duende took control and their license was not inline with our production uses and we really didn't need it.
 
 ### 4.0.0 Net Core 6
 - MudBlazor 6
