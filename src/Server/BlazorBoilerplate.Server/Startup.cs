@@ -64,6 +64,10 @@ namespace BlazorBoilerplate.Server
             Configuration = configuration;
             _environment = env;
             _enableAPIDoc = configuration.GetSection("BlazorBoilerplate:Api:Doc:Enabled").Get<bool>();
+
+            //Maybe someone else knows how to properly access the configuration from anywhere else
+            //Set the postgresql flag as a env variable to receive it where necessary
+            Environment.SetEnvironmentVariable("usePostgreSql", configuration[$"{projectName}:UsePostgresServer"]);
         }
         public void ConfigureServices(IServiceCollection services)
         {
