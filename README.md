@@ -34,12 +34,12 @@ Don't know what Blazor is? Read [here](https://docs.microsoft.com/en-us/aspnet/c
 
 Complete all Blazor dependencies.
 
-- The latest [.Net 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-- Install the Latest Visual Studio 2022 with the ASP.NET and web development workload selected.
+- The latest [.Net 7.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+- Install the Visual Studio 2022 + with the ASP.NET and web development workload selected.
 - Entity Framework Core on the command-line tools: **dotnet tool install --global dotnet-ef**
 
 ### How to run
-1. Install the latest **Visual Studio 2022 (v17.0.1 at least)**
+1. Install the **Visual Studio 2022 (v17.0.1 at minimum)**
 2. Clone or download.
 3. Review / Update appsettings.json - DefaultConnection.
 4. Open the solution in Visual Studio and press F5.
