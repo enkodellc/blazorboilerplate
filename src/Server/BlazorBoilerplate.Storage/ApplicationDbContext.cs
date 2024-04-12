@@ -1,4 +1,5 @@
-﻿using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
+﻿using AutoMapper.Configuration;
+using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
 using BlazorBoilerplate.Infrastructure.Storage.DataModels;
 using BlazorBoilerplate.Shared.Interfaces;
 using BlazorBoilerplate.Storage.Configurations;
@@ -34,13 +35,18 @@ namespace BlazorBoilerplate.Storage
             TenantNotSetMode = TenantNotSetMode.Overwrite;
             TenantMismatchMode = TenantMismatchMode.Overwrite;
             UserSession = userSession;
-
             //Database.ExecuteSqlRaw("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+ 
+            //Check if postgis is installed in postgresql for nettopology to be saved
+            if (Convert.ToBoolean(Environment.GetEnvironmentVariable("UsePostgreSql" ?? "false")))
+            {
+                modelBuilder.HasPostgresExtension("postgis");
+            }
 
             modelBuilder.Entity<ApplicationUser>(b =>
             {
@@ -90,11 +96,22 @@ namespace BlazorBoilerplate.Storage
                     .HasForeignKey(e => e.ApplicationUserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
-
-            modelBuilder.Entity<QueuedEmail>(b =>
+            
+            //Postgresql does not support getdate()
+            if (Convert.ToBoolean(Environment.GetEnvironmentVariable("UsePostgreSql" ?? "false")))
             {
-                b.Property(b => b.CreatedOn).HasDefaultValueSql("getdate()");
-            });
+                modelBuilder.Entity<QueuedEmail>(b =>
+                {
+                    b.Property(b => b.CreatedOn).HasDefaultValueSql("now()");
+                });
+            }
+            else
+            {
+                modelBuilder.Entity<QueuedEmail>(b =>
+                {
+                    b.Property(b => b.CreatedOn).HasDefaultValueSql("getdate()");
+                });
+            }
 
             modelBuilder.ShadowProperties();
 

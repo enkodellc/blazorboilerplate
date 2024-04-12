@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +32,6 @@ namespace BlazorBoilerplate.SourceGenerator
                 if (nameSymbol.Interfaces.Any(i => i.Equals(interfaceSymbol, SymbolEqualityComparer.Default)))
                 {
                     string namespaceName = nameSymbol.ContainingNamespace.ToDisplayString();
-
                     string source = $@"
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -40,10 +40,8 @@ namespace {namespaceName}
 {{
     public partial class {nameSymbol.Name}
     {{
-        [Column(TypeName = ""datetime2(7)"")]
         public DateTime CreatedOn {{ get; set; }}
 
-        [Column(TypeName = ""datetime2(7)"")]
         public DateTime? ModifiedOn {{ get; set; }}
 
         public ApplicationUser CreatedBy {{ get; set; }}
@@ -56,6 +54,8 @@ namespace {namespaceName}
     }}
 }}
 ";
+                    
+                    
 
                     context.AddSource($"{nameSymbol.Name}_auditable.cs", SourceText.From(source, Encoding.UTF8));
                 }

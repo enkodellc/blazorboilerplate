@@ -20,7 +20,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         public DateTime LastUpdatedDate { get; set; } = DateTime.MinValue;
         public string Culture { get; set; }
 
-        [Column(TypeName = "nvarchar(64)")]
+        [MaxLength(64)]
         public string TenantId { get; set; }
     }
 }

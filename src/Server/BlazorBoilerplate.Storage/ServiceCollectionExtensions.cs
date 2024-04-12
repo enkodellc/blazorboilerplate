@@ -67,7 +67,12 @@ namespace BlazorBoilerplate.Storage
                 });
             }
             else
-                builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), options => options.MigrationsAssembly(migrationsAssembly));
+                //builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), options => options.MigrationsAssembly(migrationsAssembly));
+                builder.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), options =>
+                {
+                    options.UseNetTopologySuite();
+                    options.MigrationsAssembly(migrationsAssembly);
+                });
         }
     }
 }

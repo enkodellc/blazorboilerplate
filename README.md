@@ -117,8 +117,11 @@ This project is licensed under the terms of the [MIT license](LICENSE).
 - If you are getting compiler errors try and close VS delete your .vs directory in the solution folder. If that doesn't work delete the solution and redownload the repo.
  
 ### Postgres Support
-*Note this might be out of date.. Delete Existing Migrations in the BlazorBoilerplate.Server/Migrations Folder and then create your own migrations:  
-  -`dotnet ef --startup-project ..\BlazorBoilerplate.Server migrations add InitialApplicationDbMigration --context ApplicationDbContext -o Migrations\ApplicationDb`  
+Set the use UsePostgresServer Flag to true in the appsettings.json and then delete the migrations and generete new ones (execute from within the Blazorboilerplate.Storage project):
+-`dotnet ef --startup-project ..\BlazorBoilerplate.Server migrations add InitialApplicationDbMigration --context ApplicationDbContext -o Migrations\ApplicationDb` 
+-`dotnet ef --startup-project ..\BlazorBoilerplate.Server migrations add InitialApplicationDbMigration --context LocalizationDbContext -o Migrations\LocalizationDb` 
+-`dotnet ef --startup-project ..\BlazorBoilerplate.Server migrations add InitialApplicationDbMigration --context TenantStoreDbContext -o Migrations\TenantStoreDb` 
+Note: The postgres SUPER USER must be used as the postgis extension must be installed by postgresql, as this is required to use NetTopology Types
 
 ### Docker Support
 - Prerequisite: Install [Docker Desktop](https://go.microsoft.com/fwlink/?linkid=847268) 

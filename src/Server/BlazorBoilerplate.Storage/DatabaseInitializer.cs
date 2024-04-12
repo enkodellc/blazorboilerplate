@@ -106,7 +106,7 @@ namespace BlazorBoilerplate.Storage
                     IsNavOpen = true,
                     LastPageVisited = "/dashboard",
                     IsNavMinified = false,
-                    LastUpdatedDate = DateTime.Now
+                    LastUpdatedDate = DateTime.UtcNow
                 });
 
             if (!_context.Todos.Any())
@@ -133,7 +133,7 @@ namespace BlazorBoilerplate.Storage
                 _context.ApiLogs.AddRange(
                 new ApiLogItem
                 {
-                    RequestTime = DateTime.Now,
+                    RequestTime = DateTime.UtcNow,
                     ResponseMillis = 30,
                     StatusCode = 200,
                     Method = "Get",
@@ -146,7 +146,7 @@ namespace BlazorBoilerplate.Storage
                 },
                 new ApiLogItem
                 {
-                    RequestTime = DateTime.Now,
+                    RequestTime = DateTime.UtcNow,
                     ResponseMillis = 30,
                     StatusCode = 200,
                     Method = "Get",
