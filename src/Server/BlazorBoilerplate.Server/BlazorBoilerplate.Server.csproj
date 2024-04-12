@@ -29,7 +29,7 @@
     <PackageReference Include="Breeze.AspNetCore.NetCore" Version="7.2.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="FormatWith" Version="3.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="7.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="7.0.18" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="7.0.17" />
