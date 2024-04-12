@@ -33,7 +33,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="7.0.17" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.18" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.17">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
