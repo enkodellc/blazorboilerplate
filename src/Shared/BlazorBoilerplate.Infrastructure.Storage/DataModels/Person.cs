@@ -11,6 +11,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
     [Permissions(Actions.CRUD)]
     public partial class Person : IAuditable
     {
+        public Guid? UserId { get; set; }
         public ApplicationUser User { get; set; }
 
         public int? CompanyId { get; set; }
@@ -62,40 +63,40 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
 
-        [JsonIgnore]
-        public Point Location { get; set; }
+        //[JsonIgnore]
+        //public Point Location { get; set; }
 
-        [NotMapped]
-        public double? Longitude
-        {
-            get => Location?.X;
-            set
-            {
-                if (value != null)
-                {
-                    if (Location == null)
-                        Location = TopologyUtils.CreatePoint(value.Value, 0);
-                    else
-                        Location.X = value.Value;
-                }
-            }
-        }
+        //[NotMapped]
+        //public double? Longitude
+        //{
+        //    get => Location?.X;
+        //    set
+        //    {
+        //        if (value != null)
+        //        {
+        //            if (Location == null)
+        //                Location = TopologyUtils.CreatePoint(value.Value, 0);
+        //            else
+        //                Location.X = value.Value;
+        //        }
+        //    }
+        //}
 
-        [NotMapped]
-        public double? Latitude
-        {
-            get => Location?.Y;
-            set
-            {
-                if (value != null)
-                {
-                    if (Location == null)
-                        Location = TopologyUtils.CreatePoint(0, value.Value);
-                    else
-                        Location.Y = value.Value;
-                }
-            }
-        }
+        //[NotMapped]
+        //public double? Latitude
+        //{
+        //    get => Location?.Y;
+        //    set
+        //    {
+        //        if (value != null)
+        //        {
+        //            if (Location == null)
+        //                Location = TopologyUtils.CreatePoint(0, value.Value);
+        //            else
+        //                Location.Y = value.Value;
+        //        }
+        //    }
+        //}
 
         [Timestamp]
         public byte[] Timestamp { get; set; }

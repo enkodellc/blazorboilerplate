@@ -1,9 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
 
 namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 {
+    /// <inheritdoc />
     public partial class CreateApplicationDb : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -11,10 +16,10 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,27 +31,47 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    ZipCode = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
+                    CountryCode = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
+                    VatIn = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -275,14 +300,12 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         name: "FK_Todos_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Todos_AspNetUsers_ModifiedById",
                         column: x => x.ModifiedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -297,8 +320,8 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     IsNavMinified = table.Column<bool>(type: "bit", nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),
                     LastUpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    Culture = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Culture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -309,6 +332,60 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Persons",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    TIN = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: true),
+                    IdentityCard = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpirationReminderSentOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Confirmed = table.Column<bool>(type: "bit", nullable: true),
+                    DeleteDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    City = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    Province = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    ZipCode = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: true),
+                    CountryCode = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: true),
+                    CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModifiedById = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Persons", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Persons_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Persons_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Persons_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Persons_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -356,9 +433,35 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Companies_VatIn",
+                table: "Companies",
+                column: "VatIn",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Messages_UserID",
                 table: "Messages",
                 column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Persons_CompanyId",
+                table: "Persons",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Persons_CreatedById",
+                table: "Persons",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Persons_ModifiedById",
+                table: "Persons",
+                column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Persons_UserId",
+                table: "Persons",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Todos_CreatedById",
@@ -377,6 +480,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 unique: true);
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -404,6 +508,9 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 name: "Messages");
 
             migrationBuilder.DropTable(
+                name: "Persons");
+
+            migrationBuilder.DropTable(
                 name: "QueuedEmails");
 
             migrationBuilder.DropTable(
@@ -417,6 +524,9 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

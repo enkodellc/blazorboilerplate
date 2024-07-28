@@ -28,8 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\ApplicationDb\" />
-    <Folder Include="Migrations\LocalizationDb\" />
-    <Folder Include="Migrations\TenantStoreDb\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

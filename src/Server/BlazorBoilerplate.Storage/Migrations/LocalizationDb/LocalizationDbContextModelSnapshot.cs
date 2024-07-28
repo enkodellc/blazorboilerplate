@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace BlazorBoilerplate.Storage.Migrations.LocalizationDb
 {
     [DbContext(typeof(LocalizationDbContext))]
@@ -14,16 +16,18 @@ namespace BlazorBoilerplate.Storage.Migrations.LocalizationDb
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.17")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.LocalizationRecord", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ContextId")
                         .HasColumnType("nvarchar(450)");
@@ -52,8 +56,8 @@ namespace BlazorBoilerplate.Storage.Migrations.LocalizationDb
             modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.PluralFormRule", b =>
                 {
                     b.Property<string>("Language")
-                        .HasColumnType("nvarchar(5)")
-                        .HasMaxLength(5);
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<int>("Count")
                         .HasColumnType("int");
@@ -71,8 +75,9 @@ namespace BlazorBoilerplate.Storage.Migrations.LocalizationDb
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<int>("Index")
                         .HasColumnType("int");
@@ -98,6 +103,13 @@ namespace BlazorBoilerplate.Storage.Migrations.LocalizationDb
                         .HasForeignKey("LocalizationRecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("LocalizationRecord");
+                });
+
+            modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.LocalizationRecord", b =>
+                {
+                    b.Navigation("PluralTranslations");
                 });
 #pragma warning restore 612, 618
         }
