@@ -14,40 +14,40 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         [MaxLength(64)]
         public string Name { get; set; }
 
-        [JsonIgnore]
-        public Point Location { get; set; }
+        //[JsonIgnore]
+        //public Point Location { get; set; }
 
-        [NotMapped]
-        public double? Longitude
-        {
-            get => Location?.X;
-            set
-            {
-                if (value != null)
-                {
-                    if (Location == null)
-                        Location = TopologyUtils.CreatePoint(value.Value, 0);
-                    else
-                        Location.X = value.Value;
-                }
-            }
-        }
+        //[NotMapped]
+        //public double? Longitude
+        //{
+        //    get => Location?.X;
+        //    set
+        //    {
+        //        if (value != null)
+        //        {
+        //            if (Location == null)
+        //                Location = TopologyUtils.CreatePoint(value.Value, 0);
+        //            else
+        //                Location.X = value.Value;
+        //        }
+        //    }
+        //}
 
-        [NotMapped]
-        public double? Latitude
-        {
-            get => Location?.Y;
-            set
-            {
-                if (value != null)
-                {
-                    if (Location == null)
-                        Location = TopologyUtils.CreatePoint(0, value.Value);
-                    else
-                        Location.Y = value.Value;
-                }
-            }
-        }
+        //[NotMapped]
+        //public double? Latitude
+        //{
+        //    get => Location?.Y;
+        //    set
+        //    {
+        //        if (value != null)
+        //        {
+        //            if (Location == null)
+        //                Location = TopologyUtils.CreatePoint(0, value.Value);
+        //            else
+        //                Location.Y = value.Value;
+        //        }
+        //    }
+        //}
 
         [Required]
         [MaxLength(64)]
