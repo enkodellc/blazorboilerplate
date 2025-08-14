@@ -109,7 +109,7 @@ namespace BlazorBoilerplate.UI.Base.Pages.Account
                                     var userProfile = await appState.GetUserProfile();
                                     navigateTo = navigationManager.BaseUri + (!string.IsNullOrEmpty(userProfile?.LastPageVisited) ? userProfile?.LastPageVisited : "/dashboard");
                                 }
-                                catch (Exception ex)
+                                catch
                                 {
                                     viewNotifier.Show("Could not load User Profile", ViewNotifierType.Error);
                                 }

@@ -37,7 +37,7 @@
         </MudSelect>
     </MudItem>
     <MudItem xs="6" sm="3">
-        <MudCheckBox @bind-Checked="@filter.IsCompleted" Size="Size.Large" TriState="true">Is Completed</MudCheckBox>
+        <MudCheckBox @bind-Value="@filter.IsCompleted" Size="Size.Large" TriState="true">Is Completed</MudCheckBox>
     </MudItem>
     <MudItem xs="6" sm="3">
 
@@ -72,7 +72,7 @@
             <MudGrid Class="align-center" @key="item.Id" Style="border-bottom: 1px solid #eee;">
                 <MudItem xs="2"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OpenDeleteDialog(item))"></MudIconButton></MudItem>
                 <MudItem xs="2">@item.Title</MudItem>
-                <MudItem xs="2"><MudCheckBox Checked="@item.IsCompleted" CheckedChanged="@((bool i) => Update(item))"></MudCheckBox></MudItem>
+                <MudItem xs="2"><MudCheckBox Value="@item.IsCompleted" ValueChanged="@((bool i) => Update(item))"></MudCheckBox></MudItem>
                 <MudItem xs="2">@item.CreatedOn</MudItem>
                 <MudItem xs="2">@item.CreatedBy?.UserName</MudItem>
                 <MudItem xs="2">@item.ModifiedBy?.UserName</MudItem>
@@ -100,7 +100,7 @@
                 <MudValidationSummary />
                 <MudTextField @bind-Value="@currentTodo.Title" Label="Title" AdornmentIcon="@Icons.Material.Filled.Title" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-                <MudCheckBox @bind-Checked="@currentTodo.IsCompleted" Label="Completed"></MudCheckBox>
+                <MudCheckBox @bind-Value="@currentTodo.IsCompleted" Label="Completed"></MudCheckBox>
             </EditForm>
         </DialogContent>
         <DialogActions>

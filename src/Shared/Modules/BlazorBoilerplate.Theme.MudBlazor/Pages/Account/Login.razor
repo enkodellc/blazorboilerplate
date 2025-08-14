@@ -38,7 +38,7 @@
                             <MudTextField @bind-Value="@loginViewModel.Password" Label=@L["Password"] AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] InputType="InputType.Password"></MudTextField>
 
                             @if (loginViewModel.AllowRememberLogin)
-                            {<MudCheckBox @bind-Checked="@loginViewModel.RememberMe" Class="ml-n2">@L["Keep me logged in"]</MudCheckBox>}
+                            {<MudCheckBox @bind-Value="@loginViewModel.RememberMe" Class="ml-n2">@L["Keep me logged in"]</MudCheckBox>}
                         </MudCardContent>
                         <MudCardActions>
                             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@L["Login"]</MudButton>

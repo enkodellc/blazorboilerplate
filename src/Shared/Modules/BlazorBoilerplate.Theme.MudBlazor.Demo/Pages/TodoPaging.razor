@@ -29,7 +29,7 @@
         </MudSelect>
     </MudItem>
     <MudItem xs="6" sm="3" Class="px-8">
-        <MudCheckBox @bind-Checked="@todoFilter.IsCompleted" Size="Size.Large" TriState="true">Is Completed</MudCheckBox>
+        <MudCheckBox @bind-Value="@todoFilter.IsCompleted" Size="Size.Large" TriState="true">Is Completed</MudCheckBox>
     </MudItem>
     <MudItem xs="6" sm="3" Class="px-8">
 
@@ -43,10 +43,10 @@
 </MudGrid>
 
 <div class="d-flex flex-wrap mb-4 mx-4">
-    <MudFab Icon="@Icons.Material.Filled.Refresh" OnClick="@(() => Reload())" Size="Size.Medium" Class="ma-2" />
+    <MudFab StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => Reload())" Size="Size.Medium" Class="ma-2" />
 </div>
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<Todo>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Class="rounded-0 pa-2" Elevation="0"
+<MudTable ServerData="@(new Func<TableState, CancellationToken, Task<TableData<Todo>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Class="rounded-0 pa-2" Elevation="0"
           Loading="@isBusy" LoadingProgressColor="Color.Info" @ref="table">
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="Title" T="Todo">@L["Name"]</MudTableSortLabel></MudTh>
@@ -57,7 +57,7 @@
     </HeaderContent>
     <RowTemplate Context="row">
         <MudTd DataLabel="@L["Name"]">@row.Title</MudTd>
-        <MudTd DataLabel="@L["Completed"]"><MudSwitch Checked="@row.IsCompleted" Color="Color.Primary" Disabled="true" CheckedChanged="@((bool i) => Update(row))" /></MudTd>
+        <MudTd DataLabel="@L["Completed"]"><MudSwitch Value="@row.IsCompleted" Color="Color.Primary" Disabled="true" ValueChanged="@((bool i) => Update(row))" /></MudTd>
         <MudTd DataLabel="@L["CreatedOn"]">@row.CreatedOn</MudTd>
         <MudTd DataLabel="@L["CreatedBy"]">@row.CreatedBy?.UserName</MudTd>
         <MudTd DataLabel="@L["ModifiedBy"]">@row.ModifiedBy?.UserName</MudTd>

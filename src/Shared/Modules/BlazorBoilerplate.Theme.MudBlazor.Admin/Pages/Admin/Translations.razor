@@ -21,7 +21,7 @@ else
         </MudItem>
     </MudGrid>
 
-    <MudTable ServerData="@(new Func<TableState, Task<TableData<LocalizationRecordKey>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" Class="mb-4"
+    <MudTable ServerData="@(new Func<TableState, CancellationToken, Task<TableData<LocalizationRecordKey>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" Class="mb-4"
               SelectedItemChanged="async (LocalizationRecordKey key) => await LoadLocalizationRecords((LocalizationRecordKey)key)" @ref="table">
         <ToolBarContent>
             <MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@OpenNewKeyDialogOpen" Variant="Variant.Filled" Color="Color.Primary" Class="ma-2">@L["NewTranslation"]</MudButton>
@@ -273,7 +273,7 @@ else
         await Upload(e.GetMultipleFiles().Select(e => new FileUploadEntry(e)));
     }
 
-    private async Task<TableData<LocalizationRecordKey>> ServerReload(TableState state)
+    private async Task<TableData<LocalizationRecordKey>> ServerReload(TableState state, CancellationToken token)
     {
         await OnPage(state.Page, state.PageSize);
 

@@ -15,7 +15,7 @@
     <Authorized>
         <ForumMessageCreateForm Send="Send" />
 
-        <MudList Clickable="true">
+        <MudList T="string" Clickable="true">
             @if (Messages == null || Messages.Count == 0)
             {
                 <MudListItem>

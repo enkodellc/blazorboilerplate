@@ -36,7 +36,7 @@ else
 
         <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudSwitch @bind-Checked="@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
+        <MudSwitch @bind-Value="@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
 
         @if (@settings[SettingKey.EmailConfiguration_SmtpUseSSL].ValueAsBool)
         {
@@ -59,7 +59,7 @@ else
 
         <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_PopPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudSwitch @bind-Checked="@settings[SettingKey.EmailConfiguration_PopUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
+        <MudSwitch @bind-Value="@settings[SettingKey.EmailConfiguration_PopUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
 
         <MudDivider Class="my-4" />
         <MudText Typo="Typo.h4">IMAP</MudText>
@@ -72,7 +72,7 @@ else
 
         <MudTextField @bind-Value="@settings[SettingKey.EmailConfiguration_ImapPassword].Value" Label="@L["Password"]" InputType="InputType.Password" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-        <MudSwitch @bind-Checked="@settings[SettingKey.EmailConfiguration_ImapUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
+        <MudSwitch @bind-Value="@settings[SettingKey.EmailConfiguration_ImapUseSSL].ValueAsBool" Label="SSL" Color="Color.Primary" />
     </EditForm>
 
     <MudButton OnClick="@(()=>apiClient.CancelChanges())">@L["Cancel"]</MudButton>
@@ -92,7 +92,7 @@ else
                 <MudValidationSummary />
                 <MudTextField @bind-Value="@email.ToAddress" Label=@L["Email"] AdornmentIcon="@Icons.Material.Outlined.Email" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"]></MudTextField>
 
-                <MudSwitch @bind-Checked="@email.Queued" Label=@L["Queued"] Color="Color.Primary" />
+                <MudSwitch @bind-Value="@email.Queued" Label=@L["Queued"] Color="Color.Primary" />
             </EditForm>
         </DialogContent>
         <DialogActions>

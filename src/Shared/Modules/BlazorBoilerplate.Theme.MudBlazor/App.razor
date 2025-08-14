@@ -4,10 +4,10 @@
 @inject NavigationManager navigationManager
 @inject IStringLocalizer<Global> L
 
-
 <MudThemeProvider Theme="@mudTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<MudPopoverProvider />
 
 <Router AppAssembly="typeof(App).Assembly" AdditionalAssemblies="ModuleProvider.AssembliesWithPages" OnNavigateAsync="@OnNavigateAsync">
     @*see https://github.com/dotnet/aspnetcore/issues/25731
@@ -46,15 +46,22 @@
 {
     MudTheme mudTheme = new MudTheme()
     {
-        Palette = new PaletteLight()
+        PaletteLight = new PaletteLight()
         {
             Primary = "#5D2E8F",
-            //Surface = "#f5f5f5",
+            Secondary = "#ECA542",
+            TableLines = "#e1e1e1",
+            DrawerBackground = "#303954",
+            DrawerIcon = "#FFFFFF",
+            DrawerText = "#FAFAFA",
             AppbarBackground = "#5D2E8F",
+            AppbarText = "#2a3135",
+            TextPrimary = "#2a3135",
         }
     };
 
-    private async Task OnNavigateAsync(NavigationContext args)
+    private async Task OnNavigateAsync(Microsoft.AspNetCore.Components.Routing.NavigationContext args)
+
     {
         if (navigationManager.IsWebAssembly())
             if (args.Path.Equals("admin", StringComparison.OrdinalIgnoreCase))

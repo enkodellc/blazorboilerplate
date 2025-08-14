@@ -72,7 +72,7 @@ namespace BlazorBoilerplate.Theme.Material.Shared.Components
 
         protected MudTable<T> table;
 
-        protected async Task<TableData<T>> ServerReload(TableState state)
+        protected async Task<TableData<T>> ServerReload(TableState state, CancellationToken token)
         {
             if (waitingForFilter) //use if you want to wait till your filter is loaded before filling the data
             {

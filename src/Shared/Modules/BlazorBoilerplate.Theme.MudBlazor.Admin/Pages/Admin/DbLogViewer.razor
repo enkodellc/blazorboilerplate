@@ -33,8 +33,8 @@ else
                 }
             </MudSelect></MudItem>
     </MudGrid>
-    
-    <MudTable ServerData="@(new Func<TableState, Task<TableData<DbLog>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" @ref="table">
+
+    <MudTable ServerData="@(new Func<TableState, CancellationToken, Task<TableData<DbLog>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" @ref="table">
         <HeaderContent>
             <MudTh>Timestamp</MudTh>
             <MudTh>Logging Level</MudTh>
@@ -68,7 +68,7 @@ else
 @code {
     private MudTable<DbLog> table;
 
-    private async Task<TableData<DbLog>> ServerReload(TableState state)
+    private async Task<TableData<DbLog>> ServerReload(TableState state, CancellationToken token)
     {
         await OnPage(state.Page, state.PageSize);
 

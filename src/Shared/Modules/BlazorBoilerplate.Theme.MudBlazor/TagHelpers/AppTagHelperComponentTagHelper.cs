@@ -11,8 +11,8 @@ namespace BlazorBoilerplate.Theme.Material.TagHelpers
                 output.Attributes.ContainsName("wasm"))
             {
                 output.PostContent.AppendHtml(@$"
-<div class=""triangle-container"">
- <div class=""triangles"">
+<div>
+ <div >
  </div>
 </div>
 <div class=""loading-container"">

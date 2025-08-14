@@ -28,7 +28,7 @@
             <MudTextField @bind-Value="@userViewModel.LastName" Label=@L["LastName"] FullWidth="true"></MudTextField>
 
             <strong>@L["Roles"]</strong><br />
-            <MudChipSet>
+            <MudChipSet T="string">
                 @foreach (var role in userViewModel.Roles)
                 {
                     <MudChip Text="@role"></MudChip>
@@ -40,15 +40,15 @@
         </EditForm>
         @if (userViewModel.TwoFactorEnabled)
         {
-            <MudSwitch @bind-Checked="@TwoFactorEnabled" Label=@L["TwoFactorAuthentication"] Color="Color.Primary" />
+        <MudSwitch T="bool" @bind-Value="@TwoFactorEnabled" Label=@L["TwoFactorAuthentication"] Color="Color.Primary" />
 
             @if (userViewModel.BrowserRemembered)
             {
-                <MudSwitch @bind-Checked="@BrowserRemembered" Label=@L["BrowserRemembered"] Color="Color.Primary" />
+            <MudSwitch T="bool" @bind-Value="@BrowserRemembered" Label=@L["BrowserRemembered"] Color="Color.Primary" />
             }
             if (userViewModel.RecoveryCodes != null)
             {
-                <MudChipSet>
+                <MudChipSet T="string">
                     @foreach (var rcode in userViewModel.RecoveryCodes)
                     {
                         <MudChip Text="@rcode"></MudChip>
@@ -88,7 +88,7 @@
             </EditForm>
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="@(e => { updatePasswordDialogOpen = false; })">@L["Cancel"]</MudButton>
+            <MudButton OnClick="@(() => updatePasswordDialogOpen = false)" Variant="Variant.Filled" Color="Color.Secondary">@L["Cancel"]</MudButton>
             <MudButton OnClick="@UpdatePassword" Variant="Variant.Filled" Color="Color.Primary">@L["Update Password"]</MudButton>
         </DialogActions>
     </MudDialog>

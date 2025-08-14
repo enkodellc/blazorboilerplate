@@ -8,6 +8,14 @@ namespace BlazorBoilerplate.Storage
         public LocalizationDbContext(DbContextOptions<LocalizationDbContext> options) : base(options)
         { }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            
+            // Suppress the PendingModelChangesWarning to resolve the error
+            optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+        }
+
         public DbSet<PluralFormRule> PluralFormRules { get; set; }
 
         public DbSet<PluralTranslation> PluralTranslations { get; set; }

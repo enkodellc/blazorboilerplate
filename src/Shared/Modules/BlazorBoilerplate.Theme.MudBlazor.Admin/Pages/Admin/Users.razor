@@ -20,7 +20,7 @@
 }
 else
 {
-    <MudTable ServerData="@(new Func<TableState, Task<TableData<ApplicationUser>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" @ref="table">
+    <MudTable ServerData="@(new Func<TableState, CancellationToken, Task<TableData<ApplicationUser>>>(ServerReload))" Striped="true" Bordered="true" Dense="true" Hover="true" Elevation="2" @ref="table">
         <HeaderContent>
             <MudTh><MudButton StartIcon="@Icons.Material.Filled.PersonAdd" OnClick="@(e => { createUserDialogOpen = true; })" Variant="Variant.Filled" Color="Color.Primary">@L["New User"]</MudButton></MudTh>
             <MudTh>@L["UserName"]</MudTh>
@@ -42,7 +42,7 @@ else
             </MudTd>
             <MudTd>
                 @if (@UserRow.UserRoles != null)
-                    {<MudChipSet>
+                    {<MudChipSet T="string">
                         @foreach (var ur in @UserRow.UserRoles)
                             {
                             <MudChip Text="@ur.Role.Name"></MudChip>
@@ -97,7 +97,7 @@ else
 
             <MudTextField @bind-Value="@currentUser.Email" Label=@L["Email"] AdornmentIcon="@Icons.Material.Outlined.Email" Adornment="Adornment.End" FullWidth="true" Required="true" RequiredError=@L["Required"] Type="mail"></MudTextField>
 
-            <MudChipSet>
+            <MudChipSet T="string">
                 @foreach (var role in roleSelections.OrderBy(x => x.DisplayValue))
                 {
                     <MudChip Text="@role.DisplayValue" Icon="@((role.Selected) ? Icons.Material.Filled.Done : "")" @onclick="@(()=>UpdateUserRole(role))" />
@@ -152,7 +152,7 @@ else
 @code {
     private MudTable<ApplicationUser> table;
 
-    private async Task<TableData<ApplicationUser>> ServerReload(TableState state)
+    private async Task<TableData<ApplicationUser>> ServerReload(TableState state, CancellationToken token)
     {
         await OnPage(state.Page, state.PageSize);
 
